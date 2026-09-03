@@ -41,7 +41,7 @@ a confused user six weeks from now, use Opus.
 |---|---|---|
 | 0 — Repo foundations | PENDING | Luna (Max) |
 | 1 — Question schema | DONE | **Opus** (validator: Luna) |
-| 2 — Seed content | PENDING | **Opus** |
+| 2 — Seed content | IN PROGRESS | **Opus** |
 | 3 — Frontend scaffold | PENDING | Luna (Max) |
 | 4 — Core quiz | PENDING | Luna (Max), tests first |
 | 5 — Polish | PENDING | Luna (Max) |
@@ -156,7 +156,7 @@ mechanical either way.
 **Status:** DONE
 
 **Model:** **Opus** — highest-leverage phase in the plan. This schema is
-load-bearing for 80 questions, the quiz engine, and every future cert; the
+load-bearing for 100 questions, the quiz engine, and every future cert; the
 `correctIndex` and single-select mistakes already caught here are exactly
 the failure mode, and both looked perfectly reasonable when written.
 *Exception:* once the shape is agreed, writing the zod validator and CI
@@ -214,7 +214,7 @@ change after ~100 questions exist:
   than repeated across every question. The slug set maps 1:1 onto the
   eight official exam-guide domains, so weighting/filtering stays
   data-driven and a guide re-wording changes one manifest line instead of
-  80 questions. The validator enforces that every `domain` exists in the
+  100 questions. The validator enforces that every `domain` exists in the
   manifest.
 - **`subdomain` optional**, matching the blueprint's published sub-domain
   weights. Costs nothing to record while authoring and is the difference
@@ -239,7 +239,7 @@ domains, `cert` matches folder, `sourceUrl` non-empty and well-formed.
 **Done when:** validator rejects a deliberately broken fixture in CI.
 
 ## Phase 2 — Seed content (CCDV-F)
-**Status:** PENDING
+**Status:** IN PROGRESS
 
 **Model:** **Opus** — the one phase where model quality shows up directly
 in the product. Writing a *plausible wrong answer* is the hard part of
@@ -247,24 +247,23 @@ question authoring: distractors must be wrong for an interesting reason,
 not obviously wrong, and the explanation has to hold up against the cited
 doc. Weaker models produce banks where the correct answer is guessable
 from tone alone. Note this cuts against the usual token-cost instinct —
-it's 80 questions, so it's also the most expensive phase to run on Opus.
+it's 100 questions, so it's also the most expensive phase to run on Opus.
 Spend it anyway; a guessable bank is worthless.
 *Regardless of model:* human review is the actual accuracy gate, and no
 question ships at `status: draft`.
 
 - Pull the official CCDV-F exam guide's domain breakdown into
   `manifest.json` (see verified weights above — confirm first-hand).
-- **Target 80 questions for v1**, resolving the 40–60 vs. 80–100 conflict
-  between the early research notes and this plan. 80 is the smallest bank
-  that still gives the long tail a pulse, and it's exactly what the
-  CLAUDE-CERTIFICATIONS repo settled on per cert — weak but real evidence
-  it's the right order of magnitude. Weighted straight off the blueprint,
-  80 questions yields ~26 for Applications & Integration but only ~2 for
-  Eval/Testing/Debugging and ~2 for Claude Code — too thin to be useful
-  as a study aid. **Set a floor of 5 questions per domain** and let the
-  large domains absorb the rest; the quiz engine can still *sample* to
-  true blueprint weights at runtime. Authoring depth and exam simulation
-  are different problems and shouldn't share one number.
+- **Target 100 questions for v1**, expanding the original 80-question target
+  while the source and review context is active. The larger bank gives the
+  long-tail domains more depth and delays repeat exposure. Weighted straight
+  off the blueprint, 100 questions yields ~33 for Applications and
+  Integration but only ~3 each for Eval, Testing, and Debugging and Claude
+  Code — still too thin to be useful as a study aid. **Set a floor of 5
+  questions per domain** and let the large domains absorb the rest; the quiz
+  engine can still *sample* to true blueprint weights at runtime. Authoring
+  depth and exam simulation are different problems and shouldn't share one
+  number.
 - Mix in genuine multi-response items — a bank that's 100% single-select
   will not prepare anyone for the real format.
 - No pipeline/tooling needed yet for v1 — hand-author (with AI drafting
@@ -272,7 +271,7 @@ question ships at `status: draft`.
   and flipped from `status: draft` to `reviewed`.
 - **This is the long pole.** It does not block Phase 3 — see below.
 
-**Done when:** 80 questions pass the Phase 1 validator, every domain
+**Done when:** 100 questions pass the Phase 1 validator, every domain
 meets its floor, and every question is `status: reviewed`.
 
 ## Phase 3 — Frontend scaffold
