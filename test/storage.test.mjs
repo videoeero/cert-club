@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  clearMissedQuestionIds,
   getAttempt,
   getAttempts,
   getBookmarkedQuestionIds,
@@ -103,6 +104,20 @@ test("persists bookmarks and accumulates missed questions per certification", ()
     "q3",
     "q1",
   ]);
+});
+
+test("clears missed questions once they are answered correctly", () => {
+  const storage = new MemoryStorage();
+
+  recordMissedQuestionIds("test-cert", ["q1", "q2", "q3"], storage);
+  clearMissedQuestionIds("test-cert", ["q2"], storage);
+  assert.deepEqual(getMissedQuestionIds("test-cert", storage), ["q1", "q3"]);
+
+  clearMissedQuestionIds("test-cert", [], storage);
+  assert.deepEqual(getMissedQuestionIds("test-cert", storage), ["q1", "q3"]);
+
+  clearMissedQuestionIds("other-cert", ["q1"], storage);
+  assert.deepEqual(getMissedQuestionIds("test-cert", storage), ["q1", "q3"]);
 });
 
 test("looks up a single attempt by cert and id", () => {

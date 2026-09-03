@@ -42,7 +42,10 @@ export interface CertContent {
   questions: Question[];
 }
 
-export type QuestionSelectionMode = "all" | "domain" | "random" | "weighted";
+export type QuestionSelectionMode =
+  "all" | "domain" | "random" | "weighted" | "review";
+
+export type ReviewScope = "missed" | "bookmarked" | "missed-or-bookmarked";
 
 export type RevealMode = "immediate" | "end";
 
@@ -50,6 +53,7 @@ export interface QuizSelectionConfig {
   mode: QuestionSelectionMode;
   count?: number;
   domain?: string;
+  reviewScope?: ReviewScope;
 }
 
 export interface QuizConfig extends QuizSelectionConfig {

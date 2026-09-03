@@ -6,6 +6,7 @@ import type {
   QuestionResult,
   QuizResults,
   QuizSelectionConfig,
+  ReviewScope,
 } from "../types";
 
 type RandomSource = () => number;
@@ -118,6 +119,30 @@ function weightedSample(
   return selected;
 }
 
+export function filterReviewQuestions(
+  questions: readonly Question[],
+  missedQuestionIds: readonly string[],
+  bookmarkedQuestionIds: readonly string[],
+  scope: ReviewScope,
+  domain?: string,
+): Question[] {
+  const missed = new Set(missedQuestionIds);
+  const bookmarked = new Set(bookmarkedQuestionIds);
+
+  return questions.filter((question) => {
+    const matchesScope =
+      scope === "missed"
+        ? missed.has(question.id)
+        : scope === "bookmarked"
+          ? bookmarked.has(question.id)
+          : scope === "missed-or-bookmarked"
+            ? missed.has(question.id) || bookmarked.has(question.id)
+            : false;
+
+    return matchesScope && (domain === undefined || question.domain === domain);
+  });
+}
+
 export function selectQuestions(
   questions: readonly Question[],
   domains: readonly Domain[],
@@ -144,6 +169,25 @@ export function selectQuestions(
     if (matchingQuestions.length === 0) {
       throw new QuizSelectionError(
         `No questions are available for the selected domain "${config.domain}".`,
+      );
+    }
+    if (config.count === undefined) {
+      return matchingQuestions;
+    }
+    return randomSample(
+      matchingQuestions,
+      selectionCount(config.count, matchingQuestions.length),
+      random,
+    );
+  }
+
+  if (config.mode === "review") {
+    const matchingQuestions = config.domain
+      ? questions.filter((question) => question.domain === config.domain)
+      : [...questions];
+    if (matchingQuestions.length === 0) {
+      throw new QuizSelectionError(
+        "No questions are available for the selected review filters.",
       );
     }
     if (config.count === undefined) {

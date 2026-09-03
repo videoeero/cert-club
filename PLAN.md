@@ -44,7 +44,7 @@ a confused user six weeks from now, use Opus.
 | 2 — Seed content | DONE | **Opus** |
 | 3 — Frontend scaffold | DONE | Luna (Max) |
 | 4 — Core quiz | DONE | Luna (Max), tests first |
-| 5 — Polish | PENDING | Luna (Max) |
+| 5 — Polish | DONE | Luna (Max) |
 | 6 — Deploy | PENDING | Luna (Max) |
 | 7 — Second cert | PENDING | **Opus** review, Luna wiring |
 | 8 — Stretch | PENDING (deferred) | TBD |
@@ -349,7 +349,7 @@ work; without them it isn't, whatever model you use.
   ceremony needed for v1.
 
 ## Phase 5 — Polish
-**Status:** PENDING
+**Status:** DONE
 
 **Model:** Luna (Max) — visual and interaction work you're evaluating by
 looking at it. Fastest feedback loop in the project.

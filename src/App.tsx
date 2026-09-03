@@ -16,7 +16,11 @@ function AppLayout() {
         </div>
       </header>
 
-      <main className="content-width">
+      <a className="skip-link" href="#main-content">
+        Skip to main content
+      </a>
+
+      <main id="main-content" className="content-width" tabIndex={-1}>
         <Routes>
           <Route path="/" element={<CertPickerPage />} />
           <Route path="/quiz/:certSlug" element={<QuizSessionPage />} />

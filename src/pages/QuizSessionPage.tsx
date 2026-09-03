@@ -7,12 +7,15 @@ import { loadCertContent } from "../lib/content";
 import {
   answerCountLabel,
   calculateQuizResults,
+  filterReviewQuestions,
   scoreAnswer,
   selectQuestions,
   QuizSelectionError,
 } from "../lib/quiz";
 import {
+  clearMissedQuestionIds,
   getBookmarkedQuestionIds,
+  getMissedQuestionIds,
   recordMissedQuestionIds,
   saveAttempt,
   setBookmarkedQuestionIds as persistBookmarkedQuestionIds,
@@ -22,6 +25,7 @@ import type {
   Question,
   QuestionSelectionMode,
   QuizConfig,
+  ReviewScope,
   RevealMode,
 } from "../types";
 
@@ -34,6 +38,13 @@ interface ActiveSession {
 const DEFAULT_SELECTION_MODE: QuestionSelectionMode = "random";
 const DEFAULT_QUESTION_COUNT = "10";
 const DEFAULT_REVEAL_MODE: RevealMode = "immediate";
+const DEFAULT_REVIEW_SCOPE: ReviewScope = "missed-or-bookmarked";
+
+const REVIEW_SCOPE_LABELS: Record<ReviewScope, string> = {
+  missed: "Missed questions",
+  bookmarked: "Bookmarked questions",
+  "missed-or-bookmarked": "Missed or bookmarked",
+};
 
 function errorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
@@ -57,6 +68,8 @@ export function QuizSessionPage() {
   const [selectionDomain, setSelectionDomain] = useState("");
   const [selectionCount, setSelectionCount] = useState(DEFAULT_QUESTION_COUNT);
   const [revealMode, setRevealMode] = useState<RevealMode>(DEFAULT_REVEAL_MODE);
+  const [reviewScope, setReviewScope] =
+    useState<ReviewScope>(DEFAULT_REVIEW_SCOPE);
   const [activeSession, setActiveSession] = useState<ActiveSession | null>(
     null,
   );
@@ -67,6 +80,9 @@ export function QuizSessionPage() {
   const [bookmarkedQuestionIds, setBookmarkedQuestionIds] = useState<
     Set<string>
   >(new Set());
+  const [missedQuestionIds, setMissedQuestionIds] = useState<Set<string>>(
+    new Set(),
+  );
   const [storageError, setStorageError] = useState<string | null>(null);
   const [sessionError, setSessionError] = useState<string | null>(null);
   const [finishError, setFinishError] = useState<string | null>(null);
@@ -84,17 +100,20 @@ export function QuizSessionPage() {
     setAnswers({});
     setRevealedQuestionIds(new Set());
     setSelectionDomain("");
+    setReviewScope(DEFAULT_REVIEW_SCOPE);
     setSessionError(null);
     setFinishError(null);
+    setBookmarkedQuestionIds(new Set());
+    setMissedQuestionIds(new Set());
+    setStorageError(null);
 
     if (!certSlug) {
-      setBookmarkedQuestionIds(new Set());
       return;
     }
 
     try {
       setBookmarkedQuestionIds(new Set(getBookmarkedQuestionIds(certSlug)));
-      setStorageError(null);
+      setMissedQuestionIds(new Set(getMissedQuestionIds(certSlug)));
     } catch (error) {
       setStorageError(errorMessage(error));
     }
@@ -139,6 +158,25 @@ export function QuizSessionPage() {
   const domainQuestionCount = questions.filter(
     (question) => question.domain === selectedDomain,
   ).length;
+  const reviewQuestions = filterReviewQuestions(
+    questions,
+    [...missedQuestionIds],
+    [...bookmarkedQuestionIds],
+    reviewScope,
+    selectionDomain || undefined,
+  );
+  const reviewQuestionCountByDomain = new Map(
+    manifest.domains.map((domain) => [
+      domain.slug,
+      filterReviewQuestions(
+        questions,
+        [...missedQuestionIds],
+        [...bookmarkedQuestionIds],
+        reviewScope,
+        domain.slug,
+      ).length,
+    ]),
+  );
   const questionCountByDomain = new Map(
     manifest.domains.map((domain) => [
       domain.slug,
@@ -146,13 +184,32 @@ export function QuizSessionPage() {
     ]),
   );
   const countLimit =
-    selectionMode === "domain" ? domainQuestionCount : questions.length;
+    selectionMode === "domain"
+      ? domainQuestionCount
+      : selectionMode === "review"
+        ? reviewQuestions.length
+        : questions.length;
+  const parsedSelectionCount = Number(selectionCount);
+  const boundedSelectionCount =
+    countLimit > 0 &&
+    Number.isInteger(parsedSelectionCount) &&
+    parsedSelectionCount > countLimit
+      ? String(countLimit)
+      : selectionCount;
 
   function handleStart(event: FormEvent<HTMLFormElement>): void {
     event.preventDefault();
     setSessionError(null);
 
-    const count = selectionMode === "all" ? undefined : Number(selectionCount);
+    if (selectionMode === "review" && reviewQuestions.length === 0) {
+      setSessionError(
+        "No questions match this review set and domain filter. Answer or bookmark questions first.",
+      );
+      return;
+    }
+
+    const count =
+      selectionMode === "all" ? undefined : Number(boundedSelectionCount);
     if (
       count !== undefined &&
       (!Number.isInteger(count) || count < 1 || countLimit < 1)
@@ -172,11 +229,17 @@ export function QuizSessionPage() {
       revealMode,
       ...(count === undefined ? {} : { count }),
       ...(selectionMode === "domain" ? { domain: selectedDomain } : {}),
+      ...(selectionMode === "review"
+        ? {
+            ...(selectionDomain ? { domain: selectionDomain } : {}),
+            reviewScope,
+          }
+        : {}),
     };
 
     try {
       const selectedQuestions = selectQuestions(
-        questions,
+        selectionMode === "review" ? reviewQuestions : questions,
         manifest.domains,
         config,
       );
@@ -228,26 +291,73 @@ export function QuizSessionPage() {
                   <option value="random">Random subset</option>
                   <option value="weighted">Weighted by blueprint</option>
                   <option value="domain">By domain</option>
+                  <option value="review">Review missed/bookmarked</option>
                   <option value="all">All questions</option>
                 </select>
               </label>
 
-              {selectionMode === "domain" && (
+              {selectionMode === "review" && (
                 <label className="form-field">
-                  <span>Domain</span>
+                  <span>Review set</span>
                   <select
-                    required
-                    value={selectedDomain}
+                    value={reviewScope}
+                    onChange={(event) =>
+                      setReviewScope(event.target.value as ReviewScope)
+                    }
+                  >
+                    {Object.entries(REVIEW_SCOPE_LABELS).map(
+                      ([scope, label]) => (
+                        <option key={scope} value={scope}>
+                          {label}
+                        </option>
+                      ),
+                    )}
+                  </select>
+                  <small
+                    className="selection-summary"
+                    role="status"
+                    aria-live="polite"
+                  >
+                    {reviewQuestions.length} question
+                    {reviewQuestions.length === 1 ? "" : "s"} match this review
+                    set.
+                  </small>
+                </label>
+              )}
+
+              {(selectionMode === "domain" || selectionMode === "review") && (
+                <label className="form-field">
+                  <span>
+                    {selectionMode === "review" ? "Domain filter" : "Domain"}
+                  </span>
+                  <select
+                    required={selectionMode === "domain"}
+                    value={
+                      selectionMode === "review"
+                        ? selectionDomain
+                        : selectedDomain
+                    }
                     onChange={(event) => setSelectionDomain(event.target.value)}
                   >
+                    {selectionMode === "review" && (
+                      <option value="">All domains</option>
+                    )}
                     {manifest.domains.map((domain) => (
                       <option key={domain.slug} value={domain.slug}>
-                        {`${domain.name} (${
-                          questionCountByDomain.get(domain.slug) ?? 0
+                        {`${domain.name} — ${domain.weight}% blueprint (${
+                          selectionMode === "review"
+                            ? (reviewQuestionCountByDomain.get(domain.slug) ??
+                              0)
+                            : (questionCountByDomain.get(domain.slug) ?? 0)
                         } available)`}
                       </option>
                     ))}
                   </select>
+                  <small>
+                    {selectionMode === "review"
+                      ? "Filter the review set by an exam domain."
+                      : "The domain's percentage matches the official exam blueprint."}
+                  </small>
                 </label>
               )}
 
@@ -257,8 +367,8 @@ export function QuizSessionPage() {
                   <input
                     type="number"
                     min="1"
-                    max={Math.max(1, countLimit)}
-                    value={selectionCount}
+                    max={countLimit > 0 ? countLimit : undefined}
+                    value={boundedSelectionCount}
                     onChange={(event) => setSelectionCount(event.target.value)}
                     required
                   />
@@ -313,7 +423,7 @@ export function QuizSessionPage() {
               </p>
             )}
             <button className="button button-primary" type="submit">
-              Start session
+              {selectionMode === "review" ? "Start review" : "Start session"}
               <span aria-hidden="true">→</span>
             </button>
           </form>
@@ -356,6 +466,8 @@ export function QuizSessionPage() {
   );
   const isLastQuestion = questionIndex === sessionQuestions.length - 1;
   const progress = ((questionIndex + 1) / sessionQuestions.length) * 100;
+  const questionHeadingId = `question-heading-${question.id}`;
+  const questionInstructionId = `question-instruction-${question.id}`;
 
   function markCurrentQuestionRevealed(): void {
     setRevealedQuestionIds((current) => {
@@ -465,6 +577,12 @@ export function QuizSessionPage() {
           .filter((result) => !result.isCorrect)
           .map((result) => result.questionId),
       );
+      clearMissedQuestionIds(
+        manifest.cert,
+        results.questionResults
+          .filter((result) => result.isCorrect)
+          .map((result) => result.questionId),
+      );
       const query = new URLSearchParams({ attempt: attempt.id });
       void navigate(`/results/${manifest.cert}?${query.toString()}`);
     } catch (error) {
@@ -488,19 +606,27 @@ export function QuizSessionPage() {
         className="progress-block"
         aria-label={`Question ${questionIndex + 1} of ${sessionQuestions.length}`}
       >
-        <div className="progress-label">
+        <div className="progress-label" aria-live="polite">
           <span>
             Question <strong>{questionIndex + 1}</strong> of{" "}
             {sessionQuestions.length}
           </span>
           <span>{Math.round(progress)}%</span>
         </div>
-        <div className="progress-track">
+        <div
+          className="progress-track"
+          role="progressbar"
+          aria-label="Quiz progress"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={Math.round(progress)}
+          aria-valuetext={`Question ${questionIndex + 1} of ${sessionQuestions.length}`}
+        >
           <div className="progress-value" style={{ width: `${progress}%` }} />
         </div>
       </div>
 
-      <article className="question-card">
+      <article className="question-card" aria-labelledby={questionHeadingId}>
         <div className="question-card-header">
           <div className="question-meta">
             <span>{domain?.name ?? question.domain}</span>
@@ -515,13 +641,18 @@ export function QuizSessionPage() {
             className="bookmark-button button button-secondary"
             type="button"
             aria-pressed={bookmarkedQuestionIds.has(question.id)}
+            aria-label={
+              bookmarkedQuestionIds.has(question.id)
+                ? `Remove bookmark from question ${questionIndex + 1}`
+                : `Bookmark question ${questionIndex + 1}`
+            }
             onClick={handleToggleBookmark}
           >
             {bookmarkedQuestionIds.has(question.id) ? "Bookmarked" : "Bookmark"}
           </button>
         </div>
-        <h2>{question.stem}</h2>
-        <p className="question-instruction">
+        <h2 id={questionHeadingId}>{question.stem}</h2>
+        <p id={questionInstructionId} className="question-instruction">
           Select {answerCountLabel(question.correct.length)} answer
           {question.correct.length === 1 ? "" : "s"}.
           {session.config.revealMode === "end" &&
@@ -531,6 +662,7 @@ export function QuizSessionPage() {
           className="answer-option-list"
           disabled={isRevealed}
           aria-label="Answer options"
+          aria-describedby={questionInstructionId}
         >
           <legend className="sr-only">Answer options</legend>
           {question.options.map((option) => {
@@ -571,6 +703,8 @@ export function QuizSessionPage() {
               isCorrect ? "is-correct" : "is-incorrect"
             }`}
             role="status"
+            aria-live="polite"
+            aria-atomic="true"
           >
             <strong>{isCorrect ? "Correct." : "Not quite."}</strong>
             <p>

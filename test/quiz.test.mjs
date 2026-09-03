@@ -4,6 +4,7 @@ import test from "node:test";
 import {
   answerCountLabel,
   calculateQuizResults,
+  filterReviewQuestions,
   QuizSelectionError,
   scoreAnswer,
   selectQuestions,
@@ -132,6 +133,71 @@ test("selects all, domain-filtered, and random question sets", () => {
   );
 });
 
+test("filters review questions by missed, bookmarked, and domain scope", () => {
+  const questions = [
+    question("alpha-missed", "alpha"),
+    question("alpha-bookmarked", "alpha"),
+    question("beta-both", "beta"),
+    question("beta-other", "beta"),
+  ];
+
+  assert.deepEqual(
+    filterReviewQuestions(
+      questions,
+      ["alpha-missed", "beta-both"],
+      ["alpha-bookmarked", "beta-both"],
+      "missed",
+    ).map((item) => item.id),
+    ["alpha-missed", "beta-both"],
+  );
+  assert.deepEqual(
+    filterReviewQuestions(
+      questions,
+      ["alpha-missed", "beta-both"],
+      ["alpha-bookmarked", "beta-both"],
+      "bookmarked",
+      "beta",
+    ).map((item) => item.id),
+    ["beta-both"],
+  );
+  assert.deepEqual(
+    filterReviewQuestions(
+      questions,
+      ["alpha-missed", "beta-both"],
+      ["alpha-bookmarked", "beta-both"],
+      "missed-or-bookmarked",
+    ).map((item) => item.id),
+    ["alpha-missed", "alpha-bookmarked", "beta-both"],
+  );
+  assert.deepEqual(
+    filterReviewQuestions(
+      questions,
+      ["not-in-bank"],
+      ["also-not-in-bank"],
+      "missed-or-bookmarked",
+    ),
+    [],
+  );
+});
+
+test("samples a prefiltered review set without replacement", () => {
+  const questions = [
+    question("alpha-1", "alpha"),
+    question("alpha-2", "alpha"),
+    question("beta-1", "beta"),
+  ];
+
+  const selected = selectQuestions(
+    questions,
+    domains,
+    { mode: "review", count: 2, reviewScope: "missed-or-bookmarked" },
+    () => 0,
+  );
+
+  assert.equal(selected.length, 2);
+  assert.equal(new Set(selected.map((item) => item.id)).size, 2);
+});
+
 test("samples domains according to blueprint weights without replacement", () => {
   const questions = [
     question("alpha-1", "alpha"),
@@ -163,10 +229,7 @@ test("formats answer counts as words with a numeric fallback", () => {
 });
 
 test("rejects invalid question selection configurations", () => {
-  const questions = [
-    question("alpha-1", "alpha"),
-    question("beta-1", "beta"),
-  ];
+  const questions = [question("alpha-1", "alpha"), question("beta-1", "beta")];
 
   assert.throws(
     () => selectQuestions([], domains, { mode: "all" }),
@@ -189,13 +252,11 @@ test("rejects invalid question selection configurations", () => {
     QuizSelectionError,
   );
   assert.throws(
-    () =>
-      selectQuestions(questions, domains, { mode: "random", count: 1.5 }),
+    () => selectQuestions(questions, domains, { mode: "random", count: 1.5 }),
     QuizSelectionError,
   );
   assert.throws(
-    () =>
-      selectQuestions(questions, domains, { mode: "random", count: -1 }),
+    () => selectQuestions(questions, domains, { mode: "random", count: -1 }),
     QuizSelectionError,
   );
 });

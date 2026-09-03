@@ -1,4 +1,9 @@
-import type { AttemptRecord, DomainBreakdown, QuizConfig } from "../types";
+import type {
+  AttemptRecord,
+  DomainBreakdown,
+  QuizConfig,
+  ReviewScope,
+} from "../types";
 
 export const STORAGE_VERSION = 1;
 export const MAX_ATTEMPT_HISTORY = 10;
@@ -42,19 +47,29 @@ function isStringArrayMap(value: unknown): value is Record<string, string[]> {
   );
 }
 
+function isReviewScope(value: unknown): value is ReviewScope {
+  return (
+    value === "missed" ||
+    value === "bookmarked" ||
+    value === "missed-or-bookmarked"
+  );
+}
+
 function isQuizConfig(value: unknown): value is QuizConfig {
   return (
     isRecord(value) &&
     (value.mode === "all" ||
       value.mode === "domain" ||
       value.mode === "random" ||
-      value.mode === "weighted") &&
+      value.mode === "weighted" ||
+      value.mode === "review") &&
     (value.revealMode === "immediate" || value.revealMode === "end") &&
     (value.count === undefined ||
       (typeof value.count === "number" &&
         Number.isInteger(value.count) &&
         value.count > 0)) &&
-    (value.domain === undefined || typeof value.domain === "string")
+    (value.domain === undefined || typeof value.domain === "string") &&
+    (value.reviewScope === undefined || isReviewScope(value.reviewScope))
   );
 }
 
@@ -288,6 +303,31 @@ export function recordMissedQuestionIds(
   const next = {
     ...missed,
     [cert]: [...new Set([...(missed[cert] ?? []), ...questionIds])],
+  };
+  writeValue(STORAGE_KEYS.missed, next, resolvedStorage);
+}
+
+/**
+ * Removes question ids from the persisted "missed" set for a certification,
+ * e.g. once they have been answered correctly on a later attempt.
+ */
+export function clearMissedQuestionIds(
+  cert: string,
+  questionIds: readonly string[],
+  storage?: StorageAdapter,
+): void {
+  if (questionIds.length === 0) {
+    return;
+  }
+
+  const resolvedStorage = resolveStorage(storage);
+  const missed = readQuestionIdMap(STORAGE_KEYS.missed, resolvedStorage);
+  const toRemove = new Set(questionIds);
+  const next = {
+    ...missed,
+    [cert]: (missed[cert] ?? []).filter(
+      (questionId) => !toRemove.has(questionId),
+    ),
   };
   writeValue(STORAGE_KEYS.missed, next, resolvedStorage);
 }
