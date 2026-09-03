@@ -7,9 +7,9 @@ Starting with **Claude Certified Developer – Foundations (CCDV-F)**, then
 generalizing to comparable entry-level certs (AZ-900, AI-900, the GitHub
 Copilot cert).
 
-> **Status: pre-alpha.** The frontend scaffold is in place; core quiz
-> functionality is still under construction. See [`PLAN.md`](./PLAN.md) for
-> the v1 scope, question schema, and phase-by-phase build order.
+> **Status: pre-alpha.** The core quiz flow is in place; polish and deployment
+> remain. See [`PLAN.md`](./PLAN.md) for the v1 scope, question schema, and
+> phase-by-phase build order.
 
 ## Why this exists
 

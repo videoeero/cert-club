@@ -41,3 +41,60 @@ export interface CertContent {
   manifest: Manifest;
   questions: Question[];
 }
+
+export type QuestionSelectionMode = "all" | "domain" | "random" | "weighted";
+
+export type RevealMode = "immediate" | "end";
+
+export interface QuizSelectionConfig {
+  mode: QuestionSelectionMode;
+  count?: number;
+  domain?: string;
+}
+
+export interface QuizConfig extends QuizSelectionConfig {
+  revealMode: RevealMode;
+}
+
+export type AnswerMap = Record<string, string[]>;
+
+export interface QuestionResult {
+  questionId: string;
+  domain: string;
+  selectedOptionIds: string[];
+  answered: boolean;
+  isCorrect: boolean;
+}
+
+export interface DomainBreakdown {
+  slug: string;
+  name: string;
+  totalQuestions: number;
+  answeredQuestions: number;
+  correctAnswers: number;
+  scorePercentage: number;
+}
+
+export interface QuizResults {
+  totalQuestions: number;
+  answeredQuestions: number;
+  correctAnswers: number;
+  scorePercentage: number;
+  questionResults: QuestionResult[];
+  domainBreakdown: DomainBreakdown[];
+}
+
+export interface AttemptRecord {
+  id: string;
+  cert: string;
+  startedAt: string;
+  completedAt: string;
+  config: QuizConfig;
+  questionIds: string[];
+  answers: AnswerMap;
+  totalQuestions: number;
+  answeredQuestions: number;
+  correctAnswers: number;
+  scorePercentage: number;
+  domainBreakdown: DomainBreakdown[];
+}

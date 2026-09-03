@@ -43,7 +43,7 @@ a confused user six weeks from now, use Opus.
 | 1 — Question schema | DONE | **Opus** (validator: Luna) |
 | 2 — Seed content | DONE | **Opus** |
 | 3 — Frontend scaffold | DONE | Luna (Max) |
-| 4 — Core quiz | PENDING | Luna (Max), tests first |
+| 4 — Core quiz | DONE | Luna (Max), tests first |
 | 5 — Polish | PENDING | Luna (Max) |
 | 6 — Deploy | PENDING | Luna (Max) |
 | 7 — Second cert | PENDING | **Opus** review, Luna wiring |
@@ -320,7 +320,7 @@ every UI concern except pagination.
   `typescript-eslint/typescript-eslint#10940`).
 
 ## Phase 4 — Core quiz functionality
-**Status:** PENDING
+**Status:** DONE
 
 **Model:** Luna (Max) — but write the tests *first* for scoring and
 weighted sampling. These are the two functions that can be subtly wrong

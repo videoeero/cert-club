@@ -1,0 +1,248 @@
+import type {
+  AnswerMap,
+  Domain,
+  DomainBreakdown,
+  Question,
+  QuestionResult,
+  QuizResults,
+  QuizSelectionConfig,
+} from "../types";
+
+type RandomSource = () => number;
+
+export class QuizSelectionError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "QuizSelectionError";
+  }
+}
+
+export function answerCountLabel(count: number): string {
+  const labels = ["ZERO", "ONE", "TWO", "THREE", "FOUR", "FIVE"];
+  return labels[count] ?? String(count);
+}
+
+function randomValue(random: RandomSource): number {
+  const value = random();
+  if (!Number.isFinite(value)) {
+    throw new QuizSelectionError(
+      "The question selection random source is invalid.",
+    );
+  }
+  return Math.min(Math.max(value, 0), 1 - Number.EPSILON);
+}
+
+function selectionCount(count: number | undefined, available: number): number {
+  if (count === undefined) {
+    return available;
+  }
+  if (!Number.isInteger(count) || count < 1) {
+    throw new QuizSelectionError("Question count must be a positive integer.");
+  }
+  return Math.min(count, available);
+}
+
+function randomSample(
+  questions: readonly Question[],
+  count: number,
+  random: RandomSource,
+): Question[] {
+  const shuffled = [...questions];
+  for (let index = shuffled.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(randomValue(random) * (index + 1));
+    [shuffled[index], shuffled[swapIndex]] = [
+      shuffled[swapIndex],
+      shuffled[index],
+    ];
+  }
+  return shuffled.slice(0, count);
+}
+
+function weightedSample(
+  questions: readonly Question[],
+  domains: readonly Domain[],
+  count: number,
+  random: RandomSource,
+): Question[] {
+  const remaining = new Map<string, Question[]>();
+  for (const question of questions) {
+    const group = remaining.get(question.domain) ?? [];
+    group.push(question);
+    remaining.set(question.domain, group);
+  }
+
+  const weights = new Map(
+    domains.map((domain) => [domain.slug, Math.max(0, domain.weight)]),
+  );
+  const selected: Question[] = [];
+
+  while (selected.length < count) {
+    const available = [...remaining.entries()].filter(
+      ([, group]) => group.length > 0,
+    );
+    const weighted = available.filter(
+      ([domain]) => (weights.get(domain) ?? 0) > 0,
+    );
+    const candidates = weighted.length > 0 ? weighted : available;
+    const totalWeight = candidates.reduce(
+      (total, [domain]) =>
+        total + (weighted.length > 0 ? (weights.get(domain) ?? 0) : 1),
+      0,
+    );
+    let cursor = randomValue(random) * totalWeight;
+    let selectedDomain = candidates[candidates.length - 1][0];
+
+    for (const [domain] of candidates) {
+      const weight = weighted.length > 0 ? (weights.get(domain) ?? 0) : 1;
+      if (cursor < weight) {
+        selectedDomain = domain;
+        break;
+      }
+      cursor -= weight;
+    }
+
+    const group = remaining.get(selectedDomain);
+    if (!group) {
+      throw new QuizSelectionError(
+        `No questions remain for the selected domain "${selectedDomain}".`,
+      );
+    }
+    const questionIndex = Math.floor(randomValue(random) * group.length);
+    const [question] = group.splice(questionIndex, 1);
+    if (!question) {
+      throw new QuizSelectionError("The weighted question sample was empty.");
+    }
+    selected.push(question);
+  }
+
+  return selected;
+}
+
+export function selectQuestions(
+  questions: readonly Question[],
+  domains: readonly Domain[],
+  config: QuizSelectionConfig,
+  random: RandomSource = Math.random,
+): Question[] {
+  if (questions.length === 0) {
+    throw new QuizSelectionError("The question bank is empty.");
+  }
+
+  if (config.mode === "all") {
+    return [...questions];
+  }
+
+  if (config.mode === "domain") {
+    if (!config.domain) {
+      throw new QuizSelectionError(
+        "A domain is required for domain selection.",
+      );
+    }
+    const matchingQuestions = questions.filter(
+      (question) => question.domain === config.domain,
+    );
+    if (matchingQuestions.length === 0) {
+      throw new QuizSelectionError(
+        `No questions are available for the selected domain "${config.domain}".`,
+      );
+    }
+    if (config.count === undefined) {
+      return matchingQuestions;
+    }
+    return randomSample(
+      matchingQuestions,
+      selectionCount(config.count, matchingQuestions.length),
+      random,
+    );
+  }
+
+  const count = selectionCount(config.count, questions.length);
+  if (config.mode === "random") {
+    return randomSample(questions, count, random);
+  }
+
+  if (config.mode === "weighted") {
+    return weightedSample(questions, domains, count, random);
+  }
+
+  throw new QuizSelectionError(
+    `Unsupported question selection mode "${String(config.mode)}".`,
+  );
+}
+
+export function scoreAnswer(
+  question: Question,
+  selectedOptionIds: readonly string[],
+): boolean {
+  const selected = new Set(selectedOptionIds);
+  const correct = new Set(question.correct);
+
+  return (
+    selected.size === selectedOptionIds.length &&
+    selected.size === correct.size &&
+    [...selected].every((optionId) => correct.has(optionId))
+  );
+}
+
+export function calculateQuizResults(
+  questions: readonly Question[],
+  answers: Readonly<AnswerMap>,
+  domains: readonly Domain[],
+): QuizResults {
+  const domainNames = new Map(
+    domains.map((domain) => [domain.slug, domain.name]),
+  );
+  const breakdownByDomain = new Map<string, DomainBreakdown>();
+  const questionResults: QuestionResult[] = questions.map((question) => {
+    const selectedOptionIds = [...(answers[question.id] ?? [])];
+    const answered = selectedOptionIds.length > 0;
+    const isCorrect = scoreAnswer(question, selectedOptionIds);
+    const currentBreakdown = breakdownByDomain.get(question.domain) ?? {
+      slug: question.domain,
+      name: domainNames.get(question.domain) ?? question.domain,
+      totalQuestions: 0,
+      answeredQuestions: 0,
+      correctAnswers: 0,
+      scorePercentage: 0,
+    };
+
+    currentBreakdown.totalQuestions += 1;
+    if (answered) {
+      currentBreakdown.answeredQuestions += 1;
+    }
+    if (isCorrect) {
+      currentBreakdown.correctAnswers += 1;
+    }
+    currentBreakdown.scorePercentage = Math.round(
+      (currentBreakdown.correctAnswers / currentBreakdown.totalQuestions) * 100,
+    );
+    breakdownByDomain.set(question.domain, currentBreakdown);
+
+    return {
+      questionId: question.id,
+      domain: question.domain,
+      selectedOptionIds,
+      answered,
+      isCorrect,
+    };
+  });
+
+  const correctAnswers = questionResults.filter(
+    (result) => result.isCorrect,
+  ).length;
+  const answeredQuestions = questionResults.filter(
+    (result) => result.answered,
+  ).length;
+
+  return {
+    totalQuestions: questions.length,
+    answeredQuestions,
+    correctAnswers,
+    scorePercentage:
+      questions.length === 0
+        ? 0
+        : Math.round((correctAnswers / questions.length) * 100),
+    questionResults,
+    domainBreakdown: [...breakdownByDomain.values()],
+  };
+}
