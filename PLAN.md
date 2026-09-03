@@ -40,7 +40,7 @@ a confused user six weeks from now, use Opus.
 | Phase | Status | Model |
 |---|---|---|
 | 0 — Repo foundations | PENDING | Luna (Max) |
-| 1 — Question schema | PENDING | **Opus** (validator: Luna) |
+| 1 — Question schema | DONE | **Opus** (validator: Luna) |
 | 2 — Seed content | PENDING | **Opus** |
 | 3 — Frontend scaffold | PENDING | Luna (Max) |
 | 4 — Core quiz | PENDING | Luna (Max), tests first |
@@ -153,7 +153,7 @@ mechanical either way.
   README stub.
 
 ## Phase 1 — Question schema design
-**Status:** PENDING
+**Status:** DONE
 
 **Model:** **Opus** — highest-leverage phase in the plan. This schema is
 load-bearing for 80 questions, the quiz engine, and every future cert; the

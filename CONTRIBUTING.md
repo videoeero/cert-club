@@ -20,6 +20,18 @@ Pull requests containing confidential exam material, paywalled or gated
 course content, missing provenance, or copied questions will be closed without
 review.
 
+## Validate content changes
+
+Use Node.js 22 or newer, then run:
+
+```sh
+npm ci
+npm run check
+```
+
+The check validates every cert manifest and question bank, then runs the schema
+tests, including the deliberately invalid fixture that must be rejected.
+
 ## Pull requests
 
 Keep changes focused and explain the source or rationale for question and
