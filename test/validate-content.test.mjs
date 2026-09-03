@@ -5,6 +5,7 @@ import test from "node:test";
 
 import {
   ContentValidationError,
+  validateCatalog,
   validateCertContent,
   validateRepository,
 } from "../scripts/validate-content.mjs";
@@ -29,6 +30,42 @@ test("accepts valid single- and multi-select questions", async () => {
   const { manifest, questions } = await validContent();
 
   assert.doesNotThrow(() => validateCertContent("ccdv-f", manifest, questions));
+});
+
+test("accepts a catalog that lists every cert folder exactly once", () => {
+  assert.deepEqual(
+    validateCatalog({ schemaVersion: 1, certs: ["ccdv-f", "az-900"] }, [
+      "az-900",
+      "ccdv-f",
+    ]),
+    ["ccdv-f", "az-900"],
+  );
+});
+
+test("rejects duplicate and mismatched catalog entries", () => {
+  assert.throws(
+    () =>
+      validateCatalog({ schemaVersion: 1, certs: ["ccdv-f", "ccdv-f"] }, [
+        "ccdv-f",
+      ]),
+    /duplicate cert slug "ccdv-f"/,
+  );
+  assert.throws(
+    () =>
+      validateCatalog({ schemaVersion: 1, certs: ["ccdv-f", "missing-cert"] }, [
+        "ccdv-f",
+        "az-900",
+      ]),
+    /"missing-cert" has no matching cert folder/,
+  );
+  assert.throws(
+    () =>
+      validateCatalog({ schemaVersion: 1, certs: ["ccdv-f"] }, [
+        "ccdv-f",
+        "az-900",
+      ]),
+    /certs\/az-900: cert folder is not listed in catalog.json/,
+  );
 });
 
 test("rejects the deliberately broken fixture", async () => {

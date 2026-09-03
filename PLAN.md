@@ -45,16 +45,17 @@ a confused user six weeks from now, use Opus.
 | 3 — Frontend scaffold | DONE | Luna (Max) |
 | 4 — Core quiz | DONE | Luna (Max), tests first |
 | 5 — Polish | DONE | Luna (Max) |
-| 6 — Deploy | PENDING | Luna (Max) |
-| 7 — Second cert | PENDING | **Opus** review, Luna wiring |
-| 8 — Stretch | PENDING (deferred) | TBD |
+| 6 — Second cert | DONE | **Opus** review, Luna wiring |
+| 7 — AWS Cloud Practitioner | PENDING | **Opus** review, Luna wiring |
+| 8 — Deploy | PENDING | Luna (Max) |
+| 9 — Stretch | PENDING (deferred) | TBD |
 
 *(Summary only — the per-phase `Status:` lines below are canonical. If
 they disagree, trust the phase, not the table.)*
 
-Six of nine phases are cheap-model work. The two Opus phases are
-back-to-back at the start (schema, then content) because that's where
-this project's irreversible decisions live — and Phase 1 in particular
+Most phases are cheap-model work. Opus is reserved for schema decisions,
+content accuracy, and cross-cert abstraction review because errors there
+surface much later than ordinary wiring mistakes — and Phase 1 in particular
 has already proven it, having shipped two schema bugs in its first draft.
 
 ---
@@ -144,7 +145,7 @@ mechanical either way.
   needs repeating in the app footer once Phase 3 exists.
 - ~~**No-tracking statement**~~ **done in README** (design principles).
 - `CONTRIBUTING.md` stub even though community content is deferred to
-  Phase 8 — it sets the "questions must cite public docs, no exam dumps"
+  Phase 9 — it sets the "questions must cite public docs, no exam dumps"
   bar *before* the first drive-by PR, not after. README now states the
   principle; CONTRIBUTING needs the operational version of it (what a
   valid citation looks like, what gets a PR closed on sight).
@@ -307,7 +308,7 @@ every UI concern except pagination.
   this open is the kind of decision that stalls a fresh repo.
 - Routing: landing/cert-picker page → quiz session → results page.
   (Even with one cert in v1, keep the picker so adding a second cert in
-  Phase 7 is additive, not a rewrite.)
+  Phase 6 is additive, not a rewrite.)
 - Load question bank via static `fetch()` of the JSON at runtime, keyed
   by cert slug — so adding a cert is a content change, not a code change.
 - **ESLint + Prettier added.** `npm run lint` / `npm run format` /
@@ -361,7 +362,7 @@ looking at it. Fastest feedback loop in the project.
 - Optional: dark mode, shuffle options order.
 
 ## Phase 6 — Generalize to a second cert
-**Status:** PENDING
+**Status:** DONE
 
 **Model:** **Opus** for the abstraction review, Luna (Max) for the content
 and wiring once it holds. This phase exists to detect CCDV-F assumptions
@@ -376,7 +377,41 @@ models get wrong, usually by papering over it with a special case.
 - Expect: new `/certs/az-900/*` content files, cert-picker UI now has
   two real entries, no core app logic changes if the abstraction held.
 
-## Phase 7 — Deploy
+**Met.** AZ-900 is registered through the existing data-driven catalog with
+18 independently source-reviewed questions distributed across all three
+current exam domains. The shared `src/` quiz engine required no changes. The
+content validator now also rejects catalog entries without matching cert
+folders and cert folders omitted from the catalog.
+
+## Phase 7 — Add AWS Certified Cloud Practitioner
+**Status:** PENDING
+
+**Model:** **Opus** for source review and question quality, Luna (Max) for
+manifest/catalog wiring. This is content work against a stable abstraction:
+adding the third cert should remain data-only unless it exposes a genuine
+cross-cert requirement.
+
+- Target **AWS Certified Cloud Practitioner (CLF-C02)**. Re-check the current
+  official AWS exam guide before authoring in case the exam code, domains, or
+  weights have changed.
+- Add `/certs/aws-clf-c02/manifest.json` and `questions.json`, then register the
+  cert in `certs/catalog.json`. Do not add AWS-specific branches to the shared
+  quiz engine.
+- Build a set comparable to the AZ-900 forcing-function bank: **18 original,
+  source-reviewed questions**, distributed proportionally across every current
+  exam domain, with **six multiple-response items**.
+- Cite only public AWS documentation and the public official exam guide. Do
+  not copy certification exam items, AWS Skill Builder practice questions, or
+  gated training content.
+- Run the existing structural and answer-pattern validators. Independently
+  verify every key against its cited page and record the review method and
+  results beside the bank.
+
+**Done when:** all 18 questions are `reviewed`, every current CLF-C02 domain is
+represented proportionally, the validator and app smoke checks pass, the cert
+appears in the picker, and no core `src/` logic changes were needed.
+
+## Phase 8 — Deploy
 **Status:** PENDING
 
 **Model:** Luna (Max) — CI YAML and hosting config. Well-trodden ground,
@@ -392,7 +427,7 @@ and CI failure is about as loud as feedback gets.
 - CI already exists from Phase 1 (schema validation); extend it here with
   build + the Phase 4 unit tests on every PR.
 
-## Phase 8 — Stretch / explicitly deferred
+## Phase 9 — Stretch / explicitly deferred
 **Status:** PENDING (deferred — not v1)
 
 **Model:** decide when scoped. Drift detection and lab-style questions are
@@ -414,7 +449,8 @@ both design-heavy enough to want Opus at the design step.
 - Non-MCQ question types (labs, drag-and-drop, free text). Note that
   single-select **and multiple-response** MCQ are both *in* scope — see
   Phase 1.
-- More than one cert.
+- Full-size non-CCDV-F question banks; Phases 6-7 intentionally add smaller
+  forcing-function sets before deeper content expansion.
 - Spaced repetition (floated in early research; it's a whole scheduling model
   and the review-mode in Phase 5 covers 80% of the value for ~5% of the
   effort).

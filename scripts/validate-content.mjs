@@ -3,6 +3,7 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 import {
+  catalogSchema,
   manifestSchema,
   questionBankSchema,
 } from "../schemas/question-bank.mjs";
@@ -75,6 +76,39 @@ export function validateCertContent(folderName, manifestInput, questionsInput) {
   return { manifest, questions };
 }
 
+export function validateCatalog(catalogInput, folderNames) {
+  const catalogResult = catalogSchema.safeParse(catalogInput);
+  if (!catalogResult.success) {
+    throw new ContentValidationError(
+      formatIssues("catalog", catalogResult.error.issues),
+    );
+  }
+
+  const catalogCerts = catalogResult.data.certs;
+  const catalogSet = new Set(catalogCerts);
+  const folderSet = new Set(folderNames);
+  const messages = [];
+
+  for (const cert of catalogCerts) {
+    if (!folderSet.has(cert)) {
+      messages.push(`catalog.certs: "${cert}" has no matching cert folder`);
+    }
+  }
+  for (const folderName of folderNames) {
+    if (!catalogSet.has(folderName)) {
+      messages.push(
+        `certs/${folderName}: cert folder is not listed in catalog.json`,
+      );
+    }
+  }
+
+  if (messages.length > 0) {
+    throw new ContentValidationError(messages);
+  }
+
+  return catalogCerts;
+}
+
 async function readJson(path) {
   let source;
   try {
@@ -109,6 +143,12 @@ export async function validateRepository(root = repositoryRoot) {
   if (certFolders.length === 0) {
     throw new ContentValidationError([`${certsPath}: no cert folders found`]);
   }
+
+  const catalogInput = await readJson(join(certsPath, "catalog.json"));
+  validateCatalog(
+    catalogInput,
+    certFolders.map((folder) => folder.name),
+  );
 
   const questionIds = new Set();
   let questionCount = 0;

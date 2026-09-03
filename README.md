@@ -3,13 +3,12 @@
 Open, non-paywalled practice exams for vendor certifications whose study
 material is already public.
 
-Starting with **Claude Certified Developer – Foundations (CCDV-F)**, then
-generalizing to comparable entry-level certs (AZ-900, AI-900, the GitHub
-Copilot cert).
+Currently includes **Claude Certified Developer – Foundations (CCDV-F)** and
+**Microsoft Certified: Azure Fundamentals (AZ-900)**.
 
-> **Status: pre-alpha.** The core quiz flow is in place; polish and deployment
-> remain. See [`PLAN.md`](./PLAN.md) for the v1 scope, question schema, and
-> phase-by-phase build order.
+> **Status: pre-alpha.** The core quiz flow and two certification banks are in
+> place; deployment remains. See [`PLAN.md`](./PLAN.md) for the v1 scope,
+> question schema, and phase-by-phase build order.
 
 ## Why this exists
 
@@ -62,6 +61,13 @@ One of four certifications in Anthropic's Claude Certification Program
 
 Domain weights are recorded in `certs/ccdv-f/manifest.json` (see
 `PLAN.md` § Verified exam facts).
+
+## About the exam (AZ-900)
+
+The AZ-900 bank follows Microsoft's July 20, 2026 skills outline. Because the
+official domain weights are ranges, the manifest normalizes their midpoints to
+28%, 39%, and 33% using the largest-remainder method. Every question cites the
+current public Microsoft Learn page that supports its answer.
 
 ## Design principles
 

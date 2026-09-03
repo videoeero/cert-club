@@ -39,6 +39,27 @@ export const domainSchema = z
   })
   .strict();
 
+export const catalogSchema = z
+  .object({
+    schemaVersion: z.literal(SCHEMA_VERSION),
+    certs: z.array(slugSchema).min(1),
+  })
+  .strict()
+  .superRefine((catalog, context) => {
+    const seen = new Set();
+
+    catalog.certs.forEach((cert, index) => {
+      if (seen.has(cert)) {
+        context.addIssue({
+          code: "custom",
+          path: ["certs", index],
+          message: `duplicate cert slug "${cert}"`,
+        });
+      }
+      seen.add(cert);
+    });
+  });
+
 export const manifestSchema = z
   .object({
     schemaVersion: z.literal(SCHEMA_VERSION),
