@@ -41,7 +41,7 @@ a confused user six weeks from now, use Opus.
 |---|---|---|
 | 0 — Repo foundations | PENDING | Luna (Max) |
 | 1 — Question schema | DONE | **Opus** (validator: Luna) |
-| 2 — Seed content | IN PROGRESS | **Opus** |
+| 2 — Seed content | DONE | **Opus** |
 | 3 — Frontend scaffold | PENDING | Luna (Max) |
 | 4 — Core quiz | PENDING | Luna (Max), tests first |
 | 5 — Polish | PENDING | Luna (Max) |
@@ -239,7 +239,7 @@ domains, `cert` matches folder, `sourceUrl` non-empty and well-formed.
 **Done when:** validator rejects a deliberately broken fixture in CI.
 
 ## Phase 2 — Seed content (CCDV-F)
-**Status:** IN PROGRESS
+**Status:** DONE
 
 **Model:** **Opus** — the one phase where model quality shows up directly
 in the product. Writing a *plausible wrong answer* is the hard part of
@@ -273,6 +273,14 @@ question ships at `status: draft`.
 
 **Done when:** 100 questions pass the Phase 1 validator, every domain
 meets its floor, and every question is `status: reviewed`.
+
+**Met.** 100 questions, all `reviewed`, all eight domains above the
+5-question floor (smallest: Claude Code and Eval/Testing/Debugging at 7
+each). The review method and its results are written up in
+`certs/ccdv-f/review-progress.md`: every question was independently
+cold-answered against its cited source page by a reader that never saw
+the answer key, giving 94 agreements, 3 disagreements (all adjudicated in
+the key's favour), and 3 questions whose sources were verified by hand.
 
 ## Phase 3 — Frontend scaffold
 **Status:** PENDING
