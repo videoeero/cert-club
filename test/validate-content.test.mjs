@@ -118,6 +118,58 @@ test("requires well-formed HTTP or HTTPS source URLs", async () => {
   );
 });
 
+test("rejects multi-select answers that are exactly the first options", async () => {
+  const { manifest, questions } = await validContent();
+  questions[1].options = [
+    { id: "a", text: "First correct answer" },
+    { id: "c", text: "Second correct answer" },
+    { id: "b", text: "The distractor" },
+  ];
+  questions[1].correct = ["a", "c"];
+
+  assert.throws(
+    () => validateCertContent("ccdv-f", manifest, questions),
+    /must not be exactly the first options in listed order/,
+  );
+});
+
+test("accepts multi-select answers that are not a leading run", async () => {
+  const { manifest, questions } = await validContent();
+
+  assert.deepEqual(questions[1].correct, ["a", "c"]);
+  assert.doesNotThrow(() => validateCertContent("ccdv-f", manifest, questions));
+});
+
+test("rejects a bank whose single-select answers are position-biased", async () => {
+  const { manifest, questions } = await validContent();
+  const template = questions[0];
+  const biased = Array.from({ length: 24 }, (_, index) => ({
+    ...structuredClone(template),
+    id: `ccdv-f-1${String(index).padStart(3, "0")}`,
+    // 20 of 24 answer in position 1, which is above the 50% ceiling.
+    correct: [index < 20 ? "a" : "b"],
+    distractorNotes: undefined,
+  }));
+
+  assert.throws(
+    () => validateCertContent("ccdv-f", manifest, biased),
+    /single-select answers are biased toward position 1: 20 of 24/,
+  );
+});
+
+test("ignores position bias below the minimum sample size", async () => {
+  const { manifest, questions } = await validContent();
+  const template = questions[0];
+  const small = Array.from({ length: 10 }, (_, index) => ({
+    ...structuredClone(template),
+    id: `ccdv-f-2${String(index).padStart(3, "0")}`,
+    correct: ["a"],
+    distractorNotes: undefined,
+  }));
+
+  assert.doesNotThrow(() => validateCertContent("ccdv-f", manifest, small));
+});
+
 test("validates repository cert content", async () => {
   const result = await validateRepository(fileURLToPath(repositoryFixtureUrl));
 

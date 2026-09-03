@@ -149,6 +149,28 @@ export const questionSchema = z
       });
     }
 
+    // A multi-select answer key that is exactly the leading options is
+    // solvable positionally, without reading the question.
+    if (question.type === "multi" && question.correct.length >= 2) {
+      const positions = question.correct
+        .map((optionId) =>
+          question.options.findIndex((option) => option.id === optionId),
+        )
+        .sort((left, right) => left - right);
+
+      if (
+        positions.every((position, index) => position === index) &&
+        positions.length < question.options.length
+      ) {
+        context.addIssue({
+          code: "custom",
+          path: ["correct"],
+          message:
+            "correct options must not be exactly the first options in listed order, which makes the answer guessable from position alone",
+        });
+      }
+    }
+
     for (const optionId of Object.keys(question.distractorNotes ?? {})) {
       if (!optionIds.has(optionId)) {
         context.addIssue({
@@ -166,6 +188,9 @@ export const questionSchema = z
     }
   });
 
+export const POSITION_BIAS_MIN_SAMPLE = 20;
+export const POSITION_BIAS_MAX_SHARE = 0.5;
+
 export const questionBankSchema = z
   .array(questionSchema)
   .superRefine((questions, context) => {
@@ -181,4 +206,34 @@ export const questionBankSchema = z
       }
       seen.add(question.id);
     });
+
+    // Bank-level guard: if one position holds most of the single-select
+    // answers, the bank can be passed with a fixed positional heuristic.
+    const singles = questions.filter(
+      (question) => question.type === "single" && question.correct.length === 1,
+    );
+
+    if (singles.length >= POSITION_BIAS_MIN_SAMPLE) {
+      const counts = new Map();
+
+      for (const question of singles) {
+        const position = question.options.findIndex(
+          (option) => option.id === question.correct[0],
+        );
+        if (position >= 0) {
+          counts.set(position, (counts.get(position) ?? 0) + 1);
+        }
+      }
+
+      for (const [position, count] of counts) {
+        const share = count / singles.length;
+        if (share > POSITION_BIAS_MAX_SHARE) {
+          context.addIssue({
+            code: "custom",
+            path: [],
+            message: `single-select answers are biased toward position ${position + 1}: ${count} of ${singles.length} (${Math.round(share * 100)}%) exceed the ${Math.round(POSITION_BIAS_MAX_SHARE * 100)}% ceiling`,
+          });
+        }
+      }
+    }
   });
