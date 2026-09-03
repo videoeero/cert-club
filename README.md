@@ -79,8 +79,12 @@ Phase 3.
 
 Two licenses, because code and question content are different assets:
 
-- **Code:** TBD (MIT or Apache-2.0) — Phase 0
-- **Question content:** TBD (likely CC-BY-SA 4.0) — Phase 0
+- **Code:** [MIT License](./LICENSE)
+- **Question content:** [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+
+The content license applies to original question text, explanations,
+option text, and related question-bank metadata. Contributions must meet
+the provenance requirements in [`CONTRIBUTING.md`](./CONTRIBUTING.md).
 
 ## Disclaimer
 

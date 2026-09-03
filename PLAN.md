@@ -124,7 +124,7 @@ project worth building.
 ---
 
 ## Phase 0 — Repo foundations
-**Status:** PENDING
+**Status:** DONE
 
 **Model:** Luna (Max) — boilerplate with one exception: the licence pair
 (code vs. content) is a genuine decision with downstream reuse
