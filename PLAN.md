@@ -360,23 +360,7 @@ looking at it. Fastest feedback loop in the project.
   layout check.
 - Optional: dark mode, shuffle options order.
 
-## Phase 6 — Deploy
-**Status:** PENDING
-
-**Model:** Luna (Max) — CI YAML and hosting config. Well-trodden ground,
-and CI failure is about as loud as feedback gets.
-
-- Static hosting: GitHub Pages (fits an open-source repo well) or
-  Netlify/Vercel. Pick GitHub Pages by default — zero extra accounts,
-  free, matches "no backend" philosophy.
-- Gotcha: project Pages serve from a subpath, so set Vite
-  `base: '/cert-prep-open/'` and make every question-bank `fetch()` path
-  relative to it. This is the single most common way a working local
-  build 404s in production.
-- CI already exists from Phase 1 (schema validation); extend it here with
-  build + the Phase 4 unit tests on every PR.
-
-## Phase 7 — Generalize to a second cert
+## Phase 6 — Generalize to a second cert
 **Status:** PENDING
 
 **Model:** **Opus** for the abstraction review, Luna (Max) for the content
@@ -391,6 +375,22 @@ models get wrong, usually by papering over it with a special case.
   shouldn't leak into the shared engine).
 - Expect: new `/certs/az-900/*` content files, cert-picker UI now has
   two real entries, no core app logic changes if the abstraction held.
+
+## Phase 7 — Deploy
+**Status:** PENDING
+
+**Model:** Luna (Max) — CI YAML and hosting config. Well-trodden ground,
+and CI failure is about as loud as feedback gets.
+
+- Static hosting: GitHub Pages (fits an open-source repo well) or
+  Netlify/Vercel. Pick GitHub Pages by default — zero extra accounts,
+  free, matches "no backend" philosophy.
+- Gotcha: project Pages serve from a subpath, so set Vite
+  `base: '/cert-prep-open/'` and make every question-bank `fetch()` path
+  relative to it. This is the single most common way a working local
+  build 404s in production.
+- CI already exists from Phase 1 (schema validation); extend it here with
+  build + the Phase 4 unit tests on every PR.
 
 ## Phase 8 — Stretch / explicitly deferred
 **Status:** PENDING (deferred — not v1)
