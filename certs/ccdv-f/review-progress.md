@@ -149,6 +149,30 @@ Thresholds were chosen after the rebalance so they lock in the achieved state.
 Run against the pre-fix bank, the guard fails on both axes (+24.4 chars, 59%),
 which is the regression it exists to catch.
 
+## Other pattern tells — measured, not acted on
+
+Length was one possible tell, so the obvious neighbours were measured too.
+
+**Absolute qualifiers** (`always`, `never`, `only`, `must`, `every`, `cannot`…)
+appear in **50% of distractors against 34% of keys**. The corresponding
+strategy — eliminate every option containing an absolute, then guess among
+what is left — scores an expected **32% against a 25% baseline**, and uniquely
+identifies the key in only 2 of 61 single-select items.
+
+**This is deliberately left alone.** A +7pp edge is an order of magnitude
+weaker than the length bias was (+36pp), it cannot carry anyone to 720/1000,
+and the skew is largely *legitimate*: the cited docs state correct behaviour
+with genuine hedging, while a distractor is frequently wrong precisely because
+it over-claims. Removing the pattern would mean either writing hedged
+falsehoods or flattening accurate qualifiers out of keys — both trade factual
+fidelity for cosmetics, which is the trade this project's provenance rule
+declines to make. It is recorded here so the number is known rather than
+assumed, and so a future author does not "discover" it as a new defect.
+
+Verified clean, needing no action: answer position (a/b/c/d = 15/15/16/15),
+no leading-run multi-select keys, 56 distinct source pages, `subdomain` and
+`distractorNotes` present on all 100.
+
 ## Validation
 
 ```
