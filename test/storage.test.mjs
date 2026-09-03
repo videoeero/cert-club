@@ -125,18 +125,9 @@ test("looks up a single attempt by cert and id", () => {
   saveAttempt(attempt("attempt-1"), storage);
   saveAttempt(attempt("attempt-2"), storage);
 
-  assert.equal(
-    getAttempt("test-cert", "attempt-2", storage)?.id,
-    "attempt-2",
-  );
-  assert.equal(
-    getAttempt("test-cert", "missing", storage),
-    undefined,
-  );
-  assert.equal(
-    getAttempt("other-cert", "attempt-1", storage),
-    undefined,
-  );
+  assert.equal(getAttempt("test-cert", "attempt-2", storage)?.id, "attempt-2");
+  assert.equal(getAttempt("test-cert", "missing", storage), undefined);
+  assert.equal(getAttempt("other-cert", "attempt-1", storage), undefined);
 });
 
 test("rejects saving an attempt that does not match the expected shape", () => {

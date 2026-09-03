@@ -104,6 +104,12 @@ npm run build
 npm run preview
 ```
 
+## Contributing a new cert bank
+
+See [`certs/ADDING-A-CERT.md`](./certs/ADDING-A-CERT.md) for the step-by-step
+guide covering file layout, manifest format, question schema, bias-guard rules,
+and the mandatory validation step.
+
 ## Licensing
 
 Two licenses, because code and question content are different assets:
