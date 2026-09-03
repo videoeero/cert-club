@@ -7,8 +7,9 @@ Starting with **Claude Certified Developer – Foundations (CCDV-F)**, then
 generalizing to comparable entry-level certs (AZ-900, AI-900, the GitHub
 Copilot cert).
 
-> **Status: pre-alpha.** No app yet. See [`PLAN.md`](./PLAN.md) for the
-> v1 scope, question schema, and phase-by-phase build order.
+> **Status: pre-alpha.** The frontend scaffold is in place; core quiz
+> functionality is still under construction. See [`PLAN.md`](./PLAN.md) for
+> the v1 scope, question schema, and phase-by-phase build order.
 
 ## Why this exists
 
@@ -72,8 +73,22 @@ Domain weights are recorded in `certs/ccdv-f/manifest.json` (see
 
 ## Running locally
 
-Not yet applicable — no app scaffold exists. This section lands in
-Phase 3.
+Requires Node.js 22 or newer:
+
+```sh
+npm ci
+npm run dev
+```
+
+Vite serves the app at the local URL it prints. The question banks stay as
+static JSON files and are loaded at runtime from `certs/<cert-slug>/`.
+
+To produce and preview a production build:
+
+```sh
+npm run build
+npm run preview
+```
 
 ## Licensing
 

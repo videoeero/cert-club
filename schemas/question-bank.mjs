@@ -26,7 +26,9 @@ const checkedDateSchema = z
   .regex(/^\d{4}-\d{2}-\d{2}$/, "must use YYYY-MM-DD format")
   .refine((value) => {
     const date = new Date(`${value}T00:00:00.000Z`);
-    return !Number.isNaN(date.valueOf()) && date.toISOString().startsWith(value);
+    return (
+      !Number.isNaN(date.valueOf()) && date.toISOString().startsWith(value)
+    );
   }, "must be a valid calendar date");
 
 export const domainSchema = z
@@ -145,7 +147,8 @@ export const questionSchema = z
       context.addIssue({
         code: "custom",
         path: ["correct"],
-        message: "multi-select questions must have at least two correct options",
+        message:
+          "multi-select questions must have at least two correct options",
       });
     }
 

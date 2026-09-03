@@ -20,23 +20,15 @@ async function readFixture(name, file) {
 
 async function validContent() {
   return {
-    manifest: await readFixture(
-      "repository/certs/ccdv-f",
-      "manifest.json",
-    ),
-    questions: await readFixture(
-      "repository/certs/ccdv-f",
-      "questions.json",
-    ),
+    manifest: await readFixture("repository/certs/ccdv-f", "manifest.json"),
+    questions: await readFixture("repository/certs/ccdv-f", "questions.json"),
   };
 }
 
 test("accepts valid single- and multi-select questions", async () => {
   const { manifest, questions } = await validContent();
 
-  assert.doesNotThrow(() =>
-    validateCertContent("ccdv-f", manifest, questions),
-  );
+  assert.doesNotThrow(() => validateCertContent("ccdv-f", manifest, questions));
 });
 
 test("rejects the deliberately broken fixture", async () => {
@@ -185,7 +177,10 @@ function lengthBiasBank(count, keyText, prefix) {
     // The key rotates through every position, so only length is exploitable.
     options: positions.map((id) => ({
       id,
-      text: id === positions[index % positions.length] ? keyText : "A short distractor.",
+      text:
+        id === positions[index % positions.length]
+          ? keyText
+          : "A short distractor.",
     })),
     correct: [positions[index % positions.length]],
     explanation: "The key is the correct option.",

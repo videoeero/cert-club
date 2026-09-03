@@ -42,7 +42,7 @@ a confused user six weeks from now, use Opus.
 | 0 — Repo foundations | PENDING | Luna (Max) |
 | 1 — Question schema | DONE | **Opus** (validator: Luna) |
 | 2 — Seed content | DONE | **Opus** |
-| 3 — Frontend scaffold | PENDING | Luna (Max) |
+| 3 — Frontend scaffold | DONE | Luna (Max) |
 | 4 — Core quiz | PENDING | Luna (Max), tests first |
 | 5 — Polish | PENDING | Luna (Max) |
 | 6 — Deploy | PENDING | Luna (Max) |
@@ -292,7 +292,7 @@ rebalanced by padding distractors rather than trimming keys, and a
 validator. Before/after metrics are in `review-progress.md`.
 
 ## Phase 3 — Frontend scaffold
-**Status:** PENDING
+**Status:** DONE
 
 **Model:** Luna (Max) — textbook cheap-model work. `npm create vite`,
 routing, a fetch call, three page shells. Every mistake is a build error
@@ -310,6 +310,14 @@ every UI concern except pagination.
   Phase 7 is additive, not a rewrite.)
 - Load question bank via static `fetch()` of the JSON at runtime, keyed
   by cert slug — so adding a cert is a content change, not a code change.
+- **ESLint + Prettier added.** `npm run lint` / `npm run format` /
+  `npm run format:check`, wired into `npm run check` and CI. Note:
+  `typescript-eslint` doesn't support TypeScript 7 yet (the repo's `tsc`),
+  so `devDependencies` alias a TS 6 build in under the `typescript` name
+  for linting only (see `eslint.config.js` header comment and the
+  `@typescript/native` / `typescript` aliases in `package.json`) — remove
+  this once `typescript-eslint` ships TS 7 support (tracked upstream at
+  `typescript-eslint/typescript-eslint#10940`).
 
 ## Phase 4 — Core quiz functionality
 **Status:** PENDING
