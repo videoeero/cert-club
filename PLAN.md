@@ -46,7 +46,7 @@ a confused user six weeks from now, use Opus.
 | 4 — Core quiz | DONE | Luna (Max), tests first |
 | 5 — Polish | DONE | Luna (Max) |
 | 6 — Second cert | DONE | **Opus** review, Luna wiring |
-| 7 — AWS Cloud Practitioner | PENDING | **Opus** review, Luna wiring |
+| 7 — AWS Cloud Practitioner | DONE | **Opus** review, Luna wiring |
 | 8 — Deploy | PENDING | Luna (Max) |
 | 9 — Stretch | PENDING (deferred) | TBD |
 
@@ -384,7 +384,7 @@ content validator now also rejects catalog entries without matching cert
 folders and cert folders omitted from the catalog.
 
 ## Phase 7 — Add AWS Certified Cloud Practitioner
-**Status:** PENDING
+**Status:** DONE
 
 **Model:** **Opus** for source review and question quality, Luna (Max) for
 manifest/catalog wiring. This is content work against a stable abstraction:
@@ -410,6 +410,13 @@ cross-cert requirement.
 **Done when:** all 18 questions are `reviewed`, every current CLF-C02 domain is
 represented proportionally, the validator and app smoke checks pass, the cert
 appears in the picker, and no core `src/` logic changes were needed.
+
+**Met.** AWS Certified Cloud Practitioner (CLF-C02) is registered through the
+existing data-driven catalog with 18 independently source-reviewed questions
+distributed 4/6/6/2 across the current 24%/30%/34%/12% domains. Six questions
+are multiple-response items with five options each. Every cited public AWS page
+was checked on September 3, 2026, and the shared `src/` quiz engine required no
+changes.
 
 ## Phase 8 — Deploy
 **Status:** PENDING

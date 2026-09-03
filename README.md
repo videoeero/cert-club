@@ -3,8 +3,9 @@
 Open, non-paywalled practice exams for vendor certifications whose study
 material is already public.
 
-Currently includes **Claude Certified Developer – Foundations (CCDV-F)** and
-**Microsoft Certified: Azure Fundamentals (AZ-900)**.
+Currently includes **Claude Certified Developer – Foundations (CCDV-F)**,
+**Microsoft Certified: Azure Fundamentals (AZ-900)**, and
+**AWS Certified Cloud Practitioner (CLF-C02)**.
 
 > **Status: pre-alpha.** The core quiz flow and two certification banks are in
 > place; deployment remains. See [`PLAN.md`](./PLAN.md) for the v1 scope,
@@ -69,6 +70,13 @@ official domain weights are ranges, the manifest normalizes their midpoints to
 28%, 39%, and 33% using the largest-remainder method. Every question cites the
 current public Microsoft Learn page that supports its answer.
 
+## About the exam (AWS Certified Cloud Practitioner)
+
+The AWS Certified Cloud Practitioner bank follows the current CLF-C02 exam
+guide. Its 18 questions use the official 24%, 30%, 34%, and 12% domain weights
+to produce a proportional 4/6/6/2 split, and six are multiple-response items.
+Every question cites the public AWS documentation that supports its answer.
+
 ## Design principles
 
 - **No backend.** Static site plus JSON question banks. Progress and
@@ -109,7 +117,7 @@ the provenance requirements in [`CONTRIBUTING.md`](./CONTRIBUTING.md).
 
 ## Disclaimer
 
-Independent and unofficial. Not affiliated with, endorsed by, or
-sponsored by Anthropic, Microsoft, GitHub, or any certification body.
-"Claude", "Anthropic", and all certification names are the marks of their
-respective owners.
+Independent and unofficial. Not affiliated with, endorsed by, or sponsored by
+Anthropic, Microsoft, Amazon Web Services, GitHub, or any certification body.
+"Claude", "Anthropic", "AWS", "Amazon Web Services", and all certification
+names are the marks of their respective owners.
