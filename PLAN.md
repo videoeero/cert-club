@@ -282,6 +282,15 @@ cold-answered against its cited source page by a reader that never saw
 the answer key, giving 94 agreements, 3 disagreements (all adjudicated in
 the key's favour), and 3 questions whose sources were verified by hand.
 
+A follow-up pattern audit then caught the failure mode this phase's model
+note warns about, in its other form: the bank was **answer-length biased**,
+and "always pick the longest option" scored 61% on single-select against a
+25% baseline. Cold-answering could not have caught it, since that method
+only proves the key is faithful to its source. All 100 questions were
+rebalanced by padding distractors rather than trimming keys, and a
+`lengthBias` guard now sits beside the position-bias guard in the
+validator. Before/after metrics are in `review-progress.md`.
+
 ## Phase 3 — Frontend scaffold
 **Status:** PENDING
 

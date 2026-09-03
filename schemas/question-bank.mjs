@@ -191,6 +191,26 @@ export const questionSchema = z
 export const POSITION_BIAS_MIN_SAMPLE = 20;
 export const POSITION_BIAS_MAX_SHARE = 0.5;
 
+export const LENGTH_BIAS_MIN_SAMPLE = 20;
+export const LENGTH_BIAS_MAX_MEAN_DELTA = 10;
+export const LENGTH_BIAS_MAX_LONGEST_SHARE = 0.45;
+
+function mean(values) {
+  return values.reduce((sum, value) => sum + value, 0) / values.length;
+}
+
+function optionLengths(question) {
+  const correct = new Set(question.correct);
+  const keys = [];
+  const distractors = [];
+
+  for (const option of question.options) {
+    (correct.has(option.id) ? keys : distractors).push(option.text.length);
+  }
+
+  return { keys, distractors };
+}
+
 export const questionBankSchema = z
   .array(questionSchema)
   .superRefine((questions, context) => {
@@ -234,6 +254,56 @@ export const questionBankSchema = z
             message: `single-select answers are biased toward position ${position + 1}: ${count} of ${singles.length} (${Math.round(share * 100)}%) exceed the ${Math.round(POSITION_BIAS_MAX_SHARE * 100)}% ceiling`,
           });
         }
+      }
+    }
+
+    // Bank-level guard: if correct options are systematically longer than
+    // their distractors, the bank is partly solvable on typography alone.
+    const scored = questions.filter((question) => {
+      const { keys, distractors } = optionLengths(question);
+      return keys.length > 0 && distractors.length > 0;
+    });
+
+    if (scored.length >= LENGTH_BIAS_MIN_SAMPLE) {
+      const deltas = scored.map((question) => {
+        const { keys, distractors } = optionLengths(question);
+        return mean(keys) - mean(distractors);
+      });
+      const meanDelta = mean(deltas);
+
+      // Checked in both directions: a bank whose keys are reliably shorter is
+      // just as guessable as one whose keys are reliably longer.
+      if (Math.abs(meanDelta) > LENGTH_BIAS_MAX_MEAN_DELTA) {
+        context.addIssue({
+          code: "custom",
+          path: [],
+          message: `correct options are length-biased: they run ${meanDelta > 0 ? "longer" : "shorter"} than their distractors by a mean of ${Math.abs(meanDelta).toFixed(1)} characters across ${scored.length} questions, which exceeds the ${LENGTH_BIAS_MAX_MEAN_DELTA} character ceiling`,
+        });
+      }
+    }
+
+    const scoredSingles = scored.filter(
+      (question) => question.type === "single" && question.correct.length === 1,
+    );
+
+    if (scoredSingles.length >= LENGTH_BIAS_MIN_SAMPLE) {
+      const longest = scoredSingles.filter((question) => {
+        const key = question.options.find(
+          (option) => option.id === question.correct[0],
+        );
+        return question.options.every(
+          (option) =>
+            option.id === key.id || option.text.length < key.text.length,
+        );
+      }).length;
+      const share = longest / scoredSingles.length;
+
+      if (share > LENGTH_BIAS_MAX_LONGEST_SHARE) {
+        context.addIssue({
+          code: "custom",
+          path: [],
+          message: `single-select answers are biased toward the longest option: the key is the longest option in ${longest} of ${scoredSingles.length} (${Math.round(share * 100)}%), which exceeds the ${Math.round(LENGTH_BIAS_MAX_LONGEST_SHARE * 100)}% ceiling`,
+        });
       }
     }
   });

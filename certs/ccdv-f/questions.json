@@ -53,7 +53,7 @@
     "options": [
       {
         "id": "a",
-        "text": "A request is rejected outright unless user and assistant roles strictly alternate with no repetition."
+        "text": "A request is rejected outright unless the user and assistant roles strictly alternate through the array with no repetition of the same role."
       },
       {
         "id": "b",
@@ -153,7 +153,7 @@
       },
       {
         "id": "c",
-        "text": "stop_sequence means one of the configured sequences fired nondeterministically, so the identical request should simply be retried."
+        "text": "stop_sequence means one of the configured sequences fired nondeterministically, so the identical request should simply be retried until it completes normally."
       },
       {
         "id": "d",
@@ -198,7 +198,7 @@
       },
       {
         "id": "d",
-        "text": "Receiving an unrecognized event type indicates a corrupted stream, so the connection should be torn down and the request retried."
+        "text": "Receiving an unrecognized event type indicates a corrupted stream, so the connection should be torn down and the whole request retried from the beginning."
       },
       {
         "id": "e",
@@ -368,7 +368,7 @@
       },
       {
         "id": "c",
-        "text": "A cache hit requires the entire request to match exactly, including the newest user message, or the entry is discarded."
+        "text": "A cache hit requires the entire request to match exactly, including the newest user message, or the existing entry is discarded and written again."
       },
       {
         "id": "d",
@@ -713,7 +713,7 @@
     "options": [
       {
         "id": "a",
-        "text": "Assume the model will keep serving requests past the retirement date at reduced throughput, so migration can proceed at leisure."
+        "text": "Assume the model will keep serving requests past the retirement date at reduced throughput, so the migration work can proceed at leisure after that date."
       },
       {
         "id": "b",
@@ -864,7 +864,7 @@
       },
       {
         "id": "c",
-        "text": "Choose whichever model exposes the largest context window, on the basis that more available context reliably raises accuracy on any workload."
+        "text": "Choose whichever model exposes the largest context window, on the basis that more available context reliably raises accuracy on any workload and leaves room to grow."
       },
       {
         "id": "d",
@@ -938,7 +938,7 @@
     "options": [
       {
         "id": "a",
-        "text": "It acts as a hard cap on output tokens, and generation is truncated once the selected level's allowance has been spent."
+        "text": "It acts as a hard cap on output tokens, and generation is truncated as soon as the allowance attached to the selected level has been spent."
       },
       {
         "id": "b",
@@ -993,7 +993,7 @@
       },
       {
         "id": "b",
-        "text": "The backward lookback should find the stable prefix sitting behind the breakpoint, so entries must be expiring; the longer cache duration will fix it."
+        "text": "The backward lookback should find the stable prefix sitting behind the breakpoint, so entries must be expiring before reuse; switching to the longer cache duration will fix it."
       },
       {
         "id": "c",
@@ -1042,7 +1042,7 @@
       },
       {
         "id": "d",
-        "text": "Cache entries are evicted once the accumulated prompt nears the model's context window, so compaction has to run before cache reads can resume."
+        "text": "Cache entries are evicted once the accumulated prompt nears the model's context window, so a compaction step has to run before cache reads can resume on subsequent turns."
       }
     ],
     "correct": [
@@ -1075,7 +1075,7 @@
       },
       {
         "id": "b",
-        "text": "100,050 input tokens were processed, but the cached portion no longer counts toward the context window because it was billed at the read rate."
+        "text": "100,050 input tokens were processed, but the cached portion no longer counts against the context window, because it was billed at the discounted cache read rate instead."
       },
       {
         "id": "c",
@@ -1112,7 +1112,7 @@
     "options": [
       {
         "id": "a",
-        "text": "The extended lifetime also lowers time to first token relative to the default lifetime, whether or not a given request hits the cache."
+        "text": "The extended lifetime also lowers time to first token relative to the default lifetime, whether or not a given request actually turns out to hit the cache at all."
       },
       {
         "id": "b",
@@ -1313,7 +1313,7 @@
       },
       {
         "id": "d",
-        "text": "Counts include tokens the platform adds for its own system optimizations, and those tokens are billed to the caller, explaining the overage."
+        "text": "Counts include tokens that the platform adds for its own system optimizations, and those added tokens are billed to the caller, which is what explains the overage."
       }
     ],
     "correct": [
@@ -1470,19 +1470,19 @@
     "options": [
       {
         "id": "a",
-        "text": "The context window is cleared between turns, so any instruction has to be repeated in each new prompt the application sends."
+        "text": "The context window is cleared between turns once a session grows long, so any instruction has to be repeated in each new prompt the application sends rather than being stated once at the start of the session."
       },
       {
         "id": "b",
-        "text": "The SDK lowers the reasoning effort level automatically as a session lengthens, and the rule will be honoured again once effort is raised."
+        "text": "The SDK lowers the reasoning effort level automatically as a session lengthens, and the rule will be honoured again once effort is raised back to the value the session started with, without any change to the prompt."
       },
       {
         "id": "c",
-        "text": "Automatic compaction replaced older history with a summary that did not preserve the rule; durable instructions belong in a project CLAUDE.md loaded through setting sources, because that content is supplied on every request."
+        "text": "Automatic compaction replaced older history with a summary that dropped the rule; durable instructions belong in a project CLAUDE.md loaded through setting sources, since that content is supplied on every request."
       },
       {
         "id": "d",
-        "text": "Instructions given to the main agent stop applying once tool use begins, so the rule has to be moved into a subagent's system prompt instead."
+        "text": "Instructions given to the main agent stop applying once tool use begins, so the rule has to be moved into the system prompt of a subagent that performs the formatting step on the main agent's behalf."
       }
     ],
     "correct": [
@@ -1511,7 +1511,7 @@
     "options": [
       {
         "id": "a",
-        "text": "A workflow coordinates several different models, whereas an agent is restricted to a single model."
+        "text": "A workflow coordinates several different models and routes between them, whereas an agent is restricted to a single model for the whole of its run."
       },
       {
         "id": "b",
@@ -1519,11 +1519,11 @@
       },
       {
         "id": "c",
-        "text": "An agent is able to call tools, whereas a workflow can only chain model calls together."
+        "text": "An agent is able to call tools and use retrieval, whereas a workflow can only chain model calls together and pass text from one step to the next."
       },
       {
         "id": "d",
-        "text": "A workflow pauses for human approval at every step, whereas an agent runs with no human involvement at all."
+        "text": "A workflow pauses for human approval at every step, whereas an agent runs from start to finish with no human involvement once it has been given its task and the tools it needs."
       }
     ],
     "correct": [
@@ -1593,19 +1593,19 @@
     "options": [
       {
         "id": "a",
-        "text": "The two are the same mechanism in every respect except that a dynamic workflow permits more subagents to run at once."
+        "text": "The two are the same mechanism in every respect except for scale: a dynamic workflow raises the ceiling on how many subagents may run at once, so a job that saturates that limit finishes sooner when expressed as a workflow instead."
       },
       {
         "id": "b",
-        "text": "In a dynamic workflow a script holds the loop, the branching, and the intermediate results, so only the final answer lands in Claude's context; with subagents Claude decides what to spawn next turn by turn and each result returns into its context window."
+        "text": "In a dynamic workflow a script owns the loop, the branching, and the intermediate results, so only the final answer reaches Claude's context; with subagents Claude decides what to spawn turn by turn and every result returns into its window."
       },
       {
         "id": "c",
-        "text": "Subagents always run one after another, so a dynamic workflow is the only way to get concurrent execution."
+        "text": "Subagents are dispatched one after another and each must finish before the next one begins, so a dynamic workflow is the only one of the two approaches that can execute independent branches of the same job concurrently rather than in sequence."
       },
       {
         "id": "d",
-        "text": "A dynamic workflow keeps every agent's full transcript in the main conversation for auditing, whereas subagents discard theirs."
+        "text": "A dynamic workflow keeps every agent's full transcript in the main conversation so that the run can be audited end to end, whereas subagents discard their transcripts and return only a final message to the parent when they finish."
       }
     ],
     "correct": [
@@ -1634,15 +1634,15 @@
     "options": [
       {
         "id": "a",
-        "text": "The parent's full conversation history with tool results stripped out."
+        "text": "The parent's full conversation history with tool results stripped out, so the subagent sees what was said but not what was read from disk or returned by any tool."
       },
       {
         "id": "b",
-        "text": "The parent's system prompt plus its most recent turns, so the subagent starts with recent context."
+        "text": "The parent's system prompt plus its most recent turns, so the subagent starts with recent context and only the older history is left behind when the delegation begins."
       },
       {
         "id": "c",
-        "text": "Every skill already preloaded into the parent's context, so the subagent inherits the parent's working knowledge."
+        "text": "Every skill already preloaded into the parent's context, together with its tool definitions, so the subagent inherits the parent's working knowledge without having to be told about it."
       },
       {
         "id": "d",
@@ -1675,27 +1675,27 @@
     "options": [
       {
         "id": "a",
-        "text": "Omitting the tool list leaves the subagent with no tools at all, so the field must always be populated."
+        "text": "Omitting the tool list leaves the subagent with no tools at all, so the field must always be populated before the agent can do any work on its own."
       },
       {
         "id": "b",
-        "text": "A description and a system prompt are the only required fields; the tool list, model override, and remaining fields are optional."
+        "text": "A description and a system prompt are the only required fields; the tool list, the model override, and the remaining fields are all optional."
       },
       {
         "id": "c",
-        "text": "Restricting a subagent's tools only takes effect if a matching deny rule is also configured for the session."
+        "text": "Restricting a subagent's tools only takes effect if a matching deny rule is also configured for the session, since the tool list by itself makes no permission decision and is treated as advisory metadata."
       },
       {
         "id": "d",
-        "text": "A subagent must first exist as a markdown file in a .claude/agents directory before it can be invoked."
+        "text": "A subagent must exist as a markdown file in a .claude/agents directory before it can be invoked, and the agents option only points at definitions already on disk."
       },
       {
         "id": "e",
-        "text": "The description field is used only for logging and has no bearing on when Claude chooses to use the subagent."
+        "text": "The description field is used only for logging and has no bearing on when Claude chooses to use the subagent, which depends on its system prompt instead."
       },
       {
         "id": "f",
-        "text": "When the definition lists specific tools, a tool left off that list is absent from the subagent's session entirely, so Claude works without it rather than triggering a permission prompt or an error."
+        "text": "When the definition lists specific tools, a tool left off that list is absent from the subagent's session entirely, so Claude works without it rather than hitting a permission prompt."
       }
     ],
     "correct": [
@@ -1726,19 +1726,19 @@
     "options": [
       {
         "id": "a",
-        "text": "Spawn depth and concurrent subagent count are set as environment variables supplied through the SDK's environment option, while total spend is set as a query option on the run."
+        "text": "Spawn depth and concurrent subagent count are set as environment variables supplied through the SDK's environment option, while total spend is a query option on the run."
       },
       {
         "id": "b",
-        "text": "All three are fields on the individual agent definition, so each subagent carries its own depth, concurrency, and spend ceiling."
+        "text": "All three are fields on the individual agent definition, so each subagent carries its own depth, concurrency, and spend ceiling alongside its tools and its model."
       },
       {
         "id": "c",
-        "text": "All three are query options set alongside the maximum-turns option when the run starts."
+        "text": "All three are query options on the run, set alongside the maximum-turns option when the query starts, so one options object caps depth, concurrency, and spend together."
       },
       {
         "id": "d",
-        "text": "The maximum-turns option covers all three, because every subagent a run spawns consumes one of the run's turns."
+        "text": "The maximum-turns option covers all three, because every subagent a run spawns consumes one of the run's turns and the run stops once that budget is exhausted."
       }
     ],
     "correct": [
@@ -1771,23 +1771,23 @@
       },
       {
         "id": "b",
-        "text": "A hook that returns an allow decision short-circuits the remaining evaluation, so deny and ask rules are no longer consulted for that call."
+        "text": "A hook that returns an allow decision short-circuits the remaining evaluation, so deny rules, ask rules, and the permission mode are no longer consulted for that call."
       },
       {
         "id": "c",
-        "text": "Naming tools in the allowed-tools list constrains bypassPermissions mode so that only those tools are approved."
+        "text": "Naming tools in the allowed-tools list constrains bypassPermissions mode so that only the tools named there are approved, and anything left off the list still reaches the approval callback for a decision before it can run."
       },
       {
         "id": "d",
-        "text": "In dontAsk mode the tool-approval callback is still invoked for anything that was not pre-approved."
+        "text": "In dontAsk mode the tool-approval callback is still invoked for anything that was not pre-approved, so a check placed in that callback continues to run under that mode."
       },
       {
         "id": "e",
-        "text": "Deny rules are not applied while bypassPermissions mode is active."
+        "text": "Deny rules are not applied while bypassPermissions mode is active, because that mode is consulted before any rule matching happens and approves the call outright."
       },
       {
         "id": "f",
-        "text": "Because the tool-approval callback is the last step, a call already resolved by an earlier step, such as a bare allow entry or a permissive mode, is not routed to it, so a check placed only there does not run for that call."
+        "text": "Because the tool-approval callback is the last step, a call already resolved by an earlier step, such as a bare allow entry or a permissive mode, never reaches it, so a check placed only there does not run."
       }
     ],
     "correct": [
@@ -1818,7 +1818,7 @@
     "options": [
       {
         "id": "a",
-        "text": "Forking also snapshots the working tree, so file changes made in the fork are reverted when the original session is resumed."
+        "text": "Forking also snapshots the working tree, so any file changes made inside the fork are reverted as soon as the original session is resumed from the point where it left off."
       },
       {
         "id": "b",
@@ -1830,15 +1830,15 @@
       },
       {
         "id": "d",
-        "text": "A branch is created by continuing the most recent session rather than by resuming a specific one."
+        "text": "A branch is created by continuing the most recent session rather than by resuming a specific one, so the fork option applies only to the newest session."
       },
       {
         "id": "e",
-        "text": "The fork supersedes the original session, which can no longer be resumed once the branch exists."
+        "text": "The fork supersedes the original session, which can no longer be resumed once the branch exists and must be recreated from scratch if it is needed again."
       },
       {
         "id": "f",
-        "text": "A fork can only be created by the same process that originally created the session."
+        "text": "A fork can only be created by the same process that originally created the session, since the branch point is held in memory rather than written to disk."
       }
     ],
     "correct": [
@@ -1969,7 +1969,7 @@
       },
       {
         "id": "c",
-        "text": "Omit examples and instead describe the desired output in prose, because examples steer tone but not output structure."
+        "text": "Omit examples and instead describe the desired output in prose at length, because examples steer tone and voice but have little bearing on the structure of the output."
       },
       {
         "id": "d",
@@ -2231,15 +2231,15 @@
       },
       {
         "id": "b",
-        "text": "Citations can be enabled on the subset of documents considered authoritative, leaving the remaining documents uncited."
+        "text": "Citations can be enabled on the subset of documents considered authoritative, leaving the remaining documents attached to the request but uncited."
       },
       {
         "id": "c",
-        "text": "Regions of images embedded in a PDF can be cited in the same way as text extracted from that PDF."
+        "text": "Regions of images embedded in a PDF can be cited in the same way as text extracted from that PDF, using the same citation blocks on the response."
       },
       {
         "id": "d",
-        "text": "Plain text and PDF documents both return citations as zero-indexed character offsets into the source."
+        "text": "Plain text and PDF documents both return citations as zero-indexed character offsets into the source, which keeps client-side handling uniform."
       },
       {
         "id": "e",
@@ -2247,7 +2247,7 @@
       },
       {
         "id": "f",
-        "text": "Enabling citations reduces input tokens, because the model no longer needs to restate source passages in its reasoning."
+        "text": "Enabling citations reduces input tokens, because the model no longer needs to restate source passages in its reasoning or repeat them in its answer text."
       }
     ],
     "correct": [
@@ -2278,19 +2278,19 @@
     "options": [
       {
         "id": "a",
-        "text": "Both kinds run on Anthropic's infrastructure; the label only records whether the developer or Anthropic authored the tool's schema."
+        "text": "Both kinds run on Anthropic's infrastructure, and the label records only whether the developer or Anthropic authored the tool's schema rather than where the code behind it actually executes when Claude calls it in a request."
       },
       {
         "id": "b",
-        "text": "Client tools are restricted to schemas that Anthropic publishes, such as the bash and text editor tools; any tool the developer defines is by definition a server tool."
+        "text": "Client tools are restricted to the schemas Anthropic publishes, such as bash and the text editor; any tool the developer defines is by definition a server tool that Anthropic executes on request."
       },
       {
         "id": "c",
-        "text": "Server tools behave exactly like client tools in the message loop: the application receives each call and must return a matching tool_result block before the conversation can continue."
+        "text": "Server tools behave exactly like client tools in the message loop: the application receives each call and must return a matching tool_result block before the conversation can continue to the next turn."
       },
       {
         "id": "d",
-        "text": "Client tools run inside the developer's own application, which returns the outcome in a tool_result block to continue the exchange; server tools run on Anthropic's infrastructure and the application never executes them itself."
+        "text": "Client tools run inside the developer's application, which returns the outcome in a tool_result block to continue the exchange; server tools run on Anthropic's infrastructure and the application never executes them."
       }
     ],
     "correct": [
@@ -2319,19 +2319,19 @@
     "options": [
       {
         "id": "a",
-        "text": "Break the tool apart into a family of single-purpose tools so that each one covers exactly one action and needs no description."
+        "text": "Break the tool apart into a family of single-purpose tools so that each one covers exactly one action and its name alone makes the right choice obvious to the model."
       },
       {
         "id": "b",
-        "text": "Rewrite the description into several sentences that state what the tool does, when it should and should not be used, what each parameter controls, and what the tool does not return."
+        "text": "Rewrite the description into several sentences stating what the tool does, when it should and should not be used, what each parameter controls, and what the tool does not return."
       },
       {
         "id": "c",
-        "text": "Leave the description as it is and move all of the explanatory detail about the tool into the system prompt instead."
+        "text": "Leave the description as it is and move all of the explanatory detail about the tool, including when to prefer it over the neighbouring reporting tool, into the shared system prompt instead."
       },
       {
         "id": "d",
-        "text": "Force the tool to be used on every turn so the model no longer has to choose between the available tools."
+        "text": "Force the tool to be used on every turn so that the model no longer has to choose between the available tools and always produces a call the application can handle."
       }
     ],
     "correct": [
@@ -2364,7 +2364,7 @@
       },
       {
         "id": "b",
-        "text": "Tool results are supplied under a dedicated tool role rather than the user role, so they stay separate from ordinary conversation turns."
+        "text": "Tool results are supplied under a dedicated tool role rather than the user role, so that they remain clearly separate from ordinary conversation turns in the stored transcript."
       },
       {
         "id": "c",
@@ -2411,19 +2411,19 @@
     "options": [
       {
         "id": "a",
-        "text": "Omit the tool_result block for the failed call so that Claude notices the gap and reissues the request."
+        "text": "Omit the tool_result block for the failed call so that Claude notices the gap in the exchange and reissues the request on the next turn without being told what went wrong."
       },
       {
         "id": "b",
-        "text": "Skip the result block and instead send a plain user text message explaining that the pricing service is unavailable."
+        "text": "Skip the result block and instead send a plain user text message explaining that the pricing service is unavailable and stating what Claude should do next."
       },
       {
         "id": "c",
-        "text": "Return a tool_result block for that call with is_error set to true and content that states what failed and what Claude should do next, such as how long to wait before retrying."
+        "text": "Return a tool_result block for that call with is_error set to true and content stating what failed and what Claude should do next, such as how long to wait before retrying."
       },
       {
         "id": "d",
-        "text": "Remove the failing tool from the tools array on the follow-up request so Claude cannot attempt it again."
+        "text": "Remove the failing tool from the tools array on the follow-up request so Claude cannot attempt it again, and let it answer from what it already has in context."
       }
     ],
     "correct": [
@@ -2472,7 +2472,7 @@
       },
       {
         "id": "f",
-        "text": "Emitting more than one tool_use block in a turn is opt-in and must be switched on with a request parameter before Claude will do it."
+        "text": "Emitting more than one tool_use block in a single turn is opt-in and must be switched on with a request parameter before Claude will produce parallel calls in a response at all."
       }
     ],
     "correct": [
@@ -2560,7 +2560,7 @@
       },
       {
         "id": "e",
-        "text": "It can be switched on for a Model Context Protocol toolset entry to enforce validation across every tool that server exposes."
+        "text": "It can be switched on for a Model Context Protocol toolset entry, which enforces the same input validation across every tool that the server exposes to the request."
       }
     ],
     "correct": [
@@ -2590,19 +2590,19 @@
     "options": [
       {
         "id": "a",
-        "text": "The host creates one client per server connection, and the process running on an engineer's machine is reached over the stdio transport while the hosted copy is reached over the streamable HTTP transport."
+        "text": "The host creates one client per server connection, and the process on an engineer's machine is reached over the stdio transport while the hosted copy is reached over streamable HTTP."
       },
       {
         "id": "b",
-        "text": "The host maintains a single client that multiplexes traffic to every server it uses, so adding a second server reuses the existing connection."
+        "text": "The host maintains a single client that multiplexes traffic to every server it uses, so adding a second server reuses the existing connection rather than opening another one."
       },
       {
         "id": "c",
-        "text": "Servers initiate the connection to the host and register themselves, which is why a hosted server can reach many hosts at once."
+        "text": "Servers initiate the connection to the host and register the capabilities they offer, which is why one hosted server can reach many hosts at once without any per-host configuration on the client side."
       },
       {
         "id": "d",
-        "text": "The stdio transport can serve clients across the network, so the transport choice is independent of where the server process runs."
+        "text": "The stdio transport can serve clients across the network as well as on the same machine, so the choice of transport is independent of where the server process actually runs."
       }
     ],
     "correct": [
@@ -2639,7 +2639,7 @@
       },
       {
         "id": "c",
-        "text": "A single server definition may be referenced by several toolset entries, which is the supported way to expose different subsets of its tools in one request."
+        "text": "A single server definition may be referenced by several toolset entries, which is the supported way to expose different subsets of that server's tools within a single request to the Messages API."
       },
       {
         "id": "d",
@@ -2682,7 +2682,7 @@
     "options": [
       {
         "id": "a",
-        "text": "Appended to the system prompt inside XML tags labelled as untrusted, so the handling policy and the content stay together"
+        "text": "Appended to the system prompt inside XML tags labelled as untrusted, so that the handling policy and the content it governs stay together in one place"
       },
       {
         "id": "b",
@@ -2690,11 +2690,11 @@
       },
       {
         "id": "c",
-        "text": "In a plain user text block introduced by a sentence telling Claude to ignore any instructions that follow"
+        "text": "In a plain user text block introduced by a sentence telling Claude to ignore any instructions that appear in the text that follows it"
       },
       {
         "id": "d",
-        "text": "Split across several consecutive user turns so that no single turn contains a complete instruction"
+        "text": "Split across several consecutive user turns so that no single turn contains a complete instruction that the model could act on"
       }
     ],
     "correct": [
@@ -2731,7 +2731,7 @@
       },
       {
         "id": "c",
-        "text": "Place your own operating instructions inside the tool_result block so they sit next to the content they are meant to govern"
+        "text": "Place your own operating instructions inside the tool_result block so that they sit directly next to the untrusted content they are meant to govern and cannot be separated from it later"
       },
       {
         "id": "d",
@@ -2774,11 +2774,11 @@
     "options": [
       {
         "id": "a",
-        "text": "The call runs, because the narrower allow rule is a more specific match than the broad deny rule"
+        "text": "The call runs, because the narrower allow rule is a more specific match than the broad deny rule and specificity decides which rule applies"
       },
       {
         "id": "b",
-        "text": "The user is prompted to approve or reject, because two rules match the same call and the conflict is resolved interactively"
+        "text": "The user is prompted to approve or reject the call, because two rules match it and the conflict between them is resolved interactively at the point where it is proposed"
       },
       {
         "id": "c",
@@ -2786,7 +2786,7 @@
       },
       {
         "id": "d",
-        "text": "The outcome depends on which settings file each rule came from, with the more locally scoped file winning"
+        "text": "The outcome depends on which settings file each rule came from, with the more locally scoped file winning over the shared repository configuration"
       }
     ],
     "correct": [
@@ -2815,15 +2815,15 @@
     "options": [
       {
         "id": "a",
-        "text": "It does prevent it, because CLAUDE.md is loaded as a system-level instruction that the permission layer consults before every tool call"
+        "text": "It does prevent it, because CLAUDE.md is loaded as a system-level instruction that the permission layer consults before approving any tool call proposed during the session, alongside the deny rules"
       },
       {
         "id": "b",
-        "text": "It does prevent it, provided the same instruction is repeated in the first user message of each session"
+        "text": "It does prevent it, provided the same instruction is repeated in the first user message of every session so the model sees it before it proposes any tool call"
       },
       {
         "id": "c",
-        "text": "It does not prevent it, and the only supported remedy is to run the session inside a container with no network access"
+        "text": "It does not prevent it, and the only supported remedy is to run the session inside a container with no network access and no write access to the repository"
       },
       {
         "id": "d",
@@ -2856,7 +2856,7 @@
     "options": [
       {
         "id": "a",
-        "text": "It covers only the command Claude invokes, so child processes spawned by that command fall outside the filesystem boundary"
+        "text": "It covers only the command Claude invokes directly, so any child processes spawned by that command fall outside the sandbox's filesystem boundary entirely"
       },
       {
         "id": "b",
@@ -2902,11 +2902,11 @@
     "options": [
       {
         "id": "a",
-        "text": "Treat the refusal as a transport failure and retry the identical request with exponential backoff"
+        "text": "Treat the refusal as a transport failure and retry the identical request with exponential backoff until the service returns an ordinary, non-refused completion"
       },
       {
         "id": "b",
-        "text": "Branch on stop_details.category, which is always populated when a refusal occurs"
+        "text": "Branch on stop_details.category, which is always populated when a refusal occurs, and choose the recovery path from its value"
       },
       {
         "id": "c",
@@ -2914,7 +2914,7 @@
       },
       {
         "id": "d",
-        "text": "Ignore the refusal and replay the turn, since a refused response is never billed"
+        "text": "Ignore the refusal and replay the turn unchanged, since a refused response is never billed and therefore costs nothing to retry"
       }
     ],
     "correct": [
@@ -2943,11 +2943,11 @@
     "options": [
       {
         "id": "a",
-        "text": "Pass the credential to the agent in an environment variable inside its container, so the value is never written to disk"
+        "text": "Pass the credential to the agent in an environment variable inside its container, so that the value is never written to disk and exists only for the lifetime of that single container run"
       },
       {
         "id": "b",
-        "text": "Add a system prompt instruction forbidding the agent from revealing or transmitting the credential"
+        "text": "Add a system prompt instruction forbidding the agent from revealing or transmitting the credential to anything other than the paid third-party API"
       },
       {
         "id": "c",
@@ -2955,7 +2955,7 @@
       },
       {
         "id": "d",
-        "text": "Skip permission checks for the agent so that credential-related prompts cannot interrupt an unattended run"
+        "text": "Skip permission checks for the agent so that credential-related prompts cannot interrupt an unattended run on a machine where no operator is watching"
       },
       {
         "id": "e",
@@ -3030,7 +3030,7 @@
     "options": [
       {
         "id": "a",
-        "text": "~/.claude/CLAUDE.md on each developer's machine"
+        "text": "~/.claude/CLAUDE.md on each developer's machine, kept in step across the team by hand"
       },
       {
         "id": "b",
@@ -3038,7 +3038,7 @@
       },
       {
         "id": "c",
-        "text": "CLAUDE.local.md at the repository root, listed in .gitignore"
+        "text": "CLAUDE.local.md at the repository root, listed in .gitignore so it stays out of commits"
       },
       {
         "id": "d",
@@ -3079,7 +3079,7 @@
       },
       {
         "id": "c",
-        "text": "A value supplied for one session with the claude --settings flag would be overridden by .claude/settings.local.json."
+        "text": "A value supplied for one session with the claude --settings flag would be overridden by .claude/settings.local.json, since project-local files sit at the top of the order."
       },
       {
         "id": "d",
@@ -3158,15 +3158,15 @@
     "options": [
       {
         "id": "a",
-        "text": "Keep exit code 1 but write the explanation to stdout instead of stderr."
+        "text": "Keep exit code 1 but write the explanation to stdout instead of stderr, so that Claude Code reads the message as a blocking decision."
       },
       {
         "id": "b",
-        "text": "Exit with code 0 and print a plain-text explanation, since any non-empty message on stdout is treated as a denial."
+        "text": "Exit with code 0 and print a plain-text explanation on stdout, since any non-empty message printed there is treated by Claude Code as a denial."
       },
       {
         "id": "c",
-        "text": "Increase the hook's timeout value so Claude Code waits for the exit status before running the tool."
+        "text": "Increase the hook's timeout value so that Claude Code waits for the exit status before it runs the tool call at all."
       },
       {
         "id": "d",
@@ -3199,23 +3199,23 @@
     "options": [
       {
         "id": "a",
-        "text": "Add --dangerously-skip-permissions, so repository configuration cannot influence the run."
+        "text": "Add --dangerously-skip-permissions, so that hooks, MCP servers, and CLAUDE.md contributed by the checked-out repository can no longer influence the run by prompting for approval on a runner where no human is present to answer them."
       },
       {
         "id": "b",
-        "text": "Add --bare, which skips auto-discovery of hooks, skills, custom commands, subagents, plugins, MCP servers, auto memory, and CLAUDE.md, and provide ANTHROPIC_API_KEY, because bare mode reads neither OAuth credentials nor the system keychain."
+        "text": "Add --bare, which skips auto-discovery of hooks, skills, commands, subagents, plugins, MCP servers, auto memory, and CLAUDE.md, and supply ANTHROPIC_API_KEY, since bare mode reads neither OAuth credentials nor the keychain."
       },
       {
         "id": "c",
-        "text": "Add --output-format json, which returns structured JSON carrying the response text in a result field alongside session metadata."
+        "text": "Add --output-format json, which returns structured JSON carrying the response text in a result field alongside session metadata such as cost and duration."
       },
       {
         "id": "d",
-        "text": "Add --verbose, which converts the default text output into JSON."
+        "text": "Add --verbose, which converts the default text output into the JSON envelope that a later pipeline step can parse, and additionally emits the incremental events the run produced."
       },
       {
         "id": "e",
-        "text": "Add --continue, so every run resumes the previous conversation and therefore produces consistent output."
+        "text": "Add --continue, so that every run resumes the previous conversation on that runner and therefore produces output consistent with the last invocation regardless of what the checkout contributes."
       }
     ],
     "correct": [
@@ -3286,11 +3286,11 @@
     "options": [
       {
         "id": "a",
-        "text": "The classifier should handle tickets well and rarely frustrate customers."
+        "text": "The classifier should handle the great majority of incoming tickets well and rarely frustrate customers, and is ready once the team agrees its output reads sensibly across a range of examples."
       },
       {
         "id": "b",
-        "text": "The classifier should lead every public text-classification benchmark by the end of the sprint."
+        "text": "The classifier should lead every public text-classification benchmark by the end of the sprint, since an external leaderboard is objective, published, and directly comparable across competing approaches."
       },
       {
         "id": "c",
@@ -3298,7 +3298,7 @@
       },
       {
         "id": "d",
-        "text": "The classifier should score highly on the twenty examples the team used while drafting the prompt."
+        "text": "The classifier should reach an accuracy of at least 0.85 on the twenty examples the team used while drafting the prompt, re-measured after every prompt revision so that progress stays visible."
       }
     ],
     "correct": [
@@ -3327,19 +3327,19 @@
     "options": [
       {
         "id": "a",
-        "text": "The eight hundred automatically graded cases, because volume with slightly lower-signal automated grading beats a smaller hand-graded set, and the eval should mirror the real task distribution including edge cases."
+        "text": "The eight hundred automatically graded cases, because volume with slightly noisier automated grading beats a small hand-graded set, and the eval should mirror the real task distribution including edge cases."
       },
       {
         "id": "b",
-        "text": "The forty hand-graded cases, because human judgement is the highest-quality signal and a small set is easier to keep clean."
+        "text": "The forty hand-graded cases, because human judgement is the highest-quality grading signal available and a small curated set is far easier to keep clean, consistent, and free of mislabelled or ambiguous examples before launch."
       },
       {
         "id": "c",
-        "text": "The forty hand-graded cases, because automated grading is valid only once a human has confirmed every label in the set."
+        "text": "The forty hand-graded cases, because automated grading is only valid once a human has confirmed every label in the set, and eight hundred sampled cases cannot be verified to that standard in a week."
       },
       {
         "id": "d",
-        "text": "Either set, as long as one reviewer signs off, because sample size does not affect eval design."
+        "text": "Either set will do, provided one reviewer signs off on the design, because sample size and the mix of inputs affect only how long the eval takes to run rather than the quality of its signal."
       }
     ],
     "correct": [
@@ -3372,11 +3372,11 @@
       },
       {
         "id": "b",
-        "text": "Ask the grader to reason at length and keep that reasoning as the score, since prose captures more nuance than a label."
+        "text": "Ask the grader to reason at length and keep that reasoning as the recorded score, since prose captures far more nuance than a single discrete label ever could."
       },
       {
         "id": "c",
-        "text": "Remove the rubric so the grader is not biased toward the golden answer."
+        "text": "Remove the rubric so the grader is not biased toward the golden answer and can judge each response on its own merits."
       },
       {
         "id": "d",
@@ -3384,7 +3384,7 @@
       },
       {
         "id": "e",
-        "text": "Replace automated grading with human review of every case, since LLM graders cannot be made reliable."
+        "text": "Replace automated grading with human review of every case, since LLM graders cannot be made reliable enough to trust with a release."
       }
     ],
     "correct": [
@@ -3422,11 +3422,11 @@
       },
       {
         "id": "c",
-        "text": "Human grading of a random sample, because only a person can confirm that a label is right."
+        "text": "Human grading of a random sample, because only a person can confirm that a label is right for the input it was given."
       },
       {
         "id": "d",
-        "text": "An LLM judge scoring each returned label on a 1 to 5 scale."
+        "text": "An LLM judge scoring each returned label on a 1 to 5 scale, with the scores aggregated into a single average for each run."
       }
     ],
     "correct": [
@@ -3455,7 +3455,7 @@
     "options": [
       {
         "id": "a",
-        "text": "Change the model at the same time, so the strongest overall combination is found in a single pass."
+        "text": "Change the model at the same time as the prompt, so that the strongest overall combination is found in a single evaluation pass."
       },
       {
         "id": "b",
@@ -3467,11 +3467,11 @@
       },
       {
         "id": "d",
-        "text": "Score version two on the examples that were used to write version two, since they best express the intended behaviour."
+        "text": "Score version two on the examples that were used to write version two, since those examples express the intended behaviour more precisely than sampled production traffic does."
       },
       {
         "id": "e",
-        "text": "Adopt version two if a reviewer skims a handful of sampled outputs and prefers them."
+        "text": "Adopt version two if a reviewer skims a handful of sampled outputs from each version and prefers what the new version produced."
       }
     ],
     "correct": [
@@ -3501,19 +3501,19 @@
     "options": [
       {
         "id": "a",
-        "text": "Point the OTLP endpoint variable at the collector and change nothing else, since Claude Code exports telemetry by default."
+        "text": "Point the OTLP endpoint variable at the collector and distribute it through the env block of managed settings, changing nothing else, because Claude Code exports its metrics by default as soon as an endpoint is reachable."
       },
       {
         "id": "b",
-        "text": "Collect the per-run cost field from non-interactive JSON output on each machine, which is the supported source of organization-wide cost data."
+        "text": "Leave the enable variable unset and collect the per-run cost field from non-interactive JSON output on each machine, forwarding it to the collector, because that field is the supported source of organization-wide cost data."
       },
       {
         "id": "c",
-        "text": "Enable telemetry and group the exported metrics by the prompt identifier attribute to build per-prompt dashboards."
+        "text": "Set CLAUDE_CODE_ENABLE_TELEMETRY, choose OTEL_METRICS_EXPORTER set to otlp and an OTLP endpoint, distribute them through the env block of managed settings, then group the exported metrics by the prompt identifier attribute to build per-prompt dashboards and confirm the pipeline."
       },
       {
         "id": "d",
-        "text": "Enable telemetry with CLAUDE_CODE_ENABLE_TELEMETRY, choose an exporter such as OTEL_METRICS_EXPORTER set to otlp, set the OTLP endpoint, distribute those variables through the env block of managed settings, and confirm that the session count metric arrives when a session starts."
+        "text": "Enable telemetry with CLAUDE_CODE_ENABLE_TELEMETRY, choose an exporter such as OTEL_METRICS_EXPORTER set to otlp, set the OTLP endpoint, distribute those variables through the env block of managed settings, and check that the session count metric arrives."
       }
     ],
     "correct": [
@@ -3599,7 +3599,7 @@
       },
       {
         "id": "e",
-        "text": "Reject any response whose error type is not already known to the client, since only documented type values are valid."
+        "text": "Reject any response whose error type is not already known to the client, since only the documented type values are ever considered valid."
       }
     ],
     "correct": [
@@ -3867,7 +3867,7 @@
       },
       {
         "id": "c",
-        "text": "Overflowing input is silently truncated from the oldest messages, so requests still succeed but the earliest conversation turns quietly disappear."
+        "text": "Overflowing input is silently truncated from the oldest messages, so requests still succeed but the earliest conversation turns quietly disappear from what the model actually sees."
       },
       {
         "id": "d",
@@ -3912,7 +3912,7 @@
       },
       {
         "id": "d",
-        "text": "Reaching max_tokens ends a response gracefully at the nearest sentence boundary, making it the preferred way to shorten prose answers."
+        "text": "Reaching max_tokens ends a response gracefully at the nearest sentence boundary, which makes it the preferred way to shorten prose answers without post-processing."
       },
       {
         "id": "e",
@@ -4033,15 +4033,15 @@
     "options": [
       {
         "id": "a",
-        "text": "A matcher pattern is mandatory, and a hook registered without one is ignored at runtime."
+        "text": "A matcher pattern is mandatory for every hook, and a hook registered without one is ignored at runtime rather than firing on every occurrence of its event."
       },
       {
         "id": "b",
-        "text": "A post-tool-use callback can prevent the tool from running, so either event can be used to block an operation."
+        "text": "A post-tool-use callback can prevent the tool from running, so either event can be used to block an operation and the choice between them is a matter of style."
       },
       {
         "id": "c",
-        "text": "Hooks fire only in the main agent's execution, never inside a subagent."
+        "text": "Hooks fire only in the main agent's execution and never inside a subagent, so a subagent's tool calls are neither validated nor recorded by them."
       },
       {
         "id": "d",
@@ -4049,7 +4049,7 @@
       },
       {
         "id": "e",
-        "text": "A pre-tool-use callback can observe a tool call but cannot alter the arguments the tool will receive."
+        "text": "A pre-tool-use callback can observe a tool call and allow or deny it, but it cannot alter the arguments the tool will receive, so a value can only be rejected rather than corrected."
       },
       {
         "id": "f",
@@ -4084,15 +4084,15 @@
     "options": [
       {
         "id": "a",
-        "text": "Use the Client SDK for their language, which exposes the same agent loop through a native binding."
+        "text": "Use the Client SDK for their language, which exposes the same agent loop through a native binding to the harness."
       },
       {
         "id": "b",
-        "text": "Adopt Managed Agents, which is the language-agnostic form of the Agent SDK."
+        "text": "Adopt Managed Agents, which is the language-agnostic form of the Agent SDK and exposes the same agent loop over HTTP."
       },
       {
         "id": "c",
-        "text": "Reimplement the loop against the Messages API, because no supported option exists outside Python and TypeScript."
+        "text": "Reimplement the agent loop against the Messages API directly, since no supported option exists outside of the Python and TypeScript SDKs."
       },
       {
         "id": "d",
@@ -4125,19 +4125,19 @@
     "options": [
       {
         "id": "a",
-        "text": "Chain the work, because a task with more than one reasoning step cannot be completed within a single request and must be decomposed into separate calls."
+        "text": "Chain the work, because a task with more than one reasoning step cannot be completed within a single request and must be decomposed into separate calls, one per step, before the model can attempt it at all."
       },
       {
         "id": "b",
-        "text": "Keep the work in one request and separate the stages with tags, because splitting into separate calls discards everything produced in the earlier stages."
+        "text": "Keep the work in one request and separate the draft, review, and refine stages with tags, because splitting the task into separate calls discards everything produced in the earlier stages and forces a restart from scratch."
       },
       {
         "id": "c",
-        "text": "Chain the work, because it is chaining that gives you an inspectable intermediate output and a defined pipeline; the documented shape is draft, then review against explicit criteria, then refine, with each step as its own call."
+        "text": "Chain the work, because chaining is what gives you an inspectable intermediate output and a defined pipeline; the documented shape is draft, then review against explicit criteria, then refine, each step its own call."
       },
       {
         "id": "d",
-        "text": "Chain the work mainly to reduce cost, because several short requests process fewer total tokens than one longer request."
+        "text": "Chain the work mainly to reduce cost, because several short requests process fewer total tokens than one longer request that has to carry the draft and the rubric through to the end of a single response."
       }
     ],
     "correct": [
@@ -4166,11 +4166,11 @@
     "options": [
       {
         "id": "a",
-        "text": "The minimum of 100 is enforced during decoding, so the model is structurally unable to emit a smaller number for that field."
+        "text": "The minimum of 100 is enforced during decoding in the same way as the declared required fields and types, so the model is structurally unable to emit a smaller number for that field."
       },
       {
         "id": "b",
-        "text": "The stripped constraints are still enforced remotely before the response is returned, so validating the response in application code is redundant."
+        "text": "The stripped constraints are still enforced remotely before the response is returned, because the helper registers the developer's original schema with the request, so validating the response again in application code is redundant work."
       },
       {
         "id": "c",
@@ -4178,15 +4178,15 @@
       },
       {
         "id": "d",
-        "text": "Objects remain open unless the developer sets the additional properties flag by hand, because the SDKs transmit the supplied schema unchanged."
+        "text": "Objects remain open to extra properties unless the developer sets the additional properties flag by hand, because the helpers pass object definitions through untouched even while they strip unsupported keywords."
       },
       {
         "id": "e",
-        "text": "Within the supported subset of the schema language, the response is constrained during decoding to be valid JSON with the declared required fields and types, so retry logic for parse failures or missing required fields is not needed."
+        "text": "Within the supported subset of the schema language the response is constrained during decoding to be valid JSON with the declared required fields and types, so retry logic for parse failures is not needed."
       },
       {
         "id": "f",
-        "text": "Constraining the response to a JSON schema and requesting strict schema validation on tool inputs are mutually exclusive, so only one of the two can be used per request."
+        "text": "Constraining the response to a JSON schema and requesting strict schema validation on tool inputs are mutually exclusive, so a single request may use one or the other but not both, and asking for both is rejected."
       }
     ],
     "correct": [
@@ -4221,7 +4221,7 @@
       },
       {
         "id": "b",
-        "text": "Deferred tools are retrieved from an external tool registry at call time, so their schemas no longer need to be supplied with the request."
+        "text": "Deferred tools are retrieved from an external tool registry at call time, so their schemas no longer need to be supplied with the request and the tools array shrinks to the non-deferred set."
       },
       {
         "id": "c",
@@ -4229,7 +4229,7 @@
       },
       {
         "id": "d",
-        "text": "Deferring a tool changes where it executes, routing its calls to Anthropic's infrastructure instead of the application that defined it."
+        "text": "Deferring a tool changes where it executes, routing its calls to Anthropic's infrastructure instead of the application that defined it, which no longer runs it."
       },
       {
         "id": "e",
@@ -4237,7 +4237,7 @@
       },
       {
         "id": "f",
-        "text": "The gain is limited to latency, since the definitions still occupy the same amount of context once the request is assembled."
+        "text": "The gain is limited to latency, since the definitions still occupy the same amount of context once the request has been assembled, regardless of which tools are used."
       }
     ],
     "correct": [
@@ -4313,15 +4313,15 @@
       },
       {
         "id": "b",
-        "text": "A request must carry both x-api-key and Authorization together, because the key authenticates the caller while the federated token resolves the workspace it runs in"
+        "text": "A request must carry both x-api-key and Authorization together, because the key authenticates the caller while the federated token resolves the particular workspace that the request runs in"
       },
       {
         "id": "c",
-        "text": "An API key is permanent once issued, so rotating a credential means deleting the workspace the key belongs to and recreating both from scratch"
+        "text": "An API key is permanent once issued, so rotating a credential means deleting the workspace the key belongs to and recreating both the workspace and the key from scratch"
       },
       {
         "id": "d",
-        "text": "The official client SDKs leave the authentication, version, and content-type headers to the caller, which must set all three by hand on every request"
+        "text": "The official client SDKs leave the authentication, version, and content-type headers to the caller, which must set all three by hand on every request it sends to the API"
       }
     ],
     "correct": [
@@ -4358,11 +4358,11 @@
       },
       {
         "id": "c",
-        "text": "Imported files are fetched lazily, only when Claude first needs their contents, which keeps startup context small."
+        "text": "Imported files are fetched lazily, only when Claude first needs their contents, which keeps the context small at launch."
       },
       {
         "id": "d",
-        "text": "Imports cannot nest: any @ reference inside an imported file is ignored."
+        "text": "Imports cannot nest: any @ reference inside an imported file is ignored, so only the imports in the top-level file take effect."
       },
       {
         "id": "e",
@@ -4396,11 +4396,11 @@
     "options": [
       {
         "id": "a",
-        "text": "Require an exact match between the answers in a group after normalizing whitespace and case, since only identical text proves consistency."
+        "text": "Require an exact match between the answers in each group after normalizing whitespace and case, since only identical text proves that the answers are consistent."
       },
       {
         "id": "b",
-        "text": "Score each answer with ROUGE-L against a reference summary of the source article."
+        "text": "Score each answer with ROUGE-L against a reference summary of the source article, averaging the score across the questions in each paraphrase group."
       },
       {
         "id": "c",
@@ -4408,7 +4408,7 @@
       },
       {
         "id": "d",
-        "text": "Have an LLM judge rate each answer on a 1 to 5 Likert scale for empathy and professionalism."
+        "text": "Have an LLM judge rate each answer on a 1 to 5 Likert scale for empathy and professionalism, then compare the ratings within each group."
       }
     ],
     "correct": [

@@ -98,12 +98,64 @@ The re-run cold-answer pass used that form.
 
 **The bank is now 100/100 `reviewed` — Phase 2's exit condition is met.**
 
+## Answer-length bias
+
+A pattern audit of the reviewed bank found a systematic **answer-length bias**:
+correct options were markedly longer than their distractors, because the key
+carried the source doc's full hedged claim while distractors were written as
+crisp wrong assertions. This survived the cold-answer review precisely because
+that review only proves the key is faithful to the cited source; it says nothing
+about whether a question discriminates.
+
+"Always pick the longest option" scored **37/61 = 61%** on single-select against
+a ~25% random baseline — enough to clear the real exam's 720/1000 bar on
+typography alone.
+
+| Metric | Before | After |
+|---|---|---|
+| mean(correct) − mean(distractor), all 100 | +24.4 chars | +0.5 |
+| — median | +11.2 | +2.0 |
+| — single-select (61) | +26.1 | +1.1 |
+| — multi-select (39) | +21.8 | −0.5 |
+| key is the single longest option (61 single) | 37 (61%) | 11 (18%) |
+| mean normalised length-rank of correct options | 0.27 | 0.43 |
+
+Neutral is 0.50 for length-rank and ~25% for the longest-option strategy, so
+both metrics now sit within noise of chance rather than being exploitable.
+
+**Method.** Following the guidance that provenance outranks cosmetic balance,
+the fix was applied to distractors first: each was padded with equivalent
+qualifying clauses that leave its documented reason-for-wrongness intact, and
+several were tightened into genuine near-misses. Keys were trimmed only where it
+cost no accuracy. 58 questions were touched, 147 option strings rewritten.
+
+**Every `correct` array, `explanation`, `distractorNotes`, `sourceUrl`,
+`sourceNote` and `sourceCheckedAt` is byte-identical to the reviewed bank** —
+this was a wording-only pass, verified by structural diff, so no cold-answer
+result is invalidated.
+
+**Regression check.** `schemas/question-bank.mjs` now carries a bank-level
+`lengthBias` guard alongside the position-bias guard, with the same
+minimum-sample-size shape:
+
+- `LENGTH_BIAS_MIN_SAMPLE = 20`
+- `LENGTH_BIAS_MAX_MEAN_DELTA = 10` chars, checked in **both** directions, since
+  a bank whose keys are reliably shorter is just as guessable as one whose keys
+  are reliably longer
+- `LENGTH_BIAS_MAX_LONGEST_SHARE = 0.45` for single-select, against a ~25%
+  chance rate and the position guard's comparable 50% ceiling
+
+Thresholds were chosen after the rebalance so they lock in the achieved state.
+Run against the pre-fix bank, the guard fails on both axes (+24.4 chars, 59%),
+which is the regression it exists to catch.
+
 ## Validation
 
 ```
-✅ npm run check passes (13/13 tests, 100 questions validated)
+✅ npm run check passes (17/17 tests, 100 questions validated)
 ✅ 100/100 questions at status: reviewed, 0 draft
 ✅ Schema validation passes
 ✅ No position bias detected
+✅ No answer-length bias detected
 ✅ No leading-run multi-select answers
 ```

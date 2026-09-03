@@ -170,6 +170,91 @@ test("ignores position bias below the minimum sample size", async () => {
   assert.doesNotThrow(() => validateCertContent("ccdv-f", manifest, small));
 });
 
+function lengthBiasBank(count, keyText, prefix) {
+  const positions = ["a", "b", "c", "d"];
+
+  return Array.from({ length: count }, (_, index) => ({
+    id: `ccdv-f-${prefix}${String(index).padStart(3, "0")}`,
+    cert: "ccdv-f",
+    schemaVersion: 1,
+    type: "single",
+    domain: "tools-and-mcps",
+    difficulty: "medium",
+    status: "reviewed",
+    stem: "Which option is correct?",
+    // The key rotates through every position, so only length is exploitable.
+    options: positions.map((id) => ({
+      id,
+      text: id === positions[index % positions.length] ? keyText : "A short distractor.",
+    })),
+    correct: [positions[index % positions.length]],
+    explanation: "The key is the correct option.",
+    sourceUrl: "https://example.com/source",
+    sourceNote: "Section 1",
+    sourceCheckedAt: "2026-09-03",
+  }));
+}
+
+test("rejects a bank whose correct answers are systematically longer", async () => {
+  const { manifest } = await validContent();
+  const biased = lengthBiasBank(
+    24,
+    "A correct option carrying a great deal more qualifying detail than any of its distractors.",
+    "3",
+  );
+
+  assert.throws(
+    () => validateCertContent("ccdv-f", manifest, biased),
+    /correct options are length-biased: they run longer than their distractors/,
+  );
+  assert.throws(
+    () => validateCertContent("ccdv-f", manifest, biased),
+    /biased toward the longest option: the key is the longest option in 24 of 24/,
+  );
+});
+
+test("rejects a bank whose correct answers are systematically shorter", async () => {
+  const { manifest } = await validContent();
+  const biased = lengthBiasBank(24, "Short.", "4").map((question) => ({
+    ...question,
+    options: question.options.map((option) => ({
+      ...option,
+      text:
+        option.text === "Short."
+          ? option.text
+          : "A distractor carrying a great deal more qualifying detail than the key does.",
+    })),
+  }));
+
+  assert.throws(
+    () => validateCertContent("ccdv-f", manifest, biased),
+    /correct options are length-biased: they run shorter than their distractors/,
+  );
+});
+
+test("ignores length bias below the minimum sample size", async () => {
+  const { manifest } = await validContent();
+  const small = lengthBiasBank(
+    10,
+    "A correct option carrying a great deal more qualifying detail than any of its distractors.",
+    "5",
+  );
+
+  assert.doesNotThrow(() => validateCertContent("ccdv-f", manifest, small));
+});
+
+test("accepts the shipped bank's answer lengths", async () => {
+  const certUrl = new URL("../certs/ccdv-f/", import.meta.url);
+  const manifest = JSON.parse(
+    await readFile(new URL("manifest.json", certUrl), "utf8"),
+  );
+  const questions = JSON.parse(
+    await readFile(new URL("questions.json", certUrl), "utf8"),
+  );
+
+  assert.doesNotThrow(() => validateCertContent("ccdv-f", manifest, questions));
+});
+
 test("validates repository cert content", async () => {
   const result = await validateRepository(fileURLToPath(repositoryFixtureUrl));
 
