@@ -35,12 +35,12 @@ function QuestionReview({
         </span>
       </div>
       <h3>{question.stem}</h3>
-      <div className="review-option-list">
+      <ul className="review-option-list" role="list">
         {question.options.map((option) => {
           const isSelected = selected.has(option.id);
           const isCorrectOption = question.correct.includes(option.id);
           return (
-            <div
+            <li
               className={[
                 "review-option",
                 isSelected ? "is-selected" : "",
@@ -51,12 +51,14 @@ function QuestionReview({
                 .join(" ")}
               key={option.id}
             >
-              <span className="option-id">{option.id.toUpperCase()}</span>
+              <span className="option-id" aria-hidden="true">
+                {option.id.toUpperCase()}
+              </span>
               <span>{option.text}</span>
-            </div>
+            </li>
           );
         })}
-      </div>
+      </ul>
       <p className="review-result">
         <strong>{isCorrect ? "Correct" : "Incorrect"}</strong>
         {selectedOptionIds.length === 0
@@ -147,50 +149,46 @@ export function ResultsPage() {
       </div>
 
       <article className="results-card">
-        <div className="results-grid">
+        <dl className="results-grid">
           <div>
-            <span className="results-label">Score</span>
-            <strong className="results-value">
-              {attempt.scorePercentage}%
-            </strong>
-            <span className="results-detail">
-              {attempt.correctAnswers} correct
-            </span>
+            <dt className="results-label">Score</dt>
+            <dd className="results-value">{attempt.scorePercentage}%</dd>
+            <dd className="results-detail">{attempt.correctAnswers} correct</dd>
           </div>
           <div>
-            <span className="results-label">Questions answered</span>
-            <strong className="results-value">
+            <dt className="results-label">Questions answered</dt>
+            <dd className="results-value">
               {attempt.answeredQuestions}/{attempt.totalQuestions}
-            </strong>
-            <span className="results-detail">
+            </dd>
+            <dd className="results-detail">
               {attempt.totalQuestions - attempt.answeredQuestions} skipped
-            </span>
+            </dd>
           </div>
           <div>
-            <span className="results-label">Time used</span>
-            <strong className="results-value">
+            <dt className="results-label">Time used</dt>
+            <dd className="results-value">
               {formatUsedTime(attempt.startedAt, attempt.completedAt)}
-            </strong>
-            <span className="results-detail">
+            </dd>
+            <dd className="results-detail">
               {manifest.examDurationMinutes
                 ? `of ${manifest.examDurationMinutes} min limit`
                 : "Total elapsed time"}
-            </span>
+            </dd>
           </div>
           <div>
-            <span className="results-label">Answer reveal</span>
-            <strong className="results-value">
+            <dt className="results-label">Answer reveal</dt>
+            <dd className="results-value">
               {attempt.config.revealMode === "immediate"
                 ? "Immediate"
                 : "At the end"}
-            </strong>
-            <span className="results-detail">
+            </dd>
+            <dd className="results-detail">
               {attempt.config.mode === "weighted"
                 ? "Blueprint weighted"
                 : `${attempt.config.mode} selection`}
-            </span>
+            </dd>
           </div>
-        </div>
+        </dl>
 
         <section className="domain-breakdown" aria-labelledby="domain-heading">
           <h2 id="domain-heading">Domain breakdown</h2>

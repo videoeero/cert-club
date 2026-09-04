@@ -7,6 +7,10 @@ import { ResultsPage } from "./pages/ResultsPage";
 function AppLayout() {
   return (
     <div className="app-shell">
+      <a className="skip-link" href="#main-content">
+        Skip to main content
+      </a>
+
       <header className="site-header">
         <div className="content-width header-content">
           <Link className="brand" to="/">
@@ -15,10 +19,6 @@ function AppLayout() {
           <span className="header-tagline">Practice in public</span>
         </div>
       </header>
-
-      <a className="skip-link" href="#main-content">
-        Skip to main content
-      </a>
 
       <main id="main-content" className="content-width" tabIndex={-1}>
         <Routes>

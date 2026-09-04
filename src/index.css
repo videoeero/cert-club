@@ -551,17 +551,24 @@ h2 {
   margin-bottom: 28px;
 }
 
-.question-card h2 {
+.question-card h2,
+.question-stem {
+  display: block;
+  width: 100%;
   max-width: 840px;
+  margin-top: 0;
   margin-bottom: 24px;
-  /* Tightened from clamp(1.35rem, 2.5vw, 2rem) — long question stems need
-     more breathing room and the larger size caused overflow on medium screens. */
+  padding: 0;
+  color: #101828;
   font-size: clamp(1.15rem, 1.6vw, 1.35rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
   line-height: 1.45;
 }
 
 .question-instruction {
-  margin-bottom: 18px;
+  margin-top: 0;
+  margin-bottom: 6px;
   color: #667085;
   font-size: 0.95rem;
   font-weight: 700;
@@ -574,6 +581,7 @@ h2 {
   margin: 0;
   padding: 0;
   border: 0;
+  min-width: 0;
 }
 
 .answer-option {
@@ -744,6 +752,8 @@ h2 {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 16px;
+  margin: 0;
+  padding: 0;
 }
 
 @media (max-width: 900px) {
@@ -760,20 +770,22 @@ h2 {
 
 .results-label {
   display: block;
-  margin-bottom: 8px;
+  margin: 0 0 8px;
   color: #667085;
   font-size: 0.8rem;
 }
 
 .results-value {
   display: block;
+  margin: 0;
   color: #101828;
   font-size: 1.4rem;
+  font-weight: 700;
 }
 
 .results-detail {
   display: block;
-  margin-top: 4px;
+  margin: 4px 0 0;
   color: #667085;
   font-size: 0.8rem;
 }
@@ -858,6 +870,9 @@ h2 {
 .review-option-list {
   display: grid;
   gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .review-option {

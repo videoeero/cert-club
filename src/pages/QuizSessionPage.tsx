@@ -552,7 +552,7 @@ export function QuizSessionPage() {
           </Link>
         </div>
 
-        <article className="setup-card">
+        <div className="setup-card">
           <div
             className="setup-tab-bar"
             role="tablist"
@@ -732,7 +732,7 @@ export function QuizSessionPage() {
               </button>
             </form>
           )}
-        </article>
+        </div>
       </section>
     );
   }
@@ -998,20 +998,20 @@ export function QuizSessionPage() {
             {bookmarkedQuestionIds.has(question.id) ? "Bookmarked" : "Bookmark"}
           </button>
         </div>
-        <h2 id={questionHeadingId}>{question.stem}</h2>
-        <p id={questionInstructionId} className="question-instruction">
-          Select {answerCountLabel(question.correct.length)} answer
-          {question.correct.length === 1 ? "" : "s"}.
-          {session.config.revealMode === "end" &&
-            " Answers and explanations appear after you finish."}
-        </p>
         <fieldset
           className="answer-option-list"
           disabled={isRevealed}
-          aria-label="Answer options"
           aria-describedby={questionInstructionId}
         >
-          <legend className="sr-only">Answer options</legend>
+          <legend className="question-stem" id={questionHeadingId}>
+            {question.stem}
+          </legend>
+          <p id={questionInstructionId} className="question-instruction">
+            Select {answerCountLabel(question.correct.length)} answer
+            {question.correct.length === 1 ? "" : "s"}.
+            {session.config.revealMode === "end" &&
+              " Answers and explanations appear after you finish."}
+          </p>
           {question.options.map((option) => {
             const selected = selectedOptionIds.includes(option.id);
             const correct = isRevealed && question.correct.includes(option.id);
@@ -1030,10 +1030,8 @@ export function QuizSessionPage() {
                   .filter(Boolean)
                   .join(" ")}
                 key={option.id}
-                htmlFor={`${question.id}-${option.id}`}
               >
                 <input
-                  id={`${question.id}-${option.id}`}
                   type={question.type === "multi" ? "checkbox" : "radio"}
                   name={question.id}
                   value={option.id}
@@ -1041,7 +1039,9 @@ export function QuizSessionPage() {
                   disabled={optionDisabled}
                   onChange={() => handleOptionChange(option.id)}
                 />
-                <span className="option-id">{option.id.toUpperCase()}</span>
+                <span className="option-id" aria-hidden="true">
+                  {option.id.toUpperCase()}
+                </span>
                 <span>{option.text}</span>
               </label>
             );
