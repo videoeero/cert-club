@@ -7,6 +7,7 @@ import type {
   QuizResults,
   QuizSelectionConfig,
   ReviewScope,
+  SimulationPreset,
 } from "../types";
 
 type RandomSource = () => number;
@@ -289,4 +290,90 @@ export function calculateQuizResults(
     questionResults,
     domainBreakdown: [...breakdownByDomain.values()],
   };
+}
+
+function pickIncorrectOptions(
+  question: Question,
+  random: RandomSource,
+): string[] {
+  const correctSet = new Set(question.correct);
+  const distractors = question.options.filter((opt) => !correctSet.has(opt.id));
+  const requiredCount = question.correct.length;
+
+  const shuffledDistractors = [...distractors];
+  for (let idx = shuffledDistractors.length - 1; idx > 0; idx -= 1) {
+    const swapIdx = Math.floor(randomValue(random) * (idx + 1));
+    [shuffledDistractors[idx], shuffledDistractors[swapIdx]] = [
+      shuffledDistractors[swapIdx],
+      shuffledDistractors[idx],
+    ];
+  }
+
+  if (shuffledDistractors.length >= requiredCount) {
+    return shuffledDistractors.slice(0, requiredCount).map((opt) => opt.id);
+  }
+
+  // Degenerate case: fewer distractors than correct.length (e.g. a multi-answer
+  // question with only one wrong option). Return all distractors without padding
+  // with correct IDs — scoreAnswer will still return false because the chosen
+  // set won't match question.correct exactly.
+  return shuffledDistractors.map((opt) => opt.id);
+}
+
+export function simulateQuizAnswers(
+  questions: readonly Question[],
+  preset: SimulationPreset,
+  random: RandomSource = Math.random,
+): AnswerMap {
+  if (questions.length === 0) {
+    return {};
+  }
+
+  let targetCorrectCount: number;
+  switch (preset) {
+    case "perfect-pass":
+      targetCorrectCount = questions.length;
+      break;
+    case "complete-fail":
+      targetCorrectCount = 0;
+      break;
+    case "realistic-pass": {
+      // Cap at questions.length - 1 to ensure the preset never silently becomes
+      // "perfect-pass", including for small question sets (≤ 3).
+      const target = Math.round(questions.length * 0.8);
+      targetCorrectCount = Math.min(questions.length - 1, Math.max(1, target));
+      break;
+    }
+    case "borderline-fail": {
+      // For a single question there are no "borderline" options; 0 correct is
+      // the best approximation of a failing score.
+      const target = Math.round(questions.length * 0.6);
+      targetCorrectCount = Math.min(questions.length - 1, Math.max(0, target));
+      break;
+    }
+    default:
+      throw new QuizSelectionError(
+        `Unsupported simulation preset "${String(preset)}".`,
+      );
+  }
+
+  const indices = Array.from({ length: questions.length }, (_, i) => i);
+  for (let i = indices.length - 1; i > 0; i -= 1) {
+    const swap = Math.floor(randomValue(random) * (i + 1));
+    [indices[i], indices[swap]] = [indices[swap], indices[i]];
+  }
+
+  const correctIndices = new Set(indices.slice(0, targetCorrectCount));
+  const answers: AnswerMap = {};
+
+  for (let i = 0; i < questions.length; i += 1) {
+    const question = questions[i];
+    if (correctIndices.has(i)) {
+      answers[question.id] = [...question.correct];
+    } else {
+      answers[question.id] = pickIncorrectOptions(question, random);
+    }
+  }
+
+  return answers;
 }

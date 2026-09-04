@@ -47,6 +47,8 @@ folder.
   "name": "Full certification name",
   "examUrl": "https://example.com/public-exam-guide.pdf",
   "contentLicense": "CC-BY-SA-4.0",
+  "examQuestionCount": 50,
+  "examDurationMinutes": 90,
   "domains": [
     { "slug": "domain-one", "name": "Domain One", "weight": 40 },
     { "slug": "domain-two", "name": "Domain Two", "weight": 60 }
@@ -58,6 +60,8 @@ folder.
 
 - `cert` must equal the folder name.
 - `examUrl` must be a public HTTP/HTTPS URL.
+- `examQuestionCount` (optional) must be a positive integer matching the official exam question count.
+- `examDurationMinutes` (optional) must be a positive integer matching the official exam time limit in minutes.
 - `domains[*].slug` must be unique within the manifest.
 - `domains[*].weight` values must sum to exactly 100 (±0.001). When the
   official guide gives ranges, normalise their midpoints using the

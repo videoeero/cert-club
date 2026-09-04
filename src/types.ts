@@ -10,6 +10,8 @@ export interface Manifest {
   name: string;
   examUrl: string;
   contentLicense: string;
+  examQuestionCount?: number;
+  examDurationMinutes?: number;
   domains: Domain[];
 }
 
@@ -48,6 +50,9 @@ export type QuestionSelectionMode =
 export type ReviewScope = "missed" | "bookmarked" | "missed-or-bookmarked";
 
 export type RevealMode = "immediate" | "end";
+
+export type SimulationPreset =
+  "perfect-pass" | "realistic-pass" | "borderline-fail" | "complete-fail";
 
 export interface QuizSelectionConfig {
   mode: QuestionSelectionMode;

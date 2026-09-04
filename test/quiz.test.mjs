@@ -8,6 +8,7 @@ import {
   QuizSelectionError,
   scoreAnswer,
   selectQuestions,
+  simulateQuizAnswers,
 } from "../src/lib/quiz.ts";
 
 function question(id, domain, type = "single", correct = ["a"]) {
@@ -259,4 +260,115 @@ test("rejects invalid question selection configurations", () => {
     () => selectQuestions(questions, domains, { mode: "random", count: -1 }),
     QuizSelectionError,
   );
+});
+
+test("simulates quiz answers according to presets", () => {
+  const questions = [
+    question("q1", "alpha", "single", ["a"]),
+    question("q2", "alpha", "single", ["b"]),
+    question("q3", "alpha", "multi", ["a", "c"]),
+    question("q4", "beta", "single", ["c"]),
+    question("q5", "beta", "multi", ["b", "d"]),
+  ];
+
+  // Use a deterministic random (always returns 0.5) so Fisher-Yates produces a
+  // stable shuffle and test results don't depend on Math.random internals.
+  const seededRandom = () => 0.5;
+
+  // perfect-pass: all correct
+  const perfectAnswers = simulateQuizAnswers(
+    questions,
+    "perfect-pass",
+    seededRandom,
+  );
+  const perfectResults = calculateQuizResults(
+    questions,
+    perfectAnswers,
+    domains,
+  );
+  assert.equal(perfectResults.scorePercentage, 100);
+  assert.equal(perfectResults.correctAnswers, 5);
+
+  // complete-fail: all wrong; each answer must have the required option count
+  const failAnswers = simulateQuizAnswers(
+    questions,
+    "complete-fail",
+    seededRandom,
+  );
+  const failResults = calculateQuizResults(questions, failAnswers, domains);
+  assert.equal(failResults.scorePercentage, 0);
+  assert.equal(failResults.correctAnswers, 0);
+  for (const q of questions) {
+    assert.equal(scoreAnswer(q, failAnswers[q.id]), false);
+  }
+
+  // realistic-pass: targets ~80% but capped at questions.length - 1 (≤ 4/5)
+  const passAnswers = simulateQuizAnswers(
+    questions,
+    "realistic-pass",
+    seededRandom,
+  );
+  const passResults = calculateQuizResults(questions, passAnswers, domains);
+  assert.ok(
+    passResults.correctAnswers >= 1,
+    "realistic-pass should have ≥ 1 correct",
+  );
+  assert.ok(
+    passResults.correctAnswers <= questions.length - 1,
+    "realistic-pass should not be perfect",
+  );
+
+  // borderline-fail: targets ~60% but capped at questions.length - 1
+  const borderlineAnswers = simulateQuizAnswers(
+    questions,
+    "borderline-fail",
+    seededRandom,
+  );
+  const borderlineResults = calculateQuizResults(
+    questions,
+    borderlineAnswers,
+    domains,
+  );
+  assert.ok(
+    borderlineResults.correctAnswers < questions.length,
+    "borderline-fail should not be perfect",
+  );
+});
+
+test("simulateQuizAnswers returns empty map for empty questions", () => {
+  assert.deepEqual(simulateQuizAnswers([], "perfect-pass"), {});
+  assert.deepEqual(simulateQuizAnswers([], "complete-fail"), {});
+});
+
+test("simulateQuizAnswers throws for unsupported preset", () => {
+  const q = [question("q1", "alpha")];
+  assert.throws(
+    // @ts-expect-error intentionally invalid preset
+    () => simulateQuizAnswers(q, "unknown-preset"),
+    QuizSelectionError,
+  );
+});
+
+test("simulateQuizAnswers: degenerate question with no distractors", () => {
+  // A question where all 4 options are "correct" — no distractors available.
+  const degenerateQ = {
+    id: "q-degen",
+    cert: "test-cert",
+    schemaVersion: 1,
+    type: "multi",
+    domain: "alpha",
+    difficulty: "medium",
+    status: "reviewed",
+    stem: "Degenerate question",
+    options: [
+      { id: "a", text: "Option A" },
+      { id: "b", text: "Option B" },
+    ],
+    correct: ["a", "b"],
+    sourceUrl: "https://example.com",
+  };
+  const answers = simulateQuizAnswers([degenerateQ], "complete-fail");
+  // With 0 distractors the fallback returns an empty array; scoreAnswer must
+  // return false (empty != ["a","b"]).
+  assert.equal(scoreAnswer(degenerateQ, answers[degenerateQ.id]), false);
 });

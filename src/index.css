@@ -190,6 +190,38 @@ h2 {
   padding: clamp(24px, 5vw, 48px);
 }
 
+.setup-tab-bar {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid #eaecf0;
+  margin-bottom: 28px;
+}
+
+.setup-tab {
+  position: relative;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  background: transparent;
+  padding: 10px 18px;
+  color: #667085;
+  font-size: 0.95rem;
+  font-weight: 750;
+  cursor: pointer;
+  transition:
+    color 160ms ease,
+    border-color 160ms ease;
+}
+
+.setup-tab:hover {
+  color: #101828;
+}
+
+.setup-tab.is-active {
+  border-bottom-color: #5465d8;
+  color: #5465d8;
+}
+
 .setup-card form {
   display: grid;
   gap: 28px;
@@ -248,6 +280,29 @@ h2 {
 
 .form-field .selection-summary {
   color: #475467;
+  font-weight: 700;
+}
+
+.selection-mode-guide {
+  border: 1px solid #e3e8f1;
+  border-radius: 12px;
+  background: #f8f9fc;
+  padding: 14px 16px;
+}
+
+.selection-mode-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: #475467;
+}
+
+.selection-mode-list strong {
+  color: #1d2939;
   font-weight: 700;
 }
 
@@ -426,6 +481,45 @@ h2 {
   color: #101828;
 }
 
+.timer-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  border: 1px solid #e4e7ec;
+  background: #f8f9fc;
+  color: #344054;
+  font-size: 0.825rem;
+  font-weight: 600;
+  padding: 4px 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.timer-badge strong {
+  color: #101828;
+  font-weight: 700;
+}
+
+.timer-badge.is-warning {
+  border-color: #fedf89;
+  background: #fffcf5;
+  color: #b54708;
+}
+
+.timer-badge.is-warning strong {
+  color: #b54708;
+}
+
+.timer-badge.is-expired {
+  border-color: #fda29b;
+  background: #fef3f2;
+  color: #d92d20;
+}
+
+.timer-badge.is-expired strong {
+  color: #d92d20;
+}
+
 .progress-track {
   height: 8px;
   overflow: hidden;
@@ -459,8 +553,11 @@ h2 {
 
 .question-card h2 {
   max-width: 840px;
-  margin-bottom: 32px;
-  font-size: clamp(1.35rem, 2.5vw, 2rem);
+  margin-bottom: 24px;
+  /* Tightened from clamp(1.35rem, 2.5vw, 2rem) — long question stems need
+     more breathing room and the larger size caused overflow on medium screens. */
+  font-size: clamp(1.15rem, 1.6vw, 1.35rem);
+  line-height: 1.45;
 }
 
 .question-instruction {
@@ -526,6 +623,15 @@ h2 {
 .answer-option.is-incorrect {
   border-color: #f49b9b;
   background: #fff5f5;
+}
+
+.answer-option.is-disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.answer-option.is-disabled:hover {
+  border-color: #e3e8f1;
 }
 
 .answer-option-list:disabled .answer-option {
@@ -594,6 +700,12 @@ h2 {
   margin-top: 24px;
 }
 
+.quiz-actions-forward {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .state-card {
   max-width: 680px;
   margin: 0 auto;
@@ -630,8 +742,14 @@ h2 {
 
 .results-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 16px;
+}
+
+@media (max-width: 900px) {
+  .results-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .results-grid > div {
@@ -884,6 +1002,13 @@ h2 {
 
   .quiz-actions {
     width: 100%;
+  }
+
+  .quiz-actions-forward {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 12px;
   }
 
   .footer-content {

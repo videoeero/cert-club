@@ -67,6 +67,8 @@ export const manifestSchema = z
     name: z.string().min(1),
     examUrl: sourceUrlSchema,
     contentLicense: z.string().min(1),
+    examQuestionCount: z.number().int().positive().optional(),
+    examDurationMinutes: z.number().int().positive().optional(),
     domains: z.array(domainSchema).min(1),
   })
   .strict()

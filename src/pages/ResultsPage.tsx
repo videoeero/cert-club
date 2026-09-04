@@ -6,6 +6,7 @@ import { useAsyncResource } from "../hooks/use-async-resource";
 import { loadCertContent } from "../lib/content";
 import { answerCountLabel, scoreAnswer } from "../lib/quiz";
 import { getAttempt, getAttempts } from "../lib/storage";
+import { formatUsedTime } from "../lib/time";
 import type { Question } from "../types";
 
 interface QuestionReviewProps {
@@ -163,6 +164,17 @@ export function ResultsPage() {
             </strong>
             <span className="results-detail">
               {attempt.totalQuestions - attempt.answeredQuestions} skipped
+            </span>
+          </div>
+          <div>
+            <span className="results-label">Time used</span>
+            <strong className="results-value">
+              {formatUsedTime(attempt.startedAt, attempt.completedAt)}
+            </strong>
+            <span className="results-detail">
+              {manifest.examDurationMinutes
+                ? `of ${manifest.examDurationMinutes} min limit`
+                : "Total elapsed time"}
             </span>
           </div>
           <div>

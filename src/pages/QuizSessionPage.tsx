@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 import { ErrorState, LoadingState } from "../components/PageStatus";
@@ -10,6 +10,7 @@ import {
   filterReviewQuestions,
   scoreAnswer,
   selectQuestions,
+  simulateQuizAnswers,
   QuizSelectionError,
 } from "../lib/quiz";
 import {
@@ -20,6 +21,7 @@ import {
   saveAttempt,
   setBookmarkedQuestionIds as persistBookmarkedQuestionIds,
 } from "../lib/storage";
+import { formatRemainingTime } from "../lib/time";
 import type {
   AttemptRecord,
   Question,
@@ -27,6 +29,7 @@ import type {
   QuizConfig,
   ReviewScope,
   RevealMode,
+  SimulationPreset,
 } from "../types";
 
 interface ActiveSession {
@@ -35,7 +38,7 @@ interface ActiveSession {
   startedAt: string;
 }
 
-const DEFAULT_SELECTION_MODE: QuestionSelectionMode = "random";
+const DEFAULT_SELECTION_MODE: QuestionSelectionMode = "weighted";
 const DEFAULT_QUESTION_COUNT = "10";
 const DEFAULT_REVEAL_MODE: RevealMode = "immediate";
 const DEFAULT_REVIEW_SCOPE: ReviewScope = "missed-or-bookmarked";
@@ -61,6 +64,7 @@ export function QuizSessionPage() {
   const { certSlug } = useParams<{ certSlug: string }>();
   const navigate = useNavigate();
   const [retryKey, setRetryKey] = useState(0);
+  const [currentTime, setCurrentTime] = useState(() => Date.now());
   const [questionIndex, setQuestionIndex] = useState(0);
   const [selectionMode, setSelectionMode] = useState<QuestionSelectionMode>(
     DEFAULT_SELECTION_MODE,
@@ -68,6 +72,11 @@ export function QuizSessionPage() {
   const [selectionDomain, setSelectionDomain] = useState("");
   const [selectionCount, setSelectionCount] = useState(DEFAULT_QUESTION_COUNT);
   const [revealMode, setRevealMode] = useState<RevealMode>(DEFAULT_REVEAL_MODE);
+  const [activeTab, setActiveTab] = useState<"practice" | "simulate">(
+    "practice",
+  );
+  const [simulationPreset, setSimulationPreset] =
+    useState<SimulationPreset>("realistic-pass");
   const [reviewScope, setReviewScope] =
     useState<ReviewScope>(DEFAULT_REVIEW_SCOPE);
   const [activeSession, setActiveSession] = useState<ActiveSession | null>(
@@ -101,6 +110,8 @@ export function QuizSessionPage() {
     setRevealedQuestionIds(new Set());
     setSelectionDomain("");
     setReviewScope(DEFAULT_REVIEW_SCOPE);
+    setActiveTab("practice");
+    setSimulationPreset("realistic-pass");
     setSessionError(null);
     setFinishError(null);
     setBookmarkedQuestionIds(new Set());
@@ -118,6 +129,36 @@ export function QuizSessionPage() {
       setStorageError(errorMessage(error));
     }
   }, [certSlug, retryKey]);
+
+  // Track whether we've already seeded selectionCount from the manifest so a
+  // re-resolved resource object doesn't overwrite the user's manual edit.
+  const hasSetDefaultCount = useRef(false);
+
+  useEffect(() => {
+    if (resource.status !== "ready") {
+      return;
+    }
+    if (hasSetDefaultCount.current) {
+      return;
+    }
+    hasSetDefaultCount.current = true;
+    const { manifest, questions } = resource.data;
+    const defaultCount = manifest.examQuestionCount
+      ? Math.min(manifest.examQuestionCount, questions.length)
+      : Math.min(Number(DEFAULT_QUESTION_COUNT), questions.length);
+    setSelectionCount(String(defaultCount));
+  }, [resource]);
+
+  useEffect(() => {
+    if (!activeSession) {
+      return;
+    }
+    setCurrentTime(Date.now());
+    const interval = setInterval(() => {
+      setCurrentTime(Date.now());
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [activeSession]);
 
   if (resource.status === "loading") {
     return (
@@ -261,12 +302,249 @@ export function QuizSessionPage() {
     }
   }
 
+  function handleSimulate(event: FormEvent<HTMLFormElement>): void {
+    event.preventDefault();
+    setSessionError(null);
+
+    if (!certSlug) {
+      setSessionError(
+        "A certification slug is required to simulate a session.",
+      );
+      return;
+    }
+
+    if (selectionMode === "review" && reviewQuestions.length === 0) {
+      setSessionError(
+        "No questions match this review set and domain filter. Answer or bookmark questions first.",
+      );
+      return;
+    }
+
+    const count =
+      selectionMode === "all" ? undefined : Number(boundedSelectionCount);
+    if (count !== undefined && countLimit < 1) {
+      setSessionError("No questions are available for this selection.");
+      return;
+    }
+    if (count !== undefined && (!Number.isInteger(count) || count < 1)) {
+      setSessionError(
+        "Enter a question count between 1 and the available total.",
+      );
+      return;
+    }
+    if (selectionMode === "domain" && !selectedDomain) {
+      setSessionError("Choose a domain before starting the simulation.");
+      return;
+    }
+
+    const config: QuizConfig = {
+      mode: selectionMode,
+      revealMode: "end",
+      ...(count === undefined ? {} : { count }),
+      ...(selectionMode === "domain" ? { domain: selectedDomain } : {}),
+      ...(selectionMode === "review"
+        ? {
+            ...(selectionDomain ? { domain: selectionDomain } : {}),
+            reviewScope,
+          }
+        : {}),
+    };
+
+    try {
+      const startedAt = new Date().toISOString();
+      const selectedQuestions = selectQuestions(
+        selectionMode === "review" ? reviewQuestions : questions,
+        manifest.domains,
+        config,
+      );
+      const simulatedAnswers = simulateQuizAnswers(
+        selectedQuestions,
+        simulationPreset,
+      );
+      const results = calculateQuizResults(
+        selectedQuestions,
+        simulatedAnswers,
+        manifest.domains,
+      );
+      const attempt: AttemptRecord = {
+        id: createAttemptId(),
+        cert: manifest.cert,
+        startedAt,
+        completedAt: new Date().toISOString(),
+        config,
+        questionIds: selectedQuestions.map((q) => q.id),
+        answers: simulatedAnswers,
+        totalQuestions: results.totalQuestions,
+        answeredQuestions: results.answeredQuestions,
+        correctAnswers: results.correctAnswers,
+        scorePercentage: results.scorePercentage,
+        domainBreakdown: results.domainBreakdown,
+      };
+
+      saveAttempt(attempt);
+      recordMissedQuestionIds(
+        manifest.cert,
+        results.questionResults
+          .filter((result) => !result.isCorrect)
+          .map((result) => result.questionId),
+      );
+      clearMissedQuestionIds(
+        manifest.cert,
+        results.questionResults
+          .filter((result) => result.isCorrect)
+          .map((result) => result.questionId),
+      );
+      const query = new URLSearchParams({ attempt: attempt.id });
+      void navigate(`/results/${manifest.cert}?${query.toString()}`);
+    } catch (error) {
+      if (error instanceof QuizSelectionError) {
+        setSessionError(error.message);
+        return;
+      }
+      setSessionError(errorMessage(error));
+    }
+  }
+
   if (!activeSession) {
+    const questionSetFieldset = (
+      <fieldset className="setup-fieldset">
+        <legend>Question set</legend>
+        <div className="selection-mode-guide">
+          <ul className="selection-mode-list">
+            <li>
+              <strong>Weighted by blueprint:</strong> Questions sampled
+              proportionally according to exam domain weights.
+            </li>
+            <li>
+              <strong>Random subset:</strong> A randomized mix of questions
+              across all domains.
+            </li>
+            <li>
+              <strong>By domain:</strong> Practice questions focused on a single
+              chosen domain.
+            </li>
+            <li>
+              <strong>Review missed/bookmarked:</strong> Questions you
+              previously answered incorrectly or flagged for review.
+            </li>
+            <li>
+              <strong>All questions:</strong> Complete question bank in original
+              order.
+            </li>
+          </ul>
+        </div>
+        <label className="form-field">
+          <span>Selection mode</span>
+          <select
+            value={selectionMode}
+            onChange={(event) =>
+              setSelectionMode(event.target.value as QuestionSelectionMode)
+            }
+          >
+            <option value="weighted">Weighted by blueprint</option>
+            <option value="random">Random subset</option>
+            <option value="domain">By domain</option>
+            <option value="review">Review missed/bookmarked</option>
+            <option value="all">All questions</option>
+          </select>
+        </label>
+
+        {selectionMode === "review" && (
+          <label className="form-field">
+            <span>Review set</span>
+            <select
+              value={reviewScope}
+              onChange={(event) =>
+                setReviewScope(event.target.value as ReviewScope)
+              }
+            >
+              {Object.entries(REVIEW_SCOPE_LABELS).map(([scope, label]) => (
+                <option key={scope} value={scope}>
+                  {label}
+                </option>
+              ))}
+            </select>
+            <small
+              className="selection-summary"
+              role="status"
+              aria-live="polite"
+            >
+              {reviewQuestions.length} question
+              {reviewQuestions.length === 1 ? "" : "s"} match this review set.
+            </small>
+          </label>
+        )}
+
+        {(selectionMode === "domain" || selectionMode === "review") && (
+          <label className="form-field">
+            <span>
+              {selectionMode === "review" ? "Domain filter" : "Domain"}
+            </span>
+            <select
+              required={selectionMode === "domain"}
+              value={
+                selectionMode === "review" ? selectionDomain : selectedDomain
+              }
+              onChange={(event) => setSelectionDomain(event.target.value)}
+            >
+              {selectionMode === "review" && (
+                <option value="">All domains</option>
+              )}
+              {manifest.domains.map((domain) => (
+                <option key={domain.slug} value={domain.slug}>
+                  {`${domain.name} — ${domain.weight}% blueprint (${
+                    selectionMode === "review"
+                      ? (reviewQuestionCountByDomain.get(domain.slug) ?? 0)
+                      : (questionCountByDomain.get(domain.slug) ?? 0)
+                  } available)`}
+                </option>
+              ))}
+            </select>
+            <small>
+              {selectionMode === "review"
+                ? "Filter the review set by an exam domain."
+                : "The domain's percentage matches the official exam blueprint."}
+            </small>
+          </label>
+        )}
+
+        {selectionMode !== "all" && (
+          <label className="form-field">
+            <span>Number of questions</span>
+            <input
+              type="number"
+              min="1"
+              max={countLimit > 0 ? countLimit : undefined}
+              value={boundedSelectionCount}
+              onChange={(event) => setSelectionCount(event.target.value)}
+              required
+            />
+            <small>
+              Up to {countLimit} question{countLimit === 1 ? "" : "s"} available
+              for this selection
+              {manifest.examQuestionCount
+                ? ` (official exam has ${manifest.examQuestionCount} questions${
+                    manifest.examDurationMinutes
+                      ? `, ${manifest.examDurationMinutes} min`
+                      : ""
+                  }).`
+                : "."}
+            </small>
+          </label>
+        )}
+      </fieldset>
+    );
+
     return (
       <section className="page-section">
         <div className="page-heading">
           <div>
-            <p className="eyebrow">{manifest.name}</p>
+            <p className="eyebrow">
+              {manifest.name}
+              {manifest.examDurationMinutes
+                ? ` · ${manifest.examDurationMinutes} min exam`
+                : ""}
+            </p>
             <h1>Set up practice</h1>
           </div>
           <Link className="text-link" to="/">
@@ -275,158 +553,185 @@ export function QuizSessionPage() {
         </div>
 
         <article className="setup-card">
-          <form onSubmit={handleStart}>
-            <fieldset className="setup-fieldset">
-              <legend>Question set</legend>
-              <label className="form-field">
-                <span>Selection mode</span>
-                <select
-                  value={selectionMode}
-                  onChange={(event) =>
-                    setSelectionMode(
-                      event.target.value as QuestionSelectionMode,
-                    )
-                  }
-                >
-                  <option value="random">Random subset</option>
-                  <option value="weighted">Weighted by blueprint</option>
-                  <option value="domain">By domain</option>
-                  <option value="review">Review missed/bookmarked</option>
-                  <option value="all">All questions</option>
-                </select>
-              </label>
-
-              {selectionMode === "review" && (
-                <label className="form-field">
-                  <span>Review set</span>
-                  <select
-                    value={reviewScope}
-                    onChange={(event) =>
-                      setReviewScope(event.target.value as ReviewScope)
-                    }
-                  >
-                    {Object.entries(REVIEW_SCOPE_LABELS).map(
-                      ([scope, label]) => (
-                        <option key={scope} value={scope}>
-                          {label}
-                        </option>
-                      ),
-                    )}
-                  </select>
-                  <small
-                    className="selection-summary"
-                    role="status"
-                    aria-live="polite"
-                  >
-                    {reviewQuestions.length} question
-                    {reviewQuestions.length === 1 ? "" : "s"} match this review
-                    set.
-                  </small>
-                </label>
-              )}
-
-              {(selectionMode === "domain" || selectionMode === "review") && (
-                <label className="form-field">
-                  <span>
-                    {selectionMode === "review" ? "Domain filter" : "Domain"}
-                  </span>
-                  <select
-                    required={selectionMode === "domain"}
-                    value={
-                      selectionMode === "review"
-                        ? selectionDomain
-                        : selectedDomain
-                    }
-                    onChange={(event) => setSelectionDomain(event.target.value)}
-                  >
-                    {selectionMode === "review" && (
-                      <option value="">All domains</option>
-                    )}
-                    {manifest.domains.map((domain) => (
-                      <option key={domain.slug} value={domain.slug}>
-                        {`${domain.name} — ${domain.weight}% blueprint (${
-                          selectionMode === "review"
-                            ? (reviewQuestionCountByDomain.get(domain.slug) ??
-                              0)
-                            : (questionCountByDomain.get(domain.slug) ?? 0)
-                        } available)`}
-                      </option>
-                    ))}
-                  </select>
-                  <small>
-                    {selectionMode === "review"
-                      ? "Filter the review set by an exam domain."
-                      : "The domain's percentage matches the official exam blueprint."}
-                  </small>
-                </label>
-              )}
-
-              {selectionMode !== "all" && (
-                <label className="form-field">
-                  <span>Number of questions</span>
-                  <input
-                    type="number"
-                    min="1"
-                    max={countLimit > 0 ? countLimit : undefined}
-                    value={boundedSelectionCount}
-                    onChange={(event) => setSelectionCount(event.target.value)}
-                    required
-                  />
-                  <small>
-                    Up to {countLimit} question{countLimit === 1 ? "" : "s"}{" "}
-                    available for this selection.
-                  </small>
-                </label>
-              )}
-            </fieldset>
-
-            <fieldset className="setup-fieldset">
-              <legend>Answer reveal</legend>
-              <label className="radio-option">
-                <input
-                  type="radio"
-                  name="reveal-mode"
-                  value="immediate"
-                  checked={revealMode === "immediate"}
-                  onChange={() => setRevealMode("immediate")}
-                />
-                <span>
-                  <strong>After each answer</strong>
-                  <small>See the explanation as soon as you submit.</small>
-                </span>
-              </label>
-              <label className="radio-option">
-                <input
-                  type="radio"
-                  name="reveal-mode"
-                  value="end"
-                  checked={revealMode === "end"}
-                  onChange={() => setRevealMode("end")}
-                />
-                <span>
-                  <strong>At the end</strong>
-                  <small>
-                    Review answers and explanations on the results page.
-                  </small>
-                </span>
-              </label>
-            </fieldset>
-
-            {sessionError && (
-              <p className="form-error" role="alert">
-                {sessionError}
-              </p>
-            )}
-            {storageError && (
-              <p className="storage-note" role="alert">
-                Progress cannot be saved: {storageError}
-              </p>
-            )}
-            <button className="button button-primary" type="submit">
-              {selectionMode === "review" ? "Start review" : "Start session"}
-              <span aria-hidden="true">→</span>
+          <div
+            className="setup-tab-bar"
+            role="tablist"
+            aria-label="Practice setup modes"
+          >
+            <button
+              type="button"
+              role="tab"
+              id="tab-practice"
+              aria-selected={activeTab === "practice"}
+              aria-controls="panel-practice"
+              className={`setup-tab ${activeTab === "practice" ? "is-active" : ""}`}
+              onClick={() => {
+                setActiveTab("practice");
+                setSessionError(null);
+              }}
+            >
+              Practice
             </button>
-          </form>
+            <button
+              type="button"
+              role="tab"
+              id="tab-simulate"
+              aria-selected={activeTab === "simulate"}
+              aria-controls="panel-simulate"
+              className={`setup-tab ${activeTab === "simulate" ? "is-active" : ""}`}
+              onClick={() => {
+                setActiveTab("simulate");
+                setSessionError(null);
+              }}
+            >
+              Simulate
+            </button>
+          </div>
+
+          {activeTab === "practice" ? (
+            <form
+              id="panel-practice"
+              role="tabpanel"
+              aria-labelledby="tab-practice"
+              onSubmit={handleStart}
+            >
+              {questionSetFieldset}
+
+              <fieldset className="setup-fieldset">
+                <legend>Answer reveal</legend>
+                <label className="radio-option">
+                  <input
+                    type="radio"
+                    name="reveal-mode"
+                    value="immediate"
+                    checked={revealMode === "immediate"}
+                    onChange={() => setRevealMode("immediate")}
+                  />
+                  <span>
+                    <strong>After each answer</strong>
+                    <small>
+                      See the explanation before you proceed to next question.
+                    </small>
+                  </span>
+                </label>
+                <label className="radio-option">
+                  <input
+                    type="radio"
+                    name="reveal-mode"
+                    value="end"
+                    checked={revealMode === "end"}
+                    onChange={() => setRevealMode("end")}
+                  />
+                  <span>
+                    <strong>At the end</strong>
+                    <small>
+                      Review answers and explanations on the results page.
+                    </small>
+                  </span>
+                </label>
+              </fieldset>
+
+              {sessionError && (
+                <p className="form-error" role="alert">
+                  {sessionError}
+                </p>
+              )}
+              {storageError && (
+                <p className="storage-note" role="alert">
+                  Progress cannot be saved: {storageError}
+                </p>
+              )}
+              <button className="button button-primary" type="submit">
+                {selectionMode === "review" ? "Start review" : "Start session"}
+                <span aria-hidden="true">→</span>
+              </button>
+            </form>
+          ) : (
+            <form
+              id="panel-simulate"
+              role="tabpanel"
+              aria-labelledby="tab-simulate"
+              onSubmit={handleSimulate}
+            >
+              {questionSetFieldset}
+
+              <fieldset className="setup-fieldset">
+                <legend>Simulation outcome</legend>
+                <label className="radio-option">
+                  <input
+                    type="radio"
+                    name="simulation-preset"
+                    value="perfect-pass"
+                    checked={simulationPreset === "perfect-pass"}
+                    onChange={() => setSimulationPreset("perfect-pass")}
+                  />
+                  <span>
+                    <strong>Perfect pass (100%)</strong>
+                    <small>Answers all questions correctly.</small>
+                  </span>
+                </label>
+                <label className="radio-option">
+                  <input
+                    type="radio"
+                    name="simulation-preset"
+                    value="realistic-pass"
+                    checked={simulationPreset === "realistic-pass"}
+                    onChange={() => setSimulationPreset("realistic-pass")}
+                  />
+                  <span>
+                    <strong>Realistic pass (~80%)</strong>
+                    <small>
+                      Simulates a comfortable passing score with a few missed
+                      questions.
+                    </small>
+                  </span>
+                </label>
+                <label className="radio-option">
+                  <input
+                    type="radio"
+                    name="simulation-preset"
+                    value="borderline-fail"
+                    checked={simulationPreset === "borderline-fail"}
+                    onChange={() => setSimulationPreset("borderline-fail")}
+                  />
+                  <span>
+                    <strong>Borderline fail (~60%)</strong>
+                    <small>
+                      Simulates a near-passing failing score with mixed answers.
+                    </small>
+                  </span>
+                </label>
+                <label className="radio-option">
+                  <input
+                    type="radio"
+                    name="simulation-preset"
+                    value="complete-fail"
+                    checked={simulationPreset === "complete-fail"}
+                    onChange={() => setSimulationPreset("complete-fail")}
+                  />
+                  <span>
+                    <strong>Complete fail (0%)</strong>
+                    <small>Answers all questions incorrectly.</small>
+                  </span>
+                </label>
+              </fieldset>
+
+              {sessionError && (
+                <p className="form-error" role="alert">
+                  {sessionError}
+                </p>
+              )}
+              {storageError && (
+                <p className="storage-note" role="alert">
+                  Progress cannot be saved: {storageError}
+                </p>
+              )}
+              <button className="button button-primary" type="submit">
+                Run simulation
+                <span aria-hidden="true">→</span>
+              </button>
+            </form>
+          )}
         </article>
       </section>
     );
@@ -455,6 +760,12 @@ export function QuizSessionPage() {
   }
 
   const selectedOptionIds = answers[question.id] ?? [];
+  const requiredAnswerCount = question.correct.length;
+  const hasRequiredSelectionCount =
+    selectedOptionIds.length === requiredAnswerCount;
+  const isSelectionLimitReached =
+    question.type === "multi" &&
+    selectedOptionIds.length >= requiredAnswerCount;
   const isRevealed =
     session.config.revealMode === "immediate" &&
     revealedQuestionIds.has(question.id);
@@ -466,8 +777,21 @@ export function QuizSessionPage() {
   );
   const isLastQuestion = questionIndex === sessionQuestions.length - 1;
   const progress = ((questionIndex + 1) / sessionQuestions.length) * 100;
+  const totalDurationSeconds = (manifest.examDurationMinutes ?? 0) * 60;
+  const elapsedSeconds = Math.max(
+    0,
+    Math.floor((currentTime - new Date(session.startedAt).getTime()) / 1000),
+  );
+  const remainingSeconds = Math.max(0, totalDurationSeconds - elapsedSeconds);
+  const isTimeExpired = totalDurationSeconds > 0 && remainingSeconds === 0;
+  const isTimeLow =
+    totalDurationSeconds > 0 && remainingSeconds > 0 && remainingSeconds <= 300;
   const questionHeadingId = `question-heading-${question.id}`;
   const questionInstructionId = `question-instruction-${question.id}`;
+  const canProceed =
+    session.config.revealMode === "immediate"
+      ? isRevealed
+      : hasRequiredSelectionCount;
 
   function markCurrentQuestionRevealed(): void {
     setRevealedQuestionIds((current) => {
@@ -487,14 +811,14 @@ export function QuizSessionPage() {
         ...current,
         [question.id]: [optionId],
       }));
-      if (session.config.revealMode === "immediate") {
-        markCurrentQuestionRevealed();
-      }
       return;
     }
 
     setAnswers((current) => {
       const selected = current[question.id] ?? [];
+      if (!selected.includes(optionId) && isSelectionLimitReached) {
+        return current;
+      }
       const nextSelection = selected.includes(optionId)
         ? selected.filter((selectedId) => selectedId !== optionId)
         : [...selected, optionId];
@@ -507,9 +831,8 @@ export function QuizSessionPage() {
 
   function handleCheckAnswer(): void {
     if (
-      question.type === "multi" &&
       session.config.revealMode === "immediate" &&
-      selectedOptionIds.length > 0
+      hasRequiredSelectionCount
     ) {
       markCurrentQuestionRevealed();
     }
@@ -594,7 +917,12 @@ export function QuizSessionPage() {
     <section className="page-section">
       <div className="page-heading">
         <div>
-          <p className="eyebrow">{manifest.name}</p>
+          <p className="eyebrow">
+            {manifest.name}
+            {manifest.examDurationMinutes
+              ? ` · ${manifest.examDurationMinutes} min exam`
+              : ""}
+          </p>
           <h1>Practice session</h1>
         </div>
         <Link className="text-link" to="/">
@@ -611,6 +939,25 @@ export function QuizSessionPage() {
             Question <strong>{questionIndex + 1}</strong> of{" "}
             {sessionQuestions.length}
           </span>
+          {manifest.examDurationMinutes ? (
+            <span
+              className={`timer-badge ${isTimeExpired ? "is-expired" : isTimeLow ? "is-warning" : ""}`}
+              role="timer"
+              aria-label={`Time remaining: ${formatRemainingTime(remainingSeconds)}`}
+            >
+              <span aria-hidden="true">⏱</span>
+              <span>
+                {isTimeExpired ? (
+                  <strong>Time expired (00:00)</strong>
+                ) : (
+                  <>
+                    Time left:{" "}
+                    <strong>{formatRemainingTime(remainingSeconds)}</strong>
+                  </>
+                )}
+              </span>
+            </span>
+          ) : null}
           <span>{Math.round(progress)}%</span>
         </div>
         <div
@@ -669,6 +1016,8 @@ export function QuizSessionPage() {
             const selected = selectedOptionIds.includes(option.id);
             const correct = isRevealed && question.correct.includes(option.id);
             const incorrect = isRevealed && selected && !correct;
+            const optionDisabled =
+              !isRevealed && !selected && isSelectionLimitReached;
             return (
               <label
                 className={[
@@ -676,6 +1025,7 @@ export function QuizSessionPage() {
                   selected ? "is-selected" : "",
                   correct ? "is-correct" : "",
                   incorrect ? "is-incorrect" : "",
+                  optionDisabled ? "is-disabled" : "",
                 ]
                   .filter(Boolean)
                   .join(" ")}
@@ -688,6 +1038,7 @@ export function QuizSessionPage() {
                   name={question.id}
                   value={option.id}
                   checked={selected}
+                  disabled={optionDisabled}
                   onChange={() => handleOptionChange(option.id)}
                 />
                 <span className="option-id">{option.id.toUpperCase()}</span>
@@ -743,41 +1094,43 @@ export function QuizSessionPage() {
         >
           Previous
         </button>
-        {question.type === "multi" &&
-          session.config.revealMode === "immediate" &&
-          !isRevealed && (
+        <div className="quiz-actions-forward">
+          {session.config.revealMode === "immediate" && !isRevealed && (
             <button
               className="button button-secondary"
               type="button"
               onClick={handleCheckAnswer}
-              disabled={selectedOptionIds.length === 0}
+              disabled={!hasRequiredSelectionCount}
             >
               Check answer
             </button>
           )}
-        {isLastQuestion ? (
-          <button
-            className="button button-primary"
-            type="button"
-            onClick={handleFinish}
-          >
-            Finish session
-            <span aria-hidden="true">→</span>
-          </button>
-        ) : (
-          <button
-            className="button button-primary"
-            type="button"
-            onClick={() =>
-              setQuestionIndex((value) =>
-                Math.min(sessionQuestions.length - 1, value + 1),
-              )
-            }
-          >
-            Next question
-            <span aria-hidden="true">→</span>
-          </button>
-        )}
+          {isLastQuestion ? (
+            <button
+              className="button button-primary"
+              type="button"
+              onClick={handleFinish}
+              disabled={!canProceed}
+            >
+              Finish session
+              <span aria-hidden="true">→</span>
+            </button>
+          ) : (
+            <button
+              className="button button-primary"
+              type="button"
+              onClick={() =>
+                setQuestionIndex((value) =>
+                  Math.min(sessionQuestions.length - 1, value + 1),
+                )
+              }
+              disabled={!canProceed}
+            >
+              Next question
+              <span aria-hidden="true">→</span>
+            </button>
+          )}
+        </div>
       </div>
     </section>
   );
