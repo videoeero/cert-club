@@ -2,8 +2,10 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 import { ErrorState, LoadingState } from "../components/PageStatus";
+import pageStatusStyles from "../components/PageStatus.module.css";
 import { useAsyncResource } from "../hooks/use-async-resource";
 import { loadCertContent } from "../lib/content";
+import styles from "./QuizSessionPage.module.css";
 import {
   answerCountLabel,
   calculateQuizResults,
@@ -184,7 +186,10 @@ export function QuizSessionPage() {
   if (questions.length === 0) {
     return (
       <section className="page-section">
-        <div className="state-card error-card" role="alert">
+        <div
+          className={`${pageStatusStyles.stateCard} ${pageStatusStyles.errorCard}`}
+          role="alert"
+        >
           <p className="eyebrow">Empty question bank</p>
           <h1>No questions are available yet.</h1>
           <Link className="button button-secondary" to="/">
@@ -407,10 +412,10 @@ export function QuizSessionPage() {
 
   if (!activeSession) {
     const questionSetFieldset = (
-      <fieldset className="setup-fieldset">
+      <fieldset className={styles.setupFieldset}>
         <legend>Question set</legend>
-        <div className="selection-mode-guide">
-          <ul className="selection-mode-list">
+        <div className={styles.selectionModeGuide}>
+          <ul className={styles.selectionModeList}>
             <li>
               <strong>Weighted by blueprint:</strong> Questions sampled
               proportionally according to exam domain weights.
@@ -433,7 +438,7 @@ export function QuizSessionPage() {
             </li>
           </ul>
         </div>
-        <label className="form-field">
+        <label className={styles.formField}>
           <span>Selection mode</span>
           <select
             value={selectionMode}
@@ -450,7 +455,7 @@ export function QuizSessionPage() {
         </label>
 
         {selectionMode === "review" && (
-          <label className="form-field">
+          <label className={styles.formField}>
             <span>Review set</span>
             <select
               value={reviewScope}
@@ -465,7 +470,7 @@ export function QuizSessionPage() {
               ))}
             </select>
             <small
-              className="selection-summary"
+              className={styles.selectionSummary}
               role="status"
               aria-live="polite"
             >
@@ -476,7 +481,7 @@ export function QuizSessionPage() {
         )}
 
         {(selectionMode === "domain" || selectionMode === "review") && (
-          <label className="form-field">
+          <label className={styles.formField}>
             <span>
               {selectionMode === "review" ? "Domain filter" : "Domain"}
             </span>
@@ -509,7 +514,7 @@ export function QuizSessionPage() {
         )}
 
         {selectionMode !== "all" && (
-          <label className="form-field">
+          <label className={styles.formField}>
             <span>Number of questions</span>
             <input
               type="number"
@@ -552,9 +557,9 @@ export function QuizSessionPage() {
           </Link>
         </div>
 
-        <div className="setup-card">
+        <div className={styles.setupCard}>
           <div
-            className="setup-tab-bar"
+            className={styles.setupTabBar}
             role="tablist"
             aria-label="Practice setup modes"
           >
@@ -564,7 +569,7 @@ export function QuizSessionPage() {
               id="tab-practice"
               aria-selected={activeTab === "practice"}
               aria-controls="panel-practice"
-              className={`setup-tab ${activeTab === "practice" ? "is-active" : ""}`}
+              className={`${styles.setupTab} ${activeTab === "practice" ? styles.isActive : ""}`}
               onClick={() => {
                 setActiveTab("practice");
                 setSessionError(null);
@@ -578,7 +583,7 @@ export function QuizSessionPage() {
               id="tab-simulate"
               aria-selected={activeTab === "simulate"}
               aria-controls="panel-simulate"
-              className={`setup-tab ${activeTab === "simulate" ? "is-active" : ""}`}
+              className={`${styles.setupTab} ${activeTab === "simulate" ? styles.isActive : ""}`}
               onClick={() => {
                 setActiveTab("simulate");
                 setSessionError(null);
@@ -597,9 +602,9 @@ export function QuizSessionPage() {
             >
               {questionSetFieldset}
 
-              <fieldset className="setup-fieldset">
+              <fieldset className={styles.setupFieldset}>
                 <legend>Answer reveal</legend>
-                <label className="radio-option">
+                <label className={styles.radioOption}>
                   <input
                     type="radio"
                     name="reveal-mode"
@@ -614,7 +619,7 @@ export function QuizSessionPage() {
                     </small>
                   </span>
                 </label>
-                <label className="radio-option">
+                <label className={styles.radioOption}>
                   <input
                     type="radio"
                     name="reveal-mode"
@@ -632,12 +637,12 @@ export function QuizSessionPage() {
               </fieldset>
 
               {sessionError && (
-                <p className="form-error" role="alert">
+                <p className={styles.formError} role="alert">
                   {sessionError}
                 </p>
               )}
               {storageError && (
-                <p className="storage-note" role="alert">
+                <p className={styles.storageNote} role="alert">
                   Progress cannot be saved: {storageError}
                 </p>
               )}
@@ -655,9 +660,9 @@ export function QuizSessionPage() {
             >
               {questionSetFieldset}
 
-              <fieldset className="setup-fieldset">
+              <fieldset className={styles.setupFieldset}>
                 <legend>Simulation outcome</legend>
-                <label className="radio-option">
+                <label className={styles.radioOption}>
                   <input
                     type="radio"
                     name="simulation-preset"
@@ -670,7 +675,7 @@ export function QuizSessionPage() {
                     <small>Answers all questions correctly.</small>
                   </span>
                 </label>
-                <label className="radio-option">
+                <label className={styles.radioOption}>
                   <input
                     type="radio"
                     name="simulation-preset"
@@ -686,7 +691,7 @@ export function QuizSessionPage() {
                     </small>
                   </span>
                 </label>
-                <label className="radio-option">
+                <label className={styles.radioOption}>
                   <input
                     type="radio"
                     name="simulation-preset"
@@ -701,7 +706,7 @@ export function QuizSessionPage() {
                     </small>
                   </span>
                 </label>
-                <label className="radio-option">
+                <label className={styles.radioOption}>
                   <input
                     type="radio"
                     name="simulation-preset"
@@ -717,12 +722,12 @@ export function QuizSessionPage() {
               </fieldset>
 
               {sessionError && (
-                <p className="form-error" role="alert">
+                <p className={styles.formError} role="alert">
                   {sessionError}
                 </p>
               )}
               {storageError && (
-                <p className="storage-note" role="alert">
+                <p className={styles.storageNote} role="alert">
                   Progress cannot be saved: {storageError}
                 </p>
               )}
@@ -744,7 +749,10 @@ export function QuizSessionPage() {
   if (!question) {
     return (
       <section className="page-section">
-        <div className="state-card error-card" role="alert">
+        <div
+          className={`${pageStatusStyles.stateCard} ${pageStatusStyles.errorCard}`}
+          role="alert"
+        >
           <p className="eyebrow">Session unavailable</p>
           <h1>The selected question is no longer available.</h1>
           <button
@@ -931,17 +939,17 @@ export function QuizSessionPage() {
       </div>
 
       <div
-        className="progress-block"
+        className={styles.progressBlock}
         aria-label={`Question ${questionIndex + 1} of ${sessionQuestions.length}`}
       >
-        <div className="progress-label" aria-live="polite">
+        <div className={styles.progressLabel} aria-live="polite">
           <span>
             Question <strong>{questionIndex + 1}</strong> of{" "}
             {sessionQuestions.length}
           </span>
           {manifest.examDurationMinutes ? (
             <span
-              className={`timer-badge ${isTimeExpired ? "is-expired" : isTimeLow ? "is-warning" : ""}`}
+              className={`${styles.timerBadge} ${isTimeExpired ? styles.isExpired : isTimeLow ? styles.isWarning : ""}`}
               role="timer"
               aria-label={`Time remaining: ${formatRemainingTime(remainingSeconds)}`}
             >
@@ -961,7 +969,7 @@ export function QuizSessionPage() {
           <span>{Math.round(progress)}%</span>
         </div>
         <div
-          className="progress-track"
+          className={styles.progressTrack}
           role="progressbar"
           aria-label="Quiz progress"
           aria-valuemin={0}
@@ -969,13 +977,19 @@ export function QuizSessionPage() {
           aria-valuenow={Math.round(progress)}
           aria-valuetext={`Question ${questionIndex + 1} of ${sessionQuestions.length}`}
         >
-          <div className="progress-value" style={{ width: `${progress}%` }} />
+          <div
+            className={styles.progressValue}
+            style={{ width: `${progress}%` }}
+          />
         </div>
       </div>
 
-      <article className="question-card" aria-labelledby={questionHeadingId}>
-        <div className="question-card-header">
-          <div className="question-meta">
+      <article
+        className={styles.questionCard}
+        aria-labelledby={questionHeadingId}
+      >
+        <div className={styles.questionCardHeader}>
+          <div className={styles.questionMeta}>
             <span>{domain?.name ?? question.domain}</span>
             <span>{question.difficulty}</span>
             <span>
@@ -985,7 +999,7 @@ export function QuizSessionPage() {
             </span>
           </div>
           <button
-            className="bookmark-button button button-secondary"
+            className={`${styles.bookmarkButton} button button-secondary`}
             type="button"
             aria-pressed={bookmarkedQuestionIds.has(question.id)}
             aria-label={
@@ -999,19 +1013,19 @@ export function QuizSessionPage() {
           </button>
         </div>
         <fieldset
-          className="answer-option-list"
+          className={styles.answerOptionList}
           disabled={isRevealed}
           aria-describedby={questionInstructionId}
         >
           <legend
-            className="question-stem"
+            className={styles.questionStem}
             id={questionHeadingId}
             role="heading"
             aria-level={2}
           >
             {question.stem}
           </legend>
-          <p id={questionInstructionId} className="question-instruction">
+          <p id={questionInstructionId} className={styles.questionInstruction}>
             Select {answerCountLabel(question.correct.length)} answer
             {question.correct.length === 1 ? "" : "s"}.
             {session.config.revealMode === "end" &&
@@ -1026,11 +1040,11 @@ export function QuizSessionPage() {
             return (
               <label
                 className={[
-                  "answer-option",
-                  selected ? "is-selected" : "",
-                  correct ? "is-correct" : "",
-                  incorrect ? "is-incorrect" : "",
-                  optionDisabled ? "is-disabled" : "",
+                  styles.answerOption,
+                  selected ? styles.isSelected : "",
+                  correct ? styles.isCorrect : "",
+                  incorrect ? styles.isIncorrect : "",
+                  optionDisabled ? styles.isDisabled : "",
                 ]
                   .filter(Boolean)
                   .join(" ")}
@@ -1044,7 +1058,7 @@ export function QuizSessionPage() {
                   disabled={optionDisabled}
                   onChange={() => handleOptionChange(option.id)}
                 />
-                <span className="option-id" aria-hidden="true">
+                <span className={styles.optionId} aria-hidden="true">
                   {option.id.toUpperCase()}
                 </span>
                 <span>{option.text}</span>
@@ -1055,8 +1069,8 @@ export function QuizSessionPage() {
 
         {isRevealed && (
           <div
-            className={`answer-feedback ${
-              isCorrect ? "is-correct" : "is-incorrect"
+            className={`${styles.answerFeedback} ${
+              isCorrect ? styles.isCorrect : styles.isIncorrect
             }`}
             role="status"
             aria-live="polite"
@@ -1070,7 +1084,7 @@ export function QuizSessionPage() {
                 .join(", ")}
             </p>
             <p>{question.explanation}</p>
-            <p className="source-note">
+            <p className={styles.sourceNote}>
               <a href={question.sourceUrl} target="_blank" rel="noreferrer">
                 Source: {question.sourceNote}
               </a>
@@ -1080,17 +1094,17 @@ export function QuizSessionPage() {
       </article>
 
       {storageError && (
-        <p className="storage-note" role="alert">
+        <p className={styles.storageNote} role="alert">
           Progress cannot be saved: {storageError}
         </p>
       )}
       {finishError && (
-        <p className="form-error" role="alert">
+        <p className={styles.formError} role="alert">
           {finishError}
         </p>
       )}
 
-      <div className="quiz-actions">
+      <div className={styles.quizActions}>
         <button
           className="button button-secondary"
           type="button"
@@ -1099,7 +1113,7 @@ export function QuizSessionPage() {
         >
           Previous
         </button>
-        <div className="quiz-actions-forward">
+        <div className={styles.quizActionsForward}>
           {session.config.revealMode === "immediate" && !isRevealed && (
             <button
               className="button button-secondary"

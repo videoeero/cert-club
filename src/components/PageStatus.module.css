@@ -1,0 +1,52 @@
+.stateCard {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: var(--color-bg-card);
+  box-shadow: var(--shadow-card);
+  max-width: 42.5rem;
+  margin: 0 auto;
+  padding: 2.5rem;
+  text-align: center;
+}
+
+.stateCard p:not(:global(.eyebrow)) {
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.stateCard :global(.button) {
+  margin-top: 0.75rem;
+}
+
+.errorCard {
+  border-color: var(--color-error-border);
+}
+
+.loadingDot {
+  display: inline-block;
+  width: 0.75rem;
+  height: 0.75rem;
+  margin-bottom: var(--space-md);
+  animation: pulse 1s ease-in-out infinite alternate;
+  border-radius: 50%;
+  background: var(--color-primary);
+}
+
+@keyframes pulse {
+  from {
+    opacity: 0.35;
+    transform: scale(0.85);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 40rem) {
+  .stateCard {
+    border-radius: 1rem;
+    padding: 1.375rem 1.125rem;
+  }
+}

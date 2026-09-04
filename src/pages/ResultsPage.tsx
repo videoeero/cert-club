@@ -8,6 +8,7 @@ import { answerCountLabel, scoreAnswer } from "../lib/quiz";
 import { getAttempt, getAttempts } from "../lib/storage";
 import { formatUsedTime } from "../lib/time";
 import type { Question } from "../types";
+import styles from "./ResultsPage.module.css";
 
 interface QuestionReviewProps {
   question: Question;
@@ -25,9 +26,9 @@ function QuestionReview({
 
   return (
     <article
-      className={`review-card ${isCorrect ? "is-correct" : "is-incorrect"}`}
+      className={`${styles.reviewCard} ${isCorrect ? styles.isCorrect : styles.isIncorrect}`}
     >
-      <div className="question-meta">
+      <div className={styles.questionMeta}>
         <span>{domainName}</span>
         <span>
           Select {answerCountLabel(question.correct.length)} answer
@@ -35,23 +36,23 @@ function QuestionReview({
         </span>
       </div>
       <h3>{question.stem}</h3>
-      <ul className="review-option-list" role="list">
+      <ul className={styles.reviewOptionList} role="list">
         {question.options.map((option) => {
           const isSelected = selected.has(option.id);
           const isCorrectOption = question.correct.includes(option.id);
           return (
             <li
               className={[
-                "review-option",
-                isSelected ? "is-selected" : "",
-                isCorrectOption ? "is-correct" : "",
-                isSelected && !isCorrectOption ? "is-incorrect" : "",
+                styles.reviewOption,
+                isSelected ? styles.isSelected : "",
+                isCorrectOption ? styles.isCorrect : "",
+                isSelected && !isCorrectOption ? styles.isIncorrect : "",
               ]
                 .filter(Boolean)
                 .join(" ")}
               key={option.id}
             >
-              <span className="option-id" aria-hidden="true">
+              <span className={styles.optionId} aria-hidden="true">
                 {option.id.toUpperCase()}
               </span>
               <span>{option.text}</span>
@@ -59,7 +60,7 @@ function QuestionReview({
           );
         })}
       </ul>
-      <p className="review-result">
+      <p className={styles.reviewResult}>
         <strong>{isCorrect ? "Correct" : "Incorrect"}</strong>
         {selectedOptionIds.length === 0
           ? " — no answer selected."
@@ -72,7 +73,7 @@ function QuestionReview({
         {question.correct.map((optionId) => optionId.toUpperCase()).join(", ")}
       </p>
       <p>{question.explanation}</p>
-      <p className="source-note">
+      <p className={styles.sourceNote}>
         <a href={question.sourceUrl} target="_blank" rel="noreferrer">
           Source: {question.sourceNote}
         </a>
@@ -148,41 +149,43 @@ export function ResultsPage() {
         </p>
       </div>
 
-      <article className="results-card">
-        <dl className="results-grid">
+      <article className={styles.resultsCard}>
+        <dl className={styles.resultsGrid}>
           <div>
-            <dt className="results-label">Score</dt>
-            <dd className="results-value">{attempt.scorePercentage}%</dd>
-            <dd className="results-detail">{attempt.correctAnswers} correct</dd>
+            <dt className={styles.resultsLabel}>Score</dt>
+            <dd className={styles.resultsValue}>{attempt.scorePercentage}%</dd>
+            <dd className={styles.resultsDetail}>
+              {attempt.correctAnswers} correct
+            </dd>
           </div>
           <div>
-            <dt className="results-label">Questions answered</dt>
-            <dd className="results-value">
+            <dt className={styles.resultsLabel}>Questions answered</dt>
+            <dd className={styles.resultsValue}>
               {attempt.answeredQuestions}/{attempt.totalQuestions}
             </dd>
-            <dd className="results-detail">
+            <dd className={styles.resultsDetail}>
               {attempt.totalQuestions - attempt.answeredQuestions} skipped
             </dd>
           </div>
           <div>
-            <dt className="results-label">Time used</dt>
-            <dd className="results-value">
+            <dt className={styles.resultsLabel}>Time used</dt>
+            <dd className={styles.resultsValue}>
               {formatUsedTime(attempt.startedAt, attempt.completedAt)}
             </dd>
-            <dd className="results-detail">
+            <dd className={styles.resultsDetail}>
               {manifest.examDurationMinutes
                 ? `of ${manifest.examDurationMinutes} min limit`
                 : "Total elapsed time"}
             </dd>
           </div>
           <div>
-            <dt className="results-label">Answer reveal</dt>
-            <dd className="results-value">
+            <dt className={styles.resultsLabel}>Answer reveal</dt>
+            <dd className={styles.resultsValue}>
               {attempt.config.revealMode === "immediate"
                 ? "Immediate"
                 : "At the end"}
             </dd>
-            <dd className="results-detail">
+            <dd className={styles.resultsDetail}>
               {attempt.config.mode === "weighted"
                 ? "Blueprint weighted"
                 : `${attempt.config.mode} selection`}
@@ -190,9 +193,12 @@ export function ResultsPage() {
           </div>
         </dl>
 
-        <section className="domain-breakdown" aria-labelledby="domain-heading">
+        <section
+          className={styles.domainBreakdown}
+          aria-labelledby="domain-heading"
+        >
           <h2 id="domain-heading">Domain breakdown</h2>
-          <div className="domain-table-wrapper">
+          <div className={styles.domainTableWrapper}>
             <table>
               <thead>
                 <tr>
@@ -217,7 +223,7 @@ export function ResultsPage() {
         </section>
 
         {missingQuestionCount > 0 && (
-          <p className="storage-note" role="status">
+          <p className={styles.storageNote} role="status">
             {missingQuestionCount} question
             {missingQuestionCount === 1 ? "" : "s"} from this attempt is no
             longer in the current question bank.
@@ -225,7 +231,7 @@ export function ResultsPage() {
         )}
       </article>
 
-      <div className="page-heading review-heading">
+      <div className={`page-heading ${styles.reviewHeading}`}>
         <div>
           <p className="eyebrow">Answer review</p>
           <h2>Explanations and sources</h2>
@@ -235,7 +241,7 @@ export function ResultsPage() {
         </Link>
       </div>
 
-      <div className="review-list">
+      <div className={styles.reviewList}>
         {reviewQuestions.map((question) => (
           <QuestionReview
             key={question.id}

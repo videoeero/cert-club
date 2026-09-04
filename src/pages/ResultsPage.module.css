@@ -1,0 +1,234 @@
+.resultsCard {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: var(--color-bg-card);
+  box-shadow: var(--shadow-card);
+  padding: clamp(1.5rem, 5vw, 3rem);
+}
+
+.resultsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-md);
+  margin: 0;
+  padding: 0;
+}
+
+.resultsGrid > div {
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-muted);
+  padding: 1.25rem;
+}
+
+.resultsLabel {
+  display: block;
+  margin: 0 0 var(--space-sm);
+  color: var(--color-text-secondary);
+  font-size: 0.8rem;
+}
+
+.resultsValue {
+  display: block;
+  margin: 0;
+  color: var(--color-text-heading);
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.resultsDetail {
+  display: block;
+  margin: var(--space-xs) 0 0;
+  color: var(--color-text-secondary);
+  font-size: 0.8rem;
+}
+
+.domainBreakdown {
+  margin-top: 2.25rem;
+}
+
+.domainBreakdown h2 {
+  margin-bottom: var(--space-md);
+  font-size: 1.25rem;
+}
+
+.domainTableWrapper {
+  overflow-x: auto;
+}
+
+.domainTableWrapper table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  text-align: left;
+}
+
+.domainTableWrapper th,
+.domainTableWrapper td {
+  border-bottom: 1px solid var(--color-border-subtle);
+  padding: 0.75rem 0.625rem;
+}
+
+.domainTableWrapper th {
+  color: var(--color-text-heading);
+  font-weight: 750;
+}
+
+.domainTableWrapper thead th {
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.storageNote {
+  margin: 0;
+  border: 1px solid var(--color-warning-border);
+  border-radius: var(--radius-md);
+  background: var(--color-warning-bg);
+  padding: 0.75rem 0.875rem;
+  color: var(--color-warning-text);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.reviewHeading {
+  margin-top: 4rem;
+  margin-bottom: var(--space-lg);
+}
+
+.reviewHeading h2 {
+  margin-bottom: 0;
+  font-size: clamp(1.7rem, 3vw, 2.5rem);
+}
+
+.reviewList {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.reviewCard {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: var(--color-bg-card);
+  box-shadow: var(--shadow-card);
+  padding: clamp(1.375rem, 4vw, 2.25rem);
+}
+
+.reviewCard.isCorrect {
+  border-color: var(--color-success-border);
+}
+
+.reviewCard.isIncorrect {
+  border-color: var(--color-error-border-card);
+}
+
+.reviewCard h3 {
+  margin: 0 0 1.375rem;
+  color: var(--color-text-heading);
+  font-size: 1.2rem;
+  line-height: 1.35;
+}
+
+.reviewCard > p:last-child {
+  margin-bottom: 0;
+}
+
+.questionMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  margin-bottom: 1.125rem;
+}
+
+.questionMeta span {
+  border-radius: var(--radius-pill);
+  background: var(--color-primary-light);
+  color: var(--color-primary-text);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.375rem 0.625rem;
+}
+
+.reviewOptionList {
+  display: grid;
+  gap: var(--space-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.reviewOption {
+  display: grid;
+  grid-template-columns: 2.125rem 1fr;
+  align-items: start;
+  gap: 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 0.75rem;
+  color: var(--color-text-tertiary);
+  line-height: 1.45;
+}
+
+.reviewOption.isCorrect {
+  border-color: var(--color-success);
+  background: var(--color-success-bg);
+}
+
+.reviewOption.isIncorrect {
+  border-color: var(--color-error);
+  background: var(--color-error-bg);
+}
+
+.reviewResult {
+  margin: 1.25rem 0 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.optionId {
+  display: inline-grid;
+  width: 1.75rem;
+  height: 1.75rem;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--color-bg-subtle);
+  color: var(--color-text-tertiary);
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.sourceNote {
+  color: var(--color-primary);
+  font-size: 0.9rem;
+}
+
+.sourceNote a {
+  font-weight: 700;
+}
+
+@media (max-width: 56.25rem) {
+  .resultsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 40rem) {
+  .resultsCard,
+  .reviewCard {
+    border-radius: 1rem;
+  }
+
+  .reviewCard {
+    padding: 1.375rem;
+  }
+
+  .resultsCard {
+    padding: 1.375rem 1.125rem;
+  }
+
+  .resultsGrid {
+    grid-template-columns: 1fr;
+  }
+}

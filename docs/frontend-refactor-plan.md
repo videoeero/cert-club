@@ -214,7 +214,7 @@ Replace all hardcoded hex colors with `var(--color-*)` and convert `px` values p
 
 ---
 
-## Phase 3 — CSS Modules Split · `STATUS: PENDING`
+## Phase 3 — CSS Modules Split · `STATUS: COMPLETED`
 
 **Goal**: Break the 1030-line monolithic `index.css` into co-located CSS Modules for each component/page.
 
@@ -261,11 +261,11 @@ Styles used across multiple components (`.button`, `.eyebrow`, `.content-width`)
 
 ### Acceptance criteria
 
-- [ ] `index.css` is ≤ 100 lines (resets, token imports, typography, global focus, reduced motion)
-- [ ] Each page/component has a co-located `.module.css` file
-- [ ] No broken styles — visual appearance identical
-- [ ] Shared utility classes (buttons, layout) are still globally available
-- [ ] `npm run check` passes
+- [x] `index.css` is ≤ 100 lines (resets, token imports, typography, global focus, reduced motion)
+- [x] Each page/component has a co-located `.module.css` file
+- [x] No broken styles — visual appearance identical
+- [x] Shared utility classes (buttons, layout) are still globally available
+- [x] `npm run check` passes
 
 ---
 
@@ -358,7 +358,7 @@ src/components/
 | --------- | ------------------------ | ----------- | ----------- |
 | 1         | Semantic HTML            | 2–3 h       | `COMPLETED` |
 | 2         | Design tokens + px → rem | 2–3 h       | `COMPLETED` |
-| 3         | CSS Modules split        | 3–4 h       | `PENDING`   |
+| 3         | CSS Modules split        | 3–4 h       | `COMPLETED` |
 | 4         | Component extraction     | 3–4 h       | `PENDING`   |
 | 5         | Accessibility polish     | 1–2 h       | `PENDING`   |
 | **Total** |                          | **11–16 h** |             |

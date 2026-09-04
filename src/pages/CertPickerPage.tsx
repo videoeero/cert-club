@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { ErrorState, LoadingState } from "../components/PageStatus";
 import { useAsyncResource } from "../hooks/use-async-resource";
 import { loadCertCatalog } from "../lib/content";
+import styles from "./CertPickerPage.module.css";
 
 export function CertPickerPage() {
   const [retryKey, setRetryKey] = useState(0);
@@ -30,19 +31,19 @@ export function CertPickerPage() {
         />
       )}
       {resource.status === "ready" && (
-        <div className="cert-grid">
+        <div className={styles.certGrid}>
           {resource.data.map((manifest) => (
-            <article className="cert-card" key={manifest.cert}>
-              <div className="card-heading">
+            <article className={styles.certCard} key={manifest.cert}>
+              <div className={styles.cardHeading}>
                 <p className="eyebrow">Certification</p>
-                <span className="slug-chip">{manifest.cert}</span>
+                <span className={styles.slugChip}>{manifest.cert}</span>
               </div>
               <h2>{manifest.name}</h2>
               <p>
                 Practice questions grouped across {manifest.domains.length} exam
                 domains, with source links for every item.
               </p>
-              <ul className="domain-list" aria-label="Exam domains">
+              <ul className={styles.domainList} aria-label="Exam domains">
                 {manifest.domains.map((domain) => (
                   <li key={domain.slug}>
                     <span>{domain.name}</span>
