@@ -269,7 +269,7 @@ Styles used across multiple components (`.button`, `.eyebrow`, `.content-width`)
 
 ---
 
-## Phase 4 — Component Extraction · `STATUS: PENDING`
+## Phase 4 — Component Extraction · `STATUS: COMPLETED`
 
 **Goal**: Break [QuizSessionPage.tsx](file:///Users/eero/Nitor/cert-prep-open/src/pages/QuizSessionPage.tsx) (1 138 lines) into ~5 focused components.
 
@@ -308,11 +308,11 @@ src/components/
 
 ### Acceptance criteria
 
-- [ ] `QuizSessionPage.tsx` is ≤ 350 lines
-- [ ] Each new component has clear props interface
-- [ ] All existing behavior preserved (test manually: setup → quiz → finish → results)
-- [ ] CSS Modules co-located with each new component
-- [ ] `npm run check` passes
+- [x] `QuizSessionPage.tsx` is ≤ 350 lines
+- [x] Each new component has clear props interface
+- [x] All existing behavior preserved (test manually: setup → quiz → finish → results)
+- [x] CSS Modules co-located with each new component
+- [x] `npm run check` passes
 
 ---
 
@@ -359,6 +359,6 @@ src/components/
 | 1         | Semantic HTML            | 2–3 h       | `COMPLETED` |
 | 2         | Design tokens + px → rem | 2–3 h       | `COMPLETED` |
 | 3         | CSS Modules split        | 3–4 h       | `COMPLETED` |
-| 4         | Component extraction     | 3–4 h       | `PENDING`   |
+| 4         | Component extraction     | 3–4 h       | `COMPLETED` |
 | 5         | Accessibility polish     | 1–2 h       | `PENDING`   |
 | **Total** |                          | **11–16 h** |             |
