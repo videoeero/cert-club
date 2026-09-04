@@ -122,7 +122,7 @@ Each phase is a separate branch/PR. Every phase must pass `npm run check` before
 
 ---
 
-## Phase 2 — Design Tokens & px → rem · `STATUS: PENDING`
+## Phase 2 — Design Tokens & px → rem · `STATUS: COMPLETED`
 
 **Goal**: Extract hardcoded values into CSS custom properties and convert `px` to `rem` with a clear policy.
 
@@ -206,11 +206,11 @@ Replace all hardcoded hex colors with `var(--color-*)` and convert `px` values p
 
 ### Acceptance criteria
 
-- [ ] No hardcoded hex colors remain in CSS (all use custom properties)
-- [ ] Only border, shadow, and outline use `px` — everything else is `rem`
-- [ ] Media queries use `rem`
-- [ ] Visual appearance is identical (screenshot comparison)
-- [ ] `npm run check` passes
+- [x] No hardcoded hex colors remain in CSS (all use custom properties)
+- [x] Only border, shadow, and outline use `px` — everything else is `rem`
+- [x] Media queries use `rem`
+- [x] Visual appearance is identical (screenshot comparison)
+- [x] `npm run check` passes
 
 ---
 
@@ -357,7 +357,7 @@ src/components/
 | Phase     | Scope                    | Effort      | Status      |
 | --------- | ------------------------ | ----------- | ----------- |
 | 1         | Semantic HTML            | 2–3 h       | `COMPLETED` |
-| 2         | Design tokens + px → rem | 2–3 h       | `PENDING`   |
+| 2         | Design tokens + px → rem | 2–3 h       | `COMPLETED` |
 | 3         | CSS Modules split        | 3–4 h       | `PENDING`   |
 | 4         | Component extraction     | 3–4 h       | `PENDING`   |
 | 5         | Accessibility polish     | 1–2 h       | `PENDING`   |
