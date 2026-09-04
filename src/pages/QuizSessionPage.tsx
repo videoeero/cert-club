@@ -1003,7 +1003,12 @@ export function QuizSessionPage() {
           disabled={isRevealed}
           aria-describedby={questionInstructionId}
         >
-          <legend className="question-stem" id={questionHeadingId}>
+          <legend
+            className="question-stem"
+            id={questionHeadingId}
+            role="heading"
+            aria-level={2}
+          >
             {question.stem}
           </legend>
           <p id={questionInstructionId} className="question-instruction">
