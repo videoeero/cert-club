@@ -6,6 +6,7 @@ export interface QuizActionsProps {
   canCheckAnswer: boolean;
   hasRequiredSelectionCount: boolean;
   canProceed: boolean;
+  finishErrorId?: string;
   onPrevious: () => void;
   onNext: () => void;
   onCheckAnswer: () => void;
@@ -18,6 +19,7 @@ export function QuizActions({
   canCheckAnswer,
   hasRequiredSelectionCount,
   canProceed,
+  finishErrorId,
   onPrevious,
   onNext,
   onCheckAnswer,
@@ -50,6 +52,7 @@ export function QuizActions({
             type="button"
             onClick={onFinish}
             disabled={!canProceed}
+            aria-describedby={finishErrorId}
           >
             Finish session
             <span aria-hidden="true">→</span>

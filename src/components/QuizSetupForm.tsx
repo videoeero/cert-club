@@ -276,16 +276,35 @@ function SimulationForm({
       </fieldset>
 
       {sessionError && (
-        <p className={styles.formError} role="alert">
+        <p
+          id="simulation-session-error"
+          className={styles.formError}
+          role="alert"
+        >
           {sessionError}
         </p>
       )}
       {storageError && (
-        <p className={styles.storageNote} role="alert">
+        <p
+          id="simulation-storage-error"
+          className={styles.storageNote}
+          role="alert"
+        >
           Progress cannot be saved: {storageError}
         </p>
       )}
-      <button className="button button-primary" type="submit">
+      <button
+        className="button button-primary"
+        type="submit"
+        aria-describedby={
+          [
+            sessionError ? "simulation-session-error" : "",
+            storageError ? "simulation-storage-error" : "",
+          ]
+            .filter(Boolean)
+            .join(" ") || undefined
+        }
+      >
         Run simulation
         <span aria-hidden="true">→</span>
       </button>
@@ -573,16 +592,35 @@ export function QuizSetupForm({
           </fieldset>
 
           {sessionError && (
-            <p className={styles.formError} role="alert">
+            <p
+              id="practice-session-error"
+              className={styles.formError}
+              role="alert"
+            >
               {sessionError}
             </p>
           )}
           {storageError && (
-            <p className={styles.storageNote} role="alert">
+            <p
+              id="practice-storage-error"
+              className={styles.storageNote}
+              role="alert"
+            >
               Progress cannot be saved: {storageError}
             </p>
           )}
-          <button className="button button-primary" type="submit">
+          <button
+            className="button button-primary"
+            type="submit"
+            aria-describedby={
+              [
+                sessionError ? "practice-session-error" : "",
+                storageError ? "practice-storage-error" : "",
+              ]
+                .filter(Boolean)
+                .join(" ") || undefined
+            }
+          >
             {selectionMode === "review" ? "Start review" : "Start session"}
             <span aria-hidden="true">→</span>
           </button>

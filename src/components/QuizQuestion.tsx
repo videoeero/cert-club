@@ -1,3 +1,5 @@
+import { useEffect, useRef } from "react";
+
 import styles from "./QuizQuestion.module.css";
 import { answerCountLabel, scoreAnswer } from "../lib/quiz";
 import type { Question, RevealMode } from "../types";
@@ -56,6 +58,7 @@ function QuestionHeader({
 }
 
 interface AnswerOptionListProps {
+  fieldsetRef: React.RefObject<HTMLFieldSetElement | null>;
   question: Question;
   selectedOptionIds: string[];
   isRevealed: boolean;
@@ -66,6 +69,7 @@ interface AnswerOptionListProps {
 }
 
 function AnswerOptionList({
+  fieldsetRef,
   question,
   selectedOptionIds,
   isRevealed,
@@ -81,6 +85,8 @@ function AnswerOptionList({
 
   return (
     <fieldset
+      ref={fieldsetRef}
+      tabIndex={-1}
       className={styles.answerOptionList}
       disabled={isRevealed}
       aria-describedby={instructionId}
@@ -184,6 +190,21 @@ export function QuizQuestion({
     ? scoreAnswer(question, selectedOptionIds)
     : false;
 
+  const fieldsetRef = useRef<HTMLFieldSetElement>(null);
+
+  useEffect(() => {
+    if (fieldsetRef.current) {
+      fieldsetRef.current.focus();
+      if (document.activeElement !== fieldsetRef.current) {
+        const legend = fieldsetRef.current.querySelector("legend");
+        if (legend instanceof HTMLElement) {
+          legend.tabIndex = -1;
+          legend.focus();
+        }
+      }
+    }
+  }, [questionIndex]);
+
   return (
     <article
       className={styles.questionCard}
@@ -198,6 +219,7 @@ export function QuizQuestion({
         onToggleBookmark={onToggleBookmark}
       />
       <AnswerOptionList
+        fieldsetRef={fieldsetRef}
         question={question}
         selectedOptionIds={selectedOptionIds}
         isRevealed={isRevealed}

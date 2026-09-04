@@ -304,12 +304,16 @@ export function QuizSessionPage() {
       />
 
       {storageError && (
-        <p className={styles.storageNote} role="alert">
+        <p
+          id="session-storage-error"
+          className={styles.storageNote}
+          role="alert"
+        >
           Progress cannot be saved: {storageError}
         </p>
       )}
       {finishError && (
-        <p className={styles.formError} role="alert">
+        <p id="session-finish-error" className={styles.formError} role="alert">
           {finishError}
         </p>
       )}
@@ -320,6 +324,7 @@ export function QuizSessionPage() {
         canCheckAnswer={config.revealMode === "immediate" && !isRevealed}
         hasRequiredSelectionCount={hasRequiredSelectionCount}
         canProceed={canProceed}
+        finishErrorId={finishError ? "session-finish-error" : undefined}
         onPrevious={() => setQuestionIndex((v) => Math.max(0, v - 1))}
         onNext={() =>
           setQuestionIndex((v) => Math.min(sessionQuestions.length - 1, v + 1))

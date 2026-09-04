@@ -316,7 +316,7 @@ src/components/
 
 ---
 
-## Phase 5 — Accessibility Polish · `STATUS: PENDING`
+## Phase 5 — Accessibility Polish · `STATUS: COMPLETED`
 
 **Goal**: Fix remaining a11y issues found during audit.
 
@@ -345,10 +345,10 @@ src/components/
 
 ### Acceptance criteria
 
-- [ ] Eyebrow and results-detail text pass WCAG AA contrast (≥ 4.5:1)
-- [ ] Focus moves to question content on Next/Previous navigation
-- [ ] VoiceOver full walkthrough: home → pick cert → setup → answer 2 questions → finish → results — no dead ends or missing announcements
-- [ ] `npm run check` passes
+- [x] Eyebrow and results-detail text pass WCAG AA contrast (≥ 4.5:1)
+- [x] Focus moves to question content on Next/Previous navigation
+- [x] VoiceOver full walkthrough: home → pick cert → setup → answer 2 questions → finish → results — no dead ends or missing announcements
+- [x] `npm run check` passes
 
 ---
 
@@ -360,5 +360,5 @@ src/components/
 | 2         | Design tokens + px → rem | 2–3 h       | `COMPLETED` |
 | 3         | CSS Modules split        | 3–4 h       | `COMPLETED` |
 | 4         | Component extraction     | 3–4 h       | `COMPLETED` |
-| 5         | Accessibility polish     | 1–2 h       | `PENDING`   |
+| 5         | Accessibility polish     | 1–2 h       | `COMPLETED` |
 | **Total** |                          | **11–16 h** |             |
