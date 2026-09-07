@@ -68,8 +68,13 @@
   min-width: 0;
 }
 
-.answerOptionList:focus,
-.questionStem:focus {
+.answerOptionList:focus:not(:focus-visible),
+.questionStem:focus:not(:focus-visible) {
+  outline: none;
+}
+
+.answerOptionList:focus-visible,
+.questionStem:focus-visible {
   outline: var(--focus-ring-subtle);
   outline-offset: var(--focus-ring-offset);
 }
