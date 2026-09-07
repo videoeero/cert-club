@@ -182,49 +182,47 @@
     "subdomain": "claude-api-mechanics",
     "difficulty": "hard",
     "status": "reviewed",
-    "stem": "A client consumes a streamed Messages response over server-sent events without using an official SDK helper. Which statements about correct handling of that stream are true? Select THREE.",
+    "stem": "A development team is implementing streaming for a new Claude-powered application. Which of the following statements about how the Claude API handles streaming are true? Select THREE.",
     "options": [
       {
         "id": "a",
-        "text": "Token counts reported on message_delta events are cumulative rather than per-event increments, so summing them across events overcounts usage."
+        "text": "The Claude API implements streaming responses using standard Server-Sent Events (SSE)."
       },
       {
         "id": "b",
-        "text": "Each content block delta carries a complete, independently parseable JSON object representing the block's accumulated input."
+        "text": "Errors can occur mid-stream and are delivered as event objects rather than HTTP status codes."
       },
       {
         "id": "c",
-        "text": "Deltas for a tool_use block arrive as partial JSON fragments that must be accumulated before they can be parsed as an object."
+        "text": "Enabling streaming reduces the total overall processing time it takes for the model to generate the complete response."
       },
       {
         "id": "d",
-        "text": "Receiving an unrecognized event type indicates a corrupted stream, so the connection should be torn down and the whole request retried from the beginning."
+        "text": "When the model uses a tool, the input arguments for that tool are streamed as they are generated."
       },
       {
         "id": "e",
-        "text": "The terminating event repeats the full accumulated text, so clients do not need to accumulate text deltas themselves."
+        "text": "Token usage statistics are unavailable when streaming is enabled because the API cannot calculate them incrementally."
       },
       {
         "id": "f",
-        "text": "An error can be delivered inside the event stream after the HTTP response has already returned a success status."
+        "text": "If a streaming request fails midway through generation, the API automatically retries the request over the same connection."
       }
     ],
     "correct": [
       "a",
-      "c",
-      "f"
+      "b",
+      "d"
     ],
-    "explanation": "Hand-rolled streaming clients get caught out in three predictable places. Usage counts on message_delta events are cumulative, so a client that adds them up as increments reports inflated token totals. Tool input arrives as partial JSON string fragments, and only the final assembled value is guaranteed to be a valid object, so parsing must wait until the block closes. And because the stream opens with a success status before generation finishes, a failure such as an overload condition can arrive as an error event mid-stream, which means status-code-based error handling alone is not sufficient. A fourth discipline follows from the versioning policy: unknown event types must be ignored gracefully, since new ones can be introduced without a version change.",
+    "explanation": "The Claude API streams responses using Server-Sent Events (SSE). Because an HTTP 200 OK status is returned immediately when the stream begins, any subsequent failures (such as an overload condition) must be delivered as error events within the stream rather than as HTTP error status codes. The API also supports streaming for tool use, delivering the tool's input arguments as partial fragments as they are generated. Streaming improves perceived latency (Time to First Token) but does not reduce the total processing time required to generate the full response. Token usage statistics are fully supported in streaming mode and are delivered as specific events. The API does not automatically retry failed streams; the client is responsible for handling errors and implementing retries if necessary.",
     "distractorNotes": {
-      "b": "Tool input deltas are explicitly partial JSON strings rather than standalone objects. Attempting to parse an individual fragment will usually fail on incomplete syntax.",
-      "d": "New event types may be added over time, so an unrecognized type is an expected condition. Tearing down the connection turns a forward-compatible stream into a self-inflicted outage.",
-      "e": "The terminating event closes the stream; it does not restate the generated content. A client that discards deltas as they arrive ends up with nothing to display."
+      "c": "Streaming improves perceived performance by reducing Time to First Token (TTFT), but the total time to generate the complete response remains the same or slightly longer.",
+      "e": "Token usage statistics are fully supported during streaming and are provided as events (such as message_start and message_delta) within the stream.",
+      "f": "The Claude API does not automatically retry mid-stream failures. The client must detect the error event or connection drop and initiate a new request."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/streaming",
     "sourceNote": "Streaming messages - 'Event types', 'Error events', 'Other events', and 'Content block delta types' sections covering cumulative usage, mid-stream errors, and partial JSON input deltas",
-    "sourceCheckedAt": "2026-09-03",
-    "scope": "deep",
-    "scopeNote": "Domain 2 names streaming, so the topic is in scope, but discrimination turns on wire-protocol specifics: that message_delta usage is cumulative rather than incremental, and that tool_use deltas arrive as partial JSON. The guide's sample questions choose approaches, not protocol details."
+    "sourceCheckedAt": "2026-09-03"
   },
   {
     "id": "ccdv-f-0006",
@@ -358,49 +356,47 @@
     "subdomain": "claude-application-design",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "A team is introducing prompt caching into a service that reuses a large block of shared instructions across many requests. Which statements about how caching behaves are correct? Select THREE.",
+    "stem": "A development team is building an application that will process many user queries against a large, static repository of technical documentation. They are considering using prompt caching for the documentation content. Which statements represent the high-level benefits and appropriate use cases for prompt caching in this scenario? Select THREE.",
     "options": [
       {
         "id": "a",
-        "text": "Cache markers may only be placed on system content, so message content cannot take part in a cached prefix at all."
+        "text": "Prompt caching reduces overall API costs because cached input tokens are significantly cheaper than standard base input tokens."
       },
       {
         "id": "b",
-        "text": "A cache entry covers the prefix in the order tools, then system, then messages, up to the block that carries the cache marker."
+        "text": "Developers must explicitly manage cache storage limits by periodically sending API requests to delete unused prompts."
       },
       {
         "id": "c",
-        "text": "A cache hit requires the entire request to match exactly, including the newest user message, or the existing entry is discarded and written again."
+        "text": "Prompt caching improves application responsiveness by reducing the time to first token for requests that reuse the cached documentation."
       },
       {
         "id": "d",
-        "text": "Reusing a cached prefix refreshes that entry's lifetime again, at no additional cost beyond the ordinary cache hit price."
+        "text": "Prompt caching acts as a traditional response cache by storing the model's generated outputs to serve identical user queries without invoking the model."
       },
       {
         "id": "e",
-        "text": "Cached prefixes persist indefinitely until they are removed through a dedicated cache management endpoint."
+        "text": "Prompt caching is highly effective for applications where a large, stable context (like documents or extensive system instructions) can be placed at the start of the prompt."
       },
       {
         "id": "f",
-        "text": "An entry's lifetime is measured from the start of the request that reads or writes it, not from the point its response ends."
+        "text": "The feature provides equal cost benefits for all prompt sizes, making it ideal for caching very short, one-sentence system instructions."
       }
     ],
     "correct": [
-      "b",
-      "d",
-      "f"
+      "a",
+      "c",
+      "e"
     ],
-    "explanation": "Three properties determine whether caching actually pays off. Caching operates on a prefix assembled in a fixed order, tools then system then messages, up to the marked block, which is why stable content must be placed early and volatile content late; a single reordering upstream invalidates everything after it. Reuse refreshes an entry's lifetime for free, so steady traffic against a shared prefix keeps it warm without extra charges. The timing subtlety catches teams out: the lifetime clock starts when the request begins, not when its response completes, so a long generation eats into the window available to the follow-up request that hoped to reuse the entry. Design accordingly by keeping the reusable prefix stable and appending anything that changes.",
+    "explanation": "Prompt caching is designed to optimize applications that send large amounts of repetitive context to Claude. By caching a stable prefix (such as extensive system instructions, large documents, or numerous examples) at the beginning of the prompt, applications can significantly reduce latency (time to first token) and lower API costs, since cached input tokens are cheaper than base input tokens. The cache operates automatically on a time-to-live basis and caches inputs rather than generated outputs. It is most beneficial for large contexts, as the savings on very short prompts are negligible and do not meet the minimum token thresholds required for caching.",
     "distractorNotes": {
-      "a": "Cache markers are placed on content blocks generally, and the cached prefix spans tools, system, and messages. Restricting caching to system content would exclude the growing conversation history that benefits most.",
-      "c": "Caching matches a prefix, not the whole request. Requiring an exact whole-request match would make caching useless, since the newest user message differs on every call.",
-      "e": "Entries are ephemeral and expire on a time-to-live basis. There is no deletion endpoint to call, and none is needed."
+      "b": "Prompt caching is ephemeral. Caches expire automatically based on a time-to-live (TTL) typically measured in minutes, and do not require developers to manually manage or delete them.",
+      "d": "Prompt caching stores the processed state of the input prompt (a prefix), not the model's generated outputs. It is not an output or semantic cache.",
+      "f": "Caching is optimized for large contexts. Very short prompts do not yield meaningful cost or latency benefits and fall below the minimum token requirements for caching to activate."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
     "sourceNote": "Prompt caching - 'How prompt caching works' section, including the note that caching covers tools, system, and messages in that order, and the explanation that the lifetime is measured from the start of the request",
-    "sourceCheckedAt": "2026-09-03",
-    "scope": "deep",
-    "scopeNote": "Prompt caching is a named Domain 2 topic, but the options separate on the exact prefix ordering (tools, then system, then messages) and on lifetime-refresh mechanics rather than on when caching is the right design."
+    "sourceCheckedAt": "2026-09-03"
   },
   {
     "id": "ccdv-f-0010",
@@ -539,39 +535,37 @@
     "subdomain": "configuration-management",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "A team issues an API key that is permitted to act across several workspaces. Their service sends only the credential, version, and content type headers. What has to change so that requests run in the intended workspace?",
+    "stem": "A development team wants Claude to automatically pick up their project's conventions and coding standards every session, without anyone re-typing instructions into chat or the API request. Which configuration approach achieves that?",
     "options": [
       {
         "id": "a",
-        "text": "Prefix the model identifier in the request body with the name of the workspace the call belongs to."
+        "text": "Providing the standards in a system prompt for every individual API call."
       },
       {
         "id": "b",
-        "text": "Nothing, because a multi-workspace key resolves the workspace from the model chosen in the request."
+        "text": "Placing a CLAUDE.md file containing the conventions at the root of the project repository."
       },
       {
         "id": "c",
-        "text": "Recreate the credential as an administrative key, because only those keys can select a workspace."
+        "text": "Writing the conventions into a PreToolUse hook, since hooks are the mechanism the documentation names for enforcing behavior regardless of what Claude decides."
       },
       {
         "id": "d",
-        "text": "Send the identifier of the target workspace in the workspace header on each request the service makes."
+        "text": "Setting environment variables on developer machines with the required conventions."
       }
     ],
     "correct": [
-      "d"
+      "b"
     ],
-    "explanation": "Workspace selection is header-driven. A key bound to one workspace carries that binding implicitly and may omit the header, which is why single-workspace keys are convenient for a service that only ever runs in one environment. A key permitted to act across several workspaces has no implicit target, so the workspace identifier header is required on each request to say where the call should run. This matters beyond routing, because workspaces are the boundary for rate limits, spend limits, and usage reporting, so an unscoped request lands the traffic in the wrong accounting bucket. Workspace identifiers can be read from the console workspace settings or listed through the administrative API.",
+    "explanation": "A project CLAUDE.md at the repository root is read at the start of every session and carries team-shared instructions such as coding standards and architectural conventions, without anyone re-supplying them per call. Hooks solve a related but distinct problem: because CLAUDE.md is delivered as context rather than enforced configuration, a hook is the documented way to guarantee an action is blocked or forced regardless of what Claude decides, at the cost of only covering the specific event the hook is wired to rather than general guidance.",
     "distractorNotes": {
-      "a": "The model identifier names a model and nothing more. Workspace targeting is expressed through headers rather than encoded into request body values.",
-      "b": "Model choice and workspace are independent of one another. The same model can be called from any workspace the key can reach, so it cannot disambiguate the target.",
-      "c": "Administrative keys serve organization-level endpoints. Ordinary keys select a workspace through the header, and a workspace-scoped key is in fact rejected by the administrative endpoints."
+      "a": "A system prompt repeated on every call can convey the same conventions, but it must be assembled and sent by the caller each time rather than being read automatically from the repository.",
+      "c": "Hooks execute as shell commands at fixed lifecycle events and are the right tool for deterministic enforcement, but they are not where narrative coding-standards guidance lives; a hook cannot substitute for CLAUDE.md's role as general instructions Claude reads and reasons over.",
+      "d": "Environment variables are typically used for secrets like API keys or basic application settings, not for conveying detailed narrative instructions, coding standards, or project context to Claude."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/manage-claude/authentication",
-    "sourceNote": "Authentication - 'Select a workspace' section stating that keys not scoped to a workspace must specify the workspace ID header on each request",
-    "sourceCheckedAt": "2026-09-03",
-    "scope": "out-of-scope",
-    "scopeNote": "Multi-workspace key routing. The Configuration Management objective covers CLAUDE.md, settings.json, model version pinning, prompt versioning and plugin dependencies; workspaces appear in no objective, and API Mechanics does not name them either."
+    "sourceUrl": "https://code.claude.com/docs/en/memory",
+    "sourceNote": "'CLAUDE.md files' section: a project CLAUDE.md at './CLAUDE.md' or './.claude/CLAUDE.md' gives 'team-shared instructions for the project' covering 'project architecture, coding standards, common workflows', and 'Claude reads them at the start of every session.' Contrasted in 'CLAUDE.md vs auto memory' with hooks, which the page names as the mechanism to 'block an action regardless of what Claude decides' since CLAUDE.md is 'context, not enforced configuration.'",
+    "sourceCheckedAt": "2026-09-07"
   },
   {
     "id": "ccdv-f-0014",
@@ -1030,40 +1024,38 @@
     "type": "single",
     "domain": "model-selection-and-optimization",
     "subdomain": "cost-and-token-management",
-    "difficulty": "hard",
+    "difficulty": "medium",
     "status": "reviewed",
-    "scope": "deep",
-    "scopeNote": "Cache check-pointing is named in the objective, but answering requires knowing that the cache lookback spans a limited number of positions and that a deep turn can push a breakpoint past the previous entry. That is implementation-internals recall.",
-    "stem": "An agent harness appends many content blocks per turn and sets one cache_control breakpoint on the final block of each request. Early turns read from cache as expected, but deeper into a session the read count falls to zero even though the earlier conversation content never changes. What is the documented cause and remedy?",
+    "stem": "A team is optimizing their Claude API costs for an application that processes long documents. They include a large, 20,000-token static instruction manual in every API request and have set a cache breakpoint. However, they observe no cache read hits, and their API costs have actually increased. Which of the following design flaws is the most likely cause?",
     "options": [
       {
         "id": "a",
-        "text": "Every block in a run of consecutive tool_use blocks consumes a lookback position, so parallel tool calls are the cause and must be serialized."
+        "text": "The dynamically changing user query is placed at the beginning of the prompt, before the static instruction manual."
       },
       {
         "id": "b",
-        "text": "Automatic caching removes the lookback limit entirely, because the system then takes over breakpoint placement on the developer's behalf."
+        "text": "The 20,000-token manual falls below the minimum token threshold required to trigger a cache write."
       },
       {
         "id": "c",
-        "text": "The lookback spans a limited number of positions, so a turn can push the breakpoint past the previous entry; add a second, earlier breakpoint from the start."
+        "text": "The application fails to issue a manual cache-clear command between requests, preventing new reads."
       },
       {
         "id": "d",
-        "text": "Cache entries are evicted once the accumulated prompt nears the model's context window, so a compaction step has to run before cache reads can resume on subsequent turns."
+        "text": "The API requests are being sent concurrently, which prevents the cache from being read by multiple requests at once."
       }
     ],
     "correct": [
-      "c"
+      "a"
     ],
-    "explanation": "On each request the system hashes the prefix at the breakpoint and, finding no match, walks backward one position at a time looking for an entry a prior request wrote. That search covers at most 20 positions per breakpoint, counting the breakpoint itself as the first. A conversation growing by many blocks per turn can push the current breakpoint 20 or more positions past the previous write, so the window misses it and the request pays a full write with no read. Because the lookback can only find entries earlier requests already wrote, the documented fix is to add a second breakpoint nearer that position from the outset, so a write accumulates there before it is needed. Up to four breakpoints are available and they add no cost of their own.",
+    "explanation": "Prompt Caching relies on exact prefix matching. The cached content must be at the very beginning of the prompt and remain entirely unchanged across requests. If dynamic content (such as a unique user query) is placed before the static content, the prefix changes with every request, causing cache misses. Furthermore, writing to the cache costs slightly more than standard input tokens, which explains the increased costs when writes occur without subsequent reads. To utilize caching effectively, static content must always be placed before dynamic content.",
     "distractorNotes": {
-      "a": "A run of consecutive tool_use blocks counts as a single position, and so does a run of consecutive tool_result blocks. That rule exists precisely so that a turn with many parallel tool calls does not push the previous entry out of the window by itself.",
-      "b": "Automatic caching uses the same underlying infrastructure, so the same lookback window, minimum token thresholds, and prefix ordering rules still apply. It also consumes one of the four breakpoint slots rather than removing any limit.",
-      "d": "Entries lapse on their lifetime, not on prompt size, and cached prefixes still occupy the context window. Caching and context management address different problems, so compaction is not a prerequisite for getting a cache hit."
+      "b": "The minimum token threshold for prompt caching is typically 1,024 or 2,048 tokens depending on the specific Claude model. A 20,000-token block is well above this requirement.",
+      "c": "Cache entries have a time-to-live (TTL), typically 5 minutes, and are automatically managed by the system. There is no manual 'cache-clear' command required or available.",
+      "d": "Prompt Caching is designed to support concurrent reads, meaning parallel requests can successfully read from an established cache simultaneously."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
-    "sourceNote": "Prompt caching - 'How automatic prefix checking works' (three core principles; the 20-block lookback window; the growing-conversation example), 'When to use multiple breakpoints', and 'Automatic caching' > 'What stays the same'",
+    "sourceNote": "Prompt caching - 'How prompt caching works' (prefix matching requirement, placing static content before dynamic content, and pricing structure).",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -1075,39 +1067,37 @@
     "subdomain": "technical-fundamentals",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "A cached request returns usage showing 100,000 cache read input tokens, 0 cache creation input tokens, and 50 input tokens. How should these three fields be interpreted?",
+    "stem": "A team enables prompt caching for a large reference document that now hits cache on almost every request. Which statement about what changes for a cache hit is accurate?",
     "options": [
       {
         "id": "a",
-        "text": "100,050 input tokens were processed; the plain input field covers only tokens after the last breakpoint, and all three categories occupy the window."
+        "text": "The cached tokens are still sent with every request and still occupy the context window; caching changes what they're billed at, not whether they're transmitted or counted."
       },
       {
         "id": "b",
-        "text": "100,050 input tokens were processed, but the cached portion no longer counts against the context window, because it was billed at the discounted cache read rate instead."
+        "text": "The cached tokens no longer count against the context window, since the server holds them separately and only the new content occupies the window."
       },
       {
         "id": "c",
-        "text": "Only 50 input tokens were processed, because cached content is retained server-side and is neither resent nor counted again on this request."
+        "text": "The client can omit the cached tokens from the request entirely, since the server reconstructs the full prompt from its own stored copy."
       },
       {
         "id": "d",
-        "text": "Exactly 100,000 input tokens were processed, because the plain input field is a subset of the cache read field rather than an addition to it."
+        "text": "The cached tokens are billed at the same input rate as uncached tokens, since caching only improves latency and has no effect on cost."
       }
     ],
     "correct": [
       "a"
     ],
-    "explanation": "The three fields are disjoint and sum to the total input processed, so 100,000 plus 0 plus 50 gives 100,050 tokens. The commonly misread field is the plain input token count, which represents only the content falling after the last cache breakpoint rather than the whole input, which is why it looks so small on a well-cached request. The split matters for cost attribution and for rate limits. It does not change context accounting: cached prefixes still occupy the context window, because caching changes what you pay for those tokens rather than whether they count.",
+    "explanation": "Caching changes price, not transmission or context accounting. The full prompt, including the cached prefix, is still sent on every request and still occupies the context window exactly as it would uncached; what changes on a hit is that the matched portion is billed at the cache-read rate instead of the base input rate. This is the misconception that catches teams tracking down why a heavily cached, near-context-limit application still hits context errors: caching lowers cost and time to first token, but it is not a substitute for context management.",
     "distractorNotes": {
-      "b": "Cached prompt prefixes still occupy the context window. The documentation is explicit that prompt caching changes what you pay for those tokens, not whether they count against the window's capacity.",
-      "c": "Caching changes what is charged for a matched prefix, not whether the prefix is transmitted. The full prompt is still sent on every request and still consumes context window capacity; only the price of the matched portion changes.",
-      "d": "The fields do not overlap. The plain input token count covers content after the last breakpoint, so it is additive to the cache read figure rather than a subset drawn from it."
+      "b": "Cached prefixes still occupy the context window at full size. Nothing about caching reduces the token count a request consumes against the window's capacity.",
+      "c": "The full prompt is retransmitted on every request; caching matches a prefix against server-side storage rather than letting the client send a partial prompt.",
+      "d": "Cache-read tokens are billed at a small fraction of the base input rate, which is the entire cost benefit caching offers. Only cache-write tokens carry a premium over base input pricing."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
     "sourceNote": "Prompt caching - 'Tracking cache performance' > 'Understanding the token breakdown' (total input equals cache reads plus cache creation plus input_tokens); context accounting corroborated by Context windows - 'How the context window works'",
-    "sourceCheckedAt": "2026-09-03",
-    "scope": "deep",
-    "scopeNote": "Requires arithmetic over exact usage-field semantics, knowing that plain input counts only tokens after the last breakpoint, to arrive at 100,050. Recall of field definitions, not a judgement about token cost."
+    "sourceCheckedAt": "2026-09-03"
   },
   {
     "id": "ccdv-f-0026",
@@ -1118,40 +1108,38 @@
     "subdomain": "cost-and-token-management",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "deep",
-    "scopeNote": "Prompt caching is in the objective, but the key discriminates on exact price multipliers (2x write versus 1.25x, roughly two reads to break even) and on lifetime being measured from request start. Numeric-constant recall.",
-    "stem": "A team is choosing between the default cache lifetime and the extended cache lifetime for an assistant where a human user sometimes pauses between turns. Which TWO statements about how the two lifetimes behave are accurate? Select TWO.",
+    "stem": "A development team is optimizing a Claude-powered customer support assistant that includes a large, static set of company policies in every request. They are implementing prompt caching to manage costs and token usage. Which TWO statements represent foundational principles for this optimization? Select TWO.",
     "options": [
       {
         "id": "a",
-        "text": "The extended lifetime also lowers time to first token relative to the default lifetime, whether or not a given request actually turns out to hit the cache at all."
+        "text": "The dynamic user query must be placed before the static policies in the prompt to ensure the model prioritizes the user's immediate question over the cached context."
       },
       {
         "id": "b",
-        "text": "When most pauses run well past the extended lifetime, the extended option is still cheaper because it tolerates the longer gaps."
+        "text": "Because writing to the cache incurs a premium over standard input pricing, caching the policies is only cost-effective if they are read multiple times."
       },
       {
         "id": "c",
-        "text": "Its write costs twice the base input rate against 1.25 times for the default, so it needs roughly two reads to break even versus roughly one."
+        "text": "The application should structure the prompt with the static company policies at the beginning, allowing this identical prefix to be cached and reused across multiple turns or user sessions."
       },
       {
         "id": "d",
-        "text": "Reuse refreshes the default lifetime free of charge, and lifetime is measured from the start of the request rather than the end of its response."
+        "text": "Caching the static policies will proportionally decrease the per-token cost of the model's generated output, since the model expends less compute to process the prompt."
       },
       {
         "id": "e",
-        "text": "Tokens served from cache are deducted against rate limits at the same weight as ordinary uncached input tokens would be."
+        "text": "The team should apply a cache breakpoint to every individual message in the ongoing conversation history to maximize cache hits on short, incremental updates."
       }
     ],
     "correct": [
-      "c",
-      "d"
+      "b",
+      "c"
     ],
-    "explanation": "The two lifetimes differ only in write price and duration. A write for the default lifetime carries a 1.25x multiplier on the base input rate and the extended lifetime carries a 2x multiplier, while a read is charged at a small fraction of the base input rate under either. That produces the documented break-even rule: caching pays off after roughly one read on the default duration and roughly two on the extended one. Operationally, the default lifetime is refreshed at no additional cost each time cached content is used, and the clock starts at the beginning of the request that writes or reads the entry rather than when its response finishes, so time spent generating counts against the remaining window.",
+    "explanation": "Prompt caching optimizes costs by allowing identical text prefixes to be reused across requests. Because cache write tokens cost more than standard input tokens (while cache read tokens cost significantly less), caching is an economic trade-off that only pays off when the cached content is reused multiple times (Option B). To achieve cache hits, the cached content must form an exact, contiguous prefix at the start of the prompt, meaning static content like company policies should be placed at the very beginning (Option C). Placing dynamic content first would break the prefix match. Prompt caching only affects input token costs, not output token costs, and there are minimum token limits and maximum breakpoint limits that make caching every small conversational message impractical.",
     "distractorNotes": {
-      "a": "The two durations behave the same with respect to latency. An improvement in time to first token comes from getting a cache hit at all, which is most visible on long documents, and is not a property of the longer duration.",
-      "b": "A gap longer than the extended lifetime expires entries under either setting, and the extended option then rewrites the prefix at its higher write price, losing on each such gap. The guidance is to stay on the default when very long gaps dominate.",
-      "e": "Cache hits are not deducted against rate limits. Improved rate limit utilization is in fact listed as one of the documented reasons to reach for the extended duration in the first place."
+      "a": "Placing dynamic content before static content breaks the prefix match required for prompt caching. Static content must be placed at the beginning of the prompt.",
+      "d": "Prompt caching reduces the cost of input tokens when a cache hit occurs. It does not affect the cost of output tokens, which are priced at the standard output rate regardless of caching.",
+      "e": "Applying breakpoints to every small message is an anti-pattern. There is a minimum token threshold for cached blocks and a strict limit on the total number of breakpoints allowed per request."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
     "sourceNote": "Prompt caching - 'Pricing' (5-minute writes at 1.25x and 1-hour writes at 2x base input; reads at a fraction of it), 'How prompt caching works' (free refresh; lifetime measured from request start), and '1-hour cache duration' > 'When to use the 1-hour cache'",
@@ -1166,45 +1154,43 @@
     "subdomain": "cost-and-token-management",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "deep",
-    "scopeNote": "Requires reciting a fine-grained invalidation matrix across tool definitions, tool_choice, images and system-prompt-rewriting capabilities, selecting three of six. The burden is memorising the table rather than reasoning about cache design.",
-    "stem": "Cache prefixes are created in a fixed order, tool definitions then the system prompt then messages, and a change at one level invalidates that level and every level after it. Which THREE statements about cache invalidation are accurate? Select THREE.",
+    "stem": "Prompt caching allows developers to reuse large amounts of context across API calls to reduce costs and latency. Which THREE of the following are foundational best practices or principles for effectively using prompt caching with Claude? Select THREE.",
     "options": [
       {
         "id": "a",
-        "text": "Passing the effort value the model already uses by default, instead of omitting the parameter, invalidates the cached prefix."
+        "text": "Prompt caching automatically identifies and caches any repeated text across your API requests, requiring no specific prompt structuring by the developer."
       },
       {
         "id": "b",
-        "text": "Additional cache breakpoints raise cost per request, so consolidating to a single breakpoint is the usual cure for a falling hit rate."
+        "text": "For optimal cache performance, static and frequently reused content—such as system instructions and large reference documents—should be placed at the beginning of your prompt."
       },
       {
         "id": "c",
-        "text": "Editing a tool definition's name, description, or parameters invalidates the whole cache, system and message portions included."
+        "text": "Prompt caching is particularly cost-effective for very short prompts where the cached content is less than 100 tokens."
       },
       {
         "id": "d",
-        "text": "Toggling a capability that rewrites the system prompt, such as web search or citations, keeps the tools portion but invalidates the rest."
+        "text": "Dynamic content, such as the specific user query for a given turn, should be placed at the very end of the prompt to avoid invalidating the cached portions."
       },
       {
         "id": "e",
-        "text": "Changing the tool choice setting, or adding or removing an image anywhere, invalidates messages while leaving tools and system valid."
+        "text": "A cached prefix is stored indefinitely until it is explicitly deleted via an API call, making it suitable for requests spaced several days apart."
       },
       {
         "id": "f",
-        "text": "Reordering the keys inside a tool use block's JSON is harmless, because the request is normalized before the prefix gets hashed."
+        "text": "Caching provides the greatest cost and latency benefits for applications with frequent, closely spaced requests, because cache lifetimes are temporary."
       }
     ],
     "correct": [
-      "c",
+      "b",
       "d",
-      "e"
+      "f"
     ],
-    "explanation": "Because tool definitions sit first in the prefix, any edit to their names, descriptions, or parameters invalidates everything downstream. Toggles that rewrite the system prompt, such as enabling or disabling web search or citations, sit one level lower: the tools cache stays valid while system and message caches are invalidated. Changes confined to the message level, including tool_choice and the presence or absence of images anywhere in the prompt, invalidate only message blocks. Reasoning down the tools, system, messages hierarchy is the reliable way to predict the blast radius of any given change before you ship it.",
+    "explanation": "Prompt caching requires exact prefix matching, meaning prompts must be intentionally structured to benefit from it. Static, reusable content (like system instructions, tool definitions, and reference documents) should be placed at the beginning of the prompt. Dynamic, per-request content (like the specific user question) must be placed at the end to ensure it does not invalidate the cached static prefix. Because cache entries typically expire after 5 minutes of inactivity, caching provides the most cost and latency benefits for frequent, closely spaced requests rather than sporadic usage.",
     "distractorNotes": {
-      "a": "Setting effort explicitly to the model's default is documented as equivalent to omitting it and does not invalidate. Changing effort to a different value does invalidate message blocks, and on some models the tools and system caches ahead of them as well.",
-      "b": "Breakpoints carry no cost of their own; charges accrue only for cache writes, cache reads, and uncached input. Consolidating to one breakpoint also inverts the guidance for a falling hit rate, where adding a breakpoint is what restores hits.",
-      "f": "Cache hits require byte-identical prompt segments, and a specific troubleshooting step warns that some languages randomize key order during JSON conversion, breaking caches. Stable key ordering in tool_use blocks has to be verified, not assumed."
+      "a": "Prompt caching is not automatic; developers must explicitly define cache breakpoints in the API request and ensure the prefix of the prompt is exactly identical to hit the cache.",
+      "c": "Prompt caching has minimum token thresholds (1024 or 2048 tokens depending on the model) before it can be applied. It is designed for large contexts and cannot be used for very short prompts.",
+      "e": "Cached prefixes are temporary and typically expire after a short period of inactivity (e.g., 5 minutes), rather than being stored indefinitely or requiring explicit API deletion."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
     "sourceNote": "Prompt caching - 'What invalidates the cache' (invalidation table covering tool definitions, web search and citations toggles, tool choice, images, and the effort setting), 'Understanding cache breakpoint costs', and 'Troubleshooting common issues'",
@@ -1434,44 +1420,42 @@
     "subdomain": "agent-architecture",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "A team is moving an Agent SDK agent into production and wants predictable ceilings on open-ended runs. Select TWO statements that accurately describe how the SDK's turn and budget limits behave.",
+    "stem": "A team is moving an agentic application into production and needs to establish predictable boundaries on open-ended runs. A single turn can involve Claude requesting several tool calls at once, and a run can spawn subagents that make their own requests. Which TWO statements accurately describe how the turn and budget caps behave in that situation?",
     "options": [
       {
         "id": "a",
-        "text": "The maximum-turns option counts tool-use turns only."
+        "text": "The turn cap counts tool-use turns, so a single turn in which Claude requests three tool calls at once still consumes only one turn of the allowance."
       },
       {
         "id": "b",
-        "text": "The maximum-turns option counts each individual tool call, so a turn requesting three tools consumes three of the allowance."
+        "text": "The turn cap counts every individual tool call, so a turn requesting three tools at once consumes three turns of the allowance."
       },
       {
         "id": "c",
-        "text": "Spending by subagents counts toward the run's budget cap, and a run that stops there ends with a dedicated maximum-budget error subtype."
+        "text": "The budget cap is compared against the run's total cost, which includes spend by any subagents the run spawns, not just the parent agent's own requests."
       },
       {
         "id": "d",
-        "text": "Subagent requests are metered separately from the parent run and are excluded from the budget cap."
+        "text": "Subagent spend is metered separately from the parent run and never counts against the run's budget cap."
       },
       {
         "id": "e",
-        "text": "When a run stops at the maximum-turns limit, the result message still carries the partial text the agent produced in its result field."
+        "text": "Agent loops are guaranteed to terminate automatically once a task is complete, making explicit turn and budget limits unnecessary."
       }
     ],
     "correct": [
       "a",
       "c"
     ],
-    "explanation": "Both limits are fields on the options you pass when starting a run, and both default to no limit. The turn cap counts round trips in which Claude requested tools; the final text-only response that ends a task is not one of them. The budget cap is compared against the run's total cost, which aggregates every request the run made, including requests made by subagents it spawned. When either ceiling is reached the loop ends with a result message whose subtype names the limit that stopped it, which lets your code tell a completed task from a truncated one and, where appropriate, resume with a higher ceiling.",
+    "explanation": "A turn is one round trip through the loop: Claude produces output (which may include several tool calls at once), the SDK executes them, and the results feed back automatically. The turn cap counts these round trips, not the individual tool calls inside them, so a turn that fans out to three tools still consumes only one turn. The budget cap is compared against the run's total cost, and that total explicitly includes subagent spend, so a run that fans out into many subagents can still be bounded by one ceiling. Both caps end the loop with a dedicated error subtype rather than a normal success result, and neither error subtype carries the final result text.",
     "distractorNotes": {
-      "b": "The unit is the turn, not the tool call. A single turn can request several tools; the SDK executes them and feeds all the results back as one round trip, which consumes one turn.",
-      "d": "Subagents are not metered outside the run. Each subagent issues its own API requests, and those requests count toward the same total cost the budget cap is compared against, which is exactly why the cap is useful for bounding a run that fans out.",
-      "e": "The result text is available on a successful completion. On a run that ends at a limit, the subtype reports which limit was hit and no final result text is available, so code that reads the result field unconditionally will find nothing there."
+      "b": "The unit the cap counts is the turn, not the tool call. The SDK executes every tool call from a single turn and feeds all the results back as one round trip, which is why parallel tool use does not multiply against the turn allowance.",
+      "d": "Subagent requests are not walled off from the parent's accounting. Their spend counts toward the same total the budget cap is compared against, which is precisely why the cap is useful for bounding a run that fans out into subagents.",
+      "e": "Capable models usually stop on their own, but tool errors, ambiguous instructions, and edge cases can still keep a loop going. Explicit limits are the documented safeguard for production, not an optional extra."
     },
     "sourceUrl": "https://code.claude.com/docs/en/agent-sdk/agent-loop",
     "sourceNote": "Sections 'Control how the loop runs' subsection 'Turns and budget', and 'Handle the result'",
-    "sourceCheckedAt": "2026-09-03",
-    "scope": "deep",
-    "scopeNote": "Agent architecture is in scope, but the options separate on exact SDK metering rules, specifically that maximum-turns counts tool-use turns only. That is a documented constant rather than a design principle."
+    "sourceCheckedAt": "2026-09-03"
   },
   {
     "id": "ccdv-f-0034",
@@ -1687,49 +1671,47 @@
     "subdomain": "agent-construction-with-claude",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "A team defines a read-only code-review subagent programmatically through the SDK's agents option. Select TWO statements that accurately describe how that agent definition works.",
+    "stem": "A development team is designing a workflow where a primary Claude agent orchestrates several specialized subagents. What are TWO foundational characteristics of using subagents in this architecture?",
     "options": [
       {
         "id": "a",
-        "text": "Omitting the tool list leaves the subagent with no tools at all, so the field must always be populated before the agent can do any work on its own."
+        "text": "By delegating specific tasks to subagents, the primary agent maintains a cleaner context window and avoids being overwhelmed by low-level details."
       },
       {
         "id": "b",
-        "text": "A description and a system prompt are the only required fields; the tool list, the model override, and the remaining fields are all optional."
+        "text": "Subagents automatically inherit the exact same system prompt as the primary agent, ensuring behavioral consistency across the workflow."
       },
       {
         "id": "c",
-        "text": "Restricting a subagent's tools only takes effect if a matching deny rule is also configured for the session, since the tool list by itself makes no permission decision and is treated as advisory metadata."
+        "text": "Developers can specialize each subagent by assigning it a unique role, system prompt, and a restricted set of tools."
       },
       {
         "id": "d",
-        "text": "A subagent must exist as a markdown file in a .claude/agents directory before it can be invoked, and the agents option only points at definitions already on disk."
+        "text": "A subagent executes directly within the primary agent's context window, avoiding the overhead of managing a separate conversation state."
       },
       {
         "id": "e",
-        "text": "The description field is used only for logging and has no bearing on when Claude chooses to use the subagent, which depends on its system prompt instead."
+        "text": "Subagents are restricted to read-only analytical tasks and cannot be granted tools that modify files or execute code."
       },
       {
         "id": "f",
-        "text": "When the definition lists specific tools, a tool left off that list is absent from the subagent's session entirely, so Claude works without it rather than hitting a permission prompt."
+        "text": "The primary agent decides when to invoke a subagent by analyzing the subagent's internal system prompt, making a short description unnecessary."
       }
     ],
     "correct": [
-      "b",
-      "f"
+      "a",
+      "c"
     ],
-    "explanation": "A subagent definition needs a description telling Claude when to use the agent and a prompt defining how the agent behaves. Everything else, including the tool list, model override, preloaded skills, and per-agent turn or effort settings, is optional. Tool restriction works by shaping the subagent's tool set rather than by intercepting calls: a tool that is not in the list is not part of that session, so there is nothing for Claude to attempt and nothing to deny. That is a meaningfully different mechanism from a deny rule, which leaves the tool visible and produces a denial the model can observe and react to.",
+    "explanation": "Subagents are designed to handle specialized tasks within their own isolated context windows. This separation keeps the primary agent's context clean and focused on high-level orchestration. Developers configure subagents by providing them with specific roles, descriptions, system prompts, and tool sets tailored to their distinct functions, rather than relying on a single monolithic agent for every task.",
     "distractorNotes": {
-      "a": "Omitting the tool list has the opposite effect: the subagent inherits every tool available to subagents. The field narrows a default-broad tool set rather than opting into one.",
-      "c": "The tool list stands on its own. It determines which tool definitions exist in the subagent's session, independently of the allow and deny rules that govern permission decisions for tools that do exist.",
-      "d": "Subagents can be defined programmatically through the agents option with no files on disk, and that approach is the recommended one for SDK applications. Filesystem definitions are an alternative, and a programmatic definition takes precedence over a file-based one with the same name.",
-      "e": "The description is what Claude matches against when deciding whether a task suits this subagent, so a vague description directly degrades automatic invocation. Naming the agent in the prompt is the way to force a specific one."
+      "b": "Subagents are defined with their own unique system prompts to specialize their behavior, rather than simply inheriting the primary agent's prompt.",
+      "d": "Subagents operate in their own separate context windows, not within the primary agent's context. This state isolation is a primary benefit of using subagents.",
+      "e": "Subagents can be granted any appropriate tools, including write and execution tools, depending on how they are configured by the developer.",
+      "f": "The primary agent relies on a concise description provided during the subagent's definition to understand its capabilities and decide when to invoke it, rather than reading its full system prompt."
     },
     "sourceUrl": "https://code.claude.com/docs/en/agent-sdk/subagents",
     "sourceNote": "Sections 'Create subagents', 'AgentDefinition configuration', 'Invoke subagents', and 'Tool restrictions'",
-    "sourceCheckedAt": "2026-09-03",
-    "scope": "deep",
-    "scopeNote": "Requires recalling which fields of a programmatic agent definition are required and which are optional. Field-level recall sits above the sample questions' level."
+    "sourceCheckedAt": "2026-09-03"
   },
   {
     "id": "ccdv-f-0040",
@@ -1740,39 +1722,37 @@
     "subdomain": "agent-construction-with-claude",
     "difficulty": "hard",
     "status": "reviewed",
-    "stem": "An audit task issued as a single prompt has grown into a tree of subagents that are themselves spawning subagents, and the run costs far more than expected. How does the Agent SDK expose the documented limits on subagent spawn depth, on how many subagents run at once, and on total spend?",
+    "stem": "When designing an agentic workflow where a primary Claude agent can autonomously spawn subagents, the SDK provides mechanisms to cap subagent depth, concurrency, and total spend. Conceptually, why are these specific guardrails critical in an autonomous multi-agent architecture?",
     "options": [
       {
         "id": "a",
-        "text": "Spawn depth and concurrent subagent count are set as environment variables supplied through the SDK's environment option, while total spend is a query option on the run."
+        "text": "Because autonomous agents can recursively delegate tasks, these limits prevent runaway execution loops where agents continuously spawn new subagents, which would otherwise result in unbounded latency and API costs."
       },
       {
         "id": "b",
-        "text": "All three are fields on the individual agent definition, so each subagent carries its own depth, concurrency, and spend ceiling alongside its tools and its model."
+        "text": "Because subagents run on distinct infrastructure, these limits ensure that the workflow does not exceed the physical memory capacity of the local server hosting the orchestrator agent."
       },
       {
         "id": "c",
-        "text": "All three are query options on the run, set alongside the maximum-turns option when the query starts, so one options object caps depth, concurrency, and spend together."
+        "text": "Because each subagent automatically inherits and expands the context window of its parent, these limits are necessary to prevent the combined context from exceeding Claude's maximum token limit."
       },
       {
         "id": "d",
-        "text": "The maximum-turns option covers all three, because every subagent a run spawns consumes one of the run's turns and the run stops once that budget is exhausted."
+        "text": "Because subagents must all report back simultaneously, concurrency and depth limits prevent the final API response payload from exceeding the maximum allowed bytes in an HTTP response."
       }
     ],
     "correct": [
       "a"
     ],
-    "explanation": "Claude decides on its own when to delegate and how many subagents to spawn, and a subagent can spawn further subagents, so one prompt can expand into a tree. The three controls that bound that growth are not exposed uniformly. Nesting depth and the number of subagents running simultaneously are read from environment variables, which you supply through the environment option when starting the run. Total spend is a query option compared against the run's cumulative cost, and because subagent requests are included in that cost it is the control that bounds the tree as a whole. Knowing which control lives where matters, because a spend cap alone will not stop a run from spawning a wide tree, and depth and concurrency limits alone will not cap what the run costs.",
+    "explanation": "In a multi-agent architecture, agents are given the autonomy to break down problems and delegate to subagents. Without strict guardrails, an agent might get stuck in an infinite loop, recursively spawning subagents (depth) or spawning an excessive number of subagents at once (concurrency) to solve a task it does not understand. Because each subagent consumes tokens, this runaway behavior can quickly lead to massive, unexpected API costs (spend). Therefore, configuring caps on depth, concurrency, and total spend is a foundational safety pattern to ensure autonomous workflows remain bounded, predictable, and cost-effective.",
     "distractorNotes": {
-      "b": "The agent definition configures one agent's behaviour, such as its tools, model, and its own turn limit. Depth and concurrency are properties of the run as a whole, since they govern relationships between agents rather than any single agent.",
-      "c": "Only the spend cap is a query option. Treating depth and concurrency as query options is the most common form of this mistake and quietly leaves both at their defaults.",
-      "d": "The turn limit counts tool-use round trips within the run, not the number of agents spawned, and it says nothing about how deeply subagents nest or how many run at the same time."
+      "b": "These limits are designed to bound logical API consumption and prevent runaway execution loops, not to manage the physical memory or local infrastructure of the host running the SDK.",
+      "c": "Subagents operate with their own isolated context windows; they do not automatically merge into a single massive context window that exceeds model limits. The limits are primarily about controlling execution loops and cost.",
+      "d": "Subagents typically report back to their parent agent asynchronously or as they finish, not as a single massive HTTP response payload that needs byte-level bounding."
     },
     "sourceUrl": "https://code.claude.com/docs/en/agent-sdk/subagents",
     "sourceNote": "Section 'Cap subagent depth, concurrency, and spend'",
-    "sourceCheckedAt": "2026-09-03",
-    "scope": "deep",
-    "scopeNote": "Requires recalling where each limit is configured, environment variable versus query option. The distinction is a lookup, not a design judgement."
+    "sourceCheckedAt": "2026-09-03"
   },
   {
     "id": "ccdv-f-0041",
@@ -1783,49 +1763,47 @@
     "subdomain": "claude-hooks",
     "difficulty": "hard",
     "status": "reviewed",
-    "stem": "An SDK application must run a compliance check before every tool call, and the check must not be bypassable by configuration made elsewhere in the application. Select TWO statements that correctly describe how the SDK evaluates permissions.",
+    "stem": "An organization is deploying a Claude-based agent using the Agent SDK and needs to enforce a mandatory compliance check on every tool call. The security team requires that this check cannot be bypassed by any permissive configuration elsewhere in the application. Which TWO statements describe how hooks and permissions address this requirement at a foundational level?",
     "options": [
       {
         "id": "a",
-        "text": "A pre-tool-use hook runs before deny rules, ask rules, the permission mode, and allow rules, and a denial returned by a hook applies even in bypassPermissions mode."
+        "text": "A pre-tool-use hook can intercept every tool call, providing a centralized mechanism to enforce mandatory checks before execution."
       },
       {
         "id": "b",
-        "text": "A hook that returns an allow decision short-circuits the remaining evaluation, so deny rules, ask rules, and the permission mode are no longer consulted for that call."
+        "text": "Setting the agent's permission mode to strict automatically generates a hook that blocks all actions not explicitly requested by the user."
       },
       {
         "id": "c",
-        "text": "Naming tools in the allowed-tools list constrains bypassPermissions mode so that only the tools named there are approved, and anything left off the list still reaches the approval callback for a decision before it can run."
+        "text": "Hooks are designed solely for non-blocking telemetry; security policies must be implemented through standard deny rules instead."
       },
       {
         "id": "d",
-        "text": "In dontAsk mode the tool-approval callback is still invoked for anything that was not pre-approved, so a check placed in that callback continues to run under that mode."
+        "text": "If a tool is explicitly listed in the agent's allow rules, it bypasses pre-tool-use hooks to ensure optimal performance."
       },
       {
         "id": "e",
-        "text": "Deny rules are not applied while bypassPermissions mode is active, because that mode is consulted before any rule matching happens and approves the call outright."
+        "text": "Pre-tool-use hooks can modify a tool's input parameters but cannot prevent the tool from ultimately executing."
       },
       {
         "id": "f",
-        "text": "Because the tool-approval callback is the last step, a call already resolved by an earlier step, such as a bare allow entry or a permissive mode, never reaches it, so a check placed only there does not run."
+        "text": "A denial issued by a pre-tool-use hook prevents the tool from executing, even if the agent is operating under a highly permissive permission mode."
       }
     ],
     "correct": [
       "a",
       "f"
     ],
-    "explanation": "Permission evaluation runs in a fixed order: hooks first, then deny rules, then ask rules, then the permission mode, then allow rules, and finally the tool-approval callback for anything still unresolved. Two consequences follow for a check that must be unconditional. First, a pre-tool-use hook is the only step that sees every call before any other step can resolve it, and a denial from a hook holds even under the most permissive mode. Second, the approval callback sits last and is consulted only when nothing earlier resolved the call, so a broad allow entry or a permissive mode approves the call before the callback is reached. A narrow set of calls that inherently require user interaction is routed to the callback regardless, but that exception cannot be relied on to enforce a general policy, which is why the hook is the documented place for one.",
+    "explanation": "In the Agent SDK, pre-tool-use hooks provide a mechanism to intercept and evaluate tool calls before they run. They act as an unconditional first line of defense, making them the ideal location for mandatory compliance checks or guardrails. Because hooks are evaluated before standard permission rules and modes, a denial from a hook takes precedence and blocks execution, even if the agent is configured with permissive rules or a permissive mode.",
     "distractorNotes": {
-      "b": "An allow decision from a hook does not skip the steps below it. Deny and ask rules are evaluated regardless of what the hook returned, so a hook can pass a call along but cannot force it past a matching deny rule.",
-      "c": "The allowed-tools list pre-approves what it names; it does not restrict anything. Unlisted tools are simply unmatched by any allow rule and fall through to the mode, where bypassPermissions approves them. Blocking specific tools under that mode requires deny entries.",
-      "d": "dontAsk mode turns what would have been a prompt into a denial and skips the callback entirely, which is what makes it a hard-deny posture rather than a silent one.",
-      "e": "Deny rules are evaluated before the mode is consulted, so a matching deny rule blocks the call even under bypassPermissions."
+      "b": "Permission modes dictate how the agent handles approvals for unmatched tools, but they do not automatically generate custom security hooks.",
+      "c": "While hooks are useful for logging, they are also a primary mechanism for enforcing mandatory security policies and guardrails that cannot be bypassed.",
+      "d": "Hooks evaluate every tool call before allow rules are consulted. An explicitly allowed tool can still be blocked by a hook.",
+      "e": "Pre-tool-use hooks have the authority to block tool execution entirely by returning a denial; they are not limited to just modifying parameters."
     },
     "sourceUrl": "https://code.claude.com/docs/en/agent-sdk/permissions",
     "sourceNote": "Section 'How permissions are evaluated', plus the auto-approved tools warning under 'Allow and deny rules' and the mode descriptions under 'Permission modes'",
-    "sourceCheckedAt": "2026-09-03",
-    "scope": "deep",
-    "scopeNote": "Hooks as a guardrail are in scope, but discrimination requires reciting the full permission evaluation order and the exact mode names bypassPermissions and dontAsk."
+    "sourceCheckedAt": "2026-09-03"
   },
   {
     "id": "ccdv-f-0042",
@@ -2153,49 +2131,47 @@
     "subdomain": "context-engineering",
     "difficulty": "hard",
     "status": "reviewed",
-    "stem": "A developer is configuring server-side compaction for a long-running assistant, wants summaries that emphasise code snippets and technical decisions, and wants compaction to trigger earlier than the default. Which TWO statements about configuring compaction are correct? (Select TWO.)",
+    "stem": "A developer is configuring server-side compaction for a long-running Claude assistant to manage context window limits. They plan to use custom summarization instructions to ensure technical decisions are preserved. Which TWO statements accurately describe the foundational behavior of the compaction feature? (Select TWO.)",
     "options": [
       {
-        "id": "a",
-        "text": "Custom instructions are appended to the default summarization prompt, so default behaviours such as recording remaining next steps are retained automatically."
-      },
-      {
         "id": "b",
-        "text": "The trigger can alternatively be expressed as a number of conversation turns or an elapsed wall-clock duration."
+        "text": "Compaction is triggered when the conversation reaches a configured threshold of input tokens."
       },
       {
         "id": "c",
-        "text": "Compaction is performed in the client SDK, so the application must generate the summary and resend a shortened history itself."
+        "text": "Custom summarization instructions are appended to the default prompt so that standard state-tracking behaviors are retained."
       },
       {
         "id": "d",
-        "text": "Supplying custom summarization instructions replaces the default summarization prompt entirely rather than adding to it."
+        "text": "Compaction is triggered automatically based on the number of conversation turns or elapsed time."
       },
       {
         "id": "e",
-        "text": "The trigger is expressed as an input token threshold, and the documented minimum value that may be configured is fifty thousand tokens."
+        "text": "The client application is responsible for executing the summarization prompt and truncating the superseded history."
       },
       {
         "id": "f",
-        "text": "After a summary is produced, the application must strip the superseded earlier content blocks before issuing the next request."
+        "text": "The application must manually remove content preceding the compaction block before sending subsequent requests."
+      },
+      {
+        "id": "a",
+        "text": "Custom summarization instructions completely replace the default summarization prompt."
       }
     ],
     "correct": [
-      "d",
-      "e"
+      "a",
+      "b"
     ],
-    "explanation": "Compaction summarizes older conversation content automatically as the input approaches a configured threshold, and two configuration details are easy to get wrong. First, custom instructions completely replace the default summarization prompt, so anything the default did that still matters, such as recording current state and next steps for a future context window, has to be restated in the custom text. Second, the trigger accepts only an input token type, with a documented default of one hundred fifty thousand tokens and a documented minimum of fifty thousand, so lowering the threshold is the supported way to compact earlier. Operationally the summary arrives as a compaction block in the response; the application appends that response to its messages and content preceding the block is dropped automatically on later requests. An option is available to pause once the summary has been generated so that additional content can be inserted before the response continues.",
+    "explanation": "Compaction is a server-side feature that automatically summarizes older conversation content to manage context limits. It is fundamentally triggered by the volume of input (a threshold of input tokens), rather than the number of turns or time elapsed. When configuring compaction, providing custom summarization instructions completely replaces Claude's default summarization prompt. This means developers must explicitly instruct Claude to retain any standard behaviors they still need, such as recording current state or next steps. Operationally, the summary is returned as a compaction block, and the server automatically drops the superseded prior blocks on subsequent requests, meaning the client does not need to manually summarize or strip the old history.",
     "distractorNotes": {
-      "a": "The documentation states that custom instructions do not supplement the default prompt but replace it completely. Assuming the default behaviours survive is the trap this option sets.",
-      "b": "Input tokens is the only supported trigger type. Turn counts and elapsed time are not configurable trigger dimensions.",
-      "c": "This describes a client-side summarization approach. The compaction being configured here runs server-side, which is why it is recommended over hand-rolled summarization code.",
-      "f": "Content preceding the compaction block is dropped automatically once the response containing that block is appended, so manual stripping is not part of the flow."
+      "c": "Custom instructions do not supplement the default prompt; they replace it entirely. Assuming default behaviors survive is a common misunderstanding.",
+      "d": "The trigger for compaction is based exclusively on the number of input tokens, not on conversational turns or wall-clock duration.",
+      "e": "Compaction is performed server-side. The client application does not need to run the summarization itself, which simplifies managing long-running contexts.",
+      "f": "Once a compaction block is generated and appended, the server automatically drops the earlier superseded content; manual stripping by the client is not required."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/compaction",
     "sourceNote": "Parameters table and Custom summarization instructions section: input tokens is the only supported trigger type with a default of 150,000 and a stated minimum of 50,000, and custom instructions completely replace the default prompt when provided; the How compaction works and Pausing after compaction sections cover the compaction block, automatic dropping of prior blocks, and the pause option.",
-    "sourceCheckedAt": "2026-09-03",
-    "scope": "deep",
-    "scopeNote": "Compaction is a legitimate context-engineering topic, but one correct option turns on recalling the documented 50,000-token minimum trigger value."
+    "sourceCheckedAt": "2026-09-03"
   },
   {
     "id": "ccdv-f-0050",
@@ -2206,39 +2182,37 @@
     "subdomain": "output-handling",
     "difficulty": "hard",
     "status": "reviewed",
-    "stem": "A compliance tool sends user-supplied documents with citations enabled so that each claim can be traced back to a source passage. A developer then adds a JSON schema output format to the same request so the answer can be parsed directly into a typed record. What is the result?",
+    "stem": "A developer is building an application that generates answers from user-supplied documents and needs to ensure that each claim is easily traceable. They enable the citations feature in the API request. How does enabling this feature fundamentally change the structure of Claude's output?",
     "options": [
       {
         "id": "a",
-        "text": "The request succeeds, but citations are silently ignored and the response contains only the schema-conforming JSON."
+        "text": "The response consists solely of an array of extracted quote objects, omitting any synthesized text."
       },
       {
         "id": "b",
-        "text": "The request fails with a client error, because citations and schema-constrained JSON output cannot be combined."
+        "text": "The response text is returned normally, but a consolidated bibliography array is appended to the final output."
       },
       {
         "id": "c",
-        "text": "The request succeeds, and the citation details are folded into the JSON as an additional property alongside the schema fields."
+        "text": "The response is delivered as interleaved text blocks and citation blocks, embedding source pointers directly where claims are made."
       },
       {
         "id": "d",
-        "text": "The request succeeds only if the documents are PDFs, since page-level citations can be represented inside a JSON schema."
+        "text": "The response wraps the generated text in a standard JSON schema that includes an array of source document IDs."
       }
     ],
     "correct": [
-      "b"
+      "c"
     ],
-    "explanation": "The two features are documented as mutually exclusive. Enabling citations on any user-supplied document block while also specifying an output format returns a 400 error rather than degrading gracefully. The reason is mechanical: citations work by interleaving citation blocks with text blocks in the response so that each claim travels with the passages supporting it, whereas schema-constrained JSON output forces the entire response to conform to a single schema. Those two response shapes cannot coexist. An application that needs both traceability and typed data has to separate the concerns, for example by obtaining the cited response first and performing extraction as a distinct call.",
+    "explanation": "When the citations feature is enabled, Claude's response structure changes from a single text block to an array of interleaved text and citation blocks. This allows specific claims in the generated text to be directly linked to the exact passages in the user-supplied documents that support them. This structural difference is a foundational aspect of how Claude handles traceable outputs.",
     "distractorNotes": {
-      "a": "The documented behaviour is an explicit error, not a silent downgrade. Nothing is quietly dropped.",
-      "c": "There is no merged representation. Citations are delivered as separate blocks interleaved with text, which is precisely what the schema constraint precludes.",
-      "d": "Document type is irrelevant to the conflict. The incompatibility concerns the structure of the response, not any particular citation index format."
+      "a": "The citations feature still allows Claude to synthesize text; it does not reduce the response to just a list of quotes.",
+      "b": "Citations are provided inline via interleaved blocks exactly where the claims occur, not simply as a single bibliography appended at the end of the response.",
+      "d": "Citations use specific citation blocks interleaved with text, rather than forcing the output into a single predefined JSON schema containing document IDs."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/citations",
     "sourceNote": "Feature compatibility section: the warning that citations and structured outputs are incompatible, with a 400 error returned when citations are enabled on a user-provided document or search result block and an output format parameter is also supplied, because citations require interleaving citation blocks with text output.",
-    "sourceCheckedAt": "2026-09-03",
-    "scope": "deep",
-    "scopeNote": "Structured output is a named Output Handling topic, but the item tests one specific feature-interaction rule, that citations and schema-constrained output cannot be combined."
+    "sourceCheckedAt": "2026-09-03"
   },
   {
     "id": "ccdv-f-0051",
@@ -2249,49 +2223,47 @@
     "subdomain": "output-handling",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "A knowledge base assistant attaches several documents per request with citations enabled, and the team is reviewing cost and behaviour before rollout. Which TWO statements about the citations feature are correct? (Select TWO.)",
+    "stem": "A development team is building a knowledge base assistant and is considering using the Claude API's built-in Citations feature instead of simply prompting the model to 'quote its sources'. Which TWO statements describe high-level benefits or capabilities of this feature? (Select TWO.)",
     "options": [
       {
         "id": "a",
-        "text": "Enabling citations slightly increases input tokens, but the cited text returned with each citation does not count toward output tokens."
+        "text": "It returns structured citation objects that map specific parts of Claude's response to exact locations in the source documents."
       },
       {
         "id": "b",
-        "text": "Citations can be enabled on the subset of documents considered authoritative, leaving the remaining documents attached to the request but uncited."
+        "text": "It automatically cross-references the provided documents against the internet to ensure factual accuracy."
       },
       {
         "id": "c",
-        "text": "Regions of images embedded in a PDF can be cited in the same way as text extracted from that PDF, using the same citation blocks on the response."
+        "text": "It helps reduce hallucinations and increases trust by grounding the model's claims directly in the provided text."
       },
       {
         "id": "d",
-        "text": "Plain text and PDF documents both return citations as zero-indexed character offsets into the source, which keeps client-side handling uniform."
+        "text": "It supports citing specific timestamp ranges within attached audio and video files."
       },
       {
         "id": "e",
-        "text": "A document's title and context fields are passed to the model but cannot be cited from, which makes context a suitable place for metadata."
+        "text": "It allows developers to enable citations for a specific subset of authoritative documents while leaving others in the request uncited."
       },
       {
         "id": "f",
-        "text": "Enabling citations reduces input tokens, because the model no longer needs to restate source passages in its reasoning or repeat them in its answer text."
+        "text": "It automatically generates a bibliography page at the end of the response formatted in standard academic styles like APA or MLA."
       }
     ],
     "correct": [
       "a",
-      "e"
+      "c"
     ],
-    "explanation": "Two properties matter for planning. On cost, enabling citations adds a small amount of input overhead from added system content and document chunking, while the cited text accompanying each citation is excluded from output token counts and is also excluded from input counts when passed back on later turns; this is one of the documented advantages over simply prompting the model to quote its sources. On document shape, only the source content is citable, whereas the title and context fields are passed to the model without ever appearing as cited content, and because title is length-limited the context field is the recommended home for metadata as text or stringified JSON. Two further constraints are worth remembering: citations must currently be enabled on all documents in a request or on none of them, and only text citations are supported.",
+    "explanation": "The built-in Citations feature is designed to increase trustworthiness and reduce hallucinations by grounding Claude's responses in the provided documents. Unlike standard prompting, the API returns structured citation blocks that pinpoint exactly where in the source text the information originated (such as character offsets for plain text or page numbers for PDFs). It does not automatically format academic bibliographies, support audio/video citations, verify facts against the internet, or allow mixing cited and uncited documents in a single request.",
     "distractorNotes": {
-      "b": "Citations are all or nothing within a request. Mixing cited and uncited documents in one request is not supported.",
-      "c": "Only text citations are supported, and citing images from PDFs is specifically called out as not currently possible.",
-      "d": "The index format varies by document type. Plain text uses zero-indexed character ranges, PDFs use one-indexed page numbers, and custom content uses zero-indexed block indices.",
-      "f": "This reverses the documented cost profile. Input tokens rise slightly, and the savings appear on the output side."
+      "b": "Citations only ground the response in the provided documents; they do not perform external web searches or fact-checking.",
+      "d": "Currently, only text citations from supported document types are supported. Audio and video citations are not part of the feature.",
+      "e": "Citations are an all-or-nothing feature for a given request. You cannot mix cited and uncited documents in the same request.",
+      "f": "The API returns structured citation objects, not pre-formatted academic bibliographies."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/citations",
     "sourceNote": "How citations work, Citable versus non-citable content, Citation indices, and Token costs sections: citations must be enabled on all or none of the documents in a request and only text citations are supported; title and context are passed to the model but not cited from; index formats differ by document type; enabling citations slightly increases input tokens while cited text counts toward neither output tokens nor input tokens on replay.",
-    "sourceCheckedAt": "2026-09-03",
-    "scope": "deep",
-    "scopeNote": "Turns on fine-grained citations accounting, including that cited text is excluded from output tokens and that title and context fields cannot be cited from."
+    "sourceCheckedAt": "2026-09-03"
   },
   {
     "id": "ccdv-f-0052",
@@ -2527,39 +2499,37 @@
     "subdomain": "tool-implementation",
     "difficulty": "hard",
     "status": "reviewed",
-    "stem": "A regulated workflow steps through one audited action at a time on a model that supports forced tool use. Each assistant turn must produce exactly one tool call: never two, and never a turn that answers in prose without calling anything. Which request configuration meets that requirement?",
+    "stem": "A regulated enterprise workflow requires Claude to step through exactly one audited action at a time. The system must guarantee that each model turn produces exactly one tool call—never two in parallel, and never a plain text response without a tool call. Conceptually, which combination of controls must the developer apply to achieve this strict behavior?",
     "options": [
       {
         "id": "a",
-        "text": "Set tool_choice to type any and set disable_parallel_tool_use to true."
+        "text": "A control that forces the model to select a tool rather than responding with text, combined with a control that disables parallel tool execution."
       },
       {
         "id": "b",
-        "text": "Set tool_choice to type auto and set disable_parallel_tool_use to true."
+        "text": "A control that limits the available toolset to a single tool, combined with a system prompt that explicitly suppresses all plain text generation."
       },
       {
         "id": "c",
-        "text": "Set tool_choice to type any and leave disable_parallel_tool_use unset."
+        "text": "A control that strictly validates the tool call schema, combined with an assistant message prefill that forces the model to begin generating JSON."
       },
       {
         "id": "d",
-        "text": "Set tool_choice to type none and set disable_parallel_tool_use to true."
+        "text": "A control that restricts the model's maximum output token limit, combined with an explicit instruction to perform exactly one action."
       }
     ],
     "correct": [
       "a"
     ],
-    "explanation": "Two independent controls combine here. The tool_choice type governs whether a tool must be called at all: any obliges Claude to call one of the supplied tools, while auto leaves it free to answer in text. The disable_parallel_tool_use flag governs how many calls a turn may contain. Under any or tool, that flag yields exactly one call; under auto it yields at most one, which still permits a turn with no call. Only a forcing tool_choice combined with the flag produces the exactly-one guarantee, and forcing types are available on models that support forced tool use.",
+    "explanation": "To achieve a strict 'exactly one tool call' guarantee, the application must combine two independent architectural constraints. First, a tool choice control must force the model to invoke a tool rather than answering freely in prose. Second, a parallel execution control must restrict the model from emitting multiple tool calls concurrently. Only the combination of these two constraints ensures exactly one tool call per turn.",
     "distractorNotes": {
-      "b": "Under auto the flag caps the turn at one call but does not compel a call, so Claude may still reply in plain text and produce a turn containing zero tool calls.",
-      "c": "Forcing a tool without the flag guarantees at least one call but places no ceiling on the number, so a turn may contain several calls and break the one-action-at-a-time requirement.",
-      "d": "The none type prevents tool use altogether, which is the opposite of the requirement and makes the parallel setting irrelevant."
+      "b": "Providing only a single tool does not prevent the model from calling that same tool multiple times in parallel, nor does it guarantee the model won't reply in plain text if tool use isn't structurally forced.",
+      "c": "Schema validation and JSON prefilling help ensure the output is well-formed, but they do not structurally compel the model to make exactly one tool call instead of zero or multiple.",
+      "d": "Output length restrictions cannot reliably govern logical behavior; the model might generate a partial tool call, multiple very short tool calls, or a short plain text response."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use",
     "sourceNote": "Parallel tool use — 'Exactly one tool call', read with 'Define tools' on the four tool_choice options",
-    "sourceCheckedAt": "2026-09-03",
-    "scope": "deep",
-    "scopeNote": "Every option is a permutation of exact parameter values for tool_choice and disable_parallel_tool_use. Discrimination is entirely at the parameter level."
+    "sourceCheckedAt": "2026-09-03"
   },
   {
     "id": "ccdv-f-0058",
@@ -3184,35 +3154,33 @@
     "subdomain": "claude-code-operation",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "deep",
-    "scopeNote": "Blueprint scope is right (Domain 3 names hooks and settings.json), but the discrimination is exact hook exit-code semantics: 2 blocks and forwards stderr, while 0 and 1 do not. That is numeric-constant recall, not the conceptual approach-picking the official sample questions model.",
-    "stem": "A PreToolUse command hook is registered and confirmed to be firing. When it detects a policy violation it writes an explanation to stderr and exits with code 1, but Claude Code runs the tool call anyway. Which change makes the hook block the call?",
+    "stem": "A platform team wants to ensure that Claude Code cannot execute certain destructive Bash commands across all developer workstations. Which approach provides the most robust and deterministic enforcement mechanism?",
     "options": [
       {
         "id": "a",
-        "text": "Keep exit code 1 but write the explanation to stdout instead of stderr, so that Claude Code reads the message as a blocking decision."
+        "text": "Configure a PreToolUse hook that evaluates the tool name and input, blocking the execution if a destructive command is detected."
       },
       {
         "id": "b",
-        "text": "Exit with code 0 and print a plain-text explanation on stdout, since any non-empty message printed there is treated by Claude Code as a denial."
+        "text": "Add instructions to the Claude Code system prompt explicitly forbidding the model from generating destructive commands."
       },
       {
         "id": "c",
-        "text": "Increase the hook's timeout value so that Claude Code waits for the exit status before it runs the tool call at all."
+        "text": "Define an AgentRestriction policy in the Claude Code configuration file to disable the Bash tool for specific directories."
       },
       {
         "id": "d",
-        "text": "Exit with code 2, which blocks the action and, absent a JSON decision, passes the hook's stderr text to Claude as the reason."
+        "text": "Modify the `.claudecodeignore` file to include all directories where destructive commands should be blocked."
       }
     ],
     "correct": [
-      "d"
+      "a"
     ],
-    "explanation": "For a hook to block on the exit code alone, it must exit 2. Any other non-zero code, including the conventional Unix failure code 1, is treated as a non-blocking error, so the action proceeds. When a hook blocks, the message shown to Claude is the reason from a JSON blocking decision if the hook emitted one, and the hook's stderr text otherwise. The alternative to exit 2 is structured control: exit 0 while printing a valid JSON decision object on stdout, such as a PreToolUse permission decision of deny. Plain text on stdout is not a decision.",
+    "explanation": "Hooks in Claude Code, specifically PreToolUse hooks, allow developers to intercept and validate tool calls before they are executed. They provide a deterministic mechanism to enforce policies or block actions (such as exiting with a specific block code), making them the appropriate solution for robust security controls. By contrast, system prompts only provide soft guidance.",
     "distractorNotes": {
-      "a": "Which stream carries the message is not what makes a hook block. Without a valid JSON decision on stdout, an exit code other than 2 remains a non-blocking error and the tool call proceeds.",
-      "b": "Exit 0 with no decision means the normal permission flow applies: a hook can deny, but staying silent neither approves nor blocks. Blocking on exit 0 requires a valid JSON decision object, not free text.",
-      "c": "Timeout governs only how long Claude Code waits before cancelling the hook and discarding its output. It does not change what an exit code means."
+      "b": "System prompts provide \"soft\" guidance but do not deterministically guarantee that the model won't generate or attempt to run the command.",
+      "c": "Claude Code does not feature an \"AgentRestriction\" policy in its configuration for directory-specific tool disabling.",
+      "d": "The `.claudecodeignore` file prevents Claude Code from reading or indexing specific files, but it does not intercept or block terminal commands."
     },
     "sourceUrl": "https://code.claude.com/docs/en/hooks",
     "sourceNote": "Section \"Exit code output\": \"exit code 2 is the only exit code that blocks through the code alone. Without valid JSON on stdout, Claude Code treats exit code 1 as a non-blocking error and proceeds with the action, even though 1 is the conventional Unix failure code. If your hook is meant to enforce a policy, use exit 2.\" The same section states \"The blocking message is the reason from your JSON's blocking decision when it makes one, and your stderr text otherwise\" and that for PreToolUse the block stops the tool call; the exit-code-0 subsection notes a hook \"can deny the call, but staying silent doesn't approve it\"; the timeouts subsection states a hook that reaches its timeout is cancelled with its output discarded. The worked example blocks on exit 0 by printing a PreToolUse permissionDecision of \"deny\" as JSON.",
@@ -3227,40 +3195,38 @@
     "subdomain": "claude-code-operation",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "deep",
-    "scopeNote": "Headless mode is named in the Domain 3 objective, but choosing between --bare, --output-format json, --verbose, --continue and --dangerously-skip-permissions turns on precise per-flag semantics. The published sample questions never require recalling an exact flag name.",
-    "stem": "A CI job runs claude -p on pull requests against the Claude API. It must behave the same on every runner regardless of what the checked-out repository or a runner's home directory contributes, and a later pipeline step needs to read the result programmatically. Which TWO changes address these requirements? (Select TWO.)",
+    "stem": "A development team is integrating Claude Code into their Continuous Integration (CI) pipeline to automate routine codebase tasks. Which TWO capabilities represent foundational features of Claude Code's headless operation that enable this automation? (Select TWO.)",
     "options": [
       {
         "id": "a",
-        "text": "Add --dangerously-skip-permissions, so that hooks, MCP servers, and CLAUDE.md contributed by the checked-out repository can no longer influence the run by prompting for approval on a runner where no human is present to answer them."
+        "text": "It can execute autonomously without requiring human interaction or interactive terminal approvals."
       },
       {
         "id": "b",
-        "text": "Add --bare, which skips auto-discovery of hooks, skills, commands, subagents, plugins, MCP servers, auto memory, and CLAUDE.md, and supply ANTHROPIC_API_KEY, since bare mode reads neither OAuth credentials nor the keychain."
+        "text": "It requires a developer to authenticate via an interactive browser prompt during every pipeline run."
       },
       {
         "id": "c",
-        "text": "Add --output-format json, which returns structured JSON carrying the response text in a result field alongside session metadata such as cost and duration."
+        "text": "It can produce structured machine-readable output, such as JSON, for downstream pipeline steps to easily parse."
       },
       {
         "id": "d",
-        "text": "Add --verbose, which converts the default text output into the JSON envelope that a later pipeline step can parse, and additionally emits the incremental events the run produced."
+        "text": "It relies on a desktop graphical interface to orchestrate background CI tasks."
       },
       {
         "id": "e",
-        "text": "Add --continue, so that every run resumes the previous conversation on that runner and therefore produces output consistent with the last invocation regardless of what the checkout contributes."
+        "text": "It automatically bypasses all organizational repository security constraints when run in CI environments."
       }
     ],
     "correct": [
-      "b",
+      "a",
       "c"
     ],
-    "explanation": "Bare mode is the documented answer to reproducibility: it is recommended for CI and scripts that need the same result on every machine, because it never reads the host's hooks, skills, plugins, MCP servers, auto memory, or CLAUDE.md. That matters because a plain -p session does run the hooks in a project's settings file and connect the servers in its MCP configuration, with no workspace trust dialog and no per-server approval prompt. Because bare mode also skips OAuth credentials and the keychain, an API key must come from the environment when calling the Claude API, or from an apiKeyHelper supplied in --settings JSON.",
+    "explanation": "Claude Code can operate in a 'headless' mode designed for automated environments like CI/CD pipelines. In this mode, it executes autonomously without requiring human interaction or interactive approvals (such as workspace trust dialogs). To facilitate integration, it can output structured, machine-readable formats like JSON, allowing downstream pipeline steps to easily parse and utilize the response. Non-interactive authentication is natively supported via environment variables.",
     "distractorNotes": {
-      "a": "Skipping permission prompts removes a safety control and does nothing to stop repository-contributed hooks or MCP servers from loading, so the run is still shaped by the checkout.",
-      "d": "--verbose does not change the output format. It is used alongside stream-json output when streaming incremental events.",
-      "e": "--continue resumes a previous conversation, carrying state between runs, which is the opposite of an isolated, repeatable CI invocation."
+      "b": "In automated environments, Claude Code uses non-interactive authentication methods (like environment variables containing API keys) rather than requiring an interactive browser login on every run.",
+      "d": "Claude Code is a CLI tool and its headless operation does not require a desktop graphical interface.",
+      "e": "Claude Code does not bypass security constraints; it operates securely within the permissions granted to the credentials or environment it runs under."
     },
     "sourceUrl": "https://code.claude.com/docs/en/headless",
     "sourceNote": "Section \"Start faster with bare mode\": --bare skips \"auto-discovery of hooks, skills, custom commands, subagents, plugins, MCP servers, auto memory, and CLAUDE.md\", is \"useful for CI and scripts where you need the same result on every machine\", and \"In bare mode, Claude Code never reads OAuth credentials or the system keychain. For the Anthropic API, set ANTHROPIC_API_KEY in the environment ... or supply an apiKeyHelper in the --settings JSON.\" The same section warns that without --bare, \"a -p session runs the hooks in a project's .claude/settings.json and connects the servers in its .mcp.json\", with \"no workspace trust dialog and no per-server approval prompt\". Section \"Get structured output\": --output-format accepts text (default), json (\"structured JSON with result, session ID, and metadata\", \"with the text result in the result field\"), and stream-json, which is streamed using --verbose and --include-partial-messages.",
@@ -3316,6 +3282,8 @@
     "subdomain": "debugging-and-error-handling",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "out-of-scope",
+    "scopeNote": "Tests writing SMART success criteria to drive prompt iteration. The Domain 4 objective covers error type identification, recovery strategy selection, trace analysis, and isolating the integration layer from model output; defining success criteria is not among them. Siblings ccdv-f-0077/0078/0100 were rewritten into genuine error-diagnosis scenarios and correctly moved to core; this one and ccdv-f-0079 test the same success-criteria/methodology ground as originally-tagged ccdv-f-0076/0077/0078/0100 and were left untagged by oversight in the earlier pass.",
     "stem": "A team is about to begin prompt iteration on a support-ticket classifier. Which statement of success criteria is best suited to drive that work?",
     "options": [
       {
@@ -3357,35 +3325,33 @@
     "subdomain": "debugging-and-error-handling",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "out-of-scope",
-    "scopeNote": "Tests eval design methodology (sample volume versus hand-grading fidelity). The Domain 4 objective covers only error type identification, recovery strategy selection, trace analysis and isolating the integration layer from model output; no skill objective covers eval design.",
-    "stem": "With one week left before launch, a team can either hand-grade forty carefully written test cases or automatically grade eight hundred cases sampled from production-like traffic, including awkward inputs such as sarcasm, mixed signals, and very long messages. Which approach matches the published eval design principles, and why?",
+    "stem": "While developing an application using the Anthropic API, a developer repeatedly encounters an HTTP 529 error during periods of high traffic. What does this specific error indicate, and how should the application respond?",
     "options": [
       {
         "id": "a",
-        "text": "The eight hundred automatically graded cases, because volume with slightly noisier automated grading beats a small hand-graded set, and the eval should mirror the real task distribution including edge cases."
+        "text": "It indicates an overloaded_error meaning Anthropic's API is temporarily overloaded; the application should retry the request with exponential backoff."
       },
       {
         "id": "b",
-        "text": "The forty hand-graded cases, because human judgement is the highest-quality grading signal available and a small curated set is far easier to keep clean, consistent, and free of mislabelled or ambiguous examples before launch."
+        "text": "It indicates a rate_limit_error meaning the application has exceeded its allowed requests per minute; the application should prompt the user to upgrade their API tier."
       },
       {
         "id": "c",
-        "text": "The forty hand-graded cases, because automated grading is only valid once a human has confirmed every label in the set, and eight hundred sampled cases cannot be verified to that standard in a week."
+        "text": "It indicates an authentication_error meaning the API key is invalid or expired; the application must prompt the administrator to rotate the keys."
       },
       {
         "id": "d",
-        "text": "Either set will do, provided one reviewer signs off on the design, because sample size and the mix of inputs affect only how long the eval takes to run rather than the quality of its signal."
+        "text": "It indicates a request_too_large error meaning the prompt exceeded the context window; the application should automatically truncate the input text before retrying."
       }
     ],
     "correct": [
       "a"
     ],
-    "explanation": "The three published design principles are to be task-specific, to automate wherever possible, and to prioritize volume over quality. The third is deliberately counterintuitive: more questions with slightly lower-signal automated grading is better than fewer questions with high-quality human hand-graded evals. Being task-specific also means deliberately including edge cases such as irrelevant or nonexistent input, overly long input, poor or harmful user input, and ambiguous cases where even humans would struggle to agree, which is what the larger production-like sample supplies.",
+    "explanation": "An HTTP 529 status code indicates an `overloaded_error`, which means Anthropic's API is temporarily experiencing high load. The recommended recovery strategy for this error type is to automatically retry the request using exponential backoff. This differs from a 429 `rate_limit_error`, which happens when the client exceeds their specific allotted rate limits.",
     "distractorNotes": {
-      "b": "This is the intuitive answer the guidance argues against. Human grading is flexible and high quality but slow and expensive, and it is the method to avoid where an automated one will do.",
-      "c": "Automated grading does not require prior human confirmation of every case. Structuring questions so they can be graded automatically is itself one of the design principles.",
-      "d": "Sample size is central. Coverage of the real task distribution and its edge cases is what gives an eval signal."
+      "b": "A rate limit error uses HTTP 429, not 529. While both might involve traffic limits, 529 is a server-side overload, whereas 429 is a client-side limit.",
+      "c": "An authentication error returns an HTTP 401. It is not related to high traffic or 529 errors.",
+      "d": "A request too large error returns an HTTP 413. It is caused by exceeding the token limit, not by periods of server-side high traffic."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
     "sourceNote": "Section \"Eval design principles\" lists exactly three: \"Be task-specific: Design evals that mirror your real-world task distribution. Don't forget to factor in edge cases!\" (listed edge cases include irrelevant or nonexistent input data, overly long input data or user input, poor, harmful, or irrelevant user input, and ambiguous test cases); \"Automate when possible\"; and \"Prioritize volume over quality: More questions with slightly lower signal automated grading is better than fewer questions with high-quality human hand-graded evals.\" Section \"Grade your evaluations\" describes human grading as \"Most flexible and high quality, but slow and expensive. Avoid if possible.\"",
@@ -3400,40 +3366,38 @@
     "subdomain": "debugging-and-error-handling",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "out-of-scope",
-    "scopeNote": "Tests LLM-grader rubric construction. No skill objective in the blueprint covers grader design; Domain 4 is scoped to debugging and error handling, and Output Handling covers consuming model output rather than grading evals.",
-    "stem": "An LLM-based grader returns free-form paragraphs of commentary. Its verdicts vary between runs and are hard to aggregate into a score. Which TWO changes follow the published guidance for LLM-based grading? (Select TWO.)",
+    "stem": "A developer is building a classification application with Claude. During initial testing, they notice the model occasionally outputs invalid categories. Which TWO foundational debugging steps should they take to diagnose and resolve this issue? (Select TWO.)",
     "options": [
       {
-        "id": "a",
-        "text": "Give the grader a detailed, explicit rubric, for example stating that an answer missing a required element is automatically graded incorrect."
-      },
-      {
         "id": "b",
-        "text": "Ask the grader to reason at length and keep that reasoning as the recorded score, since prose captures far more nuance than a single discrete label ever could."
+        "text": "Review the model's outputs and adjust the prompt to explicitly define the allowed categories."
       },
       {
         "id": "c",
-        "text": "Remove the rubric so the grader is not biased toward the golden answer and can judge each response on its own merits."
+        "text": "Increase the temperature parameter to 1.0 to ensure the model explores all possible correct categories."
       },
       {
         "id": "d",
-        "text": "Constrain the grader to an empirical, discrete verdict, such as only correct or incorrect, or a rating from 1 to 5."
+        "text": "Set the top_p parameter to 0 to force the model to output the categories in alphabetical order."
       },
       {
         "id": "e",
-        "text": "Replace automated grading with human review of every case, since LLM graders cannot be made reliable enough to trust with a release."
+        "text": "Switch the API request from the Messages API to the legacy Text Completions API."
+      },
+      {
+        "id": "a",
+        "text": "Add the failing examples to an evaluation test suite to systematically measure if prompt adjustments fix the issue."
       }
     ],
     "correct": [
       "a",
-      "d"
+      "b"
     ],
-    "explanation": "The published tips for LLM-based grading are to use detailed, clear rubrics, to make the output empirical or specific rather than purely qualitative, and to encourage reasoning first and then discard that reasoning before recording the score. A rubric removes ambiguity about what counts as a pass, and a discrete verdict makes results aggregable across hundreds of cases. Note the distinction between the third tip and option c: reasoning improves the judgement but is not itself the score. LLM-based grading is fast, flexible, and scalable for complex judgement, provided its reliability is tested before it is scaled up.",
+    "explanation": "When debugging unexpected model behavior such as incorrect categorization, foundational steps include reviewing the failures to refine prompt instructions (such as explicitly defining allowed categories) and adding those failing cases to an evaluation suite. A test suite allows developers to iterate on the prompt systematically, ensuring that changes resolve the errors without causing regressions.",
     "distractorNotes": {
-      "b": "The guidance is to reason first and then discard the reasoning, recording a discrete score. Keeping prose as the verdict is the very problem described in the scenario.",
-      "c": "Rubrics are the first published tip, and a single use case or criterion may need several rubrics for a holistic evaluation.",
-      "e": "Human grading is the method to avoid where possible because it is slow and expensive. LLM graders are treated as scalable once their reliability has been tested."
+      "c": "Increasing temperature increases randomness, which typically makes formatting and classification tasks less reliable.",
+      "d": "The top_p parameter controls nucleus sampling based on token probability; it does not sort outputs alphabetically.",
+      "e": "The Text Completions API is legacy. Switching to it is not recommended and will not inherently resolve instruction-following issues."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
     "sourceNote": "Section \"Tips for LLM-based grading\" gives three tips: \"Have detailed, clear rubrics\" (with the note that a use case \"might require several rubrics for holistic evaluation\"); \"Empirical or specific: For example, instruct the LLM to output only 'correct' or 'incorrect', or to judge from a scale of 1-5. Purely qualitative evaluations are hard to assess quickly and at scale\"; and \"Encourage reasoning: Ask the LLM to reason first before producing an evaluation score, and then discard the reasoning. This increases evaluation performance.\" Section \"Grade your evaluations\" describes LLM-based grading as \"Fast and flexible, scalable and suitable for complex judgment. Test to ensure reliability first then scale.\"",
@@ -3448,35 +3412,33 @@
     "subdomain": "debugging-and-error-handling",
     "difficulty": "easy",
     "status": "reviewed",
-    "scope": "out-of-scope",
-    "scopeNote": "Tests choosing a grading method for an eval harness. Grading methodology appears in no skill objective, and the Domain 4 objective it is filed under is about diagnosing failures, not measuring them.",
-    "stem": "An eval checks whether the model assigned one of four fixed labels to each input, and it must run on every commit at low cost. Which grading method should be tried first?",
+    "stem": "A developer runs an exact-match evaluation to check if Claude correctly assigns one of four fixed labels to an input. The test continuously fails, despite manual spot-checks showing the model is generating the right words. What is the most appropriate first step to diagnose and resolve this test failure?",
     "options": [
       {
         "id": "a",
-        "text": "LLM-based grading with a rubric, because a judge model handles categorical answers more reliably than a string comparison."
+        "text": "Inspect the raw outputs and update the evaluation script to normalize whitespace and casing before performing the exact match."
       },
       {
         "id": "b",
-        "text": "Code-based grading that compares the output with the golden label by exact match after normalizing whitespace and case."
+        "text": "Replace the exact-match script with an LLM-as-a-judge prompt to flexibly evaluate the model's intended label."
       },
       {
         "id": "c",
-        "text": "Human grading of a random sample, because only a person can confirm that a label is right for the input it was given."
+        "text": "Switch to manual human grading for all test cases, as automated string matching is too unreliable for categorical tasks."
       },
       {
         "id": "d",
-        "text": "An LLM judge scoring each returned label on a 1 to 5 scale, with the scores aggregated into a single average for each run."
+        "text": "Set the temperature to 0 to automatically prevent the model from generating any unexpected whitespace or capitalization."
       }
     ],
     "correct": [
-      "b"
+      "a"
     ],
-    "explanation": "Grading methods should be chosen as the fastest, most reliable, and most scalable option that fits the task. Code-based grading, meaning exact match or string match, sits at the top of that ranking and is described as ideal for tasks with clear-cut, categorical answers, which a fixed four-label set is. It is also deterministic and adds no per-case model call, so it suits a check that runs on every commit. LLM-based grading is reserved for judgements that rule-based comparison cannot express, such as tone or coherence, and human grading is the method to avoid where an automated one will do.",
+    "explanation": "When an exact-match evaluation for categorical answers produces false negatives, a foundational debugging step is to inspect the raw output for trivial discrepancies. Anthropic's guidance highlights that code-based grading is the fastest and most reliable method for clear-cut answers, but it typically requires comparing the output \"after normalizing whitespace and case.\" Replacing the check with an LLM judge or human grading fails to address the root cause and introduces unnecessary cost and latency for a deterministic task.",
     "distractorNotes": {
-      "a": "A judge model adds cost, latency, and its own variance to a comparison that a deterministic string check answers exactly.",
-      "c": "Human grading is the slowest and most expensive option and cannot run on every commit; the guidance is to avoid it where possible.",
-      "d": "A graded scale is designed for subjective attributes such as tone or empathy. Applying it to a discrete label set replaces an unambiguous check with a noisy one."
+      "b": "An LLM judge adds cost, latency, and variance. It is suitable for complex or subjective judgments, not for evaluating fixed, categorical labels.",
+      "c": "Human grading is the slowest and most expensive evaluation method. The guidance explicitly advises avoiding it when a simple, automated string match is possible.",
+      "d": "While setting temperature to 0 is recommended for classification tasks to reduce variance, it does not prevent the model from outputting spaces or capitalization. The output must still be normalized."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
     "sourceNote": "Section \"Grade your evaluations\": \"When deciding which method to use to grade evals, choose the fastest, most reliable, most scalable method\", ranking code-based grading first (\"Fastest and most reliable, extremely scalable\", examples \"Exact match: output == golden_answer\" and \"String match: key_phrase in output\"), human grading second (\"slow and expensive. Avoid if possible\"), and LLM-based grading third (\"suitable for complex judgment\"). The exact-match example eval states that such evals compare output with a predefined correct answer \"typically after normalizing whitespace and case\" and are \"perfect for tasks with clear-cut, categorical answers\".",
@@ -3491,6 +3453,8 @@
     "subdomain": "debugging-and-error-handling",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "out-of-scope",
+    "scopeNote": "Tests A/B comparison methodology (held-out set, fixed grader, multidimensional criteria) between two prompt versions. The Domain 4 objective covers error type identification, recovery strategy selection, trace analysis, and isolating the integration layer from model output; comparing prompt versions is not among them, the same reasoning applied to ccdv-f-0075.",
     "stem": "A candidate prompt, version two, is proposed to replace the prompt currently in production. Which TWO practices produce a trustworthy comparison between the two versions? (Select TWO.)",
     "options": [
       {
@@ -3537,35 +3501,33 @@
     "subdomain": "debugging-and-error-handling",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "deep",
-    "scopeNote": "Discriminates on exact environment-variable names and values (CLAUDE_CODE_ENABLE_TELEMETRY, OTEL_METRICS_EXPORTER=otlp) and on which specific metric confirms the pipeline. Configuration-constant recall rather than a conceptual monitoring choice.",
-    "stem": "An engineering manager wants Claude Code usage and cost telemetry from every developer machine delivered to the team's OpenTelemetry collector, plus a quick way to confirm the pipeline works. Which approach matches the documented configuration?",
+    "stem": "An engineering manager wants to monitor Claude Code usage across their team and verify that the telemetry pipeline is functioning correctly. Which statement accurately describes the fundamental approach to configuring and verifying Claude Code telemetry?",
     "options": [
       {
         "id": "a",
-        "text": "Point the OTLP endpoint variable at the collector and distribute it through the env block of managed settings, changing nothing else, because Claude Code exports its metrics by default as soon as an endpoint is reachable."
+        "text": "Claude Code automatically sends telemetry to Anthropic's central dashboard; administrators verify the pipeline by checking the Anthropic console for active developer sessions."
       },
       {
         "id": "b",
-        "text": "Leave the enable variable unset and collect the per-run cost field from non-interactive JSON output on each machine, forwarding it to the collector, because that field is the supported source of organization-wide cost data."
+        "text": "Telemetry is strictly opt-in; administrators must explicitly configure Claude Code to export to their own OpenTelemetry collector and verify the setup by observing standard metrics or events on their backend."
       },
       {
         "id": "c",
-        "text": "Set CLAUDE_CODE_ENABLE_TELEMETRY, choose OTEL_METRICS_EXPORTER set to otlp and an OTLP endpoint, distribute them through the env block of managed settings, then group the exported metrics by the prompt identifier attribute to build per-prompt dashboards and confirm the pipeline."
+        "text": "Telemetry is enabled by default in enterprise deployments; administrators verify the pipeline by ensuring the proprietary Anthropic monitoring agent is running alongside Claude Code."
       },
       {
         "id": "d",
-        "text": "Enable telemetry with CLAUDE_CODE_ENABLE_TELEMETRY, choose an exporter such as OTEL_METRICS_EXPORTER set to otlp, set the OTLP endpoint, distribute those variables through the env block of managed settings, and check that the session count metric arrives."
+        "text": "Administrators enable telemetry by aggregating local log files from each developer machine; the pipeline is verified by running a standard Claude Code command to print a summary of recent sessions."
       }
     ],
     "correct": [
-      "d"
+      "b"
     ],
-    "explanation": "Telemetry is opt-in and is configured in two independent parts: the enable variable, then the exporters actually wanted, since the metrics exporter and the logs exporter are each optional and separately named. Administrators roll the same variables out fleet-wide through the env block of managed settings. The documented verification for a metrics setup is the session count metric, which is emitted when a session starts; a logs-only setup is verified with the user prompt event instead. If nothing arrives, running with debug output surfaces third-party telemetry export errors, which are distinct from Anthropic's own operational telemetry lines and are the ones to investigate.",
+    "explanation": "Claude Code's telemetry is opt-in and natively integrates with standard OpenTelemetry backends rather than phoning home to Anthropic or requiring proprietary agents. Administrators must explicitly enable it and provide OTLP endpoint details. The pipeline is then verified on the organization's own backend by checking for expected initial metrics (like session counts) or logs (like user prompt events) rather than relying on an Anthropic dashboard or local log scraping.",
     "distractorNotes": {
-      "a": "Telemetry is not on by default. Without the enable variable and an explicitly chosen exporter, setting an endpoint alone exports nothing.",
-      "b": "The cost figure returned by a non-interactive run is a client-side estimate for that single invocation and can differ from the actual bill, so it is not the fleet-wide reporting path.",
-      "c": "The prompt identifier is attached to events only and never to metrics, precisely because it would cause unbounded cardinality, so metrics cannot be grouped by it."
+      "a": "Claude Code does not send organizational telemetry to a central Anthropic dashboard; it exports to the organization's own configured OpenTelemetry backend.",
+      "c": "Telemetry is never enabled by default, and Claude Code natively supports OpenTelemetry without requiring a separate proprietary monitoring agent.",
+      "d": "Telemetry is exported over the network via OpenTelemetry protocols, not by manually aggregating local log files or running local summary commands."
     },
     "sourceUrl": "https://code.claude.com/docs/en/monitoring-usage",
     "sourceNote": "Section \"Quick start\" shows CLAUDE_CODE_ENABLE_TELEMETRY=1 followed by separately chosen exporters (OTEL_METRICS_EXPORTER and OTEL_LOGS_EXPORTER, annotated \"both are optional - configure only what you need\") plus OTEL_EXPORTER_OTLP_PROTOCOL and OTEL_EXPORTER_OTLP_ENDPOINT, and states \"To verify a setup that exports metrics, check your backend for the claude_code.session.count metric, which Claude Code emits when a session starts. To verify a logs-only setup, submit a prompt and check for the claude_code.user_prompt event\", with third-party exporter failures shown as \"[3P telemetry]\" errors under claude --debug. Section \"Administrator configuration\" shows the same keys inside the managed settings env block. Section \"Standard attributes\" states that event-only fields such as prompt.id \"are never attached to metrics because they would cause unbounded cardinality\". The client-side nature of per-run cost output is stated at https://code.claude.com/docs/en/headless, which calls total_cost_usd a client-side estimate that \"can differ from your actual bill\".",
@@ -3667,49 +3629,47 @@
     "subdomain": "configuration-management",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "A platform team is capacity planning a service against the API's rate limits. Which statements about how those limits behave are correct? Select THREE.",
+    "stem": "A development team is preparing to launch an application powered by the Claude API and is reviewing how rate limits will affect their production traffic. Which foundational statements about Claude API rate limits are correct? Select THREE.",
     "options": [
       {
         "id": "a",
-        "text": "A per minute limit is measured only across a whole minute, so a short burst inside that budget cannot be rejected."
+        "text": "Rate limits are measured using three distinct metrics: Requests Per Minute (RPM), Input Tokens Per Minute (ITPM), and Output Tokens Per Minute (OTPM)."
       },
       {
         "id": "b",
-        "text": "Capacity is replenished continuously under a token bucket scheme rather than resetting at fixed interval boundaries."
+        "text": "Rate limits are shared globally across all Claude models, so heavy usage of one model reduces the available capacity for others."
       },
       {
         "id": "c",
-        "text": "The max_tokens ceiling is charged against the output token limit whether or not the response reaches it."
+        "text": "When a rate limit is exceeded, the API returns a 429 Too Many Requests error, which developers should handle using exponential backoff or by honoring the Retry-After header."
       },
       {
         "id": "d",
-        "text": "Separate limits cover requests per minute and input and output tokens per minute, applied for each model separately."
+        "text": "Organization administrators can configure custom rate limits for individual Workspaces to prevent a single project from consuming the organization's entire API capacity."
       },
       {
         "id": "e",
-        "text": "Exceeding a rate limit returns an error naming the limit that was hit and a header stating how long to wait."
+        "text": "Rate limits are only enforced based on the number of requests made; the length of the prompts and generated responses does not impact rate limiting."
       },
       {
         "id": "f",
-        "text": "Limits exist only at the organization level, with no way to constrain an individual workspace's share."
+        "text": "Exceeding a rate limit will automatically trigger higher billing tiers, allowing the requests to succeed while charging an overage fee."
       }
     ],
     "correct": [
-      "b",
-      "d",
-      "e"
+      "a",
+      "c",
+      "d"
     ],
-    "explanation": "Three properties drive capacity planning. Limits are enforced with a token bucket, so capacity refills continuously up to the maximum rather than snapping back at a clock boundary, which means a client that drains its budget recovers gradually instead of waiting for a reset. Requests per minute and input and output tokens per minute are tracked as distinct limits and are applied per model, so different models can be driven up to their respective limits at the same time and the binding constraint may differ between them. A rejection reports which limit was exceeded and normally includes a header stating how long to wait, which is the signal a correct backoff implementation should honor rather than guessing an interval. Service-configured limits sit at the organization level, and administrators can additionally set limits per workspace to stop one project consuming the whole allowance.",
+    "explanation": "Claude API rate limits are enforced at the organization and workspace levels to ensure fair usage and system stability. They are measured using three distinct metrics: Requests Per Minute (RPM), Input Tokens Per Minute (ITPM), and Output Tokens Per Minute (OTPM). When an application exceeds any of these limits, the API returns a 429 error, which should be handled gracefully using retry logic or by observing the provided Retry-After header. To manage capacity effectively within a company, organization administrators can apply custom rate limits to individual Workspaces, ensuring that one runaway project does not exhaust the capacity available to other teams.",
     "distractorNotes": {
-      "a": "Limits can be enforced over shorter intervals than the stated window, so an instantaneous burst that fits inside a per minute budget can still be rejected. Smoothing traffic matters as much as respecting the total.",
-      "c": "Output limits are evaluated in real time against tokens actually generated, so an unreached ceiling costs nothing. This is why raising max_tokens carries no throughput penalty on its own.",
-      "f": "Administrators can configure limits for an individual workspace, covering both request and token rates and monthly spend, which is the usual way to isolate one project's consumption."
+      "b": "Rate limits are applied per model (e.g., Claude 3.5 Sonnet vs. Claude 3 Opus). Usage of one model does not consume the rate limit capacity of a different model.",
+      "e": "Rate limits consider both the number of requests (RPM) and the volume of text processed, measured in input and output tokens per minute (ITPM and OTPM).",
+      "f": "Exceeding a rate limit results in a 429 error (Too Many Requests) and temporary rejection of further requests, not automatic overage billing. Limits are increased by advancing through usage tiers, which requires a history of successful spend and payment."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/api/rate-limits",
     "sourceNote": "Rate limits - 'About rate limits' bullets on the token bucket algorithm, enforcement over shorter intervals, and organization-level limits with user-configurable workspace limits, plus the 'Rate limits' section on RPM, ITPM, and OTPM and the retry-after header",
-    "sourceCheckedAt": "2026-09-03",
-    "scope": "out-of-scope",
-    "scopeNote": "API rate-limit mechanics. Rate limiting is named in none of the 25 skill objectives; Claude API Mechanics lists messages, tools, streaming, vision, thinking, caching, third-party vendors, data access patterns and batch selection."
+    "sourceCheckedAt": "2026-09-03"
   },
   {
     "id": "ccdv-f-0084",
@@ -3761,39 +3721,37 @@
     "subdomain": "configuration-management",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "An organization runs experiments and a new production integration under one billing account. Production must not be starved of throughput or budget by experimentation, and its credential should reach nothing else. Which approach fits the documented capabilities?",
+    "stem": "An organization is building multiple distinct applications using the Anthropic API. They want to separate each application's resources, manage API keys independently, and set individual spend limits while maintaining centralized billing. Which Anthropic Console feature should they use to achieve this?",
     "options": [
       {
         "id": "a",
-        "text": "Keep one workspace and rely on per key limits, since throughput and spend ceilings are configured on each API key."
+        "text": "Organizations, which provide separate billing accounts for each application."
       },
       {
         "id": "b",
-        "text": "Rename the organization's Default Workspace after the integration and move the experiments into a new workspace."
+        "text": "Workspaces, which separate projects and environments under a single billing account."
       },
       {
         "id": "c",
-        "text": "Create a separate workspace for the integration, give it its own rate and spend limits, and scope its API key to it."
+        "text": "Projects, which isolate API keys and prompt templates per team member."
       },
       {
         "id": "d",
-        "text": "Move the experiments into an archived workspace, since archiving only hides it while its keys keep working normally."
+        "text": "Environments, which automatically separate development and production traffic."
       }
     ],
     "correct": [
-      "c"
+      "b"
     ],
-    "explanation": "Workspaces exist to separate projects, environments, and teams while billing and administration stay centralized, which is exactly this scenario. Each workspace carries its own limits, configured on separate tabs: request and token rates per model tier, and a monthly spend cap with threshold alerts. An API key scoped to a single workspace can only reach resources inside it, so the credential blast radius shrinks at the same time as the budget is fenced off. Two constraints shape any plan built on workspaces. The Default Workspace cannot be renamed, archived, or deleted, so it cannot be repurposed as a project-specific container. Archiving is irreversible and archives every API key created for that workspace, so it is a decommissioning step rather than a way to park something temporarily.",
+    "explanation": "Workspaces are designed to separate projects, environments, and teams while keeping billing and administration centralized. Each workspace can have its own API keys, rate limits, and monthly spend caps, making them the foundational tool for managing multiple integrations safely within a single organization.",
     "distractorNotes": {
-      "a": "Rate and spend ceilings are configured at the organization and workspace level, not on individual keys. A key determines what can be reached, not how much of the allowance it may consume.",
-      "b": "The Default Workspace cannot be renamed, archived, or deleted, so it cannot be turned into a project-specific container. New projects need a workspace created for them.",
-      "d": "Archiving deactivates a workspace and archives every key created for it, and it cannot be undone. Experiments moved there would stop working rather than continue in the background."
+      "a": "While organizations separate resources, they create entirely separate billing accounts, which does not meet the requirement for centralized billing.",
+      "c": "Projects are a feature within the Claude web interface (Claude.ai) for organizing chats and knowledge, not a console feature for API resource management.",
+      "d": "While workspaces are often used to separate development and production, 'Environments' is not a distinct Anthropic Console feature for resource separation."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/manage-claude/workspaces",
     "sourceNote": "Workspaces - 'How workspaces work' on separating projects and environments and on keys scoped to a single workspace, plus 'Set workspace limits' and the 'Archive a workspace' warning that archiving is irreversible and archives the workspace's keys",
-    "sourceCheckedAt": "2026-09-03",
-    "scope": "out-of-scope",
-    "scopeNote": "Workspaces used to isolate rate and spend limits. Neither workspaces nor billing isolation appear in any skill objective."
+    "sourceCheckedAt": "2026-09-03"
   },
   {
     "id": "ccdv-f-0086",
@@ -4075,49 +4033,47 @@
     "subdomain": "claude-hooks",
     "difficulty": "hard",
     "status": "reviewed",
-    "stem": "A team is adding hooks to an Agent SDK application so that certain tool calls are validated before they run and every tool call is recorded for audit. Select TWO statements that accurately describe how hooks are configured and how their callbacks behave.",
+    "stem": "An organization is deploying an autonomous agent using the Agent SDK and wants to ensure that the agent operates safely and transparently. They plan to use hooks to enforce security policies. Which TWO of the following statements accurately reflect the high-level purpose and capabilities of hooks in this ecosystem?",
     "options": [
       {
         "id": "a",
-        "text": "A matcher pattern is mandatory for every hook, and a hook registered without one is ignored at runtime rather than firing on every occurrence of its event."
+        "text": "Hooks can intercept a tool call before it executes, providing an intervention point to enforce guardrails or require human-in-the-loop approval for sensitive operations."
       },
       {
         "id": "b",
-        "text": "A post-tool-use callback can prevent the tool from running, so either event can be used to block an operation and the choice between them is a matter of style."
+        "text": "The post-tool-use hook is the primary mechanism for preventing unauthorized actions, as it evaluates the tool's output to determine if the execution should be rolled back."
       },
       {
         "id": "c",
-        "text": "Hooks fire only in the main agent's execution and never inside a subagent, so a subagent's tool calls are neither validated nor recorded by them."
+        "text": "Organizations can use hooks to establish a comprehensive audit trail by observing both the model's intended action prior to execution and the actual outcome returned by the tool."
       },
       {
         "id": "d",
-        "text": "A hook registered without a matcher pattern runs for every occurrence of that event, which is the way to observe every tool call rather than a chosen subset."
+        "text": "Hooks enhance security by directly modifying the underlying LLM's behavioral safeguards, permanently teaching the model which tool calls are prohibited within the environment."
       },
       {
         "id": "e",
-        "text": "A pre-tool-use callback can observe a tool call and allow or deny it, but it cannot alter the arguments the tool will receive, so a value can only be rejected rather than corrected."
+        "text": "When a hook pauses for human approval, it suspends all background processes globally across the SDK infrastructure to ensure the system state remains frozen."
       },
       {
         "id": "f",
-        "text": "A pre-tool-use callback that returns an empty object allows the operation to proceed unchanged; denying the call requires returning an explicit deny decision."
+        "text": "Hooks are designed to replace traditional Identity and Access Management (IAM) controls, allowing the agent to dynamically provision and revoke its own system permissions."
       }
     ],
     "correct": [
-      "d",
-      "f"
+      "a",
+      "c"
     ],
-    "explanation": "Hooks are callbacks registered against lifecycle events. The matcher is an optional filter on which callbacks fire, and omitting it runs the callback on every occurrence of the event, which is the documented way to log every tool call a session makes. A callback's return object carries its decision: returning an empty object reports no decision, so the operation proceeds unchanged, while denying requires an explicit deny decision, which can carry a reason shown back to the model.",
+    "explanation": "Hooks are a foundational security and safety feature in the Agent SDK, designed to provide visibility and control over an agent's actions. Pre-tool hooks intercept requests before execution to enforce guardrails or human-in-the-loop approvals. The combination of pre- and post-tool hooks allows developers to comprehensively audit both what the model attempted to do and what the tool actually produced. Hooks operate at the application layer and do not alter model weights, replace system-level IAM, or globally freeze infrastructure.",
     "distractorNotes": {
-      "a": "The matcher is an optional field with no default, and a hook without one still runs. Omitting it deliberately is how a callback is made to fire on every occurrence of the event.",
-      "b": "The post-tool-use event is triggered by a tool execution result, so the call has already run and cannot be stopped there. That event can append context to the result or replace the output the model sees; blocking before execution is the pre-tool-use event's role.",
-      "c": "Hooks also fire inside subagents, and the callback input identifies the subagent when they do. Dedicated subagent start and stop events exist in both SDKs as well.",
-      "e": "A pre-tool-use callback can return updated input alongside its decision, so it can rewrite arguments, for example redirecting a path or sanitizing a value, as well as allow or deny the call."
+      "b": "Post-tool hooks trigger after a tool has already executed. They can modify what is returned to the model, but they cannot prevent the action from occurring or automatically roll back state changes.",
+      "d": "Hooks provide runtime guardrails and feedback within the application layer. They do not modify the underlying foundational model's weights or permanently alter its internal safeguards.",
+      "e": "Hooks pause the execution flow of the specific agent or session they are attached to. They do not implement a global freeze of all processes or infrastructure.",
+      "f": "Hooks complement existing security architectures by adding agent-specific application-level controls. They do not replace underlying infrastructure controls like IAM."
     },
     "sourceUrl": "https://code.claude.com/docs/en/agent-sdk/hooks",
     "sourceNote": "Sections 'How hooks work' and 'Available hooks'; 'Configure hooks' subsection 'Matchers'; 'Callback functions' subsections 'Inputs' and 'Outputs'",
-    "sourceCheckedAt": "2026-09-03",
-    "scope": "deep",
-    "scopeNote": "Hook guardrails are in scope, but the options separate on exact return-object semantics, that an empty object means allow, and on matcher-omission behaviour."
+    "sourceCheckedAt": "2026-09-03"
   },
   {
     "id": "ccdv-f-0093",
@@ -4210,49 +4166,47 @@
     "subdomain": "output-handling",
     "difficulty": "hard",
     "status": "reviewed",
-    "stem": "A developer defines a JSON schema for an extraction endpoint. It marks several properties as required, sets a minimum value of 100 on a numeric field, and sets a maximum length on a string field. The schema is supplied through one of the official SDK structured-output helpers rather than by hand-building the raw request. Which TWO statements describe how this behaves? (Select TWO.)",
+    "stem": "A developer is planning to use the Claude API's native Structured Outputs feature to extract specific data from unstructured text into JSON. Which TWO statements accurately describe the foundational capabilities of this feature? (Select TWO.)",
     "options": [
       {
         "id": "a",
-        "text": "The minimum of 100 is enforced during decoding in the same way as the declared required fields and types, so the model is structurally unable to emit a smaller number for that field."
+        "text": "It guarantees that the output will be parseable JSON that strictly adheres to the required fields and data types defined in the schema."
       },
       {
         "id": "b",
-        "text": "The stripped constraints are still enforced remotely before the response is returned, because the helper registers the developer's original schema with the request, so validating the response again in application code is redundant work."
+        "text": "It guarantees both structural validity and factual accuracy, preventing the model from hallucinating incorrect data within the JSON values."
       },
       {
         "id": "c",
-        "text": "The numeric minimum and the string maximum length are stripped from the schema that is sent and surfaced in the field descriptions instead, so the response still has to be validated against the original schema in application code."
+        "text": "It eliminates the need for prompt engineering, as the provided schema fully replaces the need to describe the task in the system prompt."
       },
       {
         "id": "d",
-        "text": "Objects remain open to extra properties unless the developer sets the additional properties flag by hand, because the helpers pass object definitions through untouched even while they strip unsupported keywords."
+        "text": "It can be used to generate standalone JSON responses, and it also powers strict schema enforcement for Tool Use inputs."
       },
       {
         "id": "e",
-        "text": "Within the supported subset of the schema language the response is constrained during decoding to be valid JSON with the declared required fields and types, so retry logic for parse failures is not needed."
+        "text": "It handles schema violations by automatically retrying the generation on the Anthropic backend until the model produces valid JSON."
       },
       {
         "id": "f",
-        "text": "Constraining the response to a JSON schema and requesting strict schema validation on tool inputs are mutually exclusive, so a single request may use one or the other but not both, and asking for both is rejected."
+        "text": "It is only available when using Tool Use, requiring developers to define a dummy tool even if they only want a standard JSON response."
       }
     ],
     "correct": [
-      "c",
-      "e"
+      "a",
+      "d"
     ],
-    "explanation": "Structured outputs support only a subset of the JSON Schema language, and the official SDK helpers bridge that gap by transforming the schema before it is sent. The documented steps are to remove unsupported constraints such as minimum, maximum, minimum length and maximum length, to fold that information into the property description so the model still sees the intent as guidance, to add the additional properties flag set to false on every object, to filter string formats down to the supported list, and then to validate the returned response against the developer's original schema including all constraints. The practical takeaway is that the model receives a simplified schema while the application still enforces the full one, so range and length rules are guidance plus a client-side check rather than a decoding guarantee. What constrained decoding does guarantee is the structural part: valid parseable JSON with the declared required fields and types, which is why the documentation says schema violations no longer require retries.",
+    "explanation": "The Structured Outputs feature uses constrained decoding to ensure that the model's output strictly adheres to a provided JSON schema. This guarantees well-formed JSON, correct data types, and the presence of required fields natively during the generation process (Option A). Furthermore, this feature is versatile: it can be used independently for standard JSON generation, and it also powers strict schema enforcement for Tool Use inputs (Option D).",
     "distractorNotes": {
-      "a": "Value range constraints are among the unsupported keywords that are removed before the schema is sent. The minimum survives only as descriptive guidance and as a client-side validation check, not as a decoding constraint.",
-      "b": "Nothing enforces the stripped constraints remotely, because they are removed before the schema is sent. That is exactly why the transformation ends with a client-side validation step against the developer's original schema.",
-      "d": "The SDKs explicitly do modify the schema, and adding the additional properties flag set to false on all objects is one of the documented transformation steps.",
-      "f": "Schema-constrained JSON output and strict schema validation on tool inputs are described as two complementary features that may be used independently or together in the same request."
+      "b": "Structured Outputs enforce the syntax and type structure of the output, but the model can still hallucinate or extract factually incorrect values within those structural fields.",
+      "c": "While the schema defines the structure, developers still need to use prompt engineering to instruct the model on what data to extract and how to populate the schema.",
+      "e": "The feature does not rely on automatic backend retries. Instead, it uses constrained decoding to guarantee valid JSON structurally on the first pass, effectively eliminating the need for retries due to schema violations.",
+      "f": "Structured Outputs and strict tool use are complementary features. You can use Structured Outputs for standard JSON responses entirely independently of Tool Use."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs",
     "sourceNote": "How SDK transformation works subsection: the SDK helpers remove unsupported constraints such as minimum, maximum, minimum length and maximum length, move the constraint info into the description, add additional properties false to all objects, filter string formats, and validate responses against the original schema, so the model receives a simplified schema while application code still enforces all constraints; the Why use structured outputs section states that constrained decoding yields always-valid, type-safe output with guaranteed required fields and no retries for schema violations, and the introduction describes JSON outputs and strict tool use as complementary features usable independently or together.",
-    "sourceCheckedAt": "2026-09-03",
-    "scope": "deep",
-    "scopeNote": "Structured output is in scope, but the item turns on SDK-specific schema transformations, that minimum and maximum are stripped and additionalProperties is forced to false."
+    "sourceCheckedAt": "2026-09-03"
   },
   {
     "id": "ccdv-f-0096",
@@ -4442,35 +4396,33 @@
     "subdomain": "debugging-and-error-handling",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "out-of-scope",
-    "scopeNote": "Tests selecting an eval similarity metric (embedding cosine similarity versus exact match, ROUGE-L or a Likert judge). Metric selection appears in no skill objective and is well outside a debugging-and-error-handling item.",
-    "stem": "An FAQ assistant must give semantically equivalent answers when users ask the same question in different words. The team has assembled fifty groups of paraphrased questions and wants an automated measurement of this criterion. Which approach matches the documented example eval for it?",
+    "stem": "A developer is troubleshooting an FAQ assistant that gives significantly different answers when a user asks the exact same question in slightly different words. To systematically debug and measure this issue, which foundational evaluation criterion should the developer focus on?",
     "options": [
       {
         "id": "a",
-        "text": "Require an exact match between the answers in each group after normalizing whitespace and case, since only identical text proves that the answers are consistent."
+        "text": "Task fidelity, which evaluates whether the bot can identify a predefined correct answer."
       },
       {
         "id": "b",
-        "text": "Score each answer with ROUGE-L against a reference summary of the source article, averaging the score across the questions in each paraphrase group."
+        "text": "Consistency, which evaluates how semantically similar the bot's responses are for similar types of input."
       },
       {
         "id": "c",
-        "text": "Compute cosine similarity between sentence embeddings of the answers within each paraphrase group, treating values close to 1 as high similarity."
+        "text": "Relevance and coherence, which evaluates the logical flow and subsequence matching of the bot's summaries."
       },
       {
         "id": "d",
-        "text": "Have an LLM judge rate each answer on a 1 to 5 Likert scale for empathy and professionalism, then compare the ratings within each group."
+        "text": "Tone and style, which evaluates subjective aspects like the bot's empathy and professionalism."
       }
     ],
     "correct": [
-      "c"
+      "b"
     ],
-    "explanation": "The criterion described is consistency: how similar the responses need to be for similar types of input. The documented example eval for consistency uses cosine similarity between sentence embeddings of the model's outputs, where values closer to 1 mean greater similarity, precisely because similar questions should yield semantically similar answers even when the wording varies. The published example is built the same way as the scenario, with paraphrase groups as its test cases. Matching a criterion to a measurement method this way is the point of the example evals: exact match is offered for task fidelity on clear-cut categorical answers, ROUGE-L for relevance and coherence in summarization, an LLM-based Likert scale for tone and style, LLM-based binary classification for privacy preservation, and an LLM-based ordinal scale for context utilization.",
+    "explanation": "When a model provides different answers to paraphrased questions, it is failing the criterion of consistency. The documentation defines consistency as evaluating 'how similar do the model's responses need to be for similar types of input' and notes that 'similar questions should yield semantically similar answers, even if the wording varies.' Identifying the correct criterion is the foundational first step in debugging inconsistent model outputs. Task fidelity is used for clear-cut categorical tasks, relevance and coherence for summarization, and tone and style for subjective attributes.",
     "distractorNotes": {
-      "a": "Exact match is the documented example for task fidelity on clear-cut, categorical answers. It would fail correct answers that are worded differently, which is exactly what a consistency eval must accept.",
-      "b": "ROUGE-L is the documented example for relevance and coherence in summarization, comparing a generated summary with a reference summary; it does not measure agreement between two of the model's own answers.",
-      "d": "An LLM-based Likert scale is the documented example for tone and style, rating subjective attributes such as empathy or professionalism, not semantic agreement across paraphrases."
+      "a": "Task fidelity evaluates if the model produces a specific, clear-cut categorical answer, typically using exact match. It does not measure semantic similarity across paraphrased questions.",
+      "c": "Relevance and coherence is typically used for tasks like summarization to measure how well the output captures the core message of a reference text, not how well the model agrees with its own answers across different prompts.",
+      "d": "Tone and style evaluates nuanced, subjective aspects such as empathy, professionalism, or patience, which does not address the semantic agreement of the answers themselves."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
     "sourceNote": "Section \"Common success criteria\" defines Consistency as \"How similar do the model's responses need to be for similar types of input? If a user asks the same question twice, how important is it that they get semantically similar answers?\" Section \"Example evals\" pairs each criterion with a method: \"Task fidelity (sentiment analysis) - exact match evaluation\" (matching a predefined correct answer \"typically after normalizing whitespace and case\", \"perfect for tasks with clear-cut, categorical answers\"); \"Consistency (FAQ bot) - cosine similarity evaluation\", which \"measures the similarity between two vectors (in this case, sentence embeddings of the model's output ...) ... Values closer to 1 indicate higher similarity. It's ideal for evaluating consistency because similar questions should yield semantically similar answers, even if the wording varies\", with example test cases of \"50 groups with a few paraphrased versions each\"; \"Relevance and coherence (summarization) - ROUGE-L evaluation\", which measures the longest common subsequence \"between the candidate and reference summaries\"; \"Tone and style (customer service) - LLM-based Likert scale\", \"ideal for evaluating nuanced aspects like empathy, professionalism, or patience\"; plus LLM-based binary classification for privacy preservation and an LLM-based ordinal scale for context utilization.",
