@@ -1026,6 +1026,8 @@
     "subdomain": "cost-and-token-management",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "deep",
+    "scopeNote": "Cache check-pointing is named in the objective, but answering requires knowing that the cache lookback spans a limited number of positions and that a deep turn can push a breakpoint past the previous entry. That is implementation-internals recall.",
     "stem": "An agent harness appends many content blocks per turn and sets one cache_control breakpoint on the final block of each request. Early turns read from cache as expected, but deeper into a session the read count falls to zero even though the earlier conversation content never changes. What is the documented cause and remedy?",
     "options": [
       {
@@ -1108,6 +1110,8 @@
     "subdomain": "cost-and-token-management",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "deep",
+    "scopeNote": "Prompt caching is in the objective, but the key discriminates on exact price multipliers (2x write versus 1.25x, roughly two reads to break even) and on lifetime being measured from request start. Numeric-constant recall.",
     "stem": "A team is choosing between the default cache lifetime and the extended cache lifetime for an assistant where a human user sometimes pauses between turns. Which TWO statements about how the two lifetimes behave are accurate? Select TWO.",
     "options": [
       {
@@ -1154,6 +1158,8 @@
     "subdomain": "cost-and-token-management",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "deep",
+    "scopeNote": "Requires reciting a fine-grained invalidation matrix across tool definitions, tool_choice, images and system-prompt-rewriting capabilities, selecting three of six. The burden is memorising the table rather than reasoning about cache design.",
     "stem": "Cache prefixes are created in a fixed order, tool definitions then the system prompt then messages, and a change at one level invalidates that level and every level after it. Which THREE statements about cache invalidation are accurate? Select THREE.",
     "options": [
       {
@@ -3154,6 +3160,8 @@
     "subdomain": "claude-code-operation",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "deep",
+    "scopeNote": "Blueprint scope is right (Domain 3 names hooks and settings.json), but the discrimination is exact hook exit-code semantics: 2 blocks and forwards stderr, while 0 and 1 do not. That is numeric-constant recall, not the conceptual approach-picking the official sample questions model.",
     "stem": "A PreToolUse command hook is registered and confirmed to be firing. When it detects a policy violation it writes an explanation to stderr and exits with code 1, but Claude Code runs the tool call anyway. Which change makes the hook block the call?",
     "options": [
       {
@@ -3195,6 +3203,8 @@
     "subdomain": "claude-code-operation",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "deep",
+    "scopeNote": "Headless mode is named in the Domain 3 objective, but choosing between --bare, --output-format json, --verbose, --continue and --dangerously-skip-permissions turns on precise per-flag semantics. The published sample questions never require recalling an exact flag name.",
     "stem": "A CI job runs claude -p on pull requests against the Claude API. It must behave the same on every runner regardless of what the checked-out repository or a runner's home directory contributes, and a later pipeline step needs to read the result programmatically. Which TWO changes address these requirements? (Select TWO.)",
     "options": [
       {
@@ -3323,6 +3333,8 @@
     "subdomain": "debugging-and-error-handling",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "out-of-scope",
+    "scopeNote": "Tests eval design methodology (sample volume versus hand-grading fidelity). The Domain 4 objective covers only error type identification, recovery strategy selection, trace analysis and isolating the integration layer from model output; no skill objective covers eval design.",
     "stem": "With one week left before launch, a team can either hand-grade forty carefully written test cases or automatically grade eight hundred cases sampled from production-like traffic, including awkward inputs such as sarcasm, mixed signals, and very long messages. Which approach matches the published eval design principles, and why?",
     "options": [
       {
@@ -3364,6 +3376,8 @@
     "subdomain": "debugging-and-error-handling",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "out-of-scope",
+    "scopeNote": "Tests LLM-grader rubric construction. No skill objective in the blueprint covers grader design; Domain 4 is scoped to debugging and error handling, and Output Handling covers consuming model output rather than grading evals.",
     "stem": "An LLM-based grader returns free-form paragraphs of commentary. Its verdicts vary between runs and are hard to aggregate into a score. Which TWO changes follow the published guidance for LLM-based grading? (Select TWO.)",
     "options": [
       {
@@ -3410,6 +3424,8 @@
     "subdomain": "debugging-and-error-handling",
     "difficulty": "easy",
     "status": "reviewed",
+    "scope": "out-of-scope",
+    "scopeNote": "Tests choosing a grading method for an eval harness. Grading methodology appears in no skill objective, and the Domain 4 objective it is filed under is about diagnosing failures, not measuring them.",
     "stem": "An eval checks whether the model assigned one of four fixed labels to each input, and it must run on every commit at low cost. Which grading method should be tried first?",
     "options": [
       {
@@ -3497,6 +3513,8 @@
     "subdomain": "debugging-and-error-handling",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "deep",
+    "scopeNote": "Discriminates on exact environment-variable names and values (CLAUDE_CODE_ENABLE_TELEMETRY, OTEL_METRICS_EXPORTER=otlp) and on which specific metric confirms the pipeline. Configuration-constant recall rather than a conceptual monitoring choice.",
     "stem": "An engineering manager wants Claude Code usage and cost telemetry from every developer machine delivered to the team's OpenTelemetry collector, plus a quick way to confirm the pipeline works. Which approach matches the documented configuration?",
     "options": [
       {
@@ -4392,6 +4410,8 @@
     "subdomain": "debugging-and-error-handling",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "out-of-scope",
+    "scopeNote": "Tests selecting an eval similarity metric (embedding cosine similarity versus exact match, ROUGE-L or a Likert judge). Metric selection appears in no skill objective and is well outside a debugging-and-error-handling item.",
     "stem": "An FAQ assistant must give semantically equivalent answers when users ask the same question in different words. The team has assembled fifty groups of paraphrased questions and wants an automated measurement of this criterion. Which approach matches the documented example eval for it?",
     "options": [
       {
