@@ -1,0 +1,171 @@
+[
+  {
+    "id": "aws-clf-c02-cloud-concepts-001",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-concepts",
+    "subdomain": "well-architected-framework",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "A retailer is designing a new workload and wants explicit architectural guidance on lowering the energy consumption and environmental impact of the resources it runs. Which AWS Well-Architected Framework pillar addresses that goal?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Reliability, which covers performing an intended function correctly and consistently"
+      },
+      {
+        "id": "b",
+        "text": "Sustainability, which focuses on environmental impact and energy efficiency"
+      },
+      {
+        "id": "c",
+        "text": "Cost optimization, which covers delivering business value at the lowest price point"
+      },
+      {
+        "id": "d",
+        "text": "Operational excellence, which focuses on building software correctly and delivering a great customer experience"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Sustainability is the Well-Architected pillar defined around environmental impacts, especially energy consumption and efficiency as the levers an architect can act on. The other options target workload correctness, spend, and software delivery rather than environmental footprint.",
+    "distractorNotes": {
+      "a": "Reliability is about a workload performing its intended function correctly and consistently, not about energy use.",
+      "c": "Cost optimization targets the lowest price point for business value, which is a financial rather than environmental goal.",
+      "d": "Operational excellence focuses on building software correctly and delivering a great customer experience, not environmental impact."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sustainability.html",
+    "sourceNote": "Well-Architected Framework - Sustainability pillar definition",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "aws-clf-c02-cloud-concepts-002",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "cloud-concepts",
+    "subdomain": "migration-strategies",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "During a large migration, one legacy application will move to AWS with no changes made to the application itself. A second application will move to AWS with its self-managed SQL Server database switched to Amazon RDS for SQL Server. Which TWO of the 7 Rs migration strategies do these two plans use? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Retire, which decommissions an application rather than moving it at all"
+      },
+      {
+        "id": "b",
+        "text": "Rehost, also called lift and shift, which moves an application unchanged"
+      },
+      {
+        "id": "c",
+        "text": "Repurchase, which replaces the application with a different product"
+      },
+      {
+        "id": "d",
+        "text": "Replatform, which moves an application and applies some optimization"
+      },
+      {
+        "id": "e",
+        "text": "Refactor, which re-architects an application around cloud-native features"
+      }
+    ],
+    "correct": [
+      "b",
+      "d"
+    ],
+    "explanation": "AWS documents seven migration strategies, the 7 Rs. Rehost is described as lift and shift: the application moves from the source environment to AWS without any changes, which matches the first application. Replatform is described as lift, tinker, and shift: the application moves with some optimization applied, and AWS gives replatforming a SQL Server database to Amazon RDS for SQL Server as the example, which matches the second application.",
+    "distractorNotes": {
+      "a": "Retire applies to applications you decommission or archive instead of migrating.",
+      "c": "Repurchase, or drop and shop, means replacing the application with a different product such as a SaaS offering.",
+      "e": "Refactor means modifying the architecture to use cloud-native features, which is more than the described change."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/prescriptive-guidance/latest/large-migration-guide/migration-strategies.html",
+    "sourceNote": "AWS Prescriptive Guidance - the 7 Rs migration strategies, rehost and replatform",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "aws-clf-c02-cloud-concepts-003",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-concepts",
+    "subdomain": "cloud-economics",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "A company currently buys and racks servers years in advance to cover projected peak demand. After it moves those workloads to AWS, how does its infrastructure spending model primarily change?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Fixed upfront expense becomes variable expense, paying only for what it uses"
+      },
+      {
+        "id": "b",
+        "text": "The same fixed capital purchase cycle continues, but AWS installs the hardware"
+      },
+      {
+        "id": "c",
+        "text": "One flat annual platform fee is charged that covers unlimited AWS consumption"
+      },
+      {
+        "id": "d",
+        "text": "Infrastructure spending disappears entirely because AWS absorbs the compute cost"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "AWS describes trading fixed expense for variable expense as a core advantage of cloud computing: instead of investing heavily in data centers and servers before knowing how they will be used, you pay only when you consume computing resources and only for how much you consume. Capacity no longer has to be bought ahead of demand.",
+    "distractorNotes": {
+      "b": "The point of the change is that the upfront capital purchase cycle goes away, not that AWS performs it for you.",
+      "c": "AWS consumption is metered per use; there is no flat all-you-can-use annual platform fee.",
+      "d": "Spending does not disappear; it shifts from upfront capital purchases to metered consumption charges."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/whitepapers/latest/aws-overview/six-advantages-of-cloud-computing.html",
+    "sourceNote": "Six advantages of cloud computing - trade fixed expense for variable expense",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "aws-clf-c02-cloud-concepts-004",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-concepts",
+    "subdomain": "well-architected-framework",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A media company cannot predict traffic for an upcoming launch and does not want to buy capacity for a peak that may never happen. Which AWS Well-Architected general design principle does running this workload on AWS let the team apply?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Improve through game days, by simulating production events on a schedule"
+      },
+      {
+        "id": "b",
+        "text": "Drive architectures using data gathered about how the workload behaves"
+      },
+      {
+        "id": "c",
+        "text": "Stop guessing capacity needs, scaling in and out automatically as required"
+      },
+      {
+        "id": "d",
+        "text": "Test systems at production scale using a full-size environment on demand"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Stop guessing your capacity needs is a general design principle of the Well-Architected Framework. AWS notes that a poor capacity decision leaves you either with expensive idle resources or with the performance consequences of too little capacity, and that in the cloud you can use as much or as little capacity as you need and scale in and out automatically. That directly answers unpredictable launch traffic.",
+    "distractorNotes": {
+      "a": "Game days are scheduled simulations of production events to test architecture and processes, not a response to unknown demand.",
+      "b": "Driving architectures using data is about collecting evidence to improve design choices over time.",
+      "d": "Testing at production scale is about creating and then decommissioning a full-size test environment, not about sizing live capacity."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/wellarchitected/latest/framework/general-design-principles.html",
+    "sourceNote": "Well-Architected Framework - general design principle: stop guessing your capacity needs",
+    "sourceCheckedAt": "2026-09-03"
+  }
+]

@@ -1,0 +1,248 @@
+[
+  {
+    "id": "az-900-describe-azure-management-and-governance-001",
+    "cert": "az-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-azure-management-and-governance",
+    "subdomain": "cost-management",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "A subscription budget reaches its configured threshold. What does Azure Cost Management do by default?",
+    "options": [
+      {
+        "id": "a",
+        "text": "It deallocates every virtual machine until the next budget period begins"
+      },
+      {
+        "id": "b",
+        "text": "It blocks new deployments while allowing existing resources to continue running"
+      },
+      {
+        "id": "c",
+        "text": "It triggers configured notifications without stopping resources or consumption"
+      },
+      {
+        "id": "d",
+        "text": "It immediately deletes resources in descending order of cost"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Azure budgets trigger notifications when thresholds are exceeded, but they do not affect resources or stop consumption. Cost and usage data can also lag, and budgets are evaluated against that data periodically, so a budget should be treated as an alerting mechanism rather than a hard spending cap.",
+    "distractorNotes": {
+      "a": "Budgets do not automatically deallocate virtual machines.",
+      "b": "Budgets do not block resource creation or other consumption.",
+      "d": "A budget never selects and deletes resources automatically."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/cost-management-billing/costs/tutorial-acm-create-budgets",
+    "sourceNote": "Create and manage budgets - notifications do not stop resources or consumption",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "az-900-describe-azure-management-and-governance-002",
+    "cert": "az-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-azure-management-and-governance",
+    "subdomain": "azure-policy",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An organization wants to require approved resource properties across many subscriptions and assess existing resources for compliance. Which Azure capability is designed for this?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Azure Policy, using definitions and initiatives assigned at the required scopes"
+      },
+      {
+        "id": "b",
+        "text": "Azure Resource Health, using minute-by-minute health events for each resource"
+      },
+      {
+        "id": "c",
+        "text": "Azure DNS, using private zones inherited by every subscription"
+      },
+      {
+        "id": "d",
+        "text": "Azure Service Health, using global service status to rewrite resource properties"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Azure Policy compares resource properties and actions with business rules to enforce organizational standards and assess compliance at scale. Related policy definitions can be grouped into an initiative and assigned at a scope. Health services report operational conditions rather than enforce resource configuration.",
+    "distractorNotes": {
+      "b": "Resource Health reports the condition of individual resources and does not enforce configuration standards.",
+      "c": "Azure DNS resolves names; it is not a compliance engine.",
+      "d": "Service Health reports incidents and maintenance affecting used services and regions."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/governance/policy/overview",
+    "sourceNote": "Azure Policy overview - enforcing standards, assessing compliance, and policy initiatives",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "az-900-describe-azure-management-and-governance-003",
+    "cert": "az-900",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "describe-azure-management-and-governance",
+    "subdomain": "resource-locks",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An administrator applies a Read-only lock to a resource group. Which two statements correctly describe the result? Select TWO.",
+    "options": [
+      {
+        "id": "a",
+        "text": "Authorized users can update resources but cannot delete them"
+      },
+      {
+        "id": "b",
+        "text": "Resources already in the group and resources added later inherit the lock"
+      },
+      {
+        "id": "c",
+        "text": "The lock protects both control-plane configuration and all data stored inside every resource"
+      },
+      {
+        "id": "d",
+        "text": "Authorized users can read resources but cannot update or delete them through control-plane operations"
+      }
+    ],
+    "correct": [
+      "b",
+      "d"
+    ],
+    "explanation": "Locks are inherited by resources in the locked scope, including resources added later. A Read-only lock permits reads but blocks control-plane updates and deletes. Locks apply to Azure control-plane operations, not data-plane operations, so a resource lock does not necessarily protect the data stored inside that resource.",
+    "distractorNotes": {
+      "a": "That behavior describes a Delete or CanNotDelete lock, not a Read-only lock.",
+      "c": "Resource locks apply to control-plane operations and do not generally protect data-plane operations."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources",
+    "sourceNote": "Lock Azure resources - lock levels, inheritance, and control-plane scope",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "az-900-describe-azure-management-and-governance-004",
+    "cert": "az-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-azure-management-and-governance",
+    "subdomain": "azure-arc",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A company wants to manage on-premises servers and non-Azure Kubernetes clusters through the Azure management plane as if those resources ran in Azure. Which service should it use?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Azure Arc"
+      },
+      {
+        "id": "b",
+        "text": "Azure ExpressRoute"
+      },
+      {
+        "id": "c",
+        "text": "Microsoft Purview"
+      },
+      {
+        "id": "d",
+        "text": "Azure Storage Explorer"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Azure Arc projects supported on-premises and non-Azure resources into Azure Resource Manager so teams can manage servers, Kubernetes clusters, and certain data services through a consistent Azure management plane. It is a management layer, not merely a private network connection.",
+    "distractorNotes": {
+      "b": "ExpressRoute provides private network connectivity but does not project external resources into Resource Manager.",
+      "c": "Microsoft Purview governs and protects data rather than onboarding infrastructure into Azure management.",
+      "d": "Storage Explorer is a graphical tool for working with Azure Storage data."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/azure-arc/overview",
+    "sourceNote": "Azure Arc overview - projecting non-Azure and on-premises resources into Azure Resource Manager",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "az-900-describe-azure-management-and-governance-005",
+    "cert": "az-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-azure-management-and-governance",
+    "subdomain": "service-health",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An operator needs minute-by-minute health information for one specific Azure virtual machine. Which Azure Service Health component should the operator use?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Azure status, because it shows the global state of every Azure service and region"
+      },
+      {
+        "id": "b",
+        "text": "Service health, because it reports only planned maintenance for all Azure customers"
+      },
+      {
+        "id": "c",
+        "text": "Resource health, because it reports the condition of individual resources"
+      },
+      {
+        "id": "d",
+        "text": "Azure Advisor, because it replaces live resource-health reporting with recommendations"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Resource health reports the health of individual cloud resources, such as a specific virtual machine, with minute-by-minute updates. Azure status is a global public view, while Service health is personalized to the services and regions a customer uses and includes outages, maintenance, and advisories.",
+    "distractorNotes": {
+      "a": "Azure status is global and is not scoped to one customer's virtual machine.",
+      "b": "Service health is personalized by used services and regions, but it does not provide the individual-resource view requested.",
+      "d": "Advisor supplies optimization recommendations rather than live resource-health status."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/service-health/overview",
+    "sourceNote": "Azure Service Health - Azure status, Service health, and Resource health scopes",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "az-900-describe-azure-management-and-governance-006",
+    "cert": "az-900",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "describe-azure-management-and-governance",
+    "subdomain": "azure-monitor",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A team is choosing Azure Monitor capabilities for an observability design. Which two mappings are correct? Select TWO.",
+    "options": [
+      {
+        "id": "a",
+        "text": "Log Analytics workspaces collect logs and traces that can be analyzed with Kusto Query Language"
+      },
+      {
+        "id": "b",
+        "text": "Application Insights is a cost-governance tool for allocating subscription charges"
+      },
+      {
+        "id": "c",
+        "text": "Application Insights provides application performance monitoring for live web applications"
+      },
+      {
+        "id": "d",
+        "text": "Azure Monitor workspaces store only activity logs and are queried exclusively with SQL"
+      }
+    ],
+    "correct": [
+      "a",
+      "c"
+    ],
+    "explanation": "Log Analytics workspaces collect log and trace data that can be queried with KQL. Application Insights is Azure Monitor's application performance monitoring capability for live web applications. Azure Monitor workspaces are used for Prometheus and OpenTelemetry metrics and can be queried with PromQL, not SQL.",
+    "distractorNotes": {
+      "b": "Cost allocation belongs to Cost Management, while Application Insights focuses on application telemetry and performance.",
+      "d": "Azure Monitor workspaces collect Prometheus and OpenTelemetry metrics and use PromQL."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/azure-monitor/fundamentals/overview",
+    "sourceNote": "Azure Monitor overview - workspace types, KQL, PromQL, and Application Insights",
+    "sourceCheckedAt": "2026-09-03"
+  }
+]

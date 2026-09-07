@@ -105,6 +105,18 @@ async function readJson(path) {
   return JSON.parse(await readFile(path, "utf8"));
 }
 
+async function readCertQuestions(certPath) {
+  const questionsPath = join(certPath, "questions");
+  const entries = await readdir(questionsPath, { withFileTypes: true });
+  const files = entries
+    .filter((entry) => entry.isFile() && entry.name.endsWith(".json"))
+    .map((entry) => join(questionsPath, entry.name))
+    .sort();
+
+  const perFile = await Promise.all(files.map((file) => readJson(file)));
+  return perFile.flat();
+}
+
 export async function buildRepositoryReports(root = repositoryRoot, options) {
   const certsPath = join(root, "certs");
   const entries = await readdir(certsPath, { withFileTypes: true });
@@ -117,7 +129,7 @@ export async function buildRepositoryReports(root = repositoryRoot, options) {
     const certPath = join(certsPath, folder.name);
     const [manifest, questions] = await Promise.all([
       readJson(join(certPath, "manifest.json")),
-      readJson(join(certPath, "questions.json")),
+      readCertQuestions(certPath),
     ]);
     reports.push(buildBalanceReport(manifest, questions, options));
   }

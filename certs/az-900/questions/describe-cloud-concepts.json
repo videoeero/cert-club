@@ -1,0 +1,207 @@
+[
+  {
+    "id": "az-900-describe-cloud-concepts-001",
+    "cert": "az-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-cloud-concepts",
+    "subdomain": "shared-responsibility",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "A company moves an application from its own datacenter to an Azure virtual machine. Which responsibility always remains with the company?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Maintaining the physical host that runs the virtual machine"
+      },
+      {
+        "id": "b",
+        "text": "Protecting the information and data stored by the application"
+      },
+      {
+        "id": "c",
+        "text": "Replacing failed equipment in the Azure datacenter"
+      },
+      {
+        "id": "d",
+        "text": "Maintaining the physical network used by the Azure region"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Customers always remain responsible for their information and data, identities, accounts, and connected devices. The cloud provider is always responsible for the physical datacenter, physical network, and physical hosts. Moving to IaaS changes who operates the hardware, but it does not transfer ownership or protection of the customer's data to the provider.",
+    "distractorNotes": {
+      "a": "The cloud provider operates and maintains the physical hosts.",
+      "c": "Physical datacenter equipment is always the provider's responsibility.",
+      "d": "The provider is always responsible for the physical network."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/training/modules/describe-cloud-compute/4-describe-shared-responsibility-model",
+    "sourceNote": "Shared responsibility model - responsibilities that always remain with the customer and provider",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "az-900-describe-cloud-concepts-002",
+    "cert": "az-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-cloud-concepts",
+    "subdomain": "cloud-models",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "An organization must keep one workload in a private environment but wants it to use extra capacity from a public cloud during demand spikes. Which cloud model fits this requirement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Public cloud, because every workload is hosted by one third-party provider"
+      },
+      {
+        "id": "b",
+        "text": "Private cloud, because all capacity must stay dedicated to one organization"
+      },
+      {
+        "id": "c",
+        "text": "Hybrid cloud, because interconnected private and public environments can place or burst workloads as needed"
+      },
+      {
+        "id": "d",
+        "text": "Multicloud, because the design requires services from several public cloud providers"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "A hybrid cloud combines interconnected private and public cloud environments. It lets an organization choose where workloads run and use public capacity when demand exceeds private capacity. Multicloud means using multiple public cloud providers and is not required by this scenario.",
+    "distractorNotes": {
+      "a": "A public-only model does not preserve the required private workload placement.",
+      "b": "A private-only model cannot burst into the requested public capacity.",
+      "d": "The scenario combines private and public environments, not multiple public providers."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/training/modules/describe-cloud-compute/5-define-cloud-models",
+    "sourceNote": "Cloud models - private, public, hybrid, and multicloud characteristics",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "az-900-describe-cloud-concepts-003",
+    "cert": "az-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-cloud-concepts",
+    "subdomain": "consumption-based-model",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "A startup wants to avoid buying servers before it knows how much traffic its service will receive. Which financial characteristic of cloud computing addresses this concern?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Cloud services are treated as operational expenditure and paid for as they are consumed"
+      },
+      {
+        "id": "b",
+        "text": "Cloud services require capital expenditure for enough hardware to cover peak demand"
+      },
+      {
+        "id": "c",
+        "text": "Cloud providers convert every ongoing service charge into a fixed hardware asset"
+      },
+      {
+        "id": "d",
+        "text": "Cloud customers prepay for permanently reserved capacity whether or not they use it"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Cloud computing follows a consumption-based model and is classified as operational expenditure: customers pay for services over time as they use them. This avoids the up-front capital expense of purchasing physical infrastructure and reduces the risk of buying unused peak capacity.",
+    "distractorNotes": {
+      "b": "Up-front hardware purchasing describes capital expenditure in an on-premises model.",
+      "c": "Service charges remain ongoing operating expenses rather than customer-owned hardware assets.",
+      "d": "The consumption model lets customers add and release resources instead of requiring permanent peak capacity."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/training/modules/describe-cloud-compute/6-describe-consumption-based-model",
+    "sourceNote": "Consumption-based model - CapEx, OpEx, and paying for consumed resources",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "az-900-describe-cloud-concepts-004",
+    "cert": "az-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-cloud-concepts",
+    "subdomain": "scalability",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "A web tier responds to increasing traffic by adding more virtual machine instances while leaving each instance's CPU and memory unchanged. What kind of scaling is this?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Vertical scaling down, because each instance uses fewer capabilities"
+      },
+      {
+        "id": "b",
+        "text": "Vertical scaling up, because the capabilities of one resource increase"
+      },
+      {
+        "id": "c",
+        "text": "Horizontal scaling in, because the number of resources decreases"
+      },
+      {
+        "id": "d",
+        "text": "Horizontal scaling out, because the number of resources increases"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Horizontal scaling changes the number of resources. Adding instances is scaling out; removing them is scaling in. Vertical scaling instead changes the capabilities of an individual resource, such as adding CPU or memory to one virtual machine.",
+    "distractorNotes": {
+      "a": "The scenario does not reduce the capabilities of any instance.",
+      "b": "No individual resource receives additional CPU or memory.",
+      "c": "Scaling in removes instances, while this scenario adds them."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/training/modules/describe-benefits-use-cloud-services/2-high-availability-scalability-cloud/",
+    "sourceNote": "Scalability - vertical scaling versus horizontal scaling",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "az-900-describe-cloud-concepts-005",
+    "cert": "az-900",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "describe-cloud-concepts",
+    "subdomain": "service-types",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A team is classifying Azure and Microsoft services by cloud service type. Which two classifications are correct? Select TWO.",
+    "options": [
+      {
+        "id": "a",
+        "text": "Azure Virtual Machines is infrastructure as a service because customers manage the guest operating system and applications"
+      },
+      {
+        "id": "b",
+        "text": "Azure App Service is infrastructure as a service because customers patch its platform operating system"
+      },
+      {
+        "id": "c",
+        "text": "Microsoft 365 is software as a service because users consume a provider-managed application"
+      },
+      {
+        "id": "d",
+        "text": "Azure Virtual Machines is software as a service because Microsoft maintains the physical hosts"
+      }
+    ],
+    "correct": [
+      "a",
+      "c"
+    ],
+    "explanation": "Microsoft 365 is a provider-managed SaaS application. Azure Virtual Machines is IaaS: Microsoft manages the physical infrastructure, while the customer manages the guest operating system and applications. Azure App Service is PaaS, not IaaS.",
+    "distractorNotes": {
+      "b": "Azure App Service is PaaS, where the provider manages the underlying platform.",
+      "d": "Provider-managed hardware is part of IaaS; it does not make the virtual machine a SaaS application."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/security/fundamentals/shared-responsibility",
+    "sourceNote": "Shared responsibility in the cloud - IaaS, PaaS, and SaaS examples and responsibilities",
+    "sourceCheckedAt": "2026-09-03"
+  }
+]

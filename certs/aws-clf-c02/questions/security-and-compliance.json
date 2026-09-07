@@ -1,0 +1,253 @@
+[
+  {
+    "id": "aws-clf-c02-security-and-compliance-001",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-and-compliance",
+    "subdomain": "shared-responsibility-model",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A company runs a web application on an Amazon EC2 instance. Under the AWS shared responsibility model, who is responsible for applying operating system updates and security patches to that instance's guest operating system?",
+    "options": [
+      {
+        "id": "a",
+        "text": "AWS, because it manages the hypervisor and therefore every layer above it"
+      },
+      {
+        "id": "b",
+        "text": "AWS, because patching is bundled into the hourly price of every instance"
+      },
+      {
+        "id": "c",
+        "text": "Neither party, because EC2 guest operating systems patch themselves in place"
+      },
+      {
+        "id": "d",
+        "text": "The customer, because guest operating system management is a customer duty"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "AWS categorizes Amazon EC2 as infrastructure as a service, so the customer performs the security configuration and management tasks above the hypervisor. AWS states that customers who deploy an EC2 instance are responsible for management of the guest operating system, including updates and security patches, plus any application software they install and the configuration of the AWS-provided security group.",
+    "distractorNotes": {
+      "a": "AWS responsibility stops at the virtualization layer for EC2; the guest operating system sits on the customer side of the boundary.",
+      "b": "Instance pricing covers the underlying infrastructure, not guest operating system patching, which the customer performs.",
+      "c": "EC2 does not automatically patch customer guest operating systems; the customer must manage that work."
+    },
+    "sourceUrl": "https://aws.amazon.com/compliance/shared-responsibility-model/",
+    "sourceNote": "AWS shared responsibility model - EC2 customers manage the guest OS including updates and security patches",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "aws-clf-c02-security-and-compliance-002",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-and-compliance",
+    "subdomain": "root-user",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An engineer holds full IAM administrator permissions in a standalone AWS account that is not part of AWS Organizations. Which task still requires signing in with the account root user credentials?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Creating an IAM role that grants an application read access to Amazon S3 buckets"
+      },
+      {
+        "id": "b",
+        "text": "Closing the standalone AWS account"
+      },
+      {
+        "id": "c",
+        "text": "Enabling Amazon GuardDuty threat detection across the whole account"
+      },
+      {
+        "id": "d",
+        "text": "Attaching a customer managed policy to an existing IAM user group"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "AWS publishes a specific list of tasks that can be performed only by the account root user. For a standalone account that is not part of AWS Organizations, closing the account requires root user credentials. Everyday administrative work such as creating roles, attaching policies, or turning on security services can be delegated to an IAM principal with the right permissions.",
+    "distractorNotes": {
+      "a": "Creating IAM roles is ordinary IAM administration and does not appear on the root-only task list.",
+      "c": "Enabling GuardDuty can be done by any principal with the necessary service permissions.",
+      "d": "Attaching managed policies to groups is standard IAM administration available to a permitted IAM principal."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_root-user.html",
+    "sourceNote": "IAM User Guide - tasks that require root user credentials, including closing a standalone AWS account",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "aws-clf-c02-security-and-compliance-003",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "security-and-compliance",
+    "subdomain": "root-user",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "A startup has just created its first AWS account and wants to protect the account root user. Which TWO actions match the AWS root user best practices? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Enable multi-factor authentication for root user sign-in"
+      },
+      {
+        "id": "b",
+        "text": "Create root user access keys so deployment scripts can run"
+      },
+      {
+        "id": "c",
+        "text": "Use a company group email address for the root user account"
+      },
+      {
+        "id": "d",
+        "text": "Share the root user password with the whole platform team"
+      },
+      {
+        "id": "e",
+        "text": "Sign in as the root user to do routine daily administration"
+      }
+    ],
+    "correct": [
+      "a",
+      "c"
+    ],
+    "explanation": "AWS advises adding MFA to the root user because the root user can perform privileged actions, and it recommends a business-managed group email address that forwards to several people so AWS can always reach an account owner. AWS separately recommends against creating root access keys, against sharing root credentials, and against using the root user for everyday work.",
+    "distractorNotes": {
+      "b": "AWS strongly recommends not creating access keys for the root user, and suggests console sign-in or temporary credentials instead.",
+      "d": "AWS says not to share the root user password, MFA, or access keys except with people who have a strict business need.",
+      "e": "AWS recommends creating an administrative user for everyday tasks and reserving the root user for tasks that require it."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/root-user-best-practices.html",
+    "sourceNote": "IAM User Guide - root user best practices: enable MFA, use a group email, avoid root access keys",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "aws-clf-c02-security-and-compliance-004",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-and-compliance",
+    "subdomain": "compliance",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "An external auditor asks a company to supply AWS SOC and PCI compliance reports covering the AWS infrastructure that the company's workloads run on. Where should the company obtain those reports?",
+    "options": [
+      {
+        "id": "a",
+        "text": "AWS Trusted Advisor, by exporting the results of its security checks"
+      },
+      {
+        "id": "b",
+        "text": "Amazon Inspector, by running a compliance scan across the account"
+      },
+      {
+        "id": "c",
+        "text": "AWS Artifact, by downloading the on-demand compliance documents"
+      },
+      {
+        "id": "d",
+        "text": "AWS Config, by generating a resource configuration history report"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "AWS Artifact provides on-demand downloads of AWS security and compliance documents, explicitly including ISO and PCI reports and System and Organization Controls (SOC) reports, plus certifications from accreditation bodies. Those documents can be handed to auditors or regulators as audit artifacts, and AWS provides them free of charge.",
+    "distractorNotes": {
+      "a": "Trusted Advisor gives best-practice checks on your own resources, not AWS third-party audit reports.",
+      "b": "Amazon Inspector assesses workloads for vulnerabilities; it does not publish AWS audit reports.",
+      "d": "AWS Config records how your resources are configured over time, which is not an AWS compliance attestation."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/artifact/latest/ug/what-is-aws-artifact.html",
+    "sourceNote": "What is AWS Artifact - on-demand downloads of AWS SOC, PCI, and ISO compliance documents",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "aws-clf-c02-security-and-compliance-005",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-and-compliance",
+    "subdomain": "threat-detection",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A security team wants a service that continuously analyzes AWS CloudTrail management events, VPC flow logs, and DNS logs to surface findings such as compromised credentials or unauthorized cryptomining on EC2 instances. Which service does this?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon GuardDuty, a threat detection service that monitors those data sources"
+      },
+      {
+        "id": "b",
+        "text": "AWS WAF, which filters inbound web requests against configurable rule sets"
+      },
+      {
+        "id": "c",
+        "text": "AWS Artifact, which supplies on-demand AWS compliance documentation"
+      },
+      {
+        "id": "d",
+        "text": "Amazon Inspector, which scans workloads for software vulnerabilities"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Amazon GuardDuty is a threat detection service that continuously monitors and analyzes AWS data sources and logs. Its foundational data sources are CloudTrail management events, VPC flow logs, and DNS logs, which it ingests automatically when GuardDuty is enabled. AWS lists compromised and exfiltrated credentials and unauthorized cryptomining on EC2 instances among the threats it detects.",
+    "distractorNotes": {
+      "b": "AWS WAF inspects and filters web requests to protected applications; it is not a log-analysis threat detection service.",
+      "c": "AWS Artifact is a document portal for AWS audit reports and agreements, with no detection capability.",
+      "d": "Amazon Inspector performs vulnerability assessment of workloads rather than continuous log-based threat detection."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/guardduty/latest/ug/what-is-guardduty.html",
+    "sourceNote": "What is Amazon GuardDuty - foundational data sources and detected threat scenarios",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "aws-clf-c02-security-and-compliance-006",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-and-compliance",
+    "subdomain": "governance-and-auditing",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An Amazon S3 bucket is deleted unexpectedly. An investigator needs to establish which identity made the deletion API call and at what time. Which AWS service records that information?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon CloudWatch, which collects operational metrics and log data"
+      },
+      {
+        "id": "b",
+        "text": "VPC Flow Logs, which capture IP traffic to and from network interfaces"
+      },
+      {
+        "id": "c",
+        "text": "AWS Config, which records how resources are configured over time"
+      },
+      {
+        "id": "d",
+        "text": "AWS CloudTrail, which records actions taken by users, roles, and services"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "AWS CloudTrail enables operational and risk auditing, governance, and compliance for an AWS account. Actions taken by a user, a role, or an AWS service are recorded as CloudTrail events, covering the console, the AWS CLI, and the SDKs and APIs. AWS states that CloudTrail lets you identify who or what took which action, what resources were acted upon, and when the event occurred.",
+    "distractorNotes": {
+      "a": "CloudWatch focuses on metrics, logs, and alarms for operational monitoring rather than an attributable API call record.",
+      "b": "VPC Flow Logs record network traffic metadata, not the identity behind an AWS API call.",
+      "c": "AWS Config tracks resource configuration state and compliance over time, not the caller identity and timing of each API action."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-user-guide.html",
+    "sourceNote": "What is AWS CloudTrail - records who took which action, on what resource, and when",
+    "sourceCheckedAt": "2026-09-03"
+  }
+]

@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
 
@@ -19,10 +19,24 @@ async function readFixture(name, file) {
   );
 }
 
+async function readFixtureQuestions(name) {
+  const questionsUrl = new URL(`${name}/questions/`, fixtureUrl);
+  const entries = await readdir(questionsUrl, { withFileTypes: true });
+  const files = entries
+    .filter((entry) => entry.isFile() && entry.name.endsWith(".json"))
+    .map((entry) => entry.name)
+    .sort();
+
+  const perFile = await Promise.all(
+    files.map((file) => readFixture(name, `questions/${file}`)),
+  );
+  return perFile.flat();
+}
+
 async function validContent() {
   return {
     manifest: await readFixture("repository/certs/ccdv-f", "manifest.json"),
-    questions: await readFixture("repository/certs/ccdv-f", "questions.json"),
+    questions: await readFixtureQuestions("repository/certs/ccdv-f"),
   };
 }
 
@@ -125,6 +139,21 @@ test("requires question domains and certs to match the manifest", async () => {
   assert.throws(
     () => validateCertContent("ccdv-f", manifest, questions),
     /expected "ccdv-f", received "another-cert"/,
+  );
+});
+
+test("requires every manifest domain to have at least one question", async () => {
+  const { manifest, questions } = await validContent();
+  manifest.domains[0].weight = 99;
+  manifest.domains.push({
+    slug: "empty-domain",
+    name: "Empty Domain",
+    weight: 1,
+  });
+
+  assert.throws(
+    () => validateCertContent("ccdv-f", manifest, questions),
+    /"empty-domain" has no questions\/empty-domain\.json file/,
   );
 });
 
@@ -280,9 +309,17 @@ test("accepts the shipped bank's answer lengths", async () => {
   const manifest = JSON.parse(
     await readFile(new URL("manifest.json", certUrl), "utf8"),
   );
-  const questions = JSON.parse(
-    await readFile(new URL("questions.json", certUrl), "utf8"),
-  );
+  const questionsUrl = new URL("questions/", certUrl);
+  const files = (await readdir(questionsUrl, { withFileTypes: true }))
+    .filter((entry) => entry.isFile() && entry.name.endsWith(".json"))
+    .map((entry) => entry.name);
+  const questions = (
+    await Promise.all(
+      files.map(async (file) =>
+        JSON.parse(await readFile(new URL(file, questionsUrl), "utf8")),
+      ),
+    )
+  ).flat();
 
   assert.doesNotThrow(() => validateCertContent("ccdv-f", manifest, questions));
 });

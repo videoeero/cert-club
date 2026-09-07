@@ -1,0 +1,764 @@
+[
+  {
+    "id": "ccdv-f-tools-and-mcps-001",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "tools-and-mcps",
+    "subdomain": "tool-implementation",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "A developer is deciding how much execution plumbing their service needs to build. Which statement correctly describes the division of responsibility between client tools and server tools in the Claude API?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Both kinds run on Anthropic's infrastructure, and the label records only whether the developer or Anthropic authored the tool's schema rather than where the code behind it actually executes when Claude calls it in a request."
+      },
+      {
+        "id": "b",
+        "text": "Client tools are restricted to the schemas Anthropic publishes, such as bash and the text editor; any tool the developer defines is by definition a server tool that Anthropic executes on request."
+      },
+      {
+        "id": "c",
+        "text": "Server tools behave exactly like client tools in the message loop: the application receives each call and must return a matching tool_result block before the conversation can continue to the next turn."
+      },
+      {
+        "id": "d",
+        "text": "Client tools run inside the developer's application, which returns the outcome in a tool_result block to continue the exchange; server tools run on Anthropic's infrastructure and the application never executes them."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "The client and server split is about where the code runs. For a client tool, Claude emits a tool_use block, the application performs the work, and the outcome travels back in a tool_result block. For a server tool, Anthropic runs the operation and the results appear in the response without the application executing anything or returning a result block. Both kinds are declared in the same tools array of the request, so the execution boundary, rather than where the tool is declared, is the thing to reason about when planning what to build.",
+    "distractorNotes": {
+      "a": "Authorship of the schema is not the dividing line. Anthropic publishes schemas for several client tools, and those still execute in the developer's environment, so schema origin and execution location vary independently.",
+      "b": "This inverts the categories. User-defined tools are client tools, and Anthropic-schema tools such as the bash and text editor tools are also client tools, because the developer's application performs the work in both cases.",
+      "c": "Server tool calls are resolved by Anthropic within the request. Returning tool_result blocks for them is not part of the flow, and treating them like client tools leads developers to build handling that will never be invoked."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview",
+    "sourceNote": "Tool use with Claude — 'How tool use works'",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-tools-and-mcps-002",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "tools-and-mcps",
+    "subdomain": "tool-implementation",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "An internal assistant exposes a tool named lookup_account whose entire description reads \"Gets account data.\" In testing, Claude often calls a neighbouring reporting tool instead, or calls lookup_account with parameters that make no sense for the request. According to Anthropic's tool design guidance, which change has the largest effect on tool selection performance?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Break the tool apart into a family of single-purpose tools so that each one covers exactly one action and its name alone makes the right choice obvious to the model."
+      },
+      {
+        "id": "b",
+        "text": "Rewrite the description into several sentences stating what the tool does, when it should and should not be used, what each parameter controls, and what the tool does not return."
+      },
+      {
+        "id": "c",
+        "text": "Leave the description as it is and move all of the explanatory detail about the tool, including when to prefer it over the neighbouring reporting tool, into the shared system prompt instead."
+      },
+      {
+        "id": "d",
+        "text": "Force the tool to be used on every turn so that the model no longer has to choose between the available tools and always produces a call the application can handle."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Anthropic's guidance is explicit that the description is by far the strongest lever on tool performance, and it recommends aiming for at least three or four sentences, more for a complex tool. A strong description covers behaviour, the conditions under which the tool applies, the meaning and effect of each parameter, and caveats such as information the tool deliberately omits. The failure described here is a selection and argument-construction failure, which is precisely what a thorough description addresses.",
+    "distractorNotes": {
+      "a": "The published guidance points the other way: it recommends consolidating related operations into fewer, more capable tools, often behind an action parameter, because a sprawling surface of near-identical tools increases selection ambiguity rather than reducing it.",
+      "c": "The tool description is the context attached to the tool itself and is what the model weighs when choosing among tools. Relocating that detail into the system prompt leaves the decision point under-specified and wastes the field designed to carry it.",
+      "d": "Forcing tool use guarantees that a call happens, but it does nothing to make the arguments correct or the choice appropriate, and it suppresses the model's ability to answer without a tool when that is the right outcome."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools",
+    "sourceNote": "Define tools — 'Best practices for tool definitions'",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-tools-and-mcps-003",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "tools-and-mcps",
+    "subdomain": "tool-implementation",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A team keeps receiving errors reporting that tool_use identifiers were found without tool_result blocks immediately after them. Select THREE statements that describe the required construction of a message carrying tool results.",
+    "options": [
+      {
+        "id": "a",
+        "text": "The results belong in the user message that comes immediately after the assistant turn containing the tool_use blocks, with no other message placed in between."
+      },
+      {
+        "id": "b",
+        "text": "Tool results are supplied under a dedicated tool role rather than the user role, so that they remain clearly separate from ordinary conversation turns in the stored transcript."
+      },
+      {
+        "id": "c",
+        "text": "Each tool_result block must be delivered in its own separate user message so results can be attributed unambiguously."
+      },
+      {
+        "id": "d",
+        "text": "Within that message's content array, every tool_result block must appear before any text block."
+      },
+      {
+        "id": "e",
+        "text": "The content field is mandatory on every tool_result block, so a tool that produces no output must be given a placeholder value."
+      },
+      {
+        "id": "f",
+        "text": "Each result is bound to the call it answers by the tool_use_id field, which repeats the identifier from the corresponding tool_use block."
+      }
+    ],
+    "correct": [
+      "a",
+      "d",
+      "f"
+    ],
+    "explanation": "The Claude API folds tool interaction into the ordinary user and assistant message structure rather than introducing a special role. Results must follow their calls immediately in the history, must lead the content array ahead of any text, and are matched to their calls through tool_use_id. Placing text ahead of the results is a documented cause of a 400 response, and the immediacy requirement is what the error about missing result blocks is reporting.",
+    "distractorNotes": {
+      "b": "There is no tool role in this API. Tool results are carried in user messages and tool calls in assistant messages, which is a noted difference from APIs that introduce a separate role for function output.",
+      "c": "Splitting results across messages breaks the immediacy requirement for every call after the first. All results answering a single assistant turn belong together in one user message.",
+      "e": "The content field is optional. A tool_result block carrying only a tool_use_id is valid, so inventing placeholder content is unnecessary and can mislead the model about what the tool returned."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls",
+    "sourceNote": "Handle tool calls — 'Handling results from client tools', including the 'Important formatting requirements' note",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-tools-and-mcps-004",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "tools-and-mcps",
+    "subdomain": "tool-implementation",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A client tool that queries an internal pricing service times out after Claude calls it. The developer wants the assistant to recover gracefully and, where possible, adapt rather than stall. What is the documented way to continue the conversation?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Omit the tool_result block for the failed call so that Claude notices the gap in the exchange and reissues the request on the next turn without being told what went wrong."
+      },
+      {
+        "id": "b",
+        "text": "Skip the result block and instead send a plain user text message explaining that the pricing service is unavailable and stating what Claude should do next."
+      },
+      {
+        "id": "c",
+        "text": "Return a tool_result block for that call with is_error set to true and content stating what failed and what Claude should do next, such as how long to wait before retrying."
+      },
+      {
+        "id": "d",
+        "text": "Remove the failing tool from the tools array on the follow-up request so Claude cannot attempt it again, and let it answer from what it already has in context."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Failures are reported through the same result channel as successes: a tool_result block with is_error set to true. Claude then incorporates the failure into its reply, and the guidance is to write instructive error text rather than a bare failure token, because that message is the only context Claude has for deciding whether to retry, choose a different approach, or explain the limitation to the user. The same pattern covers calls the application deliberately declines to run.",
+    "distractorNotes": {
+      "a": "A missing result leaves the tool call unanswered, which violates the requirement that results follow their calls immediately and produces a request error rather than a retry.",
+      "b": "Text in place of a result does not resolve the outstanding tool call. Text may accompany results in the same message, but only after every result block, and it cannot substitute for one.",
+      "d": "Withdrawing the tool changes the available surface mid-conversation without answering the outstanding call, and it removes the option of a legitimate retry once the service recovers."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls",
+    "sourceNote": "Handle tool calls — 'Handling errors with is_error', 'Tool execution error'",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-tools-and-mcps-005",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "tools-and-mcps",
+    "subdomain": "tool-implementation",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An agent turn returns three tool_use blocks at once: two read-only lookups and one write that must not run if a lookup fails. Select THREE statements that correctly describe how parallel tool calls work and where the developer's responsibility lies.",
+    "options": [
+      {
+        "id": "a",
+        "text": "The API runs the calls concurrently on the application's behalf and delivers a single merged result for the turn."
+      },
+      {
+        "id": "b",
+        "text": "A single assistant turn can contain several tool_use blocks, and the application decides whether to run them concurrently, in sequence, or in some combination."
+      },
+      {
+        "id": "c",
+        "text": "Every call from that turn is answered with its own tool_result block, and all of those blocks are returned together in the next single user message."
+      },
+      {
+        "id": "d",
+        "text": "If the application chooses not to run one of the calls, it still returns a tool_result for it, marked as an error and explaining why it was skipped."
+      },
+      {
+        "id": "e",
+        "text": "Results must be returned in separate user messages, one per call, ordered to match the order in which the calls appeared."
+      },
+      {
+        "id": "f",
+        "text": "Emitting more than one tool_use block in a single turn is opt-in and must be switched on with a request parameter before Claude will produce parallel calls in a response at all."
+      }
+    ],
+    "correct": [
+      "b",
+      "c",
+      "d"
+    ],
+    "explanation": "Parallel tool use is on by default, and the API deliberately does not prescribe an execution order, leaving the strategy to the application. Independent read-only work is usually safe to run concurrently for lower latency, while calls with side effects, shared state, or ordering requirements are often better run in sequence. Whatever strategy is chosen, the message contract is unchanged: one result per call, all in the next user message, each matched by tool_use_id and placed ahead of any text. A call that is deliberately skipped still needs a result block flagged as an error so that no call is left unanswered.",
+    "distractorNotes": {
+      "a": "Execution of client tools never happens inside the API. The response describes what Claude wants to call; scheduling, concurrency, and error handling are entirely the application's to implement.",
+      "e": "One message per result breaks the requirement that results immediately follow their calls, and it is precisely the pattern that stops parallel behaviour from working correctly on later turns.",
+      "f": "Multiple calls per turn are the default behaviour. The available parameter works in the opposite direction, constraining Claude to fewer calls rather than enabling more."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use",
+    "sourceNote": "Parallel tool use — 'Execution semantics'",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-tools-and-mcps-006",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "tools-and-mcps",
+    "subdomain": "tool-implementation",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A regulated enterprise workflow requires Claude to step through exactly one audited action at a time. The system must guarantee that each model turn produces exactly one tool call—never two in parallel, and never a plain text response without a tool call. Conceptually, which combination of controls must the developer apply to achieve this strict behavior?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A control that forces the model to select a tool rather than responding with text, combined with a control that disables parallel tool execution."
+      },
+      {
+        "id": "b",
+        "text": "A control that limits the available toolset to a single tool, combined with a system prompt that explicitly suppresses all plain text generation."
+      },
+      {
+        "id": "c",
+        "text": "A control that strictly validates the tool call schema, combined with an assistant message prefill that forces the model to begin generating JSON."
+      },
+      {
+        "id": "d",
+        "text": "A control that restricts the model's maximum output token limit, combined with an explicit instruction to perform exactly one action."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "To achieve a strict 'exactly one tool call' guarantee, the application must combine two independent architectural constraints. First, a tool choice control must force the model to invoke a tool rather than answering freely in prose. Second, a parallel execution control must restrict the model from emitting multiple tool calls concurrently. Only the combination of these two constraints ensures exactly one tool call per turn.",
+    "distractorNotes": {
+      "b": "Providing only a single tool does not prevent the model from calling that same tool multiple times in parallel, nor does it guarantee the model won't reply in plain text if tool use isn't structurally forced.",
+      "c": "Schema validation and JSON prefilling help ensure the output is well-formed, but they do not structurally compel the model to make exactly one tool call instead of zero or multiple.",
+      "d": "Output length restrictions cannot reliably govern logical behavior; the model might generate a partial tool call, multiple very short tool calls, or a short plain text response."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use",
+    "sourceNote": "Parallel tool use — 'Exactly one tool call', read with 'Define tools' on the four tool_choice options",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-tools-and-mcps-007",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "tools-and-mcps",
+    "subdomain": "tool-implementation",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A booking agent keeps receiving a passenger count as a string rather than an integer, and occasionally a required field is missing entirely. A colleague suggests enabling strict tool use. Select TWO statements that are accurate about strict tool use.",
+    "options": [
+      {
+        "id": "a",
+        "text": "The value the tool returns is validated against a schema before Claude is allowed to read it."
+      },
+      {
+        "id": "b",
+        "text": "The input object in a tool_use block conforms to the declared input schema, so mistyped values and absent required fields stop occurring."
+      },
+      {
+        "id": "c",
+        "text": "The underlying operation is guaranteed to succeed at runtime once the call has been made."
+      },
+      {
+        "id": "d",
+        "text": "The tool name in a tool_use block is always a valid name drawn from the tools made available for the request."
+      },
+      {
+        "id": "e",
+        "text": "It can be switched on for a Model Context Protocol toolset entry, which enforces the same input validation across every tool that the server exposes to the request."
+      }
+    ],
+    "correct": [
+      "b",
+      "d"
+    ],
+    "explanation": "Strict tool use constrains token sampling to outputs the schema permits, a technique known as grammar-constrained sampling. The resulting guarantees are narrow and precise: the tool input conforms to the schema, and the tool name is always one that genuinely exists. That removes the class of failures described here without any validate-and-retry loop of the developer's own. It says nothing about what happens once the developer's code runs, and it is not accepted on every kind of entry in the tools array.",
+    "distractorNotes": {
+      "a": "Strict mode acts on what the model generates, which is the tool call. Whatever a tool returns is produced by the developer's own code and is not schema-checked by this feature.",
+      "c": "Well-formed arguments are not the same as a successful operation. A call with perfect inputs can still fail on a network timeout or a rejected business rule, which is why error results remain necessary.",
+      "e": "Strict mode is not among the properties available on a Model Context Protocol toolset entry. Restricting or shaping which of a server's tools are exposed is done through that toolset's own configuration instead."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/strict-tool-use",
+    "sourceNote": "Strict tool use — the 'Guarantees' list following the 'Quick start' samples and 'How it works', read with 'Tool reference' — 'Tool definition properties' for where strict is unavailable",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-tools-and-mcps-008",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "tools-and-mcps",
+    "subdomain": "mcp-server-development",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A team packages an internal catalogue service as a Model Context Protocol server. Engineers run one copy as a process on their own machines alongside the AI application, and the platform team runs a hosted copy that many users reach over the network. Which statement matches the protocol's architecture?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The host creates one client per server connection, and the process on an engineer's machine is reached over the stdio transport while the hosted copy is reached over streamable HTTP."
+      },
+      {
+        "id": "b",
+        "text": "The host maintains a single client that multiplexes traffic to every server it uses, so adding a second server reuses the existing connection rather than opening another one."
+      },
+      {
+        "id": "c",
+        "text": "Servers initiate the connection to the host and register the capabilities they offer, which is why one hosted server can reach many hosts at once without any per-host configuration on the client side."
+      },
+      {
+        "id": "d",
+        "text": "The stdio transport can serve clients across the network as well as on the same machine, so the choice of transport is independent of where the server process actually runs."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "The protocol follows a client-server shape in which the host is the AI application, and the host instantiates a dedicated client for each server it connects to, so a host talking to three servers holds three clients and three connections. The two transports map onto deployment: stdio uses standard input and output streams for direct communication between processes on the same machine, while streamable HTTP carries messages over the network and is what remote deployments use. The words local and remote describe where a server runs, not a difference in what a server fundamentally is.",
+    "distractorNotes": {
+      "b": "Each client maintains its own dedicated connection to a single server. Connecting to an additional server causes the host to instantiate an additional client rather than reuse an existing one.",
+      "c": "The direction is reversed. The host, through its clients, establishes connections to servers; servers do not reach out to register themselves with hosts.",
+      "d": "The stdio transport is for direct process communication on the same machine and carries no network overhead precisely because there is no network hop. Reaching a server across the network requires the HTTP-based transport."
+    },
+    "sourceUrl": "https://modelcontextprotocol.io/docs/learn/architecture",
+    "sourceNote": "Architecture overview — 'Participants' and 'Transport layer'",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-tools-and-mcps-009",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "tools-and-mcps",
+    "subdomain": "mcp-server-development",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An architect plans to attach a partner's Model Context Protocol server to a service through the Messages API connector, without building a protocol client. Select THREE statements that correctly describe the constraints and responsibilities of that approach.",
+    "options": [
+      {
+        "id": "a",
+        "text": "The server has to be reachable at a publicly exposed HTTPS URL; a server that speaks only over standard input and output on a developer's machine cannot be attached directly."
+      },
+      {
+        "id": "b",
+        "text": "Only tool calls are available through the connector, so other capabilities a server might expose, such as resources and prompt templates, are out of scope."
+      },
+      {
+        "id": "c",
+        "text": "A single server definition may be referenced by several toolset entries, which is the supported way to expose different subsets of that server's tools within a single request to the Messages API."
+      },
+      {
+        "id": "d",
+        "text": "Naming a tool in the per-tool configuration that the server does not actually expose causes the request to fail validation."
+      },
+      {
+        "id": "e",
+        "text": "The calling application obtains the access token for an authenticated server and refreshes it as needed, passing it in the server definition."
+      },
+      {
+        "id": "f",
+        "text": "Enabling strict schema validation on the toolset entry applies that guarantee to every tool the server exposes."
+      }
+    ],
+    "correct": [
+      "a",
+      "b",
+      "e"
+    ],
+    "explanation": "The connector removes the need to implement a protocol client, but it narrows what is available in exchange. Servers are declared by URL and must be publicly reachable over HTTPS, which rules out attaching a purely local process directly; only the tool-calling portion of the protocol is surfaced; and the authorisation flow stays with the caller, which obtains and refreshes the token itself. Teams that need local servers or the capabilities the connector omits are pointed instead toward managing their own protocol client connection, for which the SDKs provide client-side helper functions.",
+    "distractorNotes": {
+      "c": "Each server must be referenced by exactly one toolset entry, and each toolset entry maps to one server. Differentiating which tools are exposed is done inside that single entry through its default and per-tool configuration.",
+      "d": "An unrecognised tool name in the per-tool configuration is tolerated: a warning is recorded and the request proceeds, deliberately, because a server's set of tools can change over time.",
+      "f": "Strict schema validation is not among the properties accepted on a Model Context Protocol toolset entry. Control over that server's tools is exercised by enabling or disabling them and by deferring their loading."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/mcp-connector",
+    "sourceNote": "MCP connector — 'Limitations', 'Validation rules', and 'Authentication'",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-tools-and-mcps-010",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "tools-and-mcps",
+    "subdomain": "agentic-customization",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A platform team's agent has grown to several hundred tools spanning many integrations. Definitions now consume a large share of the context window before any work begins, and the agent increasingly picks the wrong tool. The team adds the tool search tool and marks most definitions for deferred loading. Select THREE statements that correctly describe how this arrangement works.",
+    "options": [
+      {
+        "id": "a",
+        "text": "Every tool definition still travels in the request's tools array; deferred loading marks which of them stay out of the initial context rather than removing them from the request."
+      },
+      {
+        "id": "b",
+        "text": "Deferred tools are retrieved from an external tool registry at call time, so their schemas no longer need to be supplied with the request and the tools array shrinks to the non-deferred set."
+      },
+      {
+        "id": "c",
+        "text": "At least one tool must remain non-deferred, normally the tool search tool itself, because something has to be present initially in order to surface the deferred definitions."
+      },
+      {
+        "id": "d",
+        "text": "Deferring a tool changes where it executes, routing its calls to Anthropic's infrastructure instead of the application that defined it, which no longer runs it."
+      },
+      {
+        "id": "e",
+        "text": "When a search matches, the API returns references to the matching tools and expands them into full definitions, after which Claude calls the discovered tool in the ordinary way."
+      },
+      {
+        "id": "f",
+        "text": "The gain is limited to latency, since the definitions still occupy the same amount of context once the request has been assembled, regardless of which tools are used."
+      }
+    ],
+    "correct": [
+      "a",
+      "c",
+      "e"
+    ],
+    "explanation": "Tool search addresses two problems that arrive together as a tool library grows: definitions crowd the context window, and selection accuracy falls away once several dozen tools are simultaneously available. The mechanism is discovery, not relocation. The application continues to declare every tool it owns, deferred loading keeps the marked ones out of the initial system prompt, and at least one non-deferred tool has to remain so that a search can happen at all. A matching search returns references that the API expands into full definitions on the spot, so only the handful of tools relevant to the current request ever reach the model's context.",
+    "distractorNotes": {
+      "b": "There is no external registry in this design. Schemas are still supplied in full with the request, which is what allows the API to expand a match into a complete definition without another round trip.",
+      "d": "Deferred loading affects only when a definition enters the model's context. It leaves the execution boundary untouched, so a client tool that is deferred still executes in the application when it is eventually called.",
+      "f": "Reducing the context consumed by definitions is the primary purpose. Loading only the few tools a request actually needs cuts the definition footprint substantially and is what keeps selection accuracy from degrading across a large library."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool",
+    "sourceNote": "Tool search tool — the 'Context bloat' and 'Tool selection accuracy' points in the introduction, and 'How tool search works'",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-tools-and-mcps-011",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "tools-and-mcps",
+    "subdomain": "mcp-server-development",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A team is designing a Model Context Protocol server for an internal knowledge platform. They need three things: read-only document sources that the host application selects and supplies as context, a small set of actions the model may invoke on its own initiative, and named starting templates that a person chooses from a menu. Which mapping onto the server's building blocks is correct?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The documents are resources, but resources are model-controlled in the same way tools are, so the model pulls them in whenever it judges them relevant and the host makes no selection."
+      },
+      {
+        "id": "b",
+        "text": "The documents are resources, which the application controls; the actions are tools, which the model controls; the templates are prompts, which the user controls."
+      },
+      {
+        "id": "c",
+        "text": "All three should be exposed as tools, because tools are the only building block an AI application can discover, and resources and prompts are documentation concepts rather than server features."
+      },
+      {
+        "id": "d",
+        "text": "The templates should be exposed as tools that return template text, because prompts are chosen by the server rather than offered to a person for selection."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "The three server building blocks differ mainly in who decides when they are used. Tools are model-controlled: the model decides to invoke them based on the request, and they are the way actions get taken. Resources are application-controlled: they are passive, read-only data identified by URI, and the host decides which to retrieve and how to feed them to the model, whether that means passing them wholesale or selecting portions. Prompts are user-controlled: they are reusable templates a person picks to start a piece of work. Matching each requirement to the block with the right control point is the core design decision when building a server.",
+    "distractorNotes": {
+      "a": "This misreads the control point for resources. They are passive data sources that the application retrieves and decides how to use, which is what distinguishes them from tools. An application may well enlist AI assistance when choosing which resources to include, but retrieval and control still sit with the application rather than with a model-initiated call.",
+      "c": "Resources and prompts are first-class server features with their own discovery and retrieval operations, not documentation. Collapsing everything into tools discards the control distinctions and turns host-curated context and user-selected templates into model-initiated calls.",
+      "d": "Prompts exist precisely so that templates can be surfaced for a person to choose, which matches the requirement described. Wrapping them as tools hands the decision to the model instead of the user."
+    },
+    "sourceUrl": "https://modelcontextprotocol.io/docs/learn/server-concepts",
+    "sourceNote": "Understanding MCP servers — 'Core Server Features' table, including the 'Who controls it' column, and the 'Tools', 'Resources', and 'Prompts' sections",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-tools-and-mcps-012",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "tools-and-mcps",
+    "subdomain": "agentic-customization",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "Three separate Claude applications each need to read and update records in the same internal ticketing system, and the integration should be owned and versioned by one platform team rather than copied into each app. Which approach fits best?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Give each application its own built-in tool, relying on the fact that built-in tools can connect to almost any internal system without any extra integration work."
+      },
+      {
+        "id": "b",
+        "text": "Embed the ticketing access logic directly in every application's system prompt so each app carries and maintains its own copy of it."
+      },
+      {
+        "id": "c",
+        "text": "Build an MCP server exposing the ticketing operations as tools, so every application connects to one integration that one team maintains independently."
+      },
+      {
+        "id": "d",
+        "text": "Paste the latest ticket records into each request's context so the applications always appear to have current data to work from."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "An MCP server exposes reusable tools that multiple Claude applications can share and that can be maintained and versioned independently of any one app, which is exactly the reuse-plus-single-owner requirement here (c). Built-in tools do not automatically reach arbitrary internal APIs (a); duplicating logic across system prompts is neither reusable nor centrally maintainable (b); and pasting data gives no live read/update capability and wastes context (d).",
+    "distractorNotes": {
+      "a": "Built-in tools are a fixed Anthropic-provided set and do not connect to an arbitrary internal REST service, so this misstates what they can do.",
+      "b": "Copying the integration into each prompt is the opposite of single-owner reuse; three divergent copies become three maintenance burdens.",
+      "d": "Pasted records are a static snapshot with no ability to update the system, and they consume context on every request without providing live access."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/mcp",
+    "sourceNote": "Connect Claude Code to tools via MCP — MCP servers give access to your tools, databases, and APIs, reusable across applications",
+    "sourceCheckedAt": "2026-09-07"
+  },
+  {
+    "id": "ccdv-f-tools-and-mcps-013",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "tools-and-mcps",
+    "subdomain": "agentic-customization",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "A developer keeps pasting the same multi-step release checklist into Claude Code at the start of every deployment session. They want the procedure available on demand without carrying it in every conversation. What should they create?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A new MCP server whose single job is to return the fixed checklist text over the network whenever the deployment session happens to ask for it."
+      },
+      {
+        "id": "b",
+        "text": "A custom API tool that does nothing but echo the fixed checklist steps back into the model's context on request."
+      },
+      {
+        "id": "c",
+        "text": "A permanent block in the system prompt holding the whole checklist so it is loaded on absolutely every turn."
+      },
+      {
+        "id": "d",
+        "text": "A Skill that stores the checklist as instructions and loads into context only when the procedure is actually relevant."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "A Skill is exactly for a repeated procedure or checklist: its body loads only when relevant, so the long reference costs almost nothing until it is needed (d). Standing up an MCP server (a) or a custom tool (b) to serve static text is heavy over-engineering for content that has no external system behind it, and pinning the checklist in the system prompt (c) pays its full token cost on every single turn.",
+    "distractorNotes": {
+      "a": "MCP is for connecting to external systems and data; wrapping a static checklist in a networked server adds infrastructure with no live integration to justify it.",
+      "b": "A custom tool implies real execution against a system. Using one merely to re-emit fixed text is unnecessary machinery for what is just reusable instructions.",
+      "c": "Putting the checklist in the system prompt loads it every turn even when no deployment is happening, which is the context bloat a Skill is designed to avoid."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/skills",
+    "sourceNote": "Extend Claude with skills — a skill's body loads only when used; create one for a repeated multi-step procedure",
+    "sourceCheckedAt": "2026-09-07"
+  },
+  {
+    "id": "ccdv-f-tools-and-mcps-014",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "tools-and-mcps",
+    "subdomain": "agentic-customization",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A team is matching several capabilities to the right customization approach among built-in tools, custom tools, Skills, and MCP servers. Select THREE statements that correctly pair a use case with an approach.",
+    "options": [
+      {
+        "id": "a",
+        "text": "Built-in tools are the right default for any private internal REST service, because they can reach any such endpoint with no extra integration."
+      },
+      {
+        "id": "b",
+        "text": "An MCP server fits when a capability must be shared across several applications and maintained independently of any one of them."
+      },
+      {
+        "id": "c",
+        "text": "An MCP server should be chosen for every integration, since prompts and Skills are unable to trigger any external system at all."
+      },
+      {
+        "id": "d",
+        "text": "A Skill fits when a repeated multi-step procedure should be packaged as reusable instructions that load only when they are relevant."
+      },
+      {
+        "id": "e",
+        "text": "A Skill is the right choice whenever you need live authenticated access to an external database on every single request."
+      },
+      {
+        "id": "f",
+        "text": "A custom tool fits when the application itself must execute a specific action against your own system that no built-in tool covers."
+      }
+    ],
+    "correct": [
+      "b",
+      "d",
+      "f"
+    ],
+    "explanation": "The correct pairings follow each approach's purpose: MCP for a capability shared and independently maintained across apps (b), a Skill for a reusable multi-step procedure that loads on demand (d), and a custom tool for an app-specific action against your own system with no built-in equivalent (f). The distractors misstate scope: built-in tools do not reach arbitrary internal APIs (a); MCP is not mandatory for every integration and Skills can drive tools (c); and live per-request database access is a job for a tool or MCP server, not a Skill (e).",
+    "distractorNotes": {
+      "a": "Built-in tools are a fixed set and do not automatically connect to arbitrary private endpoints, so they are not a universal default for internal services.",
+      "c": "This overstates MCP's necessity and wrongly claims Skills cannot invoke external systems; the choice depends on reuse and ownership, not an absolute rule.",
+      "e": "Skills package instructions that load on demand; they are not the mechanism for live authenticated data access, which belongs to a tool or an MCP server."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/skills",
+    "sourceNote": "Extend Claude with skills; compare with MCP servers and plugins for selecting the appropriate approach",
+    "sourceCheckedAt": "2026-09-07"
+  },
+  {
+    "id": "ccdv-f-tools-and-mcps-015",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "tools-and-mcps",
+    "subdomain": "agentic-customization",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A single application needs Claude to run one specific transformation on values the app already holds, with no external system involved and no reuse expected anywhere else. Considering built-in tools, custom tools, Skills, and MCP servers, which approach is most appropriate?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Implement it as a custom tool in the application, since the action is local, specific, and does not need to be shared or independently maintained."
+      },
+      {
+        "id": "b",
+        "text": "Stand up a dedicated MCP server for the transformation so that it could in theory be reused later, even though no other application is expected to ever consume it."
+      },
+      {
+        "id": "c",
+        "text": "Package it as a Skill so the steps load on demand, even though this is one deterministic computation rather than a reusable procedure."
+      },
+      {
+        "id": "d",
+        "text": "Assume a built-in tool already covers this application-specific computation and wire the app to call that instead of writing anything."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Guidance is to choose the simplest approach that fits and add complexity only when needed. A local, single-app action with no external system and no reuse is precisely what a custom tool is for (a). An MCP server (b) adds shared infrastructure for reuse that will never happen; a Skill (c) is for reusable procedures, not a single computation; and there is no built-in tool for arbitrary app-specific logic (d), so relying on one is misplaced.",
+    "distractorNotes": {
+      "b": "MCP earns its overhead when a capability is shared and independently maintained. Building a server for a one-app, no-reuse action is over-engineering.",
+      "c": "Skills package multi-step procedures that load when relevant; a single deterministic transformation is not that shape and gains nothing from being a Skill.",
+      "d": "Built-in tools are a fixed set and do not cover arbitrary application-specific computation, so assuming one exists leaves the requirement unmet."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
+    "sourceNote": "When (and when not) to use agents — find the simplest solution and add complexity only when needed",
+    "sourceCheckedAt": "2026-09-07"
+  },
+  {
+    "id": "ccdv-f-tools-and-mcps-016",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "tools-and-mcps",
+    "subdomain": "agentic-customization",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An assistant must answer using current information from the public web. The team is about to build a custom tool that wraps a third-party search API and runs inside their own service. What should they weigh before doing that?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Whether a built-in server-side tool already covers this, since those run on Anthropic's infrastructure with no handler code in their service."
+      },
+      {
+        "id": "opt-b",
+        "text": "Whether their search provider can be reached over stdio, since that is the transport that locally executed tools are expected to use."
+      },
+      {
+        "id": "opt-c",
+        "text": "Whether to package the search procedure as a Skill instead, so that the instructions travel with the repository and remain under code review."
+      },
+      {
+        "id": "opt-d",
+        "text": "Whether the model can already browse the web from its training data, which would remove the need for any tool or external call at all."
+      }
+    ],
+    "correct": [
+      "opt-a"
+    ],
+    "explanation": "Tools divide by where they execute. A client tool runs in your application, so you own the handler, the credentials, the error handling and the operational burden. A server tool runs on Anthropic's infrastructure and you receive the result without implementing execution at all. Web search is a capability already offered as a server tool, so building a custom wrapper means taking on work that is otherwise free. The general principle is to check what the platform already provides before extending it, and to reserve custom tools for capabilities specific to your own systems.",
+    "distractorNotes": {
+      "opt-b": "Confuses this with Model Context Protocol transports. Transport choice concerns how a separate MCP server is reached, and does not arise when deciding between a built-in and a custom tool.",
+      "opt-c": "A Skill packages instructions and reference material for a repeated procedure. It does not provide live authenticated access to an external data source, which is what fetching current web results requires.",
+      "opt-d": "Training data is fixed at training time, which is the reason the requirement exists. No amount of prompting turns a static corpus into current information."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview",
+    "sourceNote": "Tool use overview — server tools run on Anthropic's infrastructure with no handler code in your application, while client tools run in your application",
+    "sourceCheckedAt": "2026-09-07"
+  },
+  {
+    "id": "ccdv-f-tools-and-mcps-017",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "tools-and-mcps",
+    "subdomain": "tool-implementation",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A team is designing the tool set for an agent that spans several internal services and keeps mis-selecting tools and passing over-large results back into context. Select THREE tool-set construction practices Anthropic recommends.",
+    "options": [
+      {
+        "id": "a",
+        "text": "Create one narrowly scoped tool per action so the surface is as large and finely granular as it can possibly be."
+      },
+      {
+        "id": "b",
+        "text": "Consolidate related operations into a single tool with an action parameter rather than many near-identical tools."
+      },
+      {
+        "id": "c",
+        "text": "Rely on the model to disambiguate heavily overlapping tools, on the assumption that adding more tools always improves coverage."
+      },
+      {
+        "id": "d",
+        "text": "Namespace tool names by service or resource so that tool selection stays unambiguous as the library grows larger."
+      },
+      {
+        "id": "e",
+        "text": "Return every field the backend produces in each response, so that the model can never be short of information."
+      },
+      {
+        "id": "f",
+        "text": "Shape responses to return only high-signal fields and stable identifiers instead of bloated, opaque payloads."
+      }
+    ],
+    "correct": [
+      "b",
+      "d",
+      "f"
+    ],
+    "explanation": "The recommended practices are consolidating related operations behind an action parameter (b), namespacing tool names by service so selection stays unambiguous (d), and returning only high-signal fields and stable identifiers (f). The distractors invert each of these: a sprawling one-tool-per-action surface (a) and piling on overlapping tools (c) increase selection ambiguity, and returning every backend field (e) bloats context and buries what matters.",
+    "distractorNotes": {
+      "a": "A maximally granular surface of near-identical tools is what causes the mis-selection described; guidance is to consolidate, not proliferate.",
+      "c": "If a human cannot say which overlapping tool applies, the model cannot either; more tools do not automatically help and often hurt selection.",
+      "e": "Returning every field wastes context and makes it harder for the model to extract the signal; responses should be trimmed to what is needed."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools",
+    "sourceNote": "Define tools — 'Best practices for tool definitions' (consolidate operations, namespacing, high-signal responses)",
+    "sourceCheckedAt": "2026-09-07"
+  }
+]

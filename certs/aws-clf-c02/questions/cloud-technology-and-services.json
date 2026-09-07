@@ -1,0 +1,263 @@
+[
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-001",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "global-infrastructure",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "A team is deciding where to place a production workload on AWS. Which TWO statements about AWS Regions and Availability Zones are correct? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "An Availability Zone spans several AWS Regions on the same continent"
+      },
+      {
+        "id": "b",
+        "text": "AWS automatically replicates your resources into every other Region"
+      },
+      {
+        "id": "c",
+        "text": "Each AWS Region contains multiple, isolated Availability Zones"
+      },
+      {
+        "id": "d",
+        "text": "An AWS Region is always made up of exactly one Availability Zone"
+      },
+      {
+        "id": "e",
+        "text": "Spreading instances across Availability Zones survives one location failing"
+      }
+    ],
+    "correct": [
+      "c",
+      "e"
+    ],
+    "explanation": "AWS documents that each Region has multiple, isolated locations known as Availability Zones, identified by the Region code plus a letter such as us-east-1a. It also states that launching instances in multiple Availability Zones protects applications from the failure of a single location within the Region.",
+    "distractorNotes": {
+      "a": "The containment runs the other way: Availability Zones sit inside a single Region, not across Regions.",
+      "b": "AWS states that Regions are isolated from each other and that resources are not automatically replicated across Regions.",
+      "d": "A Region contains multiple Availability Zones, which is what makes multi-zone resilience possible."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html",
+    "sourceNote": "EC2 Regions and Zones - Regions contain multiple isolated AZs; multi-AZ protects against single-location failure",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-002",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "storage",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A hospital must retain medical imaging archives in Amazon S3 for seven years. The data is expected to be accessed less than once a year, and a retrieval time of up to 48 hours is acceptable. Which S3 storage class gives the lowest storage cost?",
+    "options": [
+      {
+        "id": "a",
+        "text": "S3 Standard-IA, for long-lived data that still needs millisecond access"
+      },
+      {
+        "id": "b",
+        "text": "S3 Glacier Deep Archive, the lowest-cost class for yearly access"
+      },
+      {
+        "id": "c",
+        "text": "S3 Glacier Instant Retrieval, for quarterly access in milliseconds"
+      },
+      {
+        "id": "d",
+        "text": "S3 Standard, the default class for frequently accessed objects"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "AWS recommends S3 Glacier Deep Archive for archive data accessed less than once a year, describes it as designed for retaining data sets for multiple years to meet compliance requirements, and calls it the lowest-cost storage option in AWS. Its bulk retrieval tier typically restores objects within 48 hours, which fits the stated tolerance, and its 180-day minimum duration is comfortably inside a seven-year retention period.",
+    "distractorNotes": {
+      "a": "S3 Standard-IA targets infrequently accessed data that still needs millisecond retrieval, so it costs more to store than Deep Archive.",
+      "c": "S3 Glacier Instant Retrieval is sized for roughly quarterly access with millisecond retrieval, and stores at a higher cost than Deep Archive.",
+      "d": "S3 Standard is the default class for frequently accessed data and is the most expensive of these options to store long-term archives."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/glacier-storage-classes.html",
+    "sourceNote": "S3 Glacier storage classes - Deep Archive for less-than-annual access, lowest-cost option, bulk retrieval within 48 hours",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-003",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "compute",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A team wants to run two workloads without provisioning or managing any servers: a piece of event-driven application code, and a set of containers. Which TWO AWS compute services are serverless options for this? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon EC2, which provides resizable virtual server capacity"
+      },
+      {
+        "id": "b",
+        "text": "AWS Lambda, which runs code without provisioning servers"
+      },
+      {
+        "id": "c",
+        "text": "Amazon Lightsail, which bundles a virtual server with storage"
+      },
+      {
+        "id": "d",
+        "text": "Amazon EC2 Auto Scaling, which adjusts instance capacity"
+      },
+      {
+        "id": "e",
+        "text": "AWS Fargate, which is serverless compute for containers"
+      }
+    ],
+    "correct": [
+      "b",
+      "e"
+    ],
+    "explanation": "AWS groups AWS Lambda under the serverless compute category and describes it as running code without thinking about servers, paying only for the compute time consumed. AWS Fargate is listed in the container category and described as serverless compute for containers. Together they cover event-driven code and containers with no servers to provision or manage.",
+    "distractorNotes": {
+      "a": "Amazon EC2 provides virtual servers, which you size, launch, and maintain yourself.",
+      "c": "Amazon Lightsail packages a virtual server with storage and networking, so servers are still part of the model.",
+      "d": "EC2 Auto Scaling adds and removes EC2 capacity in response to demand, but the underlying instances are still servers."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/whitepapers/latest/aws-overview/compute-services.html",
+    "sourceNote": "AWS Overview compute services - Lambda listed as serverless, Fargate as serverless compute for containers",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-004",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "databases",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A read-heavy web application repeatedly issues the same expensive queries against its relational database. The team wants to serve those repeated reads from an in-memory cache at microsecond latency. Which AWS service fits that role?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon RDS, a managed relational database for transactional workloads"
+      },
+      {
+        "id": "b",
+        "text": "Amazon Redshift, a data warehouse for large-scale analytics queries"
+      },
+      {
+        "id": "c",
+        "text": "Amazon ElastiCache, in-memory caching at microsecond latency"
+      },
+      {
+        "id": "d",
+        "text": "Amazon DynamoDB, a key-value store with millisecond read performance"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "AWS maps the in-memory database category to caching, session management, and similar use cases, and lists Amazon ElastiCache as the service that unlocks microsecond latency with in-memory caching. AWS also describes ElastiCache as improving web application performance by retrieving information from fast managed in-memory caches instead of relying entirely on slower disk-based databases.",
+    "distractorNotes": {
+      "a": "Amazon RDS is the relational database being cached in this scenario, not the cache in front of it.",
+      "b": "Amazon Redshift is a data warehouse for analytics, not a low-latency cache for application reads.",
+      "d": "AWS positions DynamoDB as a key-value database delivering single-digit millisecond performance, not microsecond in-memory caching."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/whitepapers/latest/aws-overview/database.html",
+    "sourceNote": "AWS Overview databases - in-memory category maps caching use cases to ElastiCache at microsecond latency",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-005",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "networking",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An engineer adds an inbound rule to a security group so that clients can reach an EC2 instance over HTTPS. Does a matching outbound rule also have to be added before the instance's replies can reach those clients?",
+    "options": [
+      {
+        "id": "a",
+        "text": "No, because security groups are stateful and return traffic is allowed automatically"
+      },
+      {
+        "id": "b",
+        "text": "Yes, because a security group evaluates its inbound and outbound rules separately"
+      },
+      {
+        "id": "c",
+        "text": "Yes, because return traffic needs an explicit outbound allow rule to be permitted"
+      },
+      {
+        "id": "d",
+        "text": "No, because the subnet's network ACL always permits replies from any instance"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "AWS documents that security groups are stateful: return traffic is automatically allowed, regardless of any outbound rule. That is the documented difference from network ACLs, which are stateless and require return traffic to be explicitly allowed. Security groups also operate at the instance level and support allow rules only.",
+    "distractorNotes": {
+      "b": "Because security groups are stateful, the response to an allowed inbound flow is permitted without a separate outbound rule.",
+      "c": "Explicitly allowing return traffic is the requirement for stateless network ACLs, not for security groups.",
+      "d": "Network ACLs are stateless and can contain deny rules, so they do not blanket-permit replies from any instance."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/vpc/latest/userguide/infrastructure-security.html",
+    "sourceNote": "Amazon VPC - security group versus network ACL comparison, return traffic automatically allowed (stateful)",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-006",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "application-integration",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An order service must hand work to a processing component without losing messages while that component is unavailable. Separately, each new order event must be pushed to many subscriber endpoints at once for parallel processing. Which TWO services meet these needs? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon SQS, a managed queue that stores messages until consumers read them"
+      },
+      {
+        "id": "b",
+        "text": "Amazon CloudFront, a content delivery network that caches data at edge sites"
+      },
+      {
+        "id": "c",
+        "text": "AWS Direct Connect, a dedicated private link from a data center into AWS"
+      },
+      {
+        "id": "d",
+        "text": "Amazon SNS, a pub/sub service that fans messages out to many subscribers"
+      },
+      {
+        "id": "e",
+        "text": "Amazon Route 53, a managed DNS service that also registers domain names"
+      }
+    ],
+    "correct": [
+      "a",
+      "d"
+    ],
+    "explanation": "AWS describes Amazon SQS as a fully managed message queuing service that lets you send, store, and receive messages between software components at any volume without losing messages or requiring other services to be available, which covers the durable hand-off. AWS describes Amazon SNS as a pub/sub service whose topics let publishers fan out messages to a large number of subscriber endpoints for parallel processing, which covers the broadcast requirement.",
+    "distractorNotes": {
+      "b": "CloudFront is a content delivery network for caching and serving content, not an application messaging service.",
+      "c": "Direct Connect provides dedicated private network connectivity into AWS and does not carry application messages between components.",
+      "e": "Route 53 handles DNS resolution and domain registration rather than message queuing or publish and subscribe delivery."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/whitepapers/latest/aws-overview/application-integration.html",
+    "sourceNote": "AWS Overview application integration - SQS message queuing without losing messages; SNS topics fan out to many subscribers",
+    "sourceCheckedAt": "2026-09-03"
+  }
+]

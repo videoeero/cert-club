@@ -190,19 +190,22 @@ export async function loadCertContent(
   certSlug: string,
   fetcher: JsonFetcher = fetch,
 ): Promise<CertContent> {
-  const [manifest, questionsValue] = await Promise.all([
-    loadCertManifest(certSlug, fetcher),
-    fetchJson<unknown>(
-      fetcher,
-      contentUrl(certSlug, "questions.json"),
-      `the ${certSlug} question bank`,
+  const manifest = await loadCertManifest(certSlug, fetcher);
+  const domainQuestions = await Promise.all(
+    manifest.domains.map((domain) =>
+      fetchJson<unknown[]>(
+        fetcher,
+        contentUrl(certSlug, `questions/${domain.slug}.json`),
+        `the ${certSlug} ${domain.slug} question file`,
+      ),
     ),
-  ]);
+  );
 
-  if (!Array.isArray(questionsValue) || !questionsValue.every(isQuestion)) {
+  const questions = domainQuestions.flat();
+  if (!questions.every(isQuestion)) {
     throw new ContentLoadError(
       `The ${certSlug} question bank does not match the expected schema.`,
     );
   }
-  return { manifest, questions: questionsValue };
+  return { manifest, questions };
 }

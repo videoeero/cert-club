@@ -1,0 +1,943 @@
+[
+  {
+    "id": "ccdv-f-prompt-and-context-engineering-001",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "prompt-and-context-engineering",
+    "subdomain": "prompt-engineering",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "A team builds a document analysis endpoint. Each request bundles roughly 40,000 tokens of reference material together with the analyst's question, a short instruction block, and two worked examples, all in a single user message. Quality on multi-document requests is inconsistent. Following Anthropic's long context prompting guidance, how should that message be ordered?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Place the question first so the model knows what to look for before it reads any reference material."
+      },
+      {
+        "id": "b",
+        "text": "Repeat the question immediately after each individual document so every document is paired with the ask."
+      },
+      {
+        "id": "c",
+        "text": "Place the reference material first, near the top, and put the question, instructions, and examples after it."
+      },
+      {
+        "id": "d",
+        "text": "Place the reference material last, directly before the response, so the source material is the most recently read content."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Anthropic's long context guidance applies to data-rich inputs of roughly 20,000 tokens or more and is explicit about ordering: put longform data near the top of the prompt, above the query, instructions, and examples. The documentation reports that placing queries at the end improved response quality by up to 30 percent in testing, with the largest gains on complex, multi-document inputs. The effect is about where the query sits relative to the bulk of the material, so the fix here is structural rather than a matter of rewriting the instruction text. The same section adds two complementary techniques for this shape of prompt: tag each document with its source metadata, and ask for relevant quotes to be pulled out before the analysis begins.",
+    "distractorNotes": {
+      "a": "This inverts the documented recommendation. Leading with the question and trailing the documents is the arrangement the guidance advises against for large inputs.",
+      "b": "Repeating the query between documents inflates the prompt without addressing placement, and the documented benefit comes specifically from a query positioned after the full body of longform data.",
+      "d": "This is the opposite of the published advice. Longform data belongs at the top of the prompt, with the query at the end."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices#long-context-prompting",
+    "sourceNote": "Long context prompting section, which covers inputs of 20k+ tokens: 'Put longform data at the top' above the query, instructions, and examples, with the note that queries at the end can improve response quality by up to 30 percent in tests on complex multidocument inputs.",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-prompt-and-context-engineering-002",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "prompt-and-context-engineering",
+    "subdomain": "prompt-engineering",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An engineer is assembling a prompt that mixes standing instructions, several supplied source documents, and a user question, and wants the boundaries between those parts to be unambiguous. Which TWO practices does Anthropic's prompting guidance recommend for structuring this prompt with tags? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Choose tag names from a fixed reserved vocabulary, since only a predefined set of names is recognised."
+      },
+      {
+        "id": "b",
+        "text": "Rely on the service to parse the tags and return each tagged section back as a separate content block in the response."
+      },
+      {
+        "id": "c",
+        "text": "Give each supplied document its own indexed tag containing separate subtags for its source metadata and for its content."
+      },
+      {
+        "id": "d",
+        "text": "Encode the whole prompt as JSON instead, because tagged markup is not a supported way to delimit prompt sections."
+      },
+      {
+        "id": "e",
+        "text": "Set a dedicated request header to activate tag-aware prompt parsing before tagged sections take effect."
+      },
+      {
+        "id": "f",
+        "text": "Use consistent, descriptive tag names across prompts, and nest tags where the content has a natural hierarchy."
+      }
+    ],
+    "correct": [
+      "c",
+      "f"
+    ],
+    "explanation": "Tags help the model separate instructions from context, examples, and variable inputs when a prompt mixes several kinds of content. The documented best practices are to use consistent, descriptive tag names and to nest tags where the content has a genuine hierarchy, and the guidance illustrates that hierarchy with a multi-document layout in which each document sits inside its own indexed tag alongside distinct subtags for source metadata and body content. This is prompt-authoring convention rather than a request feature: the tags are ordinary text that the model reads, so there is nothing to enable, no reserved name list, and no change to the shape of the response.",
+    "distractorNotes": {
+      "a": "Tag names are arbitrary text chosen by the prompt author. The guidance asks only that they be descriptive and used consistently; there is no reserved list.",
+      "b": "Tags in the prompt do not cause the response to be segmented into corresponding content blocks. Constrained response shapes come from separate output formatting features, not from input tagging.",
+      "d": "This overstates the case in the opposite direction. Tagged markup is exactly what the guidance recommends for delimiting mixed prompt sections, and JSON is not required.",
+      "e": "No header or flag governs tagged prompt sections. They are ordinary text in the prompt and take effect immediately."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices#structure-prompts-with-xml-tags",
+    "sourceNote": "Structure prompts with XML tags section: use consistent, descriptive tag names and nest tags when content has a natural hierarchy, illustrated with documents nested inside an indexed document tag; the adjacent long context prompting section shows the same layout with separate source and document content subtags.",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-prompt-and-context-engineering-003",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "prompt-and-context-engineering",
+    "subdomain": "prompt-engineering",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "A support team is adding examples to a ticket classification prompt to make the output format and label choices more consistent. Which approach best matches Anthropic's published guidance on using examples?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Include one carefully polished example, since additional examples mainly consume tokens without changing behaviour."
+      },
+      {
+        "id": "b",
+        "text": "Enumerate every edge case the team has ever seen as its own example, so that no scenario is left unrepresented."
+      },
+      {
+        "id": "c",
+        "text": "Omit examples and instead describe the desired output in prose at length, because examples steer tone and voice but have little bearing on the structure of the output."
+      },
+      {
+        "id": "d",
+        "text": "Include roughly three to five examples that closely mirror real tickets and vary enough to cover edge cases, each wrapped in its own example tag."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Examples are described as one of the most reliable levers for steering output format, tone, and structure, and the guidance names three qualities to aim for: relevance, so the examples mirror the actual use case; diversity, so edge cases are covered and the model does not pick up an unintended pattern; and structure, achieved by wrapping each example in an example tag and the whole set in an enclosing tag so examples are distinguishable from instructions. The documentation gives a concrete target of three to five examples for best results, and notes that the model can be asked to assess a draft example set for relevance and diversity or to generate additional examples from an initial set.",
+    "distractorNotes": {
+      "a": "A single example gives the model no signal about which features of the example are essential and which are incidental. The published target is three to five, and diversity across them is part of the point.",
+      "b": "Exhaustive enumeration works against the diversity criterion and bloats the prompt. A small curated set that spans the space is what the guidance calls for.",
+      "c": "This contradicts the guidance, which presents examples as a primary tool for steering output format and structure, not merely tone."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices#use-examples-effectively",
+    "sourceNote": "Use examples effectively section: examples should be relevant, diverse, and structured by wrapping them in example tags, with the stated tip to include three to five examples for best results and the suggestion to have the model evaluate or extend an example set.",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-prompt-and-context-engineering-004",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "prompt-and-context-engineering",
+    "subdomain": "prompt-engineering",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "A developer wants every response from an internal assistant to be framed as coming from a specialist in a narrow technical area, so that tone and focus stay consistent across a multi-turn conversation. What is the documented way to establish this role in a Messages API request?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Set the request's top-level system field to a short description of the role."
+      },
+      {
+        "id": "b",
+        "text": "Insert an entry with a system role as the first item in the messages array."
+      },
+      {
+        "id": "c",
+        "text": "Begin the reply on the developer's behalf by supplying a partial assistant turn that states the persona."
+      },
+      {
+        "id": "d",
+        "text": "Restate the role at the start of every user message, because role framing does not carry across turns."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "The role is set through the request's dedicated top-level system field, which sits alongside model, max_tokens, and messages rather than inside the messages list. The documentation notes that even a single sentence of role framing focuses behaviour and tone for a use case, and its examples across every SDK pass the role string to that field. Because system content is sent with each request, the framing already applies to every turn without being repeated in user messages.",
+    "distractorNotes": {
+      "b": "The Messages API carries system content in its own top-level field; entries in the messages array use the user and assistant roles.",
+      "c": "Supplying a partial assistant turn to steer the reply is a legacy technique that current guidance directs developers away from, and it was never the documented mechanism for setting a role.",
+      "d": "System content is sent with every request, so the framing already applies to each turn. Repeating it in user messages adds tokens without adding effect."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices#give-claude-a-role",
+    "sourceNote": "Give Claude a role section: setting a role in the system prompt focuses behaviour and tone, and even a single sentence makes a difference; the SDK examples all pass the role string to the request's top-level system field.",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-prompt-and-context-engineering-005",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "prompt-and-context-engineering",
+    "subdomain": "context-engineering",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An agent is hitting its context limit sooner than its developer expected, and the developer is auditing what actually consumes the window. Which THREE statements about context window accounting are correct? (Select THREE.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "The system prompt is handled separately from the conversation and is excluded from the window."
+      },
+      {
+        "id": "b",
+        "text": "Only input counts toward the window; the tokens the model generates for the turn fall outside it."
+      },
+      {
+        "id": "c",
+        "text": "The tool definitions supplied with a request consume window space, whether or not a tool is called on that turn."
+      },
+      {
+        "id": "d",
+        "text": "Tool results, images, and documents carried inside the messages array consume window space like any other input."
+      },
+      {
+        "id": "e",
+        "text": "Of the token fields reported in usage, only the plain input token count applies to the window, because the cache-related counts are billing metrics that sit outside it."
+      },
+      {
+        "id": "f",
+        "text": "Tokens served from the prompt cache still occupy the window; caching changes what those tokens cost, not whether they count."
+      }
+    ],
+    "correct": [
+      "c",
+      "d",
+      "f"
+    ],
+    "explanation": "The context window covers everything in the request plus what the model produces for that turn. That explicitly includes the system prompt, every message in the messages array along with tool results, images, and documents, and the tool definitions themselves, which is why the documentation points developers at separate techniques for reducing tool-definition overhead. Prompt caching is a frequent source of confusion: the cache read and cache creation counts reported in usage all count toward the window, so caching reduces what those tokens cost without freeing any space. Because the window is finite and recall degrades as it fills, the documentation frames curating what occupies it as being as important as how much room is available, and points to the token counting API for estimating a request before it is sent.",
+    "distractorNotes": {
+      "a": "The system prompt is counted along with everything else in the request. There is no separate allowance for it.",
+      "b": "Output is part of the window, and it also becomes input on the following turn, so a window must accommodate the response as well as the prompt.",
+      "e": "All three token fields reported in usage count toward the window. Treating cached tokens as free space is the specific misconception the documentation warns about."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/context-windows",
+    "sourceNote": "How the context window works section: everything in the request counts, including the system prompt, every message with its tool results, images, and documents, and the tool definitions, plus the generated output; the input count splits across input, cache read, and cache creation tokens and all three count, and cached prefixes still occupy the window because caching changes what you pay rather than whether tokens count.",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-prompt-and-context-engineering-006",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "prompt-and-context-engineering",
+    "subdomain": "context-engineering",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A team enables server-side tool result clearing on a long-running agent that accumulates large file reads and search results. During review, someone asks how the application's own stored conversation history should be maintained now that older tool results are being cleared. What is correct?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The application must apply the same clearing to its local history, or subsequent requests will be rejected as inconsistent."
+      },
+      {
+        "id": "b",
+        "text": "The response carries an edited transcript that the application is expected to store in place of its previous history."
+      },
+      {
+        "id": "c",
+        "text": "The application keeps its full, unmodified history and keeps sending it; the clearing is applied server-side before the prompt reaches the model."
+      },
+      {
+        "id": "d",
+        "text": "Clearing permanently removes the affected tool results from the conversation, so the application should archive them elsewhere first if it may need them."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Context editing is applied server-side, before the prompt reaches the model, and the documentation states directly that the client keeps the full unmodified conversation history and does not need to sync its state with the edited version. When the configured threshold is exceeded, the oldest tool results are cleared in chronological order and each is replaced with placeholder text signalling to the model that content was removed; by default only the results are cleared, with an option to clear the tool call inputs as well. Because the edit is recomputed per request against whatever history is sent, the client-side record remains the durable source of truth and is unaffected. A practical consequence worth knowing is that clearing tool results invalidates cached prompt prefixes, so a minimum-clearing threshold is provided to make each invalidation worth the cache write.",
+    "distractorNotes": {
+      "a": "No client-side mirroring is required or expected. The documentation calls out explicitly that you continue managing your full history locally as normal.",
+      "b": "The response does not return an edited transcript for the client to adopt. The edit is applied to the prompt on the way in, not handed back as replacement state.",
+      "d": "Nothing is removed from the application's own records, so there is nothing to archive defensively. Clearing affects only what the model sees for a given request."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/context-editing",
+    "sourceNote": "Context editing happens server-side section: edits are applied before the prompt reaches the model, the client maintains the full unmodified history, and no client state sync is needed; the tool result clearing and prompt caching sections describe oldest-first clearing with placeholder replacement text, the optional clearing of tool inputs, and cache invalidation with a minimum-clearing parameter.",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-prompt-and-context-engineering-007",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "prompt-and-context-engineering",
+    "subdomain": "context-engineering",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A developer is configuring server-side compaction for a long-running Claude assistant to manage context window limits. They plan to use custom summarization instructions to ensure technical decisions are preserved. Which TWO statements accurately describe the foundational behavior of the compaction feature? (Select TWO.)",
+    "options": [
+      {
+        "id": "b",
+        "text": "Compaction is triggered when the conversation reaches a configured threshold of input tokens."
+      },
+      {
+        "id": "c",
+        "text": "Custom summarization instructions are appended to the default prompt so that standard state-tracking behaviors are retained."
+      },
+      {
+        "id": "d",
+        "text": "Compaction is triggered automatically based on the number of conversation turns or elapsed time."
+      },
+      {
+        "id": "e",
+        "text": "The client application is responsible for executing the summarization prompt and truncating the superseded history."
+      },
+      {
+        "id": "f",
+        "text": "The application must manually remove content preceding the compaction block before sending subsequent requests."
+      },
+      {
+        "id": "a",
+        "text": "Custom summarization instructions completely replace the default summarization prompt."
+      }
+    ],
+    "correct": [
+      "a",
+      "b"
+    ],
+    "explanation": "Compaction is a server-side feature that automatically summarizes older conversation content to manage context limits. It is fundamentally triggered by the volume of input (a threshold of input tokens), rather than the number of turns or time elapsed. When configuring compaction, providing custom summarization instructions completely replaces Claude's default summarization prompt. This means developers must explicitly instruct Claude to retain any standard behaviors they still need, such as recording current state or next steps. Operationally, the summary is returned as a compaction block, and the server automatically drops the superseded prior blocks on subsequent requests, meaning the client does not need to manually summarize or strip the old history.",
+    "distractorNotes": {
+      "c": "Custom instructions do not supplement the default prompt; they replace it entirely. Assuming default behaviors survive is a common misunderstanding.",
+      "d": "The trigger for compaction is based exclusively on the number of input tokens, not on conversational turns or wall-clock duration.",
+      "e": "Compaction is performed server-side. The client application does not need to run the summarization itself, which simplifies managing long-running contexts.",
+      "f": "Once a compaction block is generated and appended, the server automatically drops the earlier superseded content; manual stripping by the client is not required."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/compaction",
+    "sourceNote": "Parameters table and Custom summarization instructions section: input tokens is the only supported trigger type with a default of 150,000 and a stated minimum of 50,000, and custom instructions completely replace the default prompt when provided; the How compaction works and Pausing after compaction sections cover the compaction block, automatic dropping of prior blocks, and the pause option.",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-prompt-and-context-engineering-008",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "prompt-and-context-engineering",
+    "subdomain": "output-handling",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A developer is building an application that generates answers from user-supplied documents and needs to ensure that each claim is easily traceable. They enable the citations feature in the API request. How does enabling this feature fundamentally change the structure of Claude's output?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The response consists solely of an array of extracted quote objects, omitting any synthesized text."
+      },
+      {
+        "id": "b",
+        "text": "The response text is returned normally, but a consolidated bibliography array is appended to the final output."
+      },
+      {
+        "id": "c",
+        "text": "The response is delivered as interleaved text blocks and citation blocks, embedding source pointers directly where claims are made."
+      },
+      {
+        "id": "d",
+        "text": "The response wraps the generated text in a standard JSON schema that includes an array of source document IDs."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "When the citations feature is enabled, Claude's response structure changes from a single text block to an array of interleaved text and citation blocks. This allows specific claims in the generated text to be directly linked to the exact passages in the user-supplied documents that support them. This structural difference is a foundational aspect of how Claude handles traceable outputs.",
+    "distractorNotes": {
+      "a": "The citations feature still allows Claude to synthesize text; it does not reduce the response to just a list of quotes.",
+      "b": "Citations are provided inline via interleaved blocks exactly where the claims occur, not simply as a single bibliography appended at the end of the response.",
+      "d": "Citations use specific citation blocks interleaved with text, rather than forcing the output into a single predefined JSON schema containing document IDs."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/citations",
+    "sourceNote": "Feature compatibility section: the warning that citations and structured outputs are incompatible, with a 400 error returned when citations are enabled on a user-provided document or search result block and an output format parameter is also supplied, because citations require interleaving citation blocks with text output.",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-prompt-and-context-engineering-009",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "prompt-and-context-engineering",
+    "subdomain": "output-handling",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A development team is building a knowledge base assistant and is considering using the Claude API's built-in Citations feature instead of simply prompting the model to 'quote its sources'. Which TWO statements describe high-level benefits or capabilities of this feature? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "It returns structured citation objects that map specific parts of Claude's response to exact locations in the source documents."
+      },
+      {
+        "id": "b",
+        "text": "It automatically cross-references the provided documents against the internet to ensure factual accuracy."
+      },
+      {
+        "id": "c",
+        "text": "It helps reduce hallucinations and increases trust by grounding the model's claims directly in the provided text."
+      },
+      {
+        "id": "d",
+        "text": "It supports citing specific timestamp ranges within attached audio and video files."
+      },
+      {
+        "id": "e",
+        "text": "It allows developers to enable citations for a specific subset of authoritative documents while leaving others in the request uncited."
+      },
+      {
+        "id": "f",
+        "text": "It automatically generates a bibliography page at the end of the response formatted in standard academic styles like APA or MLA."
+      }
+    ],
+    "correct": [
+      "a",
+      "c"
+    ],
+    "explanation": "The built-in Citations feature is designed to increase trustworthiness and reduce hallucinations by grounding Claude's responses in the provided documents. Unlike standard prompting, the API returns structured citation blocks that pinpoint exactly where in the source text the information originated (such as character offsets for plain text or page numbers for PDFs). It does not automatically format academic bibliographies, support audio/video citations, verify facts against the internet, or allow mixing cited and uncited documents in a single request.",
+    "distractorNotes": {
+      "b": "Citations only ground the response in the provided documents; they do not perform external web searches or fact-checking.",
+      "d": "Currently, only text citations from supported document types are supported. Audio and video citations are not part of the feature.",
+      "e": "Citations are an all-or-nothing feature for a given request. You cannot mix cited and uncited documents in the same request.",
+      "f": "The API returns structured citation objects, not pre-formatted academic bibliographies."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/citations",
+    "sourceNote": "How citations work, Citable versus non-citable content, Citation indices, and Token costs sections: citations must be enabled on all or none of the documents in a request and only text citations are supported; title and context are passed to the model but not cited from; index formats differ by document type; enabling citations slightly increases input tokens while cited text counts toward neither output tokens nor input tokens on replay.",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-prompt-and-context-engineering-010",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "prompt-and-context-engineering",
+    "subdomain": "prompt-engineering",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A content team needs generated policy summaries to be checked against a fixed rubric before publication, and auditors must be able to see what the first draft looked like and why it changed. The engineer is deciding whether to keep the work in one request or split it into an explicit chain of separate API calls. Which reasoning matches Anthropic's guidance on chaining complex prompts?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Chain the work, because a task with more than one reasoning step cannot be completed within a single request and must be decomposed into separate calls, one per step, before the model can attempt it at all."
+      },
+      {
+        "id": "b",
+        "text": "Keep the work in one request and separate the draft, review, and refine stages with tags, because splitting the task into separate calls discards everything produced in the earlier stages and forces a restart from scratch."
+      },
+      {
+        "id": "c",
+        "text": "Chain the work, because chaining is what gives you an inspectable intermediate output and a defined pipeline; the documented shape is draft, then review against explicit criteria, then refine, each step its own call."
+      },
+      {
+        "id": "d",
+        "text": "Chain the work mainly to reduce cost, because several short requests process fewer total tokens than one longer request that has to carry the draft and the rubric through to the end of a single response."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Current guidance is that much multistep reasoning is handled inside a single response, so chaining is no longer the default answer to task complexity. What chaining still buys you is control at the seams: it is called out as useful specifically when you need to inspect intermediate outputs or enforce a particular pipeline structure. The documented canonical pattern is self-correction, meaning generate a draft, review it against criteria, then refine based on that review, with each step issued as a separate API call so the run can be logged, evaluated, or branched at any point. That is exactly the requirement here, since the rubric check must be a distinct auditable stage and the original draft has to remain visible.",
+    "distractorNotes": {
+      "a": "This overstates the need for chaining. Multistep reasoning is largely handled within a single response, which is why the guidance now frames chaining as a control and observability technique rather than a capability workaround.",
+      "b": "Separate calls do not discard earlier work; the draft and the review are passed forward as input to the next call. Keeping everything in one request is what removes the inspection point the team needs.",
+      "d": "Cost is not a documented rationale for chaining. Splitting a task does not inherently reduce the total tokens processed, since each call still has to carry the context it needs, and the stated reasons to chain are inspection of intermediate outputs and pipeline control."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices#chain-complex-prompts",
+    "sourceNote": "Chain complex prompts section: explicit prompt chaining remains useful when you need to inspect intermediate outputs or enforce a specific pipeline structure, and the most common chaining pattern is self-correction, generating a draft, reviewing it against criteria, then refining, with each step as a separate API call so you can log, evaluate, or branch.",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-prompt-and-context-engineering-011",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "prompt-and-context-engineering",
+    "subdomain": "output-handling",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A developer is planning to use the Claude API's native Structured Outputs feature to extract specific data from unstructured text into JSON. Which TWO statements accurately describe the foundational capabilities of this feature? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "It guarantees that the output will be parseable JSON that strictly adheres to the required fields and data types defined in the schema."
+      },
+      {
+        "id": "b",
+        "text": "It guarantees both structural validity and factual accuracy, preventing the model from hallucinating incorrect data within the JSON values."
+      },
+      {
+        "id": "c",
+        "text": "It eliminates the need for prompt engineering, as the provided schema fully replaces the need to describe the task in the system prompt."
+      },
+      {
+        "id": "d",
+        "text": "It can be used to generate standalone JSON responses, and it also powers strict schema enforcement for Tool Use inputs."
+      },
+      {
+        "id": "e",
+        "text": "It handles schema violations by automatically retrying the generation on the Anthropic backend until the model produces valid JSON."
+      },
+      {
+        "id": "f",
+        "text": "It is only available when using Tool Use, requiring developers to define a dummy tool even if they only want a standard JSON response."
+      }
+    ],
+    "correct": [
+      "a",
+      "d"
+    ],
+    "explanation": "The Structured Outputs feature uses constrained decoding to ensure that the model's output strictly adheres to a provided JSON schema. This guarantees well-formed JSON, correct data types, and the presence of required fields natively during the generation process (Option A). Furthermore, this feature is versatile: it can be used independently for standard JSON generation, and it also powers strict schema enforcement for Tool Use inputs (Option D).",
+    "distractorNotes": {
+      "b": "Structured Outputs enforce the syntax and type structure of the output, but the model can still hallucinate or extract factually incorrect values within those structural fields.",
+      "c": "While the schema defines the structure, developers still need to use prompt engineering to instruct the model on what data to extract and how to populate the schema.",
+      "e": "The feature does not rely on automatic backend retries. Instead, it uses constrained decoding to guarantee valid JSON structurally on the first pass, effectively eliminating the need for retries due to schema violations.",
+      "f": "Structured Outputs and strict tool use are complementary features. You can use Structured Outputs for standard JSON responses entirely independently of Tool Use."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs",
+    "sourceNote": "How SDK transformation works subsection: the SDK helpers remove unsupported constraints such as minimum, maximum, minimum length and maximum length, move the constraint info into the description, add additional properties false to all objects, filter string formats, and validate responses against the original schema, so the model receives a simplified schema while application code still enforces all constraints; the Why use structured outputs section states that constrained decoding yields always-valid, type-safe output with guaranteed required fields and no retries for schema violations, and the introduction describes JSON outputs and strict tool use as complementary features usable independently or together.",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-prompt-and-context-engineering-012",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "prompt-and-context-engineering",
+    "subdomain": "context-engineering",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A team maintaining a long-running agent keeps loading more reference material into its context window \"just in case\" it turns out to be relevant, and answer quality is slowly getting worse. Which principle should guide what actually belongs in context?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Aim for the smallest set of high-signal tokens that supports the task, because context is a finite resource and irrelevant content degrades the model's focus."
+      },
+      {
+        "id": "b",
+        "text": "Load as much plausibly relevant material as will fit inside the window, because a fuller context reliably improves the model's overall accuracy and its recall."
+      },
+      {
+        "id": "c",
+        "text": "Retain everything the agent has already seen so that it never has to re-derive an earlier conclusion during a later turn."
+      },
+      {
+        "id": "d",
+        "text": "Fill the system prompt with every edge case up front, since exhaustive rules are always more dependable than concise guidance."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Anthropic's context-engineering guidance treats context as a finite resource with diminishing returns: as tokens accumulate, recall and focus degrade (context rot), so the goal is the smallest high-signal set that still fully specifies the task. Option a states exactly that. The other options assume more context is monotonically better, which is the misconception the guidance warns against; padding the window, hoarding history, or stuffing exhaustive rules all dilute the attention budget and make relevant tokens harder to use.",
+    "distractorNotes": {
+      "b": "This is the intuition the guidance explicitly rejects. More tokens do not reliably improve recall; beyond a point they cause context rot and reduce the model's ability to find what matters.",
+      "c": "Retaining all prior content indefinitely is what compaction and context editing exist to counter. Stale tool outputs and resolved turns are prime candidates for removal, not permanent retention.",
+      "d": "Minimal does not mean short, but exhaustively enumerating edge cases in the system prompt bloats it and buries the load-bearing instructions; curated, canonical guidance performs better."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/context-windows",
+    "sourceNote": "Context windows — 'How the context window works' (context rot; curating what's in context)",
+    "sourceCheckedAt": "2026-09-07"
+  },
+  {
+    "id": "ccdv-f-prompt-and-context-engineering-013",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "prompt-and-context-engineering",
+    "subdomain": "context-engineering",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An agent runs multi-hour codebase migrations whose cumulative token count far exceeds the context window, and it must stay coherent and goal-directed across the whole task. Select THREE techniques that let it work past the window limit while preserving the context that still matters.",
+    "options": [
+      {
+        "id": "a",
+        "text": "Raise the sampling temperature so the agent improvises whatever earlier state has scrolled out of the window."
+      },
+      {
+        "id": "b",
+        "text": "Summarise the conversation as it nears the limit and reinitialise a fresh window from that high-fidelity summary."
+      },
+      {
+        "id": "c",
+        "text": "Keep the entire raw message history verbatim on every turn so that no earlier detail is ever discarded."
+      },
+      {
+        "id": "d",
+        "text": "Have the agent write structured notes to an external store and pull them back into context when they are needed later."
+      },
+      {
+        "id": "e",
+        "text": "Delegate focused sub-tasks to sub-agents that each work in their own clean context and return only their results."
+      },
+      {
+        "id": "f",
+        "text": "Wait for a larger context window, since a big enough window removes any need to curate what the agent sees."
+      }
+    ],
+    "correct": [
+      "b",
+      "d",
+      "e"
+    ],
+    "explanation": "For long-horizon tasks Anthropic describes three complementary techniques: compaction (summarise near the limit and continue from the summary), structured note-taking to memory outside the window that is read back later, and sub-agent architectures that isolate focused work in clean contexts. Options b, d, and e are those three. Raising temperature (a) does nothing to recover lost state; keeping all raw history (c) is precisely what causes context rot; and waiting for a bigger window (f) is rejected because windows of every size still suffer context pollution and relevance decay.",
+    "distractorNotes": {
+      "a": "Temperature controls randomness of sampling, not memory. It cannot restore information that has already left the window and only makes behaviour less predictable.",
+      "c": "Carrying the full raw history is the failure mode these techniques address; unbounded accumulation degrades recall long before any hard limit is reached.",
+      "f": "A larger window is not a substitute for curation. Context rot and relevance decay affect windows of all sizes, so the strongest agents still manage what they carry."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+    "sourceNote": "Context engineering for long-horizon tasks — compaction, structured note-taking, sub-agent architectures",
+    "sourceCheckedAt": "2026-09-07"
+  },
+  {
+    "id": "ccdv-f-prompt-and-context-engineering-014",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "prompt-and-context-engineering",
+    "subdomain": "context-engineering",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An agent works across many sessions and must remember project state, decisions, and progress that would otherwise be lost as the conversation is summarised or scrolls out of the context window. Where should that durable information live?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Entirely inside the running conversation, since anything already in the message history is guaranteed to stay available to the model."
+      },
+      {
+        "id": "b",
+        "text": "In external notes or a file-based memory the agent writes and reads back, so the facts persist independently of the context window."
+      },
+      {
+        "id": "c",
+        "text": "Encoded implicitly in a higher temperature setting, so the model reconstructs the missing state by improvising when it is asked."
+      },
+      {
+        "id": "d",
+        "text": "Copied into the system prompt again on every turn, letting it grow without bound as the project accumulates more state."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Structured note-taking, or agentic memory, persists critical facts outside the context window and reads them back when needed, giving continuity across sessions and summarisation steps. That is option b. Leaving durable state only in the conversation (a) is unsafe because compaction and window limits can discard it; temperature (c) has nothing to do with memory; and endlessly appending state to the system prompt (d) bloats it and reintroduces the very window pressure you were trying to escape.",
+    "distractorNotes": {
+      "a": "Message history is not permanent: compaction summarises older turns and long conversations fall out of the window, so facts kept only there can silently disappear.",
+      "c": "Temperature governs randomness, not recall. It cannot store or retrieve state, and improvised reconstruction of prior decisions is exactly what a memory store prevents.",
+      "d": "Continuously growing the system prompt trades one window problem for another; persistent facts belong in an external store that is consulted on demand, not re-injected every turn."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+    "sourceNote": "Context engineering for long-horizon tasks — 'Structured note-taking' (agentic memory persisted outside the context window)",
+    "sourceCheckedAt": "2026-09-07"
+  },
+  {
+    "id": "ccdv-f-prompt-and-context-engineering-015",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "prompt-and-context-engineering",
+    "subdomain": "context-engineering",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A developer is deciding whether to let a long conversation keep accumulating turns or to summarise older ones as it approaches the window limit. Select TWO statements that correctly describe the tradeoff involved.",
+    "options": [
+      {
+        "id": "a",
+        "text": "Carrying the full untrimmed history always yields better answers, because the model attends equally well to every token no matter how long the context grows."
+      },
+      {
+        "id": "b",
+        "text": "Replacing old turns with a summary reclaims attention budget and reduces context rot, but overly aggressive summarising can drop subtle details whose importance only surfaces later."
+      },
+      {
+        "id": "c",
+        "text": "Compaction removes any need to persist information elsewhere, since the summary is guaranteed to retain every fact the agent could later require."
+      },
+      {
+        "id": "d",
+        "text": "Facts that must survive the whole task are more reliable when written to external notes than when left only in a conversation that may be summarised away."
+      },
+      {
+        "id": "e",
+        "text": "Summarising conversation history is a lossless operation, so there is no real decision about what to keep versus what to discard."
+      }
+    ],
+    "correct": [
+      "b",
+      "d"
+    ],
+    "explanation": "Compaction distils the window into a summary so the agent can continue with a smaller, higher-signal context, but the art lies in choosing what to keep: too-aggressive compaction loses subtle context whose importance appears only later (b). Because summarisation is lossy, durable facts are safer in external notes than in a conversation that can be compacted away (d). The distractors are wrong in principle: long context is not uniformly attended (a), a summary is not a guaranteed complete record (c), and compaction is explicitly not lossless (e).",
+    "distractorNotes": {
+      "a": "Attention is not uniform across a long window; recall degrades as tokens accumulate, which is the whole reason to summarise rather than carry everything.",
+      "c": "A summary is a lossy distillation, not a guarantee. Critical facts can be dropped, which is why external persistence is recommended alongside compaction.",
+      "e": "Summarisation necessarily discards content, so deciding what to preserve versus drop is the central design choice, not a non-issue."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+    "sourceNote": "Context engineering for long-horizon tasks — 'Compaction' (the art of what to keep vs discard)",
+    "sourceCheckedAt": "2026-09-07"
+  },
+  {
+    "id": "ccdv-f-prompt-and-context-engineering-016",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "prompt-and-context-engineering",
+    "subdomain": "prompt-engineering",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "A developer has fixed, standing instructions that should govern the assistant's role and behaviour on every request, alongside per-request user content that varies. Where should the standing instructions be placed?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Appended to the end of each user message, so they always sit as close as possible to where the model begins its response."
+      },
+      {
+        "id": "b",
+        "text": "In the system prompt, which is designed to carry persistent role and behaviour instructions that apply consistently across all turns."
+      },
+      {
+        "id": "c",
+        "text": "Split unpredictably between the system prompt and user turns so the model encounters the same rules from several positions."
+      },
+      {
+        "id": "d",
+        "text": "Only in the first user turn, relying on the model to carry those rules forward unaided through the rest of the conversation."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "The system prompt is the component meant to hold persistent role and behavioural instructions that apply across the whole conversation, so standing instructions belong there (b). Appending them to every user message (a) mixes durable rules with variable input and duplicates them needlessly; scattering them (c) is inconsistent and hard to maintain; and relying on a single early user turn (d) leaves the rules vulnerable to being summarised or drifting out of focus over a long session.",
+    "distractorNotes": {
+      "a": "Repeating standing rules in every user turn conflates persistent behaviour with per-request content and wastes tokens; the system prompt exists precisely so you do not have to.",
+      "c": "Randomly splitting instructions across components makes the prompt inconsistent and hard to reason about, without improving adherence.",
+      "d": "A single early user turn is not durable; over a long or compacted conversation those instructions can lose salience or drop out of the window entirely."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices#give-claude-a-role",
+    "sourceNote": "Prompting best practices — giving Claude a role via the system prompt for persistent behaviour",
+    "sourceCheckedAt": "2026-09-07"
+  },
+  {
+    "id": "ccdv-f-prompt-and-context-engineering-017",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "prompt-and-context-engineering",
+    "subdomain": "prompt-engineering",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer is struggling to get consistent output formatting from an assistant and is iterating on the prompt. Select THREE techniques that Anthropic recommends for steering output format.",
+    "options": [
+      {
+        "id": "a",
+        "text": "Raise the sampling temperature so that the model adheres to the requested output format more strictly and predictably."
+      },
+      {
+        "id": "b",
+        "text": "Tell the model what to do rather than what not to do, for example describing the prose you want instead of forbidding markdown."
+      },
+      {
+        "id": "c",
+        "text": "Prefill a partial assistant message to force the format, which remains the recommended formatting technique on the current models."
+      },
+      {
+        "id": "d",
+        "text": "Use XML tags or explicit format indicators to mark where a particular kind of output should be placed in the response."
+      },
+      {
+        "id": "e",
+        "text": "State the formatting rule once and never revisit it, since iterating on the wording of a prompt rarely changes the output."
+      },
+      {
+        "id": "f",
+        "text": "Match the style of the prompt to the desired output, since the formatting used in the prompt influences the response's formatting."
+      }
+    ],
+    "correct": [
+      "b",
+      "d",
+      "f"
+    ],
+    "explanation": "The recommended levers for output formatting are: state what to do instead of what to avoid (b), use XML tags or format indicators to delineate output (d), and match your prompt's style to the output you want (f). Temperature (a) governs randomness, not format adherence; prefilling (c) is no longer supported on current 4.6-and-later models and returns an error; and refusing to iterate (e) contradicts the core practice of iterative refinement.",
+    "distractorNotes": {
+      "a": "Temperature affects randomness of sampling, not whether the model follows a format. It is not a formatting control.",
+      "c": "Prefilled assistant responses are unsupported on current models and return a 400 error; structured outputs or explicit instructions replace that technique.",
+      "e": "Iterative refinement is central to prompt engineering; adjusting wording and examples based on failures is how formatting reliability improves."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices",
+    "sourceNote": "Prompting best practices — 'Control the format of responses' (say what to do; XML indicators; match prompt style)",
+    "sourceCheckedAt": "2026-09-07"
+  },
+  {
+    "id": "ccdv-f-prompt-and-context-engineering-018",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "prompt-and-context-engineering",
+    "subdomain": "output-handling",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A service asks Claude for JSON and parses the reply. Roughly one call in twenty fails to parse, so the team wrapped the call in a retry loop that reissues the request until parsing succeeds. Costs and latency have both climbed. What is the better approach?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Raise the temperature so that a failed attempt is more likely to produce different output on the next try, which shortens the retry loop."
+      },
+      {
+        "id": "opt-b",
+        "text": "Keep the retry loop but strip the reply of any text outside the outermost braces first, since the parse failures are formatting noise."
+      },
+      {
+        "id": "opt-c",
+        "text": "Constrain the response with structured outputs, so the reply is schema-compliant by construction and the retry loop can be removed entirely."
+      },
+      {
+        "id": "opt-d",
+        "text": "Move the schema into the system prompt and restate it before every user turn, so the instruction stays close to the point of generation."
+      }
+    ],
+    "correct": [
+      "opt-c"
+    ],
+    "explanation": "Structured outputs constrain generation to a supplied JSON schema, so the response is valid and correctly typed by construction rather than by luck. That removes the failure the retry loop exists to absorb, along with the duplicated cost and latency of reissuing requests. The other options all treat the symptom: they try to make an unconstrained generation fail less often, rather than removing the possibility of a schema violation.",
+    "distractorNotes": {
+      "opt-a": "Temperature does change sampling, but it is not a correctness control. Varying the output distribution to make a malformed reply less likely still leaves the reply unconstrained.",
+      "opt-b": "Salvaging text around the JSON is a real defensive technique, but here it papers over a problem that can be eliminated outright, and it silently accepts whatever survives the strip.",
+      "opt-d": "Restating a schema in the prompt is instruction, not enforcement. The model is still free to deviate, so the parse failures continue at some lower rate."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs",
+    "sourceNote": "Structured outputs — constrained decoding guarantees schema-compliant responses, removing the need for retries on schema violations",
+    "sourceCheckedAt": "2026-09-07"
+  },
+  {
+    "id": "ccdv-f-prompt-and-context-engineering-019",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "prompt-and-context-engineering",
+    "subdomain": "output-handling",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A summarisation endpoint occasionally stores summaries that end mid-sentence. The integration reads the first text block of every successful response and writes it straight to the database. No errors are logged. What is the underlying defect?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "The client never inspects why generation stopped, so a response cut short by the output limit is stored as though it were complete."
+      },
+      {
+        "id": "opt-b",
+        "text": "The client is reading the first text block rather than concatenating every block, so any summary split across blocks is stored truncated."
+      },
+      {
+        "id": "opt-c",
+        "text": "The database column is too narrow for the longer summaries, so the value is silently cut to length as it is written rather than rejected."
+      },
+      {
+        "id": "opt-d",
+        "text": "The requests are being served without streaming, so any summary longer than a single response chunk is delivered incomplete to the client."
+      }
+    ],
+    "correct": [
+      "opt-a"
+    ],
+    "explanation": "A response that hits the output token limit is still a successful, well-formed response. The signal that it was cut short lives in the stop reason, which distinguishes a turn that finished naturally from one that ran out of room, was refused, or paused. Consuming output defensively means branching on that signal before treating text as final, which is exactly the step this integration skips.",
+    "distractorNotes": {
+      "opt-b": "Worth doing, and a real source of bugs, but it would drop whole segments rather than produce text that stops mid-sentence at varying lengths.",
+      "opt-c": "Plausible, but a storage-layer truncation is a property of the database rather than the integration, and the symptom would track the column width rather than the generation.",
+      "opt-d": "Streaming changes how output is delivered, not how much of it is generated. A non-streamed response carries the full generated text."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons",
+    "sourceNote": "Handling stop reasons — a successful response may have ended because the output limit was reached, and clients should branch on the stop reason",
+    "sourceCheckedAt": "2026-09-07"
+  },
+  {
+    "id": "ccdv-f-prompt-and-context-engineering-020",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "prompt-and-context-engineering",
+    "subdomain": "output-handling",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A team is hardening the code that consumes Claude's output before an audit. Select TWO practices that genuinely improve robustness rather than merely appearing to.",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Treat a schema-valid response as verified, since constrained generation has already established that the content is correct."
+      },
+      {
+        "id": "opt-b",
+        "text": "Validate the meaning of the output against business rules, because a guarantee about shape says nothing about whether the values are right."
+      },
+      {
+        "id": "opt-c",
+        "text": "Log the raw response alongside the parsed result, so a later dispute can be traced to what the model actually returned."
+      },
+      {
+        "id": "opt-d",
+        "text": "Discard any response the parser rejects without recording it, to keep malformed content out of the audit trail entirely."
+      },
+      {
+        "id": "opt-e",
+        "text": "Infer confidence from how assertively the response is phrased, and route the least hedged answers through review."
+      }
+    ],
+    "correct": [
+      "opt-b",
+      "opt-c"
+    ],
+    "explanation": "Constrained generation guarantees that output parses and that fields carry the declared types, and nothing beyond that. A well-formed response can still be wrong, so semantic validation against business rules remains the caller's job. Retaining the raw response next to the parsed result is what makes a failure investigable after the fact, which is precisely what an audit needs.",
+    "distractorNotes": {
+      "opt-a": "This is the error the skill is named for. Schema compliance is a structural guarantee; it is silent on whether the values are accurate.",
+      "opt-d": "Exactly inverts the goal. The rejected responses are the most diagnostic evidence available, and discarding them removes the audit trail rather than protecting it.",
+      "opt-e": "Assertive phrasing is not a confidence signal. Fluent, confident wording accompanies wrong answers as readily as right ones, so routing on tone selects almost arbitrarily."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs",
+    "sourceNote": "Structured outputs — the stated guarantees are schema-level: valid JSON, guaranteed field types and required fields",
+    "sourceCheckedAt": "2026-09-07"
+  },
+  {
+    "id": "ccdv-f-prompt-and-context-engineering-021",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "prompt-and-context-engineering",
+    "subdomain": "output-handling",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An agent calls an internal pricing tool. The team needs certainty that the arguments Claude passes to that tool always match the tool's declared input schema, because a malformed argument reaches a downstream billing system. Which approach fits the requirement?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Describe the argument format carefully in the tool description and add examples of well-formed calls, so the model has a pattern to copy."
+      },
+      {
+        "id": "opt-b",
+        "text": "Constrain the assistant's final text response to a JSON schema, which covers the arguments because tool calls are emitted as part of that response."
+      },
+      {
+        "id": "opt-c",
+        "text": "Accept the call, submit it to the billing system, and roll the transaction back if the billing system rejects the argument as malformed."
+      },
+      {
+        "id": "opt-d",
+        "text": "Enable strict tool use, so the tool name and its inputs are themselves schema-validated during generation rather than checked afterwards."
+      }
+    ],
+    "correct": [
+      "opt-d"
+    ],
+    "explanation": "Structured outputs cover two distinct surfaces. Constraining the response format governs the text Claude returns; strict tool use governs the tool name and the inputs Claude passes. The requirement here is about tool arguments, so it is the tool-use surface that must be constrained. Choosing between the two is a matter of knowing which part of the exchange each one governs.",
+    "distractorNotes": {
+      "opt-a": "Good tool descriptions genuinely raise the hit rate, but description is guidance rather than enforcement, and the requirement asks for certainty.",
+      "opt-b": "Confuses the two surfaces. Constraining the response format does not govern tool inputs, so the malformed arguments would still pass through.",
+      "opt-c": "Pushes validation past the boundary it was supposed to protect. The billing system is the thing being shielded, so letting it perform the check defeats the purpose."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs",
+    "sourceNote": "Structured outputs — strict tool use guarantees schema validation on tool names and inputs, complementing JSON output formats",
+    "sourceCheckedAt": "2026-09-07"
+  }
+]

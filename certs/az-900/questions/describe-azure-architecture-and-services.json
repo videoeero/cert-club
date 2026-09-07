@@ -1,0 +1,289 @@
+[
+  {
+    "id": "az-900-describe-azure-architecture-and-services-001",
+    "cert": "az-900",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "describe-azure-architecture-and-services",
+    "subdomain": "regions-and-region-pairs",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An architect is evaluating how Azure region pairs affect a disaster-recovery design. Which two statements are correct? Select TWO.",
+    "options": [
+      {
+        "id": "a",
+        "text": "Every Azure region is paired with another region inside the same geography"
+      },
+      {
+        "id": "b",
+        "text": "Deploying resources in one paired region does not automatically provide replication or failover"
+      },
+      {
+        "id": "c",
+        "text": "Customers define their own region pairs when they create a subscription"
+      },
+      {
+        "id": "d",
+        "text": "Microsoft strives to stagger planned system updates across paired regions"
+      }
+    ],
+    "correct": [
+      "b",
+      "d"
+    ],
+    "explanation": "Microsoft defines region pairs and strives to stagger planned system updates across them. Merely deploying to a region in a pair does not create replication, high availability, disaster recovery, or failover. Many regions are not paired, and customers cannot choose their own pairings.",
+    "distractorNotes": {
+      "a": "Many Azure regions are not paired, and an asymmetric pair can cross geography boundaries.",
+      "c": "Microsoft defines region pairs; customers cannot create arbitrary pairings."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-paired",
+    "sourceNote": "Paired regions - Microsoft-defined pairs, unpaired regions, and resilience limitations",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "az-900-describe-azure-architecture-and-services-002",
+    "cert": "az-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-azure-architecture-and-services",
+    "subdomain": "resource-groups",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A resource group was created in West Europe. The team now needs to deploy a virtual machine in North Europe into that group. What should the team expect?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The deployment is valid because a resource can be in a different region from its resource group"
+      },
+      {
+        "id": "b",
+        "text": "The deployment fails because every resource must share the resource group's region"
+      },
+      {
+        "id": "c",
+        "text": "The resource group automatically moves its metadata to North Europe before deployment"
+      },
+      {
+        "id": "d",
+        "text": "The virtual machine is added to both regional resource groups because resources can have multiple groups"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "A resource group's location determines where Azure stores the group's metadata, not where every contained resource must run. Resources in one group can be located in different regions. Each resource can belong to only one resource group at a time.",
+    "distractorNotes": {
+      "b": "Resource location is independent of the resource group's metadata location.",
+      "c": "Adding a resource does not relocate the resource group's metadata.",
+      "d": "An Azure resource can exist in only one resource group."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/overview",
+    "sourceNote": "Resource groups - location, metadata, membership, and lifecycle considerations",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "az-900-describe-azure-architecture-and-services-003",
+    "cert": "az-900",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "describe-azure-architecture-and-services",
+    "subdomain": "role-based-access-control",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An administrator is troubleshooting effective access under Azure role-based access control. Which two statements correctly describe Azure RBAC? Select TWO.",
+    "options": [
+      {
+        "id": "a",
+        "text": "A role assignment combines a security principal, a role definition, and a scope"
+      },
+      {
+        "id": "b",
+        "text": "A narrower Reader assignment always removes permissions granted by a broader Contributor assignment"
+      },
+      {
+        "id": "c",
+        "text": "Effective permissions normally add together, but an applicable deny assignment blocks access"
+      },
+      {
+        "id": "d",
+        "text": "Role assignments can be scoped only to subscriptions and resource groups"
+      }
+    ],
+    "correct": [
+      "a",
+      "c"
+    ],
+    "explanation": "An Azure role assignment consists of a security principal, role definition, and scope. RBAC permissions are additive across assignments, but deny assignments are evaluated before role assignments and can block access. Valid scopes include management group, subscription, resource group, and individual resource.",
+    "distractorNotes": {
+      "b": "RBAC is additive; a narrower Reader assignment does not subtract broader Contributor permissions.",
+      "d": "Management groups and individual resources are also valid RBAC scopes."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/role-based-access-control/overview",
+    "sourceNote": "Azure RBAC overview - role assignments, scopes, additive permissions, and deny assignments",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "az-900-describe-azure-architecture-and-services-004",
+    "cert": "az-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-azure-architecture-and-services",
+    "subdomain": "network-connectivity",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A company requires private Layer 3 connectivity from its datacenter to Azure that does not traverse the public internet. Which service should it choose?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Azure VPN Gateway with a site-to-site tunnel over the public internet"
+      },
+      {
+        "id": "b",
+        "text": "Azure ExpressRoute through a connectivity provider"
+      },
+      {
+        "id": "c",
+        "text": "Azure DNS Private Resolver without any network circuit"
+      },
+      {
+        "id": "d",
+        "text": "Virtual network peering between the datacenter and Azure"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "ExpressRoute extends an on-premises network into Microsoft cloud services over a private Layer 3 connection supplied through a connectivity provider. VPN Gateway encrypts traffic but carries it over the public internet. VNet peering connects Azure virtual networks rather than creating an on-premises circuit.",
+    "distractorNotes": {
+      "a": "VPN Gateway uses encrypted tunnels over the public internet, which violates the requirement.",
+      "c": "Private Resolver handles DNS queries and does not provide the underlying private connection.",
+      "d": "VNet peering connects virtual networks and cannot by itself connect an on-premises datacenter."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/expressroute/expressroute-introduction",
+    "sourceNote": "ExpressRoute introduction - private Layer 3 connectivity through a provider",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "az-900-describe-azure-architecture-and-services-005",
+    "cert": "az-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-azure-architecture-and-services",
+    "subdomain": "storage-redundancy",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A storage account must keep synchronous copies across availability zones in its primary region and also allow reads from an asynchronously replicated secondary region before a failover. Which redundancy option meets both requirements?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Locally redundant storage (LRS)"
+      },
+      {
+        "id": "b",
+        "text": "Zone-redundant storage (ZRS)"
+      },
+      {
+        "id": "c",
+        "text": "Read-access geo-zone-redundant storage (RA-GZRS)"
+      },
+      {
+        "id": "d",
+        "text": "Geo-redundant storage (GRS)"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "GZRS synchronously distributes the primary copy across availability zones and asynchronously copies data to a secondary region. The RA variant adds read access to the secondary before failover. ZRS has no secondary-region copy, while ordinary GRS uses LRS rather than ZRS in the primary region and does not expose secondary reads.",
+    "distractorNotes": {
+      "a": "LRS keeps copies in one physical datacenter and has neither zone nor geo redundancy.",
+      "b": "ZRS spans primary-region zones but does not add a secondary-region copy.",
+      "d": "GRS geo-replicates from an LRS primary and does not provide secondary read access before failover."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy",
+    "sourceNote": "Azure Storage redundancy - ZRS, GRS, GZRS, and read-access variants",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "az-900-describe-azure-architecture-and-services-006",
+    "cert": "az-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-azure-architecture-and-services",
+    "subdomain": "identity-services",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A company is moving a legacy application to Azure. The application requires domain join, Group Policy, LDAP, and Kerberos, but the company does not want to deploy or patch domain controllers. Which service fits?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Microsoft Entra Conditional Access"
+      },
+      {
+        "id": "b",
+        "text": "Microsoft Entra Domain Services"
+      },
+      {
+        "id": "c",
+        "text": "Azure role-based access control"
+      },
+      {
+        "id": "d",
+        "text": "Microsoft Defender for Cloud"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Microsoft Entra Domain Services supplies managed domain join, Group Policy, LDAP, and Kerberos/NTLM authentication without requiring customers to deploy, manage, or patch domain controllers. It integrates with Microsoft Entra ID as its source of authority and is intended for scenarios such as lifting and shifting legacy applications.",
+    "distractorNotes": {
+      "a": "Conditional Access makes if-then access decisions after first-factor authentication; it is not a managed domain.",
+      "c": "Azure RBAC authorizes access to Azure resources but does not provide LDAP or domain join.",
+      "d": "Defender for Cloud manages cloud security posture and workload protection, not directory protocols."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/entra/identity/domain-services/overview",
+    "sourceNote": "Microsoft Entra Domain Services - managed domain capabilities and lift-and-shift use cases",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "az-900-describe-azure-architecture-and-services-007",
+    "cert": "az-900",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "describe-azure-architecture-and-services",
+    "subdomain": "zero-trust",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A security team is aligning its Azure design with the documented Zero Trust principles. Which two actions directly reflect those principles? Select TWO.",
+    "options": [
+      {
+        "id": "a",
+        "text": "Trust requests from the corporate network without checking identity or device signals"
+      },
+      {
+        "id": "b",
+        "text": "Grant standing administrator access broadly so responders are never delayed"
+      },
+      {
+        "id": "c",
+        "text": "Authenticate and authorize each request by using all available signals"
+      },
+      {
+        "id": "d",
+        "text": "Limit access to what a user or workload needs and for only as long as needed"
+      }
+    ],
+    "correct": [
+      "c",
+      "d"
+    ],
+    "explanation": "Zero Trust says to verify explicitly by authenticating and authorizing every request with available signals, use least-privilege access for the shortest necessary time, and assume breach. Network location alone does not establish trust, and broad standing access conflicts with least privilege.",
+    "distractorNotes": {
+      "a": "Zero Trust does not treat a network location as an automatic trust boundary.",
+      "b": "Broad standing privileges conflict with granting only the access needed for the shortest time."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/security/zero-trust/zero-trust-overview",
+    "sourceNote": "Zero Trust overview - verify explicitly, use least privilege, and assume breach",
+    "sourceCheckedAt": "2026-09-03"
+  }
+]

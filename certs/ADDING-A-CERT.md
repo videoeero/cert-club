@@ -12,18 +12,26 @@ anyone can open without an account or paid subscription.
 
 ## File layout
 
-A cert bank is exactly three files in a new subfolder of `certs/`:
+A cert bank is a `manifest.json` plus one questions file per domain, in a new
+subfolder of `certs/`:
 
 ```
 certs/
   <slug>/
     manifest.json
-    questions.json
+    questions/
+      domain-one.json
+      domain-two.json
 ```
 
 `<slug>` must be a lowercase, hyphen-separated identifier (e.g. `az-900`,
 `aws-clf-c02`). It must match `manifest.cert` and be the prefix of every
 question ID in that bank.
+
+Each file under `questions/` is named after a `domains[*].slug` declared in
+`manifest.json` and holds a JSON array of every question in that domain.
+Every declared domain needs a matching file, even if it only holds one
+question so far — the app fetches one file per manifest domain.
 
 ## Step 1 — Register in the catalog
 
@@ -96,16 +104,16 @@ npm run balance                # measure the shape of the bank as it stands
 npm run balance -- --target 150   # measure it against an authoring goal
 ```
 
-## Step 3 — Write `questions.json`
+## Step 3 — Write `questions/<domain-slug>.json`
 
-The file is a JSON array of question objects. The full schema is in
-[`schemas/question-bank.mjs`](../schemas/question-bank.mjs). A minimal
-single-select example:
+Each file is a JSON array of question objects belonging to that domain. The
+full schema is in [`schemas/question-bank.mjs`](../schemas/question-bank.mjs).
+A minimal single-select example:
 
 ```json
 [
   {
-    "id": "<slug>-001",
+    "id": "<slug>-domain-one-001",
     "cert": "<slug>",
     "schemaVersion": 1,
     "type": "single",
@@ -135,7 +143,7 @@ single-select example:
 
 | Field | Constraint |
 |---|---|
-| `id` | Must start with `<slug>-`; unique across the entire repository |
+| `id` | Must start with `<slug>-`; conventionally `<slug>-<domain-slug>-NNN`; unique across the entire repository |
 | `cert` | Must equal `manifest.cert` |
 | `schemaVersion` | Must be `1` |
 | `type` | `"single"` or `"multi"` |
@@ -194,7 +202,7 @@ Anchor 2 is the one that gets missed, and it reduces to a single testable rule:
 
 ### Worked example
 
-`ccdv-f-0073` asks which two flags to add to a `claude -p` invocation in CI. It
+`ccdv-f-claude-code-005` asks which two flags to add to a `claude -p` invocation in CI. It
 passes anchor 1 cleanly: its domain names headless mode outright, and both flags
 are explicit recommendations in the official headless-mode documentation, not
 buried trivia. It fails anchor 2. Answering means separating five flags on their
@@ -244,5 +252,5 @@ unaffected.
 ## Content license
 
 Original question text, option text, explanations, and metadata in
-`questions.json` are licensed under **CC BY-SA 4.0**. By submitting a new bank
+`questions/*.json` are licensed under **CC BY-SA 4.0**. By submitting a new bank
 you agree to that license for your content contributions.

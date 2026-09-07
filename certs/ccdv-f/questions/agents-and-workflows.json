@@ -1,0 +1,1077 @@
+[
+  {
+    "id": "ccdv-f-agents-and-workflows-001",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agents-and-workflows",
+    "subdomain": "agent-architecture",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "A developer runs a task with the Claude Agent SDK and sets no turn limit and no budget limit. Assuming the task completes normally, what causes the agent loop to stop so the SDK can emit its final result message?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Claude produces a response that contains no tool calls."
+      },
+      {
+        "id": "b",
+        "text": "The accumulated conversation reaches the context window limit."
+      },
+      {
+        "id": "c",
+        "text": "Every tool the agent was permitted to use has been called at least once."
+      },
+      {
+        "id": "d",
+        "text": "The SDK reaches its default maximum number of turns."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "The loop repeats one cycle: Claude evaluates the current state and may respond with text, tool calls, or both; the SDK executes any requested tools and feeds the results back for the next decision. That cycle continues until Claude answers without requesting any tools. At that point the SDK yields a final assistant message carrying the text, followed by a result message with the final text, token usage, cost, and session ID. Termination is therefore a property of the model's own output rather than of an external counter or a resource ceiling.",
+    "distractorNotes": {
+      "b": "Approaching the context limit triggers automatic compaction rather than termination. The SDK summarizes older history to free space, signals this with a system message marking a compaction boundary, and the loop continues.",
+      "c": "Nothing in the loop requires exhausting the available tool set. Claude selects tools based on the task, and many tasks finish having used only one or two of the tools offered to them.",
+      "d": "There is no default turn ceiling; the maximum-turns option applies only when you configure it. Even then, reaching it is an error termination reported through a dedicated error subtype, not the normal end of a completed task."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/agent-sdk/agent-loop",
+    "sourceNote": "Sections 'The loop at a glance' and 'Turns and messages'",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-agents-and-workflows-002",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "agents-and-workflows",
+    "subdomain": "agent-architecture",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A team is moving an agentic application into production and needs to establish predictable boundaries on open-ended runs. A single turn can involve Claude requesting several tool calls at once, and a run can spawn subagents that make their own requests. Which TWO statements accurately describe how the turn and budget caps behave in that situation?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The turn cap counts tool-use turns, so a single turn in which Claude requests three tool calls at once still consumes only one turn of the allowance."
+      },
+      {
+        "id": "b",
+        "text": "The turn cap counts every individual tool call, so a turn requesting three tools at once consumes three turns of the allowance."
+      },
+      {
+        "id": "c",
+        "text": "The budget cap is compared against the run's total cost, which includes spend by any subagents the run spawns, not just the parent agent's own requests."
+      },
+      {
+        "id": "d",
+        "text": "Subagent spend is metered separately from the parent run and never counts against the run's budget cap."
+      },
+      {
+        "id": "e",
+        "text": "Agent loops are guaranteed to terminate automatically once a task is complete, making explicit turn and budget limits unnecessary."
+      }
+    ],
+    "correct": [
+      "a",
+      "c"
+    ],
+    "explanation": "A turn is one round trip through the loop: Claude produces output (which may include several tool calls at once), the SDK executes them, and the results feed back automatically. The turn cap counts these round trips, not the individual tool calls inside them, so a turn that fans out to three tools still consumes only one turn. The budget cap is compared against the run's total cost, and that total explicitly includes subagent spend, so a run that fans out into many subagents can still be bounded by one ceiling. Both caps end the loop with a dedicated error subtype rather than a normal success result, and neither error subtype carries the final result text.",
+    "distractorNotes": {
+      "b": "The unit the cap counts is the turn, not the tool call. The SDK executes every tool call from a single turn and feeds all the results back as one round trip, which is why parallel tool use does not multiply against the turn allowance.",
+      "d": "Subagent requests are not walled off from the parent's accounting. Their spend counts toward the same total the budget cap is compared against, which is precisely why the cap is useful for bounding a run that fans out into subagents.",
+      "e": "Capable models usually stop on their own, but tool errors, ambiguous instructions, and edge cases can still keep a loop going. Explicit limits are the documented safeguard for production, not an optional extra."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/agent-sdk/agent-loop",
+    "sourceNote": "Sections 'Control how the loop runs' subsection 'Turns and budget', and 'Handle the result'",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-agents-and-workflows-003",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agents-and-workflows",
+    "subdomain": "agent-architecture",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An Agent SDK agent is given a formatting rule in its opening prompt. It follows the rule early on, but many turns into the same long session it quietly stops applying it, even though no options or prompts were changed. What explains this, and what is the documented way to make the rule stick?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The context window is cleared between turns once a session grows long, so any instruction has to be repeated in each new prompt the application sends rather than being stated once at the start of the session."
+      },
+      {
+        "id": "b",
+        "text": "The SDK lowers the reasoning effort level automatically as a session lengthens, and the rule will be honoured again once effort is raised back to the value the session started with, without any change to the prompt."
+      },
+      {
+        "id": "c",
+        "text": "Automatic compaction replaced older history with a summary that dropped the rule; durable instructions belong in a project CLAUDE.md loaded through setting sources, since that content is supplied on every request."
+      },
+      {
+        "id": "d",
+        "text": "Instructions given to the main agent stop applying once tool use begins, so the rule has to be moved into the system prompt of a subagent that performs the formatting step on the main agent's behalf."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Context accumulates across a session rather than resetting: the system prompt, tool definitions, conversation history, and every tool input and output all build up. When the window approaches its limit, the SDK compacts the conversation by summarizing older history while keeping recent exchanges and key decisions. Compaction is lossy by design, so a specific instruction stated once at the start of a long session may not survive the summary. CLAUDE.md is treated differently because its content is supplied on every request, which is why persistent rules belong there rather than in a one-time opening prompt. A pre-compaction hook can also run custom logic before a summary is produced.",
+    "distractorNotes": {
+      "a": "The context window explicitly does not reset between turns within a session; everything accumulates. That accumulation is the reason compaction exists at all.",
+      "b": "Effort is a configuration value controlling how much reasoning Claude applies per response. The SDK does not decay it over the life of a session, and raising it would not restore content a summary dropped.",
+      "d": "Main-agent instructions remain in force across tool use. Moving the rule into a subagent would confine it to that subagent's isolated context, which is the opposite of making it apply to the whole session."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/agent-sdk/agent-loop",
+    "sourceNote": "Section 'The context window', subsections 'What consumes context' and 'Automatic compaction'",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-agents-and-workflows-004",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agents-and-workflows",
+    "subdomain": "agent-patterns-and-frameworks",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "Anthropic's published guidance on building effective agents treats both workflows and agents as agentic systems, but draws an architectural distinction between them. What is that distinction?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A workflow coordinates several different models and routes between them, whereas an agent is restricted to a single model for the whole of its run."
+      },
+      {
+        "id": "b",
+        "text": "In a workflow, model calls and tools are orchestrated through predefined code paths; in an agent, the model dynamically directs its own process and tool usage."
+      },
+      {
+        "id": "c",
+        "text": "An agent is able to call tools and use retrieval, whereas a workflow can only chain model calls together and pass text from one step to the next."
+      },
+      {
+        "id": "d",
+        "text": "A workflow pauses for human approval at every step, whereas an agent runs from start to finish with no human involvement once it has been given its task and the tools it needs."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "The distinction turns on who determines the sequence of steps. In a workflow the path is fixed in advance by code the developer writes, which yields predictability and consistency for well-defined tasks. In an agent the model decides what to do next and which tools to use as it goes, which buys flexibility for problems whose steps cannot be enumerated ahead of time. The same guidance recommends reaching for the simplest option that works, since agentic systems trade latency and cost for task performance and many applications are served well by a single optimized model call with retrieval and good examples.",
+    "distractorNotes": {
+      "a": "The number of models involved is orthogonal to the distinction. A workflow may route between models of different sizes as a cost optimization, and an agent can be built on a single model.",
+      "c": "Both categories build on a model augmented with capabilities such as tools, retrieval, and memory. Workflows call tools too; the difference is that those calls sit on a path defined by code.",
+      "d": "Human oversight is a separate design choice. Agents commonly return to a human for judgement at checkpoints or when blocked, and workflows can run start to finish without approval steps."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
+    "sourceNote": "Sections 'What are agents?' and 'When (and when not) to use agents'",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-agents-and-workflows-005",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agents-and-workflows",
+    "subdomain": "agent-patterns-and-frameworks",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A code-modification feature must change a set of files that differs with every request, and neither the number of files nor the nature of each change can be known before the request arrives. The design has one central model call break the request into subtasks at runtime, hand each subtask to a worker model call, and combine the workers' output into a single answer. Which documented agentic pattern does this describe?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Parallelization using sectioning"
+      },
+      {
+        "id": "b",
+        "text": "Evaluator-optimizer"
+      },
+      {
+        "id": "c",
+        "text": "Prompt chaining"
+      },
+      {
+        "id": "d",
+        "text": "Orchestrator-workers"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Orchestrator-workers suits tasks whose subtasks cannot be predicted in advance. A central model call decomposes the work for the specific input it received, delegates the pieces to workers, and synthesizes their results. Coding changes that touch an unpredictable number of files are the example the guidance itself gives. The pattern is structurally similar to parallelization, and the stated difference is precisely the one this scenario turns on: the subtasks are determined by the orchestrator at runtime rather than fixed by the developer beforehand.",
+    "distractorNotes": {
+      "a": "Sectioning splits a task into independent subtasks the developer has defined ahead of time and runs them concurrently. It is the closest structural match, but it presumes the breakdown is known before the input arrives, which is what this scenario rules out.",
+      "b": "Evaluator-optimizer pairs a generator with a critic that reviews its output and feeds back suggestions in a loop. It suits work with clear evaluation criteria that benefits from iterative refinement, not work that must fan out across an unknown number of files.",
+      "c": "Prompt chaining decomposes a task into a fixed sequence of steps in which each call processes the previous call's output, optionally with programmatic gates between steps. It depends on the decomposition being clean and known in advance."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
+    "sourceNote": "Section 'Building blocks, workflows, and agents', subsection 'Workflow: Orchestrator-workers'",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-agents-and-workflows-006",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agents-and-workflows",
+    "subdomain": "agent-patterns-and-frameworks",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A team is deciding between having Claude delegate to subagents turn by turn and running the same job as a dynamic workflow. Which statement correctly captures the documented difference between the two approaches?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The two are the same mechanism in every respect except for scale: a dynamic workflow raises the ceiling on how many subagents may run at once, so a job that saturates that limit finishes sooner when expressed as a workflow instead."
+      },
+      {
+        "id": "b",
+        "text": "In a dynamic workflow a script owns the loop, the branching, and the intermediate results, so only the final answer reaches Claude's context; with subagents Claude decides what to spawn turn by turn and every result returns into its window."
+      },
+      {
+        "id": "c",
+        "text": "Subagents are dispatched one after another and each must finish before the next one begins, so a dynamic workflow is the only one of the two approaches that can execute independent branches of the same job concurrently rather than in sequence."
+      },
+      {
+        "id": "d",
+        "text": "A dynamic workflow keeps every agent's full transcript in the main conversation so that the run can be audited end to end, whereas subagents discard their transcripts and return only a final message to the parent when they finish."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "The two approaches differ in who holds the plan. With subagents, Claude is the orchestrator and decides turn by turn what to delegate, and every returned result occupies space in its context window. A dynamic workflow moves the plan into a script the runtime executes, so control flow and intermediate values live in script variables instead. That shift is what allows a workflow to coordinate far more agents per run than one conversation can, and it also makes the orchestration itself repeatable, since the script can be reread, rerun, and saved for later use.",
+    "distractorNotes": {
+      "a": "The difference is not a quota. Raising a concurrency ceiling would still leave Claude deciding each delegation turn by turn and still leave every result accumulating in its context, which is the specific constraint a workflow removes.",
+      "c": "Subagents can run concurrently, and running independent subtasks in parallel is one of their stated benefits. Concurrency is not what separates the two approaches.",
+      "d": "This inverts the design. Keeping intermediate results out of the main context is the point of a workflow, and a subagent likewise returns only its final message to the parent rather than its full transcript."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/workflows",
+    "sourceNote": "Section 'When to use a workflow'",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-agents-and-workflows-007",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agents-and-workflows",
+    "subdomain": "agent-construction-with-claude",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer defines a research subagent programmatically and notices it keeps asking about a configuration file the main agent had already read and discussed earlier in the run. For a subagent that is not a fork of the parent conversation, what does the subagent actually receive from the parent?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The parent's full conversation history with tool results stripped out, so the subagent sees what was said but not what was read from disk or returned by any tool."
+      },
+      {
+        "id": "b",
+        "text": "The parent's system prompt plus its most recent turns, so the subagent starts with recent context and only the older history is left behind when the delegation begins."
+      },
+      {
+        "id": "c",
+        "text": "Every skill already preloaded into the parent's context, together with its tool definitions, so the subagent inherits the parent's working knowledge without having to be told about it."
+      },
+      {
+        "id": "d",
+        "text": "Only the prompt string passed in the Agent tool call, alongside the subagent's own system prompt, project CLAUDE.md loaded through setting sources, and its tool definitions."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "A subagent that is not a fork starts a fresh conversation. Its context is not empty, because it loads its own system prompt, project instruction files, and tool definitions, but none of the parent's conversation crosses over. The only content the parent passes is the prompt string in the Agent tool call, which is why file paths, error messages, and prior decisions the subagent needs must be written into that prompt explicitly. The boundary is deliberately narrow in both directions: intermediate tool calls and results stay inside the subagent, and only its final message returns to the parent as the tool result. That is what makes subagents effective for context isolation.",
+    "distractorNotes": {
+      "a": "No portion of the parent's conversation history is transferred, with or without tool results. Assuming otherwise is the specific mistake that produces subagents which appear to have forgotten what the main agent knows.",
+      "b": "Neither the parent's system prompt nor its recent turns are inherited. The subagent runs under its own system prompt, which is what lets it carry specialized instructions the main agent does not need.",
+      "c": "Preloaded skill content is not inherited. A subagent definition can name skills to preload for that subagent, and unlisted skills remain invocable through the skill tool, but nothing carries across from the parent automatically."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/agent-sdk/subagents",
+    "sourceNote": "Section 'What subagents inherit'",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-agents-and-workflows-008",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "agents-and-workflows",
+    "subdomain": "agent-construction-with-claude",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A development team is designing a workflow where a primary Claude agent orchestrates several specialized subagents. What are TWO foundational characteristics of using subagents in this architecture?",
+    "options": [
+      {
+        "id": "a",
+        "text": "By delegating specific tasks to subagents, the primary agent maintains a cleaner context window and avoids being overwhelmed by low-level details."
+      },
+      {
+        "id": "b",
+        "text": "Subagents automatically inherit the exact same system prompt as the primary agent, ensuring behavioral consistency across the workflow."
+      },
+      {
+        "id": "c",
+        "text": "Developers can specialize each subagent by assigning it a unique role, system prompt, and a restricted set of tools."
+      },
+      {
+        "id": "d",
+        "text": "A subagent executes directly within the primary agent's context window, avoiding the overhead of managing a separate conversation state."
+      },
+      {
+        "id": "e",
+        "text": "Subagents are restricted to read-only analytical tasks and cannot be granted tools that modify files or execute code."
+      },
+      {
+        "id": "f",
+        "text": "The primary agent decides when to invoke a subagent by analyzing the subagent's internal system prompt, making a short description unnecessary."
+      }
+    ],
+    "correct": [
+      "a",
+      "c"
+    ],
+    "explanation": "Subagents are designed to handle specialized tasks within their own isolated context windows. This separation keeps the primary agent's context clean and focused on high-level orchestration. Developers configure subagents by providing them with specific roles, descriptions, system prompts, and tool sets tailored to their distinct functions, rather than relying on a single monolithic agent for every task.",
+    "distractorNotes": {
+      "b": "Subagents are defined with their own unique system prompts to specialize their behavior, rather than simply inheriting the primary agent's prompt.",
+      "d": "Subagents operate in their own separate context windows, not within the primary agent's context. This state isolation is a primary benefit of using subagents.",
+      "e": "Subagents can be granted any appropriate tools, including write and execution tools, depending on how they are configured by the developer.",
+      "f": "The primary agent relies on a concise description provided during the subagent's definition to understand its capabilities and decide when to invoke it, rather than reading its full system prompt."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/agent-sdk/subagents",
+    "sourceNote": "Sections 'Create subagents', 'AgentDefinition configuration', 'Invoke subagents', and 'Tool restrictions'",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-agents-and-workflows-009",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agents-and-workflows",
+    "subdomain": "agent-construction-with-claude",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "When designing an agentic workflow where a primary Claude agent can autonomously spawn subagents, the SDK provides mechanisms to cap subagent depth, concurrency, and total spend. Conceptually, why are these specific guardrails critical in an autonomous multi-agent architecture?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Because autonomous agents can recursively delegate tasks, these limits prevent runaway execution loops where agents continuously spawn new subagents, which would otherwise result in unbounded latency and API costs."
+      },
+      {
+        "id": "b",
+        "text": "Because subagents run on distinct infrastructure, these limits ensure that the workflow does not exceed the physical memory capacity of the local server hosting the orchestrator agent."
+      },
+      {
+        "id": "c",
+        "text": "Because each subagent automatically inherits and expands the context window of its parent, these limits are necessary to prevent the combined context from exceeding Claude's maximum token limit."
+      },
+      {
+        "id": "d",
+        "text": "Because subagents must all report back simultaneously, concurrency and depth limits prevent the final API response payload from exceeding the maximum allowed bytes in an HTTP response."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "In a multi-agent architecture, agents are given the autonomy to break down problems and delegate to subagents. Without strict guardrails, an agent might get stuck in an infinite loop, recursively spawning subagents (depth) or spawning an excessive number of subagents at once (concurrency) to solve a task it does not understand. Because each subagent consumes tokens, this runaway behavior can quickly lead to massive, unexpected API costs (spend). Therefore, configuring caps on depth, concurrency, and total spend is a foundational safety pattern to ensure autonomous workflows remain bounded, predictable, and cost-effective.",
+    "distractorNotes": {
+      "b": "These limits are designed to bound logical API consumption and prevent runaway execution loops, not to manage the physical memory or local infrastructure of the host running the SDK.",
+      "c": "Subagents operate with their own isolated context windows; they do not automatically merge into a single massive context window that exceeds model limits. The limits are primarily about controlling execution loops and cost.",
+      "d": "Subagents typically report back to their parent agent asynchronously or as they finish, not as a single massive HTTP response payload that needs byte-level bounding."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/agent-sdk/subagents",
+    "sourceNote": "Section 'Cap subagent depth, concurrency, and spend'",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-agents-and-workflows-010",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "agents-and-workflows",
+    "subdomain": "agent-construction-with-claude",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "After an agent has analysed a module across several turns, an engineer wants to explore a different design direction from that point without losing the original line of work, so they fork the session. Select TWO statements that accurately describe what forking does.",
+    "options": [
+      {
+        "id": "a",
+        "text": "Forking also snapshots the working tree, so any file changes made inside the fork are reverted as soon as the original session is resumed from the point where it left off."
+      },
+      {
+        "id": "b",
+        "text": "The fork begins from a copy of the original session's history and receives its own session ID, while the original session's ID and history are left unchanged."
+      },
+      {
+        "id": "c",
+        "text": "Forking branches the conversation only, so any file changes the forked agent makes are real and visible to anything else working in that directory."
+      },
+      {
+        "id": "d",
+        "text": "A branch is created by continuing the most recent session rather than by resuming a specific one, so the fork option applies only to the newest session."
+      },
+      {
+        "id": "e",
+        "text": "The fork supersedes the original session, which can no longer be resumed once the branch exists and must be recreated from scratch if it is needed again."
+      },
+      {
+        "id": "f",
+        "text": "A fork can only be created by the same process that originally created the session, since the branch point is held in memory rather than written to disk."
+      }
+    ],
+    "correct": [
+      "b",
+      "c"
+    ],
+    "explanation": "Forking is requested by resuming a session with the fork option set. It produces a second, independent session seeded with a copy of the original's history, and both can be resumed separately afterwards. The scope of the branch is the conversation transcript and nothing else. Because sessions persist the conversation rather than the filesystem, an agent running in the fork writes to the same working directory as any other session there, and those writes are ordinary file changes. Branching and reverting file state is a separate concern handled by file checkpointing, which is why the two features are documented as complements rather than alternatives.",
+    "distractorNotes": {
+      "a": "Sessions persist the conversation, not the filesystem, and forking inherits that scope. Snapshotting and restoring file state is what file checkpointing is for.",
+      "d": "Continuing picks up the most recent session in the directory and adds to it, which extends a single thread rather than creating a second one. A branch requires resuming a session with the fork option set.",
+      "e": "The original is untouched by the fork. Resuming it afterwards continues its own history, which is the entire reason to fork instead of simply continuing.",
+      "f": "Sessions are written to disk so they can be returned to later, including after a process restart, provided the session is reachable from the host doing the resuming."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/agent-sdk/sessions",
+    "sourceNote": "Sections 'Continue, resume, and fork' and 'Fork to explore alternatives'",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-agents-and-workflows-011",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agents-and-workflows",
+    "subdomain": "agent-patterns-and-frameworks",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An internal service desk receives requests that fall into a few clearly distinct categories, such as password resets, hardware faults, and software licence approvals. Each category is handled best by its own prompt, tools, and downstream process, and the category can be identified reliably from the request itself. Which documented agentic pattern fits this design?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Routing: classify the incoming request, then direct it to a specialized follow-up task built for that category."
+      },
+      {
+        "id": "b",
+        "text": "Prompt chaining: pass every request through the same fixed sequence of steps, with each step consuming the previous step's output."
+      },
+      {
+        "id": "c",
+        "text": "Parallelization using voting: run the same request several times in parallel and aggregate the outputs into one answer."
+      },
+      {
+        "id": "d",
+        "text": "Evaluator-optimizer: have one call draft a response and a second call critique it in a loop until the critique is satisfied."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Routing classifies an input and sends it to a specialized follow-up task. Its value is separation of concerns: without it, one prompt has to serve every category, and tuning that prompt for one request type can degrade performance on others. Routing fits tasks with distinct categories that are better handled separately and where classification can be performed accurately, whether by a model or a conventional classifier.",
+    "distractorNotes": {
+      "b": "Prompt chaining decomposes one task into a fixed sequence and trades latency for accuracy. It does not address different categories needing different handlers.",
+      "c": "Voting runs the same task several times to gain confidence from diverse outputs, which suits judgement calls rather than dispatch. A reliably identifiable category needs one specialized handler, not repeated attempts at the same one.",
+      "d": "Evaluator-optimizer pairs a generator with a critic in an iterative refinement loop. It improves one response rather than selecting a specialized handler."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
+    "sourceNote": "Section 'Building blocks, workflows, and agents', subsection 'Workflow: Routing'",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-agents-and-workflows-012",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agents-and-workflows",
+    "subdomain": "agent-patterns-and-frameworks",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A backend service is written in a language other than Python or TypeScript. The team wants the same agent loop the Claude Agent SDK provides, does not want to implement tool execution and the result feedback cycle themselves, and requires the loop to run on infrastructure they operate. What does the documentation direct them to do?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Use the Client SDK for their language, which exposes the same agent loop through a native binding to the harness."
+      },
+      {
+        "id": "b",
+        "text": "Adopt Managed Agents, which is the language-agnostic form of the Agent SDK and exposes the same agent loop over HTTP."
+      },
+      {
+        "id": "c",
+        "text": "Reimplement the agent loop against the Messages API directly, since no supported option exists outside of the Python and TypeScript SDKs."
+      },
+      {
+        "id": "d",
+        "text": "Run the Claude Code command line interface as a subprocess in print mode with JSON output, and drive it from their service."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "The Agent SDK is available as a library for Python and TypeScript only. The documented way to drive the same agent loop from another language is to run the command line interface as a subprocess, using the print flag with the JSON output format so the calling service can parse structured results. This keeps tool execution, context management, and the loop itself inside the harness while running on the team's own infrastructure. The comparison of Anthropic's agent-building options separates this case from the alternatives: a library that runs the loop in your own process, a terminal interface for interactive use, a client library for calling the API directly, and a hosted service.",
+    "distractorNotes": {
+      "a": "The Client SDK gives direct access to the Anthropic API rather than to the Claude Code harness, and choosing it means implementing the tool loop yourself, which is the work this team wants to avoid.",
+      "b": "Managed Agents is a separate hosted product rather than another distribution of the Agent SDK. Anthropic runs the agent and its sandbox, which does not satisfy a requirement to run the loop on infrastructure the team operates.",
+      "c": "A supported option does exist, so reimplementing the loop is unnecessary; it would also move tool execution, context management, and error handling back into application code."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/agent-sdk/overview",
+    "sourceNote": "Section 'Compare the Agent SDK to other Claude tools'",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-agents-and-workflows-013",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agents-and-workflows",
+    "subdomain": "agent-construction-with-claude",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "During a large refactoring task, the main agent has to survey dozens of files before making any change, and its context fills with file contents long before the edits begin. The team wants the survey done without crowding out the working conversation. What is the best way to structure this?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Delegate the survey to a subagent, whose file reads stay in its own context so only a summary returns."
+      },
+      {
+        "id": "opt-b",
+        "text": "Raise the main agent's max-turns option so it has room to read every file in one conversation."
+      },
+      {
+        "id": "opt-c",
+        "text": "Enlarge the context window through a query option so all of the surveyed files fit in the conversation."
+      },
+      {
+        "id": "opt-d",
+        "text": "Lower the agent's reasoning effort so each turn spends fewer tokens and more file content fits."
+      }
+    ],
+    "correct": [
+      "opt-a"
+    ],
+    "explanation": "opt-a is correct: a subagent runs in isolated context, so its intermediate reads and tool results stay inside it and only the final summary returns to the parent, keeping the main conversation clean. The others don't stop the accumulation: more turns still store the same content, the context window is not a size you raise, and effort changes reasoning not retained history.",
+    "distractorNotes": {
+      "opt-b": "Plausible because more turns lets it read more, but max-turns governs tool-use round trips, not how much history the context holds; the file content still accumulates.",
+      "opt-c": "Plausible-sounding, but the context window is a fixed property of the model, not a lever you enlarge through options.",
+      "opt-d": "Effort controls how much the model reasons per turn, not how much prior tool output remains in context."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/agent-sdk/subagents",
+    "sourceNote": "Benefits of using subagents — Context isolation",
+    "sourceCheckedAt": "2026-09-07"
+  },
+  {
+    "id": "ccdv-f-agents-and-workflows-014",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agents-and-workflows",
+    "subdomain": "agent-construction-with-claude",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A team adds a subagent that audits code for problems and reports them. Reviewers worry it might accidentally change the files it inspects. What is the most reliable way to guarantee it cannot?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Instruct the subagent in its system prompt to review only and never edit, and rely on it to comply."
+      },
+      {
+        "id": "opt-b",
+        "text": "Define the subagent with only read and search tools, so editing a file is not an action available to it."
+      },
+      {
+        "id": "opt-c",
+        "text": "Give the subagent a more capable model, which is less likely to make an unintended change while reviewing."
+      },
+      {
+        "id": "opt-d",
+        "text": "Let it run normally, then inspect the resulting diff and revert any edits it should not have made."
+      }
+    ],
+    "correct": [
+      "opt-b"
+    ],
+    "explanation": "opt-b is correct: restricting the subagent to read and search tools removes any write capability, so modification is impossible by construction rather than by request. Prompt instructions are guidance a model can be steered around, model capability doesn't remove the write tool, and reverting afterwards is detective rather than preventive.",
+    "distractorNotes": {
+      "opt-a": "Plausible because a clear instruction usually works, but a system prompt is not an enforceable boundary; the tool stays available if the model chooses it.",
+      "opt-c": "A more capable model can still call a write tool; capability does not remove the ability to edit.",
+      "opt-d": "Reverting after the fact still means the change happened and any side effects already occurred."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/agent-sdk/subagents",
+    "sourceNote": "Benefits of using subagents — Tool restrictions",
+    "sourceCheckedAt": "2026-09-07"
+  },
+  {
+    "id": "ccdv-f-agents-and-workflows-015",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "agents-and-workflows",
+    "subdomain": "agent-construction-with-claude",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A team is deciding how tightly to scope the tool set they grant an autonomous agent that will process untrusted content. Select TWO statements that correctly describe what restricting the agent to a minimal tool set achieves.",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "The shorter tool list mainly makes the agent respond faster, which is the primary security reason to trim it."
+      },
+      {
+        "id": "opt-b",
+        "text": "If injected instructions try to steer the agent, it can still only take actions its granted tools expose, limiting harm."
+      },
+      {
+        "id": "opt-c",
+        "text": "A minimal tool set removes the need to keep untrusted input separated from the agent's trusted instructions."
+      },
+      {
+        "id": "opt-d",
+        "text": "Narrowing tools to the task means an unintended or injected instruction has fewer actions available to reach for."
+      },
+      {
+        "id": "opt-e",
+        "text": "With tools restricted, no human-approval step is ever needed, because nothing the agent can do is harmful."
+      }
+    ],
+    "correct": [
+      "opt-b",
+      "opt-d"
+    ],
+    "explanation": "opt-b and opt-d are correct: least privilege limits the actions available to the agent, so even content that tries to redirect it can only reach the small set of tools it was granted, which caps the blast radius. The distractors misstate the benefit: trimming tools is not primarily about speed, it does not replace isolating untrusted input, and it reduces but does not eliminate the need for approval on sensitive actions.",
+    "distractorNotes": {
+      "opt-a": "Plausible because fewer options can feel faster, but speed is not the security benefit; least privilege is about limiting what actions exist.",
+      "opt-c": "Least privilege is one layer; you still separate untrusted input from trusted instructions — the two are defense in depth, not substitutes.",
+      "opt-e": "A restricted tool set lowers but does not remove risk; sensitive actions can still warrant an approval step."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/agent-sdk/secure-deployment",
+    "sourceNote": "Security principles — Least privilege",
+    "sourceCheckedAt": "2026-09-07"
+  },
+  {
+    "id": "ccdv-f-agents-and-workflows-016",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agents-and-workflows",
+    "subdomain": "agent-construction-with-claude",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An internal tool exposes a 'clean up this repository' button that issues one open-ended prompt to an agent. In testing, runs vary wildly in length and cost, and one looped for a long time before stopping. How should the team make runs terminate predictably?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Give the agent a narrow objective with a clear completion test, and set a turn or spend ceiling as a backstop."
+      },
+      {
+        "id": "opt-b",
+        "text": "Remove any limits and let the agent decide when it is done, since a cap risks cutting off useful work midway."
+      },
+      {
+        "id": "opt-c",
+        "text": "Keep the broad prompt but lower reasoning effort, since cheaper turns keep the total cost of a run bounded."
+      },
+      {
+        "id": "opt-d",
+        "text": "Fan the broad prompt out across parallel subagents so the overall job reaches completion in less wall-clock time."
+      }
+    ],
+    "correct": [
+      "opt-a"
+    ],
+    "explanation": "opt-a is correct: an open-ended prompt has no natural stopping point, so predictability comes from scoping the task with a verifiable completion criterion and adding a turn or budget ceiling as a safety net against runaway loops. Removing limits makes runs less predictable, lower effort trims per-turn cost but not the number of iterations, and parallelism reduces wall-clock time without bounding total work.",
+    "distractorNotes": {
+      "opt-b": "Plausible because caps can interrupt work, but with no stopping criterion an open-ended prompt can loop indefinitely; removing limits makes runs less predictable, not more.",
+      "opt-c": "Lower effort reduces cost per turn but not how many turns run, so an open-ended prompt can still run away.",
+      "opt-d": "Parallel subagents shorten wall-clock time but do not bound how long or how much the overall job consumes."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/agent-sdk/agent-loop",
+    "sourceNote": "Turns and messages — running long on open-ended prompts; Turns and budget",
+    "sourceCheckedAt": "2026-09-07"
+  },
+  {
+    "id": "ccdv-f-agents-and-workflows-017",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agents-and-workflows",
+    "subdomain": "agent-construction-with-claude",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "Company policy is absolute: the agent must never write to files under a secrets directory, and every attempt must be recorded. The team needs this enforced regardless of what the model decides in any given run. Where should this rule live?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "In the system prompt and project memory, worded firmly so the model reliably refuses to write there."
+      },
+      {
+        "id": "opt-b",
+        "text": "In a lower temperature setting, so the model's tool choices become deterministic and skip the write."
+      },
+      {
+        "id": "opt-c",
+        "text": "In a pre-tool-use hook that inspects each call in code and blocks the ones that target the secrets directory."
+      },
+      {
+        "id": "opt-d",
+        "text": "In a stricter model choice, since a more capable model is better at honoring firm prohibitions in its prompt."
+      }
+    ],
+    "correct": [
+      "opt-c"
+    ],
+    "explanation": "opt-c is correct: a hook runs deterministic code before a tool call and can deny it outright, so the policy is enforced in the harness rather than left to the model's discretion, and the same hook can log every attempt. Prompt wording and model choice only bias behavior, and temperature affects sampling, none of which guarantee a forbidden action is blocked.",
+    "distractorNotes": {
+      "opt-a": "Plausible because instructions usually work, but prompt and memory bias the model without guaranteeing it; an injected or determined instruction can still elicit the write.",
+      "opt-b": "Temperature affects sampling, not policy enforcement, and gives no guarantee a forbidden call is blocked.",
+      "opt-d": "Model capability is not an enforcement mechanism; no model choice deterministically prevents a specific tool call."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/agent-sdk/hooks",
+    "sourceNote": "Intercept and control agent behavior with hooks — Block dangerous operations (PreToolUse)",
+    "sourceCheckedAt": "2026-09-07"
+  },
+  {
+    "id": "ccdv-f-agents-and-workflows-018",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agents-and-workflows",
+    "subdomain": "agent-construction-with-claude",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A team wants to run long-running, asynchronous agents in production but does not want to operate the sandboxes or session infrastructure those agents need. Which approach fits this constraint?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Embed the Agent SDK as a library in their own service, which runs the agent loop inside infrastructure they manage."
+      },
+      {
+        "id": "opt-b",
+        "text": "Call the Messages API through the Client SDK and implement the tool-execution loop within their own service."
+      },
+      {
+        "id": "opt-c",
+        "text": "Run the Claude Code CLI as a subprocess on their own hosts and persist each session's state to local disk."
+      },
+      {
+        "id": "opt-d",
+        "text": "Adopt Managed Agents, the Anthropic-hosted option that runs the agent and its sandbox so the team runs neither."
+      }
+    ],
+    "correct": [
+      "opt-d"
+    ],
+    "explanation": "opt-d is correct: Managed Agents is a hosted product where Anthropic runs both the agent and the sandbox, which fits a team that wants long-running async agents without operating that infrastructure. The other three all keep the loop and its hosting on the team's own machines, which is precisely what they are trying to avoid.",
+    "distractorNotes": {
+      "opt-a": "The Agent SDK runs the loop inside your own process and infrastructure, exactly the operational burden this team wants to shed.",
+      "opt-b": "The Client SDK gives raw API access and pushes the entire tool loop and its hosting onto the team.",
+      "opt-c": "Driving the CLI still requires the team to run the hosts and manage session state themselves."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/agent-sdk/overview",
+    "sourceNote": "Compare the Agent SDK to other Claude tools — Managed Agents",
+    "sourceCheckedAt": "2026-09-07"
+  },
+  {
+    "id": "ccdv-f-agents-and-workflows-019",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agents-and-workflows",
+    "subdomain": "agent-architecture",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "A product team is tempted to build a multi-step agent for a task that a single well-prompted model call with retrieval already handles accurately. According to Anthropic's guidance on building effective agents, what should guide the decision?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Build the agent anyway, because agentic systems always outperform single calls once tools are added."
+      },
+      {
+        "id": "opt-b",
+        "text": "Prefer the simplest solution that works, and add agentic complexity only when it demonstrably helps."
+      },
+      {
+        "id": "opt-c",
+        "text": "Choose a workflow rather than an agent, since a workflow is the simplest possible agentic system by definition."
+      },
+      {
+        "id": "opt-d",
+        "text": "Add the agent but leave its tools disabled until traffic grows, so the extra complexity stays dormant for now."
+      }
+    ],
+    "correct": [
+      "opt-b"
+    ],
+    "explanation": "opt-b is correct: the guidance recommends finding the simplest solution and increasing complexity only when it demonstrably helps, so a single call that already works should not be replaced by an agent. Agents trade latency and cost for performance and are not always warranted, a workflow is still added complexity, and dormant complexity carries cost without benefit.",
+    "distractorNotes": {
+      "opt-a": "The guidance explicitly warns that agents trade latency and cost for performance and are not always the right choice.",
+      "opt-c": "A workflow is still added complexity; the point is to avoid an agentic system entirely when a single call suffices.",
+      "opt-d": "Adding dormant complexity still carries the abstraction and maintenance cost without delivering any benefit."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
+    "sourceNote": "When (and when not) to use agents",
+    "sourceCheckedAt": "2026-09-07"
+  },
+  {
+    "id": "ccdv-f-agents-and-workflows-020",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "agents-and-workflows",
+    "subdomain": "agent-architecture",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A team is choosing between a fixed workflow and an autonomous agent for a new feature. Select TWO statements that correctly capture the documented decision criteria.",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "An agent is the right choice for a well-defined task whose steps are known ahead of time and never vary."
+      },
+      {
+        "id": "opt-b",
+        "text": "A workflow offers predictability and consistency when the task is well-defined and its steps are known in advance."
+      },
+      {
+        "id": "opt-c",
+        "text": "Agents suit open-ended problems where you cannot predict the number of steps or hardcode a fixed path."
+      },
+      {
+        "id": "opt-d",
+        "text": "Workflows are preferable only when cost is irrelevant, since they always cost more than an equivalent agent."
+      },
+      {
+        "id": "opt-e",
+        "text": "The choice never depends on how far you can trust the model's decisions, only on the raw volume of requests."
+      }
+    ],
+    "correct": [
+      "opt-b",
+      "opt-c"
+    ],
+    "explanation": "opt-b and opt-c are correct: workflows give predictability for well-defined tasks with known steps, while agents fit open-ended problems where the number of steps can't be predicted and no fixed path can be hardcoded. Fixed, known steps favor a workflow not an agent, workflows are not defined by cost, and the guidance stresses you must have some trust in an agent's decision-making.",
+    "distractorNotes": {
+      "opt-a": "Fixed, known steps favor a workflow's predefined code paths, not an agent's dynamic, model-driven control.",
+      "opt-d": "Workflows are not chosen on cost; it is agent autonomy that typically raises cost, not workflows.",
+      "opt-e": "The guidance says you must have some level of trust in an agent's decision-making, so trust does factor into the choice."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
+    "sourceNote": "When (and when not) to use agents; When to use agents",
+    "sourceCheckedAt": "2026-09-07"
+  },
+  {
+    "id": "ccdv-f-agents-and-workflows-021",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "agents-and-workflows",
+    "subdomain": "agent-architecture",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A design uses one central 'manager' model call that breaks an incoming task into subtasks at runtime, hands each to a worker call, and combines the results. Select TWO statements that accurately describe this manager/supervisor structure.",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "The manager decides the subtasks dynamically from the input rather than from a fixed, predefined list."
+      },
+      {
+        "id": "opt-b",
+        "text": "The set of subtasks is fixed ahead of time, so each request follows one of a few predetermined branches."
+      },
+      {
+        "id": "opt-c",
+        "text": "The manager only routes work and performs no synthesis of the workers' outputs into a final result."
+      },
+      {
+        "id": "opt-d",
+        "text": "Because the manager handles decomposition and synthesis, each worker can focus on one narrower subtask."
+      },
+      {
+        "id": "opt-e",
+        "text": "Workers must execute strictly in sequence, so independent subtasks can never run concurrently here."
+      }
+    ],
+    "correct": [
+      "opt-a",
+      "opt-d"
+    ],
+    "explanation": "opt-a and opt-d are correct: in an orchestrator-workers structure the central call determines the subtasks from the specific input rather than a fixed list, and because it owns both decomposition and synthesis, each worker can concentrate on a single narrower piece. Predefined branches describe routing, the manager does synthesize results rather than merely route, and independent subtasks can run concurrently.",
+    "distractorNotes": {
+      "opt-b": "Predefined branches describe routing; in this pattern the subtasks are determined at runtime by the manager, not fixed.",
+      "opt-c": "The manager both decomposes the task and synthesizes the workers' outputs, so it is more than a router.",
+      "opt-e": "Independent subtasks produced by the manager can run concurrently; sequential execution is not required."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
+    "sourceNote": "Workflow: Orchestrator-workers",
+    "sourceCheckedAt": "2026-09-07"
+  },
+  {
+    "id": "ccdv-f-agents-and-workflows-022",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "agents-and-workflows",
+    "subdomain": "agent-architecture",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An engineering lead asks why routing parts of a large task to subagents can improve execution quality, not just throughput. Select TWO benefits that the documentation attributes to subagents.",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Subagents share the parent's full conversation, so nothing has to be re-explained when work is delegated."
+      },
+      {
+        "id": "opt-b",
+        "text": "Each subagent runs in isolated context, so its exploratory reads don't crowd the parent's working conversation."
+      },
+      {
+        "id": "opt-c",
+        "text": "Independent subtasks can run in parallel, finishing in the time of the slowest rather than the sum of all."
+      },
+      {
+        "id": "opt-d",
+        "text": "Subagents remove the need for the parent to have any tools of its own, since they perform every action."
+      },
+      {
+        "id": "opt-e",
+        "text": "A subagent's intermediate tool results are merged verbatim into the parent to preserve the full detail."
+      }
+    ],
+    "correct": [
+      "opt-b",
+      "opt-c"
+    ],
+    "explanation": "opt-b and opt-c are correct: a subagent's isolated context keeps its exploratory reads out of the parent's conversation, and running independent subtasks in parallel finishes them in the time of the slowest rather than their sum. A non-fork subagent does not inherit the parent's conversation, subagents complement rather than replace the parent's tools, and only the final message returns, not intermediate results.",
+    "distractorNotes": {
+      "opt-a": "A non-fork subagent starts fresh and does not inherit the parent's conversation; context is deliberately isolated.",
+      "opt-d": "Subagents complement the parent's tools rather than removing the parent's need for tools of its own.",
+      "opt-e": "Only a subagent's final message returns to the parent; intermediate tool results stay isolated, which is the point."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/agent-sdk/subagents",
+    "sourceNote": "Benefits of using subagents",
+    "sourceCheckedAt": "2026-09-07"
+  },
+  {
+    "id": "ccdv-f-agents-and-workflows-023",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "agents-and-workflows",
+    "subdomain": "agent-architecture",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "Before shipping an autonomous agent, a team reviews the tradeoffs of agent autonomy against a scripted workflow. Select TWO statements that reflect the documented guidance.",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Agent autonomy is effectively free once tools exist, so cost need not factor into the decision at all."
+      },
+      {
+        "id": "opt-b",
+        "text": "Agents should be preferred to workflows on any task that happens to involve more than one model call."
+      },
+      {
+        "id": "opt-c",
+        "text": "Autonomy raises cost and risks compounding errors, so extensive testing in sandboxed environments is advised."
+      },
+      {
+        "id": "opt-d",
+        "text": "Because agents self-correct, guardrails add little value and can safely be dropped in trusted settings."
+      },
+      {
+        "id": "opt-e",
+        "text": "Agents suit open-ended problems where the needed number of steps cannot be predicted in advance."
+      }
+    ],
+    "correct": [
+      "opt-c",
+      "opt-e"
+    ],
+    "explanation": "opt-c and opt-e are correct: the guidance notes that autonomy brings higher cost and the potential for compounding errors, recommending extensive testing in sandboxed environments, and that agents fit open-ended problems where the number of steps can't be predicted. Autonomy is not free, more than one model call does not mandate an agent, and guardrails are recommended precisely because agents can compound errors.",
+    "distractorNotes": {
+      "opt-a": "The guidance is explicit that autonomy trades higher cost and latency for performance, so cost does matter.",
+      "opt-b": "Added complexity is warranted only when it demonstrably helps; multiple calls alone do not require an agent.",
+      "opt-d": "Guardrails are recommended alongside sandboxed testing because agents can compound errors; they are not optional."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
+    "sourceNote": "Agents; When to use agents",
+    "sourceCheckedAt": "2026-09-07"
+  },
+  {
+    "id": "ccdv-f-agents-and-workflows-024",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agents-and-workflows",
+    "subdomain": "agent-patterns-and-frameworks",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A localization feature drafts a translation, then has a second model call critique it against style and nuance guidelines and feed the critique back so the draft is revised, looping until the critique is satisfied. Which documented pattern is this?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Routing: classify the input first, then send it down a branch specialized for that category."
+      },
+      {
+        "id": "opt-b",
+        "text": "Parallelization using voting: run the same task several times and aggregate the separate outputs."
+      },
+      {
+        "id": "opt-c",
+        "text": "Evaluator-optimizer: one call drafts while another critiques in a loop until the feedback is met."
+      },
+      {
+        "id": "opt-d",
+        "text": "Prompt chaining: pass the input through a fixed forward sequence where each step feeds the next."
+      }
+    ],
+    "correct": [
+      "opt-c"
+    ],
+    "explanation": "opt-c is correct: a generate-then-critique loop where one call drafts and another evaluates and feeds back until the criteria are met is the evaluator-optimizer pattern, a fit here because there are clear evaluation criteria and iterative refinement adds value. Routing branches by category, voting aggregates parallel attempts, and prompt chaining is a fixed forward sequence, none of which describe the feedback loop.",
+    "distractorNotes": {
+      "opt-a": "Routing classifies an input and dispatches it to a specialized branch; there is no iterative critique loop.",
+      "opt-b": "Voting runs the same task in parallel and aggregates outputs; it does not refine a single draft with feedback.",
+      "opt-d": "Prompt chaining is a fixed forward sequence of steps, not a generate-and-critique loop."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
+    "sourceNote": "Workflow: Evaluator-optimizer",
+    "sourceCheckedAt": "2026-09-07"
+  },
+  {
+    "id": "ccdv-f-agents-and-workflows-025",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agents-and-workflows",
+    "subdomain": "agent-patterns-and-frameworks",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "A content pipeline writes an outline, runs a programmatic check that the outline meets set criteria, and only then writes the full document from the approved outline. Each step consumes the previous step's output in a fixed order. Which documented pattern fits?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Orchestrator-workers: a central call splits the task into subtasks decided at runtime."
+      },
+      {
+        "id": "opt-b",
+        "text": "Routing: classify the request and dispatch it to one of several specialized handlers."
+      },
+      {
+        "id": "opt-c",
+        "text": "Evaluator-optimizer: generate a draft and refine it against a critic in a repeating loop."
+      },
+      {
+        "id": "opt-d",
+        "text": "Prompt chaining: a fixed sequence of steps, optionally with a gate check between them."
+      }
+    ],
+    "correct": [
+      "opt-d"
+    ],
+    "explanation": "opt-d is correct: decomposing a task into a fixed sequence where each call processes the previous one's output, with an optional programmatic gate between steps, is prompt chaining. The subtasks here are fixed and known, there is no classification into categories, and the check is a one-time gate rather than an iterative critic refining a draft.",
+    "distractorNotes": {
+      "opt-a": "The subtasks here are fixed and known in advance, not decomposed dynamically by a manager at runtime.",
+      "opt-b": "There is no classification into categories; it is one linear pipeline applied to every input.",
+      "opt-c": "The check is a single programmatic gate, not an iterative critic refining a draft in a loop."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
+    "sourceNote": "Workflow: Prompt chaining",
+    "sourceCheckedAt": "2026-09-07"
+  }
+]

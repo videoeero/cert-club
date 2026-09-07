@@ -16,19 +16,19 @@
 
 All 3 disagreements were investigated against the live source pages. **In every case, the answer key was correct and the cold reader erred.**
 
-### 1. ccdv-f-0040 — Subagent limits mechanism
+### 1. ccdv-f-agents-and-workflows-009 — Subagent limits mechanism
 - **Key:** `a` (depth/concurrency = env vars, spend = query option)
 - **Cold:** `c` (all three are query options)
 - **Source text:** Table at `code.claude.com/.../subagents` shows Depth → `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`, Concurrency → `CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS` (env vars via `env` option), Spend → `maxBudgetUsd`/`max_budget_usd` (query option)
 - **Verdict:** ✅ Key correct. Cold reader conflated the two mechanisms.
 
-### 2. ccdv-f-0012 — Replacing shared API keys
+### 2. ccdv-f-security-and-safety-001 — Replacing shared API keys
 - **Key:** `a, e` (service account + workload identity federation)
 - **Cold:** `a` only (missed federation)
 - **Source text:** "Move to Workload Identity Federation when your workload already has a platform-issued identity you can federate."
 - **Verdict:** ✅ Key correct. Cold reader stopped at the first correct answer.
 
-### 3. ccdv-f-0013 — Multi-workspace key needs workspace header
+### 3. ccdv-f-applications-and-integration-012 — Multi-workspace key needs workspace header
 - **Key:** `d` (send workspace ID header)
 - **Cold:** `a` (confused about 401 authentication_error)
 - **Source text:** "If your API key isn't scoped to a workspace, you must specify the workspace ID in the `anthropic-workspace-id` header for each request."
@@ -40,14 +40,14 @@ All 3 disagreements were investigated against the live source pages. **In every 
 
 | Pair | Source Page | Concern | Resolution |
 |------|-----------|---------|----------------|
-| 0018 / 0075 | develop-tests | Both test "recognize a good success criterion" — 0018 asks for SMART properties, 0075 asks for the F1 example. Different domains but same concept. | **Kept both.** They sit in different domains (`applications-and-integration` vs `eval-testing-and-debugging`) and test different layers: 0018 the abstract SMART criteria, 0075 a concrete worked metric. `eval-testing-and-debugging` is also a floor-padded domain at 7 questions, so removing one would cost depth where the bank is thinnest. |
+| ccdv-f-applications-and-integration-017 / ccdv-f-eval-testing-and-debugging-001 | develop-tests | Both test "recognize a good success criterion" — ccdv-f-applications-and-integration-017 asks for SMART properties, ccdv-f-eval-testing-and-debugging-001 asks for the F1 example. Different domains but same concept. | **Kept both.** They sit in different domains (`applications-and-integration` vs `eval-testing-and-debugging`) and test different layers: ccdv-f-applications-and-integration-017 the abstract SMART criteria, ccdv-f-eval-testing-and-debugging-001 a concrete worked metric. `eval-testing-and-debugging` is also a floor-padded domain at 7 questions, so removing one would cost depth where the bank is thinnest. |
 
 ### Checked and cleared
 
 | Pair | Source Page | Why they're different enough |
 |------|-----------|-----|
-| 0007 / 0047 | context-windows | 0007 is easy single-select overview; 0047 is medium multi-select drilling into specifics. |
-| 0063 / 0071 | permissions / permission-modes | Different source pages. 0063 tests deny-first eval order; 0071 tests bypassPermissions mode carve-out. Complementary, not redundant. |
+| ccdv-f-applications-and-integration-007 / ccdv-f-prompt-and-context-engineering-005 | context-windows | ccdv-f-applications-and-integration-007 is easy single-select overview; ccdv-f-prompt-and-context-engineering-005 is medium multi-select drilling into specifics. |
+| ccdv-f-security-and-safety-005 / ccdv-f-claude-code-003 | permissions / permission-modes | Different source pages. ccdv-f-security-and-safety-005 tests deny-first eval order; ccdv-f-claude-code-003 tests bypassPermissions mode carve-out. Complementary, not redundant. |
 
 ## Quality Observations
 
@@ -81,17 +81,17 @@ The re-run cold-answer pass used that form.
 
 | Question | Key | Cold | Result |
 |---|---|---|---|
-| ccdv-f-0002 | b, c, e | b, c, e | ✅ agree |
-| ccdv-f-0005 | a, c, f | a, c, f | ✅ agree |
-| ccdv-f-0014 | a, d, e | a, d, e | ✅ agree |
-| ccdv-f-0022 | b, e, f | b, e, f | ✅ agree |
-| ccdv-f-0030 | c | c | ✅ agree |
-| ccdv-f-0031 | b | b | ✅ agree |
-| ccdv-f-0037 | b | b | ✅ agree |
-| ccdv-f-0042 | b, c | b, c | ✅ agree |
-| ccdv-f-0048 | c | c | ✅ agree |
-| ccdv-f-0049 | d, e | d, e | ✅ agree |
-| ccdv-f-0053 | b | b | ✅ agree |
+| ccdv-f-applications-and-integration-002 | b, c, e | b, c, e | ✅ agree |
+| ccdv-f-applications-and-integration-005 | a, c, f | a, c, f | ✅ agree |
+| ccdv-f-applications-and-integration-013 | a, d, e | a, d, e | ✅ agree |
+| ccdv-f-model-selection-and-optimization-003 | b, e, f | b, e, f | ✅ agree |
+| ccdv-f-model-selection-and-optimization-011 | c | c | ✅ agree |
+| ccdv-f-model-selection-and-optimization-012 | b | b | ✅ agree |
+| ccdv-f-agents-and-workflows-006 | b | b | ✅ agree |
+| ccdv-f-agents-and-workflows-010 | b, c | b, c | ✅ agree |
+| ccdv-f-prompt-and-context-engineering-006 | c | c | ✅ agree |
+| ccdv-f-prompt-and-context-engineering-007 | d, e | d, e | ✅ agree |
+| ccdv-f-tools-and-mcps-002 | b | b | ✅ agree |
 
 11/11 agreements, all at `high` confidence, no `multipleDefensible` flags. All
 11 flipped from `draft` to `reviewed` with `sourceCheckedAt: 2026-09-03`.

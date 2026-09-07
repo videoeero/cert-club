@@ -1,0 +1,385 @@
+[
+  {
+    "id": "ccdv-f-eval-testing-and-debugging-001",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "eval-testing-and-debugging",
+    "subdomain": "debugging-and-error-handling",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "out-of-scope",
+    "scopeNote": "Tests writing SMART success criteria to drive prompt iteration. The Domain 4 objective covers error type identification, recovery strategy selection, trace analysis, and isolating the integration layer from model output; defining success criteria is not among them. Siblings ccdv-f-0077/0078/0100 were rewritten into genuine error-diagnosis scenarios and correctly moved to core; this one and ccdv-f-0079 test the same success-criteria/methodology ground as originally-tagged ccdv-f-0076/0077/0078/0100 and were left untagged by oversight in the earlier pass.",
+    "stem": "A team is about to begin prompt iteration on a support-ticket classifier. Which statement of success criteria is best suited to drive that work?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The classifier should handle the great majority of incoming tickets well and rarely frustrate customers, and is ready once the team agrees its output reads sensibly across a range of examples."
+      },
+      {
+        "id": "b",
+        "text": "The classifier should lead every public text-classification benchmark by the end of the sprint, since an external leaderboard is objective, published, and directly comparable across competing approaches."
+      },
+      {
+        "id": "c",
+        "text": "The classifier should reach an F1 score of at least 0.85 on a held-out set of 10,000 labelled tickets drawn from production traffic, a 5 percent improvement over the current baseline."
+      },
+      {
+        "id": "d",
+        "text": "The classifier should reach an accuracy of at least 0.85 on the twenty examples the team used while drafting the prompt, re-measured after every prompt revision so that progress stays visible."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Useful success criteria are specific, measurable, achievable, and relevant. This option names the metric and its threshold, states the dataset and its size, keeps that dataset held out and representative of the real distribution, and anchors the target to an improvement over the existing baseline so the goal is realistic. Criteria written this way can be tested empirically, which the prompt engineering guidance treats as a prerequisite before any prompt iteration begins.",
+    "distractorNotes": {
+      "a": "Neither specific nor measurable. Vague quality language gives nothing to grade against and no threshold separating a pass from a fail.",
+      "b": "Fails the achievable test. Targets should be grounded in industry benchmarks, prior experiments, research, or expert knowledge rather than set beyond current frontier capability, and public benchmarks may not be relevant to this application's own distribution.",
+      "d": "The examples used to author the prompt are not a held-out test set, so a high score shows fit to the drafting examples rather than generalization."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
+    "sourceNote": "Section \"Define your success criteria\" states that good criteria are Specific, Measurable, Achievable, and Relevant, that achievable targets are based on \"industry benchmarks, prior experiments, AI research, or expert knowledge\", and that \"Your success metrics should not be unrealistic to current frontier model capabilities.\" Its worked comparison rates \"The model should classify sentiments well\" as bad and, as good, \"an F1 score of at least 0.85 (Measurable, Specific) on a held-out test set of 10,000 diverse Twitter posts (Relevant), which is a 5% improvement over the current baseline (Achievable).\" The prerequisite of empirical testing is stated at https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview under \"Before prompt engineering\".",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-eval-testing-and-debugging-002",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "eval-testing-and-debugging",
+    "subdomain": "debugging-and-error-handling",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "While developing an application using the Anthropic API, a developer repeatedly encounters an HTTP 529 error during periods of high traffic. What does this specific error indicate, and how should the application respond?",
+    "options": [
+      {
+        "id": "a",
+        "text": "It indicates an overloaded_error meaning Anthropic's API is temporarily overloaded; the application should retry the request with exponential backoff."
+      },
+      {
+        "id": "b",
+        "text": "It indicates a rate_limit_error meaning the application has exceeded its allowed requests per minute; the application should prompt the user to upgrade their API tier."
+      },
+      {
+        "id": "c",
+        "text": "It indicates an authentication_error meaning the API key is invalid or expired; the application must prompt the administrator to rotate the keys."
+      },
+      {
+        "id": "d",
+        "text": "It indicates a request_too_large error meaning the prompt exceeded the context window; the application should automatically truncate the input text before retrying."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "An HTTP 529 status code indicates an `overloaded_error`, which means Anthropic's API is temporarily experiencing high load. The recommended recovery strategy for this error type is to automatically retry the request using exponential backoff. This differs from a 429 `rate_limit_error`, which happens when the client exceeds their specific allotted rate limits.",
+    "distractorNotes": {
+      "b": "A rate limit error uses HTTP 429, not 529. While both might involve traffic limits, 529 is a server-side overload, whereas 429 is a client-side limit.",
+      "c": "An authentication error returns an HTTP 401. It is not related to high traffic or 529 errors.",
+      "d": "A request too large error returns an HTTP 413. It is caused by exceeding the token limit, not by periods of server-side high traffic."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
+    "sourceNote": "Section \"Eval design principles\" lists exactly three: \"Be task-specific: Design evals that mirror your real-world task distribution. Don't forget to factor in edge cases!\" (listed edge cases include irrelevant or nonexistent input data, overly long input data or user input, poor, harmful, or irrelevant user input, and ambiguous test cases); \"Automate when possible\"; and \"Prioritize volume over quality: More questions with slightly lower signal automated grading is better than fewer questions with high-quality human hand-graded evals.\" Section \"Grade your evaluations\" describes human grading as \"Most flexible and high quality, but slow and expensive. Avoid if possible.\"",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-eval-testing-and-debugging-003",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "eval-testing-and-debugging",
+    "subdomain": "debugging-and-error-handling",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer is building a classification application with Claude. During initial testing, they notice the model occasionally outputs invalid categories. Which TWO foundational debugging steps should they take to diagnose and resolve this issue? (Select TWO.)",
+    "options": [
+      {
+        "id": "b",
+        "text": "Review the model's outputs and adjust the prompt to explicitly define the allowed categories."
+      },
+      {
+        "id": "c",
+        "text": "Increase the temperature parameter to 1.0 to ensure the model explores all possible correct categories."
+      },
+      {
+        "id": "d",
+        "text": "Set the top_p parameter to 0 to force the model to output the categories in alphabetical order."
+      },
+      {
+        "id": "e",
+        "text": "Switch the API request from the Messages API to the legacy Text Completions API."
+      },
+      {
+        "id": "a",
+        "text": "Add the failing examples to an evaluation test suite to systematically measure if prompt adjustments fix the issue."
+      }
+    ],
+    "correct": [
+      "a",
+      "b"
+    ],
+    "explanation": "When debugging unexpected model behavior such as incorrect categorization, foundational steps include reviewing the failures to refine prompt instructions (such as explicitly defining allowed categories) and adding those failing cases to an evaluation suite. A test suite allows developers to iterate on the prompt systematically, ensuring that changes resolve the errors without causing regressions.",
+    "distractorNotes": {
+      "c": "Increasing temperature increases randomness, which typically makes formatting and classification tasks less reliable.",
+      "d": "The top_p parameter controls nucleus sampling based on token probability; it does not sort outputs alphabetically.",
+      "e": "The Text Completions API is legacy. Switching to it is not recommended and will not inherently resolve instruction-following issues."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
+    "sourceNote": "Section \"Tips for LLM-based grading\" gives three tips: \"Have detailed, clear rubrics\" (with the note that a use case \"might require several rubrics for holistic evaluation\"); \"Empirical or specific: For example, instruct the LLM to output only 'correct' or 'incorrect', or to judge from a scale of 1-5. Purely qualitative evaluations are hard to assess quickly and at scale\"; and \"Encourage reasoning: Ask the LLM to reason first before producing an evaluation score, and then discard the reasoning. This increases evaluation performance.\" Section \"Grade your evaluations\" describes LLM-based grading as \"Fast and flexible, scalable and suitable for complex judgment. Test to ensure reliability first then scale.\"",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-eval-testing-and-debugging-004",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "eval-testing-and-debugging",
+    "subdomain": "debugging-and-error-handling",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "A developer runs an exact-match evaluation to check if Claude correctly assigns one of four fixed labels to an input. The test continuously fails, despite manual spot-checks showing the model is generating the right words. What is the most appropriate first step to diagnose and resolve this test failure?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Inspect the raw outputs and update the evaluation script to normalize whitespace and casing before performing the exact match."
+      },
+      {
+        "id": "b",
+        "text": "Replace the exact-match script with an LLM-as-a-judge prompt to flexibly evaluate the model's intended label."
+      },
+      {
+        "id": "c",
+        "text": "Switch to manual human grading for all test cases, as automated string matching is too unreliable for categorical tasks."
+      },
+      {
+        "id": "d",
+        "text": "Set the temperature to 0 to automatically prevent the model from generating any unexpected whitespace or capitalization."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "When an exact-match evaluation for categorical answers produces false negatives, a foundational debugging step is to inspect the raw output for trivial discrepancies. Anthropic's guidance highlights that code-based grading is the fastest and most reliable method for clear-cut answers, but it typically requires comparing the output \"after normalizing whitespace and case.\" Replacing the check with an LLM judge or human grading fails to address the root cause and introduces unnecessary cost and latency for a deterministic task.",
+    "distractorNotes": {
+      "b": "An LLM judge adds cost, latency, and variance. It is suitable for complex or subjective judgments, not for evaluating fixed, categorical labels.",
+      "c": "Human grading is the slowest and most expensive evaluation method. The guidance explicitly advises avoiding it when a simple, automated string match is possible.",
+      "d": "While setting temperature to 0 is recommended for classification tasks to reduce variance, it does not prevent the model from outputting spaces or capitalization. The output must still be normalized."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
+    "sourceNote": "Section \"Grade your evaluations\": \"When deciding which method to use to grade evals, choose the fastest, most reliable, most scalable method\", ranking code-based grading first (\"Fastest and most reliable, extremely scalable\", examples \"Exact match: output == golden_answer\" and \"String match: key_phrase in output\"), human grading second (\"slow and expensive. Avoid if possible\"), and LLM-based grading third (\"suitable for complex judgment\"). The exact-match example eval states that such evals compare output with a predefined correct answer \"typically after normalizing whitespace and case\" and are \"perfect for tasks with clear-cut, categorical answers\".",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-eval-testing-and-debugging-005",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "eval-testing-and-debugging",
+    "subdomain": "debugging-and-error-handling",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "out-of-scope",
+    "scopeNote": "Tests A/B comparison methodology (held-out set, fixed grader, multidimensional criteria) between two prompt versions. The Domain 4 objective covers error type identification, recovery strategy selection, trace analysis, and isolating the integration layer from model output; comparing prompt versions is not among them, the same reasoning applied to ccdv-f-0075.",
+    "stem": "A candidate prompt, version two, is proposed to replace the prompt currently in production. Which TWO practices produce a trustworthy comparison between the two versions? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Change the model at the same time as the prompt, so that the strongest overall combination is found in a single evaluation pass."
+      },
+      {
+        "id": "b",
+        "text": "Run both versions against the same held-out test set with the same grader and rubric, changing only the prompt between the runs."
+      },
+      {
+        "id": "c",
+        "text": "Judge the outcome against the full set of success criteria, including operational measures such as latency and cost, rather than one headline metric."
+      },
+      {
+        "id": "d",
+        "text": "Score version two on the examples that were used to write version two, since those examples express the intended behaviour more precisely than sampled production traffic does."
+      },
+      {
+        "id": "e",
+        "text": "Adopt version two if a reviewer skims a handful of sampled outputs from each version and prefers what the new version produced."
+      }
+    ],
+    "correct": [
+      "b",
+      "c"
+    ],
+    "explanation": "Comparing versions is A/B testing against a baseline, which here is the earlier prompt. The difference is attributable to the prompt only if the dataset, the grader, and the rubric are held constant and the test set is held out from the work that produced the new version. The verdict should then be read against the multidimensional criteria the application actually needs, because most use cases require evaluation along several criteria at once, such as accuracy together with response time. A version that improves a headline score while regressing latency or cost is not necessarily an improvement, and where latency or cost is the failing criterion the better fix may be model selection rather than further prompt iteration.",
+    "distractorNotes": {
+      "a": "Changing two variables at once makes the result unattributable: any difference could come from the prompt, the model, or their interaction.",
+      "d": "Those examples are not held out. Scoring on the data used to author a prompt measures fit to that data rather than performance on the real distribution.",
+      "e": "An impression from a few samples is neither a defined metric nor a repeatable measurement, so it cannot establish whether the change is an improvement."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
+    "sourceNote": "Section \"Define your success criteria\" lists A/B testing among quantitative methods as \"Compare performance against a baseline model or earlier version\", and anchors criteria to \"a held-out test set\". Its multidimensional example measures one use case on F1, non-toxicity, error severity, and 95% response time together, and states \"Most use cases need multidimensional evaluation along several success criteria.\" Holding the dataset, grader, and rubric constant is the standard meaning of that A/B comparison rather than a separate quoted rule. The related overview at https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview adds that \"Not every success criteria or failing eval is best solved by prompt engineering\" and that latency and cost can sometimes be improved \"by selecting a different model\".",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-eval-testing-and-debugging-006",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "eval-testing-and-debugging",
+    "subdomain": "debugging-and-error-handling",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An engineering manager wants to monitor Claude Code usage across their team and verify that the telemetry pipeline is functioning correctly. Which statement accurately describes the fundamental approach to configuring and verifying Claude Code telemetry?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Claude Code automatically sends telemetry to Anthropic's central dashboard; administrators verify the pipeline by checking the Anthropic console for active developer sessions."
+      },
+      {
+        "id": "b",
+        "text": "Telemetry is strictly opt-in; administrators must explicitly configure Claude Code to export to their own OpenTelemetry collector and verify the setup by observing standard metrics or events on their backend."
+      },
+      {
+        "id": "c",
+        "text": "Telemetry is enabled by default in enterprise deployments; administrators verify the pipeline by ensuring the proprietary Anthropic monitoring agent is running alongside Claude Code."
+      },
+      {
+        "id": "d",
+        "text": "Administrators enable telemetry by aggregating local log files from each developer machine; the pipeline is verified by running a standard Claude Code command to print a summary of recent sessions."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Claude Code's telemetry is opt-in and natively integrates with standard OpenTelemetry backends rather than phoning home to Anthropic or requiring proprietary agents. Administrators must explicitly enable it and provide OTLP endpoint details. The pipeline is then verified on the organization's own backend by checking for expected initial metrics (like session counts) or logs (like user prompt events) rather than relying on an Anthropic dashboard or local log scraping.",
+    "distractorNotes": {
+      "a": "Claude Code does not send organizational telemetry to a central Anthropic dashboard; it exports to the organization's own configured OpenTelemetry backend.",
+      "c": "Telemetry is never enabled by default, and Claude Code natively supports OpenTelemetry without requiring a separate proprietary monitoring agent.",
+      "d": "Telemetry is exported over the network via OpenTelemetry protocols, not by manually aggregating local log files or running local summary commands."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/monitoring-usage",
+    "sourceNote": "Section \"Quick start\" shows CLAUDE_CODE_ENABLE_TELEMETRY=1 followed by separately chosen exporters (OTEL_METRICS_EXPORTER and OTEL_LOGS_EXPORTER, annotated \"both are optional - configure only what you need\") plus OTEL_EXPORTER_OTLP_PROTOCOL and OTEL_EXPORTER_OTLP_ENDPOINT, and states \"To verify a setup that exports metrics, check your backend for the claude_code.session.count metric, which Claude Code emits when a session starts. To verify a logs-only setup, submit a prompt and check for the claude_code.user_prompt event\", with third-party exporter failures shown as \"[3P telemetry]\" errors under claude --debug. Section \"Administrator configuration\" shows the same keys inside the managed settings env block. Section \"Standard attributes\" states that event-only fields such as prompt.id \"are never attached to metrics because they would cause unbounded cardinality\". The client-side nature of per-run cost output is stated at https://code.claude.com/docs/en/headless, which calls total_cost_usd a client-side estimate that \"can differ from your actual bill\".",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-eval-testing-and-debugging-007",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "eval-testing-and-debugging",
+    "subdomain": "debugging-and-error-handling",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A production service starts receiving 429 responses. The failures persist for hours, the SDK's automatic retries never recover, and the responses carry no retry-after header. What is the most likely cause?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The pinned version header has lapsed, so calls fail until the request is updated to a currently supported version value."
+      },
+      {
+        "id": "b",
+        "text": "A transient acceleration condition applies, so retrying at a fixed interval until capacity returns is the correct response."
+      },
+      {
+        "id": "c",
+        "text": "The organization reached its tier's monthly spend cap; the error details carry a spend limit code and access resumes later."
+      },
+      {
+        "id": "d",
+        "text": "A spend limit the organization set for itself was reached, which is what a 429 with no retry-after header indicates."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Reaching a usage tier's monthly spend cap pauses API usage and returns the same 429 status and rate limit error type as an ordinary throughput rejection, which is why it is so often misdiagnosed. Two signals separate them. The spend cap response carries no retry-after header, so backoff has nothing to honor and both hand-written retries and the SDK's automatic ones keep failing. The error details also carry a specific spend limit error code that a client can branch on to raise an alert instead of retrying. Recovery comes from moving to a higher tier or from the start of the next month, not from waiting a few seconds. A limit the organization sets for itself behaves differently and is returned as a 400 invalid request error, which is another reason to inspect the error body rather than the status code alone.",
+    "distractorNotes": {
+      "a": "A version problem is reported as a request validation failure, not as a 429. Pinned versions do not silently lapse and start returning throughput errors.",
+      "b": "Acceleration conditions do arise from sharp usage increases, but they are transient and are addressed by ramping traffic gradually. They do not produce hours of failures immune to backoff.",
+      "d": "A spend limit the organization configures for itself is returned as a 400 invalid request error rather than a 429, so this misreads the status code and would send the team to the wrong setting."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/api/rate-limits",
+    "sourceNote": "Rate limits - 'Reaching your spend cap' subsection describing the 429 rate_limit_error with no retry-after header and a spend limit error code, contrasted with the 400 returned for a self-configured spend limit",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-eval-testing-and-debugging-008",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "eval-testing-and-debugging",
+    "subdomain": "debugging-and-error-handling",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer is troubleshooting an FAQ assistant that gives significantly different answers when a user asks the exact same question in slightly different words. To systematically debug and measure this issue, which foundational evaluation criterion should the developer focus on?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Task fidelity, which evaluates whether the bot can identify a predefined correct answer."
+      },
+      {
+        "id": "b",
+        "text": "Consistency, which evaluates how semantically similar the bot's responses are for similar types of input."
+      },
+      {
+        "id": "c",
+        "text": "Relevance and coherence, which evaluates the logical flow and subsequence matching of the bot's summaries."
+      },
+      {
+        "id": "d",
+        "text": "Tone and style, which evaluates subjective aspects like the bot's empathy and professionalism."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "When a model provides different answers to paraphrased questions, it is failing the criterion of consistency. The documentation defines consistency as evaluating 'how similar do the model's responses need to be for similar types of input' and notes that 'similar questions should yield semantically similar answers, even if the wording varies.' Identifying the correct criterion is the foundational first step in debugging inconsistent model outputs. Task fidelity is used for clear-cut categorical tasks, relevance and coherence for summarization, and tone and style for subjective attributes.",
+    "distractorNotes": {
+      "a": "Task fidelity evaluates if the model produces a specific, clear-cut categorical answer, typically using exact match. It does not measure semantic similarity across paraphrased questions.",
+      "c": "Relevance and coherence is typically used for tasks like summarization to measure how well the output captures the core message of a reference text, not how well the model agrees with its own answers across different prompts.",
+      "d": "Tone and style evaluates nuanced, subjective aspects such as empathy, professionalism, or patience, which does not address the semantic agreement of the answers themselves."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
+    "sourceNote": "Section \"Common success criteria\" defines Consistency as \"How similar do the model's responses need to be for similar types of input? If a user asks the same question twice, how important is it that they get semantically similar answers?\" Section \"Example evals\" pairs each criterion with a method: \"Task fidelity (sentiment analysis) - exact match evaluation\" (matching a predefined correct answer \"typically after normalizing whitespace and case\", \"perfect for tasks with clear-cut, categorical answers\"); \"Consistency (FAQ bot) - cosine similarity evaluation\", which \"measures the similarity between two vectors (in this case, sentence embeddings of the model's output ...) ... Values closer to 1 indicate higher similarity. It's ideal for evaluating consistency because similar questions should yield semantically similar answers, even if the wording varies\", with example test cases of \"50 groups with a few paraphrased versions each\"; \"Relevance and coherence (summarization) - ROUGE-L evaluation\", which measures the longest common subsequence \"between the candidate and reference summaries\"; \"Tone and style (customer service) - LLM-based Likert scale\", \"ideal for evaluating nuanced aspects like empathy, professionalism, or patience\"; plus LLM-based binary classification for privacy preservation and an LLM-based ordinal scale for context utilization.",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-eval-testing-and-debugging-009",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "eval-testing-and-debugging",
+    "subdomain": "debugging-and-error-handling",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A nightly job that extracts fields from documents has started failing. On some runs the API returns a client error before the model is invoked; on others the call succeeds but the extracted values are wrong. An engineer wants to isolate where the fault lies before changing anything. What best separates the two cases?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Rerun the failures at a lower temperature, and treat anything that then succeeds as a model problem and anything that still fails as an integration problem."
+      },
+      {
+        "id": "opt-b",
+        "text": "Separate failures the API rejected as invalid requests from calls that returned successfully, since the first class is the integration layer and the second is the output."
+      },
+      {
+        "id": "opt-c",
+        "text": "Compare the failure rate against the previous week, and treat any increase as a service-side regression that should be raised with the provider."
+      },
+      {
+        "id": "opt-d",
+        "text": "Retry every failure with backoff, and treat the ones that eventually succeed as transient so that only the permanent failures need investigation."
+      }
+    ],
+    "correct": [
+      "opt-b"
+    ],
+    "explanation": "The two failure classes have different origins and different fixes. A request the API refuses never reached generation, so the fault is in how the integration assembled the call. A call that returns successfully but with wrong content did reach generation, so the fault lies in the prompt, the context supplied, or the handling of the output. Sorting by that boundary tells the engineer which half of the system to open first.",
+    "distractorNotes": {
+      "opt-a": "Sampling settings affect only the generation half, so this diagnoses nothing about requests that were rejected before generation, and it conflates non-determinism with a defect.",
+      "opt-c": "Rate comparison detects that something changed without indicating where, and it prematurely attributes the change to the provider rather than to the caller.",
+      "opt-d": "Backoff is the right response to transient errors once identified, but it treats a whole mixed population as transient and hides the invalid requests it silently retries."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/api/errors",
+    "sourceNote": "Errors — request-level errors such as invalid_request_error are raised against the caller's request, distinct from a successful response whose content is unsatisfactory",
+    "sourceCheckedAt": "2026-09-07"
+  }
+]

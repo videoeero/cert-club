@@ -1,0 +1,672 @@
+[
+  {
+    "id": "ccdv-f-security-and-safety-001",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "security-and-safety",
+    "subdomain": "identity-secrets-and-key-management",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An organization is replacing a personal API key that several engineers currently share to run a production service. Which approaches align with the documented guidance? Select TWO.",
+    "options": [
+      {
+        "id": "a",
+        "text": "Have an administrator create a service account so the workload holds its own identity, and issue a key linked to that service account."
+      },
+      {
+        "id": "b",
+        "text": "Create a workspace-scoped legacy key, since a credential that belongs to no individual is the recommended default for new integrations."
+      },
+      {
+        "id": "c",
+        "text": "Keep the shared personal key but rotate it more often, since it already carries exactly the permissions the service needs."
+      },
+      {
+        "id": "d",
+        "text": "Issue one personal key per engineer and have the service select one at random per request to spread usage across identities."
+      },
+      {
+        "id": "e",
+        "text": "Federate the workload's existing platform identity so requests present short-lived tokens instead of a stored static secret."
+      }
+    ],
+    "correct": [
+      "a",
+      "e"
+    ],
+    "explanation": "A shared personal key acts as one specific person and stops working when that person leaves the organization, which makes it a production outage waiting on a personnel change. The guidance offers two sound replacements. A service account gives the workload its own managed identity, so the credential's lifetime is tied to the workload rather than to an employee. Workload identity federation goes further by removing the static secret entirely: the workload exchanges an identity token it already holds for a short-lived access token, which suits cloud platforms, CI pipelines, and container orchestrators where a platform identity already exists. Both grant the same access to the API endpoints, so the choice turns on whether the workload has a federatable identity available.",
+    "distractorNotes": {
+      "b": "Workspace-scoped keys still function but are explicitly legacy. Identity-backed keys or federation are preferred for new integrations, so this is the opposite of the recommended default.",
+      "c": "Rotation does not address the underlying defect. The key still acts as one individual and still breaks the moment that individual loses access to the organization.",
+      "d": "This multiplies the original problem rather than solving it, spreading production dependence across several personal identities that can each disappear independently."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/manage-claude/authentication",
+    "sourceNote": "Authentication - method comparison table and the 'Key types' section, which recommends service accounts for shared or automated workloads and marks workspace keys as legacy",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-security-and-safety-002",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "security-and-safety",
+    "subdomain": "claude-hooks",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An organization is deploying a Claude-based agent using the Agent SDK and needs to enforce a mandatory compliance check on every tool call. The security team requires that this check cannot be bypassed by any permissive configuration elsewhere in the application. Which TWO statements describe how hooks and permissions address this requirement at a foundational level?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A pre-tool-use hook can intercept every tool call, providing a centralized mechanism to enforce mandatory checks before execution."
+      },
+      {
+        "id": "b",
+        "text": "Setting the agent's permission mode to strict automatically generates a hook that blocks all actions not explicitly requested by the user."
+      },
+      {
+        "id": "c",
+        "text": "Hooks are designed solely for non-blocking telemetry; security policies must be implemented through standard deny rules instead."
+      },
+      {
+        "id": "d",
+        "text": "If a tool is explicitly listed in the agent's allow rules, it bypasses pre-tool-use hooks to ensure optimal performance."
+      },
+      {
+        "id": "e",
+        "text": "Pre-tool-use hooks can modify a tool's input parameters but cannot prevent the tool from ultimately executing."
+      },
+      {
+        "id": "f",
+        "text": "A denial issued by a pre-tool-use hook prevents the tool from executing, even if the agent is operating under a highly permissive permission mode."
+      }
+    ],
+    "correct": [
+      "a",
+      "f"
+    ],
+    "explanation": "In the Agent SDK, pre-tool-use hooks provide a mechanism to intercept and evaluate tool calls before they run. They act as an unconditional first line of defense, making them the ideal location for mandatory compliance checks or guardrails. Because hooks are evaluated before standard permission rules and modes, a denial from a hook takes precedence and blocks execution, even if the agent is configured with permissive rules or a permissive mode.",
+    "distractorNotes": {
+      "b": "Permission modes dictate how the agent handles approvals for unmatched tools, but they do not automatically generate custom security hooks.",
+      "c": "While hooks are useful for logging, they are also a primary mechanism for enforcing mandatory security policies and guardrails that cannot be bypassed.",
+      "d": "Hooks evaluate every tool call before allow rules are consulted. An explicitly allowed tool can still be blocked by a hook.",
+      "e": "Pre-tool-use hooks have the authority to block tool execution entirely by returning a denial; they are not limited to just modifying parameters."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/agent-sdk/permissions",
+    "sourceNote": "Section 'How permissions are evaluated', plus the auto-approved tools warning under 'Allow and deny rules' and the mode descriptions under 'Permission modes'",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-security-and-safety-003",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-and-safety",
+    "subdomain": "ai-application-security",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A support application asks Claude to summarize inbound emails from unknown senders. The team wants Claude to treat every email body as data rather than as instructions it might follow. Following Anthropic's guidance on indirect prompt injection, where should the retrieved email body be placed in the request?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Appended to the system prompt inside XML tags labelled as untrusted, so that the handling policy and the content it governs stay together in one place"
+      },
+      {
+        "id": "b",
+        "text": "Inside a tool_result block, with the tool description stating that the content is the body of an inbound email from an unknown sender"
+      },
+      {
+        "id": "c",
+        "text": "In a plain user text block introduced by a sentence telling Claude to ignore any instructions that appear in the text that follows it"
+      },
+      {
+        "id": "d",
+        "text": "Split across several consecutive user turns so that no single turn contains a complete instruction that the model could act on"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Anthropic's guidance is to deliver third-party content to Claude inside tool_result blocks and never in system prompts or plain user text blocks, because Claude is trained to treat instructions appearing inside tool results with appropriate skepticism. The guidance also asks you to make the nature and source of the content explicit, either in the tool description or in the structure of the result, so Claude can calibrate how much to trust any directives embedded in it. Encoding the payload as a JSON string strengthens this further, since JSON escaping gives unambiguous delimiters that an attacker cannot close in order to break out into an instruction context.",
+    "distractorNotes": {
+      "a": "The guidance does place an untrusted-content policy in the system prompt, but never the untrusted content itself. Content sitting in the system prompt inherits the authority of your own instructions, which is the trust level an injection is trying to reach.",
+      "c": "A plain user text block is the other placement the guidance rules out. A preamble telling Claude to disregard what follows is a prompt-level hint rather than a structural signal, and it leaves the untrusted text in a trusted position.",
+      "d": "Fragmenting the content does not change its trust level. The control that matters is which block type carries the content, not how many turns it spans, and splitting it also degrades the summary."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks",
+    "sourceNote": "Section \"Indirect prompt injection\", bullets \"Put untrusted content only in tool results\" (deliver third-party content inside tool_result blocks, never in system prompts or plain user text blocks), \"Tell Claude what the content is and where it came from\", and \"State the policy in your system prompt\".",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-security-and-safety-004",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "security-and-safety",
+    "subdomain": "ai-application-security",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An agent retrieves web pages and documents on a trusted user's behalf, so the adversary controls the retrieved content rather than the user's prompt. Which THREE practices does Anthropic's guidance recommend for limiting the damage an embedded instruction can do? Select THREE.",
+    "options": [
+      {
+        "id": "a",
+        "text": "Encode third-party strings as JSON so that escaping provides unambiguous delimiters around the untrusted payload"
+      },
+      {
+        "id": "b",
+        "text": "Screen each tool's raw output with a lightweight classifier call constrained by structured outputs, and return the content only when the screen reports no injection attempt"
+      },
+      {
+        "id": "c",
+        "text": "Place your own operating instructions inside the tool_result block so that they sit directly next to the untrusted content they are meant to govern and cannot be separated from it later"
+      },
+      {
+        "id": "d",
+        "text": "Apply least privilege by withholding secrets the agent does not need, running tools in sandboxed environments, and scoping permissions narrowly"
+      },
+      {
+        "id": "e",
+        "text": "Raise the sampling temperature so that Claude is less likely to reproduce an embedded instruction verbatim"
+      },
+      {
+        "id": "f",
+        "text": "Rely on the model's inherent resistance to injection instead of adding application-level controls"
+      }
+    ],
+    "correct": [
+      "a",
+      "b",
+      "d"
+    ],
+    "explanation": "The recommended defenses are layered. JSON encoding wraps the untrusted string so an attacker cannot close a quote or tag and escape into an instruction context. Output screening applies the same lightweight-model pattern used for user input to the content tools return, with structured outputs making the verdict a parseable value the application can branch on before the content is handed back as a tool result. Least privilege limits the blast radius of any injection that does succeed, which is why the guidance pairs it with sandboxed execution and narrowly scoped permissions. Red-teaming the workflow with deliberately poisoned documents and continuous monitoring of outputs complete the picture.",
+    "distractorNotes": {
+      "c": "The guidance says the opposite: because Claude treats tool-result content as untrusted data, instructions you place there may be ignored or flagged as a possible injection. Send them in a user turn that follows the tool result instead.",
+      "e": "Temperature is a sampling parameter and has no bearing on whether Claude treats retrieved text as data or as a directive. It appears nowhere in the injection guidance.",
+      "f": "Model resistance is described as a starting point, not a substitute for guardrails. The guidance exists to add application-level layers on top of it, and the sandboxing documentation makes the same defense-in-depth argument."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks",
+    "sourceNote": "Section \"Indirect prompt injection\", bullets \"JSON-encode untrusted content\", \"Screen tool outputs before Claude acts on them\" (classifier call constrained with structured outputs), \"Limit Claude's access to sensitive data and actions\", \"Don't put your own instructions in tool results\", and \"Red-team your own agent\".",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-security-and-safety-005",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-and-safety",
+    "subdomain": "guardrails-and-safe-deployment",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A repository's Claude Code settings contain both a deny rule for Bash(aws *) and an allow rule for Bash(aws s3 ls). During a session Claude proposes running aws s3 ls. What happens, and why?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The call runs, because the narrower allow rule is a more specific match than the broad deny rule and specificity decides which rule applies"
+      },
+      {
+        "id": "b",
+        "text": "The user is prompted to approve or reject the call, because two rules match it and the conflict between them is resolved interactively at the point where it is proposed"
+      },
+      {
+        "id": "c",
+        "text": "The call is blocked, because rules are evaluated deny, then ask, then allow, and the first match decides the outcome regardless of how specific each rule is"
+      },
+      {
+        "id": "d",
+        "text": "The outcome depends on which settings file each rule came from, with the more locally scoped file winning over the shared repository configuration"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Permission rules are evaluated in a fixed order: deny, then ask, then allow. The first match in that order determines the result, and rule specificity does not change the order. A broad deny rule therefore cannot carry allowlist exceptions; to permit one command from a family you have to narrow the deny rule itself rather than add a more specific allow. The same precedence governs ask against allow, so a matching ask rule still prompts even when a narrower allow rule also matches the call. Deny rules apply in every permission mode, which is what makes them a dependable control rather than a default that a mode can relax.",
+    "distractorNotes": {
+      "a": "Specificity is a familiar intuition from firewall and IAM systems, but it is explicitly not how these rules are ordered. The documentation uses this exact pairing of a broad deny with a narrower allow as the example where the deny still wins.",
+      "b": "Prompting is what an ask rule produces, not a fallback for resolving conflicts. A matched deny rule blocks the call outright and offers no approval option.",
+      "d": "Settings precedence governs which rules are in effect and how they merge across scopes. Once the rules are resolved, the deny-ask-allow ordering decides the outcome, not the file a rule came from."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/permissions",
+    "sourceNote": "Section \"Manage permissions\": rules are evaluated in the order deny, ask, allow; the first match determines the outcome and rule specificity does not change the order, with Bash(aws *) against Bash(aws s3 ls) given as the worked example of a deny rule that cannot carry allowlist exceptions. That deny rules apply in every mode is stated in \"Permission modes\" on https://code.claude.com/docs/en/permission-modes.",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-security-and-safety-006",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-and-safety",
+    "subdomain": "claude-hooks",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "A team writes in its CLAUDE.md that Claude must never run the project's deployment script. A reviewer asks whether that instruction on its own prevents the tool call from executing. Which assessment is correct?",
+    "options": [
+      {
+        "id": "a",
+        "text": "It does prevent it, because CLAUDE.md is loaded as a system-level instruction that the permission layer consults before approving any tool call proposed during the session, alongside the deny rules"
+      },
+      {
+        "id": "b",
+        "text": "It does prevent it, provided the same instruction is repeated in the first user message of every session so the model sees it before it proposes any tool call"
+      },
+      {
+        "id": "c",
+        "text": "It does not prevent it, and the only supported remedy is to run the session inside a container with no network access and no write access to the repository"
+      },
+      {
+        "id": "d",
+        "text": "It does not prevent it; what Claude Code allows is decided outside the model, so the block has to be expressed as a deny rule, a permission mode, or a PreToolUse hook"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Permission rules are enforced by Claude Code itself, not by the model. Instructions in a prompt or in CLAUDE.md shape what Claude tries to do, but they do not change what the tooling allows, so a documented prohibition is guidance rather than a control. To actually grant or revoke access you use the permissions dialog, a permission rule, a permission mode, or a PreToolUse hook, each of which sits outside the model and evaluates the call before it runs. Keeping this separation clear between what steers the model and what gates the tool is the central idea in the Claude Code security model.",
+    "distractorNotes": {
+      "a": "CLAUDE.md is context supplied to the model, not policy consumed by the permission layer. Nothing in the permission evaluation path reads it.",
+      "b": "Repeating an instruction may raise the chance the model follows it but adds no enforcement. A restriction that depends on the model choosing to comply is not a control.",
+      "c": "The first half is right and the second is overstated. A deny rule, a permission mode, or a PreToolUse hook blocks the call directly; container isolation is a separate, coarser layer for limiting damage if something does run."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/permissions",
+    "sourceNote": "Note in section \"Manage permissions\": permission rules are enforced by Claude Code, not by the model; instructions in your prompt or CLAUDE.md shape what Claude tries to do but do not change what Claude Code allows, and access is granted or revoked with /permissions, a permission rule, a permission mode, or a PreToolUse hook.",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-security-and-safety-007",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "security-and-safety",
+    "subdomain": "guardrails-and-safe-deployment",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A team enables the built-in sandboxed Bash tool and asks its security reviewer what that sandbox does not protect against. Which TWO statements are accurate? Select TWO.",
+    "options": [
+      {
+        "id": "a",
+        "text": "It covers only the command Claude invokes directly, so any child processes spawned by that command fall outside the sandbox's filesystem boundary entirely"
+      },
+      {
+        "id": "b",
+        "text": "It restricts Bash commands only; built-in file tools, MCP servers, and hooks still run directly on the host"
+      },
+      {
+        "id": "c",
+        "text": "It supersedes the permission system, so explicit deny rules stop being applied once sandboxing is enabled"
+      },
+      {
+        "id": "d",
+        "text": "It leaves network access unrestricted, because the boundary it enforces covers the filesystem only"
+      },
+      {
+        "id": "e",
+        "text": "It does not change what is sent to the model, since prompts and the files Claude reads are still transmitted to the API or configured provider"
+      }
+    ],
+    "correct": [
+      "b",
+      "e"
+    ],
+    "explanation": "The built-in Bash sandbox is narrow by design: it constrains Bash commands, while built-in file tools, MCP servers, and hooks continue to run on the host. Putting the whole agent process inside a boundary takes a different approach, such as the sandbox runtime, a dev or custom container, or a virtual machine. Isolation also governs what the agent can reach rather than what leaves the machine as part of a request, so prompts and file contents are still transmitted to the model with or without a sandbox. Both points are why the documentation warns against treating a sandbox as a hard control on its own.",
+    "distractorNotes": {
+      "a": "Sandbox filesystem paths are enforced at the operating-system level, so every command running inside the sandbox and all of its child processes respect them.",
+      "c": "Explicit deny rules are always respected, including in auto-allow mode. The sandbox changes how commands get approved, not whether your deny rules apply.",
+      "d": "The sandbox enforces both filesystem and network isolation. The first time a command needs a network domain that is not already allowed, that access is gated rather than granted silently."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/sandbox-environments",
+    "sourceNote": "Section \"Compare sandboxing approaches\": the sandboxed Bash tool restricts only Bash commands while built-in file tools, MCP servers, and hooks still run on the host, and the following warning states that isolation does not change what is sent to the model. The distractors are contradicted on https://code.claude.com/docs/en/sandboxing, which states that filesystem paths are enforced at the OS level for sandboxed commands and their child processes, that explicit deny rules are always respected in auto-allow mode, and that a new network domain is gated on first use.",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-security-and-safety-008",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-and-safety",
+    "subdomain": "guardrails-and-safe-deployment",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A streaming integration receives a response whose stop_reason is refusal. The application appends the partial assistant text to its history and immediately re-sends the same conversation, which is refused again on every retry. What should the application do instead?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Treat the refusal as a transport failure and retry the identical request with exponential backoff until the service returns an ordinary, non-refused completion"
+      },
+      {
+        "id": "b",
+        "text": "Branch on stop_details.category, which is always populated when a refusal occurs, and choose the recovery path from its value"
+      },
+      {
+        "id": "c",
+        "text": "Reset the conversation context by removing or rephrasing the turn that triggered the refusal, or by clearing the history, before continuing"
+      },
+      {
+        "id": "d",
+        "text": "Ignore the refusal and replay the turn unchanged, since a refused response is never billed and therefore costs nothing to retry"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "A refusal stop reason means safety classifiers intervened, and the content that triggered them is still sitting in the conversation. Continuing without resetting produces further refusals, so the application has to remove or rephrase the triggering turn or clear the history; retrying the request on a different model through a fallback path is the other supported recovery. When handling the response, branch on stop_reason or on stop_details.type rather than on category, because stop_details is always present on a refusal while its category and explanation fields can be null, and supply your own user-facing message when they are.",
+    "distractorNotes": {
+      "a": "A refusal is a normal, successful API response carrying a specific stop reason, not a transport error. Backoff changes nothing because the input that triggered the refusal is unchanged.",
+      "b": "The premise is wrong. On a refusal the stop_details object is always present, but its category and explanation can each be null, so code that assumes they are populated will break.",
+      "d": "Billing depends on timing. You are not billed only when the refusal arrives before any output is generated; if output was produced before the refusal, the request is billed. Usage metrics are returned either way."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/handle-streaming-refusals",
+    "sourceNote": "Sections \"API response format\" and \"Reset context after refusal\": streaming classifiers return stop_reason refusal with a stop_details object whose category and explanation can be null, callers should branch on stop_reason or stop_details.type, the context must be reset before continuing or refusals persist, and the billing note states you are not billed when the refusal precedes any generated output.",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-security-and-safety-009",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "security-and-safety",
+    "subdomain": "identity-secrets-and-key-management",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A multi-tenant service runs an agent over customer repositories it does not control, and the agent must call a paid third-party API. Which TWO measures follow Anthropic's guidance on securely deploying agents? Select TWO.",
+    "options": [
+      {
+        "id": "a",
+        "text": "Pass the credential to the agent in an environment variable inside its container, so that the value is never written to disk and exists only for the lifetime of that single container run"
+      },
+      {
+        "id": "b",
+        "text": "Add a system prompt instruction forbidding the agent from revealing or transmitting the credential to anything other than the paid third-party API"
+      },
+      {
+        "id": "c",
+        "text": "Run a proxy outside the agent's environment that injects the credential into outbound requests, so the agent can call the API without ever seeing the key"
+      },
+      {
+        "id": "d",
+        "text": "Skip permission checks for the agent so that credential-related prompts cannot interrupt an unattended run on a machine where no operator is watching"
+      },
+      {
+        "id": "e",
+        "text": "Restrict the agent to the capabilities its task requires: mount only the directories it needs, prefer read-only mounts, and confine network egress to specific endpoints"
+      }
+    ],
+    "correct": [
+      "c",
+      "e"
+    ],
+    "explanation": "The guidance frames this as a security boundary problem: keep sensitive resources outside the boundary that contains the agent, so a compromise inside that boundary leaves them protected. Credential injection at a proxy is the worked example, because the agent gains the ability to make the call without ever holding the secret. Least privilege supplies the second layer, with per-resource restrictions covering filesystem, network, credentials, and system capabilities. Layering these controls is deliberate, since an agent's actions are generated dynamically and can be influenced by the content it processes, so network and filesystem controls stop an exfiltration attempt that a prompt-level rule would not.",
+    "distractorNotes": {
+      "a": "An environment variable keeps the secret inside the agent's boundary, which is exactly what the security-boundary pattern is meant to avoid. Any process the agent runs can read it.",
+      "b": "A prompt-level instruction is guidance to the model rather than an enforced control, and it is the layer that an injected instruction is trying to override.",
+      "d": "Skipping permission checks removes a control instead of adding one. That posture is intended only for isolated environments where the agent cannot cause damage, and it is not an answer to credential handling."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/agent-sdk/secure-deployment",
+    "sourceNote": "Sections \"Security boundaries\" (run a proxy outside the agent's environment that injects the key into requests so the agent never sees the credential, noted as useful for multi-tenant deployments and untrusted content) and \"Least privilege\" (mount only needed directories preferring read-only, restrict network to specific endpoints via proxy, inject credentials via proxy rather than exposing them directly, drop container capabilities).",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-security-and-safety-010",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-and-safety",
+    "subdomain": "ai-application-security",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An organization has a zero data retention arrangement enabled for its Claude API organization. Which workload does that arrangement cover?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A Messages API request whose features are all listed as ZDR-eligible"
+      },
+      {
+        "id": "b",
+        "text": "Prompts an engineer runs in the Console playground while iterating on wording"
+      },
+      {
+        "id": "c",
+        "text": "A Messages API request that includes the code execution tool"
+      },
+      {
+        "id": "d",
+        "text": "Requests issued straight from a browser front end using cross-origin requests"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Under a zero data retention arrangement Anthropic does not store customer prompts or responses at rest once the API response is returned, and it applies to the Messages and Token Counting endpoints for the features marked eligible in the feature eligibility table. Eligibility is per feature rather than per endpoint, so a capability that rides on the same endpoint but requires storage to function falls outside the arrangement. The arrangement is also enabled per organization and does not automatically extend to other organizations under the same account, which makes checking both the feature table and the enabled scope part of any design review.",
+    "distractorNotes": {
+      "b": "Any usage in the Claude Console, including the playground, is explicitly outside the coverage even when the organization has the arrangement enabled.",
+      "c": "Code execution is named as a feature that rides on the messages endpoint but is not eligible, precisely because it requires storage to function.",
+      "d": "Cross-origin requests are not supported for organizations with this arrangement; browser-based applications have to route calls through a backend proxy server instead."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/manage-claude/api-and-data-retention",
+    "sourceNote": "Sections \"Zero data retention (ZDR)\" (no storage of prompts or responses at rest after the response is returned; enabled per organization and not extended automatically to other organizations), \"What ZDR covers\" (Messages and Token Counting APIs for features listed as eligible) and \"What ZDR does not cover\" (Claude Console including playground, features riding on /v1/messages that are marked ineligible such as code execution, and CORS, for which requests must be routed through a backend proxy).",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-security-and-safety-011",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "security-and-safety",
+    "subdomain": "claude-hooks",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An organization is deploying an autonomous agent using the Agent SDK and wants to ensure that the agent operates safely and transparently. They plan to use hooks to enforce security policies. Which TWO of the following statements accurately reflect the high-level purpose and capabilities of hooks in this ecosystem?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Hooks can intercept a tool call before it executes, providing an intervention point to enforce guardrails or require human-in-the-loop approval for sensitive operations."
+      },
+      {
+        "id": "b",
+        "text": "The post-tool-use hook is the primary mechanism for preventing unauthorized actions, as it evaluates the tool's output to determine if the execution should be rolled back."
+      },
+      {
+        "id": "c",
+        "text": "Organizations can use hooks to establish a comprehensive audit trail by observing both the model's intended action prior to execution and the actual outcome returned by the tool."
+      },
+      {
+        "id": "d",
+        "text": "Hooks enhance security by directly modifying the underlying LLM's behavioral safeguards, permanently teaching the model which tool calls are prohibited within the environment."
+      },
+      {
+        "id": "e",
+        "text": "When a hook pauses for human approval, it suspends all background processes globally across the SDK infrastructure to ensure the system state remains frozen."
+      },
+      {
+        "id": "f",
+        "text": "Hooks are designed to replace traditional Identity and Access Management (IAM) controls, allowing the agent to dynamically provision and revoke its own system permissions."
+      }
+    ],
+    "correct": [
+      "a",
+      "c"
+    ],
+    "explanation": "Hooks are a foundational security and safety feature in the Agent SDK, designed to provide visibility and control over an agent's actions. Pre-tool hooks intercept requests before execution to enforce guardrails or human-in-the-loop approvals. The combination of pre- and post-tool hooks allows developers to comprehensively audit both what the model attempted to do and what the tool actually produced. Hooks operate at the application layer and do not alter model weights, replace system-level IAM, or globally freeze infrastructure.",
+    "distractorNotes": {
+      "b": "Post-tool hooks trigger after a tool has already executed. They can modify what is returned to the model, but they cannot prevent the action from occurring or automatically roll back state changes.",
+      "d": "Hooks provide runtime guardrails and feedback within the application layer. They do not modify the underlying foundational model's weights or permanently alter its internal safeguards.",
+      "e": "Hooks pause the execution flow of the specific agent or session they are attached to. They do not implement a global freeze of all processes or infrastructure.",
+      "f": "Hooks complement existing security architectures by adding agent-specific application-level controls. They do not replace underlying infrastructure controls like IAM."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/agent-sdk/hooks",
+    "sourceNote": "Sections 'How hooks work' and 'Available hooks'; 'Configure hooks' subsection 'Matchers'; 'Callback functions' subsections 'Inputs' and 'Outputs'",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-security-and-safety-012",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-and-safety",
+    "subdomain": "identity-secrets-and-key-management",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A backend service is being provisioned to call the Claude API, and the team is deciding how it should authenticate. Which statement about authenticating a request is accurate?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A request carries either x-api-key or an Authorization header holding a short-lived federated access token, which selects its workspace at token exchange rather than through a workspace header"
+      },
+      {
+        "id": "b",
+        "text": "A request must carry both x-api-key and Authorization together, because the key authenticates the caller while the federated token resolves the particular workspace that the request runs in"
+      },
+      {
+        "id": "c",
+        "text": "An API key is permanent once issued, so rotating a credential means deleting the workspace the key belongs to and recreating both the workspace and the key from scratch"
+      },
+      {
+        "id": "d",
+        "text": "The official client SDKs leave the authentication, version, and content-type headers to the caller, which must set all three by hand on every request it sends to the API"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Authentication takes one of two forms: an API key sent in x-api-key, or a short-lived access token sent in Authorization that the caller obtains through Workload Identity Federation. The two are alternatives, and only one of them is required on a request. The workspace a request runs in is normally selected with a workspace header when a multi-workspace key needs it, but a federated token already carries that choice from the token exchange, so the header is not used with it. Preferring short-lived federated tokens, and otherwise giving each key an expiration and separating environments into their own workspaces, keeps the exposure of any single leaked credential bounded.",
+    "distractorNotes": {
+      "b": "The two headers are alternatives, not a pair. An API key is sufficient on its own, and a federated token already identifies both the caller and the workspace the request runs in.",
+      "c": "Key type and expiration are both chosen when the key is created, so rotation is a normal key lifecycle operation. Workspaces exist to separate environments and control spend, not as a rotation mechanism.",
+      "d": "The SDKs manage those headers automatically, along with retries, streaming, and timeouts. The one header an application may still need to pass itself is the workspace header, and only when its key requires it."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/api/overview",
+    "sourceNote": "Section \"Authentication\" header table (one of x-api-key or Authorization is required, the Authorization value being a short-lived access token obtained through Workload Identity Federation; anthropic-workspace-id is required only with a multi-workspace API key and is not used with Workload Identity Federation tokens, which select a workspace at token exchange), section \"Getting API keys\" (key type and expiration are chosen at creation, and workspaces separate environments and control spend), and section \"Client SDKs\" (the SDK sends the authentication, version, and content-type headers automatically, while anthropic-workspace-id is passed by the caller when the key needs it).",
+    "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "ccdv-f-security-and-safety-013",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-and-safety",
+    "subdomain": "ai-application-security",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An agent that reads untrusted third-party content can also call tools that move money and delete records. The team wants to bound the damage if an injected instruction ever slips past their screening. Which design principle matters most?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Raise the model's temperature so that its behaviour is harder for an attacker crafting an injection to anticipate and steer."
+      },
+      {
+        "id": "b",
+        "text": "Add a single system-prompt sentence telling the model never to obey malicious instructions, and treat that one sentence as the application's primary control."
+      },
+      {
+        "id": "c",
+        "text": "Grant the agent broad permissions so that, if an injection does succeed, it retains enough access to clean up the damage itself."
+      },
+      {
+        "id": "d",
+        "text": "Apply least privilege and require authorization or human confirmation before sensitive actions, so model output alone cannot trigger irreversible ones."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Because a successful injection acts through the model's output, the durable defense is to break the link between that output and privileged action: apply least privilege and gate sensitive or irreversible operations behind authorization or human confirmation (d). Temperature (a) is irrelevant to injection; a single system-prompt sentence (b) is not an enforceable boundary on its own; and broad permissions (c) do the opposite of containment by maximising what a successful injection can reach.",
+    "distractorNotes": {
+      "a": "Randomising outputs does nothing to stop an injection from invoking a dangerous tool and only makes behaviour less predictable overall.",
+      "b": "Prompt-level instructions help but are not an enforceable control; they can be overridden and must be backed by least-privilege and confirmation gates.",
+      "c": "Broad permissions widen the blast radius; the goal is to minimise what a compromised turn can do, not to give it more power to act."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks",
+    "sourceNote": "Indirect prompt injection — 'Limit Claude's access to sensitive data and actions' (least privilege)",
+    "sourceCheckedAt": "2026-09-07"
+  },
+  {
+    "id": "ccdv-f-security-and-safety-014",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "security-and-safety",
+    "subdomain": "ai-application-security",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A public-facing assistant is the target of users who deliberately craft inputs to bypass its guardrails. Select THREE mitigations Anthropic recommends against these direct jailbreak attempts.",
+    "options": [
+      {
+        "id": "a",
+        "text": "Raise the model temperature so that manipulative prompts become harder for the attacker to reproduce reliably across attempts."
+      },
+      {
+        "id": "b",
+        "text": "Pre-screen incoming user input with a lightweight model that classifies it for harmful intent before it reaches the main conversation."
+      },
+      {
+        "id": "c",
+        "text": "Add a line politely asking users not to submit malicious instructions and treat that request as a sufficient guardrail on its own."
+      },
+      {
+        "id": "d",
+        "text": "Throttle or ban users who repeatedly trigger the same guardrail refusals after being told their actions violate the usage policy."
+      },
+      {
+        "id": "e",
+        "text": "Switch to a larger model on the assumption that larger models are inherently immune to jailbreak attempts."
+      },
+      {
+        "id": "f",
+        "text": "Harden the system prompt so it states the ethical and legal boundaries and tells the model exactly how it should refuse."
+      }
+    ],
+    "correct": [
+      "b",
+      "d",
+      "f"
+    ],
+    "explanation": "For direct jailbreaks, where the user is the adversary, the recommended layers are a lightweight harmlessness screen on input (b), responding to repeat offenders by throttling or banning them (d), and hardening the system prompt with explicit boundaries and refusal guidance (f). The distractors are ineffective: temperature (a) does not deter manipulation, a polite request (c) is not an enforceable control, and a larger model (e) is not inherently immune and can even be more susceptible.",
+    "distractorNotes": {
+      "a": "Temperature changes randomness, not resistance to manipulation; it is not a guardrail against crafted jailbreak inputs.",
+      "c": "A polite instruction is unenforceable and trivially ignored by a determined adversary; it cannot substitute for screening and hardened prompts.",
+      "e": "Model size does not confer immunity to jailbreaks, and a more instruction-following model can be more, not less, susceptible to manipulation."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks",
+    "sourceNote": "Jailbreaks and direct prompt injection — harmlessness screens, respond to repeat offenders, prompt engineering",
+    "sourceCheckedAt": "2026-09-07"
+  },
+  {
+    "id": "ccdv-f-security-and-safety-015",
+    "cert": "ccdv-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-and-safety",
+    "subdomain": "claude-hooks",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A platform team must guarantee that Claude Code never runs a command that deletes a production database, whatever the session or the prompt. They plan to enforce this with a hook. Where in the lifecycle must the check run, and why?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "At session start, where the hook can scan the configured tool list once and refuse to open a session that exposes any destructive command."
+      },
+      {
+        "id": "opt-b",
+        "text": "On every user prompt submission, where the hook can reject any prompt whose wording suggests the user is asking for a destructive operation."
+      },
+      {
+        "id": "opt-c",
+        "text": "Before each tool call, where the hook receives the pending call and can deny it, so the command never executes in the first place."
+      },
+      {
+        "id": "opt-d",
+        "text": "After each tool call, where the hook sees exactly what ran and can raise an alert and begin restoring from the most recent backup."
+      }
+    ],
+    "correct": [
+      "opt-c"
+    ],
+    "explanation": "A guardrail against a destructive action has to sit between the decision to act and the action itself. The pre-tool-use event fires on every tool call inside the agentic loop and receives the pending call, so the handler can inspect the actual command and deny it before execution. The other placements either run too early to see the concrete call or too late to prevent it.",
+    "distractorNotes": {
+      "opt-a": "Runs once, before any call exists. It can reason about what is available in principle but never sees the specific command, and a broadly capable tool cannot be judged in advance.",
+      "opt-b": "Filters intent rather than action, so it misses any destructive call the model arrives at from an innocuous request, which is the case that most needs catching.",
+      "opt-d": "Fires after execution. Detection and recovery are valuable, but the requirement is prevention, and by this point the deletion has already happened."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/hooks",
+    "sourceNote": "Hooks reference — hook lifecycle: PreToolUse and PostToolUse fire on every tool call inside the agentic loop, and a handler can inspect the input and return a decision",
+    "sourceCheckedAt": "2026-09-07"
+  }
+]

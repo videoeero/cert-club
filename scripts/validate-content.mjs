@@ -59,6 +59,20 @@ export function validateCertContent(folderName, manifestInput, questionsInput) {
     );
   }
 
+  // The app fetches one questions/<domain-slug>.json file per manifest
+  // domain, so a domain with no matching questions is a runtime 404 waiting
+  // to happen, not a merely thin domain.
+  const domainsWithQuestions = new Set(
+    questions.map((question) => question.domain),
+  );
+  for (const domain of domains) {
+    if (!domainsWithQuestions.has(domain)) {
+      messages.push(
+        `manifest.domains: "${domain}" has no questions/${domain}.json file`,
+      );
+    }
+  }
+
   questions.forEach((question, index) => {
     if (question.cert !== manifest.cert) {
       messages.push(
@@ -151,6 +165,24 @@ async function readJson(path) {
   }
 }
 
+async function readCertQuestions(certPath) {
+  const questionsPath = join(certPath, "questions");
+  let entries;
+  try {
+    entries = await readdir(questionsPath, { withFileTypes: true });
+  } catch (error) {
+    throw new ContentValidationError([`${questionsPath}: ${error.message}`]);
+  }
+
+  const files = entries
+    .filter((entry) => entry.isFile() && entry.name.endsWith(".json"))
+    .map((entry) => join(questionsPath, entry.name))
+    .sort();
+
+  const perFile = await Promise.all(files.map((file) => readJson(file)));
+  return perFile.flat();
+}
+
 export async function validateRepository(root = repositoryRoot) {
   const certsPath = join(root, "certs");
   let entries;
@@ -182,7 +214,7 @@ export async function validateRepository(root = repositoryRoot) {
     const certPath = join(certsPath, folder.name);
     const [manifestInput, questionsInput] = await Promise.all([
       readJson(join(certPath, "manifest.json")),
-      readJson(join(certPath, "questions.json")),
+      readCertQuestions(certPath),
     ]);
     const { questions } = validateCertContent(
       folder.name,
