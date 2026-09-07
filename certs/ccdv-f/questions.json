@@ -141,36 +141,36 @@
     "subdomain": "claude-api-mechanics",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "An application inspects stop_reason on every response to decide what to do next. Which mapping of a stop_reason value to the required follow-up action is correct?",
+    "stem": "An agent runs for a few turns and then stops making progress. The logs show a response in which the model asked to call a client-side tool. The integration recorded that response as the assistant's final answer and returned its text to the user. What did the integration misread?",
     "options": [
       {
-        "id": "a",
-        "text": "pause_turn means the client should discard the assistant content produced so far and resend the original user message unchanged."
+        "id": "opt-a",
+        "text": "The tool definition it sent was malformed, so the model described the tool in prose instead of calling it, and the schema is what needs correcting."
       },
       {
-        "id": "b",
-        "text": "end_turn means the response was cut short partway through and the client should immediately request a continuation of it."
+        "id": "opt-b",
+        "text": "The model exceeded its output allowance partway through the answer, so the text is incomplete and the integration should request a continuation."
       },
       {
-        "id": "c",
-        "text": "stop_sequence means one of the configured sequences fired nondeterministically, so the identical request should simply be retried until it completes normally."
+        "id": "opt-c",
+        "text": "The turn was a request for the caller to act: the model is waiting for the tool to be run and its output returned before it can continue."
       },
       {
-        "id": "d",
-        "text": "tool_use means the client should run the requested client-side tool and return its output as a tool_result block in the next user message."
+        "id": "opt-d",
+        "text": "The model declined the request on safety grounds, so the integration should send the turn to a fallback model rather than surfacing the text."
       }
     ],
     "correct": [
-      "d"
+      "opt-c"
     ],
-    "explanation": "stop_reason is the control signal that drives an agent loop. A value of tool_use means the model has emitted a tool call and is waiting on the caller: the client runs the tool it defined and returns the outcome as a tool_result block in the following user message, keyed to the originating tool_use id. The other values each imply a distinct action. end_turn means the response is complete and usable. max_tokens means the client's own ceiling truncated the output. pause_turn means a server-side tool loop reached its iteration limit and the assistant content must be sent back so work can continue. refusal means the model declined, with accompanying detail identifying the policy category involved.",
+    "explanation": "A response can end for several different reasons, and only some of them mean the assistant has finished. When the model asks for a tool, the turn is a handover: it has paused because it needs something only the caller can supply, and it cannot continue until the tool has been run and its output returned in the following message. Treating that pause as a completed answer breaks the loop, which is why the agent appears to stall rather than fail. Reading the reason a response ended, instead of assuming every response is final, is what keeps the loop turning.",
     "distractorNotes": {
-      "a": "A paused turn is resumed by sending the assistant content produced so far back to the API, not by discarding it. Throwing that content away loses completed work and restarts the loop from the beginning.",
-      "b": "end_turn is the ordinary completion signal and means the response should be used as-is. Truncation against a client-supplied ceiling is reported as max_tokens instead.",
-      "c": "This value means one of the caller's own configured stop sequences was emitted. The response reports which one fired, and reissuing the same request will simply reproduce it."
+      "opt-a": "A rejected tool definition is a request-level validation problem, so the call would fail outright rather than return a well-formed turn that the integration was able to log and display.",
+      "opt-b": "Running out of output room does end a turn early, but it produces partial prose rather than a request to invoke a tool, and the recovery is to continue generating rather than to run anything.",
+      "opt-d": "A refusal is the model declining to answer. Here the model is willing and mid-task; it is blocked on an input it expects the caller to provide."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons",
-    "sourceNote": "Stop reasons and fallback - 'Quick reference' table mapping each stop_reason value to its meaning and the recommended follow-up action",
+    "sourceNote": "Handling stop reasons — a turn can end because the model is requesting a client-side tool call, which the caller must execute and return before the assistant can continue",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -3097,38 +3097,38 @@
     "subdomain": "claude-code-operation",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "A developer has set the same settings key in ~/.claude/settings.json, in the repository's .claude/settings.json, and in .claude/settings.local.json. Their employer also ships a managed settings file that sets the same key. Which TWO statements correctly describe how Claude Code resolves the value? (Select TWO.)",
+    "stem": "A security team must guarantee that one Claude Code setting holds on every machine and cannot be changed by any developer. Separately, a developer wants a personal override for one project that is never committed to the repository. Select TWO statements that correctly describe how the configuration layers serve these two needs.",
     "options": [
       {
-        "id": "a",
-        "text": "The managed settings value wins over the value in any of the three files the developer controls."
+        "id": "opt-a",
+        "text": "User-level configuration is the strongest of the layers a developer controls, because it describes the person rather than any particular project."
       },
       {
-        "id": "b",
-        "text": "~/.claude/settings.json wins, because user settings sit at the top of the precedence order."
+        "id": "opt-b",
+        "text": "Configuration distributed centrally by the organisation cannot be overridden by any file a developer controls, which is what makes it fit for policy."
       },
       {
-        "id": "c",
-        "text": "A value supplied for one session with the claude --settings flag would be overridden by .claude/settings.local.json, since project-local files sit at the top of the order."
+        "id": "opt-c",
+        "text": "A key set at more than one layer is reported as a conflict at startup and ignored everywhere until someone removes the duplicate definitions."
       },
       {
-        "id": "d",
-        "text": "Among the developer's own files, .claude/settings.local.json takes precedence over .claude/settings.json, which takes precedence over ~/.claude/settings.json."
+        "id": "opt-d",
+        "text": "Among the layers a developer controls, the more specific and local one wins, so an uncommitted personal file overrides the shared project file."
       },
       {
-        "id": "e",
-        "text": "Claude Code reports a conflict at startup and ignores that key in all four files until the duplicates are removed."
+        "id": "opt-e",
+        "text": "A value supplied for a single session is the weakest layer of all, so any configuration file present on disk will override it at run time."
       }
     ],
     "correct": [
-      "a",
-      "d"
+      "opt-b",
+      "opt-d"
     ],
-    "explanation": "Settings precedence runs from managed settings at the top, then the command line, then project local, then shared project, then user settings at the bottom, and a key set at a higher level overrides the same key set lower down. The organization's managed value is therefore what applies here, and if managed settings were absent the developer's own files would resolve local over shared project over user. Precedence decides which file a key is read from; it is not a merge or a conflict error.",
+    "explanation": "The layers are ordered so that the two needs do not compete. Configuration an organisation distributes sits above everything an individual can edit, so it is the only layer that can carry a guarantee; anything a developer can edit, a developer can undo. Below that, precedence runs from the general to the specific, so a personal file scoped to one project beats the shared project file, which in turn beats the developer's global preferences. That ordering is what lets a personal override exist without weakening the policy above it.",
     "distractorNotes": {
-      "b": "User settings are the lowest precedence level, not the highest. They apply only when no closer scope and no managed setting sets the same key.",
-      "c": "The command line sits directly below managed settings and above every project and user file, so a --settings value overrides project local rather than the other way around.",
-      "e": "Setting the same key in several scopes is the ordinary case that the precedence order exists to resolve, not a startup error."
+      "opt-a": "Inverts the developer-controlled ordering. User-level settings are the broadest and most general of them, so they are overridden by project and project-local files rather than winning over them.",
+      "opt-c": "Setting a key at several layers is the normal case that precedence exists to resolve, not an error state. Refusing to apply the key would make layered configuration unusable.",
+      "opt-e": "Reverses the relationship. A value supplied for one session is the most specific expression of intent available, so it sits above the files on disk rather than beneath them."
     },
     "sourceUrl": "https://code.claude.com/docs/en/settings",
     "sourceNote": "Settings precedence figure, highest to lowest: 1. Managed settings (managed-settings.json, MDM, or the claude.ai console), 2. Command line (claude --settings), 3. Project local (.claude/settings.local.json), 4. Shared project (.claude/settings.json), 5. User (~/.claude/settings.json), summarized as \"A key set at a higher level overrides the same key set lower down.\" The page's \"Settings files and who they affect\" table gives the scope of each file.",
