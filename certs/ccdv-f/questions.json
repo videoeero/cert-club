@@ -2473,7 +2473,7 @@
     "schemaVersion": 1,
     "type": "multi",
     "domain": "tools-and-mcps",
-    "subdomain": "agentic-customization",
+    "subdomain": "tool-implementation",
     "difficulty": "medium",
     "status": "reviewed",
     "stem": "An agent turn returns three tool_use blocks at once: two read-only lookups and one write that must not run if a lookup fails. Select THREE statements that correctly describe how parallel tool calls work and where the developer's responsibility lies.",
@@ -2524,7 +2524,7 @@
     "schemaVersion": 1,
     "type": "single",
     "domain": "tools-and-mcps",
-    "subdomain": "agentic-customization",
+    "subdomain": "tool-implementation",
     "difficulty": "hard",
     "status": "reviewed",
     "stem": "A regulated workflow steps through one audited action at a time on a model that supports forced tool use. Each assistant turn must produce exactly one tool call: never two, and never a turn that answers in prose without calling anything. Which request configuration meets that requirement?",
@@ -4396,41 +4396,41 @@
     "subdomain": "claude-code-operation",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "A team splits a long project CLAUDE.md into smaller markdown files and references them from the main file with the @path import syntax. Which TWO statements correctly describe how those imports behave? (Select TWO.)",
+    "stem": "A team wants Claude Code to run on every pull request in CI, with no engineer watching the run. Select TWO statements that correctly describe what running it non-interactively implies.",
     "options": [
       {
-        "id": "a",
-        "text": "A path written inside backticks or a fenced code block is imported just like one written in prose, so such paths must be removed to avoid unwanted imports."
+        "id": "opt-a",
+        "text": "Non-interactive runs escalate their own permissions as needed, since blocking on a prompt that nobody can answer would deadlock the pipeline."
       },
       {
-        "id": "b",
-        "text": "A relative import path resolves against the file that contains the import, not against the directory Claude Code was launched from."
+        "id": "opt-b",
+        "text": "Because nobody is available to approve anything mid-run, the tools the run may use have to be settled before it starts rather than agreed as it goes."
       },
       {
-        "id": "c",
-        "text": "Imported files are fetched lazily, only when Claude first needs their contents, which keeps the context small at launch."
+        "id": "opt-c",
+        "text": "The pipeline should decide the outcome by matching phrases in the printed transcript, because a programmatic run reports its status only in prose."
       },
       {
-        "id": "d",
-        "text": "Imports cannot nest: any @ reference inside an imported file is ignored, so only the imports in the top-level file take effect."
+        "id": "opt-d",
+        "text": "The run reports success or failure through its exit status, so the surrounding pipeline can branch on the outcome without reading the transcript."
       },
       {
-        "id": "e",
-        "text": "Imported files are expanded and loaded into context at launch, so splitting a file for organization does not by itself reduce context usage."
+        "id": "opt-e",
+        "text": "Running without a terminal disables tool use altogether, so an automated run is limited to reading files and producing a written summary."
       }
     ],
     "correct": [
-      "b",
-      "e"
+      "opt-b",
+      "opt-d"
     ],
-    "explanation": "Imports use @path/to/import syntax, accept relative or absolute paths, and resolve relative paths against the file containing the import rather than the working directory, so the same import line behaves identically no matter which directory Claude Code was started from. The expansion happens at launch, which is why the guidance to keep each CLAUDE.md short treats imports as an organizational device rather than a way to save context; path-scoped rules are the mechanism for loading instructions only when Claude works with matching files. Imported files may themselves import others, up to a documented maximum depth. One further behaviour is worth knowing: when an import in a project-level memory file resolves outside the working directory, Claude Code shows a one-time approval dialog listing those external files, and declining leaves them disabled.",
+    "explanation": "Removing the human from the loop changes two things at once. Every approval that a person would have given interactively has to be decided in advance, because there is nobody to ask once the run begins; that is a design decision about how much the run is trusted to do, made before it starts. And the surrounding automation needs a machine-readable verdict, which the process supplies through its exit status, so the pipeline can succeed or fail without anyone interpreting the output. Both follow from the absence of a person rather than from any particular invocation detail.",
     "distractorNotes": {
-      "a": "Import parsing skips markdown code spans and fenced code blocks, so wrapping a path in backticks is the documented way to mention it literally without importing it.",
-      "c": "There is no lazy fetch for imports. They are expanded and enter the context window at launch alongside the CLAUDE.md that references them. On-demand loading applies to CLAUDE.md files in subdirectories, which is a different mechanism.",
-      "d": "Imported files can recursively import other files, up to a documented maximum depth, so nesting is supported rather than ignored."
+      "opt-a": "Inverts the safety model. Self-escalation would mean an unattended run could grant itself anything it wanted, which is the opposite of what removing human oversight demands.",
+      "opt-c": "Scraping prose for a verdict is brittle and unnecessary. It also throws away the reliable signal the process already provides for exactly this purpose.",
+      "opt-e": "Non-interactive means no human prompts, not no tools. The run still edits files and executes commands, which is precisely why the permissions question matters."
     },
-    "sourceUrl": "https://code.claude.com/docs/en/memory",
-    "sourceNote": "Section \"Import additional files\": \"CLAUDE.md files can import additional files using @path/to/import syntax. Imported files are expanded and loaded into context at launch alongside the CLAUDE.md that references them.\" It continues: \"Both relative and absolute paths are allowed. Relative paths resolve relative to the file containing the import, not the working directory. Imported files can recursively import other files\" up to a stated maximum depth, and \"Import parsing skips Markdown code spans and fenced code blocks. To mention a path in your CLAUDE.md without importing it, wrap it in backticks.\" The size guidance under \"Write effective instructions\" notes that content can be split \"into imports for organization, though imported files still load and enter the context window at launch\", and recommends path-scoped rules when instructions should load only for matching files. The warning in the same section describes the one-time approval dialog for an import in a project-level memory file whose path resolves outside the working directory. Section \"How CLAUDE.md files load\" separately states that CLAUDE.md files in subdirectories are included when Claude reads files there rather than at launch.",
+    "sourceUrl": "https://code.claude.com/docs/en/headless",
+    "sourceNote": "Run Claude Code programmatically — non-interactive runs exit 0 on success and non-zero on failure so scripts can branch on exit status, and tools are auto-approved up front",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -7289,39 +7289,39 @@
     "schemaVersion": 1,
     "type": "single",
     "domain": "tools-and-mcps",
-    "subdomain": "tool-implementation",
+    "subdomain": "agentic-customization",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "When a client tool fails, a developer currently returns a tool result whose entire content is the word \"failed\". Claude then stalls or apologises instead of recovering. According to Anthropic's tool guidance, what is the better design for the error content returned to the model?",
+    "stem": "An assistant must answer using current information from the public web. The team is about to build a custom tool that wraps a third-party search API and runs inside their own service. What should they weigh before doing that?",
     "options": [
       {
-        "id": "a",
-        "text": "Return an empty result with no explanation so the model is not distracted by the failure and simply proceeds with the turn."
+        "id": "opt-a",
+        "text": "Whether a built-in server-side tool already covers this, since those run on Anthropic's infrastructure with no handler code in their service."
       },
       {
-        "id": "b",
-        "text": "Suppress the error entirely and silently retry the identical call in a tight loop until it eventually happens to succeed."
+        "id": "opt-b",
+        "text": "Whether their search provider can be reached over stdio, since that is the transport that locally executed tools are expected to use."
       },
       {
-        "id": "c",
-        "text": "Return a message stating what went wrong and what to try next, so the model has the context it needs to recover or adapt."
+        "id": "opt-c",
+        "text": "Whether to package the search procedure as a Skill instead, so that the instructions travel with the repository and remain under code review."
       },
       {
-        "id": "d",
-        "text": "Return the raw low-level stack trace verbatim, on the basis that more internal detail is always more useful to the model."
+        "id": "opt-d",
+        "text": "Whether the model can already browse the web from its training data, which would remove the need for any tool or external call at all."
       }
     ],
     "correct": [
-      "c"
+      "opt-a"
     ],
-    "explanation": "Guidance is to write instructive error messages: instead of a generic \"failed\", say what went wrong and what Claude should try next, so it can recover or adapt without guessing (c). An empty result (a) hides the failure and gives nothing to act on; silently retrying forever (b) removes the model from the loop and can hang; and dumping a raw stack trace (d) is low-signal noise, not the actionable guidance the model needs.",
+    "explanation": "Tools divide by where they execute. A client tool runs in your application, so you own the handler, the credentials, the error handling and the operational burden. A server tool runs on Anthropic's infrastructure and you receive the result without implementing execution at all. Web search is a capability already offered as a server tool, so building a custom wrapper means taking on work that is otherwise free. The general principle is to check what the platform already provides before extending it, and to reserve custom tools for capabilities specific to your own systems.",
     "distractorNotes": {
-      "a": "An empty result leaves the model unaware of what failed and unable to adjust, which is how it ends up stalling in the first place.",
-      "b": "Blind unbounded retries mask the real problem and can loop indefinitely; the model should be told about the failure so it can choose an alternative.",
-      "d": "A verbatim stack trace is high-volume, low-signal context; a concise statement of the cause and next step is far more actionable for the model."
+      "opt-b": "Confuses this with Model Context Protocol transports. Transport choice concerns how a separate MCP server is reached, and does not arise when deciding between a built-in and a custom tool.",
+      "opt-c": "A Skill packages instructions and reference material for a repeated procedure. It does not provide live authenticated access to an external data source, which is what fetching current web results requires.",
+      "opt-d": "Training data is fixed at training time, which is the reason the requirement exists. No amount of prompting turns a static corpus into current information."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls",
-    "sourceNote": "Handling errors with is_error — write instructive error messages describing what went wrong and what to try next",
+    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview",
+    "sourceNote": "Tool use overview — server tools run on Anthropic's infrastructure with no handler code in your application, while client tools run in your application",
     "sourceCheckedAt": "2026-09-07"
   },
   {
