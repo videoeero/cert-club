@@ -42,6 +42,16 @@ nothing reliably.
 Core formats: 97 single-select, 52 multi-select (36 select-TWO, 16
 select-THREE). 65 distinct source pages across the whole bank.
 
+These target percentages are what a "Weighted by blueprint" quiz run is
+supposed to reproduce per session, not just on average. The sampler now
+enforces that: every domain's per-run count lands on floor-or-ceil of its
+exact target (e.g. applications-and-integration always draws 17 or 18 of 53,
+never the 12–23 spread the previous draw-by-draw sampler produced). See the
+Phase 4 addendum in `PLAN.md` for the algorithm and why a fixed
+largest-remainder rounding was rejected in favour of randomized rounding.
+This is shared sampler code (`src/lib/quiz.ts`), not ccdv-f-specific, but is
+noted here because these are the targets it's now measured against.
+
 ## Why the scope split exists
 
 The bank was calibrated against the only public full-length CCDV-F practice
@@ -96,6 +106,93 @@ Tagging shrinks the `core` pool, which shrinks every per-skill balance target,
 which can push a skill you did not touch outside `BALANCE_TOLERANCE`. And
 because the guard engages only above 20 questions, it will not fire on a small
 new cert bank.
+
+## Calibration against the guide's own sample questions
+
+Section 8 of the exam guide carries **three official sample items** (Domain 2
+batch processing, Domain 7 prompt injection, Domain 8 MCP server) with answer
+keys and rationales. The guide calls them illustrative of "the style and
+cognitive level of the exam" and states they are not drawn from the live item
+bank. They are published in the guide itself, so they sit inside the sourcing
+boundary — a stronger anchor than the third-party practice set above, which is
+one sitter's reconstruction.
+
+All three share one shape: two or three sentences of concrete scenario with an
+explicit constraint, then "which approach best fits" or "which mitigation is
+most effective". Single-select, four options, ~35-word stems, ~15-word
+options. The key names a mechanism. Crucially the distractors are
+*transparently* bad — raise the temperature so behaviour is harder to predict;
+add a line asking users not to include malicious instructions; hard-code the
+logic into each system prompt. A competent practitioner eliminates three
+options without recalling any documentation detail. None of the three tests a
+parameter name, a status code, a precedence rule, or token accounting.
+
+Structurally `core` matches closely: median stem **38 words**, **133 of 149**
+open on a concrete scenario, four options the norm. The bank also contains
+direct analogues of all three samples — `applications-and-integration-008`
+and `-038`, `security-and-safety-003` and `-004`, `tools-and-mcps-012` — and
+the "which documented pattern fits" family (`agents-and-workflows-005`,
+`-011`, `-024`, `-025`) is sample-3 shape almost exactly.
+
+Cognitively, about a quarter of `core` sits **above** the samples, along four
+identifiable axes:
+
+1. **Distractor subtlety.** Where the samples allow elimination by judgement,
+   these turn on recalling one specific documented rule: `claude-code-003`
+   (deny rules bind in `bypassPermissions`, allow rules do not),
+   `security-and-safety-005` (deny → ask → allow, first match wins regardless
+   of specificity), `model-selection-and-optimization-013` (input alone over
+   the window is always a 400; input + `max_tokens` over may be accepted and
+   stopped mid-generation), `-015` (thinking tokens: subset of `max_tokens`,
+   billed as output, count toward window *and* rate limits),
+   `applications-and-integration-002` (adjacent same-role messages are
+   combined, not rejected), `-003` (the exact error class for unsupported
+   prefill), `agents-and-workflows-001` (hinges on there being no default turn
+   ceiling), `tools-and-mcps-008` (one client per server connection, plus
+   transport mapping), `eval-testing-and-debugging-006` (telemetry is opt-in
+   and needs your own collector).
+2. **Multi-select share.** 52 of 149 (35%), of which 16 are select-THREE and 5
+   of those are also `hard`. All three samples are single-select; the guide
+   confirms the exam mixes both formats but publishes no ratio, so 35% is an
+   unanchored choice. Under all-or-nothing scoring a select-THREE needs three
+   independent facts to land.
+3. **Compound stems.** Nine ask two things at once — `agents-and-workflows-003`,
+   `applications-and-integration-001`, `-003`, `-008`, `-047`,
+   `model-selection-and-optimization-012`,
+   `prompt-and-context-engineering-010`, `security-and-safety-005`, `-015`.
+   The samples ask exactly one thing. This is what drives mean option length
+   to 20.3 words against the samples' ~15.
+4. **Self-reported difficulty.** `core` is 24 easy/single, 56 medium/single,
+   33 medium/multi, 17 hard/single, 19 hard/multi. The samples are
+   easy-to-medium single on this bank's own scale, so the 36 `hard` items
+   (24%) are the overshoot by the bank's own labelling.
+
+### This headroom is deliberate — do not "fix" it
+
+Practising above the bar is the goal. A learner who scores well here should
+find the real exam more comfortable, which is the useful direction for the
+error to run. The four axes above are recorded so a future author recognises
+them as intent rather than rediscovering them as a defect and flattening the
+bank toward the samples.
+
+Two boundaries on that licence:
+
+- **"Above the samples" is not "above the exam."** The anchor is three items
+  the guide itself calls illustrative, and vendors tend to publish easy
+  samples; a real 53-item form almost certainly contains harder items than its
+  own showcase. The 24% figure is *how many `core` items exceed the sample
+  set*, not a claim that every question is a quarter harder. It is not
+  evidence that further escalation is safe.
+- **`deep` still catches genuine overshoot.** Headroom inside `core` is not a
+  reason to stop tagging. The test is unchanged: a question belongs in `deep`
+  when it turns on narrow documentation mechanics with no analogue in the
+  reference material, not merely when it is demanding.
+
+The scoring facts make the headroom cheap. Section 9 of the guide confirms the
+result is a single scaled score (720 on 100–1,000) against a fixed standard,
+and that per-domain percentages "are not used to determine your pass or fail
+result". There are no per-domain minimums, so a hard item costs one item and
+nothing more — practising against a harder bank carries no structural penalty.
 
 ## Answer-length bias
 

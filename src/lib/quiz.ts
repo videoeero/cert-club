@@ -75,106 +75,225 @@ export function filterQuestionsByScope(
 }
 
 /**
- * Maps each question to the bucket that weighted sampling draws from. When a
- * domain publishes a skill breakdown, buckets are per skill so the mix inside a
- * domain tracks the blueprint too, not just the mix across domains.
+ * Splits `count` units across `weights` so the allocation sums to exactly
+ * `count` while each item's expected share equals its weight's proportion.
+ * Uses Madow systematic sampling to resolve the fractional remainder: this is
+ * the same rounding problem largest-remainder solves, but largest-remainder
+ * always breaks ties the same way run after run, which reproduces a fixed
+ * bias (e.g. the item whose remainder happens to rank highest gets rounded up
+ * on every single quiz). Resolving the remainder by weighted lottery instead
+ * keeps every run's counts within one of the exact target while making the
+ * long-run average exact too.
  */
-function samplingBuckets(domains: readonly Domain[]): {
-  keyOf: (question: Question) => string;
-  weightOf: (key: string) => number;
-} {
-  const weights = new Map<string, number>();
-  const skillsByDomain = new Map<string, Set<string>>();
-
-  for (const domain of domains) {
-    const skills = domain.skills ?? [];
-    if (skills.length > 0) {
-      skillsByDomain.set(domain.slug, new Set(skills.map((s) => s.slug)));
-      for (const skill of skills) {
-        weights.set(`${domain.slug}/${skill.slug}`, Math.max(0, skill.weight));
-      }
-    }
-    // A skill-declaring domain's own bucket only catches questions whose
-    // subdomain names no declared skill, which content validation rejects.
-    // Weight zero deprioritises them without dropping them outright.
-    weights.set(
-      domain.slug,
-      skills.length > 0 ? 0 : Math.max(0, domain.weight),
+function quotaAllocate(
+  weights: readonly number[],
+  count: number,
+  random: RandomSource,
+): number[] {
+  if (weights.length === 0 || count <= 0) {
+    return weights.map(() => 0);
+  }
+  const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
+  if (totalWeight <= 0) {
+    // No weighting signal among these items (e.g. every remaining bucket has
+    // weight zero) — split as evenly as possible rather than favour none.
+    return quotaAllocate(
+      weights.map(() => 1),
+      count,
+      random,
     );
   }
 
-  return {
-    keyOf(question) {
-      const skills = skillsByDomain.get(question.domain);
-      if (
-        skills !== undefined &&
-        question.subdomain !== undefined &&
-        skills.has(question.subdomain)
-      ) {
-        return `${question.domain}/${question.subdomain}`;
+  const exact = weights.map((weight) => (weight / totalWeight) * count);
+  const base = exact.map((value) => Math.floor(value));
+  const remainder = count - base.reduce((sum, value) => sum + value, 0);
+  const fraction = exact.map((value, index) => value - base[index]);
+
+  const order = fraction.map((_, index) => index);
+  for (let index = order.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(randomValue(random) * (index + 1));
+    [order[index], order[swapIndex]] = [order[swapIndex], order[index]];
+  }
+
+  const extra = weights.map(() => 0);
+  const totalFraction = order.reduce((sum, index) => sum + fraction[index], 0);
+  let taken = 0;
+  if (totalFraction > 0) {
+    const cursor = randomValue(random);
+    let cumulative = 0;
+    for (const index of order) {
+      const previous = cumulative;
+      cumulative += fraction[index];
+      const hits =
+        Math.floor(cumulative - cursor) - Math.floor(previous - cursor);
+      if (hits > 0 && taken < remainder) {
+        extra[index] = 1;
+        taken += 1;
       }
-      return question.domain;
-    },
-    weightOf(key) {
-      return weights.get(key) ?? 0;
-    },
-  };
+    }
+  }
+  // Floating-point safety net: the fractions can sum to `remainder` with a
+  // sliver of error, occasionally leaving the lottery one short.
+  for (const index of order) {
+    if (taken >= remainder) break;
+    if (fraction[index] > 0 && extra[index] === 0) {
+      extra[index] = 1;
+      taken += 1;
+    }
+  }
+  // Last-resort net: `remainder` is always < weights.length by construction
+  // (each fraction is < 1 and they sum to `remainder`), so there is always
+  // room to reach it even if float cancellation zeroed out every fraction.
+  for (const index of order) {
+    if (taken >= remainder) break;
+    if (extra[index] === 0) {
+      extra[index] = 1;
+      taken += 1;
+    }
+  }
+
+  return base.map((value, index) => value + extra[index]);
 }
 
+/**
+ * Caps `quotaAllocate`'s output at each item's available pool, redistributing
+ * any shortfall among the items that still have room. Repeats until every
+ * unit lands somewhere; each round either finishes or saturates at least one
+ * more item, so it terminates within `items.length` rounds.
+ */
+function allocateWithCapacity(
+  items: readonly { key: string; weight: number; capacity: number }[],
+  count: number,
+  random: RandomSource,
+): Map<string, number> {
+  const quotas = new Map(items.map((item) => [item.key, 0]));
+  let open = items.map((item) => ({ ...item, remaining: item.capacity }));
+  let toAllocate = count;
+
+  while (toAllocate > 0) {
+    const eligible = open.filter((item) => item.remaining > 0);
+    if (eligible.length === 0) {
+      throw new QuizSelectionError(
+        "Not enough questions are available to fill the requested quota.",
+      );
+    }
+
+    const allocations = quotaAllocate(
+      eligible.map((item) => item.weight),
+      toAllocate,
+      random,
+    );
+
+    const stillOpen: typeof open = [];
+    let allocatedThisRound = 0;
+    eligible.forEach((item, index) => {
+      const granted = Math.min(allocations[index], item.remaining);
+      quotas.set(item.key, (quotas.get(item.key) ?? 0) + granted);
+      allocatedThisRound += granted;
+      const remaining = item.remaining - granted;
+      if (remaining > 0) {
+        stillOpen.push({ ...item, remaining });
+      }
+    });
+
+    if (allocatedThisRound === 0) {
+      throw new QuizSelectionError(
+        "Failed to allocate the requested question quota.",
+      );
+    }
+    open = stillOpen;
+    toAllocate -= allocatedThisRound;
+  }
+
+  return quotas;
+}
+
+const UNCLASSIFIED_SKILL_KEY = "__unclassified__";
+
+/**
+ * Allocates `count` questions across domains, then within each domain across
+ * its published skills, so every run's per-domain (and per-skill) counts sit
+ * within one of the exact blueprint target — not merely correct on average
+ * over many runs. A domain or skill with no available questions is simply
+ * excluded from its round, and its share is redistributed proportionally
+ * among the rest rather than left empty. A question whose subdomain names no
+ * declared skill (content validation rejects this today, so it is a defensive
+ * fallback, not a live case) is pooled separately per domain and only reached
+ * once every declared skill's pool is exhausted.
+ */
 function weightedSample(
   questions: readonly Question[],
   domains: readonly Domain[],
   count: number,
   random: RandomSource,
 ): Question[] {
-  const { keyOf, weightOf } = samplingBuckets(domains);
-  const remaining = new Map<string, Question[]>();
+  const domainPools = new Map<string, Question[]>();
   for (const question of questions) {
-    const key = keyOf(question);
-    const group = remaining.get(key) ?? [];
+    const group = domainPools.get(question.domain) ?? [];
     group.push(question);
-    remaining.set(key, group);
+    domainPools.set(question.domain, group);
   }
+
+  const domainQuotas = allocateWithCapacity(
+    domains.map((domain) => ({
+      key: domain.slug,
+      weight: domain.weight,
+      capacity: (domainPools.get(domain.slug) ?? []).length,
+    })),
+    count,
+    random,
+  );
 
   const selected: Question[] = [];
 
-  while (selected.length < count) {
-    const available = [...remaining.entries()].filter(
-      ([, group]) => group.length > 0,
-    );
-    const weighted = available.filter(([key]) => weightOf(key) > 0);
-    const candidates = weighted.length > 0 ? weighted : available;
-    const totalWeight = candidates.reduce(
-      (total, [key]) => total + (weighted.length > 0 ? weightOf(key) : 1),
-      0,
-    );
-    let cursor = randomValue(random) * totalWeight;
-    let selectedKey = candidates[candidates.length - 1][0];
+  for (const domain of domains) {
+    const domainQuota = domainQuotas.get(domain.slug) ?? 0;
+    if (domainQuota === 0) continue;
+    const domainQuestions = domainPools.get(domain.slug) ?? [];
+    const skills = domain.skills ?? [];
 
-    for (const [key] of candidates) {
-      const weight = weighted.length > 0 ? weightOf(key) : 1;
-      if (cursor < weight) {
-        selectedKey = key;
-        break;
-      }
-      cursor -= weight;
+    if (skills.length === 0) {
+      selected.push(...randomSample(domainQuestions, domainQuota, random));
+      continue;
     }
 
-    const group = remaining.get(selectedKey);
-    if (!group) {
-      throw new QuizSelectionError(
-        `No questions remain for the selected group "${selectedKey}".`,
-      );
+    const skillSlugs = new Set(skills.map((skill) => skill.slug));
+    const skillPools = new Map<string, Question[]>();
+    for (const question of domainQuestions) {
+      const key =
+        question.subdomain !== undefined && skillSlugs.has(question.subdomain)
+          ? question.subdomain
+          : UNCLASSIFIED_SKILL_KEY;
+      const group = skillPools.get(key) ?? [];
+      group.push(question);
+      skillPools.set(key, group);
     }
-    const questionIndex = Math.floor(randomValue(random) * group.length);
-    const [question] = group.splice(questionIndex, 1);
-    if (!question) {
-      throw new QuizSelectionError("The weighted question sample was empty.");
+
+    const unclassified = skillPools.get(UNCLASSIFIED_SKILL_KEY) ?? [];
+    const skillItems = skills.map((skill) => ({
+      key: skill.slug,
+      weight: skill.weight,
+      capacity: (skillPools.get(skill.slug) ?? []).length,
+    }));
+    if (unclassified.length > 0) {
+      skillItems.push({
+        key: UNCLASSIFIED_SKILL_KEY,
+        weight: 0,
+        capacity: unclassified.length,
+      });
     }
-    selected.push(question);
+
+    const skillQuotas = allocateWithCapacity(skillItems, domainQuota, random);
+    for (const [key, quota] of skillQuotas) {
+      if (quota === 0) continue;
+      const pool = skillPools.get(key) ?? [];
+      selected.push(...randomSample(pool, quota, random));
+    }
   }
 
-  return selected;
+  // Selection above is grouped by domain then skill; shuffle so quiz order
+  // doesn't telegraph the blueprint structure.
+  return randomSample(selected, selected.length, random);
 }
 
 export function filterReviewQuestions(

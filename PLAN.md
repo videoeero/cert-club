@@ -349,6 +349,39 @@ work; without them it isn't, whatever model you use.
   and it's trivially testable as pure functions. No other testing
   ceremony needed for v1.
 
+**Addendum (2026-09-07) — weighted sampling replaced with quota allocation.**
+The original `weightedSample` drew one bucket at a time, proportional to
+weight, without replacement — sampling-with-replacement-of-buckets, not a
+quota. Simulating it against ccdv-f's real 8-domain, 53-question blueprint
+showed why that's the "off-by-one" risk this phase's plan text called out
+turning out worse than off-by-one: per-domain counts on a single run ranged
+±5–8 questions from the exact blueprint target (e.g.
+applications-and-integration, target 17.5, ranged 12–23 across runs), and the
+two smallest domains (claude-code, eval-testing-and-debugging) drew zero
+questions in 19–24% of runs. The mean across many runs was unbiased — the
+weights themselves were correct — but no single exam averages across runs,
+and the per-domain score breakdown this app mirrors is read from one run.
+
+`weightedSample` (`src/lib/quiz.ts`) now allocates `count` as a quota:
+domains first, then each domain's quota split across its published skills,
+using sum-preserving randomized rounding (Madow systematic sampling) to
+resolve the fractional remainder rather than drawing buckets one at a time.
+Plain largest-remainder rounding was considered and rejected — it resolves
+every fractional remainder the same way on every run, which trades the
+variance problem for a fixed bias (measured on ccdv-f: applications-and-
+integration locked to 19 every run against a 17.5 target). Randomized
+rounding keeps every run within one of the exact target *and* keeps the
+long-run average exact, which a deterministic rule can't do simultaneously.
+A quota that exceeds a bucket's available pool is capped and the shortfall
+redistributed to buckets with room, so a thin skill pool degrades gracefully
+instead of throwing or overdrawing. Verified against the shipped ccdv-f core
+bank at count 53 over 5,000 runs: every domain lands on floor-or-ceil of its
+exact target on every run, and no domain draws zero.
+
+This is generic sampler code, not ccdv-f content — it applies to every cert
+that declares blueprint weights. See `certs/ccdv-f/review-progress.md` for
+the per-domain target percentages this fix now holds to on every run.
+
 ## Phase 5 — Polish
 **Status:** DONE
 

@@ -207,21 +207,66 @@ test("samples domains according to blueprint weights without replacement", () =>
     question("alpha-2", "alpha"),
     question("beta-1", "beta"),
   ];
-  const values = [0, 0, 0.95, 0];
-  let index = 0;
 
-  const selected = selectQuestions(
-    questions,
-    domains,
-    { mode: "weighted", count: 2 },
-    () => values[index++] ?? 0,
-  );
+  const selected = selectQuestions(questions, domains, {
+    mode: "weighted",
+    count: 2,
+  });
 
-  assert.deepEqual(
-    selected.map((item) => item.id),
-    ["alpha-1", "beta-1"],
-  );
+  assert.equal(selected.length, 2);
   assert.equal(new Set(selected.map((item) => item.id)).size, 2);
+  for (const item of selected) {
+    assert.ok(
+      ["alpha-1", "alpha-2", "beta-1"].includes(item.id),
+      `unexpected question ${item.id} in the sample`,
+    );
+  }
+});
+
+test("keeps every domain's count within one of its exact blueprint share, on every run", () => {
+  const weightedDomains = [
+    { slug: "alpha", name: "Alpha", weight: 70 },
+    { slug: "beta", name: "Beta", weight: 30 },
+  ];
+  const bank = [
+    ...Array.from({ length: 10 }, (_, i) => question(`alpha-${i}`, "alpha")),
+    ...Array.from({ length: 10 }, (_, i) => question(`beta-${i}`, "beta")),
+  ];
+  const count = 5;
+  // Exact targets: alpha 3.5, beta 1.5 — every run must land on the adjacent
+  // integer pair, never on a value that rounds the same way twice over.
+  const seenAlphaCounts = new Set();
+
+  for (let seed = 0; seed < 200; seed += 1) {
+    let state = seed + 1;
+    const random = () => {
+      state = (state * 1103515245 + 12345) % 2147483648;
+      return state / 2147483648;
+    };
+
+    const selected = selectQuestions(
+      bank,
+      weightedDomains,
+      { mode: "weighted", count },
+      random,
+    );
+
+    assert.equal(selected.length, count);
+    assert.equal(new Set(selected.map((q) => q.id)).size, count);
+
+    const alphaCount = selected.filter((q) => q.domain === "alpha").length;
+    const betaCount = selected.filter((q) => q.domain === "beta").length;
+    assert.ok(
+      alphaCount === 3 || alphaCount === 4,
+      `alpha count ${alphaCount} fell outside its exact target's adjacent integers`,
+    );
+    assert.equal(alphaCount + betaCount, count);
+    seenAlphaCounts.add(alphaCount);
+  }
+
+  // Both integers adjacent to the exact target must actually occur — a
+  // deterministic rounding rule would always pick the same one.
+  assert.deepEqual([...seenAlphaCounts].sort(), [3, 4]);
 });
 
 test("formats answer counts as words with a numeric fallback", () => {
@@ -507,4 +552,95 @@ test("falls back to domain weighting when no skills are declared", () => {
     count: 2,
   });
   assert.deepEqual(selected.map((q) => q.id).sort(), ["alpha-1", "beta-1"]);
+});
+
+test("redistributes a domain's shortfall to other domains when its pool runs dry", () => {
+  const skewedDomains = [
+    { slug: "small", name: "Small", weight: 90 },
+    { slug: "big", name: "Big", weight: 10 },
+  ];
+  // "small" is weighted at 90% but only has one question available; "big"
+  // must absorb the rest of the quota without exceeding its own pool either.
+  const bank = [
+    scopedQuestion("small-1", "small"),
+    ...Array.from({ length: 9 }, (_, i) => scopedQuestion(`big-${i}`, "big")),
+  ];
+
+  for (let seed = 0; seed < 50; seed += 1) {
+    let state = seed + 1;
+    const random = () => {
+      state = (state * 1103515245 + 12345) % 2147483648;
+      return state / 2147483648;
+    };
+
+    const selected = selectQuestions(
+      bank,
+      skewedDomains,
+      { mode: "weighted", count: 10 },
+      random,
+    );
+
+    assert.equal(selected.length, 10);
+    assert.equal(new Set(selected.map((q) => q.id)).size, 10);
+    const smallCount = selected.filter((q) => q.domain === "small").length;
+    const bigCount = selected.filter((q) => q.domain === "big").length;
+    assert.ok(
+      smallCount <= 1,
+      `"small" pool only has 1 question but ${smallCount} were drawn`,
+    );
+    assert.equal(smallCount + bigCount, 10);
+  }
+});
+
+test("only reaches a question with an undeclared subdomain once every declared skill is exhausted", () => {
+  const skillDomains = [
+    {
+      slug: "alpha",
+      name: "Alpha",
+      weight: 100,
+      skills: [
+        { slug: "known-a", name: "Known A", weight: 50 },
+        { slug: "known-b", name: "Known B", weight: 50 },
+      ],
+    },
+  ];
+  // "unknown" names no declared skill — content validation rejects this in
+  // the real bank, so this exercises the defensive fallback bucket only.
+  const bank = [
+    scopedQuestion("a-1", "alpha", "core", "known-a"),
+    scopedQuestion("b-1", "alpha", "core", "known-b"),
+    scopedQuestion("orphan-1", "alpha", "core", "unknown"),
+  ];
+
+  for (let seed = 0; seed < 50; seed += 1) {
+    let state = seed + 1;
+    const random = () => {
+      state = (state * 1103515245 + 12345) % 2147483648;
+      return state / 2147483648;
+    };
+
+    // The declared skills alone can satisfy a 2-question draw, so the
+    // orphaned question must never be reached.
+    const partial = selectQuestions(
+      bank,
+      skillDomains,
+      { mode: "weighted", count: 2 },
+      random,
+    );
+    assert.equal(partial.length, 2);
+    assert.ok(
+      !partial.some((q) => q.id === "orphan-1"),
+      "drew the undeclared-subdomain question while declared skills still had room",
+    );
+
+    // Drawing all 3 forces the declared skills' pools to exhaust, so the
+    // orphaned question must appear to fill out the quota.
+    const full = selectQuestions(
+      bank,
+      skillDomains,
+      { mode: "weighted", count: 3 },
+      random,
+    );
+    assert.deepEqual(full.map((q) => q.id).sort(), ["a-1", "b-1", "orphan-1"]);
+  }
 });
