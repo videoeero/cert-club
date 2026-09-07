@@ -37,16 +37,25 @@ If you are looking for exam dumps, this is the wrong repository.
 
 For CCDV-F specifically:
 
-| Source                                                      | Status                          | Usable?                      |
-| ----------------------------------------------------------- | ------------------------------- | ---------------------------- |
-| `docs.claude.com` — API reference, Agent SDK, tool use, MCP | Public                          | ✅ Primary source            |
-| Official exam guide / blueprint (domains + weights)         | Public                          | ✅ Drives question weighting |
-| Anthropic Partner Academy course content (Skilljar)         | Gated to Claude Partner Network | ❌ Never                     |
-| Real exam items                                             | Confidential                    | ❌ Never                     |
+| Source                                                           | Status                               | Usable?                      |
+| ---------------------------------------------------------------- | ------------------------------------ | ---------------------------- |
+| `platform.claude.com`, `code.claude.com` — API, Agent SDK, tools | Public                               | ✅ Primary source            |
+| `modelcontextprotocol.io` — MCP specification and concepts       | Public                               | ✅ Primary source            |
+| Official exam guide / blueprint (domains + weights)              | Public                               | ✅ Drives question weighting |
+| Anthropic Academy course _landing pages_ (syllabus, objectives)  | Public, no account                   | ⚠️ Coverage cross-check only |
+| Anthropic Academy / Partner Academy _course content_             | Requires registration, free or gated | ❌ Never                     |
+| Real exam items                                                  | Confidential                         | ❌ Never                     |
 
-Questions are written **only** from the first two rows. The citation
-requirement (`sourceUrl` on every question) is what makes that auditable
-rather than merely claimed.
+Questions are written **only** from the rows marked as primary sources and the
+exam guide. The citation requirement (`sourceUrl` on every question) is what
+makes that auditable rather than merely claimed.
+
+The boundary is drawn at the **gate, not the vendor**. Some Anthropic Academy
+courses cost nothing, but the lessons still sit behind a registration wall, so
+they are excluded on the same footing as paid ones. Their public landing pages
+are not behind that wall and may be read — but only to ask "is this skill
+covered?", never as a citation, and never to calibrate how deep a question
+should go. Courses teach you to build; this exam tests what to choose.
 
 ## About the exam (CCDV-F)
 

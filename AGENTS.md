@@ -19,11 +19,21 @@ object and the validator enforces it. Never invent or omit it.
 Never source questions from:
 
 - Real exam items (confidential, legally off-limits)
-- Paywalled or gated course content (Skilljar, K21 Academy, Datrick, etc.)
-- Any material behind a login wall
+- Any material that requires an account to read. **The test is registration,
+  not price** — a course that is free but asks you to register still fails,
+  because "free to register" is not "open to read".
+- Paywalled or gated course content (Anthropic Academy and Partner Academy,
+  K21 Academy, Datrick, etc.)
 
 Always source questions from public vendor documentation and official exam
 guides/blueprints only.
+
+The rule is about the gate, never about the vendor. A course's **public
+landing page** — syllabus, learning objectives, prerequisites — is genuinely
+open and may be read, but only as a cross-check on whether a skill is
+covered. It is still not a valid `sourceUrl`, because it states what a course
+claims to teach rather than a verifiable technical fact. Cite the
+documentation that establishes the fact instead.
 
 ## Dev setup
 
