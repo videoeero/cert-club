@@ -1,4 +1,10 @@
-import type { CertContent, Manifest, Question, QuestionOption } from "../types";
+import type {
+  CertContent,
+  Manifest,
+  Question,
+  QuestionOption,
+  Skill,
+} from "../types";
 
 const CERT_SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const CONTENT_SCHEMA_VERSION = 1;
@@ -36,6 +42,11 @@ function isQuestion(value: unknown): value is Question {
       value.difficulty === "medium" ||
       value.difficulty === "hard") &&
     (value.status === "draft" || value.status === "reviewed") &&
+    (value.scope === undefined ||
+      value.scope === "core" ||
+      value.scope === "deep" ||
+      value.scope === "out-of-scope") &&
+    (value.scopeNote === undefined || typeof value.scopeNote === "string") &&
     typeof value.stem === "string" &&
     Array.isArray(value.options) &&
     value.options.every(isOption) &&
@@ -48,6 +59,15 @@ function isQuestion(value: unknown): value is Question {
     typeof value.sourceUrl === "string" &&
     typeof value.sourceNote === "string" &&
     typeof value.sourceCheckedAt === "string"
+  );
+}
+
+function isSkill(value: unknown): value is Skill {
+  return (
+    isRecord(value) &&
+    typeof value.slug === "string" &&
+    typeof value.name === "string" &&
+    typeof value.weight === "number"
   );
 }
 
@@ -65,7 +85,9 @@ function isManifest(value: unknown): value is Manifest {
         isRecord(domain) &&
         typeof domain.slug === "string" &&
         typeof domain.name === "string" &&
-        typeof domain.weight === "number",
+        typeof domain.weight === "number" &&
+        (domain.skills === undefined ||
+          (Array.isArray(domain.skills) && domain.skills.every(isSkill))),
     )
   );
 }

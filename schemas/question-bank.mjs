@@ -31,13 +31,53 @@ const checkedDateSchema = z
     );
   }, "must be a valid calendar date");
 
-export const domainSchema = z
+export const skillSchema = z
   .object({
     slug: slugSchema,
     name: z.string().min(1),
     weight: z.number().positive().max(100),
   })
   .strict();
+
+export const domainSchema = z
+  .object({
+    slug: slugSchema,
+    name: z.string().min(1),
+    weight: z.number().positive().max(100),
+    skills: z.array(skillSchema).min(1).optional(),
+  })
+  .strict()
+  .superRefine((domain, context) => {
+    if (!domain.skills) {
+      return;
+    }
+
+    const seen = new Set();
+    domain.skills.forEach((skill, index) => {
+      if (seen.has(skill.slug)) {
+        context.addIssue({
+          code: "custom",
+          path: ["skills", index, "slug"],
+          message: `duplicate skill slug "${skill.slug}"`,
+        });
+      }
+      seen.add(skill.slug);
+    });
+
+    // Skill weights are shares of the whole exam, not of their domain, so they
+    // must reconstruct the domain weight exactly.
+    const totalWeight = domain.skills.reduce(
+      (sum, skill) => sum + skill.weight,
+      0,
+    );
+    if (Math.abs(totalWeight - domain.weight) > 0.001) {
+      context.addIssue({
+        code: "custom",
+        path: ["skills"],
+        message: `skill weights must total the domain weight ${domain.weight}, received ${totalWeight}`,
+      });
+    }
+  });
 
 export const catalogSchema = z
   .object({
@@ -116,6 +156,8 @@ export const questionSchema = z
     subdomain: slugSchema.optional(),
     difficulty: z.enum(["easy", "medium", "hard"]),
     status: z.enum(["draft", "reviewed"]),
+    scope: z.enum(["core", "deep", "out-of-scope"]).optional(),
+    scopeNote: z.string().min(1).optional(),
     stem: z.string().min(1),
     options: z.array(optionSchema).min(2),
     correct: z.array(slugSchema).min(1),
@@ -127,6 +169,24 @@ export const questionSchema = z
   })
   .strict()
   .superRefine((question, context) => {
+    // An absent scope means "core": the question is traceable to a blueprint
+    // objective and discriminates at the exam's cognitive level.
+    const scope = question.scope ?? "core";
+    if (scope !== "core" && question.scopeNote === undefined) {
+      context.addIssue({
+        code: "custom",
+        path: ["scopeNote"],
+        message: `is required when scope is "${scope}", to justify the classification against the blueprint`,
+      });
+    }
+    if (scope === "core" && question.scopeNote !== undefined) {
+      context.addIssue({
+        code: "custom",
+        path: ["scopeNote"],
+        message: 'must only be set when scope is not "core"',
+      });
+    }
+
     const optionIds = new Set();
 
     question.options.forEach((option, index) => {

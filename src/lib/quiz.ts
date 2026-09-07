@@ -7,6 +7,7 @@ import type {
   QuizResults,
   QuizSelectionConfig,
   ReviewScope,
+  ScopeFilter,
   SimulationPreset,
 } from "../types";
 
@@ -60,53 +61,117 @@ function randomSample(
   return shuffled.slice(0, count);
 }
 
+export const DEFAULT_SCOPE_FILTER: ScopeFilter = "core-only";
+
+/**
+ * Restricts the pool to the slice of the bank the user opted into. An absent
+ * scope means "core", so banks that predate the field are unaffected.
+ */
+export function filterQuestionsByScope(
+  questions: readonly Question[],
+  scopeFilter: ScopeFilter = DEFAULT_SCOPE_FILTER,
+): Question[] {
+  if (scopeFilter === "everything") {
+    return [...questions];
+  }
+  return questions.filter((question) => {
+    const scope = question.scope ?? "core";
+    return (
+      scope === "core" || (scopeFilter === "with-deep" && scope === "deep")
+    );
+  });
+}
+
+/**
+ * Maps each question to the bucket that weighted sampling draws from. When a
+ * domain publishes a skill breakdown, buckets are per skill so the mix inside a
+ * domain tracks the blueprint too, not just the mix across domains.
+ */
+function samplingBuckets(domains: readonly Domain[]): {
+  keyOf: (question: Question) => string;
+  weightOf: (key: string) => number;
+} {
+  const weights = new Map<string, number>();
+  const skillsByDomain = new Map<string, Set<string>>();
+
+  for (const domain of domains) {
+    const skills = domain.skills ?? [];
+    if (skills.length > 0) {
+      skillsByDomain.set(domain.slug, new Set(skills.map((s) => s.slug)));
+      for (const skill of skills) {
+        weights.set(`${domain.slug}/${skill.slug}`, Math.max(0, skill.weight));
+      }
+    }
+    // A skill-declaring domain's own bucket only catches questions whose
+    // subdomain names no declared skill, which content validation rejects.
+    // Weight zero deprioritises them without dropping them outright.
+    weights.set(
+      domain.slug,
+      skills.length > 0 ? 0 : Math.max(0, domain.weight),
+    );
+  }
+
+  return {
+    keyOf(question) {
+      const skills = skillsByDomain.get(question.domain);
+      if (
+        skills !== undefined &&
+        question.subdomain !== undefined &&
+        skills.has(question.subdomain)
+      ) {
+        return `${question.domain}/${question.subdomain}`;
+      }
+      return question.domain;
+    },
+    weightOf(key) {
+      return weights.get(key) ?? 0;
+    },
+  };
+}
+
 function weightedSample(
   questions: readonly Question[],
   domains: readonly Domain[],
   count: number,
   random: RandomSource,
 ): Question[] {
+  const { keyOf, weightOf } = samplingBuckets(domains);
   const remaining = new Map<string, Question[]>();
   for (const question of questions) {
-    const group = remaining.get(question.domain) ?? [];
+    const key = keyOf(question);
+    const group = remaining.get(key) ?? [];
     group.push(question);
-    remaining.set(question.domain, group);
+    remaining.set(key, group);
   }
 
-  const weights = new Map(
-    domains.map((domain) => [domain.slug, Math.max(0, domain.weight)]),
-  );
   const selected: Question[] = [];
 
   while (selected.length < count) {
     const available = [...remaining.entries()].filter(
       ([, group]) => group.length > 0,
     );
-    const weighted = available.filter(
-      ([domain]) => (weights.get(domain) ?? 0) > 0,
-    );
+    const weighted = available.filter(([key]) => weightOf(key) > 0);
     const candidates = weighted.length > 0 ? weighted : available;
     const totalWeight = candidates.reduce(
-      (total, [domain]) =>
-        total + (weighted.length > 0 ? (weights.get(domain) ?? 0) : 1),
+      (total, [key]) => total + (weighted.length > 0 ? weightOf(key) : 1),
       0,
     );
     let cursor = randomValue(random) * totalWeight;
-    let selectedDomain = candidates[candidates.length - 1][0];
+    let selectedKey = candidates[candidates.length - 1][0];
 
-    for (const [domain] of candidates) {
-      const weight = weighted.length > 0 ? (weights.get(domain) ?? 0) : 1;
+    for (const [key] of candidates) {
+      const weight = weighted.length > 0 ? weightOf(key) : 1;
       if (cursor < weight) {
-        selectedDomain = domain;
+        selectedKey = key;
         break;
       }
       cursor -= weight;
     }
 
-    const group = remaining.get(selectedDomain);
+    const group = remaining.get(selectedKey);
     if (!group) {
       throw new QuizSelectionError(
-        `No questions remain for the selected domain "${selectedDomain}".`,
+        `No questions remain for the selected group "${selectedKey}".`,
       );
     }
     const questionIndex = Math.floor(randomValue(random) * group.length);
@@ -154,8 +219,15 @@ export function selectQuestions(
     throw new QuizSelectionError("The question bank is empty.");
   }
 
+  const scoped = filterQuestionsByScope(questions, config.scopeFilter);
+  if (scoped.length === 0) {
+    throw new QuizSelectionError(
+      "No questions match the selected question scope.",
+    );
+  }
+
   if (config.mode === "all") {
-    return [...questions];
+    return [...scoped];
   }
 
   if (config.mode === "domain") {
@@ -164,7 +236,7 @@ export function selectQuestions(
         "A domain is required for domain selection.",
       );
     }
-    const matchingQuestions = questions.filter(
+    const matchingQuestions = scoped.filter(
       (question) => question.domain === config.domain,
     );
     if (matchingQuestions.length === 0) {
@@ -184,8 +256,8 @@ export function selectQuestions(
 
   if (config.mode === "review") {
     const matchingQuestions = config.domain
-      ? questions.filter((question) => question.domain === config.domain)
-      : [...questions];
+      ? scoped.filter((question) => question.domain === config.domain)
+      : [...scoped];
     if (matchingQuestions.length === 0) {
       throw new QuizSelectionError(
         "No questions are available for the selected review filters.",
@@ -201,13 +273,13 @@ export function selectQuestions(
     );
   }
 
-  const count = selectionCount(config.count, questions.length);
+  const count = selectionCount(config.count, scoped.length);
   if (config.mode === "random") {
-    return randomSample(questions, count, random);
+    return randomSample(scoped, count, random);
   }
 
   if (config.mode === "weighted") {
-    return weightedSample(questions, domains, count, random);
+    return weightedSample(scoped, domains, count, random);
   }
 
   throw new QuizSelectionError(

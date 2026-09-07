@@ -44,6 +44,14 @@ export function validateCertContent(folderName, manifestInput, questionsInput) {
   const manifest = manifestResult.data;
   const questions = questionsResult.data;
   const domains = new Set(manifest.domains.map((domain) => domain.slug));
+  const skillsByDomain = new Map(
+    manifest.domains
+      .filter((domain) => domain.skills !== undefined)
+      .map((domain) => [
+        domain.slug,
+        new Set(domain.skills.map((skill) => skill.slug)),
+      ]),
+  );
 
   if (manifest.cert !== folderName) {
     messages.push(
@@ -65,6 +73,23 @@ export function validateCertContent(folderName, manifestInput, questionsInput) {
     if (!domains.has(question.domain)) {
       messages.push(
         `questions.${index}.domain: "${question.domain}" is not declared in the manifest`,
+      );
+      return;
+    }
+
+    // Only enforced for domains that publish a skill breakdown, so cert banks
+    // without one keep using subdomain as a free-form label.
+    const skills = skillsByDomain.get(question.domain);
+    if (!skills) {
+      return;
+    }
+    if (question.subdomain === undefined) {
+      messages.push(
+        `questions.${index}.subdomain: is required because domain "${question.domain}" declares skills`,
+      );
+    } else if (!skills.has(question.subdomain)) {
+      messages.push(
+        `questions.${index}.subdomain: "${question.subdomain}" is not a skill of domain "${question.domain}"`,
       );
     }
   });

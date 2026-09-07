@@ -1,7 +1,14 @@
+export interface Skill {
+  slug: string;
+  name: string;
+  weight: number;
+}
+
 export interface Domain {
   slug: string;
   name: string;
   weight: number;
+  skills?: Skill[];
 }
 
 export interface Manifest {
@@ -20,6 +27,8 @@ export interface QuestionOption {
   text: string;
 }
 
+export type QuestionScope = "core" | "deep" | "out-of-scope";
+
 export interface Question {
   id: string;
   cert: string;
@@ -29,6 +38,8 @@ export interface Question {
   subdomain?: string;
   difficulty: "easy" | "medium" | "hard";
   status: "draft" | "reviewed";
+  scope?: QuestionScope;
+  scopeNote?: string;
   stem: string;
   options: QuestionOption[];
   correct: string[];
@@ -49,6 +60,17 @@ export type QuestionSelectionMode =
 
 export type ReviewScope = "missed" | "bookmarked" | "missed-or-bookmarked";
 
+/**
+ * Which slice of the bank a session may draw from. "core-only" keeps sessions
+ * aligned to the published blueprint; the wider settings opt into questions
+ * that sit above the exam's cognitive level or outside its objectives.
+ */
+export type ScopeFilter = "core-only" | "with-deep" | "everything";
+
+export interface Preferences {
+  scopeFilter: ScopeFilter;
+}
+
 export type RevealMode = "immediate" | "end";
 
 export type SimulationPreset =
@@ -59,6 +81,7 @@ export interface QuizSelectionConfig {
   count?: number;
   domain?: string;
   reviewScope?: ReviewScope;
+  scopeFilter?: ScopeFilter;
 }
 
 export interface QuizConfig extends QuizSelectionConfig {

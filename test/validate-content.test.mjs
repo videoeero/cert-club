@@ -292,3 +292,100 @@ test("validates repository cert content", async () => {
 
   assert.deepEqual(result, { manifestCount: 1, questionCount: 2 });
 });
+
+test("accepts skill weights that total their domain weight", async () => {
+  const { manifest, questions } = await validContent();
+  manifest.domains[0].skills = [
+    { slug: "mcp-architecture", name: "MCP Architecture", weight: 40 },
+    { slug: "tool-implementation", name: "Tool Implementation", weight: 60 },
+  ];
+  questions[1].subdomain = "tool-implementation";
+
+  assert.doesNotThrow(() => validateCertContent("ccdv-f", manifest, questions));
+});
+
+test("rejects skill weights that do not total the domain weight", async () => {
+  const { manifest, questions } = await validContent();
+  manifest.domains[0].skills = [
+    { slug: "mcp-architecture", name: "MCP Architecture", weight: 40 },
+    { slug: "tool-implementation", name: "Tool Implementation", weight: 50 },
+  ];
+
+  assert.throws(
+    () => validateCertContent("ccdv-f", manifest, questions),
+    /skill weights must total the domain weight 100, received 90/,
+  );
+});
+
+test("rejects duplicate skill slugs within a domain", async () => {
+  const { manifest, questions } = await validContent();
+  manifest.domains[0].skills = [
+    { slug: "mcp-architecture", name: "MCP Architecture", weight: 40 },
+    { slug: "mcp-architecture", name: "Duplicate", weight: 60 },
+  ];
+
+  assert.throws(
+    () => validateCertContent("ccdv-f", manifest, questions),
+    /duplicate skill slug "mcp-architecture"/,
+  );
+});
+
+test("requires question subdomains to name a declared skill", async () => {
+  const { manifest, questions } = await validContent();
+  manifest.domains[0].skills = [
+    { slug: "mcp-architecture", name: "MCP Architecture", weight: 100 },
+  ];
+
+  // questions[1] has no subdomain at all.
+  assert.throws(
+    () => validateCertContent("ccdv-f", manifest, questions),
+    /questions\.1\.subdomain: is required because domain "tools-and-mcps" declares skills/,
+  );
+
+  questions[1].subdomain = "not-a-declared-skill";
+  assert.throws(
+    () => validateCertContent("ccdv-f", manifest, questions),
+    /questions\.1\.subdomain: "not-a-declared-skill" is not a skill of domain "tools-and-mcps"/,
+  );
+});
+
+test("leaves subdomains unchecked for domains without a skill breakdown", async () => {
+  const { manifest, questions } = await validContent();
+  questions[0].subdomain = "anything-at-all";
+
+  assert.doesNotThrow(() => validateCertContent("ccdv-f", manifest, questions));
+});
+
+test("requires a scope note on questions that are not core", async () => {
+  const { manifest, questions } = await validContent();
+  questions[0].scope = "deep";
+
+  assert.throws(
+    () => validateCertContent("ccdv-f", manifest, questions),
+    /is required when scope is "deep"/,
+  );
+
+  questions[0].scopeNote =
+    "Tests exact CLI flag semantics, above sample level.";
+  assert.doesNotThrow(() => validateCertContent("ccdv-f", manifest, questions));
+});
+
+test("rejects a scope note on a core question", async () => {
+  const { manifest, questions } = await validContent();
+  questions[0].scopeNote = "Unjustified note.";
+
+  assert.throws(
+    () => validateCertContent("ccdv-f", manifest, questions),
+    /must only be set when scope is not "core"/,
+  );
+});
+
+test("rejects an unknown scope value", async () => {
+  const { manifest, questions } = await validContent();
+  questions[0].scope = "extended";
+
+  assert.throws(
+    () => validateCertContent("ccdv-f", manifest, questions),
+    ContentValidationError,
+  );
+});

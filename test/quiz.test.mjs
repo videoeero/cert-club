@@ -4,6 +4,7 @@ import test from "node:test";
 import {
   answerCountLabel,
   calculateQuizResults,
+  filterQuestionsByScope,
   filterReviewQuestions,
   QuizSelectionError,
   scoreAnswer,
@@ -371,4 +372,143 @@ test("simulateQuizAnswers: degenerate question with no distractors", () => {
   // With 0 distractors the fallback returns an empty array; scoreAnswer must
   // return false (empty != ["a","b"]).
   assert.equal(scoreAnswer(degenerateQ, answers[degenerateQ.id]), false);
+});
+
+function scopedQuestion(id, domain, scope, subdomain) {
+  const built = question(id, domain);
+  if (scope !== undefined) {
+    built.scope = scope;
+    built.scopeNote = "Tagged for test purposes.";
+  }
+  if (subdomain !== undefined) {
+    built.subdomain = subdomain;
+  }
+  return built;
+}
+
+const scopedBank = [
+  scopedQuestion("core-1", "alpha"),
+  scopedQuestion("core-2", "alpha", "core"),
+  scopedQuestion("deep-1", "alpha", "deep"),
+  scopedQuestion("out-1", "beta", "out-of-scope"),
+];
+
+test("treats questions without a scope as core", () => {
+  assert.deepEqual(
+    filterQuestionsByScope(scopedBank).map((q) => q.id),
+    ["core-1", "core-2"],
+  );
+});
+
+test("widens the pool step by step as the scope filter opens up", () => {
+  assert.deepEqual(
+    filterQuestionsByScope(scopedBank, "core-only").map((q) => q.id),
+    ["core-1", "core-2"],
+  );
+  assert.deepEqual(
+    filterQuestionsByScope(scopedBank, "with-deep").map((q) => q.id),
+    ["core-1", "core-2", "deep-1"],
+  );
+  assert.deepEqual(
+    filterQuestionsByScope(scopedBank, "everything").map((q) => q.id),
+    ["core-1", "core-2", "deep-1", "out-1"],
+  );
+});
+
+test("applies the scope filter to every selection mode", () => {
+  for (const mode of ["all", "random", "weighted"]) {
+    const selected = selectQuestions(scopedBank, domains, {
+      mode,
+      ...(mode === "all" ? {} : { count: 4 }),
+    });
+    assert.deepEqual(
+      selected.map((q) => q.id).sort(),
+      ["core-1", "core-2"],
+      `mode ${mode} leaked a tagged question`,
+    );
+  }
+
+  // beta holds only an out-of-scope question, so "with-deep" empties it.
+  assert.throws(
+    () =>
+      selectQuestions(scopedBank, domains, {
+        mode: "domain",
+        domain: "beta",
+        scopeFilter: "with-deep",
+      }),
+    /No questions are available for the selected domain "beta"/,
+  );
+});
+
+test("defaults the scope filter to core-only when unset", () => {
+  const selected = selectQuestions(scopedBank, domains, { mode: "all" });
+  assert.equal(selected.length, 2);
+});
+
+test("reports when the scope filter empties the pool", () => {
+  assert.throws(
+    () =>
+      selectQuestions([scopedQuestion("deep-only", "alpha", "deep")], domains, {
+        mode: "all",
+      }),
+    /No questions match the selected question scope/,
+  );
+});
+
+test("weights by skill when a domain publishes a skill breakdown", () => {
+  const skillDomains = [
+    {
+      slug: "alpha",
+      name: "Alpha",
+      weight: 100,
+      skills: [
+        { slug: "big", name: "Big", weight: 99 },
+        { slug: "small", name: "Small", weight: 1 },
+      ],
+    },
+  ];
+  const bank = [
+    scopedQuestion("big-1", "alpha", undefined, "big"),
+    scopedQuestion("big-2", "alpha", undefined, "big"),
+    scopedQuestion("small-1", "alpha", undefined, "small"),
+    scopedQuestion("small-2", "alpha", undefined, "small"),
+  ];
+
+  // Domain-level weighting cannot distinguish these four; skill-level weighting
+  // must almost always reach for the 99% skill first.
+  let bigFirst = 0;
+  for (let seed = 0; seed < 200; seed += 1) {
+    let state = seed + 1;
+    const random = () => {
+      state = (state * 1103515245 + 12345) % 2147483648;
+      return state / 2147483648;
+    };
+    const [first] = selectQuestions(
+      bank,
+      skillDomains,
+      { mode: "weighted", count: 1 },
+      random,
+    );
+    if (first.subdomain === "big") {
+      bigFirst += 1;
+    }
+  }
+
+  assert.ok(
+    bigFirst > 180,
+    `expected the 99% skill to dominate, picked it ${bigFirst}/200 times`,
+  );
+});
+
+test("falls back to domain weighting when no skills are declared", () => {
+  const bank = [
+    scopedQuestion("alpha-1", "alpha"),
+    scopedQuestion("beta-1", "beta"),
+  ];
+
+  const selected = selectQuestions(bank, domains, {
+    mode: "weighted",
+    count: 2,
+  });
+  assert.deepEqual(selected.map((q) => q.id).sort(), ["alpha-1", "beta-1"]);
 });

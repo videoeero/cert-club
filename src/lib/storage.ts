@@ -1,8 +1,10 @@
 import type {
   AttemptRecord,
   DomainBreakdown,
+  Preferences,
   QuizConfig,
   ReviewScope,
+  ScopeFilter,
 } from "../types";
 
 export const STORAGE_VERSION = 1;
@@ -12,7 +14,12 @@ export const STORAGE_KEYS = {
   attempts: "cert-prep-open.attempts",
   bookmarks: "cert-prep-open.bookmarks",
   missed: "cert-prep-open.missed",
+  preferences: "cert-prep-open.preferences",
 } as const;
+
+export const DEFAULT_PREFERENCES: Preferences = {
+  scopeFilter: "core-only",
+};
 
 export interface StorageAdapter {
   getItem(key: string): string | null;
@@ -55,6 +62,16 @@ function isReviewScope(value: unknown): value is ReviewScope {
   );
 }
 
+function isScopeFilter(value: unknown): value is ScopeFilter {
+  return (
+    value === "core-only" || value === "with-deep" || value === "everything"
+  );
+}
+
+function isPreferences(value: unknown): value is Preferences {
+  return isRecord(value) && isScopeFilter(value.scopeFilter);
+}
+
 function isQuizConfig(value: unknown): value is QuizConfig {
   return (
     isRecord(value) &&
@@ -69,7 +86,8 @@ function isQuizConfig(value: unknown): value is QuizConfig {
         Number.isInteger(value.count) &&
         value.count > 0)) &&
     (value.domain === undefined || typeof value.domain === "string") &&
-    (value.reviewScope === undefined || isReviewScope(value.reviewScope))
+    (value.reviewScope === undefined || isReviewScope(value.reviewScope)) &&
+    (value.scopeFilter === undefined || isScopeFilter(value.scopeFilter))
   );
 }
 
@@ -250,6 +268,30 @@ export function saveAttempt(
     STORAGE_KEYS.attempts,
     [attempt, ...attempts].slice(0, MAX_ATTEMPT_HISTORY),
     resolvedStorage,
+  );
+}
+
+/**
+ * Preferences are app-wide rather than per-cert: the scope filter expresses how
+ * the user wants to study, not something about one certification.
+ */
+export function getPreferences(storage?: StorageAdapter): Preferences {
+  return readValue(
+    STORAGE_KEYS.preferences,
+    DEFAULT_PREFERENCES,
+    isPreferences,
+    resolveStorage(storage),
+  );
+}
+
+export function setPreferences(
+  preferences: Preferences,
+  storage?: StorageAdapter,
+): void {
+  writeValue(
+    STORAGE_KEYS.preferences,
+    { ...preferences },
+    resolveStorage(storage),
   );
 }
 
