@@ -222,7 +222,9 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/streaming",
     "sourceNote": "Streaming messages - 'Event types', 'Error events', 'Other events', and 'Content block delta types' sections covering cumulative usage, mid-stream errors, and partial JSON input deltas",
-    "sourceCheckedAt": "2026-09-03"
+    "sourceCheckedAt": "2026-09-03",
+    "scope": "deep",
+    "scopeNote": "Domain 2 names streaming, so the topic is in scope, but discrimination turns on wire-protocol specifics: that message_delta usage is cumulative rather than incremental, and that tool_use deltas arrive as partial JSON. The guide's sample questions choose approaches, not protocol details."
   },
   {
     "id": "ccdv-f-0006",
@@ -396,7 +398,9 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
     "sourceNote": "Prompt caching - 'How prompt caching works' section, including the note that caching covers tools, system, and messages in that order, and the explanation that the lifetime is measured from the start of the request",
-    "sourceCheckedAt": "2026-09-03"
+    "sourceCheckedAt": "2026-09-03",
+    "scope": "deep",
+    "scopeNote": "Prompt caching is a named Domain 2 topic, but the options separate on the exact prefix ordering (tools, then system, then messages) and on lifetime-refresh mechanics rather than on when caching is the right design."
   },
   {
     "id": "ccdv-f-0010",
@@ -445,7 +449,7 @@
     "schemaVersion": 1,
     "type": "single",
     "domain": "applications-and-integration",
-    "subdomain": "configuration-management",
+    "subdomain": "claude-api-mechanics",
     "difficulty": "easy",
     "status": "reviewed",
     "stem": "A service calls the Messages endpoint over plain HTTP without using an official SDK. Which set of request headers must be present on every call?",
@@ -485,8 +489,8 @@
     "cert": "ccdv-f",
     "schemaVersion": 1,
     "type": "multi",
-    "domain": "applications-and-integration",
-    "subdomain": "configuration-management",
+    "domain": "security-and-safety",
+    "subdomain": "identity-secrets-and-key-management",
     "difficulty": "medium",
     "status": "reviewed",
     "stem": "An organization is replacing a personal API key that several engineers currently share to run a production service. Which approaches align with the documented guidance? Select TWO.",
@@ -565,7 +569,9 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/manage-claude/authentication",
     "sourceNote": "Authentication - 'Select a workspace' section stating that keys not scoped to a workspace must specify the workspace ID header on each request",
-    "sourceCheckedAt": "2026-09-03"
+    "sourceCheckedAt": "2026-09-03",
+    "scope": "out-of-scope",
+    "scopeNote": "Multi-workspace key routing. The Configuration Management objective covers CLAUDE.md, settings.json, model version pinning, prompt versioning and plugin dependencies; workspaces appear in no objective, and API Mechanics does not name them either."
   },
   {
     "id": "ccdv-f-0014",
@@ -1099,7 +1105,9 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
     "sourceNote": "Prompt caching - 'Tracking cache performance' > 'Understanding the token breakdown' (total input equals cache reads plus cache creation plus input_tokens); context accounting corroborated by Context windows - 'How the context window works'",
-    "sourceCheckedAt": "2026-09-03"
+    "sourceCheckedAt": "2026-09-03",
+    "scope": "deep",
+    "scopeNote": "Requires arithmetic over exact usage-field semantics, knowing that plain input counts only tokens after the last breakpoint, to arrive at 100,050. Recall of field definitions, not a judgement about token cost."
   },
   {
     "id": "ccdv-f-0026",
@@ -1461,7 +1469,9 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/agent-sdk/agent-loop",
     "sourceNote": "Sections 'Control how the loop runs' subsection 'Turns and budget', and 'Handle the result'",
-    "sourceCheckedAt": "2026-09-03"
+    "sourceCheckedAt": "2026-09-03",
+    "scope": "deep",
+    "scopeNote": "Agent architecture is in scope, but the options separate on exact SDK metering rules, specifically that maximum-turns counts tool-use turns only. That is a documented constant rather than a design principle."
   },
   {
     "id": "ccdv-f-0034",
@@ -1717,7 +1727,9 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/agent-sdk/subagents",
     "sourceNote": "Sections 'Create subagents', 'AgentDefinition configuration', 'Invoke subagents', and 'Tool restrictions'",
-    "sourceCheckedAt": "2026-09-03"
+    "sourceCheckedAt": "2026-09-03",
+    "scope": "deep",
+    "scopeNote": "Requires recalling which fields of a programmatic agent definition are required and which are optional. Field-level recall sits above the sample questions' level."
   },
   {
     "id": "ccdv-f-0040",
@@ -1758,15 +1770,17 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/agent-sdk/subagents",
     "sourceNote": "Section 'Cap subagent depth, concurrency, and spend'",
-    "sourceCheckedAt": "2026-09-03"
+    "sourceCheckedAt": "2026-09-03",
+    "scope": "deep",
+    "scopeNote": "Requires recalling where each limit is configured, environment variable versus query option. The distinction is a lookup, not a design judgement."
   },
   {
     "id": "ccdv-f-0041",
     "cert": "ccdv-f",
     "schemaVersion": 1,
     "type": "multi",
-    "domain": "agents-and-workflows",
-    "subdomain": "agent-construction-with-claude",
+    "domain": "security-and-safety",
+    "subdomain": "claude-hooks",
     "difficulty": "hard",
     "status": "reviewed",
     "stem": "An SDK application must run a compliance check before every tool call, and the check must not be bypassable by configuration made elsewhere in the application. Select TWO statements that correctly describe how the SDK evaluates permissions.",
@@ -1809,7 +1823,9 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/agent-sdk/permissions",
     "sourceNote": "Section 'How permissions are evaluated', plus the auto-approved tools warning under 'Allow and deny rules' and the mode descriptions under 'Permission modes'",
-    "sourceCheckedAt": "2026-09-03"
+    "sourceCheckedAt": "2026-09-03",
+    "scope": "deep",
+    "scopeNote": "Hooks as a guardrail are in scope, but discrimination requires reciting the full permission evaluation order and the exact mode names bypassPermissions and dontAsk."
   },
   {
     "id": "ccdv-f-0042",
@@ -2177,7 +2193,9 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/compaction",
     "sourceNote": "Parameters table and Custom summarization instructions section: input tokens is the only supported trigger type with a default of 150,000 and a stated minimum of 50,000, and custom instructions completely replace the default prompt when provided; the How compaction works and Pausing after compaction sections cover the compaction block, automatic dropping of prior blocks, and the pause option.",
-    "sourceCheckedAt": "2026-09-03"
+    "sourceCheckedAt": "2026-09-03",
+    "scope": "deep",
+    "scopeNote": "Compaction is a legitimate context-engineering topic, but one correct option turns on recalling the documented 50,000-token minimum trigger value."
   },
   {
     "id": "ccdv-f-0050",
@@ -2218,7 +2236,9 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/citations",
     "sourceNote": "Feature compatibility section: the warning that citations and structured outputs are incompatible, with a 400 error returned when citations are enabled on a user-provided document or search result block and an output format parameter is also supplied, because citations require interleaving citation blocks with text output.",
-    "sourceCheckedAt": "2026-09-03"
+    "sourceCheckedAt": "2026-09-03",
+    "scope": "deep",
+    "scopeNote": "Structured output is a named Output Handling topic, but the item tests one specific feature-interaction rule, that citations and schema-constrained output cannot be combined."
   },
   {
     "id": "ccdv-f-0051",
@@ -2269,7 +2289,9 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/citations",
     "sourceNote": "How citations work, Citable versus non-citable content, Citation indices, and Token costs sections: citations must be enabled on all or none of the documents in a request and only text citations are supported; title and context are passed to the model but not cited from; index formats differ by document type; enabling citations slightly increases input tokens while cited text counts toward neither output tokens nor input tokens on replay.",
-    "sourceCheckedAt": "2026-09-03"
+    "sourceCheckedAt": "2026-09-03",
+    "scope": "deep",
+    "scopeNote": "Turns on fine-grained citations accounting, including that cited text is excluded from output tokens and that title and context fields cannot be cited from."
   },
   {
     "id": "ccdv-f-0052",
@@ -2535,7 +2557,9 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use",
     "sourceNote": "Parallel tool use — 'Exactly one tool call', read with 'Define tools' on the four tool_choice options",
-    "sourceCheckedAt": "2026-09-03"
+    "sourceCheckedAt": "2026-09-03",
+    "scope": "deep",
+    "scopeNote": "Every option is a permutation of exact parameter values for tool_choice and disable_parallel_tool_use. Discrimination is entirely at the parameter level."
   },
   {
     "id": "ccdv-f-0058",
@@ -3683,15 +3707,17 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/api/rate-limits",
     "sourceNote": "Rate limits - 'About rate limits' bullets on the token bucket algorithm, enforcement over shorter intervals, and organization-level limits with user-configurable workspace limits, plus the 'Rate limits' section on RPM, ITPM, and OTPM and the retry-after header",
-    "sourceCheckedAt": "2026-09-03"
+    "sourceCheckedAt": "2026-09-03",
+    "scope": "out-of-scope",
+    "scopeNote": "API rate-limit mechanics. Rate limiting is named in none of the 25 skill objectives; Claude API Mechanics lists messages, tools, streaming, vision, thinking, caching, third-party vendors, data access patterns and batch selection."
   },
   {
     "id": "ccdv-f-0084",
     "cert": "ccdv-f",
     "schemaVersion": 1,
     "type": "single",
-    "domain": "applications-and-integration",
-    "subdomain": "configuration-management",
+    "domain": "eval-testing-and-debugging",
+    "subdomain": "debugging-and-error-handling",
     "difficulty": "hard",
     "status": "reviewed",
     "stem": "A production service starts receiving 429 responses. The failures persist for hours, the SDK's automatic retries never recover, and the responses carry no retry-after header. What is the most likely cause?",
@@ -3765,7 +3791,9 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/manage-claude/workspaces",
     "sourceNote": "Workspaces - 'How workspaces work' on separating projects and environments and on keys scoped to a single workspace, plus 'Set workspace limits' and the 'Archive a workspace' warning that archiving is irreversible and archives the workspace's keys",
-    "sourceCheckedAt": "2026-09-03"
+    "sourceCheckedAt": "2026-09-03",
+    "scope": "out-of-scope",
+    "scopeNote": "Workspaces used to isolate rate and spend limits. Neither workspaces nor billing isolation appear in any skill objective."
   },
   {
     "id": "ccdv-f-0086",
@@ -4043,8 +4071,8 @@
     "cert": "ccdv-f",
     "schemaVersion": 1,
     "type": "multi",
-    "domain": "agents-and-workflows",
-    "subdomain": "agent-construction-with-claude",
+    "domain": "security-and-safety",
+    "subdomain": "claude-hooks",
     "difficulty": "hard",
     "status": "reviewed",
     "stem": "A team is adding hooks to an Agent SDK application so that certain tool calls are validated before they run and every tool call is recorded for audit. Select TWO statements that accurately describe how hooks are configured and how their callbacks behave.",
@@ -4087,7 +4115,9 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/agent-sdk/hooks",
     "sourceNote": "Sections 'How hooks work' and 'Available hooks'; 'Configure hooks' subsection 'Matchers'; 'Callback functions' subsections 'Inputs' and 'Outputs'",
-    "sourceCheckedAt": "2026-09-03"
+    "sourceCheckedAt": "2026-09-03",
+    "scope": "deep",
+    "scopeNote": "Hook guardrails are in scope, but the options separate on exact return-object semantics, that an empty object means allow, and on matcher-omission behaviour."
   },
   {
     "id": "ccdv-f-0093",
@@ -4220,7 +4250,9 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs",
     "sourceNote": "How SDK transformation works subsection: the SDK helpers remove unsupported constraints such as minimum, maximum, minimum length and maximum length, move the constraint info into the description, add additional properties false to all objects, filter string formats, and validate responses against the original schema, so the model receives a simplified schema while application code still enforces all constraints; the Why use structured outputs section states that constrained decoding yields always-valid, type-safe output with guaranteed required fields and no retries for schema violations, and the introduction describes JSON outputs and strict tool use as complementary features usable independently or together.",
-    "sourceCheckedAt": "2026-09-03"
+    "sourceCheckedAt": "2026-09-03",
+    "scope": "deep",
+    "scopeNote": "Structured output is in scope, but the item turns on SDK-specific schema transformations, that minimum and maximum are stripped and additionalProperties is forced to false."
   },
   {
     "id": "ccdv-f-0096",
