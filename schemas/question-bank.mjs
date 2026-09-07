@@ -156,7 +156,7 @@ export const questionSchema = z
     subdomain: slugSchema.optional(),
     difficulty: z.enum(["easy", "medium", "hard"]),
     status: z.enum(["draft", "reviewed"]),
-    scope: z.enum(["core", "deep", "out-of-scope"]).optional(),
+    scope: z.enum(["core", "deep"]),
     scopeNote: z.string().min(1).optional(),
     stem: z.string().min(1),
     options: z.array(optionSchema).min(2),
@@ -169,9 +169,11 @@ export const questionSchema = z
   })
   .strict()
   .superRefine((question, context) => {
-    // An absent scope means "core": the question is traceable to a blueprint
-    // objective and discriminates at the exam's cognitive level.
-    const scope = question.scope ?? "core";
+    // "core" means the question is traceable to a blueprint objective and
+    // discriminates at the exam's cognitive level; "deep" means it is sound and
+    // sourced but sits past that level, so it is served only on request. Every
+    // question must say which, so a new one cannot slip in unclassified.
+    const scope = question.scope;
     if (scope !== "core" && question.scopeNote === undefined) {
       context.addIssue({
         code: "custom",
@@ -281,6 +283,9 @@ export const LENGTH_BIAS_MIN_SAMPLE = 20;
 export const LENGTH_BIAS_MAX_MEAN_DELTA = 10;
 export const LENGTH_BIAS_MAX_LONGEST_SHARE = 0.45;
 
+export const SCOPE_MIN_SAMPLE = 20;
+export const SCOPE_MIN_CORE_SHARE = 0.8;
+
 function mean(values) {
   return values.reduce((sum, value) => sum + value, 0) / values.length;
 }
@@ -389,6 +394,25 @@ export const questionBankSchema = z
           code: "custom",
           path: [],
           message: `single-select answers are biased toward the longest option: the key is the longest option in ${longest} of ${scoredSingles.length} (${Math.round(share * 100)}%), which exceeds the ${Math.round(LENGTH_BIAS_MAX_LONGEST_SHARE * 100)}% ceiling`,
+        });
+      }
+    }
+
+    // Bank-level guard: the default "core-only" scope filter is what a learner
+    // practising for the exam actually sits. If too much of the bank is tagged
+    // deep, that default pool shrinks below a useful size and the bank stops
+    // being a rehearsal of the real thing.
+    if (questions.length >= SCOPE_MIN_SAMPLE) {
+      const core = questions.filter(
+        (question) => question.scope === "core",
+      ).length;
+      const share = core / questions.length;
+
+      if (share < SCOPE_MIN_CORE_SHARE) {
+        context.addIssue({
+          code: "custom",
+          path: [],
+          message: `too little of the bank is exam-aligned: ${core} of ${questions.length} questions (${Math.round(share * 100)}%) are scope "core", below the ${Math.round(SCOPE_MIN_CORE_SHARE * 100)}% floor`,
         });
       }
     }

@@ -30,17 +30,16 @@ function questions(counts, extra = []) {
   const built = [];
   for (const [subdomain, count] of Object.entries(counts)) {
     for (let index = 0; index < count; index += 1) {
-      built.push({ domain: "tools-and-mcps", subdomain });
+      built.push({ domain: "tools-and-mcps", subdomain, scope: "core" });
     }
   }
   return [...built, ...extra];
 }
 
-test("treats an absent scope as core", () => {
-  assert.equal(isCoreQuestion({}), true);
+test("counts only questions explicitly scoped core", () => {
   assert.equal(isCoreQuestion({ scope: "core" }), true);
   assert.equal(isCoreQuestion({ scope: "deep" }), false);
-  assert.equal(isCoreQuestion({ scope: "out-of-scope" }), false);
+  assert.equal(isCoreQuestion({}), false);
 });
 
 test("reports an evenly split bank as balanced", () => {
@@ -101,7 +100,7 @@ test("excludes tagged questions from the core count and the targets", () => {
       {
         domain: "tools-and-mcps",
         subdomain: "mcp-server-development",
-        scope: "out-of-scope",
+        scope: "deep",
         scopeNote: "Not traceable to a blueprint objective.",
       },
     ]),

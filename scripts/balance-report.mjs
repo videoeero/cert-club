@@ -15,11 +15,11 @@ export const MINIMUM_SKILL_TARGET = 2;
 
 /**
  * Core questions are the ones a blueprint-aligned session draws from. Questions
- * tagged "deep" or "out-of-scope" are opt-in extras and are excluded from the
- * balance arithmetic entirely.
+ * tagged "deep" are opt-in extras and are excluded from the balance arithmetic
+ * entirely.
  */
 export function isCoreQuestion(question) {
-  return (question.scope ?? "core") === "core";
+  return question.scope === "core";
 }
 
 export function buildBalanceReport(manifest, questions, options = {}) {

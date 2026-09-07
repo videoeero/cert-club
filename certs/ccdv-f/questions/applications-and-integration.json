@@ -8,6 +8,7 @@
     "subdomain": "claude-api-mechanics",
     "difficulty": "easy",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A chat application sends only the newest user message to the Messages endpoint on each turn. Users report that Claude has no awareness of anything said earlier in the same conversation. What explains this behavior, and what is the correct remedy?",
     "options": [
       {
@@ -49,6 +50,7 @@
     "subdomain": "claude-api-mechanics",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A developer is reviewing how the Messages API interprets the body of a create-message request. Which statements are correct? Select THREE.",
     "options": [
       {
@@ -100,6 +102,7 @@
     "subdomain": "claude-api-mechanics",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "To force a particular output shape, an integration ends its messages array with an assistant message containing a partial sentence. Against a model that does not support assistant-message prefill, the request fails. What does the API return, and what is the documented alternative?",
     "options": [
       {
@@ -141,33 +144,34 @@
     "subdomain": "claude-api-mechanics",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "An agent runs for a few turns and then stops making progress. The logs show a response in which the model asked to call a client-side tool. The integration recorded that response as the assistant's final answer and returned its text to the user. What did the integration misread?",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "The tool definition it sent was malformed, so the model described the tool in prose instead of calling it, and the schema is what needs correcting."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "The model exceeded its output allowance partway through the answer, so the text is incomplete and the integration should request a continuation."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "The turn was a request for the caller to act: the model is waiting for the tool to be run and its output returned before it can continue."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "The model declined the request on safety grounds, so the integration should send the turn to a fallback model rather than surfacing the text."
       }
     ],
     "correct": [
-      "opt-c"
+      "c"
     ],
     "explanation": "A response can end for several different reasons, and only some of them mean the assistant has finished. When the model asks for a tool, the turn is a handover: it has paused because it needs something only the caller can supply, and it cannot continue until the tool has been run and its output returned in the following message. Treating that pause as a completed answer breaks the loop, which is why the agent appears to stall rather than fail. Reading the reason a response ended, instead of assuming every response is final, is what keeps the loop turning.",
     "distractorNotes": {
-      "opt-a": "A rejected tool definition is a request-level validation problem, so the call would fail outright rather than return a well-formed turn that the integration was able to log and display.",
-      "opt-b": "Running out of output room does end a turn early, but it produces partial prose rather than a request to invoke a tool, and the recovery is to continue generating rather than to run anything.",
-      "opt-d": "A refusal is the model declining to answer. Here the model is willing and mid-task; it is blocked on an input it expects the caller to provide."
+      "a": "A rejected tool definition is a request-level validation problem, so the call would fail outright rather than return a well-formed turn that the integration was able to log and display.",
+      "b": "Running out of output room does end a turn early, but it produces partial prose rather than a request to invoke a tool, and the recovery is to continue generating rather than to run anything.",
+      "d": "A refusal is the model declining to answer. Here the model is willing and mid-task; it is blocked on an input it expects the caller to provide."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons",
     "sourceNote": "Handling stop reasons — a turn can end because the model is requesting a client-side tool call, which the caller must execute and return before the assistant can continue",
@@ -182,6 +186,7 @@
     "subdomain": "claude-api-mechanics",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A development team is implementing streaming for a new Claude-powered application. Which of the following statements about how the Claude API handles streaming are true? Select THREE.",
     "options": [
       {
@@ -233,6 +238,8 @@
     "subdomain": "claude-api-mechanics",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "deep",
+    "scopeNote": "Tests that appending a text block after a tool_result inside the same user message leads the model to end its turn early. On-blueprint under Claude API mechanics, but this is a specific transcript-construction gotcha recognisable only from the stop-reason page's edge-case note, not a diagnosis reachable from principle.",
     "stem": "An agent loop frequently receives a near-empty assistant response carrying a stop_reason of end_turn. Inspecting the transcript shows that each tool_result block is followed, inside the same user message, by an extra text block that summarizes what the tool returned. What is the documented cause?",
     "options": [
       {
@@ -274,6 +281,7 @@
     "subdomain": "claude-application-design",
     "difficulty": "easy",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A team is estimating whether a planned request will fit inside a model's context window. Which components have to be counted?",
     "options": [
       {
@@ -315,6 +323,7 @@
     "subdomain": "claude-application-design",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A nightly job classifies a large backlog of documents. No result is consumed interactively, and cost is the dominant constraint. Which approach fits, and which design constraint must be accepted alongside it?",
     "options": [
       {
@@ -356,6 +365,7 @@
     "subdomain": "claude-application-design",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A development team is building an application that will process many user queries against a large, static repository of technical documentation. They are considering using prompt caching for the documentation content. Which statements represent the high-level benefits and appropriate use cases for prompt caching in this scenario? Select THREE.",
     "options": [
       {
@@ -407,6 +417,7 @@
     "subdomain": "claude-application-design",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "core",
     "stem": "An API-driven agent recalls details from its transcript less and less reliably as a session runs on, even though the transcript remains comfortably inside the model's context window. What does the guidance identify as the underlying issue and the appropriate response?",
     "options": [
       {
@@ -448,6 +459,8 @@
     "subdomain": "claude-api-mechanics",
     "difficulty": "easy",
     "status": "reviewed",
+    "scope": "deep",
+    "scopeNote": "Tests the exact set of headers a non-SDK caller must send on every request. On-blueprint under Claude API mechanics, but it is direct recall of a required-header list; the exam tests why a team would adopt an SDK, not which headers the SDK sets on their behalf.",
     "stem": "A service calls the Messages endpoint over plain HTTP without using an official SDK. Which set of request headers must be present on every call?",
     "options": [
       {
@@ -489,6 +502,7 @@
     "subdomain": "configuration-management",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A development team wants Claude to automatically pick up their project's conventions and coding standards every session, without anyone re-typing instructions into chat or the API request. Which configuration approach achieves that?",
     "options": [
       {
@@ -530,6 +544,8 @@
     "subdomain": "software-engineering-foundations",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "deep",
+    "scopeNote": "Tests the API version compatibility contract — which additive changes a client pinning a version must tolerate without breaking. On-blueprint under software engineering foundations, but enumerating the guarantee's clauses is reference-page recall rather than the applied versioning judgement the exam samples.",
     "stem": "A client library pins a specific API version value on every request. Under the documented version guarantees, which changes must that client tolerate without breaking? Select THREE.",
     "options": [
       {
@@ -581,6 +597,7 @@
     "subdomain": "software-engineering-foundations",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A production integration currently classifies failures by matching substrings of error messages and wraps every failure in its own fixed-interval retry loop. Which change aligns with the documented guidance?",
     "options": [
       {
@@ -622,6 +639,7 @@
     "subdomain": "systems-life-cycle",
     "difficulty": "easy",
     "status": "reviewed",
+    "scope": "core",
     "stem": "Which description of the documented model lifecycle states is correct?",
     "options": [
       {
@@ -663,6 +681,7 @@
     "subdomain": "systems-life-cycle",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A model that an application depends on has been announced for retirement. Which actions are supported by the documented migration guidance? Select THREE.",
     "options": [
       {
@@ -714,6 +733,7 @@
     "subdomain": "understanding-requirements",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A stakeholder asks only that the assistant should give good answers to billing questions. The team must turn that into a usable success criterion. Which restatement best satisfies the documented properties of being specific, measurable, achievable, and relevant?",
     "options": [
       {
@@ -755,6 +775,7 @@
     "subdomain": "understanding-requirements",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A team is building an evaluation suite for a Claude-based feature before it ships. Which practices match the documented evaluation design principles? Select THREE.",
     "options": [
       {
@@ -806,6 +827,7 @@
     "subdomain": "software-engineering-foundations",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A report generation job issues non-streaming Messages requests with a very large max_tokens value. Most calls succeed, but some fail after several minutes with no response body at all, and failures cluster on particular network paths. Which change matches the documented guidance?",
     "options": [
       {
@@ -847,6 +869,8 @@
     "subdomain": "software-engineering-foundations",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "deep",
+    "scopeNote": "Tests the request-id response header and the open-endedness of error type values. On-blueprint under software engineering foundations, but both are observability details of the error surface rather than the failure-handling design the objective covers.",
     "stem": "A team is hardening the logging and failure handling of a direct HTTP integration that does not use an official SDK. Which practices match the documented guidance? Select TWO.",
     "options": [
       {
@@ -893,6 +917,8 @@
     "subdomain": "configuration-management",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "deep",
+    "scopeNote": "Tests the three rate-limit metrics by name and administrator-configured per-workspace limits. On-blueprint under configuration management, but the exam tests how a client should react to a 429, not the metric taxonomy or console-level limit administration.",
     "stem": "A development team is preparing to launch an application powered by the Claude API and is reviewing how rate limits will affect their production traffic. Which foundational statements about Claude API rate limits are correct? Select THREE.",
     "options": [
       {
@@ -944,6 +970,7 @@
     "subdomain": "configuration-management",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "An organization is building multiple distinct applications using the Anthropic API. They want to separate each application's resources, manage API keys independently, and set individual spend limits while maintaining centralized billing. Which Anthropic Console feature should they use to achieve this?",
     "options": [
       {
@@ -985,6 +1012,8 @@
     "subdomain": "systems-life-cycle",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "deep",
+    "scopeNote": "Tests beta-feature governance: breaking changes with notice, rate limits and pricing that diverge from the GA surface, and regional availability. On-blueprint under systems life cycle, but beta-surface detail sits past the lifecycle reasoning the exam samples.",
     "stem": "An architect is deciding whether a feature currently offered in beta can carry a long-lived production workload. Which statements about beta features are accurate? Select THREE.",
     "options": [
       {
@@ -1036,6 +1065,7 @@
     "subdomain": "understanding-requirements",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A product owner writes that a new assistant simply has to feel fast. Before the team can build against that, the requirement must be restated in terms it can measure. Which statements reflect the documented guidance on latency? Select TWO.",
     "options": [
       {
@@ -1082,33 +1112,34 @@
     "subdomain": "claude-application-design",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A team asks the model to read a raw support email, decide a category, draft a reply, and translate that reply, all inside one large prompt. Accuracy on the categorisation step is poor and hard to debug. What design change best fits this situation?",
     "options": [
       {
-        "id": "opt-a",
-        "text": "Raise the model's temperature so the single call explores more categorisation options before committing to a final reply."
+        "id": "a",
+        "text": "Ask for the category, the reply, and the translation as three labelled sections of one response so each step is separately inspectable."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "Split the work into a sequence of calls where each step consumes the previous step's output, with checks between steps."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "Merge every instruction into one longer paragraph so nothing about the task can be missed by the model."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "Move all of the logic into tool schemas so the model never has to reason about any of the steps itself."
       }
     ],
     "correct": [
-      "opt-b"
+      "b"
     ],
     "explanation": "opt-b is correct because decomposing a task into a chain of smaller calls, where each call handles one easier subtask and its output feeds the next, trades a little latency for higher accuracy and lets you insert programmatic checks (gates) between steps for debugging. opt-a treats a structural problem as a sampling problem; opt-c makes the single overloaded call harder, not easier; opt-d misuses tools, which supply capabilities rather than replacing the model's step-by-step reasoning.",
     "distractorNotes": {
-      "opt-a": "Plausible because temperature affects output variety, but categorisation reliability comes from splitting the task, not from more random sampling.",
-      "opt-c": "Plausible because more explicit instructions sometimes help, but concatenating everything keeps the hard, hard-to-inspect single call intact.",
-      "opt-d": "Plausible because tools add structure, but tools augment the model rather than remove the need to sequence reasoning steps."
+      "a": "Labelled sections do make the output easier to read, but every step is still produced in a single pass, so a mis-categorisation flows straight into the reply and the translation with no gate between them.",
+      "c": "Plausible because more explicit instructions sometimes help, but concatenating everything keeps the hard, hard-to-inspect single call intact.",
+      "d": "Plausible because tools add structure, but tools augment the model rather than remove the need to sequence reasoning steps."
     },
     "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
     "sourceNote": "Workflow: Prompt chaining",
@@ -1123,33 +1154,34 @@
     "subdomain": "claude-application-design",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "Deterministic code downstream of the model repeatedly breaks because the JSON it receives is sometimes malformed or missing fields, even after careful prompting. The team is deciding how to harden the boundary between the model's output and their parser. Which statements reflect the intended design? Select TWO.",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "The parser should keep adding regexes to repair whatever malformed shapes the model happens to emit each release."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "Constraining responses to a supplied schema removes a class of parse-and-retry error handling from the calling code."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "Schema constraints are only cosmetic, so the downstream code must still assume arbitrary free-form text on every call."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "Constrained output is appropriate exactly where a program, not a human, is the direct consumer of the response."
       }
     ],
     "correct": [
-      "opt-b",
-      "opt-d"
+      "b",
+      "d"
     ],
     "explanation": "opt-b and opt-d are correct: structured outputs constrain the response to a declared schema so calling code gets valid, typed, parseable results and can drop bespoke retry-on-bad-JSON handling, and they are meant for cases where downstream software consumes the output directly. opt-a describes the brittle status quo the feature exists to replace; opt-c is wrong because schema constraints materially change what the model can emit rather than being cosmetic.",
     "distractorNotes": {
-      "opt-a": "Plausible because defensive parsing is common, but the design point is to constrain generation upstream instead of endlessly patching the parser.",
-      "opt-c": "Plausible-sounding caution, but incorrect: constrained decoding actually restricts the output shape, so treating it as arbitrary text misses the guarantee."
+      "a": "Plausible because defensive parsing is common, but the design point is to constrain generation upstream instead of endlessly patching the parser.",
+      "c": "Plausible-sounding caution, but incorrect: constrained decoding actually restricts the output shape, so treating it as arbitrary text misses the guarantee."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs",
     "sourceNote": "Why use structured outputs",
@@ -1164,33 +1196,34 @@
     "subdomain": "claude-application-design",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "core",
     "stem": "In a production support system, most incoming questions are simple and repetitive while a small fraction are genuinely complex. The team wants strong quality on the hard cases without paying top-tier cost on every request. Which architecture best fits the constraint?",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "Send every request to the smallest model and accept whatever quality it produces on the difficult minority of cases."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "Send every request to the largest model so quality is uniformly high across the easy and the hard traffic."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "Classify each request first, then dispatch easy traffic to a cheaper model and hard traffic to a more capable one."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "Alternate between a cheap and an expensive model on a fixed schedule to average the per-request spend over time."
       }
     ],
     "correct": [
-      "opt-c"
+      "c"
     ],
     "explanation": "opt-c is correct because a routing step that classifies input and directs each class to the appropriately sized model captures most of the cost savings while preserving quality where it matters, a documented multi-model strategy for the cost-to-intelligence tradeoff. opt-a underserves the hard minority; opt-b overpays on the easy majority; opt-d ignores the actual difficulty of each request, so it randomly misroutes hard work to the cheap model.",
     "distractorNotes": {
-      "opt-a": "Plausible as a cost play, but it sacrifices exactly the complex cases the team cares about.",
-      "opt-b": "Plausible as a quality play, but it spends top-tier cost on the easy majority the requirement wants to economise.",
-      "opt-d": "Plausible because it mixes models, but a schedule uncorrelated with difficulty routes hard cases to the weak model by chance."
+      "a": "Plausible as a cost play, but it sacrifices exactly the complex cases the team cares about.",
+      "b": "Plausible as a quality play, but it spends top-tier cost on the easy majority the requirement wants to economise.",
+      "d": "Plausible because it mixes models, but a schedule uncorrelated with difficulty routes hard cases to the weak model by chance."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/about-claude/models/optimizing-for-cost-and-intelligence",
     "sourceNote": "Tradeoffs: model choice and multi-model architectures",
@@ -1205,33 +1238,34 @@
     "subdomain": "claude-application-design",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A team is scoping a new feature and defaults to a fully autonomous agent that plans and directs its own tool use. A reviewer pushes back and asks them to justify the complexity. Which considerations correctly inform whether an autonomous agent is the right choice here? Select TWO.",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "Autonomy is the recommended baseline for any Claude feature, and simpler compositions are legacy patterns to avoid."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "The simplest thing that works is preferred, with complexity added only when a requirement clearly demands it."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "A framework must be adopted first, because agentic behaviour cannot be built by calling the API directly."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "Agents trade latency and cost for flexibility, so a predefined workflow is better when the steps are well understood."
       }
     ],
     "correct": [
-      "opt-b",
-      "opt-d"
+      "b",
+      "d"
     ],
     "explanation": "opt-b and opt-d are correct: the guidance is to find the simplest solution and add complexity only when needed, and to reserve autonomous agents for tasks needing model-driven flexibility because agents trade latency and cost for that flexibility, whereas well-defined tasks are better served by predictable workflows. opt-a inverts the guidance, which does not treat autonomy as the default; opt-c is false because many patterns are a few lines against the API directly and a framework is optional.",
     "distractorNotes": {
-      "opt-a": "Plausible given the hype around agents, but the documented stance is to start simple, not to default to autonomy.",
-      "opt-c": "Plausible because frameworks exist, but they are optional conveniences, not a prerequisite for agentic behaviour."
+      "a": "Plausible given the hype around agents, but the documented stance is to start simple, not to default to autonomy.",
+      "c": "Plausible because frameworks exist, but they are optional conveniences, not a prerequisite for agentic behaviour."
     },
     "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
     "sourceNote": "When (and when not) to use agents",
@@ -1246,33 +1280,34 @@
     "subdomain": "claude-application-design",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A coding assistant must change an unpredictable number of files per request, and the set of files and edits cannot be known before the task is examined. The team wants a structure that decides the subtasks at runtime and then combines the results. Which pattern fits best?",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "A fixed prompt chain with one predetermined step per file, sized to the largest change the team has seen so far."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "A single, larger call that is simply given more context and a higher output cap so it can rewrite every one of the affected files at once."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "A parallelisation of a fixed, predefined set of subtasks whose sections are decided up front before the task is read."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "An orchestrator that breaks the task down at runtime, delegates each piece to a worker, and synthesises their results."
       }
     ],
     "correct": [
-      "opt-d"
+      "d"
     ],
     "explanation": "opt-d is correct because the orchestrator-workers pattern is designed for tasks where subtasks cannot be predicted in advance: a central call decomposes the work dynamically, delegates to workers, and merges the outputs. opt-a and opt-c both hard-code a fixed set of steps, which the scenario rules out because the number and nature of edits vary per task; opt-b collapses the work into one overloaded call, losing the focused, per-file handling the task needs.",
     "distractorNotes": {
-      "opt-a": "Plausible because chaining is a real pattern, but a fixed chain cannot express a per-request-variable number of subtasks.",
-      "opt-b": "Plausible as a shortcut, but one big call forgoes the decomposition that keeps each file's change tractable.",
-      "opt-c": "Plausible because it also uses multiple workers, but parallelisation presumes predefined sections, unlike the runtime decomposition required here."
+      "a": "Plausible because chaining is a real pattern, but a fixed chain cannot express a per-request-variable number of subtasks.",
+      "b": "Plausible as a shortcut, but one big call forgoes the decomposition that keeps each file's change tractable.",
+      "c": "Plausible because it also uses multiple workers, but parallelisation presumes predefined sections, unlike the runtime decomposition required here."
     },
     "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
     "sourceNote": "Workflow: Orchestrator-workers",
@@ -1287,33 +1322,34 @@
     "subdomain": "claude-application-design",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A team is about to start tuning prompts and swapping models to improve a classification feature, but different engineers disagree about whether the current output is even 'good enough'. What should the design put in place before this optimisation work begins?",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "Specific, measurable success criteria and an evaluation set, so changes can be judged against a fixed target."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "A larger model chosen immediately, because raw capability is what ultimately settles disagreements about quality."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "A production rollout to real users first, on the assumption that live feedback replaces the need for defined criteria."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "A longer system prompt that describes quality in rich prose, so the model can self-assess whether it did well."
       }
     ],
     "correct": [
-      "opt-a"
+      "a"
     ],
     "explanation": "opt-a is correct because defining specific, measurable success criteria and building evaluations to measure against them is the starting point of the develop-and-refine cycle; without a fixed target, prompt and model changes cannot be judged objectively. opt-b optimises before knowing what 'better' means; opt-c ships without a yardstick and risks user harm while still lacking criteria; opt-d confuses a verbose prompt with an actual measurement method.",
     "distractorNotes": {
-      "opt-b": "Plausible because bigger models can help, but choosing one before defining the target is optimising blind.",
-      "opt-c": "Plausible because real feedback is valuable, but it is not a substitute for measurable criteria and can expose users to a poor feature.",
-      "opt-d": "Plausible because clear prompts matter, but prose describing quality is not an evaluation and does not measure performance."
+      "b": "Plausible because bigger models can help, but choosing one before defining the target is optimising blind.",
+      "c": "Plausible because real feedback is valuable, but it is not a substitute for measurable criteria and can expose users to a poor feature.",
+      "d": "Plausible because clear prompts matter, but prose describing quality is not an evaluation and does not measure performance."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
     "sourceNote": "Define your success criteria",
@@ -1328,33 +1364,34 @@
     "subdomain": "claude-application-design",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A team keeps re-typing the same project conventions to Claude Code every session, and also needs one rule that must never be violated regardless of what the model decides. How should responsibility for these two needs be split in the design? Select TWO.",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "Durable project conventions belong in a persistent instructions file that is loaded into context at the start of each session."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "Both the conventions and the hard rule should be pasted fresh into the chat every session to guarantee they take effect."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "A rule that must hold no matter what the model chooses should be enforced by a deterministic hook, not by instruction text."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "A hard rule can be guaranteed simply by writing it more firmly in the instructions file, since loaded context is binding."
       }
     ],
     "correct": [
-      "opt-a",
-      "opt-c"
+      "a",
+      "c"
     ],
     "explanation": "opt-a and opt-c are correct: persistent instruction files carry project context into every session so it need not be re-explained, but the model treats loaded instructions as context rather than enforced configuration, so a rule that must always hold should be enforced with a deterministic hook. opt-b ignores the persistence mechanism that exists precisely to avoid re-pasting; opt-d is wrong because stronger wording does not make context binding, which is exactly why a hook is needed.",
     "distractorNotes": {
-      "opt-b": "Plausible as a brute-force habit, but it defeats the purpose of a persistent file and still does not make any rule binding.",
-      "opt-d": "Plausible because firm wording feels authoritative, but instructions are guidance, not enforcement, so a hard guarantee needs a hook."
+      "b": "Plausible as a brute-force habit, but it defeats the purpose of a persistent file and still does not make any rule binding.",
+      "d": "Plausible because firm wording feels authoritative, but instructions are guidance, not enforcement, so a hard guarantee needs a hook."
     },
     "sourceUrl": "https://code.claude.com/docs/en/memory",
     "sourceNote": "CLAUDE.md vs auto memory",
@@ -1369,33 +1406,34 @@
     "subdomain": "claude-application-design",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A summariser concatenates the user's fixed instructions with a block of user-submitted article text into one plain-text prompt. Occasionally the model follows directives embedded in the article instead of the real instructions. Which prompt-design change most directly reduces this confusion?",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "Shorten the instructions dramatically so the article text clearly dominates the prompt and the model simply focuses on what to summarise."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "Repeat the same instructions several times before and after the article so their intent outweighs the embedded text."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "Delimit the trusted instructions and the untrusted article in distinct tagged sections so their roles are unambiguous."
       },
       {
-        "id": "opt-d",
-        "text": "Lower the temperature so the model produces a more deterministic summary and is less likely to wander off task."
+        "id": "d",
+        "text": "Strip imperative sentences out of the article before inserting it into the prompt, so no directive survives to be followed."
       }
     ],
     "correct": [
-      "opt-c"
+      "c"
     ],
     "explanation": "opt-c is correct because using structured tags to separate the trusted instructions from the untrusted content makes each part's role explicit and helps the model avoid conflating data with directives. opt-a weakens the very instructions that should govern behaviour; opt-b adds redundancy without drawing a boundary between roles; opt-d changes sampling determinism, which does nothing to clarify which text is an instruction versus data.",
     "distractorNotes": {
-      "opt-a": "Plausible because concise prompts help generally, but cutting the instructions makes them easier, not harder, to override.",
-      "opt-b": "Plausible because emphasis can help, but repetition without a structural boundary still mixes instructions and data.",
-      "opt-d": "Plausible because temperature affects behaviour, but determinism does not tell the model which span is trusted."
+      "a": "Plausible because concise prompts help generally, but cutting the instructions makes them easier, not harder, to override.",
+      "b": "Plausible because emphasis can help, but repetition without a structural boundary still mixes instructions and data.",
+      "d": "Filtering imperatives is brittle: an injection need not be phrased as an imperative, no filter enumerates every phrasing, and removing sentences damages the article the summary is meant to cover."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices#structure-prompts-with-xml-tags",
     "sourceNote": "Structure prompts with XML tags",
@@ -1410,33 +1448,34 @@
     "subdomain": "claude-application-design",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A growing integration exposes many narrow, terse tools (create_pr, review_pr, merge_pr, and dozens more), and the model increasingly picks the wrong one or calls tools at the wrong time. Which design moves are aligned with the guidance on defining tools? Select THREE.",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "Give each tool a detailed description covering what it does, when to use it, and when not to, rather than a bare name."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "Consolidate closely related operations into fewer, more capable tools instead of one tiny tool per action."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "Rely on the tool names alone and trust the model to infer behaviour, keeping descriptions minimal to save tokens."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "Use meaningful namespacing in tool names so selection stays unambiguous as the library of tools grows."
       }
     ],
     "correct": [
-      "opt-a",
-      "opt-b",
-      "opt-d"
+      "a",
+      "b",
+      "d"
     ],
     "explanation": "opt-a, opt-b, and opt-d are correct: detailed descriptions are the single biggest factor in tool performance, consolidating related actions into fewer capable tools reduces selection ambiguity, and namespaced names keep selection clear as the surface grows. opt-c is the opposite of the guidance; skimping on descriptions to save tokens removes the very context the model needs to choose and invoke tools correctly.",
     "distractorNotes": {
-      "opt-c": "Plausible because token thrift is a real concern, but starving tools of descriptions directly causes the wrong-tool selection the scenario describes."
+      "c": "Plausible because token thrift is a real concern, but starving tools of descriptions directly causes the wrong-tool selection the scenario describes."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools",
     "sourceNote": "Best practices for tool definitions",
@@ -1451,33 +1490,34 @@
     "subdomain": "claude-application-design",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A translation feature produces serviceable but flat output, and the team notices that when a human reviewer writes specific critiques, a second pass reliably improves the result against clear criteria. They want to bake this into the application. Which pattern and which precondition make it a good fit? Select TWO.",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "A parallel voting scheme that runs many identical translations at once and returns whichever variant appears most often."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "A loop in which one call produces a draft and another evaluates it and returns feedback for the next revision."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "The fit depends on having evaluation criteria clear enough that articulated feedback measurably improves the output."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "A single high-effort call, because iterative critique cannot improve a translation beyond the first attempt anyway."
       }
     ],
     "correct": [
-      "opt-b",
-      "opt-c"
+      "b",
+      "c"
     ],
     "explanation": "opt-b and opt-c are correct: the evaluator-optimizer pattern pairs a generator call with an evaluator call that gives feedback in a loop, and it fits precisely when evaluation criteria are clear and articulated feedback demonstrably improves the result, which the scenario reports. opt-a describes voting, which aggregates independent attempts rather than iteratively refining one; opt-d denies the observed improvement from feedback, contradicting the premise.",
     "distractorNotes": {
-      "opt-a": "Plausible because it also uses multiple calls, but voting picks among parallel attempts instead of refining a draft against critique.",
-      "opt-d": "Plausible as a simplicity argument, but it contradicts the observed fact that reviewer feedback already improves the second pass."
+      "a": "Plausible because it also uses multiple calls, but voting picks among parallel attempts instead of refining a draft against critique.",
+      "d": "Plausible as a simplicity argument, but it contradicts the observed fact that reviewer feedback already improves the second pass."
     },
     "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
     "sourceNote": "Workflow: Evaluator-optimizer",
@@ -1492,33 +1532,34 @@
     "subdomain": "claude-api-mechanics",
     "difficulty": "easy",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A team is adding image understanding to an application that already calls the Messages API. They want to know how images are supplied to a request and how to arrange them relative to the accompanying question. Which statement is correct?",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "Images must be trained into a custom model beforehand; the request body itself cannot carry image data of any kind."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "Images are provided as image content blocks, and placing the image before the text generally gives better results."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "Only a single image is ever allowed per request, and it must always be positioned after all of the text content."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "Images can be sent only as public URLs, since embedding image bytes directly in the request is not supported."
       }
     ],
     "correct": [
-      "opt-b"
+      "b"
     ],
     "explanation": "opt-b is correct because vision requests supply images as image content blocks (via base64, a URL, or a Files API file_id), and the guidance is that Claude works best when the image comes before the text. opt-a is false since the request carries the image directly; opt-c invents a single-image, image-last rule that does not exist; opt-d is wrong because base64 and file_id sources are supported alongside URLs.",
     "distractorNotes": {
-      "opt-a": "Plausible to someone thinking of fine-tuning, but vision is a request-time capability and the body carries the image.",
-      "opt-c": "Plausible as a guessed constraint, but multiple images are allowed and image-before-text is preferred, not the reverse.",
-      "opt-d": "Plausible because URL sources exist, but base64 and file_id sources are equally supported ways to pass an image."
+      "a": "Plausible to someone thinking of fine-tuning, but vision is a request-time capability and the body carries the image.",
+      "c": "Plausible as a guessed constraint, but multiple images are allowed and image-before-text is preferred, not the reverse.",
+      "d": "Plausible because URL sources exist, but base64 and file_id sources are equally supported ways to pass an image."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/vision",
     "sourceNote": "Send images to Claude",
@@ -1533,33 +1574,34 @@
     "subdomain": "claude-api-mechanics",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "For compliance reasons, a company must invoke Claude through its existing Google Cloud vendor account rather than calling Anthropic's API directly. An engineer worries the whole integration must be rebuilt. What is the most accurate characterisation of the change?",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "The request format is entirely different, so the messages-based structure of the integration has to be rewritten from scratch."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "Going through a cloud vendor is unsupported for production, so requests must still terminate at Anthropic's own endpoint."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "Model choice disappears at the vendor, because the platform selects a model automatically for every incoming request."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "The interface stays close to the Messages API, with mainly authentication and a few request-format details differing."
       }
     ],
     "correct": [
-      "opt-d"
+      "d"
     ],
     "explanation": "opt-d is correct because accessing Claude through Google Cloud uses an API nearly identical to the Messages API, differing chiefly in how the model is specified, where the version value is passed, and vendor authentication via the official SDK, so the core messages structure carries over. opt-a overstates the change; opt-b is false because vendor access is a supported path; opt-c is wrong because the caller still selects the model, just specified through the endpoint rather than the body.",
     "distractorNotes": {
-      "opt-a": "Plausible if you assume each vendor is bespoke, but the request shape is nearly identical to the Messages API.",
-      "opt-b": "Plausible to someone unaware of vendor deployments, but invoking Claude through cloud vendors is fully supported.",
-      "opt-c": "Plausible because endpoints encode the model, but the developer still chooses which model to call."
+      "a": "Plausible if you assume each vendor is bespoke, but the request shape is nearly identical to the Messages API.",
+      "b": "Plausible to someone unaware of vendor deployments, but invoking Claude through cloud vendors is fully supported.",
+      "c": "Plausible because endpoints encode the model, but the developer still chooses which model to call."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/claude-on-vertex-ai",
     "sourceNote": "Differences from the Messages API",
@@ -1574,33 +1616,34 @@
     "subdomain": "claude-api-mechanics",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A data team is integrating the Message Batches API to process a large evaluation set and needs to design how their code submits work and collects answers. Which statements about how the batch workflow behaves are correct? Select TWO.",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "Each request in a batch is processed independently, so a batch can mix different kinds of requests together."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "The client streams tokens back for every batched request as it runs, exactly as with a synchronous call."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "Code submits the batch, then polls for status and retrieves results once processing has ended for the requests."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "A batch holds its connection open until finished, blocking the caller until all responses are ready to return."
       }
     ],
     "correct": [
-      "opt-a",
-      "opt-c"
+      "a",
+      "c"
     ],
     "explanation": "opt-a and opt-c are correct: each batched request is handled independently, allowing a mix of request types in one batch, and the workflow is asynchronous, so callers submit, poll for status, and retrieve results after processing ends. opt-b is false because streaming is not supported inside a batch; results come back as a file rather than a live token stream. opt-d contradicts the asynchronous, non-blocking design of batching.",
     "distractorNotes": {
-      "opt-b": "Plausible by analogy to synchronous calls, but stream is unsupported in batch requests and results are returned as a file.",
-      "opt-d": "Plausible if you picture a long request, but batching is asynchronous and does not block the caller on an open connection."
+      "b": "Plausible by analogy to synchronous calls, but stream is unsupported in batch requests and results are returned as a file.",
+      "d": "Plausible if you picture a long request, but batching is asynchronous and does not block the caller on an open connection."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/batch-processing",
     "sourceNote": "How the Message Batches API works",
@@ -1615,33 +1658,34 @@
     "subdomain": "claude-api-mechanics",
     "difficulty": "easy",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A product manager proposes routing an interactive chat feature's live requests through the Message Batches API to cut cost, since batching is cheaper per token. Users expect a reply within a second or two. Why is this the wrong tool for the workload?",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "Batch processing is asynchronous and latency-tolerant, so it does not fit a request that needs an immediate reply."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "Batch processing costs more per token than synchronous calls, so it never helps once user wait time is considered."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "Batch processing rejects any conversational messages, so a chat turn cannot be expressed as a batched request at all."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "Batch processing guarantees sub-second responses but caps throughput too low to serve a busy chat feature's traffic."
       }
     ],
     "correct": [
-      "opt-a"
+      "a"
     ],
     "explanation": "opt-a is correct because the Batches API is an asynchronous, latency-tolerant path suited to work that can wait, which is the opposite of an interactive request needing an immediate response; the realtime-versus-batch tradeoff turns on whether latency matters, not just on price. opt-b misstates pricing, since batching is cheaper per token; opt-c is false because conversational messages can be batched; opt-d inverts the latency profile of batching entirely.",
     "distractorNotes": {
-      "opt-b": "Plausible if you conflate cost with latency, but batching is cheaper per token; the real issue is response time.",
-      "opt-c": "Plausible as a guessed limitation, but multi-turn conversational requests can be included in a batch.",
-      "opt-d": "Plausible-sounding but backwards: batching is latency-tolerant and asynchronous, not a sub-second path."
+      "b": "Plausible if you conflate cost with latency, but batching is cheaper per token; the real issue is response time.",
+      "c": "Plausible as a guessed limitation, but multi-turn conversational requests can be included in a batch.",
+      "d": "Plausible-sounding but backwards: batching is latency-tolerant and asynchronous, not a sub-second path."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/batch-processing",
     "sourceNote": "When batch processing is useful",
@@ -1656,6 +1700,7 @@
     "subdomain": "software-engineering-foundations",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "core",
     "stem": "An engineer must migrate a large module onto a new internal framework and wants Claude's help without destabilising the codebase. Which approach is safest for a change of this size?",
     "options": [
       {
@@ -1697,6 +1742,7 @@
     "subdomain": "software-engineering-foundations",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A reviewer is assigned a pull request whose changes were produced with Claude. Which review practices fit the documented guidance for AI-assisted changes? Select TWO.",
     "options": [
       {
@@ -1738,6 +1784,7 @@
     "subdomain": "software-engineering-foundations",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "During a task Claude proposes a sweeping set of edits spanning many files, and the developer wants to stay in control of what actually lands. What is the best way to work?",
     "options": [
       {
@@ -1779,6 +1826,7 @@
     "subdomain": "software-engineering-foundations",
     "difficulty": "easy",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A developer hits an intermittent failure when running the test command and wants Claude to help find the cause. What gives Claude the best chance of locating the source?",
     "options": [
       {
@@ -1820,6 +1868,7 @@
     "subdomain": "software-engineering-foundations",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A developer asks Claude to add tests to a service that currently has none. Which expectations match how Claude approaches writing those tests? Select TWO.",
     "options": [
       {
@@ -1861,6 +1910,7 @@
     "subdomain": "software-engineering-foundations",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A team wants to run Claude as a non-interactive step inside their continuous-integration pipeline to process changes in batch. Which characterisation of this use is accurate?",
     "options": [
       {
@@ -1902,6 +1952,7 @@
     "subdomain": "software-engineering-foundations",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "Two developers want to run separate Claude sessions against the same repository at the same time without their edits colliding. What is the recommended setup?",
     "options": [
       {
@@ -1943,6 +1994,7 @@
     "subdomain": "configuration-management",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A team commits shared settings in the project settings file, but one developer needs a different model for that project only, without changing it for teammates. Which statement about how the configuration layers resolve is correct?",
     "options": [
       {
@@ -1984,6 +2036,7 @@
     "subdomain": "configuration-management",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A developer is deciding where a new instruction belongs. It is a build-and-test convention every teammate on the project should follow. Which placement fits the intended scope, and why?",
     "options": [
       {
@@ -2025,6 +2078,8 @@
     "subdomain": "configuration-management",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "deep",
+    "scopeNote": "Tests which Claude Code configuration files belong outside version control, file by file. On-blueprint under configuration management, but per-file gitignore judgement is finer-grained than the exam's treatment of committing prompts and pinned model versions.",
     "stem": "A developer wants to keep some Claude configuration private to their own machine while still committing the team's shared setup. Which items should be kept out of version control? Select TWO.",
     "options": [
       {
@@ -2066,6 +2121,7 @@
     "subdomain": "configuration-management",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A team finds that regenerating a year-old report yields different results over time from identical inputs, and traces it to the model their configuration resolves to. Which practice most directly addresses this?",
     "options": [
       {
@@ -2107,6 +2163,8 @@
     "subdomain": "configuration-management",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "deep",
+    "scopeNote": "Tests plugin packaging and that consumers receive updates only when the plugin's version field is bumped. On-blueprint under configuration management, but plugin distribution mechanics sit past the configuration-management objective the exam samples.",
     "stem": "A developer has skills and hooks in their local Claude directory that several teams now want to reuse and version. Which statements about packaging this as a plugin are accurate? Select TWO.",
     "options": [
       {
@@ -2148,6 +2206,7 @@
     "subdomain": "configuration-management",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A developer keeps adding rules to the project memory file expecting them to be enforced like hard constraints, and is surprised when Claude occasionally deviates. Which statements reflect how these files are designed to work? Select TWO.",
     "options": [
       {
@@ -2189,6 +2248,7 @@
     "subdomain": "understanding-requirements",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A business goal states that a support assistant must answer accurately and stay responsive under load. A developer is separating this into requirement types before design begins. Which reading is correct?",
     "options": [
       {
@@ -2230,6 +2290,7 @@
     "subdomain": "understanding-requirements",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A stakeholder gives only the business aim to pick a model that keeps costs sane while handling the hardest tickets. Which criteria should the team derive to turn this into something decidable? Select TWO.",
     "options": [
       {
@@ -2271,6 +2332,7 @@
     "subdomain": "systems-life-cycle",
     "difficulty": "easy",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A service has run in production for a year on a model that was just marked deprecated with a retirement date. Which operate-and-maintain action best fits managing the system across the model lifecycle?",
     "options": [
       {

@@ -9,6 +9,10 @@ import {
   validateCertContent,
   validateRepository,
 } from "../scripts/validate-content.mjs";
+import {
+  SCOPE_MIN_CORE_SHARE,
+  SCOPE_MIN_SAMPLE,
+} from "../schemas/question-bank.mjs";
 
 const fixtureUrl = new URL("./fixtures/", import.meta.url);
 const repositoryFixtureUrl = new URL("repository/", fixtureUrl);
@@ -239,6 +243,7 @@ function lengthBiasBank(count, keyText, prefix) {
     domain: "tools-and-mcps",
     difficulty: "medium",
     status: "reviewed",
+    scope: "core",
     stem: "Which option is correct?",
     // The key rotates through every position, so only length is exploitable.
     options: positions.map((id) => ({
@@ -424,5 +429,50 @@ test("rejects an unknown scope value", async () => {
   assert.throws(
     () => validateCertContent("ccdv-f", manifest, questions),
     ContentValidationError,
+  );
+});
+
+test("requires every question to declare a scope", async () => {
+  const { manifest, questions } = await validContent();
+  delete questions[0].scope;
+
+  assert.throws(
+    () => validateCertContent("ccdv-f", manifest, questions),
+    /questions\.0\.scope/,
+  );
+});
+
+function scopedBank(count, deepCount) {
+  const bank = lengthBiasBank(count, "A short distractor.", "scope");
+
+  for (const question of bank.slice(0, deepCount)) {
+    question.scope = "deep";
+    question.scopeNote = "Above the sample questions' cognitive level.";
+  }
+
+  return bank;
+}
+
+test("rejects a bank whose exam-aligned slice falls below the floor", async () => {
+  const { manifest } = await validContent();
+  // One more than the floor tolerates: 24 * (1 - 0.8) = 4.8, so 5 tips it.
+  const deep = Math.floor(24 * (1 - SCOPE_MIN_CORE_SHARE)) + 1;
+
+  assert.throws(
+    () => validateCertContent("ccdv-f", manifest, scopedBank(24, deep)),
+    /too little of the bank is exam-aligned/,
+  );
+
+  assert.doesNotThrow(() =>
+    validateCertContent("ccdv-f", manifest, scopedBank(24, deep - 1)),
+  );
+});
+
+test("ignores the exam-aligned floor below the minimum sample size", async () => {
+  const { manifest } = await validContent();
+  const size = SCOPE_MIN_SAMPLE - 1;
+
+  assert.doesNotThrow(() =>
+    validateCertContent("ccdv-f", manifest, scopedBank(size, size)),
   );
 });

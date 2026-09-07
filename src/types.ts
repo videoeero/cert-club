@@ -27,7 +27,12 @@ export interface QuestionOption {
   text: string;
 }
 
-export type QuestionScope = "core" | "deep" | "out-of-scope";
+/**
+ * "core" is traceable to a blueprint objective and pitched at the exam's
+ * cognitive level; "deep" is sound and sourced but sits above it. Every
+ * question declares one, so nothing enters the bank unclassified.
+ */
+export type QuestionScope = "core" | "deep";
 
 export interface Question {
   id: string;
@@ -38,7 +43,7 @@ export interface Question {
   subdomain?: string;
   difficulty: "easy" | "medium" | "hard";
   status: "draft" | "reviewed";
-  scope?: QuestionScope;
+  scope: QuestionScope;
   scopeNote?: string;
   stem: string;
   options: QuestionOption[];
@@ -62,10 +67,10 @@ export type ReviewScope = "missed" | "bookmarked" | "missed-or-bookmarked";
 
 /**
  * Which slice of the bank a session may draw from. "core-only" keeps sessions
- * aligned to the published blueprint; the wider settings opt into questions
- * that sit above the exam's cognitive level or outside its objectives.
+ * aligned to the published blueprint; "with-deep" opts into questions that sit
+ * above the exam's cognitive level.
  */
-export type ScopeFilter = "core-only" | "with-deep" | "everything";
+export type ScopeFilter = "core-only" | "with-deep";
 
 export interface Preferences {
   scopeFilter: ScopeFilter;

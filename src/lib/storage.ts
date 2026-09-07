@@ -63,9 +63,7 @@ function isReviewScope(value: unknown): value is ReviewScope {
 }
 
 function isScopeFilter(value: unknown): value is ScopeFilter {
-  return (
-    value === "core-only" || value === "with-deep" || value === "everything"
-  );
+  return value === "core-only" || value === "with-deep";
 }
 
 function isPreferences(value: unknown): value is Preferences {

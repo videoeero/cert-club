@@ -63,23 +63,15 @@ function randomSample(
 
 export const DEFAULT_SCOPE_FILTER: ScopeFilter = "core-only";
 
-/**
- * Restricts the pool to the slice of the bank the user opted into. An absent
- * scope means "core", so banks that predate the field are unaffected.
- */
+/** Restricts the pool to the slice of the bank the user opted into. */
 export function filterQuestionsByScope(
   questions: readonly Question[],
   scopeFilter: ScopeFilter = DEFAULT_SCOPE_FILTER,
 ): Question[] {
-  if (scopeFilter === "everything") {
+  if (scopeFilter === "with-deep") {
     return [...questions];
   }
-  return questions.filter((question) => {
-    const scope = question.scope ?? "core";
-    return (
-      scope === "core" || (scopeFilter === "with-deep" && scope === "deep")
-    );
-  });
+  return questions.filter((question) => question.scope === "core");
 }
 
 /**

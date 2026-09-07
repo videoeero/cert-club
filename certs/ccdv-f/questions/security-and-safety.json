@@ -8,6 +8,7 @@
     "subdomain": "identity-secrets-and-key-management",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "An organization is replacing a personal API key that several engineers currently share to run a production service. Which approaches align with the documented guidance? Select TWO.",
     "options": [
       {
@@ -54,6 +55,7 @@
     "subdomain": "claude-hooks",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "core",
     "stem": "An organization is deploying a Claude-based agent using the Agent SDK and needs to enforce a mandatory compliance check on every tool call. The security team requires that this check cannot be bypassed by any permissive configuration elsewhere in the application. Which TWO statements describe how hooks and permissions address this requirement at a foundational level?",
     "options": [
       {
@@ -105,6 +107,7 @@
     "subdomain": "ai-application-security",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A support application asks Claude to summarize inbound emails from unknown senders. The team wants Claude to treat every email body as data rather than as instructions it might follow. Following Anthropic's guidance on indirect prompt injection, where should the retrieved email body be placed in the request?",
     "options": [
       {
@@ -146,6 +149,7 @@
     "subdomain": "ai-application-security",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "core",
     "stem": "An agent retrieves web pages and documents on a trusted user's behalf, so the adversary controls the retrieved content rather than the user's prompt. Which THREE practices does Anthropic's guidance recommend for limiting the damage an embedded instruction can do? Select THREE.",
     "options": [
       {
@@ -197,6 +201,7 @@
     "subdomain": "guardrails-and-safe-deployment",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A repository's Claude Code settings contain both a deny rule for Bash(aws *) and an allow rule for Bash(aws s3 ls). During a session Claude proposes running aws s3 ls. What happens, and why?",
     "options": [
       {
@@ -238,6 +243,7 @@
     "subdomain": "claude-hooks",
     "difficulty": "easy",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A team writes in its CLAUDE.md that Claude must never run the project's deployment script. A reviewer asks whether that instruction on its own prevents the tool call from executing. Which assessment is correct?",
     "options": [
       {
@@ -279,6 +285,7 @@
     "subdomain": "guardrails-and-safe-deployment",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A team enables the built-in sandboxed Bash tool and asks its security reviewer what that sandbox does not protect against. Which TWO statements are accurate? Select TWO.",
     "options": [
       {
@@ -325,6 +332,7 @@
     "subdomain": "guardrails-and-safe-deployment",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A streaming integration receives a response whose stop_reason is refusal. The application appends the partial assistant text to its history and immediately re-sends the same conversation, which is refused again on every retry. What should the application do instead?",
     "options": [
       {
@@ -366,6 +374,7 @@
     "subdomain": "identity-secrets-and-key-management",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A multi-tenant service runs an agent over customer repositories it does not control, and the agent must call a paid third-party API. Which TWO measures follow Anthropic's guidance on securely deploying agents? Select TWO.",
     "options": [
       {
@@ -412,6 +421,8 @@
     "subdomain": "ai-application-security",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "deep",
+    "scopeNote": "Tests which workloads a zero-data-retention arrangement covers, feature by feature. On-blueprint under AI application security, but per-feature ZDR eligibility is a compliance lookup rather than a security design decision the developer makes.",
     "stem": "An organization has a zero data retention arrangement enabled for its Claude API organization. Which workload does that arrangement cover?",
     "options": [
       {
@@ -453,6 +464,7 @@
     "subdomain": "claude-hooks",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "core",
     "stem": "An organization is deploying an autonomous agent using the Agent SDK and wants to ensure that the agent operates safely and transparently. They plan to use hooks to enforce security policies. Which TWO of the following statements accurately reflect the high-level purpose and capabilities of hooks in this ecosystem?",
     "options": [
       {
@@ -504,6 +516,8 @@
     "subdomain": "identity-secrets-and-key-management",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "deep",
+    "scopeNote": "Tests that a request carries either an API key or a federated bearer token, and that a federated token selects its workspace at token exchange rather than through a workspace header. On-blueprint under identity, secrets and key management, but the exam tests where credentials should live, not how workspace scoping is carried on the wire.",
     "stem": "A backend service is being provisioned to call the Claude API, and the team is deciding how it should authenticate. Which statement about authenticating a request is accurate?",
     "options": [
       {
@@ -545,11 +559,12 @@
     "subdomain": "ai-application-security",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "core",
     "stem": "An agent that reads untrusted third-party content can also call tools that move money and delete records. The team wants to bound the damage if an injected instruction ever slips past their screening. Which design principle matters most?",
     "options": [
       {
         "id": "a",
-        "text": "Raise the model's temperature so that its behaviour is harder for an attacker crafting an injection to anticipate and steer."
+        "text": "Screen every tool result through a second model call that classifies it for injection attempts, and proceed whenever that screen reports the content clean."
       },
       {
         "id": "b",
@@ -569,7 +584,7 @@
     ],
     "explanation": "Because a successful injection acts through the model's output, the durable defense is to break the link between that output and privileged action: apply least privilege and gate sensitive or irreversible operations behind authorization or human confirmation (d). Temperature (a) is irrelevant to injection; a single system-prompt sentence (b) is not an enforceable boundary on its own; and broad permissions (c) do the opposite of containment by maximising what a successful injection can reach.",
     "distractorNotes": {
-      "a": "Randomising outputs does nothing to stop an injection from invoking a dangerous tool and only makes behaviour less predictable overall.",
+      "a": "Classifier screening is a recommended layer, but the scenario is explicitly about an instruction that slips past screening, and a probabilistic filter cannot be the control that bounds an irreversible action.",
       "b": "Prompt-level instructions help but are not an enforceable control; they can be overridden and must be backed by least-privilege and confirmation gates.",
       "c": "Broad permissions widen the blast radius; the goal is to minimise what a compromised turn can do, not to give it more power to act."
     },
@@ -586,6 +601,7 @@
     "subdomain": "ai-application-security",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A public-facing assistant is the target of users who deliberately craft inputs to bypass its guardrails. Select THREE mitigations Anthropic recommends against these direct jailbreak attempts.",
     "options": [
       {
@@ -637,33 +653,34 @@
     "subdomain": "claude-hooks",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A platform team must guarantee that Claude Code never runs a command that deletes a production database, whatever the session or the prompt. They plan to enforce this with a hook. Where in the lifecycle must the check run, and why?",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "At session start, where the hook can scan the configured tool list once and refuse to open a session that exposes any destructive command."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "On every user prompt submission, where the hook can reject any prompt whose wording suggests the user is asking for a destructive operation."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "Before each tool call, where the hook receives the pending call and can deny it, so the command never executes in the first place."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "After each tool call, where the hook sees exactly what ran and can raise an alert and begin restoring from the most recent backup."
       }
     ],
     "correct": [
-      "opt-c"
+      "c"
     ],
     "explanation": "A guardrail against a destructive action has to sit between the decision to act and the action itself. The pre-tool-use event fires on every tool call inside the agentic loop and receives the pending call, so the handler can inspect the actual command and deny it before execution. The other placements either run too early to see the concrete call or too late to prevent it.",
     "distractorNotes": {
-      "opt-a": "Runs once, before any call exists. It can reason about what is available in principle but never sees the specific command, and a broadly capable tool cannot be judged in advance.",
-      "opt-b": "Filters intent rather than action, so it misses any destructive call the model arrives at from an innocuous request, which is the case that most needs catching.",
-      "opt-d": "Fires after execution. Detection and recovery are valuable, but the requirement is prevention, and by this point the deletion has already happened."
+      "a": "Runs once, before any call exists. It can reason about what is available in principle but never sees the specific command, and a broadly capable tool cannot be judged in advance.",
+      "b": "Filters intent rather than action, so it misses any destructive call the model arrives at from an innocuous request, which is the case that most needs catching.",
+      "d": "Fires after execution. Detection and recovery are valuable, but the requirement is prevention, and by this point the deletion has already happened."
     },
     "sourceUrl": "https://code.claude.com/docs/en/hooks",
     "sourceNote": "Hooks reference — hook lifecycle: PreToolUse and PostToolUse fire on every tool call inside the agentic loop, and a handler can inspect the input and return a decision",

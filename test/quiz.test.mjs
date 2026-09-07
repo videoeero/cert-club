@@ -21,6 +21,7 @@ function question(id, domain, type = "single", correct = ["a"]) {
     domain,
     difficulty: "medium",
     status: "reviewed",
+    scope: "core",
     stem: `Question ${id}`,
     options: [
       { id: "a", text: "Option A" },
@@ -374,10 +375,10 @@ test("simulateQuizAnswers: degenerate question with no distractors", () => {
   assert.equal(scoreAnswer(degenerateQ, answers[degenerateQ.id]), false);
 });
 
-function scopedQuestion(id, domain, scope, subdomain) {
+function scopedQuestion(id, domain, scope = "core", subdomain) {
   const built = question(id, domain);
-  if (scope !== undefined) {
-    built.scope = scope;
+  built.scope = scope;
+  if (scope !== "core") {
     built.scopeNote = "Tagged for test purposes.";
   }
   if (subdomain !== undefined) {
@@ -390,28 +391,24 @@ const scopedBank = [
   scopedQuestion("core-1", "alpha"),
   scopedQuestion("core-2", "alpha", "core"),
   scopedQuestion("deep-1", "alpha", "deep"),
-  scopedQuestion("out-1", "beta", "out-of-scope"),
+  scopedQuestion("deep-2", "beta", "deep"),
 ];
 
-test("treats questions without a scope as core", () => {
+test("defaults to the exam-aligned slice of the bank", () => {
   assert.deepEqual(
     filterQuestionsByScope(scopedBank).map((q) => q.id),
     ["core-1", "core-2"],
   );
 });
 
-test("widens the pool step by step as the scope filter opens up", () => {
+test("widens the pool when the scope filter opens up", () => {
   assert.deepEqual(
     filterQuestionsByScope(scopedBank, "core-only").map((q) => q.id),
     ["core-1", "core-2"],
   );
   assert.deepEqual(
     filterQuestionsByScope(scopedBank, "with-deep").map((q) => q.id),
-    ["core-1", "core-2", "deep-1"],
-  );
-  assert.deepEqual(
-    filterQuestionsByScope(scopedBank, "everything").map((q) => q.id),
-    ["core-1", "core-2", "deep-1", "out-1"],
+    ["core-1", "core-2", "deep-1", "deep-2"],
   );
 });
 
@@ -428,13 +425,12 @@ test("applies the scope filter to every selection mode", () => {
     );
   }
 
-  // beta holds only an out-of-scope question, so "with-deep" empties it.
+  // beta holds only a deep question, so the default filter empties it.
   assert.throws(
     () =>
       selectQuestions(scopedBank, domains, {
         mode: "domain",
         domain: "beta",
-        scopeFilter: "with-deep",
       }),
     /No questions are available for the selected domain "beta"/,
   );

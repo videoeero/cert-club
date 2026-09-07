@@ -8,6 +8,7 @@
     "subdomain": "prompt-engineering",
     "difficulty": "easy",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A team builds a document analysis endpoint. Each request bundles roughly 40,000 tokens of reference material together with the analyst's question, a short instruction block, and two worked examples, all in a single user message. Quality on multi-document requests is inconsistent. Following Anthropic's long context prompting guidance, how should that message be ordered?",
     "options": [
       {
@@ -49,6 +50,7 @@
     "subdomain": "prompt-engineering",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "An engineer is assembling a prompt that mixes standing instructions, several supplied source documents, and a user question, and wants the boundaries between those parts to be unambiguous. Which TWO practices does Anthropic's prompting guidance recommend for structuring this prompt with tags? (Select TWO.)",
     "options": [
       {
@@ -100,6 +102,7 @@
     "subdomain": "prompt-engineering",
     "difficulty": "easy",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A support team is adding examples to a ticket classification prompt to make the output format and label choices more consistent. Which approach best matches Anthropic's published guidance on using examples?",
     "options": [
       {
@@ -141,6 +144,7 @@
     "subdomain": "prompt-engineering",
     "difficulty": "easy",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A developer wants every response from an internal assistant to be framed as coming from a specialist in a narrow technical area, so that tone and focus stay consistent across a multi-turn conversation. What is the documented way to establish this role in a Messages API request?",
     "options": [
       {
@@ -182,6 +186,7 @@
     "subdomain": "context-engineering",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "An agent is hitting its context limit sooner than its developer expected, and the developer is auditing what actually consumes the window. Which THREE statements about context window accounting are correct? (Select THREE.)",
     "options": [
       {
@@ -233,6 +238,8 @@
     "subdomain": "context-engineering",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "deep",
+    "scopeNote": "Tests the context-editing calling convention: the application keeps its full unmodified history and keeps sending it, because clearing is applied server-side before the prompt reaches the model. On-blueprint under context engineering, but this is one feature's contract rather than the context-pruning principle the exam tests.",
     "stem": "A team enables server-side tool result clearing on a long-running agent that accumulates large file reads and search results. During review, someone asks how the application's own stored conversation history should be maintained now that older tool results are being cleared. What is correct?",
     "options": [
       {
@@ -274,43 +281,45 @@
     "subdomain": "context-engineering",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "deep",
+    "scopeNote": "Tests server-side compaction specifics: an input-token threshold trigger, and custom summarization instructions replacing rather than augmenting the default prompt. On-blueprint under context engineering, but the exam treats compaction as a technique to reach for, not as a configuration surface with documented defaults.",
     "stem": "A developer is configuring server-side compaction for a long-running Claude assistant to manage context window limits. They plan to use custom summarization instructions to ensure technical decisions are preserved. Which TWO statements accurately describe the foundational behavior of the compaction feature? (Select TWO.)",
     "options": [
       {
-        "id": "b",
+        "id": "a",
         "text": "Compaction is triggered when the conversation reaches a configured threshold of input tokens."
       },
       {
-        "id": "c",
+        "id": "b",
         "text": "Custom summarization instructions are appended to the default prompt so that standard state-tracking behaviors are retained."
       },
       {
-        "id": "d",
+        "id": "c",
         "text": "Compaction is triggered automatically based on the number of conversation turns or elapsed time."
       },
       {
-        "id": "e",
+        "id": "d",
         "text": "The client application is responsible for executing the summarization prompt and truncating the superseded history."
       },
       {
-        "id": "f",
+        "id": "e",
         "text": "The application must manually remove content preceding the compaction block before sending subsequent requests."
       },
       {
-        "id": "a",
+        "id": "f",
         "text": "Custom summarization instructions completely replace the default summarization prompt."
       }
     ],
     "correct": [
-      "a",
-      "b"
+      "f",
+      "a"
     ],
     "explanation": "Compaction is a server-side feature that automatically summarizes older conversation content to manage context limits. It is fundamentally triggered by the volume of input (a threshold of input tokens), rather than the number of turns or time elapsed. When configuring compaction, providing custom summarization instructions completely replaces Claude's default summarization prompt. This means developers must explicitly instruct Claude to retain any standard behaviors they still need, such as recording current state or next steps. Operationally, the summary is returned as a compaction block, and the server automatically drops the superseded prior blocks on subsequent requests, meaning the client does not need to manually summarize or strip the old history.",
     "distractorNotes": {
-      "c": "Custom instructions do not supplement the default prompt; they replace it entirely. Assuming default behaviors survive is a common misunderstanding.",
-      "d": "The trigger for compaction is based exclusively on the number of input tokens, not on conversational turns or wall-clock duration.",
-      "e": "Compaction is performed server-side. The client application does not need to run the summarization itself, which simplifies managing long-running contexts.",
-      "f": "Once a compaction block is generated and appended, the server automatically drops the earlier superseded content; manual stripping by the client is not required."
+      "b": "Custom instructions do not supplement the default prompt; they replace it entirely. Assuming default behaviors survive is a common misunderstanding.",
+      "c": "The trigger for compaction is based exclusively on the number of input tokens, not on conversational turns or wall-clock duration.",
+      "d": "Compaction is performed server-side. The client application does not need to run the summarization itself, which simplifies managing long-running contexts.",
+      "e": "Once a compaction block is generated and appended, the server automatically drops the earlier superseded content; manual stripping by the client is not required."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/compaction",
     "sourceNote": "Parameters table and Custom summarization instructions section: input tokens is the only supported trigger type with a default of 150,000 and a stated minimum of 50,000, and custom instructions completely replace the default prompt when provided; the How compaction works and Pausing after compaction sections cover the compaction block, automatic dropping of prior blocks, and the pause option.",
@@ -325,6 +334,8 @@
     "subdomain": "output-handling",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "deep",
+    "scopeNote": "Tests that enabling citations restructures the response into interleaved text and citation blocks. On-blueprint under output handling, but the exam treats output handling as validate-before-you-trust; one feature's response layout sits past that.",
     "stem": "A developer is building an application that generates answers from user-supplied documents and needs to ensure that each claim is easily traceable. They enable the citations feature in the API request. How does enabling this feature fundamentally change the structure of Claude's output?",
     "options": [
       {
@@ -366,6 +377,7 @@
     "subdomain": "output-handling",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A development team is building a knowledge base assistant and is considering using the Claude API's built-in Citations feature instead of simply prompting the model to 'quote its sources'. Which TWO statements describe high-level benefits or capabilities of this feature? (Select TWO.)",
     "options": [
       {
@@ -417,6 +429,7 @@
     "subdomain": "prompt-engineering",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A content team needs generated policy summaries to be checked against a fixed rubric before publication, and auditors must be able to see what the first draft looked like and why it changed. The engineer is deciding whether to keep the work in one request or split it into an explicit chain of separate API calls. Which reasoning matches Anthropic's guidance on chaining complex prompts?",
     "options": [
       {
@@ -458,6 +471,8 @@
     "subdomain": "output-handling",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "deep",
+    "scopeNote": "Tests structured-outputs guarantees, including that the same mechanism powers strict schema enforcement for tool inputs. On-blueprint under output handling, but the exam samples why you validate model output, not the feature's coverage boundary.",
     "stem": "A developer is planning to use the Claude API's native Structured Outputs feature to extract specific data from unstructured text into JSON. Which TWO statements accurately describe the foundational capabilities of this feature? (Select TWO.)",
     "options": [
       {
@@ -509,6 +524,7 @@
     "subdomain": "context-engineering",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A team maintaining a long-running agent keeps loading more reference material into its context window \"just in case\" it turns out to be relevant, and answer quality is slowly getting worse. Which principle should guide what actually belongs in context?",
     "options": [
       {
@@ -550,6 +566,7 @@
     "subdomain": "context-engineering",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "core",
     "stem": "An agent runs multi-hour codebase migrations whose cumulative token count far exceeds the context window, and it must stay coherent and goal-directed across the whole task. Select THREE techniques that let it work past the window limit while preserving the context that still matters.",
     "options": [
       {
@@ -601,6 +618,7 @@
     "subdomain": "context-engineering",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "An agent works across many sessions and must remember project state, decisions, and progress that would otherwise be lost as the conversation is summarised or scrolls out of the context window. Where should that durable information live?",
     "options": [
       {
@@ -613,7 +631,7 @@
       },
       {
         "id": "c",
-        "text": "Encoded implicitly in a higher temperature setting, so the model reconstructs the missing state by improvising when it is asked."
+        "text": "In the summaries compaction produces, since compaction exists to carry forward the decisions and progress that matter."
       },
       {
         "id": "d",
@@ -626,7 +644,7 @@
     "explanation": "Structured note-taking, or agentic memory, persists critical facts outside the context window and reads them back when needed, giving continuity across sessions and summarisation steps. That is option b. Leaving durable state only in the conversation (a) is unsafe because compaction and window limits can discard it; temperature (c) has nothing to do with memory; and endlessly appending state to the system prompt (d) bloats it and reintroduces the very window pressure you were trying to escape.",
     "distractorNotes": {
       "a": "Message history is not permanent: compaction summarises older turns and long conversations fall out of the window, so facts kept only there can silently disappear.",
-      "c": "Temperature governs randomness, not recall. It cannot store or retrieve state, and improvised reconstruction of prior decisions is exactly what a memory store prevents.",
+      "c": "Compaction does carry a condensed history forward, but summarising is lossy and each pass summarises the previous summary, so details that matter only later are progressively dropped. Notes written outside the conversation are not subject to that.",
       "d": "Continuously growing the system prompt trades one window problem for another; persistent facts belong in an external store that is consulted on demand, not re-injected every turn."
     },
     "sourceUrl": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
@@ -642,6 +660,7 @@
     "subdomain": "context-engineering",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A developer is deciding whether to let a long conversation keep accumulating turns or to summarise older ones as it approaches the window limit. Select TWO statements that correctly describe the tradeoff involved.",
     "options": [
       {
@@ -688,6 +707,7 @@
     "subdomain": "prompt-engineering",
     "difficulty": "easy",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A developer has fixed, standing instructions that should govern the assistant's role and behaviour on every request, alongside per-request user content that varies. Where should the standing instructions be placed?",
     "options": [
       {
@@ -729,6 +749,7 @@
     "subdomain": "prompt-engineering",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A developer is struggling to get consistent output formatting from an assistant and is iterating on the prompt. Select THREE techniques that Anthropic recommends for steering output format.",
     "options": [
       {
@@ -780,33 +801,34 @@
     "subdomain": "output-handling",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A service asks Claude for JSON and parses the reply. Roughly one call in twenty fails to parse, so the team wrapped the call in a retry loop that reissues the request until parsing succeeds. Costs and latency have both climbed. What is the better approach?",
     "options": [
       {
-        "id": "opt-a",
-        "text": "Raise the temperature so that a failed attempt is more likely to produce different output on the next try, which shortens the retry loop."
+        "id": "a",
+        "text": "Cap the retry loop at three attempts and fall back to a null result when all three fail, so cost and latency stay bounded."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "Keep the retry loop but strip the reply of any text outside the outermost braces first, since the parse failures are formatting noise."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "Constrain the response with structured outputs, so the reply is schema-compliant by construction and the retry loop can be removed entirely."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "Move the schema into the system prompt and restate it before every user turn, so the instruction stays close to the point of generation."
       }
     ],
     "correct": [
-      "opt-c"
+      "c"
     ],
     "explanation": "Structured outputs constrain generation to a supplied JSON schema, so the response is valid and correctly typed by construction rather than by luck. That removes the failure the retry loop exists to absorb, along with the duplicated cost and latency of reissuing requests. The other options all treat the symptom: they try to make an unconstrained generation fail less often, rather than removing the possibility of a schema violation.",
     "distractorNotes": {
-      "opt-a": "Temperature does change sampling, but it is not a correctness control. Varying the output distribution to make a malformed reply less likely still leaves the reply unconstrained.",
-      "opt-b": "Salvaging text around the JSON is a real defensive technique, but here it papers over a problem that can be eliminated outright, and it silently accepts whatever survives the strip.",
-      "opt-d": "Restating a schema in the prompt is instruction, not enforcement. The model is still free to deviate, so the parse failures continue at some lower rate."
+      "a": "Bounding the loop does contain the cost, but it accepts a residual failure rate and discards results instead of removing the failure class. Constrained decoding makes the malformed reply impossible in the first place.",
+      "b": "Salvaging text around the JSON is a real defensive technique, but here it papers over a problem that can be eliminated outright, and it silently accepts whatever survives the strip.",
+      "d": "Restating a schema in the prompt is instruction, not enforcement. The model is still free to deviate, so the parse failures continue at some lower rate."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs",
     "sourceNote": "Structured outputs — constrained decoding guarantees schema-compliant responses, removing the need for retries on schema violations",
@@ -821,33 +843,34 @@
     "subdomain": "output-handling",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A summarisation endpoint occasionally stores summaries that end mid-sentence. The integration reads the first text block of every successful response and writes it straight to the database. No errors are logged. What is the underlying defect?",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "The client never inspects why generation stopped, so a response cut short by the output limit is stored as though it were complete."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "The client is reading the first text block rather than concatenating every block, so any summary split across blocks is stored truncated."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "The database column is too narrow for the longer summaries, so the value is silently cut to length as it is written rather than rejected."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "The requests are being served without streaming, so any summary longer than a single response chunk is delivered incomplete to the client."
       }
     ],
     "correct": [
-      "opt-a"
+      "a"
     ],
     "explanation": "A response that hits the output token limit is still a successful, well-formed response. The signal that it was cut short lives in the stop reason, which distinguishes a turn that finished naturally from one that ran out of room, was refused, or paused. Consuming output defensively means branching on that signal before treating text as final, which is exactly the step this integration skips.",
     "distractorNotes": {
-      "opt-b": "Worth doing, and a real source of bugs, but it would drop whole segments rather than produce text that stops mid-sentence at varying lengths.",
-      "opt-c": "Plausible, but a storage-layer truncation is a property of the database rather than the integration, and the symptom would track the column width rather than the generation.",
-      "opt-d": "Streaming changes how output is delivered, not how much of it is generated. A non-streamed response carries the full generated text."
+      "b": "Worth doing, and a real source of bugs, but it would drop whole segments rather than produce text that stops mid-sentence at varying lengths.",
+      "c": "Plausible, but a storage-layer truncation is a property of the database rather than the integration, and the symptom would track the column width rather than the generation.",
+      "d": "Streaming changes how output is delivered, not how much of it is generated. A non-streamed response carries the full generated text."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons",
     "sourceNote": "Handling stop reasons — a successful response may have ended because the output limit was reached, and clients should branch on the stop reason",
@@ -862,38 +885,39 @@
     "subdomain": "output-handling",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A team is hardening the code that consumes Claude's output before an audit. Select TWO practices that genuinely improve robustness rather than merely appearing to.",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "Treat a schema-valid response as verified, since constrained generation has already established that the content is correct."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "Validate the meaning of the output against business rules, because a guarantee about shape says nothing about whether the values are right."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "Log the raw response alongside the parsed result, so a later dispute can be traced to what the model actually returned."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "Discard any response the parser rejects without recording it, to keep malformed content out of the audit trail entirely."
       },
       {
-        "id": "opt-e",
+        "id": "e",
         "text": "Infer confidence from how assertively the response is phrased, and route the least hedged answers through review."
       }
     ],
     "correct": [
-      "opt-b",
-      "opt-c"
+      "b",
+      "c"
     ],
     "explanation": "Constrained generation guarantees that output parses and that fields carry the declared types, and nothing beyond that. A well-formed response can still be wrong, so semantic validation against business rules remains the caller's job. Retaining the raw response next to the parsed result is what makes a failure investigable after the fact, which is precisely what an audit needs.",
     "distractorNotes": {
-      "opt-a": "This is the error the skill is named for. Schema compliance is a structural guarantee; it is silent on whether the values are accurate.",
-      "opt-d": "Exactly inverts the goal. The rejected responses are the most diagnostic evidence available, and discarding them removes the audit trail rather than protecting it.",
-      "opt-e": "Assertive phrasing is not a confidence signal. Fluent, confident wording accompanies wrong answers as readily as right ones, so routing on tone selects almost arbitrarily."
+      "a": "This is the error the skill is named for. Schema compliance is a structural guarantee; it is silent on whether the values are accurate.",
+      "d": "Exactly inverts the goal. The rejected responses are the most diagnostic evidence available, and discarding them removes the audit trail rather than protecting it.",
+      "e": "Assertive phrasing is not a confidence signal. Fluent, confident wording accompanies wrong answers as readily as right ones, so routing on tone selects almost arbitrarily."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs",
     "sourceNote": "Structured outputs — the stated guarantees are schema-level: valid JSON, guaranteed field types and required fields",
@@ -908,33 +932,35 @@
     "subdomain": "output-handling",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "deep",
+    "scopeNote": "Tests that strict tool use schema-validates tool inputs during generation rather than checking them after the call. On-blueprint under output handling, but separating it from response-level structured outputs is a finer boundary than the exam draws.",
     "stem": "An agent calls an internal pricing tool. The team needs certainty that the arguments Claude passes to that tool always match the tool's declared input schema, because a malformed argument reaches a downstream billing system. Which approach fits the requirement?",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "Describe the argument format carefully in the tool description and add examples of well-formed calls, so the model has a pattern to copy."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "Constrain the assistant's final text response to a JSON schema, which covers the arguments because tool calls are emitted as part of that response."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "Accept the call, submit it to the billing system, and roll the transaction back if the billing system rejects the argument as malformed."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "Enable strict tool use, so the tool name and its inputs are themselves schema-validated during generation rather than checked afterwards."
       }
     ],
     "correct": [
-      "opt-d"
+      "d"
     ],
     "explanation": "Structured outputs cover two distinct surfaces. Constraining the response format governs the text Claude returns; strict tool use governs the tool name and the inputs Claude passes. The requirement here is about tool arguments, so it is the tool-use surface that must be constrained. Choosing between the two is a matter of knowing which part of the exchange each one governs.",
     "distractorNotes": {
-      "opt-a": "Good tool descriptions genuinely raise the hit rate, but description is guidance rather than enforcement, and the requirement asks for certainty.",
-      "opt-b": "Confuses the two surfaces. Constraining the response format does not govern tool inputs, so the malformed arguments would still pass through.",
-      "opt-c": "Pushes validation past the boundary it was supposed to protect. The billing system is the thing being shielded, so letting it perform the check defeats the purpose."
+      "a": "Good tool descriptions genuinely raise the hit rate, but description is guidance rather than enforcement, and the requirement asks for certainty.",
+      "b": "Confuses the two surfaces. Constraining the response format does not govern tool inputs, so the malformed arguments would still pass through.",
+      "c": "Pushes validation past the boundary it was supposed to protect. The billing system is the thing being shielded, so letting it perform the check defeats the purpose."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs",
     "sourceNote": "Structured outputs — strict tool use guarantees schema validation on tool names and inputs, complementing JSON output formats",

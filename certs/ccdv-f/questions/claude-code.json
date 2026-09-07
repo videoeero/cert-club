@@ -8,6 +8,7 @@
     "subdomain": "claude-code-operation",
     "difficulty": "easy",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A platform team keeps its build commands, review checklist, and naming conventions in a Claude Code instruction file. The guidance must reach everyone who clones the payments-api repository, travel with that repository in version control, and have no effect when the same developers work in their other repositories. Where should the file live?",
     "options": [
       {
@@ -49,38 +50,39 @@
     "subdomain": "claude-code-operation",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A security team must guarantee that one Claude Code setting holds on every machine and cannot be changed by any developer. Separately, a developer wants a personal override for one project that is never committed to the repository. Select TWO statements that correctly describe how the configuration layers serve these two needs.",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "User-level configuration is the strongest of the layers a developer controls, because it describes the person rather than any particular project."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "Configuration distributed centrally by the organisation cannot be overridden by any file a developer controls, which is what makes it fit for policy."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "A key set at more than one layer is reported as a conflict at startup and ignored everywhere until someone removes the duplicate definitions."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "Among the layers a developer controls, the more specific and local one wins, so an uncommitted personal file overrides the shared project file."
       },
       {
-        "id": "opt-e",
+        "id": "e",
         "text": "A value supplied for a single session is the weakest layer of all, so any configuration file present on disk will override it at run time."
       }
     ],
     "correct": [
-      "opt-b",
-      "opt-d"
+      "b",
+      "d"
     ],
     "explanation": "The layers are ordered so that the two needs do not compete. Configuration an organisation distributes sits above everything an individual can edit, so it is the only layer that can carry a guarantee; anything a developer can edit, a developer can undo. Below that, precedence runs from the general to the specific, so a personal file scoped to one project beats the shared project file, which in turn beats the developer's global preferences. That ordering is what lets a personal override exist without weakening the policy above it.",
     "distractorNotes": {
-      "opt-a": "Inverts the developer-controlled ordering. User-level settings are the broadest and most general of them, so they are overridden by project and project-local files rather than winning over them.",
-      "opt-c": "Setting a key at several layers is the normal case that precedence exists to resolve, not an error state. Refusing to apply the key would make layered configuration unusable.",
-      "opt-e": "Reverses the relationship. A value supplied for one session is the most specific expression of intent available, so it sits above the files on disk rather than beneath them."
+      "a": "Inverts the developer-controlled ordering. User-level settings are the broadest and most general of them, so they are overridden by project and project-local files rather than winning over them.",
+      "c": "Setting a key at several layers is the normal case that precedence exists to resolve, not an error state. Refusing to apply the key would make layered configuration unusable.",
+      "e": "Reverses the relationship. A value supplied for one session is the most specific expression of intent available, so it sits above the files on disk rather than beneath them."
     },
     "sourceUrl": "https://code.claude.com/docs/en/settings",
     "sourceNote": "Settings precedence figure, highest to lowest: 1. Managed settings (managed-settings.json, MDM, or the claude.ai console), 2. Command line (claude --settings), 3. Project local (.claude/settings.local.json), 4. Shared project (.claude/settings.json), 5. User (~/.claude/settings.json), summarized as \"A key set at a higher level overrides the same key set lower down.\" The page's \"Settings files and who they affect\" table gives the scope of each file.",
@@ -95,6 +97,7 @@
     "subdomain": "claude-code-operation",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A team runs Claude Code fully unattended inside a container with --dangerously-skip-permissions, which puts the session in bypassPermissions mode. Their security reviewer asks which of the permission rules configured in the repository's settings still have any force. Which statement is correct?",
     "options": [
       {
@@ -136,6 +139,7 @@
     "subdomain": "claude-code-operation",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A platform team wants to ensure that Claude Code cannot execute certain destructive Bash commands across all developer workstations. Which approach provides the most robust and deterministic enforcement mechanism?",
     "options": [
       {
@@ -177,6 +181,7 @@
     "subdomain": "claude-code-operation",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A development team is integrating Claude Code into their Continuous Integration (CI) pipeline to automate routine codebase tasks. Which TWO capabilities represent foundational features of Claude Code's headless operation that enable this automation? (Select TWO.)",
     "options": [
       {
@@ -223,6 +228,7 @@
     "subdomain": "claude-code-operation",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A developer added a convention to a project CLAUDE.md, but Claude Code seems to ignore it. Before rewriting the wording, what is the most direct way to find out whether the file was actually loaded into the session?",
     "options": [
       {
@@ -264,38 +270,39 @@
     "subdomain": "claude-code-operation",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A team wants Claude Code to run on every pull request in CI, with no engineer watching the run. Select TWO statements that correctly describe what running it non-interactively implies.",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "Non-interactive runs escalate their own permissions as needed, since blocking on a prompt that nobody can answer would deadlock the pipeline."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "Because nobody is available to approve anything mid-run, the tools the run may use have to be settled before it starts rather than agreed as it goes."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "The pipeline should decide the outcome by matching phrases in the printed transcript, because a programmatic run reports its status only in prose."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "The run reports success or failure through its exit status, so the surrounding pipeline can branch on the outcome without reading the transcript."
       },
       {
-        "id": "opt-e",
+        "id": "e",
         "text": "Running without a terminal disables tool use altogether, so an automated run is limited to reading files and producing a written summary."
       }
     ],
     "correct": [
-      "opt-b",
-      "opt-d"
+      "b",
+      "d"
     ],
     "explanation": "Removing the human from the loop changes two things at once. Every approval that a person would have given interactively has to be decided in advance, because there is nobody to ask once the run begins; that is a design decision about how much the run is trusted to do, made before it starts. And the surrounding automation needs a machine-readable verdict, which the process supplies through its exit status, so the pipeline can succeed or fail without anyone interpreting the output. Both follow from the absence of a person rather than from any particular invocation detail.",
     "distractorNotes": {
-      "opt-a": "Inverts the safety model. Self-escalation would mean an unattended run could grant itself anything it wanted, which is the opposite of what removing human oversight demands.",
-      "opt-c": "Scraping prose for a verdict is brittle and unnecessary. It also throws away the reliable signal the process already provides for exactly this purpose.",
-      "opt-e": "Non-interactive means no human prompts, not no tools. The run still edits files and executes commands, which is precisely why the permissions question matters."
+      "a": "Inverts the safety model. Self-escalation would mean an unattended run could grant itself anything it wanted, which is the opposite of what removing human oversight demands.",
+      "c": "Scraping prose for a verdict is brittle and unnecessary. It also throws away the reliable signal the process already provides for exactly this purpose.",
+      "e": "Non-interactive means no human prompts, not no tools. The run still edits files and executes commands, which is precisely why the permissions question matters."
     },
     "sourceUrl": "https://code.claude.com/docs/en/headless",
     "sourceNote": "Run Claude Code programmatically — non-interactive runs exit 0 on success and non-zero on failure so scripts can branch on exit status, and tools are auto-approved up front",

@@ -42,10 +42,7 @@ function isQuestion(value: unknown): value is Question {
       value.difficulty === "medium" ||
       value.difficulty === "hard") &&
     (value.status === "draft" || value.status === "reviewed") &&
-    (value.scope === undefined ||
-      value.scope === "core" ||
-      value.scope === "deep" ||
-      value.scope === "out-of-scope") &&
+    (value.scope === "core" || value.scope === "deep") &&
     (value.scopeNote === undefined || typeof value.scopeNote === "string") &&
     typeof value.stem === "string" &&
     Array.isArray(value.options) &&

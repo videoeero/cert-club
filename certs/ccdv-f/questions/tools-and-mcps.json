@@ -8,6 +8,7 @@
     "subdomain": "tool-implementation",
     "difficulty": "easy",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A developer is deciding how much execution plumbing their service needs to build. Which statement correctly describes the division of responsibility between client tools and server tools in the Claude API?",
     "options": [
       {
@@ -49,6 +50,7 @@
     "subdomain": "tool-implementation",
     "difficulty": "easy",
     "status": "reviewed",
+    "scope": "core",
     "stem": "An internal assistant exposes a tool named lookup_account whose entire description reads \"Gets account data.\" In testing, Claude often calls a neighbouring reporting tool instead, or calls lookup_account with parameters that make no sense for the request. According to Anthropic's tool design guidance, which change has the largest effect on tool selection performance?",
     "options": [
       {
@@ -90,6 +92,8 @@
     "subdomain": "tool-implementation",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "deep",
+    "scopeNote": "Tests tool_result message construction: placement in the immediately following user message, result blocks ahead of any text block, and tool_use_id binding each result to its call. On-blueprint under tool implementation, but block-ordering rules are wire-format detail rather than the tool-error and tool-design reasoning the exam samples.",
     "stem": "A team keeps receiving errors reporting that tool_use identifiers were found without tool_result blocks immediately after them. Select THREE statements that describe the required construction of a message carrying tool results.",
     "options": [
       {
@@ -141,6 +145,7 @@
     "subdomain": "tool-implementation",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A client tool that queries an internal pricing service times out after Claude calls it. The developer wants the assistant to recover gracefully and, where possible, adapt rather than stall. What is the documented way to continue the conversation?",
     "options": [
       {
@@ -182,6 +187,7 @@
     "subdomain": "tool-implementation",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "An agent turn returns three tool_use blocks at once: two read-only lookups and one write that must not run if a lookup fails. Select THREE statements that correctly describe how parallel tool calls work and where the developer's responsibility lies.",
     "options": [
       {
@@ -233,6 +239,7 @@
     "subdomain": "tool-implementation",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A regulated enterprise workflow requires Claude to step through exactly one audited action at a time. The system must guarantee that each model turn produces exactly one tool call—never two in parallel, and never a plain text response without a tool call. Conceptually, which combination of controls must the developer apply to achieve this strict behavior?",
     "options": [
       {
@@ -274,6 +281,7 @@
     "subdomain": "tool-implementation",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A booking agent keeps receiving a passenger count as a string rather than an integer, and occasionally a required field is missing entirely. A colleague suggests enabling strict tool use. Select TWO statements that are accurate about strict tool use.",
     "options": [
       {
@@ -320,6 +328,7 @@
     "subdomain": "mcp-server-development",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A team packages an internal catalogue service as a Model Context Protocol server. Engineers run one copy as a process on their own machines alongside the AI application, and the platform team runs a hosted copy that many users reach over the network. Which statement matches the protocol's architecture?",
     "options": [
       {
@@ -361,6 +370,8 @@
     "subdomain": "mcp-server-development",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "deep",
+    "scopeNote": "Tests MCP-connector constraints: public HTTPS reachability, tool calls only with resources and prompts out of scope, and caller-managed access tokens. On-blueprint under MCP server development, but per-field connector responsibilities are integration detail rather than the architectural understanding the objective asks for.",
     "stem": "An architect plans to attach a partner's Model Context Protocol server to a service through the Messages API connector, without building a protocol client. Select THREE statements that correctly describe the constraints and responsibilities of that approach.",
     "options": [
       {
@@ -412,6 +423,8 @@
     "subdomain": "agentic-customization",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "deep",
+    "scopeNote": "Tests tool-search-tool internals: deferred definitions still travel in the request's tools array, at least one tool must stay non-deferred, and a match expands into full definitions. On-blueprint under agentic customization, but the mechanics of a narrow recent feature sit past the level at which the exam treats tool-set design.",
     "stem": "A platform team's agent has grown to several hundred tools spanning many integrations. Definitions now consume a large share of the context window before any work begins, and the agent increasingly picks the wrong tool. The team adds the tool search tool and marks most definitions for deferred loading. Select THREE statements that correctly describe how this arrangement works.",
     "options": [
       {
@@ -463,6 +476,7 @@
     "subdomain": "mcp-server-development",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A team is designing a Model Context Protocol server for an internal knowledge platform. They need three things: read-only document sources that the host application selects and supplies as context, a small set of actions the model may invoke on its own initiative, and named starting templates that a person chooses from a menu. Which mapping onto the server's building blocks is correct?",
     "options": [
       {
@@ -504,6 +518,7 @@
     "subdomain": "agentic-customization",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "Three separate Claude applications each need to read and update records in the same internal ticketing system, and the integration should be owned and versioned by one platform team rather than copied into each app. Which approach fits best?",
     "options": [
       {
@@ -545,6 +560,7 @@
     "subdomain": "agentic-customization",
     "difficulty": "easy",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A developer keeps pasting the same multi-step release checklist into Claude Code at the start of every deployment session. They want the procedure available on demand without carrying it in every conversation. What should they create?",
     "options": [
       {
@@ -586,6 +602,7 @@
     "subdomain": "agentic-customization",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A team is matching several capabilities to the right customization approach among built-in tools, custom tools, Skills, and MCP servers. Select THREE statements that correctly pair a use case with an approach.",
     "options": [
       {
@@ -637,6 +654,7 @@
     "subdomain": "agentic-customization",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A single application needs Claude to run one specific transformation on values the app already holds, with no external system involved and no reuse expected anywhere else. Considering built-in tools, custom tools, Skills, and MCP servers, which approach is most appropriate?",
     "options": [
       {
@@ -678,33 +696,34 @@
     "subdomain": "agentic-customization",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "An assistant must answer using current information from the public web. The team is about to build a custom tool that wraps a third-party search API and runs inside their own service. What should they weigh before doing that?",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "Whether a built-in server-side tool already covers this, since those run on Anthropic's infrastructure with no handler code in their service."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "Whether their search provider can be reached over stdio, since that is the transport that locally executed tools are expected to use."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "Whether to package the search procedure as a Skill instead, so that the instructions travel with the repository and remain under code review."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "Whether the model can already browse the web from its training data, which would remove the need for any tool or external call at all."
       }
     ],
     "correct": [
-      "opt-a"
+      "a"
     ],
     "explanation": "Tools divide by where they execute. A client tool runs in your application, so you own the handler, the credentials, the error handling and the operational burden. A server tool runs on Anthropic's infrastructure and you receive the result without implementing execution at all. Web search is a capability already offered as a server tool, so building a custom wrapper means taking on work that is otherwise free. The general principle is to check what the platform already provides before extending it, and to reserve custom tools for capabilities specific to your own systems.",
     "distractorNotes": {
-      "opt-b": "Confuses this with Model Context Protocol transports. Transport choice concerns how a separate MCP server is reached, and does not arise when deciding between a built-in and a custom tool.",
-      "opt-c": "A Skill packages instructions and reference material for a repeated procedure. It does not provide live authenticated access to an external data source, which is what fetching current web results requires.",
-      "opt-d": "Training data is fixed at training time, which is the reason the requirement exists. No amount of prompting turns a static corpus into current information."
+      "b": "Confuses this with Model Context Protocol transports. Transport choice concerns how a separate MCP server is reached, and does not arise when deciding between a built-in and a custom tool.",
+      "c": "A Skill packages instructions and reference material for a repeated procedure. It does not provide live authenticated access to an external data source, which is what fetching current web results requires.",
+      "d": "Training data is fixed at training time, which is the reason the requirement exists. No amount of prompting turns a static corpus into current information."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview",
     "sourceNote": "Tool use overview — server tools run on Anthropic's infrastructure with no handler code in your application, while client tools run in your application",
@@ -719,6 +738,7 @@
     "subdomain": "tool-implementation",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A team is designing the tool set for an agent that spans several internal services and keeps mis-selecting tools and passing over-large results back into context. Select THREE tool-set construction practices Anthropic recommends.",
     "options": [
       {

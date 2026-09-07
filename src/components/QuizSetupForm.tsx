@@ -33,7 +33,6 @@ const REVIEW_SCOPE_LABELS: Record<ReviewScope, string> = {
 const SCOPE_FILTER_LABELS: Record<ScopeFilter, string> = {
   "core-only": "Exam-aligned only",
   "with-deep": "Include deeper practice",
-  everything: "Include everything",
 };
 
 const SCOPE_FILTER_HINTS: Record<ScopeFilter, string> = {
@@ -41,8 +40,6 @@ const SCOPE_FILTER_HINTS: Record<ScopeFilter, string> = {
     "Only questions traceable to a blueprint objective and pitched at the exam's level.",
   "with-deep":
     "Adds questions on blueprint topics that go deeper than the exam is likely to.",
-  everything:
-    "Adds questions that fall outside the published blueprint entirely.",
 };
 
 interface QuestionSetFieldsetProps {
@@ -420,7 +417,7 @@ export function QuizSetupForm({
 
   const scopedQuestions = filterQuestionsByScope(questions, scopeFilter);
   const hasTaggedQuestions = questions.some(
-    (question) => (question.scope ?? "core") !== "core",
+    (question) => question.scope !== "core",
   );
 
   const selectedDomain = selectionDomain || manifest.domains[0]?.slug || "";

@@ -8,8 +8,8 @@
     "subdomain": "debugging-and-error-handling",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "out-of-scope",
-    "scopeNote": "Tests writing SMART success criteria to drive prompt iteration. The Domain 4 objective covers error type identification, recovery strategy selection, trace analysis, and isolating the integration layer from model output; defining success criteria is not among them. Siblings ccdv-f-0077/0078/0100 were rewritten into genuine error-diagnosis scenarios and correctly moved to core; this one and ccdv-f-0079 test the same success-criteria/methodology ground as originally-tagged ccdv-f-0076/0077/0078/0100 and were left untagged by oversight in the earlier pass.",
+    "scope": "deep",
+    "scopeNote": "Tests writing SMART success criteria to drive prompt iteration. The Domain 4 objective covers error type identification, recovery strategy selection, trace analysis, and isolating the integration layer from model output; defining success criteria is not among them. Siblings ccdv-f-eval-testing-and-debugging-003, -004 and -008 were rewritten into genuine error-diagnosis scenarios and kept core; this one and ccdv-f-eval-testing-and-debugging-005 test success-criteria and comparison methodology instead.",
     "stem": "A team is about to begin prompt iteration on a support-ticket classifier. Which statement of success criteria is best suited to drive that work?",
     "options": [
       {
@@ -51,6 +51,7 @@
     "subdomain": "debugging-and-error-handling",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "While developing an application using the Anthropic API, a developer repeatedly encounters an HTTP 529 error during periods of high traffic. What does this specific error indicate, and how should the application respond?",
     "options": [
       {
@@ -92,38 +93,39 @@
     "subdomain": "debugging-and-error-handling",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A developer is building a classification application with Claude. During initial testing, they notice the model occasionally outputs invalid categories. Which TWO foundational debugging steps should they take to diagnose and resolve this issue? (Select TWO.)",
     "options": [
       {
-        "id": "b",
+        "id": "a",
         "text": "Review the model's outputs and adjust the prompt to explicitly define the allowed categories."
       },
       {
+        "id": "b",
+        "text": "Lower max_tokens so the model cannot append explanatory prose after the category label it selects."
+      },
+      {
         "id": "c",
-        "text": "Increase the temperature parameter to 1.0 to ensure the model explores all possible correct categories."
+        "text": "Retry any response whose label falls outside the allowed set, so the caller only ever observes a valid category."
       },
       {
         "id": "d",
-        "text": "Set the top_p parameter to 0 to force the model to output the categories in alphabetical order."
-      },
-      {
-        "id": "e",
         "text": "Switch the API request from the Messages API to the legacy Text Completions API."
       },
       {
-        "id": "a",
+        "id": "e",
         "text": "Add the failing examples to an evaluation test suite to systematically measure if prompt adjustments fix the issue."
       }
     ],
     "correct": [
       "a",
-      "b"
+      "e"
     ],
     "explanation": "When debugging unexpected model behavior such as incorrect categorization, foundational steps include reviewing the failures to refine prompt instructions (such as explicitly defining allowed categories) and adding those failing cases to an evaluation suite. A test suite allows developers to iterate on the prompt systematically, ensuring that changes resolve the errors without causing regressions.",
     "distractorNotes": {
-      "c": "Increasing temperature increases randomness, which typically makes formatting and classification tasks less reliable.",
-      "d": "The top_p parameter controls nucleus sampling based on token probability; it does not sort outputs alphabetically.",
-      "e": "The Text Completions API is legacy. Switching to it is not recommended and will not inherently resolve instruction-following issues."
+      "b": "This truncates the response rather than constraining what it may say, and a label outside the allowed set is just as invalid when it arrives on its own.",
+      "c": "Retrying hides the defect behind added cost and latency without diagnosing it, and it produces no record that would show whether a prompt change actually helped.",
+      "d": "The Text Completions API is legacy. Switching to it is not recommended and will not inherently resolve instruction-following issues."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
     "sourceNote": "Section \"Tips for LLM-based grading\" gives three tips: \"Have detailed, clear rubrics\" (with the note that a use case \"might require several rubrics for holistic evaluation\"); \"Empirical or specific: For example, instruct the LLM to output only 'correct' or 'incorrect', or to judge from a scale of 1-5. Purely qualitative evaluations are hard to assess quickly and at scale\"; and \"Encourage reasoning: Ask the LLM to reason first before producing an evaluation score, and then discard the reasoning. This increases evaluation performance.\" Section \"Grade your evaluations\" describes LLM-based grading as \"Fast and flexible, scalable and suitable for complex judgment. Test to ensure reliability first then scale.\"",
@@ -138,6 +140,7 @@
     "subdomain": "debugging-and-error-handling",
     "difficulty": "easy",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A developer runs an exact-match evaluation to check if Claude correctly assigns one of four fixed labels to an input. The test continuously fails, despite manual spot-checks showing the model is generating the right words. What is the most appropriate first step to diagnose and resolve this test failure?",
     "options": [
       {
@@ -154,7 +157,7 @@
       },
       {
         "id": "d",
-        "text": "Set the temperature to 0 to automatically prevent the model from generating any unexpected whitespace or capitalization."
+        "text": "Loosen the assertion to a substring match, so a label surrounded by extra words still counts as correct."
       }
     ],
     "correct": [
@@ -164,7 +167,7 @@
     "distractorNotes": {
       "b": "An LLM judge adds cost, latency, and variance. It is suitable for complex or subjective judgments, not for evaluating fixed, categorical labels.",
       "c": "Human grading is the slowest and most expensive evaluation method. The guidance explicitly advises avoiding it when a simple, automated string match is possible.",
-      "d": "While setting temperature to 0 is recommended for classification tasks to reduce variance, it does not prevent the model from outputting spaces or capitalization. The output must still be normalized."
+      "d": "A substring match would make the test pass, but it also accepts outputs it should reject: a reply that mentions one label while selecting another still matches. Normalising and keeping the exact match preserves the check's precision."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
     "sourceNote": "Section \"Grade your evaluations\": \"When deciding which method to use to grade evals, choose the fastest, most reliable, most scalable method\", ranking code-based grading first (\"Fastest and most reliable, extremely scalable\", examples \"Exact match: output == golden_answer\" and \"String match: key_phrase in output\"), human grading second (\"slow and expensive. Avoid if possible\"), and LLM-based grading third (\"suitable for complex judgment\"). The exact-match example eval states that such evals compare output with a predefined correct answer \"typically after normalizing whitespace and case\" and are \"perfect for tasks with clear-cut, categorical answers\".",
@@ -179,8 +182,8 @@
     "subdomain": "debugging-and-error-handling",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "out-of-scope",
-    "scopeNote": "Tests A/B comparison methodology (held-out set, fixed grader, multidimensional criteria) between two prompt versions. The Domain 4 objective covers error type identification, recovery strategy selection, trace analysis, and isolating the integration layer from model output; comparing prompt versions is not among them, the same reasoning applied to ccdv-f-0075.",
+    "scope": "deep",
+    "scopeNote": "Tests A/B comparison methodology (held-out set, fixed grader, multidimensional criteria) between two prompt versions. The Domain 4 objective covers error type identification, recovery strategy selection, trace analysis, and isolating the integration layer from model output; comparing prompt versions is not among them, the same reasoning applied to ccdv-f-eval-testing-and-debugging-001.",
     "stem": "A candidate prompt, version two, is proposed to replace the prompt currently in production. Which TWO practices produce a trustworthy comparison between the two versions? (Select TWO.)",
     "options": [
       {
@@ -227,6 +230,7 @@
     "subdomain": "debugging-and-error-handling",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "core",
     "stem": "An engineering manager wants to monitor Claude Code usage across their team and verify that the telemetry pipeline is functioning correctly. Which statement accurately describes the fundamental approach to configuring and verifying Claude Code telemetry?",
     "options": [
       {
@@ -268,6 +272,8 @@
     "subdomain": "debugging-and-error-handling",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "deep",
+    "scopeNote": "Tests that a usage tier's monthly spend cap returns a 429 with no retry-after header while a self-configured spend limit returns a 400. On-blueprint under debugging and error handling, but the two remaining options differ only on which flavour of spend limit carries which status code, so the item discriminates on error-body trivia rather than on diagnostic reasoning.",
     "stem": "A production service starts receiving 429 responses. The failures persist for hours, the SDK's automatic retries never recover, and the responses carry no retry-after header. What is the most likely cause?",
     "options": [
       {
@@ -284,7 +290,7 @@
       },
       {
         "id": "d",
-        "text": "A spend limit the organization set for itself was reached, which is what a 429 with no retry-after header indicates."
+        "text": "The workspace's custom rate limit is set below the organization's, so this workspace throttles while org-level headroom remains unused."
       }
     ],
     "correct": [
@@ -294,7 +300,7 @@
     "distractorNotes": {
       "a": "A version problem is reported as a request validation failure, not as a 429. Pinned versions do not silently lapse and start returning throughput errors.",
       "b": "Acceleration conditions do arise from sharp usage increases, but they are transient and are addressed by ramping traffic gradually. They do not produce hours of failures immune to backoff.",
-      "d": "A spend limit the organization configures for itself is returned as a 400 invalid request error rather than a 429, so this misreads the status code and would send the team to the wrong setting."
+      "d": "Workspace limits do throttle independently of the organization's remaining headroom, but that is an ordinary throughput rejection: it carries retry-after guidance and clears in seconds, so the SDK's backoff would recover instead of failing for hours."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/api/rate-limits",
     "sourceNote": "Rate limits - 'Reaching your spend cap' subsection describing the 429 rate_limit_error with no retry-after header and a spend limit error code, contrasted with the 400 returned for a self-configured spend limit",
@@ -309,6 +315,7 @@
     "subdomain": "debugging-and-error-handling",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A developer is troubleshooting an FAQ assistant that gives significantly different answers when a user asks the exact same question in slightly different words. To systematically debug and measure this issue, which foundational evaluation criterion should the developer focus on?",
     "options": [
       {
@@ -350,33 +357,34 @@
     "subdomain": "debugging-and-error-handling",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A nightly job that extracts fields from documents has started failing. On some runs the API returns a client error before the model is invoked; on others the call succeeds but the extracted values are wrong. An engineer wants to isolate where the fault lies before changing anything. What best separates the two cases?",
     "options": [
       {
-        "id": "opt-a",
-        "text": "Rerun the failures at a lower temperature, and treat anything that then succeeds as a model problem and anything that still fails as an integration problem."
+        "id": "a",
+        "text": "Group every failure by HTTP status code, treating each 4xx as an integration fault and each 5xx as a fault in the model's output."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "Separate failures the API rejected as invalid requests from calls that returned successfully, since the first class is the integration layer and the second is the output."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "Compare the failure rate against the previous week, and treat any increase as a service-side regression that should be raised with the provider."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "Retry every failure with backoff, and treat the ones that eventually succeed as transient so that only the permanent failures need investigation."
       }
     ],
     "correct": [
-      "opt-b"
+      "b"
     ],
     "explanation": "The two failure classes have different origins and different fixes. A request the API refuses never reached generation, so the fault is in how the integration assembled the call. A call that returns successfully but with wrong content did reach generation, so the fault lies in the prompt, the context supplied, or the handling of the output. Sorting by that boundary tells the engineer which half of the system to open first.",
     "distractorNotes": {
-      "opt-a": "Sampling settings affect only the generation half, so this diagnoses nothing about requests that were rejected before generation, and it conflates non-determinism with a defect.",
-      "opt-c": "Rate comparison detects that something changed without indicating where, and it prematurely attributes the change to the provider rather than to the caller.",
-      "opt-d": "Backoff is the right response to transient errors once identified, but it treats a whole mixed population as transient and hides the invalid requests it silently retries."
+      "a": "Grouping by status does separate caller faults from service faults, but the wrong-value runs return 200 and so never appear in the grouping at all, and a 5xx is a service or transport fault rather than a defect in what the model produced.",
+      "c": "Rate comparison detects that something changed without indicating where, and it prematurely attributes the change to the provider rather than to the caller.",
+      "d": "Backoff is the right response to transient errors once identified, but it treats a whole mixed population as transient and hides the invalid requests it silently retries."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/api/errors",
     "sourceNote": "Errors — request-level errors such as invalid_request_error are raised against the caller's request, distinct from a successful response whose content is unsatisfactory",

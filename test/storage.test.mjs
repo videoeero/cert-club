@@ -154,8 +154,8 @@ test("round-trips the scope filter preference", () => {
   setPreferences({ scopeFilter: "with-deep" }, storage);
   assert.equal(getPreferences(storage).scopeFilter, "with-deep");
 
-  setPreferences({ scopeFilter: "everything" }, storage);
-  assert.equal(getPreferences(storage).scopeFilter, "everything");
+  setPreferences({ scopeFilter: "core-only" }, storage);
+  assert.equal(getPreferences(storage).scopeFilter, "core-only");
 });
 
 test("falls back to the default when stored preferences are unusable", () => {
@@ -172,7 +172,7 @@ test("falls back to the default when stored preferences are unusable", () => {
 
   storage.setItem(
     STORAGE_KEYS.preferences,
-    JSON.stringify({ version: 99, data: { scopeFilter: "everything" } }),
+    JSON.stringify({ version: 99, data: { scopeFilter: "with-deep" } }),
   );
   assert.deepEqual(getPreferences(storage), DEFAULT_PREFERENCES);
 });

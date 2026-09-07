@@ -8,6 +8,7 @@
     "subdomain": "model-selection-and-tradeoffs",
     "difficulty": "easy",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A team is prototyping a high-volume, latency-sensitive classification feature and has not yet established a quality bar for it. They want to follow the path that Anthropic's model-selection guidance labels as starting efficiency-first. Which sequence matches that path?",
     "options": [
       {
@@ -49,6 +50,7 @@
     "subdomain": "model-selection-and-tradeoffs",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "An existing integration comfortably meets its latency budget but is failing quality checks on inputs that need multi-step reasoning. The team's first instinct is to jump to a more capable model tier. What does Anthropic's model-selection guidance advise instead?",
     "options": [
       {
@@ -90,6 +92,8 @@
     "subdomain": "model-selection-and-tradeoffs",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "deep",
+    "scopeNote": "Tests effort-parameter semantics, including that it applies to tool-call tokens and that setting the model's default level explicitly behaves identically to omitting the parameter. On-blueprint under model selection and tradeoffs, but parameter-level equivalences are finer-grained than the exam's treatment of the reasoning-depth/cost tradeoff.",
     "stem": "A developer is adopting the effort parameter to trade response thoroughness against token efficiency within a single model. Which THREE statements about how the effort parameter behaves are accurate? Select THREE.",
     "options": [
       {
@@ -141,6 +145,8 @@
     "subdomain": "cost-and-token-management",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "deep",
+    "scopeNote": "Tests cache-breakpoint placement diagnosed from non-zero cache-creation and zero cache-read counters, against the rule that writes happen only at the breakpoint. On-blueprint under cost and token management, but it turns on where the prefix hash is computed rather than the prefix-stability principle the exam tests.",
     "stem": "A service puts a large, unchanging instruction set in its leading content blocks, then appends one final block holding the current timestamp plus the incoming user message, and marks that final block with cache_control. Every response reports a non-zero cache creation count and a cache read count of zero. What explains this, and what is the fix?",
     "options": [
       {
@@ -182,6 +188,7 @@
     "subdomain": "cost-and-token-management",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A team is optimizing their Claude API costs for an application that processes long documents. They include a large, 20,000-token static instruction manual in every API request and have set a cache breakpoint. However, they observe no cache read hits, and their API costs have actually increased. Which of the following design flaws is the most likely cause?",
     "options": [
       {
@@ -223,6 +230,7 @@
     "subdomain": "technical-fundamentals",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A team enables prompt caching for a large reference document that now hits cache on almost every request. Which statement about what changes for a cache hit is accurate?",
     "options": [
       {
@@ -264,6 +272,7 @@
     "subdomain": "cost-and-token-management",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A development team is optimizing a Claude-powered customer support assistant that includes a large, static set of company policies in every request. They are implementing prompt caching to manage costs and token usage. Which TWO statements represent foundational principles for this optimization? Select TWO.",
     "options": [
       {
@@ -310,6 +319,7 @@
     "subdomain": "cost-and-token-management",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "Prompt caching allows developers to reuse large amounts of context across API calls to reduce costs and latency. Which THREE of the following are foundational best practices or principles for effectively using prompt caching with Claude? Select THREE.",
     "options": [
       {
@@ -361,6 +371,8 @@
     "subdomain": "cost-and-token-management",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "deep",
+    "scopeNote": "Tests that the minimum cacheable length varies by model and that caching below it is skipped silently rather than rejected. On-blueprint under cost and token management, but per-model thresholds are lookup values rather than a design principle.",
     "stem": "A developer marks a fairly short system prompt with cache_control. The requests succeed and no error is returned, but both the cache creation and cache read token counts are zero on every call. What is the most likely explanation, and what should the developer do about it?",
     "options": [
       {
@@ -402,6 +414,8 @@
     "subdomain": "cost-and-token-management",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "deep",
+    "scopeNote": "Tests batch mechanics: the discount stacking with prompt-caching multipliers, the 24-hour expiry, and results returning unordered so each must be reconciled by its supplied identifier. On-blueprint under cost and token management, but the exam samples when to choose batch, not its billing and reconciliation rules.",
     "stem": "A team is moving a nightly evaluation workload onto the Message Batches API. Which THREE statements about batch processing are accurate? Select THREE.",
     "options": [
       {
@@ -453,6 +467,8 @@
     "subdomain": "llm-fundamentals",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "deep",
+    "scopeNote": "Tests that token counts are not portable across model generations because a newer tokenizer yields different counts for the same text. On-blueprint under LLM fundamentals, but this is a migration footnote rather than the token and context-window understanding the objective describes.",
     "stem": "A team sized its prompts using figures from the token counting endpoint captured some time ago against an older model generation, then reused those stored figures when moving the workload to a newer generation. Requests now consume more input than budgeted. Which statement best explains the situation?",
     "options": [
       {
@@ -494,6 +510,7 @@
     "subdomain": "cost-and-token-management",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "core",
     "stem": "Spend on a user-facing production agent loop is climbing as sessions run longer, while output quality remains acceptable. Anthropic's cost guidance separates levers that cut spend without touching quality from levers that trade quality for cost. Which action should the team take first, and why?",
     "options": [
       {
@@ -535,6 +552,7 @@
     "subdomain": "technical-fundamentals",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A service assembles prompts dynamically from retrieved documents, so request size varies and sometimes approaches the model's context window. The team wants to handle overflow correctly rather than discovering it in production. How does the API behave when a request exceeds the context window?",
     "options": [
       {
@@ -576,6 +594,7 @@
     "subdomain": "llm-fundamentals",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "An interactive assistant feels sluggish to its users, and the team is applying Anthropic's guidance on reducing latency. Which THREE statements reflect that guidance? Select THREE.",
     "options": [
       {
@@ -627,6 +646,7 @@
     "subdomain": "technical-fundamentals",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A team is sizing max_tokens and forecasting spend for a workload that runs with thinking enabled, and wants the token accounting right before it ships. How are thinking tokens accounted for?",
     "options": [
       {
@@ -668,33 +688,34 @@
     "subdomain": "llm-fundamentals",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A team caches Claude's answers keyed on the exact prompt string and sets temperature to 0, expecting identical inputs to always return byte-identical outputs so the cache can never serve a mismatched result. In testing they occasionally see two different completions for the same input. What best explains this?",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "Temperature 0 fully disables sampling, so any variation must come from an unnoticed change in the prompt text actually being sent."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "Even at temperature 0 the API is not fully deterministic, so identical inputs can differ and exact-match caching cannot assume reproducible replies."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "Temperature 0 only fixes the first token and leaves later tokens free to vary, so capping max_tokens at 1 would restore full determinism."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "Determinism holds only when top_p is also pinned to 0, so adding that single sampling parameter will make repeated calls come out identical."
       }
     ],
     "correct": [
-      "opt-b"
+      "b"
     ],
     "explanation": "opt-b is correct: Anthropic documents that even with temperature set to 0 the results are not fully deterministic and identical inputs may produce different outputs across calls, so a cache keyed on exact input cannot assume the response is reproducible byte-for-byte. opt-a wrongly treats temperature 0 as a determinism guarantee and blames the prompt. opt-c invents a first-token-only rule. opt-d invents a top_p condition; neither parameter makes the service fully deterministic.",
     "distractorNotes": {
-      "opt-a": "Plausible because temperature 0 does bias toward the most probable tokens, but it is not a determinism guarantee, so unexplained variation is expected, not necessarily a changed prompt.",
-      "opt-c": "Plausible-sounding mechanics, but temperature does not act on only the first token, and shrinking max_tokens does not remove non-determinism.",
-      "opt-d": "top_p is a sampling control, not a determinism switch; setting it to 0 does not make repeated calls identical."
+      "a": "Plausible because temperature 0 does bias toward the most probable tokens, but it is not a determinism guarantee, so unexplained variation is expected, not necessarily a changed prompt.",
+      "c": "Plausible-sounding mechanics, but temperature does not act on only the first token, and shrinking max_tokens does not remove non-determinism.",
+      "d": "top_p is a sampling control, not a determinism switch; setting it to 0 does not make repeated calls identical."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/about-claude/glossary",
     "sourceNote": "Temperature (note on non-determinism at temperature 0)",
@@ -709,33 +730,34 @@
     "subdomain": "llm-fundamentals",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A service sends very long documents to Claude and also sets a high max_tokens because it wants a long answer. On the longest inputs the model runs out of room to finish its response. A developer argues that input and output draw from separate budgets, so the input size should not matter. How does the context window actually work?",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "Input tokens and generated output tokens count against independent limits, so a large input never constrains how much the model can produce in reply."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "Only the system prompt and tool definitions count toward the window, while ordinary user messages and the response are tracked in a separate pool."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "The context window is one working-memory budget shared by the whole request and the response, so a large input leaves less room for output."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "The window measures the prompt alone, and because the reply is streamed out afterward it does not occupy the same budget as the input."
       }
     ],
     "correct": [
-      "opt-c"
+      "c"
     ],
     "explanation": "opt-c is correct: the context window is the model's working memory covering all the text it can reference including the response itself, so the system prompt, every message, tool definitions, and the generated output all share one budget; a large input therefore leaves less room to generate. opt-a, opt-b, and opt-d all imagine separate budgets, but input and output are counted against the same window.",
     "distractorNotes": {
-      "opt-a": "Plausible because input and output are reported as distinct usage fields, but they are billed distinctly, not budgeted separately; both draw on the same window.",
-      "opt-b": "Everything in the request counts toward the window, including ordinary user messages and the generated response, not just system prompt and tools.",
-      "opt-d": "Streaming only changes how the response is delivered; the generated tokens still occupy the same context window."
+      "a": "Plausible because input and output are reported as distinct usage fields, but they are billed distinctly, not budgeted separately; both draw on the same window.",
+      "b": "Everything in the request counts toward the window, including ordinary user messages and the generated response, not just system prompt and tools.",
+      "d": "Streaming only changes how the response is delivered; the generated tokens still occupy the same context window."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/context-windows",
     "sourceNote": "How the context window works (window holds history plus the new output)",
@@ -750,33 +772,34 @@
     "subdomain": "llm-fundamentals",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A team is deciding which features should run with thinking enabled. They want to spend the extra thinking tokens only where they actually change the outcome. Which TWO statements reflect sound use of thinking? Select TWO.",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "Thinking should be enabled everywhere, because spending more thinking tokens reliably raises answer quality on every kind of task."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "Heavier thinking is best reserved for tasks that need multi-step reasoning, where the extra tokens buy a meaningfully better answer."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "Thinking tokens are free in practice, since they are not billed as output and do not count toward the context window."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "For simple, low-ambiguity tasks, keeping thinking low avoids paying latency and token cost for reasoning the task does not need."
       }
     ],
     "correct": [
-      "opt-b",
-      "opt-d"
+      "b",
+      "d"
     ],
     "explanation": "opt-b and opt-d are correct: thinking earns its cost on genuinely hard, multi-step problems, while on simple tasks it mainly adds latency and spend, so match thinking depth to difficulty. opt-a is wrong because more thinking is not universally better and wastes budget on easy tasks. opt-c is wrong because thinking tokens are billed as output tokens and do count toward the context window, so they are a real cost to weigh.",
     "distractorNotes": {
-      "opt-a": "Plausible because thinking helps on hard problems, but enabling it globally pays cost on tasks that gain nothing from it.",
-      "opt-c": "Thinking tokens are billed as output and count toward the context window, so treating them as free misjudges the tradeoff."
+      "a": "Plausible because thinking helps on hard problems, but enabling it globally pays cost on tasks that gain nothing from it.",
+      "c": "Thinking tokens are billed as output and count toward the context window, so treating them as free misjudges the tradeoff."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/context-windows",
     "sourceNote": "The context window with thinking (thinking tokens billed as output, count toward the window)",
@@ -791,33 +814,34 @@
     "subdomain": "llm-fundamentals",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "An extraction feature returns correct facts but in inconsistent formats, and a downstream parser keeps choking on the variation. The prompt already describes the desired schema in prose. A developer proposes adding a few worked input/output examples. What does multi-shot prompting primarily buy in this situation?",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "Concrete examples steer the output's format and structure toward a consistent shape, matching the inconsistency the parser hits."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "Examples expand the model's underlying factual knowledge, so the extracted facts themselves come back more accurate than before."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "Examples cut token usage, because once shown a pattern the model can skip reading the prose instructions on later calls."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "Examples make the model deterministic, guaranteeing byte-identical output for every single input that happens to share the same shape."
       }
     ],
     "correct": [
-      "opt-a"
+      "a"
     ],
     "explanation": "opt-a is correct: worked examples (few-shot or multi-shot prompting) are one of the most reliable ways to steer output format, tone, and structure, directly addressing inconsistent shape. opt-b overstates examples as knowledge injection rather than format steering. opt-c invents a token saving; the instructions are still sent each call. opt-d wrongly promises determinism, which examples do not provide.",
     "distractorNotes": {
-      "opt-b": "Examples shape output form and style; they do not add new factual knowledge to the model.",
-      "opt-c": "Each request is independent, so the prose still costs tokens; examples add input rather than removing it.",
-      "opt-d": "Examples improve consistency but do not make generation deterministic across calls."
+      "b": "Examples shape output form and style; they do not add new factual knowledge to the model.",
+      "c": "Each request is independent, so the prose still costs tokens; examples add input rather than removing it.",
+      "d": "Examples improve consistency but do not make generation deterministic across calls."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices",
     "sourceNote": "Use examples effectively (few-shot/multishot steers format, tone, structure)",
@@ -832,33 +856,34 @@
     "subdomain": "llm-fundamentals",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A team debates whether every prompt should carry examples. They want a principled rule for when examples earn their place versus a plain zero-shot prompt. Which TWO statements are sound? Select TWO.",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "When output must follow a specific format, tone, or structure, a handful of well-chosen examples is among the most reliable ways to get consistency."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "Examples are always required, because a zero-shot prompt cannot produce usable output for any non-trivial task at all."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "For a simple, unambiguous instruction the model already handles well, a clear zero-shot prompt can suffice and avoids the extra input tokens."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "More examples strictly improve results, so packing in dozens is always better than including only a few of them."
       }
     ],
     "correct": [
-      "opt-a",
-      "opt-c"
+      "a",
+      "c"
     ],
     "explanation": "opt-a and opt-c are correct: examples shine when format or structure matters, but a clear zero-shot prompt can be enough for simple, well-handled tasks, and it avoids extra tokens. opt-b is false because zero-shot prompts routinely work for straightforward tasks. opt-d is false because the guidance recommends a small set (about three to five) rather than piling on dozens.",
     "distractorNotes": {
-      "opt-b": "Zero-shot prompts work well for many clear tasks, so examples are not universally required.",
-      "opt-d": "Guidance is to include a few strong examples, not dozens; more is not monotonically better."
+      "b": "Zero-shot prompts work well for many clear tasks, so examples are not universally required.",
+      "d": "Guidance is to include a few strong examples, not dozens; more is not monotonically better."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices",
     "sourceNote": "Use examples effectively (include 3-5 examples; examples steer consistency)",
@@ -873,33 +898,34 @@
     "subdomain": "llm-fundamentals",
     "difficulty": "easy",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A developer new to Claude assumes one token equals one character and sizes their limits by counting characters, then is surprised the numbers do not line up with reported usage. Which understanding of tokens is correct?",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "A token is always exactly one whole word, so the token count simply equals the number of space-separated words present in the text."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "A token is always a fixed number of bytes, so dividing the byte length by that constant yields the exact token count."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "Tokens map one-to-one onto characters, so character count and token count are interchangeable for sizing purposes."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "Tokens are sub-word units that may be words, subwords, or characters, so token count only approximately tracks character count."
       }
     ],
     "correct": [
-      "opt-d"
+      "d"
     ],
     "explanation": "opt-d is correct: tokens are the model's smallest units and may correspond to words, subwords, characters, or bytes, so a token roughly maps to a few characters and the ratio shifts with the language and content. opt-a, opt-b, and opt-c each assume a fixed one-to-one mapping (to words, bytes, or characters), which is why the developer's character-based sizing does not match.",
     "distractorNotes": {
-      "opt-a": "Tokens are not whole words; common words may be one token while others split into several.",
-      "opt-b": "There is no fixed bytes-per-token constant; tokenization depends on the text.",
-      "opt-c": "Tokens do not map one-to-one to characters, which is exactly why the counts diverged."
+      "a": "Tokens are not whole words; common words may be one token while others split into several.",
+      "b": "There is no fixed bytes-per-token constant; tokenization depends on the text.",
+      "c": "Tokens do not map one-to-one to characters, which is exactly why the counts diverged."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/about-claude/glossary",
     "sourceNote": "Tokens (smallest units: words, subwords, characters, or bytes)",
@@ -914,33 +940,34 @@
     "subdomain": "technical-fundamentals",
     "difficulty": "easy",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A team is starting a Python integration and debates whether to hand-roll HTTP calls to the Messages endpoint or adopt Anthropic's official client SDK. What is the most accurate framing of what the official client SDK provides?",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "The SDK runs the full agent loop and executes tools for you, so you no longer send individual requests or handle their responses at all."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "The SDK swaps the REST API for a different wire protocol, so requests no longer correspond to the documented HTTP endpoints and shapes."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "The SDK is an idiomatic client over the same REST API, adding type safety plus built-in streaming, retries, and error handling."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "The SDK is only a thin set of type stubs, so features like streaming and retries must still be implemented by hand on top of it."
       }
     ],
     "correct": [
-      "opt-c"
+      "c"
     ],
     "explanation": "opt-c is correct: the client SDKs are general-purpose Messages API clients that wrap the same REST API with idiomatic interfaces, type safety, and built-in streaming, retries, and error handling, while you still send each request. opt-a describes the higher-level Agent SDK, not the client SDK. opt-b is wrong because the SDK still targets the documented REST endpoints. opt-d understates the SDK, which provides those features rather than leaving them to you.",
     "distractorNotes": {
-      "opt-a": "Running the agent loop and executing tools describes the Claude Agent SDK, not the request/response client SDK.",
-      "opt-b": "The SDK is a client over the existing REST API; it does not replace the HTTP protocol.",
-      "opt-d": "Streaming, retries, and error handling are built in, so they are not left for the team to implement."
+      "a": "Running the agent loop and executing tools describes the Claude Agent SDK, not the request/response client SDK.",
+      "b": "The SDK is a client over the existing REST API; it does not replace the HTTP protocol.",
+      "d": "Streaming, retries, and error handling are built in, so they are not left for the team to implement."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/cli-sdks-libraries/overview",
     "sourceNote": "Client SDKs (idiomatic interfaces, type safety, built-in streaming, retries, error handling)",
@@ -955,33 +982,34 @@
     "subdomain": "technical-fundamentals",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "An interactive chat app enables streaming, and someone predicts it will lower the monthly bill by reducing how many tokens each response consumes. Is that the right expectation about what streaming does?",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "Yes; streaming sends tokens incrementally, and those partial tokens are billed at a lower per-token rate than one batched response."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "No; streaming delivers the same response incrementally over server-sent events, improving perceived responsiveness but not token cost."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "Yes; streaming lets the client stop early on most requests, so the average response ends up billed for far fewer output tokens overall."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "No; streaming actually costs more, because each server-sent event in the stream is billed as though it were a wholly separate request."
       }
     ],
     "correct": [
-      "opt-b"
+      "b"
     ],
     "explanation": "opt-b is correct: streaming uses server-sent events to deliver the same response incrementally, which improves perceived latency and time-to-first-token but does not change how many tokens are generated or what they cost. opt-a and opt-c invent billing discounts from streaming or early stopping. opt-d invents a per-event surcharge. Streaming is a delivery mechanism, not a pricing lever.",
     "distractorNotes": {
-      "opt-a": "There is no lower per-token rate for streamed tokens; delivery method does not change token pricing.",
-      "opt-c": "Early client-side stopping is not the point of streaming, and it is not how streaming reduces the bill.",
-      "opt-d": "Server-sent events are parts of one response, not separate billable requests."
+      "a": "There is no lower per-token rate for streamed tokens; delivery method does not change token pricing.",
+      "c": "Early client-side stopping is not the point of streaming, and it is not how streaming reduces the bill.",
+      "d": "Server-sent events are parts of one response, not separate billable requests."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/streaming",
     "sourceNote": "Streaming messages (incremental delivery via server-sent events)",
@@ -996,33 +1024,34 @@
     "subdomain": "technical-fundamentals",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A team adds streaming so the UI can show Claude's answer as it is produced. Which TWO statements about how streaming works with the SDKs are accurate? Select TWO.",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "Streaming returns the whole response in a single final event, so the interface still waits for generation to finish before it can show anything."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "The response arrives as a sequence of incremental server-sent events, which the client can render as they come in."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "For very large max_tokens generations the SDKs recommend streaming to avoid hitting HTTP request timeouts."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "Streaming requires opening and managing a persistent websocket, kept separate from the ordinary request path."
       }
     ],
     "correct": [
-      "opt-b",
-      "opt-c"
+      "b",
+      "c"
     ],
     "explanation": "opt-b and opt-c are correct: streaming delivers the response as incremental server-sent events the client renders progressively, and the SDKs recommend streaming for very large max_tokens generations so long responses do not exceed HTTP timeouts. opt-a contradicts incremental delivery. opt-d is wrong because streaming uses server-sent events over the normal request, not a separately managed websocket.",
     "distractorNotes": {
-      "opt-a": "Streaming exists precisely so the UI does not wait for the full response; events arrive during generation.",
-      "opt-d": "Streaming uses server-sent events on the standard request, not a persistent websocket the team must manage."
+      "a": "Streaming exists precisely so the UI does not wait for the full response; events arrive during generation.",
+      "d": "Streaming uses server-sent events on the standard request, not a persistent websocket the team must manage."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/streaming",
     "sourceNote": "Streaming messages (SSE deltas; streaming recommended for large max_tokens to avoid timeouts)",
@@ -1037,33 +1066,34 @@
     "subdomain": "technical-fundamentals",
     "difficulty": "medium",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A developer builds multi-turn chat and assumes that after the first request the service remembers the conversation, so later requests can send only the newest user message. Earlier context then starts disappearing from responses. What is the correct model of how the Messages API handles conversation state?",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "The API keeps a server-side session per API key, so omitting earlier turns should not lose context and the real bug must be elsewhere."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "The API stores the last several turns automatically and only forgets once a session times out, so lengthening that timeout fixes the loss."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "The API reconstructs missing history from the API key's recent activity, so prior turns need not be resent on each request."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "Each request is self-contained, so the app must resend the prior conversation every turn since the API does not retain it between calls."
       }
     ],
     "correct": [
-      "opt-d"
+      "d"
     ],
     "explanation": "opt-d is correct: each request's input must contain all previous conversation history plus the current user message, because the Messages API does not persist state between calls; the client owns the transcript and resends it each turn. opt-a, opt-b, and opt-c all assume some server-side memory keyed to a session or API key, which does not exist, so dropping earlier turns is exactly why context is lost.",
     "distractorNotes": {
-      "opt-a": "There is no per-key server session; omitting earlier turns really does drop that context.",
-      "opt-b": "The API does not automatically retain recent turns, so no timeout setting brings them back.",
-      "opt-c": "History is not reconstructed from account activity; it must be resent explicitly in messages."
+      "a": "There is no per-key server session; omitting earlier turns really does drop that context.",
+      "b": "The API does not automatically retain recent turns, so no timeout setting brings them back.",
+      "c": "History is not reconstructed from account activity; it must be resent explicitly in messages."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/context-windows",
     "sourceNote": "Input-output flow (input phase contains all previous conversation history plus the current user message)",
@@ -1078,33 +1108,34 @@
     "subdomain": "technical-fundamentals",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A team hand-rolled HTTP calls and now sees intermittent rate-limit and server errors under load, which they handle by immediately retrying in a tight loop. They are considering the official SDK. Which TWO points correctly describe robust request handling and what the SDK offers? Select TWO.",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "Transient failures should be retried as fast as possible with no delay, since any backoff only slows the recovery down."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "A single failed request means the workload must halt, because retrying any request risks duplicate side effects in every case."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "A 429 carries a retry-after hint, so transient errors are best retried after waiting rather than in a tight loop."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "The official SDKs include automatic retries, moving that logic into the library instead of code the team maintains by hand."
       }
     ],
     "correct": [
-      "opt-c",
-      "opt-d"
+      "c",
+      "d"
     ],
     "explanation": "opt-c and opt-d are correct: rate-limit responses return a retry-after header indicating how long to wait, so transient errors should be retried after backing off, and the official SDKs perform automatic retries so the team need not hand-roll that logic. opt-a is wrong because a tight no-delay retry loop worsens rate limiting. opt-b overgeneralizes; transient errors are routinely retried rather than forcing the workload to stop.",
     "distractorNotes": {
-      "opt-a": "Immediate no-delay retries hammer the API and prolong rate limiting; backoff is the correct response.",
-      "opt-b": "Transient rate-limit and server errors are safely retried; halting the whole workload is not required."
+      "a": "Immediate no-delay retries hammer the API and prolong rate limiting; backoff is the correct response.",
+      "b": "Transient rate-limit and server errors are safely retried; halting the whole workload is not required."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/api/rate-limits",
     "sourceNote": "429 handling (retry-after header; SDKs' automatic retries)",
@@ -1119,33 +1150,34 @@
     "subdomain": "technical-fundamentals",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A retrieval pipeline batches a variable number of source documents into each prompt, and occasionally a batch is large enough to be rejected. The team would rather catch an oversize batch while assembling it than learn about it from a failed call. Which approach fits?",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "Estimate the request's token size with the token counting API before sending, and trim or split when the estimate nears the window."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "Send the request as-is and rely on the model to silently truncate the oldest content so that the call always fits within the window."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "Assume a fixed characters-per-token ratio is exact and hard-code a character cap, since token counts never vary with the actual content."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "Set max_tokens as high as possible, which reserves extra window space and thereby prevents any oversize input from failing."
       }
     ],
     "correct": [
-      "opt-a"
+      "a"
     ],
     "explanation": "opt-a is correct: the token counting API lets you estimate a request before sending it, so the service can measure assembled prompts and trim or split when they approach the window. opt-b is wrong because the API does not silently truncate to fit. opt-c is wrong because token counts vary by content, so a hard-coded character cap is unreliable. opt-d misreads max_tokens, which reserves output room and does not shield an oversize input.",
     "distractorNotes": {
-      "opt-b": "The request is not silently truncated to fit; an oversize request is an error to prevent, not a quiet trim.",
-      "opt-c": "Characters-per-token is only approximate and shifts with content and language, so a fixed cap misjudges size.",
-      "opt-d": "max_tokens governs output length and consumes window space; raising it does not accommodate a larger input."
+      "b": "The request is not silently truncated to fit; an oversize request is an error to prevent, not a quiet trim.",
+      "c": "Characters-per-token is only approximate and shifts with content and language, so a fixed cap misjudges size.",
+      "d": "max_tokens governs output length and consumes window space; raising it does not accommodate a larger input."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/context-windows",
     "sourceNote": "How the context window works (estimate a request before sending with the token counting API)",
@@ -1160,33 +1192,34 @@
     "subdomain": "technical-fundamentals",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A team is choosing between Anthropic's client SDKs and the Claude Agent SDK for a new build. Which TWO statements correctly distinguish the two levels of tooling? Select TWO.",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "The client SDKs are Messages API clients where you send each request and handle each response yourself."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "The client SDKs and the Agent SDK are the same tool under two names, so the choice between them is purely cosmetic."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "The Agent SDK is only a set of type definitions layered on the client SDK, so it adds no runtime behavior of its own."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "The Agent SDK operates at a higher level, providing the agent loop, tool execution, and runtime rather than raw request/response."
       }
     ],
     "correct": [
-      "opt-a",
-      "opt-d"
+      "a",
+      "d"
     ],
     "explanation": "opt-a and opt-d are correct: the client SDKs are for calling the API yourself, issuing each request and handling each response, whereas the Agent SDK works at a higher level and provides the agent loop, tool execution, and runtime. opt-b is wrong because they are distinct tools at different levels. opt-c is wrong because the Agent SDK supplies real runtime behavior, not just types.",
     "distractorNotes": {
-      "opt-b": "They are different tools at different levels of abstraction, so the choice is substantive, not cosmetic.",
-      "opt-c": "The Agent SDK provides the agent loop and runtime, which is behavior, not merely type definitions."
+      "b": "They are different tools at different levels of abstraction, so the choice is substantive, not cosmetic.",
+      "c": "The Agent SDK provides the agent loop and runtime, which is behavior, not merely type definitions."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/cli-sdks-libraries/overview",
     "sourceNote": "Building agents or using Claude Code? (client SDK vs Agent SDK levels)",
@@ -1201,33 +1234,34 @@
     "subdomain": "model-selection-and-tradeoffs",
     "difficulty": "hard",
     "status": "reviewed",
+    "scope": "core",
     "stem": "A team upgrades to a newer Claude model expecting a drop-in improvement and reuses prompts tuned for the previous generation. Some outputs regress in format and length. What does Anthropic's guidance advise about selecting or moving between models?",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "Newer models are strict supersets of older ones, so any regression has to be an infrastructure bug rather than a model difference."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "Treat a model change as something to validate: run benchmark tests with real prompts and data, since behavior shifts across releases."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "Prompt wording never interacts with the model version, so re-testing prompts after an upgrade is wasted effort that can be skipped."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "Always pick the largest available model to eliminate behavior differences, since capability gaps are the only real source of any regressions."
       }
     ],
     "correct": [
-      "opt-b"
+      "b"
     ],
     "explanation": "opt-b is correct: Anthropic advises deciding whether to upgrade or change models by creating benchmark tests specific to your use case and testing with your actual prompts and data, because behavior can change across releases and prompts tuned for one model may need adjustment on another. opt-a and opt-c wrongly assume model versions are interchangeable for a given prompt. opt-d wrongly treats model size as a way to avoid behavior differences instead of evaluating them.",
     "distractorNotes": {
-      "opt-a": "Newer models are not guaranteed supersets; behavior genuinely shifts across releases, so regressions can be real model differences.",
-      "opt-c": "Prompts often interact with model version, so re-evaluating after an upgrade is exactly what is recommended.",
-      "opt-d": "Choosing the largest model does not neutralize cross-release behavior changes and ignores cost and latency tradeoffs."
+      "a": "Newer models are not guaranteed supersets; behavior genuinely shifts across releases, so regressions can be real model differences.",
+      "c": "Prompts often interact with model version, so re-evaluating after an upgrade is exactly what is recommended.",
+      "d": "Choosing the largest model does not neutralize cross-release behavior changes and ignores cost and latency tradeoffs."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/about-claude/models/choosing-a-model",
     "sourceNote": "Decide whether to upgrade or change models (benchmark with your actual prompts and data)",

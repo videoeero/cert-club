@@ -1,185 +1,228 @@
-# Phase 2 Review: CCDV-F Question Bank
+# CCDV-F review record
 
-## Cold-Answer Pass Results
+Standing record of how this bank was built and reviewed, and of the judgement
+calls a future author should not have to rediscover. Chronology lives in git;
+this file holds the reasons.
 
-| Metric | Count |
-|--------|-------|
-| Total questions | 100 |
-| Cold-answered | 97 |
-| Source inaccessible (verified via sourceNote) | 3 |
-| Pending | 0 |
-| **Agreements** | **94** |
-| **Disagreements** | **3** |
-| False-agree rate (10-question audit) | **0/10** |
+The bank follows the Claude Certified Developer – Foundations Exam Guide v1.0
+(July 2026). Sources were last checked on September 7, 2026.
 
-## Disagreements — All Adjudicated
+## Composition
 
-All 3 disagreements were investigated against the live source pages. **In every case, the answer key was correct and the cold reader erred.**
+177 questions, all at `status: reviewed`.
 
-### 1. ccdv-f-agents-and-workflows-009 — Subagent limits mechanism
-- **Key:** `a` (depth/concurrency = env vars, spend = query option)
-- **Cold:** `c` (all three are query options)
-- **Source text:** Table at `code.claude.com/.../subagents` shows Depth → `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`, Concurrency → `CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS` (env vars via `env` option), Spend → `maxBudgetUsd`/`max_budget_usd` (query option)
-- **Verdict:** ✅ Key correct. Cold reader conflated the two mechanisms.
+| Scope  | Questions | Share |
+| ------ | --------: | ----: |
+| `core` |       149 | 84.2% |
+| `deep` |        28 | 15.8% |
 
-### 2. ccdv-f-security-and-safety-001 — Replacing shared API keys
-- **Key:** `a, e` (service account + workload identity federation)
-- **Cold:** `a` only (missed federation)
-- **Source text:** "Move to Workload Identity Federation when your workload already has a platform-issued identity you can federate."
-- **Verdict:** ✅ Key correct. Cold reader stopped at the first correct answer.
+`core` questions are traceable to a blueprint objective and pitched at the
+exam's cognitive level. `deep` questions are sound and sourced but sit above
+that level; they are served only when the learner opts into "Include deeper
+practice", and are excluded from the blueprint balance arithmetic entirely.
 
-### 3. ccdv-f-applications-and-integration-012 — Multi-workspace key needs workspace header
-- **Key:** `d` (send workspace ID header)
-- **Cold:** `a` (confused about 401 authentication_error)
-- **Source text:** "If your API key isn't scoped to a workspace, you must specify the workspace ID in the `anthropic-workspace-id` header for each request."
-- **Verdict:** ✅ Key correct. Cold reader answered a different question.
+The `core` slice tracks the published domain weights:
 
-## Near-Duplicate Analysis
+| Domain                           | Core | Share | Weight |
+| -------------------------------- | ---: | ----: | -----: |
+| applications-and-integration     |   46 | 30.9% |  33.1% |
+| model-selection-and-optimization |   24 | 16.1% |  16.8% |
+| agents-and-workflows             |   23 | 15.4% |  14.7% |
+| prompt-and-context-engineering   |   16 | 10.7% |  11.0% |
+| tools-and-mcps                   |   14 |  9.4% |  10.6% |
+| security-and-safety              |   13 |  8.7% |   8.1% |
+| claude-code                      |    7 |  4.7% |   3.1% |
+| eval-testing-and-debugging       |    6 |  4.0% |   2.6% |
 
-### Confirmed near-duplicates
+`claude-code` and `eval-testing-and-debugging` sit above their weights because
+`MINIMUM_SKILL_TARGET` floors every skill at 2 questions, which over-provisions
+the smallest domains. That is deliberate: a domain with one question tests
+nothing reliably.
 
-| Pair | Source Page | Concern | Resolution |
-|------|-----------|---------|----------------|
-| ccdv-f-applications-and-integration-017 / ccdv-f-eval-testing-and-debugging-001 | develop-tests | Both test "recognize a good success criterion" — ccdv-f-applications-and-integration-017 asks for SMART properties, ccdv-f-eval-testing-and-debugging-001 asks for the F1 example. Different domains but same concept. | **Kept both.** They sit in different domains (`applications-and-integration` vs `eval-testing-and-debugging`) and test different layers: ccdv-f-applications-and-integration-017 the abstract SMART criteria, ccdv-f-eval-testing-and-debugging-001 a concrete worked metric. `eval-testing-and-debugging` is also a floor-padded domain at 7 questions, so removing one would cost depth where the bank is thinnest. |
+Core formats: 97 single-select, 52 multi-select (36 select-TWO, 16
+select-THREE). 65 distinct source pages across the whole bank.
 
-### Checked and cleared
+## Why the scope split exists
 
-| Pair | Source Page | Why they're different enough |
-|------|-----------|-----|
-| ccdv-f-applications-and-integration-007 / ccdv-f-prompt-and-context-engineering-005 | context-windows | ccdv-f-applications-and-integration-007 is easy single-select overview; ccdv-f-prompt-and-context-engineering-005 is medium multi-select drilling into specifics. |
-| ccdv-f-security-and-safety-005 / ccdv-f-claude-code-003 | permissions / permission-modes | Different source pages. ccdv-f-security-and-safety-005 tests deny-first eval order; ccdv-f-claude-code-003 tests bypassPermissions mode carve-out. Complementary, not redundant. |
+The bank was calibrated against the only public full-length CCDV-F practice
+set, `docs/claude_certified_developer_foundations_practice_exam.md`, written by
+someone who had sat the exam. That set is uniformly scenario-driven — situation,
+then recognise the governing principle — and almost never asks for a parameter
+name, a status code, or a field-level contract.
 
-## Quality Observations
+Measured against it, most of this bank matches. A tail did not: questions that
+turn on narrow documentation mechanics with no analogue anywhere in the
+reference set. Those 28 are now tagged `deep` rather than deleted, because each
+is accurate, sourced, and genuinely instructive — just not a rehearsal of the
+exam.
 
-> [!TIP]
-> **stemSelfContained flag**: The cold reader marked all 20 batch-0 questions as `stemSelfContained: false`. On manual inspection, many of these stems are scenario-based ("what explains this behavior?") which inherently require reading the options. This is appropriate for applied-knowledge certification questions — the stem sets up a realistic debugging scenario and the options represent possible diagnoses. The flag was over-conservative.
+Each `deep` question carries a `scopeNote` justifying the classification
+against the blueprint; the schema requires one and forbids it on `core`.
 
-## Review Progress by Domain (highest weight first)
+Tagged `deep` (28):
 
-| Domain | Weight | Questions | Reviewed | Draft |
-|--------|--------|-----------|----------|-------|
-| applications-and-integration | 33.1% | 26 | 26 | 0 |
-| model-selection-and-optimization | 16.8% | 15 | 15 | 0 |
-| agents-and-workflows | 14.7% | 14 | 14 | 0 |
-| prompt-and-context-engineering | 11.0% | 11 | 11 | 0 |
-| tools-and-mcps | 10.6% | 11 | 11 | 0 |
-| security-and-safety | 8.1% | 9 | 9 | 0 |
-| claude-code | 3.1% | 7 | 7 | 0 |
-| eval-testing-and-debugging | 2.6% | 7 | 7 | 0 |
-| **Total** | | **100** | **100** | **0** |
+| Domain                           | Questions                                     |
+| -------------------------------- | --------------------------------------------- |
+| applications-and-integration     | 006, 011, 013, 020, 021, 023, 048, 050        |
+| model-selection-and-optimization | 003, 004, 009, 010, 011                       |
+| prompt-and-context-engineering   | 006, 007, 008, 011, 021                       |
+| eval-testing-and-debugging       | 001, 005, 007                                 |
+| tools-and-mcps                   | 003, 009, 010                                 |
+| agents-and-workflows             | 002, 010                                      |
+| security-and-safety              | 010, 012                                      |
 
-## Batch 3 — Resolved (no doc drift)
+Two of these (`eval-testing-and-debugging-001` and `-005`) are tagged for a
+different reason from the rest: they are not merely deep but off-objective,
+testing success-criteria and A/B methodology where the Domain 4 objective
+covers error identification, recovery, and trace analysis. An earlier
+`out-of-scope` scope value recorded that distinction. It was removed in favour
+of a two-value taxonomy, because a third bucket bought nothing the UI or the
+arithmetic used — both treated `deep` and `out-of-scope` identically — while
+letting a question sit unclassified by default. `scope` is now mandatory, so a
+new question cannot enter the bank without a decision.
 
-The 11 questions left pending were blocked by the batch-3 cold-answerer's URL
-fetcher, which reported `404` / "content moved" for seven source pages. **All
-seven URLs were re-checked directly and are live and correct** — the failures
-were a tool artefact, not doc drift. No `sourceUrl` needed changing.
+### The 80% floor
 
-The docs render client-side, so the reliable way to read them is to append
-`.md` to the page URL (e.g. `curl -sL https://platform.claude.com/docs/en/build-with-claude/compaction.md`).
-The re-run cold-answer pass used that form.
+`SCOPE_MIN_CORE_SHARE = 0.8`, checked above `SCOPE_MIN_SAMPLE = 20` questions.
 
-| Question | Key | Cold | Result |
-|---|---|---|---|
-| ccdv-f-applications-and-integration-002 | b, c, e | b, c, e | ✅ agree |
-| ccdv-f-applications-and-integration-005 | a, c, f | a, c, f | ✅ agree |
-| ccdv-f-applications-and-integration-013 | a, d, e | a, d, e | ✅ agree |
-| ccdv-f-model-selection-and-optimization-003 | b, e, f | b, e, f | ✅ agree |
-| ccdv-f-model-selection-and-optimization-011 | c | c | ✅ agree |
-| ccdv-f-model-selection-and-optimization-012 | b | b | ✅ agree |
-| ccdv-f-agents-and-workflows-006 | b | b | ✅ agree |
-| ccdv-f-agents-and-workflows-010 | b, c | b, c | ✅ agree |
-| ccdv-f-prompt-and-context-engineering-006 | c | c | ✅ agree |
-| ccdv-f-prompt-and-context-engineering-007 | d, e | d, e | ✅ agree |
-| ccdv-f-tools-and-mcps-002 | b | b | ✅ agree |
+The default filter is `core-only`, so the exam-aligned slice is what a learner
+practising cold actually sits. If tagging drifts upward, that default pool
+shrinks below a useful size and the bank stops rehearsing the real thing. The
+floor is a ceiling on tagging, not a target to fill: tag a question `deep`
+because it overshoots the exam, never to reach a quota.
 
-11/11 agreements, all at `high` confidence, no `multipleDefensible` flags. All
-11 flipped from `draft` to `reviewed` with `sourceCheckedAt: 2026-09-03`.
-
-**The bank is now 100/100 `reviewed` — Phase 2's exit condition is met.**
+Two second-order effects are worth knowing before tagging anything else.
+Tagging shrinks the `core` pool, which shrinks every per-skill balance target,
+which can push a skill you did not touch outside `BALANCE_TOLERANCE`. And
+because the guard engages only above 20 questions, it will not fire on a small
+new cert bank.
 
 ## Answer-length bias
 
-A pattern audit of the reviewed bank found a systematic **answer-length bias**:
-correct options were markedly longer than their distractors, because the key
-carried the source doc's full hedged claim while distractors were written as
-crisp wrong assertions. This survived the cold-answer review precisely because
-that review only proves the key is faithful to the cited source; it says nothing
-about whether a question discriminates.
+An audit of the reviewed bank found a systematic answer-length bias: correct
+options ran markedly longer than their distractors, because the key carried the
+source doc's full hedged claim while distractors were written as crisp wrong
+assertions. This survived source review precisely because that review only
+proves the key is faithful to the cited source — it says nothing about whether
+the question discriminates.
 
-"Always pick the longest option" scored **37/61 = 61%** on single-select against
-a ~25% random baseline — enough to clear the real exam's 720/1000 bar on
+"Always pick the longest option" scored **37/61 = 61%** on single-select
+against a ~25% random baseline, enough to clear the exam's 720/1000 bar on
 typography alone.
 
-| Metric | Before | After |
-|---|---|---|
-| mean(correct) − mean(distractor), all 100 | +24.4 chars | +0.5 |
-| — median | +11.2 | +2.0 |
-| — single-select (61) | +26.1 | +1.1 |
-| — multi-select (39) | +21.8 | −0.5 |
-| key is the single longest option (61 single) | 37 (61%) | 11 (18%) |
-| mean normalised length-rank of correct options | 0.27 | 0.43 |
+| Metric                                     | Before | Now  |
+| ------------------------------------------ | -----: | ---: |
+| mean(correct) − mean(distractor)           |  +24.4 | +2.6 |
+| — median                                   |  +11.2 | +2.0 |
+| key is the single longest option (singles) |    61% |  19% |
 
-Neutral is 0.50 for length-rank and ~25% for the longest-option strategy, so
-both metrics now sit within noise of chance rather than being exploitable.
+"Before" was measured on the 100-question bank the audit ran against; "Now" is
+the current 177. The populations differ, so read the columns as bank states
+rather than as a controlled before/after.
 
-**Method.** Following the guidance that provenance outranks cosmetic balance,
-the fix was applied to distractors first: each was padded with equivalent
-qualifying clauses that leave its documented reason-for-wrongness intact, and
-several were tightened into genuine near-misses. Keys were trimmed only where it
-cost no accuracy. 58 questions were touched, 147 option strings rewritten.
+The fix was applied to distractors first: each was padded with equivalent
+qualifying clauses leaving its documented reason-for-wrongness intact, and
+several were tightened into genuine near-misses. Keys were trimmed only where
+it cost no accuracy. Provenance outranks cosmetic balance — never trim a key
+into inaccuracy to satisfy a metric.
 
-**Every `correct` array, `explanation`, `distractorNotes`, `sourceUrl`,
-`sourceNote` and `sourceCheckedAt` is byte-identical to the reviewed bank** —
-this was a wording-only pass, verified by structural diff, so no cold-answer
-result is invalidated.
+Thresholds in `schemas/question-bank.mjs` lock in the achieved state:
 
-**Regression check.** `schemas/question-bank.mjs` now carries a bank-level
-`lengthBias` guard alongside the position-bias guard, with the same
-minimum-sample-size shape:
-
-- `LENGTH_BIAS_MIN_SAMPLE = 20`
-- `LENGTH_BIAS_MAX_MEAN_DELTA = 10` chars, checked in **both** directions, since
-  a bank whose keys are reliably shorter is just as guessable as one whose keys
-  are reliably longer
+- `LENGTH_BIAS_MAX_MEAN_DELTA = 10` characters, checked in **both** directions,
+  since a bank whose keys are reliably shorter is just as guessable as one
+  whose keys are reliably longer.
 - `LENGTH_BIAS_MAX_LONGEST_SHARE = 0.45` for single-select, against a ~25%
-  chance rate and the position guard's comparable 50% ceiling
+  chance rate and the position guard's comparable 50% ceiling.
 
-Thresholds were chosen after the rebalance so they lock in the achieved state.
-Run against the pre-fix bank, the guard fails on both axes (+24.4 chars, 59%),
-which is the regression it exists to catch.
+Run against the pre-fix bank the guard fails on both axes, which is the
+regression it exists to catch.
+
+## Distractor quality
+
+A separate pass measured how often a distractor could be eliminated for free.
+14 questions offered a "raise/lower the temperature" option in a context where
+temperature was plainly irrelevant — a gift of 25% of the option space in a
+four-option item.
+
+The 10 costliest were rewritten into genuine near-misses that encode real
+misconceptions rather than filler. Two illustrate the intended standard:
+
+- `agents-and-workflows-017` now offers a **deny rule**, which really does
+  block the write. The stem also requires every attempt to be recorded, which
+  a deny rule does not do and a hook does.
+- `security-and-safety-013` now offers **classifier screening**, which is
+  recommended guidance — but the stem is explicitly about an instruction that
+  slipped past screening.
+
+`eval-testing-and-debugging-007` was fixed for the opposite reason: its two
+surviving options both said "spend limit reached" and differed only on which
+flavour returns 429 versus 400. A coin-flip on a lookup value is not a hard
+question. The distractor is now a workspace-limit throttle, wrong for a
+learnable reason: throughput 429s carry retry-after guidance and recover, spend-cap
+429s do not.
+
+**Five questions still carry a free temperature elimination**, all
+six-option multi-selects where one gift costs proportionally less. Worth
+doing; not urgent.
 
 ## Other pattern tells — measured, not acted on
 
-Length was one possible tell, so the obvious neighbours were measured too.
+**Absolute qualifiers** (`always`, `never`, `only`, `must`, `every`, `cannot`,
+`all`, `any`, `no`) appear in **49% of distractors against 29% of keys**. The
+corresponding strategy — eliminate every option containing an absolute, then
+guess among what is left — scores an expected **30% against a 25% baseline**,
+and uniquely identifies the key in only 7 of 109 single-select items.
 
-**Absolute qualifiers** (`always`, `never`, `only`, `must`, `every`, `cannot`…)
-appear in **50% of distractors against 34% of keys**. The corresponding
-strategy — eliminate every option containing an absolute, then guess among
-what is left — scores an expected **32% against a 25% baseline**, and uniquely
-identifies the key in only 2 of 61 single-select items.
-
-**This is deliberately left alone.** A +7pp edge is an order of magnitude
+**This is deliberately left alone.** A +5pp edge is an order of magnitude
 weaker than the length bias was (+36pp), it cannot carry anyone to 720/1000,
 and the skew is largely *legitimate*: the cited docs state correct behaviour
 with genuine hedging, while a distractor is frequently wrong precisely because
 it over-claims. Removing the pattern would mean either writing hedged
 falsehoods or flattening accurate qualifiers out of keys — both trade factual
 fidelity for cosmetics, which is the trade this project's provenance rule
-declines to make. It is recorded here so the number is known rather than
-assumed, and so a future author does not "discover" it as a new defect.
+declines to make. It is recorded so the number is known rather than assumed,
+and so a future author does not "discover" it as a new defect.
 
-Verified clean, needing no action: answer position (a/b/c/d = 15/15/16/15),
-no leading-run multi-select keys, 56 distinct source pages, `subdomain` and
-`distractorNotes` present on all 100.
+## Near-duplicate adjudications
 
-## Validation
+| Pair | Source | Resolution |
+| --- | --- | --- |
+| `applications-and-integration-017` / `eval-testing-and-debugging-001` | develop-tests | **Both kept.** Different domains, different layers: the first asks for the abstract SMART properties, the second for a concrete worked metric. |
+| `applications-and-integration-007` / `prompt-and-context-engineering-005` | context-windows | **Both kept.** The first is an easy single-select overview; the second a medium multi-select drilling into specifics. |
+| `security-and-safety-005` / `claude-code-003` | permissions / permission-modes | **Both kept.** Different source pages. The first tests deny-first evaluation order, the second the `bypassPermissions` carve-out. Complementary, not redundant. |
+
+## Source review
+
+Every key was independently answered cold against its cited source and
+adjudicated where the cold reader disagreed. In every disagreement the answer
+key proved correct and the cold reader had erred: once by conflating two
+mechanisms the source described separately, once by stopping at the first
+correct option in a multi-select, once by answering a different question than
+the stem asked.
+
+The docs render client-side, so the reliable way to read a page is to append
+`.md` to its URL:
+
+```sh
+curl -sL https://platform.claude.com/docs/en/build-with-claude/compaction.md
+```
+
+An early review pass reported `404` / "content moved" for seven source pages.
+All seven were live and correct; the failures were an artefact of that pass's
+URL fetcher, not doc drift. No `sourceUrl` needed changing. Confirm a page is
+genuinely gone before editing a `sourceUrl`.
+
+## Verified clean
+
+- Answer position across single-select: 30 / 30 / 27 / 22 (no position holds
+  more than the 50% ceiling).
+- No multi-select key is a leading run of options.
+- `subdomain` and `distractorNotes` present on all 177.
+- `scope` present on all 177; every non-`core` question carries a `scopeNote`.
 
 ```
-✅ npm run check passes (17/17 tests, 100 questions validated)
-✅ 100/100 questions at status: reviewed, 0 draft
-✅ Schema validation passes
-✅ No position bias detected
-✅ No answer-length bias detected
-✅ No leading-run multi-select answers
+npm run check   # validate + balance --strict + 69 tests + lint + format
+npm run typecheck
 ```
+
+Both pass.
