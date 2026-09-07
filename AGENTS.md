@@ -38,8 +38,8 @@ npm run dev   # Vite dev server
 npm run check
 ```
 
-This runs, in order: content validation → Node test runner → ESLint → Prettier
-check. All four must pass. Do not commit if any step fails.
+This runs, in order: content validation → blueprint balance → Node test runner →
+ESLint → Prettier check. All five must pass. Do not commit if any step fails.
 
 To fix formatting automatically: `npm run format`.
 

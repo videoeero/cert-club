@@ -234,8 +234,12 @@ both. Untagged questions are unaffected, so existing banks need no migration.
 npm run check
 ```
 
-This runs the content validator, the schema tests, the linter, and the
-formatter check. All must pass before opening a pull request.
+This runs the content validator, the balance check, the schema tests, the
+linter, and the formatter check. All must pass before opening a pull request.
+
+The balance check only constrains banks whose manifest declares `skills`. A
+bank without them is reported as aligned by definition, so existing banks are
+unaffected.
 
 ## Content license
 
