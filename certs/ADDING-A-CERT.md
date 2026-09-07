@@ -67,6 +67,35 @@ folder.
   official guide gives ranges, normalise their midpoints using the
   largest-remainder method.
 
+### Optional: declare the skill breakdown
+
+Many exam guides publish weights one level below the domain. If yours does,
+record them — the app then samples weighted sessions per skill instead of per
+domain, so the mix _inside_ a domain tracks the blueprint too:
+
+```json
+{
+  "slug": "domain-one",
+  "name": "Domain One",
+  "weight": 40,
+  "skills": [
+    { "slug": "skill-one", "name": "Skill One", "weight": 25 },
+    { "slug": "skill-two", "name": "Skill Two", "weight": 15 }
+  ]
+}
+```
+
+Skill weights are shares of the **whole exam**, not of their domain, so they
+must total their own domain's weight. Once a domain declares `skills`, every
+question in that domain must set `subdomain` to one of them.
+
+Check the result at any time:
+
+```sh
+npm run balance                # measure the shape of the bank as it stands
+npm run balance -- --target 150   # measure it against an authoring goal
+```
+
 ## Step 3 — Write `questions.json`
 
 The file is a JSON array of question objects. The full schema is in
@@ -111,6 +140,7 @@ single-select example:
 | `schemaVersion` | Must be `1` |
 | `type` | `"single"` or `"multi"` |
 | `domain` | Must match a slug declared in `manifest.domains` |
+| `subdomain` | Optional, but required if the domain declares `skills` — must match one |
 | `difficulty` | `"easy"`, `"medium"`, or `"hard"` |
 | `status` | `"draft"` or `"reviewed"` |
 | `correct` | Exactly one entry for `single`; two or more for `multi` |
@@ -136,6 +166,67 @@ single-select example:
 
 Write stems as situations, not definition prompts. "What is X?" discriminates
 poorly. "A team observes X and needs Y — what explains it?" discriminates well.
+
+## How deep should a question go?
+
+The hardest judgement in bank authoring is depth. A question can cite official
+documentation, state a true fact, and still be a bad exam question, because the
+exam does not test at that resolution. Three public anchors settle it, in
+priority order:
+
+1. **Scope — the blueprint objective sentence.** If the guide's own description
+   of the skill does not cover the fact, the question is out of scope, however
+   well documented the fact is.
+2. **Cognitive level — the guide's sample questions.** Most guides include a
+   handful, labelled as representative. They are the calibration set. Match how
+   they discriminate, not just what they cover.
+3. **Tiebreak — the candidate profile.** Guides describe who should pass, in
+   years of experience and months of hands-on use. Ask whether that person
+   would know this, or would merely look it up.
+
+Anchor 2 is the one that gets missed, and it reduces to a single testable rule:
+
+> Named flags, parameters and constants may appear as supporting detail inside
+> the correct option, but the **discrimination between options must be
+> conceptual**. If the candidate can only answer by recalling an exact string or
+> number, the question is too deep — regardless of how prominently the docs
+> state it.
+
+### Worked example
+
+`ccdv-f-0073` asks which two flags to add to a `claude -p` invocation in CI. It
+passes anchor 1 cleanly: its domain names headless mode outright, and both flags
+are explicit recommendations in the official headless-mode documentation, not
+buried trivia. It fails anchor 2. Answering means separating five flags on their
+exact semantics, in a skill worth about one and a half items on the real exam.
+A conceptual version of the same objective would ask what property a CI
+invocation needs — non-interactive, machine-parseable, reproducible — and let
+the flag names ride along inside the correct option.
+
+### When the bank is already too deep
+
+Depth problems are usually **allocation** problems. If a skill worth 3% of the
+exam holds 7% of the bank, its author ran out of blueprint-level facts and
+started mining detail to fill the quota. Fix the allocation and the depth
+problem largely dissolves. `npm run balance` is how you see it.
+
+### Tagging instead of deleting
+
+Questions that overshoot need not be lost. Two optional fields keep them in the
+bank but out of exam-aligned practice:
+
+| Field | Purpose |
+| --- | --- |
+| `scope` | `"core"` (default when absent), `"deep"`, or `"out-of-scope"` |
+| `scopeNote` | Required whenever `scope` is not `core`; justifies the call against the blueprint |
+
+- **`deep`** — the topic is a real blueprint objective, but the discrimination
+  sits above the sample questions' level. Still worth studying for mastery, and
+  a candidate for rewriting down to conceptual discrimination later.
+- **`out-of-scope`** — not traceable to any blueprint objective at all.
+
+Learners choose their appetite in the quiz setup form; the default excludes
+both. Untagged questions are unaffected, so existing banks need no migration.
 
 ## Step 4 — Validate
 
