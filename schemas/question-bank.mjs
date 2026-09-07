@@ -164,7 +164,14 @@ export const questionSchema = z
     explanation: z.string().min(1),
     distractorNotes: z.record(slugSchema, z.string().min(1)).optional(),
     sourceUrl: sourceUrlSchema,
-    sourceNote: z.string().min(1),
+    sourceNote: z
+      .string()
+      .min(1)
+      .max(140)
+      .refine(
+        (value) => !value.includes("\n") && !value.includes("\r"),
+        "must be a single line without newlines",
+      ),
     sourceCheckedAt: checkedDateSchema,
   })
   .strict()

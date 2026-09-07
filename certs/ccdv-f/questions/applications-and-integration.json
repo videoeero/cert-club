@@ -38,7 +38,7 @@
       "d": "Streaming changes only how a single response is delivered over the wire. It has no bearing on whether conversation history is retained between requests."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/working-with-messages",
-    "sourceNote": "Using the Messages API - 'Multiple conversational turns' section, which states the API is stateless and the full conversational history must be sent on each request",
+    "sourceNote": "Using the Messages API — 'Multiple conversational turns'",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -90,7 +90,7 @@
       "f": "No such requirement exists. The system prompt is supplied through its own top-level field and does not constrain which role opens the messages array."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/api/messages/create",
-    "sourceNote": "Messages API reference - 'Body parameters' entries for messages and max_tokens, covering turn merging, string-versus-block content equivalence, and the max_tokens ceiling",
+    "sourceNote": "Messages API reference — 'Body parameters' (messages and max_tokens)",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -132,7 +132,7 @@
       "d": "429 signals a rate or spend condition. An unsupported request shape has nothing to do with throughput, and no amount of backoff will make the request succeed."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/api/errors",
-    "sourceNote": "Claude API errors - 'Common validation errors' subsection 'Prefill not supported', giving the 400 invalid_request_error and the structured outputs alternative",
+    "sourceNote": "Claude API errors — 'Common validation errors' (Prefill not supported)",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -174,7 +174,7 @@
       "d": "A refusal is the model declining to answer. Here the model is willing and mid-task; it is blocked on an input it expects the caller to provide."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons",
-    "sourceNote": "Handling stop reasons — a turn can end because the model is requesting a client-side tool call, which the caller must execute and return before the assistant can continue",
+    "sourceNote": "Handling stop reasons — client-side tool call requests",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -226,7 +226,7 @@
       "f": "The Claude API does not automatically retry mid-stream failures. The client must detect the error event or connection drop and initiate a new request."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/streaming",
-    "sourceNote": "Streaming messages - 'Event types', 'Error events', 'Other events', and 'Content block delta types' sections covering cumulative usage, mid-stream errors, and partial JSON input deltas",
+    "sourceNote": "Streaming messages — event types and content block deltas",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -269,7 +269,7 @@
       "d": "Exhausting the context window is reported through its own dedicated stop reason. An end_turn response reflects the model choosing to stop rather than the window running out."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons",
-    "sourceNote": "Stop reasons and fallback - 'Empty responses with end_turn' accordion under the end_turn section, listing text blocks appended after tool results as a common cause",
+    "sourceNote": "Stop reasons and fallback — 'Empty responses with end_turn'",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -311,7 +311,7 @@
       "c": "Server-side compaction is an explicitly enabled feature rather than default behavior. On an ordinary request, prior turns are present because the client resent them and they consume window space in full."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/context-windows",
-    "sourceNote": "Context windows - 'How the context window works' section enumerating what counts toward the window, including system prompt, messages, tool definitions, and generated output",
+    "sourceNote": "Context windows — 'How the context window works'",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -353,7 +353,7 @@
       "d": "Batches accept essentially the full range of Messages requests, including tools, system prompts, multi-turn conversations, and vision, and different request types can be mixed within one batch."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/batch-processing",
-    "sourceNote": "Batch processing - 'How the Message Batches API works', 'Batch limitations', and 'What can be batched' sections, including the table of parameters unsupported in batch requests",
+    "sourceNote": "Batch processing — limitations and unsupported parameters",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -405,7 +405,7 @@
       "f": "Caching is optimized for large contexts. Very short prompts do not yield meaningful cost or latency benefits and fall below the minimum token requirements for caching to activate."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
-    "sourceNote": "Prompt caching - 'How prompt caching works' section, including the note that caching covers tools, system, and messages in that order, and the explanation that the lifetime is measured from the start of the request",
+    "sourceNote": "Prompt caching — 'How prompt caching works'",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -447,7 +447,7 @@
       "d": "The training cutoff bounds what the model knows independently of the request. It does not govern how well the model uses material placed in its context."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/context-windows",
-    "sourceNote": "Context windows - 'How the context window works' section describing context rot, that more context is not automatically better, and that curating context matters as much as available space",
+    "sourceNote": "Context windows — context rot and curation",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -490,7 +490,7 @@
       "d": "Credentials travel in headers, never as query parameters, which would leak them into logs and referrer data. A beta header is needed only when a beta feature is actually being used."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/api/overview",
-    "sourceNote": "API overview - 'Authentication' section header table listing which headers are required and noting that client SDKs send authentication, version, and content-type automatically",
+    "sourceNote": "API overview — 'Authentication' header requirements",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -532,7 +532,7 @@
       "d": "Environment variables are typically used for secrets like API keys or basic application settings, not for conveying detailed narrative instructions, coding standards, or project context to Claude."
     },
     "sourceUrl": "https://code.claude.com/docs/en/memory",
-    "sourceNote": "'CLAUDE.md files' section: a project CLAUDE.md at './CLAUDE.md' or './.claude/CLAUDE.md' gives 'team-shared instructions for the project' covering 'project architecture, coding standards, common workflows', and 'Claude reads them at the start of every session.' Contrasted in 'CLAUDE.md vs auto memory' with hooks, which the page names as the mechanism to 'block an action regardless of what Claude decides' since CLAUDE.md is 'context, not enforced configuration.'",
+    "sourceNote": "Memory — 'CLAUDE.md files' and 'CLAUDE.md vs auto memory'",
     "sourceCheckedAt": "2026-09-07"
   },
   {
@@ -585,7 +585,7 @@
       "f": "Redefining the meaning of existing values would break clients silently and is not among the permitted changes. The surface grows by adding new values, not by repurposing old ones."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/api/versioning",
-    "sourceNote": "Versions - opening section listing what is preserved for a given version and the permitted additive changes, including new variants in enum-like output values",
+    "sourceNote": "Versions — preserved features and permitted additive changes",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -627,7 +627,7 @@
       "d": "Some conditions genuinely are transient and are expected to be retried with backoff. Escalating all of them immediately discards recovery behavior the SDK already implements correctly."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/api/errors",
-    "sourceNote": "Claude API errors - 'HTTP errors' paragraph on automatic SDK retries with exponential backoff and the 'SDK error types' section advising typed exception handling over string matching",
+    "sourceNote": "Claude API errors — automatic SDK retries and error types",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -721,7 +721,7 @@
       "e": "Customers running affected deployments receive advance notice of a retirement, and that notice period is exactly what makes an orderly migration plan possible."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/about-claude/model-deprecations",
-    "sourceNote": "Model deprecations - 'Migrating to replacements', 'Notifications', 'Auditing model usage', and 'Best practices' sections, plus the note that partner-operated platforms set their own retirement schedules",
+    "sourceNote": "Model deprecations — migration, notification, and partner schedules",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -763,7 +763,7 @@
       "d": "A demand for perfection under any input is not achievable and gives the team no usable target, since the criterion fails on the first edge case regardless of overall quality."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
-    "sourceNote": "Define success criteria and build evaluations - 'Define your success criteria' section on specific, measurable, achievable, and relevant criteria, with its good-versus-bad criteria comparisons",
+    "sourceNote": "Develop tests — 'Define your success criteria' (SMART criteria)",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -815,7 +815,7 @@
       "f": "Most use cases require multidimensional evaluation across several criteria. Collapsing to one number hides trade-offs, such as accuracy gains bought with unacceptable latency or cost."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
-    "sourceNote": "Define success criteria and build evaluations - 'Build evaluations' section, 'Eval design principles' list covering task specificity, automation, and prioritizing volume over quality",
+    "sourceNote": "Develop tests — 'Eval design principles' (task specificity and volume)",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -857,7 +857,7 @@
       "d": "A max_tokens value larger than the model allows is rejected during validation, immediately and with an error. Failures that appear only after minutes of waiting point at connection duration instead."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/api/errors",
-    "sourceNote": "Claude API errors - 'Long requests' section advising streaming or the Message Batches API for long-running requests, and noting dropped idle connections, SDK timeout validation, and TCP keep-alive",
+    "sourceNote": "Claude API errors — long requests and idle connections",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -905,7 +905,7 @@
       "e": "Hard failing on an unfamiliar type breaks the client on a change the contract expressly allows. Unknown types should fall through to a safe default that reports the failure for a human to classify."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/api/errors",
-    "sourceNote": "Claude API errors - 'Request ID' section on the per-response identifier and quoting it to support, and 'Error shapes' section noting that values within error objects may expand under the versioning policy",
+    "sourceNote": "Claude API errors — request ID tracking and error shapes",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -958,7 +958,7 @@
       "f": "Exceeding a rate limit results in a 429 error (Too Many Requests) and temporary rejection of further requests, not automatic overage billing. Limits are increased by advancing through usage tiers, which requires a history of successful spend and payment."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/api/rate-limits",
-    "sourceNote": "Rate limits - 'About rate limits' bullets on the token bucket algorithm, enforcement over shorter intervals, and organization-level limits with user-configurable workspace limits, plus the 'Rate limits' section on RPM, ITPM, and OTPM and the retry-after header",
+    "sourceNote": "Rate limits — token bucket algorithm and limits (RPM, ITPM, OTPM)",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -1000,7 +1000,7 @@
       "d": "While workspaces are often used to separate development and production, 'Environments' is not a distinct Anthropic Console feature for resource separation."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/manage-claude/workspaces",
-    "sourceNote": "Workspaces - 'How workspaces work' on separating projects and environments and on keys scoped to a single workspace, plus 'Set workspace limits' and the 'Archive a workspace' warning that archiving is irreversible and archives the workspace's keys",
+    "sourceNote": "Workspaces — project isolation, key scoping, and archiving",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -1053,7 +1053,7 @@
       "d": "Multiple betas can be enabled on the same request by listing their names together, so features need not be adopted one at a time."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/api/beta-headers",
-    "sourceNote": "Beta headers - the warning listing that beta features may have breaking changes with notice, be deprecated or removed, have different rate limits or pricing, and not be available in all regions, plus 'Multiple beta features' and 'Error handling'",
+    "sourceNote": "Beta headers — beta feature stability, pricing, and error handling",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -1100,7 +1100,7 @@
       "e": "The two stay distinct under streaming, which is exactly when the distinction matters most: first output can appear quickly while the complete response still takes just as long to finish."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-latency",
-    "sourceNote": "Reducing latency - 'How to measure latency' section defining baseline latency and time to first token, the 'Stream responses' section on improved perceived responsiveness, and the opening note advising latency reduction only after prompt quality is established",
+    "sourceNote": "Reducing latency — latency measurement and streaming responses",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -1730,7 +1730,7 @@
       "d": "Silencing tests removes failures cosmetically; it discards the feedback that a behaviour-preserving migration depends on."
     },
     "sourceUrl": "https://code.claude.com/docs/en/common-workflows",
-    "sourceNote": "Refactor code recipe: tips to refactor in small, testable increments and maintain the same behaviour, verifying with tests",
+    "sourceNote": "Common workflows — refactoring code in small testable increments",
     "sourceCheckedAt": "2026-09-07"
   },
   {
@@ -1772,7 +1772,7 @@
       "c": "Whether the model ran tests while drafting is not a substitute for the reviewer verifying the change in their own environment."
     },
     "sourceUrl": "https://code.claude.com/docs/en/common-workflows",
-    "sourceNote": "Create pull requests: review Claude's generated PR before submitting and ask Claude to highlight potential risks or considerations",
+    "sourceNote": "Common workflows — reviewing generated pull requests",
     "sourceCheckedAt": "2026-09-07"
   },
   {
@@ -1898,7 +1898,7 @@
       "d": "No coverage guarantee is implied, and the recipe explicitly ends by running the new tests and fixing failures."
     },
     "sourceUrl": "https://code.claude.com/docs/en/common-workflows",
-    "sourceNote": "Work with tests: Claude examines existing test files to match style and frameworks, can suggest edge cases, and you run and verify the tests",
+    "sourceNote": "Common workflows — working with tests and test frameworks",
     "sourceCheckedAt": "2026-09-07"
   },
   {
@@ -2024,7 +2024,7 @@
       "c": "Managed settings are not the only higher layer; a developer's own project-local file already overrides the shared value."
     },
     "sourceUrl": "https://code.claude.com/docs/en/settings",
-    "sourceNote": "Settings precedence and Keep personal settings out of a repository: project-local overrides shared project, which overrides user",
+    "sourceNote": "Settings — precedence and local configuration overrides",
     "sourceCheckedAt": "2026-09-07"
   },
   {
@@ -2066,7 +2066,7 @@
       "d": "The user file would leak this project's convention into unrelated projects, which is broader than the intended scope."
     },
     "sourceUrl": "https://code.claude.com/docs/en/memory",
-    "sourceNote": "Choose where to put CLAUDE.md files: project instructions are shared with the team via source control; user instructions are personal across projects",
+    "sourceNote": "Memory — 'Choose where to put CLAUDE.md files'",
     "sourceCheckedAt": "2026-09-07"
   },
   {
@@ -2109,7 +2109,7 @@
       "c": "Shared permissions and hooks are committed precisely so every teammate who clones the repo gets the same setup."
     },
     "sourceUrl": "https://code.claude.com/docs/en/settings",
-    "sourceNote": "Keep personal settings out of a repository and Share settings with your team: local file stays out of git; shared settings.json is committed",
+    "sourceNote": "Settings — shared settings.json versus local settings",
     "sourceCheckedAt": "2026-09-07"
   },
   {
@@ -2151,7 +2151,7 @@
       "d": "Letting each environment pick a default makes outputs depend on the environment, worsening rather than fixing the drift."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/about-claude/model-deprecations",
-    "sourceNote": "Overview and Migrating to replacements: models change over their lifecycle, so migrations are deliberate and tested rather than automatic",
+    "sourceNote": "Model deprecations — lifecycle overview and replacement migration",
     "sourceCheckedAt": "2026-09-07"
   },
   {
@@ -2194,7 +2194,7 @@
       "c": "This is backwards: a plugin can declare a version, and doing so is what controls when consumers get updates."
     },
     "sourceUrl": "https://code.claude.com/docs/en/plugins",
-    "sourceNote": "When to use plugins vs standalone configuration, and the version field: users only receive updates when the version is bumped",
+    "sourceNote": "Plugins — standalone configuration versus plugins and versioning",
     "sourceCheckedAt": "2026-09-07"
   },
   {
@@ -2236,7 +2236,7 @@
       "d": "Files load from broadest to most specific, and since they are context rather than strict precedence, a narrow rule is not guaranteed to override a broad one."
     },
     "sourceUrl": "https://code.claude.com/docs/en/memory",
-    "sourceNote": "CLAUDE.md vs auto memory: files are treated as context, not enforced configuration; use a PreToolUse hook to block an action",
+    "sourceNote": "Memory — 'CLAUDE.md vs auto memory' (context vs enforcement)",
     "sourceCheckedAt": "2026-09-07"
   },
   {
@@ -2362,7 +2362,7 @@
       "d": "No configuration keeps a retired model alive; once retired, requests fail regardless of how firmly it was pinned."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/about-claude/model-deprecations",
-    "sourceNote": "Migrating to replacements and Best practices: test replacements before the retirement date; requests to retired models fail",
+    "sourceNote": "Model deprecations — replacement testing and retirement dates",
     "sourceCheckedAt": "2026-09-07"
   }
 ]

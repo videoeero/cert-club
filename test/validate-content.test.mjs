@@ -180,6 +180,22 @@ test("requires well-formed HTTP or HTTPS source URLs", async () => {
   );
 });
 
+test("requires concise, single-line source notes", async () => {
+  const { manifest, questions } = await validContent();
+  questions[0].sourceNote = "A".repeat(141);
+
+  assert.throws(
+    () => validateCertContent("ccdv-f", manifest, questions),
+    /questions\.0\.sourceNote/,
+  );
+
+  questions[0].sourceNote = "First line\nSecond line";
+  assert.throws(
+    () => validateCertContent("ccdv-f", manifest, questions),
+    /must be a single line without newlines/,
+  );
+});
+
 test("rejects multi-select answers that are exactly the first options", async () => {
   const { manifest, questions } = await validContent();
   questions[1].options = [

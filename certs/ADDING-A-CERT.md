@@ -153,6 +153,7 @@ A minimal single-select example:
 | `status` | `"draft"` or `"reviewed"` |
 | `correct` | Exactly one entry for `single`; two or more for `multi` |
 | `sourceUrl` | Public HTTP/HTTPS URL, no paywalled or gated links |
+| `sourceNote` | Section heading or topic that supports the answer; single line, max 140 characters |
 | `sourceCheckedAt` | `YYYY-MM-DD` format |
 
 **Per-question structural rules:**

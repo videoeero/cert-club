@@ -38,7 +38,7 @@
       "d": "Managed policy is organization-wide and applies in every repository. It also requires IT or device-management deployment, which is far broader than one repository's conventions."
     },
     "sourceUrl": "https://code.claude.com/docs/en/memory",
-    "sourceNote": "Section \"Choose where to put CLAUDE.md files\": project instructions live at ./CLAUDE.md or ./.claude/CLAUDE.md, are for \"Team-shared instructions for the project\", and are \"Shared with: Team members via source control\". The same table scopes ~/.claude/CLAUDE.md to \"Just you (all projects)\", ./CLAUDE.local.md to \"Just you (current project)\" with the advice to add it to .gitignore, and managed policy files to \"All users in organization\". Section \"How CLAUDE.md files load\" states that Claude Code loads CLAUDE.md and CLAUDE.local.md \"from your current working directory and every directory above it\".",
+    "sourceNote": "Memory — CLAUDE.md file locations and loading precedence",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -85,7 +85,7 @@
       "e": "Reverses the relationship. A value supplied for one session is the most specific expression of intent available, so it sits above the files on disk rather than beneath them."
     },
     "sourceUrl": "https://code.claude.com/docs/en/settings",
-    "sourceNote": "Settings precedence figure, highest to lowest: 1. Managed settings (managed-settings.json, MDM, or the claude.ai console), 2. Command line (claude --settings), 3. Project local (.claude/settings.local.json), 4. Shared project (.claude/settings.json), 5. User (~/.claude/settings.json), summarized as \"A key set at a higher level overrides the same key set lower down.\" The page's \"Settings files and who they affect\" table gives the scope of each file.",
+    "sourceNote": "Settings — configuration precedence and file scopes",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -127,7 +127,7 @@
       "c": "There is no first-prompt threshold. Deny rules are evaluated on every matching call for the whole session regardless of mode."
     },
     "sourceUrl": "https://code.claude.com/docs/en/permission-modes",
-    "sourceNote": "Section \"Available modes\": \"Modes set the baseline. Layer permission rules on top to pre-approve or block specific tools. Deny rules block in every mode, including bypassPermissions... Allow rules have no effect in bypassPermissions.\" The carve-outs are listed under \"Actions no mode auto-approves\" (explicit ask rules, tools requiring user interaction such as AskUserQuestion, and rm/rmdir targeting a critical path), and the \"Common setups\" table notes that in a -p run the few calls that would still prompt are denied instead, with a container, VM, or sandbox runtime listed as required isolation.",
+    "sourceNote": "Permission modes — 'Available modes' and non-auto-approved actions",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -169,7 +169,7 @@
       "d": "The `.claudecodeignore` file prevents Claude Code from reading or indexing specific files, but it does not intercept or block terminal commands."
     },
     "sourceUrl": "https://code.claude.com/docs/en/hooks",
-    "sourceNote": "Section \"Exit code output\": \"exit code 2 is the only exit code that blocks through the code alone. Without valid JSON on stdout, Claude Code treats exit code 1 as a non-blocking error and proceeds with the action, even though 1 is the conventional Unix failure code. If your hook is meant to enforce a policy, use exit 2.\" The same section states \"The blocking message is the reason from your JSON's blocking decision when it makes one, and your stderr text otherwise\" and that for PreToolUse the block stops the tool call; the exit-code-0 subsection notes a hook \"can deny the call, but staying silent doesn't approve it\"; the timeouts subsection states a hook that reaches its timeout is cancelled with its output discarded. The worked example blocks on exit 0 by printing a PreToolUse permissionDecision of \"deny\" as JSON.",
+    "sourceNote": "Hooks reference — 'Exit code output' (exit code 2 policy blocking)",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -216,7 +216,7 @@
       "e": "Claude Code does not bypass security constraints; it operates securely within the permissions granted to the credentials or environment it runs under."
     },
     "sourceUrl": "https://code.claude.com/docs/en/headless",
-    "sourceNote": "Section \"Start faster with bare mode\": --bare skips \"auto-discovery of hooks, skills, custom commands, subagents, plugins, MCP servers, auto memory, and CLAUDE.md\", is \"useful for CI and scripts where you need the same result on every machine\", and \"In bare mode, Claude Code never reads OAuth credentials or the system keychain. For the Anthropic API, set ANTHROPIC_API_KEY in the environment ... or supply an apiKeyHelper in the --settings JSON.\" The same section warns that without --bare, \"a -p session runs the hooks in a project's .claude/settings.json and connects the servers in its .mcp.json\", with \"no workspace trust dialog and no per-server approval prompt\". Section \"Get structured output\": --output-format accepts text (default), json (\"structured JSON with result, session ID, and metadata\", \"with the text result in the result field\"), and stream-json, which is streamed using --verbose and --include-partial-messages.",
+    "sourceNote": "Headless — bare mode and '--output-format' structured options",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -258,7 +258,7 @@
       "d": "Deleting configuration is destructive and skips diagnosis. The documented isolation technique points a session at a separate, empty configuration directory instead of removing the real one."
     },
     "sourceUrl": "https://code.claude.com/docs/en/debug-your-config",
-    "sourceNote": "Section \"See what loaded into context\": \"The /context command shows everything occupying the context window for the current session, broken down by category: system prompt, system tools, MCP tools, custom subagents with the source each loaded from, memory files, skills, and conversation messages. Run it first to confirm whether your CLAUDE.md, rules, or skill descriptions are present at all.\" It adds that subdirectory CLAUDE.md files \"load on demand when Claude reads a file in that directory with the Read tool, not at session start\", and that when the file did load, \"the issue is likely how the instruction is written rather than whether it loaded\". The follow-up command table lists /memory, /skills, /hooks, /mcp, /permissions, /doctor, and /status, and \"Test against a clean configuration\" describes pointing CLAUDE_CONFIG_DIR at an empty directory. The compaction behavior is stated at https://code.claude.com/docs/en/memory: \"Project-root CLAUDE.md survives compaction: after /compact, Claude re-reads it from disk and re-injects it into the session.\"",
+    "sourceNote": "Debug your config — 'See what loaded into context' (/context command)",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -305,7 +305,7 @@
       "e": "Non-interactive means no human prompts, not no tools. The run still edits files and executes commands, which is precisely why the permissions question matters."
     },
     "sourceUrl": "https://code.claude.com/docs/en/headless",
-    "sourceNote": "Run Claude Code programmatically — non-interactive runs exit 0 on success and non-zero on failure so scripts can branch on exit status, and tools are auto-approved up front",
+    "sourceNote": "Headless — non-interactive script execution and exit codes",
     "sourceCheckedAt": "2026-09-03"
   }
 ]

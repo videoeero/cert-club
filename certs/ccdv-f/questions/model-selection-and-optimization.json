@@ -38,7 +38,7 @@
       "c": "Context window size is not a proxy for accuracy. The guidance states that more context is not automatically better, because accuracy and recall degrade as token count grows, which makes curating what sits in context as important as how much room exists."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/about-claude/models/choosing-a-model",
-    "sourceNote": "Choosing the right model - 'Choose the best model to start with', Option 1: Start efficiency-first (contrasted with Option 2: Start capability-first) and 'Decide whether to upgrade or change models'",
+    "sourceNote": "Choosing a model — 'Choose the best model to start with'",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -80,7 +80,7 @@
       "d": "Effort is not a latency-only control. It governs how many tokens the model spends across the entire response, including thinking and tool calls, so it is a direct lever on reasoning depth rather than a neutral speed dial."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/about-claude/models/choosing-a-model",
-    "sourceNote": "Choosing the right model - 'Establish key criteria' (Effort: tuning effort is often a better lever than switching models) and 'Decide whether to upgrade or change models'",
+    "sourceNote": "Choosing a model — 'Establish key criteria' (Effort level)",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -133,7 +133,7 @@
       "d": "Because effort applies to every output token, it works whether or not thinking is enabled. Even with thinking inactive, a lower level still shortens explanations and reduces the number of tool calls made."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/effort",
-    "sourceNote": "Effort - 'How effort works' (affects all tokens; setting the default is the same as omitting), 'Effort levels' (behavioral signal, not a strict token budget), and 'Effort with tool use'",
+    "sourceNote": "Effort — 'How effort works' and 'Effort levels'",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -176,7 +176,7 @@
       "d": "A matching prefix is reported as a read on the very next request that reuses it. A read count that stays at zero across many requests is the documented signal that no matching entry exists, not evidence of a warm-up period."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
-    "sourceNote": "Prompt caching - 'Structuring your prompt' > 'How automatic prefix checking works' (Common mistake: Breakpoint on content that changes every request), 'Understanding cache breakpoint costs', and 'Best practices for effective caching'",
+    "sourceNote": "Prompt caching — 'Structuring your prompt' and prefix checking",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -218,7 +218,7 @@
       "d": "Prompt Caching is designed to support concurrent reads, meaning parallel requests can successfully read from an established cache simultaneously."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
-    "sourceNote": "Prompt caching - 'How prompt caching works' (prefix matching requirement, placing static content before dynamic content, and pricing structure).",
+    "sourceNote": "Prompt caching — prefix matching and static content placement",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -260,7 +260,7 @@
       "d": "Cache-read tokens are billed at a small fraction of the base input rate, which is the entire cost benefit caching offers. Only cache-write tokens carry a premium over base input pricing."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
-    "sourceNote": "Prompt caching - 'Tracking cache performance' > 'Understanding the token breakdown' (total input equals cache reads plus cache creation plus input_tokens); context accounting corroborated by Context windows - 'How the context window works'",
+    "sourceNote": "Prompt caching — token breakdown and cache read/creation usage",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -307,7 +307,7 @@
       "e": "Applying breakpoints to every small message is an anti-pattern. There is a minimum token threshold for cached blocks and a strict limit on the total number of breakpoints allowed per request."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
-    "sourceNote": "Prompt caching - 'Pricing' (5-minute writes at 1.25x and 1-hour writes at 2x base input; reads at a fraction of it), 'How prompt caching works' (free refresh; lifetime measured from request start), and '1-hour cache duration' > 'When to use the 1-hour cache'",
+    "sourceNote": "Prompt caching — pricing structure and 1-hour cache duration",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -359,7 +359,7 @@
       "e": "Cached prefixes are temporary and typically expire after a short period of inactivity (e.g., 5 minutes), rather than being stored indefinitely or requiring explicit API deletion."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
-    "sourceNote": "Prompt caching - 'What invalidates the cache' (invalidation table covering tool definitions, web search and citations toggles, tool choice, images, and the effort setting), 'Understanding cache breakpoint costs', and 'Troubleshooting common issues'",
+    "sourceNote": "Prompt caching — 'What invalidates the cache'",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -402,7 +402,7 @@
       "c": "Caching below the minimum fails silently rather than raising an error. That is exactly why the response usage fields are documented as the way to confirm whether a prompt was actually cached at all."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
-    "sourceNote": "Prompt caching - 'Caching strategies and considerations' > 'Cache limitations' (per-model minimum cacheable prompt length; requests below it are processed without caching and no error is returned; verify via the response usage fields)",
+    "sourceNote": "Prompt caching — minimum cacheable prompt lengths",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -455,7 +455,7 @@
       "d": "Validation of the parameters object for each request is performed asynchronously, and validation errors are returned only once processing of the entire batch has ended. This is why request shape should be verified against the synchronous Messages API first."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/batch-processing",
-    "sourceNote": "Batch processing - 'Batch limitations' (24-hour expiration), 'What can be batched' (unsupported parameters table including stream) plus its 1-hour cache tip, 'Pricing' (50% of standard rates), and 'Retrieving batch results' (result types and unbilled outcomes; results may not match input order)",
+    "sourceNote": "Batch processing — batch limitations, unsupported parameters, and pricing",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -498,7 +498,7 @@
       "d": "Counts may include tokens added automatically for system optimizations, but the documentation states you are not billed for system-added tokens and that billing reflects only your content, so they cannot explain a genuine cost overage."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/token-counting",
-    "sourceNote": "Token counting - 'How to count message tokens' (the count is an estimate; system-added tokens are not billed) and 'Supported models' (newer tokenizer produces more tokens for the same input text; recount against the model you plan to use)",
+    "sourceNote": "Token counting — message token counting and supported models",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -540,7 +540,7 @@
       "d": "Effort is a real lever, but it belongs to the group that trades intelligence for cost rather than the group that cuts spend for free. The guidance is to take the levers carrying no quality cost first, then move along the cost-to-intelligence frontier."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/about-claude/models/optimizing-for-cost-and-intelligence",
-    "sourceNote": "Optimizing for cost and intelligence - 'Start here' (free wins versus tradeoffs) and 'Cut spend without losing quality' > 'Cache repeated context' > 'Why caching comes first'",
+    "sourceNote": "Optimizing for cost and intelligence — caching repeated context",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -582,7 +582,7 @@
       "d": "Both an error path and a stop reason exist: a 400 invalid_request_error for input that is too long by itself, and model_context_window_exceeded when generation reaches the limit. Usage reporting is not the only signal available."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/context-windows",
-    "sourceNote": "Sections 'Context window overflow behavior' (400 invalid_request_error for oversized input; stop_reason model_context_window_exceeded on newer models; token counting to stay within limits) and 'How the context window works' (footnote distinguishing chat interface rolling behavior).",
+    "sourceNote": "Context windows — context overflow behavior and 400 errors",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -634,7 +634,7 @@
       "e": "The recommended order is the opposite: engineer a prompt that works well without model or prompt constraints first, then apply latency reduction, because optimizing prematurely can prevent you from discovering what top performance looks like."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-latency",
-    "sourceNote": "Opening note on engineering the prompt before reducing latency, section 'How to measure latency' (baseline latency versus time to first token), and section 'How to reduce latency' subsections '2. Optimize prompt and output length' and '3. Stream responses'.",
+    "sourceNote": "Reducing latency — latency measurement and prompt optimization",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -676,7 +676,7 @@
       "c": "Stripping of previous thinking blocks is a per-model default rather than universal, and models that keep them continue to count and bill those blocks as input tokens. In every case the tokens counted toward the window during the turn that generated them."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/context-windows",
-    "sourceNote": "Section 'The context window with thinking': thinking tokens are part of max_tokens, billed as output, count toward rate limits, and have model-dependent preservation.",
+    "sourceNote": "Context windows — thinking tokens accounting and max_tokens",
     "sourceCheckedAt": "2026-09-03"
   },
   {

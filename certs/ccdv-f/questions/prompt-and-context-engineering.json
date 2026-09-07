@@ -38,7 +38,7 @@
       "d": "This is the opposite of the published advice. Longform data belongs at the top of the prompt, with the query at the end."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices#long-context-prompting",
-    "sourceNote": "Long context prompting section, which covers inputs of 20k+ tokens: 'Put longform data at the top' above the query, instructions, and examples, with the note that queries at the end can improve response quality by up to 30 percent in tests on complex multidocument inputs.",
+    "sourceNote": "Prompting best practices — 'Long context prompting'",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -90,7 +90,7 @@
       "e": "No header or flag governs tagged prompt sections. They are ordinary text in the prompt and take effect immediately."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices#structure-prompts-with-xml-tags",
-    "sourceNote": "Structure prompts with XML tags section: use consistent, descriptive tag names and nest tags when content has a natural hierarchy, illustrated with documents nested inside an indexed document tag; the adjacent long context prompting section shows the same layout with separate source and document content subtags.",
+    "sourceNote": "Prompting best practices — 'Structure prompts with XML tags'",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -132,7 +132,7 @@
       "c": "This contradicts the guidance, which presents examples as a primary tool for steering output format and structure, not merely tone."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices#use-examples-effectively",
-    "sourceNote": "Use examples effectively section: examples should be relevant, diverse, and structured by wrapping them in example tags, with the stated tip to include three to five examples for best results and the suggestion to have the model evaluate or extend an example set.",
+    "sourceNote": "Prompting best practices — 'Use examples effectively'",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -174,7 +174,7 @@
       "d": "System content is sent with every request, so the framing already applies to each turn. Repeating it in user messages adds tokens without adding effect."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices#give-claude-a-role",
-    "sourceNote": "Give Claude a role section: setting a role in the system prompt focuses behaviour and tone, and even a single sentence makes a difference; the SDK examples all pass the role string to the request's top-level system field.",
+    "sourceNote": "Prompting best practices — 'Give Claude a role'",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -226,7 +226,7 @@
       "e": "All three token fields reported in usage count toward the window. Treating cached tokens as free space is the specific misconception the documentation warns about."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/context-windows",
-    "sourceNote": "How the context window works section: everything in the request counts, including the system prompt, every message with its tool results, images, and documents, and the tool definitions, plus the generated output; the input count splits across input, cache read, and cache creation tokens and all three count, and cached prefixes still occupy the window because caching changes what you pay rather than whether tokens count.",
+    "sourceNote": "Context windows — 'How the context window works'",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -269,7 +269,7 @@
       "d": "Nothing is removed from the application's own records, so there is nothing to archive defensively. Clearing affects only what the model sees for a given request."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/context-editing",
-    "sourceNote": "Context editing happens server-side section: edits are applied before the prompt reaches the model, the client maintains the full unmodified history, and no client state sync is needed; the tool result clearing and prompt caching sections describe oldest-first clearing with placeholder replacement text, the optional clearing of tool inputs, and cache invalidation with a minimum-clearing parameter.",
+    "sourceNote": "Context editing — server-side editing and cache invalidation",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -322,7 +322,7 @@
       "e": "Once a compaction block is generated and appended, the server automatically drops the earlier superseded content; manual stripping by the client is not required."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/compaction",
-    "sourceNote": "Parameters table and Custom summarization instructions section: input tokens is the only supported trigger type with a default of 150,000 and a stated minimum of 50,000, and custom instructions completely replace the default prompt when provided; the How compaction works and Pausing after compaction sections cover the compaction block, automatic dropping of prior blocks, and the pause option.",
+    "sourceNote": "Compaction — parameters table and custom instructions",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -365,7 +365,7 @@
       "d": "Citations use specific citation blocks interleaved with text, rather than forcing the output into a single predefined JSON schema containing document IDs."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/citations",
-    "sourceNote": "Feature compatibility section: the warning that citations and structured outputs are incompatible, with a 400 error returned when citations are enabled on a user-provided document or search result block and an output format parameter is also supplied, because citations require interleaving citation blocks with text output.",
+    "sourceNote": "Citations — feature compatibility with structured outputs",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -417,7 +417,7 @@
       "f": "The API returns structured citation objects, not pre-formatted academic bibliographies."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/citations",
-    "sourceNote": "How citations work, Citable versus non-citable content, Citation indices, and Token costs sections: citations must be enabled on all or none of the documents in a request and only text citations are supported; title and context are passed to the model but not cited from; index formats differ by document type; enabling citations slightly increases input tokens while cited text counts toward neither output tokens nor input tokens on replay.",
+    "sourceNote": "Citations — 'How citations work' and document requirements",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -459,7 +459,7 @@
       "d": "Cost is not a documented rationale for chaining. Splitting a task does not inherently reduce the total tokens processed, since each call still has to carry the context it needs, and the stated reasons to chain are inspection of intermediate outputs and pipeline control."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices#chain-complex-prompts",
-    "sourceNote": "Chain complex prompts section: explicit prompt chaining remains useful when you need to inspect intermediate outputs or enforce a specific pipeline structure, and the most common chaining pattern is self-correction, generating a draft, reviewing it against criteria, then refining, with each step as a separate API call so you can log, evaluate, or branch.",
+    "sourceNote": "Prompting best practices — 'Chain complex prompts'",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -512,7 +512,7 @@
       "f": "Structured Outputs and strict tool use are complementary features. You can use Structured Outputs for standard JSON responses entirely independently of Tool Use."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs",
-    "sourceNote": "How SDK transformation works subsection: the SDK helpers remove unsupported constraints such as minimum, maximum, minimum length and maximum length, move the constraint info into the description, add additional properties false to all objects, filter string formats, and validate responses against the original schema, so the model receives a simplified schema while application code still enforces all constraints; the Why use structured outputs section states that constrained decoding yields always-valid, type-safe output with guaranteed required fields and no retries for schema violations, and the introduction describes JSON outputs and strict tool use as complementary features usable independently or together.",
+    "sourceNote": "Structured outputs — 'How SDK transformation works'",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -648,7 +648,7 @@
       "d": "Continuously growing the system prompt trades one window problem for another; persistent facts belong in an external store that is consulted on demand, not re-injected every turn."
     },
     "sourceUrl": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
-    "sourceNote": "Context engineering for long-horizon tasks — 'Structured note-taking' (agentic memory persisted outside the context window)",
+    "sourceNote": "Context engineering — 'Structured note-taking' (external memory)",
     "sourceCheckedAt": "2026-09-07"
   },
   {
@@ -831,7 +831,7 @@
       "d": "Restating a schema in the prompt is instruction, not enforcement. The model is still free to deviate, so the parse failures continue at some lower rate."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs",
-    "sourceNote": "Structured outputs — constrained decoding guarantees schema-compliant responses, removing the need for retries on schema violations",
+    "sourceNote": "Structured outputs — constrained decoding and schema guarantees",
     "sourceCheckedAt": "2026-09-07"
   },
   {
@@ -873,7 +873,7 @@
       "d": "Streaming changes how output is delivered, not how much of it is generated. A non-streamed response carries the full generated text."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons",
-    "sourceNote": "Handling stop reasons — a successful response may have ended because the output limit was reached, and clients should branch on the stop reason",
+    "sourceNote": "Handling stop reasons — max_tokens and output limits",
     "sourceCheckedAt": "2026-09-07"
   },
   {
@@ -963,7 +963,7 @@
       "c": "Pushes validation past the boundary it was supposed to protect. The billing system is the thing being shielded, so letting it perform the check defeats the purpose."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs",
-    "sourceNote": "Structured outputs — strict tool use guarantees schema validation on tool names and inputs, complementing JSON output formats",
+    "sourceNote": "Structured outputs — strict tool use schema validation",
     "sourceCheckedAt": "2026-09-07"
   }
 ]

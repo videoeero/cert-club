@@ -43,7 +43,7 @@
       "d": "This multiplies the original problem rather than solving it, spreading production dependence across several personal identities that can each disappear independently."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/manage-claude/authentication",
-    "sourceNote": "Authentication - method comparison table and the 'Key types' section, which recommends service accounts for shared or automated workloads and marks workspace keys as legacy",
+    "sourceNote": "Authentication — method comparison table and 'Key types'",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -95,7 +95,7 @@
       "e": "Pre-tool-use hooks have the authority to block tool execution entirely by returning a denial; they are not limited to just modifying parameters."
     },
     "sourceUrl": "https://code.claude.com/docs/en/agent-sdk/permissions",
-    "sourceNote": "Section 'How permissions are evaluated', plus the auto-approved tools warning under 'Allow and deny rules' and the mode descriptions under 'Permission modes'",
+    "sourceNote": "Agent SDK permissions — evaluation order and auto-approved tools",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -137,7 +137,7 @@
       "d": "Fragmenting the content does not change its trust level. The control that matters is which block type carries the content, not how many turns it spans, and splitting it also degrades the summary."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks",
-    "sourceNote": "Section \"Indirect prompt injection\", bullets \"Put untrusted content only in tool results\" (deliver third-party content inside tool_result blocks, never in system prompts or plain user text blocks), \"Tell Claude what the content is and where it came from\", and \"State the policy in your system prompt\".",
+    "sourceNote": "Mitigate jailbreaks — 'Indirect prompt injection' defenses",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -189,7 +189,7 @@
       "f": "Model resistance is described as a starting point, not a substitute for guardrails. The guidance exists to add application-level layers on top of it, and the sandboxing documentation makes the same defense-in-depth argument."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks",
-    "sourceNote": "Section \"Indirect prompt injection\", bullets \"JSON-encode untrusted content\", \"Screen tool outputs before Claude acts on them\" (classifier call constrained with structured outputs), \"Limit Claude's access to sensitive data and actions\", \"Don't put your own instructions in tool results\", and \"Red-team your own agent\".",
+    "sourceNote": "Mitigate jailbreaks — screening tool outputs and prompt injection",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -231,7 +231,7 @@
       "d": "Settings precedence governs which rules are in effect and how they merge across scopes. Once the rules are resolved, the deny-ask-allow ordering decides the outcome, not the file a rule came from."
     },
     "sourceUrl": "https://code.claude.com/docs/en/permissions",
-    "sourceNote": "Section \"Manage permissions\": rules are evaluated in the order deny, ask, allow; the first match determines the outcome and rule specificity does not change the order, with Bash(aws *) against Bash(aws s3 ls) given as the worked example of a deny rule that cannot carry allowlist exceptions. That deny rules apply in every mode is stated in \"Permission modes\" on https://code.claude.com/docs/en/permission-modes.",
+    "sourceNote": "Permissions — 'Manage permissions' (evaluation order: deny, ask, allow)",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -273,7 +273,7 @@
       "c": "The first half is right and the second is overstated. A deny rule, a permission mode, or a PreToolUse hook blocks the call directly; container isolation is a separate, coarser layer for limiting damage if something does run."
     },
     "sourceUrl": "https://code.claude.com/docs/en/permissions",
-    "sourceNote": "Note in section \"Manage permissions\": permission rules are enforced by Claude Code, not by the model; instructions in your prompt or CLAUDE.md shape what Claude tries to do but do not change what Claude Code allows, and access is granted or revoked with /permissions, a permission rule, a permission mode, or a PreToolUse hook.",
+    "sourceNote": "Permissions — enforcement boundaries and permission rules",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -320,7 +320,7 @@
       "d": "The sandbox enforces both filesystem and network isolation. The first time a command needs a network domain that is not already allowed, that access is gated rather than granted silently."
     },
     "sourceUrl": "https://code.claude.com/docs/en/sandbox-environments",
-    "sourceNote": "Section \"Compare sandboxing approaches\": the sandboxed Bash tool restricts only Bash commands while built-in file tools, MCP servers, and hooks still run on the host, and the following warning states that isolation does not change what is sent to the model. The distractors are contradicted on https://code.claude.com/docs/en/sandboxing, which states that filesystem paths are enforced at the OS level for sandboxed commands and their child processes, that explicit deny rules are always respected in auto-allow mode, and that a new network domain is gated on first use.",
+    "sourceNote": "Sandbox environments — 'Compare sandboxing approaches'",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -362,7 +362,7 @@
       "d": "Billing depends on timing. You are not billed only when the refusal arrives before any output is generated; if output was produced before the refusal, the request is billed. Usage metrics are returned either way."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/handle-streaming-refusals",
-    "sourceNote": "Sections \"API response format\" and \"Reset context after refusal\": streaming classifiers return stop_reason refusal with a stop_details object whose category and explanation can be null, callers should branch on stop_reason or stop_details.type, the context must be reset before continuing or refusals persist, and the billing note states you are not billed when the refusal precedes any generated output.",
+    "sourceNote": "Streaming refusals — 'API response format' and resetting context",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -409,7 +409,7 @@
       "d": "Skipping permission checks removes a control instead of adding one. That posture is intended only for isolated environments where the agent cannot cause damage, and it is not an answer to credential handling."
     },
     "sourceUrl": "https://code.claude.com/docs/en/agent-sdk/secure-deployment",
-    "sourceNote": "Sections \"Security boundaries\" (run a proxy outside the agent's environment that injects the key into requests so the agent never sees the credential, noted as useful for multi-tenant deployments and untrusted content) and \"Least privilege\" (mount only needed directories preferring read-only, restrict network to specific endpoints via proxy, inject credentials via proxy rather than exposing them directly, drop container capabilities).",
+    "sourceNote": "Secure deployment — security boundaries and proxy credential injection",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -452,7 +452,7 @@
       "d": "Cross-origin requests are not supported for organizations with this arrangement; browser-based applications have to route calls through a backend proxy server instead."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/manage-claude/api-and-data-retention",
-    "sourceNote": "Sections \"Zero data retention (ZDR)\" (no storage of prompts or responses at rest after the response is returned; enabled per organization and not extended automatically to other organizations), \"What ZDR covers\" (Messages and Token Counting APIs for features listed as eligible) and \"What ZDR does not cover\" (Claude Console including playground, features riding on /v1/messages that are marked ineligible such as code execution, and CORS, for which requests must be routed through a backend proxy).",
+    "sourceNote": "Data retention — 'Zero data retention (ZDR)' coverage and limitations",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -504,7 +504,7 @@
       "f": "Hooks complement existing security architectures by adding agent-specific application-level controls. They do not replace underlying infrastructure controls like IAM."
     },
     "sourceUrl": "https://code.claude.com/docs/en/agent-sdk/hooks",
-    "sourceNote": "Sections 'How hooks work' and 'Available hooks'; 'Configure hooks' subsection 'Matchers'; 'Callback functions' subsections 'Inputs' and 'Outputs'",
+    "sourceNote": "Agent SDK hooks — hook configuration and matchers",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -547,7 +547,7 @@
       "d": "The SDKs manage those headers automatically, along with retries, streaming, and timeouts. The one header an application may still need to pass itself is the workspace header, and only when its key requires it."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/api/overview",
-    "sourceNote": "Section \"Authentication\" header table (one of x-api-key or Authorization is required, the Authorization value being a short-lived access token obtained through Workload Identity Federation; anthropic-workspace-id is required only with a multi-workspace API key and is not used with Workload Identity Federation tokens, which select a workspace at token exchange), section \"Getting API keys\" (key type and expiration are chosen at creation, and workspaces separate environments and control spend), and section \"Client SDKs\" (the SDK sends the authentication, version, and content-type headers automatically, while anthropic-workspace-id is passed by the caller when the key needs it).",
+    "sourceNote": "API overview — authentication headers and workspace tokens",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -683,7 +683,7 @@
       "d": "Fires after execution. Detection and recovery are valuable, but the requirement is prevention, and by this point the deletion has already happened."
     },
     "sourceUrl": "https://code.claude.com/docs/en/hooks",
-    "sourceNote": "Hooks reference — hook lifecycle: PreToolUse and PostToolUse fire on every tool call inside the agentic loop, and a handler can inspect the input and return a decision",
+    "sourceNote": "Hooks reference — PreToolUse and PostToolUse lifecycle",
     "sourceCheckedAt": "2026-09-07"
   }
 ]

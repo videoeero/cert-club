@@ -39,7 +39,7 @@
       "d": "The examples used to author the prompt are not a held-out test set, so a high score shows fit to the drafting examples rather than generalization."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
-    "sourceNote": "Section \"Define your success criteria\" states that good criteria are Specific, Measurable, Achievable, and Relevant, that achievable targets are based on \"industry benchmarks, prior experiments, AI research, or expert knowledge\", and that \"Your success metrics should not be unrealistic to current frontier model capabilities.\" Its worked comparison rates \"The model should classify sentiments well\" as bad and, as good, \"an F1 score of at least 0.85 (Measurable, Specific) on a held-out test set of 10,000 diverse Twitter posts (Relevant), which is a 5% improvement over the current baseline (Achievable).\" The prerequisite of empirical testing is stated at https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview under \"Before prompt engineering\".",
+    "sourceNote": "Develop tests — 'Define your success criteria' (SMART criteria)",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -80,8 +80,8 @@
       "c": "An authentication error returns an HTTP 401. It is not related to high traffic or 529 errors.",
       "d": "A request too large error returns an HTTP 413. It is caused by exceeding the token limit, not by periods of server-side high traffic."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
-    "sourceNote": "Section \"Eval design principles\" lists exactly three: \"Be task-specific: Design evals that mirror your real-world task distribution. Don't forget to factor in edge cases!\" (listed edge cases include irrelevant or nonexistent input data, overly long input data or user input, poor, harmful, or irrelevant user input, and ambiguous test cases); \"Automate when possible\"; and \"Prioritize volume over quality: More questions with slightly lower signal automated grading is better than fewer questions with high-quality human hand-graded evals.\" Section \"Grade your evaluations\" describes human grading as \"Most flexible and high quality, but slow and expensive. Avoid if possible.\"",
+    "sourceUrl": "https://platform.claude.com/docs/en/api/errors",
+    "sourceNote": "Errors — HTTP 529 overloaded_error and retry strategies",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -128,7 +128,7 @@
       "d": "The Text Completions API is legacy. Switching to it is not recommended and will not inherently resolve instruction-following issues."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
-    "sourceNote": "Section \"Tips for LLM-based grading\" gives three tips: \"Have detailed, clear rubrics\" (with the note that a use case \"might require several rubrics for holistic evaluation\"); \"Empirical or specific: For example, instruct the LLM to output only 'correct' or 'incorrect', or to judge from a scale of 1-5. Purely qualitative evaluations are hard to assess quickly and at scale\"; and \"Encourage reasoning: Ask the LLM to reason first before producing an evaluation score, and then discard the reasoning. This increases evaluation performance.\" Section \"Grade your evaluations\" describes LLM-based grading as \"Fast and flexible, scalable and suitable for complex judgment. Test to ensure reliability first then scale.\"",
+    "sourceNote": "Develop tests — 'Tips for LLM-based grading' (rubrics and reasoning)",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -170,7 +170,7 @@
       "d": "A substring match would make the test pass, but it also accepts outputs it should reject: a reply that mentions one label while selecting another still matches. Normalising and keeping the exact match preserves the check's precision."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
-    "sourceNote": "Section \"Grade your evaluations\": \"When deciding which method to use to grade evals, choose the fastest, most reliable, most scalable method\", ranking code-based grading first (\"Fastest and most reliable, extremely scalable\", examples \"Exact match: output == golden_answer\" and \"String match: key_phrase in output\"), human grading second (\"slow and expensive. Avoid if possible\"), and LLM-based grading third (\"suitable for complex judgment\"). The exact-match example eval states that such evals compare output with a predefined correct answer \"typically after normalizing whitespace and case\" and are \"perfect for tasks with clear-cut, categorical answers\".",
+    "sourceNote": "Develop tests — 'Grade your evaluations' (grading methods hierarchy)",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -218,7 +218,7 @@
       "e": "An impression from a few samples is neither a defined metric nor a repeatable measurement, so it cannot establish whether the change is an improvement."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
-    "sourceNote": "Section \"Define your success criteria\" lists A/B testing among quantitative methods as \"Compare performance against a baseline model or earlier version\", and anchors criteria to \"a held-out test set\". Its multidimensional example measures one use case on F1, non-toxicity, error severity, and 95% response time together, and states \"Most use cases need multidimensional evaluation along several success criteria.\" Holding the dataset, grader, and rubric constant is the standard meaning of that A/B comparison rather than a separate quoted rule. The related overview at https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview adds that \"Not every success criteria or failing eval is best solved by prompt engineering\" and that latency and cost can sometimes be improved \"by selecting a different model\".",
+    "sourceNote": "Develop tests — 'Define your success criteria' (A/B comparisons)",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -260,7 +260,7 @@
       "d": "Telemetry is exported over the network via OpenTelemetry protocols, not by manually aggregating local log files or running local summary commands."
     },
     "sourceUrl": "https://code.claude.com/docs/en/monitoring-usage",
-    "sourceNote": "Section \"Quick start\" shows CLAUDE_CODE_ENABLE_TELEMETRY=1 followed by separately chosen exporters (OTEL_METRICS_EXPORTER and OTEL_LOGS_EXPORTER, annotated \"both are optional - configure only what you need\") plus OTEL_EXPORTER_OTLP_PROTOCOL and OTEL_EXPORTER_OTLP_ENDPOINT, and states \"To verify a setup that exports metrics, check your backend for the claude_code.session.count metric, which Claude Code emits when a session starts. To verify a logs-only setup, submit a prompt and check for the claude_code.user_prompt event\", with third-party exporter failures shown as \"[3P telemetry]\" errors under claude --debug. Section \"Administrator configuration\" shows the same keys inside the managed settings env block. Section \"Standard attributes\" states that event-only fields such as prompt.id \"are never attached to metrics because they would cause unbounded cardinality\". The client-side nature of per-run cost output is stated at https://code.claude.com/docs/en/headless, which calls total_cost_usd a client-side estimate that \"can differ from your actual bill\".",
+    "sourceNote": "Monitoring usage — OpenTelemetry exporter setup and verification",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -303,7 +303,7 @@
       "d": "Workspace limits do throttle independently of the organization's remaining headroom, but that is an ordinary throughput rejection: it carries retry-after guidance and clears in seconds, so the SDK's backoff would recover instead of failing for hours."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/api/rate-limits",
-    "sourceNote": "Rate limits - 'Reaching your spend cap' subsection describing the 429 rate_limit_error with no retry-after header and a spend limit error code, contrasted with the 400 returned for a self-configured spend limit",
+    "sourceNote": "Rate limits — 'Reaching your spend cap' (429 rate_limit_error)",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -345,7 +345,7 @@
       "d": "Tone and style evaluates nuanced, subjective aspects such as empathy, professionalism, or patience, which does not address the semantic agreement of the answers themselves."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
-    "sourceNote": "Section \"Common success criteria\" defines Consistency as \"How similar do the model's responses need to be for similar types of input? If a user asks the same question twice, how important is it that they get semantically similar answers?\" Section \"Example evals\" pairs each criterion with a method: \"Task fidelity (sentiment analysis) - exact match evaluation\" (matching a predefined correct answer \"typically after normalizing whitespace and case\", \"perfect for tasks with clear-cut, categorical answers\"); \"Consistency (FAQ bot) - cosine similarity evaluation\", which \"measures the similarity between two vectors (in this case, sentence embeddings of the model's output ...) ... Values closer to 1 indicate higher similarity. It's ideal for evaluating consistency because similar questions should yield semantically similar answers, even if the wording varies\", with example test cases of \"50 groups with a few paraphrased versions each\"; \"Relevance and coherence (summarization) - ROUGE-L evaluation\", which measures the longest common subsequence \"between the candidate and reference summaries\"; \"Tone and style (customer service) - LLM-based Likert scale\", \"ideal for evaluating nuanced aspects like empathy, professionalism, or patience\"; plus LLM-based binary classification for privacy preservation and an LLM-based ordinal scale for context utilization.",
+    "sourceNote": "Develop tests — 'Common success criteria' and 'Example evals' (Consistency)",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -387,7 +387,7 @@
       "d": "Backoff is the right response to transient errors once identified, but it treats a whole mixed population as transient and hides the invalid requests it silently retries."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/api/errors",
-    "sourceNote": "Errors — request-level errors such as invalid_request_error are raised against the caller's request, distinct from a successful response whose content is unsatisfactory",
+    "sourceNote": "Errors — request-level errors versus response content",
     "sourceCheckedAt": "2026-09-07"
   }
 ]
