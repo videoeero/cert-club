@@ -18,10 +18,11 @@ today.
 
 ## Why this exists
 
-For entry-level certifications, the vendor documents the material
-publicly — but the _practice question_ experience is mostly locked behind
-paid bootcamps (K21 Academy, Datrick, CloudThat and similar all
-repackage the same public docs commercially).
+Vendors document their certification material publicly — but the _practice
+question_ experience is mostly locked behind paid bootcamps and subscription
+question banks (K21 Academy, Datrick, CloudThat and similar all repackage the
+same public docs commercially). That holds right up the certification ladder,
+not just at entry level.
 
 The docs are free. The questions shouldn't cost $300.
 
