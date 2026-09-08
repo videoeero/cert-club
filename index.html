@@ -8,6 +8,16 @@
       content="Open, non-paywalled practice exams for vendor certifications, built from public documentation."
     />
     <title>Cert Club — open certification practice</title>
+
+    <!-- Applies a stored theme before first paint. Must stay in <head> and
+         stay a classic (non-module) script so it runs during parse. -->
+    <script>
+      try {
+        var t = localStorage.getItem("cert-club.theme");
+        if (t === "dark" || t === "light")
+          document.documentElement.dataset.theme = t;
+      } catch {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

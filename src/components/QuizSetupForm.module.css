@@ -1,7 +1,7 @@
 .setupCard {
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border-default);
   border-radius: var(--radius-xl);
-  background: var(--color-bg-card);
+  background: var(--surface-raised);
   box-shadow: var(--shadow-card);
   max-width: 47.5rem;
   padding: clamp(1.5rem, 5vw, 3rem);
@@ -15,7 +15,7 @@
 .setupTabBar {
   display: flex;
   gap: var(--space-xs);
-  border-bottom: 2px solid var(--color-border-divider);
+  border-bottom: 2px solid var(--border-subtle);
   margin-bottom: 1.75rem;
 }
 
@@ -26,22 +26,22 @@
   margin-bottom: -2px;
   background: transparent;
   padding: 0.625rem 1.125rem;
-  color: var(--color-text-secondary);
-  font-size: 0.95rem;
-  font-weight: 750;
+  color: var(--text-muted);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
   cursor: pointer;
   transition:
-    color 160ms ease,
-    border-color 160ms ease;
+    color var(--duration-base) var(--ease-base),
+    border-color var(--duration-base) var(--ease-base);
 }
 
 .setupTab:hover {
-  color: var(--color-text-heading);
+  color: var(--text-strong);
 }
 
 .setupTab.isActive {
   border-bottom-color: var(--color-primary);
-  color: var(--color-primary);
+  color: var(--color-primary-text);
 }
 
 .setupFieldset {
@@ -55,16 +55,16 @@
 
 .setupFieldset legend {
   margin-bottom: 0.125rem;
-  color: var(--color-text-heading);
-  font-size: 1.1rem;
-  font-weight: 800;
+  color: var(--text-strong);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-black);
 }
 
 .formField {
   display: grid;
   gap: var(--space-sm);
-  color: var(--color-text-muted);
-  font-weight: 700;
+  color: var(--text-muted);
+  font-weight: var(--font-weight-bold);
 }
 
 .formField select,
@@ -72,11 +72,11 @@
   width: 100%;
   max-width: 100%;
   min-height: 2.75rem;
-  border: 1px solid var(--color-border-input);
+  border: 1px solid var(--border-strong);
   border-radius: var(--radius-md);
-  background: var(--color-bg-card);
+  background: var(--surface-raised);
   padding: 0 0.75rem;
-  color: var(--color-text);
+  color: var(--text-default);
   font: inherit;
 }
 
@@ -89,21 +89,21 @@
 
 .formField small,
 .radioOption small {
-  color: var(--color-text-secondary);
-  font-size: 0.85rem;
-  font-weight: 400;
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
   line-height: 1.45;
 }
 
 .selectionSummary {
-  color: var(--color-text-tertiary);
-  font-weight: 700;
+  color: var(--text-subtle);
+  font-weight: var(--font-weight-bold);
 }
 
 .selectionModeGuide {
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border-default);
   border-radius: var(--radius-lg);
-  background: var(--color-bg-muted);
+  background: var(--surface-sunken);
   padding: 0.875rem var(--space-md);
 }
 
@@ -113,14 +113,14 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  font-size: 0.85rem;
+  font-size: var(--font-size-sm);
   line-height: 1.45;
-  color: var(--color-text-tertiary);
+  color: var(--text-subtle);
 }
 
 .selectionModeList strong {
-  color: var(--color-text-dark);
-  font-weight: 700;
+  color: var(--text-strong);
+  font-weight: var(--font-weight-bold);
 }
 
 .radioOption {
@@ -128,7 +128,7 @@
   grid-template-columns: 1.25rem 1fr;
   align-items: start;
   gap: 0.625rem;
-  color: var(--color-text-muted);
+  color: var(--text-muted);
   cursor: pointer;
 }
 
@@ -155,19 +155,19 @@
   margin: 0;
   border-radius: var(--radius-md);
   padding: 0.75rem 0.875rem;
-  font-size: 0.9rem;
+  font-size: var(--font-size-md);
   line-height: 1.5;
 }
 
 .formError {
-  border: 1px solid var(--color-error-border);
-  background: var(--color-error-alert-bg);
-  color: var(--color-error-text);
+  border: 1px solid var(--color-danger-border);
+  background: var(--color-danger-tint);
+  color: var(--color-danger-text);
 }
 
 .storageNote {
   border: 1px solid var(--color-warning-border);
-  background: var(--color-warning-bg);
+  background: var(--color-warning-tint);
   color: var(--color-warning-text);
 }
 

@@ -1,52 +1,147 @@
+/* Tier 2 — semantic roles derived from the Tier 1 seeds in themes.css.
+ * No colour literals live here; every colour is a function of a seed.
+ *
+ * Tints mix toward --seed-surface rather than white. That is what makes dark
+ * mode work: in a dark theme the surface is near-black, so the same formula
+ * yields a dark tint with no per-theme override.
+ *
+ * color-mix() is required, not progressively enhanced. It is Baseline since
+ * 2023 (Chrome 111, Safari 16.2, Firefox 113) and Vite's default build target
+ * already assumes this class of feature. An unsupported browser does not
+ * degrade gracefully -- the declaration is invalid at computed-value time, so
+ * consumers fall back to transparent or inherited colours. That trade is
+ * accepted deliberately here rather than carrying a hex fallback per token.
+ */
 :root {
   /* Brand */
-  --color-primary: #5465d8;
-  --color-primary-hover: #4050bf;
-  --color-primary-light: #eef0ff;
-  --color-primary-text: #4655bb;
-  --color-primary-border: #8792e6;
-  --color-primary-selected-bg: #f5f6ff;
+  --color-primary: var(--seed-primary);
+  --color-primary-hover: color-mix(
+    in oklab,
+    var(--seed-primary),
+    var(--seed-ink) var(--mix-hover)
+  );
+  --color-primary-tint: color-mix(
+    in oklab,
+    var(--seed-primary) var(--mix-tint),
+    var(--seed-surface)
+  );
+  --color-primary-border: color-mix(
+    in oklab,
+    var(--seed-primary) var(--mix-border),
+    var(--seed-surface)
+  );
+  --color-primary-text: color-mix(
+    in oklab,
+    var(--seed-ink) var(--mix-text-shade),
+    var(--seed-primary)
+  );
 
-  /* Neutrals */
-  --color-text: #172033;
-  --color-text-heading: #101828;
-  --color-text-secondary: #667085;
-  --color-text-tertiary: #475467;
-  --color-text-muted: #344054;
-  --color-text-dark: #1d2939;
-  --color-border: #e3e8f1;
-  --color-border-input: #d0d5dd;
-  --color-border-hover: #98a2b3;
-  --color-border-subtle: #edf0f5;
-  --color-border-divider: #eaecf0;
-  --color-border-track: #e4e7ec;
-  --color-bg: #f5f7fb;
-  --color-bg-card: #ffffff;
-  --color-bg-muted: #f8f9fc;
-  --color-bg-subtle: #f2f4f7;
-  --color-bg-hover: #f9fafb;
+  /* Secondary / Accent */
+  --color-secondary: var(--seed-secondary);
+  --color-secondary-tint: color-mix(
+    in oklab,
+    var(--seed-secondary) var(--mix-tint),
+    var(--seed-surface)
+  );
+  --color-secondary-border: color-mix(
+    in oklab,
+    var(--seed-secondary) var(--mix-border),
+    var(--seed-surface)
+  );
+  --color-secondary-text: color-mix(
+    in oklab,
+    var(--seed-ink) var(--mix-text-shade),
+    var(--seed-secondary)
+  );
 
   /* Feedback */
-  --color-success: #75c78b;
-  --color-success-bg: #f0fbf3;
-  --color-success-border: #b8e2c2;
-  --color-error: #f49b9b;
-  --color-error-bg: #fff5f5;
-  --color-error-border: #fecdca;
-  --color-error-border-card: #f5c0c0;
-  --color-error-text: #b42318;
-  --color-error-alert-bg: #fff4f2;
-  --color-warning-border: #f2c94c;
-  --color-warning-bg: #fffaf0;
-  --color-warning-text: #7a5b00;
+  --color-success: var(--seed-success);
+  --color-success-tint: color-mix(
+    in oklab,
+    var(--seed-success) var(--mix-tint),
+    var(--seed-surface)
+  );
+  --color-success-border: color-mix(
+    in oklab,
+    var(--seed-success) var(--mix-border),
+    var(--seed-surface)
+  );
 
-  /* Timer badges */
-  --color-timer-warning-border: #fedf89;
-  --color-timer-warning-bg: #fffcf5;
-  --color-timer-warning-text: #b54708;
-  --color-timer-expired-border: #fda29b;
-  --color-timer-expired-bg: #fef3f2;
-  --color-timer-expired-text: #d92d20;
+  --color-warning-tint: color-mix(
+    in oklab,
+    var(--seed-warning) var(--mix-tint),
+    var(--seed-surface)
+  );
+  --color-warning-border: color-mix(
+    in oklab,
+    var(--seed-warning) var(--mix-border),
+    var(--seed-surface)
+  );
+  --color-warning-text: color-mix(
+    in oklab,
+    var(--seed-ink) var(--mix-text-shade),
+    var(--seed-warning)
+  );
+
+  --color-danger: var(--seed-danger);
+  --color-danger-tint: color-mix(
+    in oklab,
+    var(--seed-danger) var(--mix-tint),
+    var(--seed-surface)
+  );
+  --color-danger-border: color-mix(
+    in oklab,
+    var(--seed-danger) var(--mix-border),
+    var(--seed-surface)
+  );
+  --color-danger-text: color-mix(
+    in oklab,
+    var(--seed-ink) var(--mix-text-shade),
+    var(--seed-danger)
+  );
+
+  /* Surfaces */
+  --surface-canvas: var(--seed-canvas);
+  --surface-raised: var(--seed-surface);
+  --surface-sunken: color-mix(
+    in oklab,
+    var(--seed-ink) 4%,
+    var(--seed-surface)
+  );
+
+  /* Text */
+  --text-strong: var(--seed-ink);
+  --text-default: color-mix(in oklab, var(--seed-ink) 88%, var(--seed-surface));
+  --text-muted: color-mix(in oklab, var(--seed-ink) 62%, var(--seed-surface));
+  --text-subtle: color-mix(
+    in oklab,
+    var(--seed-ink) var(--mix-text-subtle),
+    var(--seed-surface)
+  );
+
+  /* Borders */
+  --border-subtle: color-mix(in oklab, var(--seed-ink) 8%, var(--seed-surface));
+  --border-default: color-mix(
+    in oklab,
+    var(--seed-ink) 14%,
+    var(--seed-surface)
+  );
+  --border-strong: color-mix(
+    in oklab,
+    var(--seed-ink) 30%,
+    var(--seed-surface)
+  );
+
+  /* Focus ring */
+  --focus-ring: 3px solid
+    color-mix(in srgb, var(--color-primary) 45%, transparent);
+  --focus-ring-offset: 0.1875rem;
+  --focus-ring-subtle: 3px solid
+    color-mix(in srgb, var(--color-primary) 20%, transparent);
+
+  /* Shadows */
+  --shadow-card: 0 16px 40px
+    color-mix(in srgb, var(--seed-shadow) var(--mix-shadow), transparent);
 
   /* Spacing scale */
   --space-xs: 0.25rem;
@@ -63,11 +158,33 @@
   --radius-xl: 1.25rem;
   --radius-pill: 999px;
 
-  /* Focus ring */
-  --focus-ring: 3px solid rgba(84, 101, 216, 0.45);
-  --focus-ring-offset: 0.1875rem;
-  --focus-ring-subtle: 3px solid rgba(84, 101, 216, 0.2);
+  /* Typography */
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.8125rem;
+  --font-size-md: 0.875rem;
+  --font-size-lg: 0.9375rem;
+  --font-size-xl: 1.0625rem;
+  --font-size-2xl: 1.1875rem;
+  --font-size-3xl: 1.4375rem;
 
-  /* Shadows */
-  --shadow-card: 0 16px 40px rgba(42, 54, 86, 0.06);
+  --font-size-display-1: clamp(2.4rem, 6vw, 4.6rem);
+  --font-size-display-2: clamp(2rem, 4vw, 3.5rem);
+  --font-size-display-3: clamp(1.7rem, 3vw, 2.5rem);
+  --font-size-display-4: clamp(1.15rem, 1.6vw, 1.35rem);
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 600;
+  --font-weight-bold: 700;
+  --font-weight-black: 800;
+
+  /* Motion */
+  --duration-base: 160ms;
+  --ease-base: ease;
+
+  /* Opacity */
+  --opacity-disabled: 0.6;
+  --opacity-muted: 0.65;
+  --opacity-faint: 0.5;
+
+  /* Breakpoint convention: @media (max-width: 40rem) */
 }

@@ -1,5 +1,6 @@
 import { BrowserRouter, Link, Navigate, Route, Routes } from "react-router-dom";
 
+import { ThemeToggle } from "./components";
 import { CertPickerPage } from "./pages/CertPickerPage";
 import { QuizSessionPage } from "./pages/QuizSessionPage";
 import { ResultsPage } from "./pages/ResultsPage";
@@ -16,7 +17,10 @@ function AppLayout() {
           <Link className="brand" to="/">
             Cert Club
           </Link>
-          <span className="header-tagline">Rule one: talk about it</span>
+          <div className="header-actions">
+            <span className="header-tagline">Rule one: talk about it</span>
+            <ThemeToggle />
+          </div>
         </div>
       </header>
 

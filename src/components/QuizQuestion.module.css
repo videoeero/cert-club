@@ -1,7 +1,7 @@
 .questionCard {
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border-default);
   border-radius: var(--radius-xl);
-  background: var(--color-bg-card);
+  background: var(--surface-raised);
   box-shadow: var(--shadow-card);
   padding: clamp(1.5rem, 5vw, 3rem);
 }
@@ -24,15 +24,27 @@
 
 .questionMeta span {
   border-radius: var(--radius-pill);
-  background: var(--color-primary-light);
+  background: var(--color-primary-tint);
   color: var(--color-primary-text);
-  font-size: 0.75rem;
-  font-weight: 700;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
   padding: 0.375rem 0.625rem;
 }
 
 .bookmarkButton {
   /* Mobile override sets width: auto */
+}
+
+.bookmarkButton[aria-pressed="true"] {
+  border-color: var(--color-secondary-border);
+  background: var(--color-secondary-tint);
+  color: var(--color-secondary-text);
+}
+
+.bookmarkButton[aria-pressed="true"]:hover:not(:disabled) {
+  border-color: var(--color-secondary);
+  background: var(--color-secondary-tint);
+  color: var(--color-secondary-text);
 }
 
 .questionCard h2,
@@ -43,9 +55,9 @@
   margin-top: 0;
   margin-bottom: var(--space-lg);
   padding: 0;
-  color: var(--color-text-heading);
-  font-size: clamp(1.15rem, 1.6vw, 1.35rem);
-  font-weight: 400;
+  color: var(--text-strong);
+  font-size: var(--font-size-display-4);
+  font-weight: var(--font-weight-regular);
   letter-spacing: -0.03em;
   line-height: 1.45;
 }
@@ -53,9 +65,9 @@
 .questionInstruction {
   margin-top: 0;
   margin-bottom: 0.375rem;
-  color: var(--color-text-secondary);
-  font-size: 0.95rem;
-  font-weight: 700;
+  color: var(--text-muted);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
   overflow-wrap: anywhere;
 }
 
@@ -83,20 +95,20 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border-default);
   border-radius: var(--radius-lg);
   min-width: 0;
-  background: var(--color-bg-card);
-  color: var(--color-text-muted);
+  background: var(--surface-raised);
+  color: var(--text-muted);
   line-height: 1.5;
   transition:
-    border-color 160ms ease,
-    background 160ms ease,
-    opacity 160ms ease;
+    border-color var(--duration-base) var(--ease-base),
+    background var(--duration-base) var(--ease-base),
+    opacity var(--duration-base) var(--ease-base);
 }
 
 .answerOption:hover {
-  border-color: var(--color-border-hover);
+  border-color: var(--border-strong);
 }
 
 .answerOption:focus-within {
@@ -125,21 +137,21 @@
 
 .answerOption.isSelected {
   border-color: var(--color-primary-border);
-  background: var(--color-primary-selected-bg);
+  background: var(--color-primary-tint);
 }
 
 .answerOption.isStruck {
-  background: var(--color-bg-subtle);
-  opacity: 0.65;
+  background: var(--surface-sunken);
+  opacity: var(--opacity-muted);
 }
 
 .answerOption.isStruck:hover {
-  opacity: 0.85;
+  opacity: 1;
 }
 
 .strikethroughText {
   text-decoration-thickness: 1.5px;
-  color: var(--color-text-secondary);
+  color: var(--text-muted);
 }
 
 .strikethroughButton {
@@ -151,23 +163,23 @@
   margin-right: var(--space-md);
   margin-left: 0.25rem;
   padding: 0;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border-default);
   border-radius: var(--radius-md);
-  background: var(--color-bg-card);
-  color: var(--color-text-tertiary);
+  background: var(--surface-raised);
+  color: var(--text-subtle);
   cursor: pointer;
   flex-shrink: 0;
   transition:
-    border-color 160ms ease,
-    background 160ms ease,
-    color 160ms ease,
-    transform 160ms ease;
+    border-color var(--duration-base) var(--ease-base),
+    background var(--duration-base) var(--ease-base),
+    color var(--duration-base) var(--ease-base),
+    transform var(--duration-base) var(--ease-base);
 }
 
 .strikethroughButton:hover:not(:disabled) {
-  border-color: var(--color-border-hover);
-  background: var(--color-bg-hover);
-  color: var(--color-text);
+  border-color: var(--border-strong);
+  background: var(--surface-sunken);
+  color: var(--text-strong);
   transform: translateY(-1px);
 }
 
@@ -179,13 +191,13 @@
 
 .strikethroughButton.strikethroughButtonActive {
   border-color: var(--color-primary-border);
-  background: var(--color-primary-light);
+  background: var(--color-primary-tint);
   color: var(--color-primary-text);
 }
 
 .strikethroughButton:disabled {
   cursor: default;
-  opacity: 0.5;
+  opacity: var(--opacity-faint);
   transform: none;
 }
 
@@ -195,19 +207,19 @@
 
 .answerOption.isCorrect {
   border-color: var(--color-success);
-  background: var(--color-success-bg);
+  background: var(--color-success-tint);
   opacity: 1;
 }
 
 .answerOption.isIncorrect {
-  border-color: var(--color-error);
-  background: var(--color-error-bg);
+  border-color: var(--color-danger);
+  background: var(--color-danger-tint);
   opacity: 1;
 }
 
 .answerOption.isDisabled {
   cursor: not-allowed;
-  opacity: 0.55;
+  opacity: var(--opacity-disabled);
 }
 
 .answerOption.isDisabled .answerOptionLabel {
@@ -215,17 +227,17 @@
 }
 
 .answerOption.isDisabled:hover {
-  border-color: var(--color-border);
+  border-color: var(--border-default);
 }
 
 .answerOption.isStruck.isDisabled {
   cursor: not-allowed;
-  opacity: 0.5;
+  opacity: var(--opacity-faint);
 }
 
 .answerOption.isStruck.isDisabled:hover {
-  border-color: var(--color-border);
-  opacity: 0.5;
+  border-color: var(--border-default);
+  opacity: var(--opacity-faint);
 }
 
 .answerOptionList:disabled .answerOption,
@@ -244,29 +256,29 @@
   height: 1.75rem;
   place-items: center;
   border-radius: 50%;
-  background: var(--color-bg-subtle);
-  color: var(--color-text-tertiary);
-  font-size: 0.75rem;
-  font-weight: 800;
+  background: var(--surface-sunken);
+  color: var(--text-subtle);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-black);
 }
 
 .answerFeedback {
   margin-top: var(--space-lg);
-  border: 1px solid var(--color-border-input);
+  border: 1px solid var(--border-strong);
   border-radius: var(--radius-lg);
   padding: 1.125rem;
-  color: var(--color-text-muted);
+  color: var(--text-muted);
   line-height: 1.55;
 }
 
 .answerFeedback.isCorrect {
   border-color: var(--color-success);
-  background: var(--color-success-bg);
+  background: var(--color-success-tint);
 }
 
 .answerFeedback.isIncorrect {
-  border-color: var(--color-error);
-  background: var(--color-error-bg);
+  border-color: var(--color-danger);
+  background: var(--color-danger-tint);
 }
 
 .answerFeedback p:last-child {
@@ -275,11 +287,11 @@
 
 .sourceNote {
   color: var(--color-primary-text);
-  font-size: 0.9rem;
+  font-size: var(--font-size-md);
 }
 
 .sourceNote a {
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
 }
 
 @media (max-width: 40rem) {

@@ -1,3 +1,4 @@
+@import "./styles/themes.css";
 @import "./styles/tokens.css";
 @import "./styles/layout.css";
 @import "./styles/buttons.css";
@@ -11,8 +12,8 @@
     BlinkMacSystemFont,
     "Segoe UI",
     sans-serif;
-  color: var(--color-text);
-  background: var(--color-bg);
+  color: var(--text-default);
+  background: var(--surface-canvas);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 }
@@ -38,7 +39,7 @@ button {
 
 button:disabled {
   cursor: not-allowed;
-  opacity: 0.6;
+  opacity: var(--opacity-disabled);
 }
 
 a {
@@ -54,14 +55,14 @@ p {
 h1 {
   max-width: 45rem;
   margin-bottom: 1.25rem;
-  color: var(--color-text-heading);
-  font-size: clamp(2.4rem, 6vw, 4.6rem);
+  color: var(--text-strong);
+  font-size: var(--font-size-display-1);
   letter-spacing: -0.06em;
   line-height: 0.98;
 }
 
 h2 {
-  color: var(--color-text-heading);
+  color: var(--text-strong);
   letter-spacing: -0.03em;
   line-height: 1.2;
 }

@@ -23,6 +23,7 @@ export const STORAGE_KEYS = {
   bookmarks: "cert-club.bookmarks",
   missed: "cert-club.missed",
   preferences: "cert-club.preferences",
+  theme: "cert-club.theme",
 } as const;
 
 export const DEFAULT_PREFERENCES: Preferences = {
@@ -32,6 +33,7 @@ export const DEFAULT_PREFERENCES: Preferences = {
 export interface StorageAdapter {
   getItem(key: string): string | null;
   setItem(key: string, value: string): void;
+  removeItem?(key: string): void;
 }
 
 export class StorageError extends Error {

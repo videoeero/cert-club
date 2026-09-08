@@ -1,0 +1,109 @@
+/* Tier 1 — theme inputs. The only file in the repo with colour literals.
+ *
+ * Adding a theme means adding a block here; tokens.css never changes.
+ * Every block must declare the identical set of properties — test/tokens.test.mjs
+ * enforces that, because the two dark blocks below are duplicated by necessity
+ * (CSS cannot share a declaration body between a media query and a selector).
+ */
+
+/* 1. Light is the base */
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+
+  /* Theme seed hues */
+  --seed-primary: #5465d8;
+  --seed-secondary: #0e9384;
+  --seed-success: #3f9e5b;
+  --seed-warning: #b54708;
+  --seed-danger: #d92d20;
+
+  /* Neutrals */
+  --seed-surface: #ffffff;
+  --seed-canvas: #f5f7fb;
+  --seed-ink: #101828;
+  --seed-shadow: #2a3656;
+
+  /* Text on a solid primary fill */
+  --color-primary-on: #ffffff;
+
+  /* Mix scales */
+  --mix-tint: 12%;
+  --mix-hover: 12%;
+  --mix-border: 45%;
+  --mix-shadow: 8%;
+
+  /* Ink mixed into a hue to make it legible as text. On light ground this
+   * darkens the hue; on dark ground --seed-ink is light, so it lightens it. */
+  --mix-text-shade: 20%;
+
+  /* Ink mixed into the surface for the faintest body text. 60% keeps
+   * --text-subtle at >=4.5:1 on canvas, raised and sunken alike. */
+  --mix-text-subtle: 60%;
+}
+
+/* 2. System dark, unless the user forced light */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    /* Theme seed hues (lightened for dark ground) */
+    --seed-primary: #7d8ceb;
+    --seed-secondary: #2dd4bf;
+    --seed-success: #4ade80;
+    --seed-warning: #f59e0b;
+    --seed-danger: #f87171;
+
+    /* Neutrals */
+    --seed-surface: #1a1f2e;
+    --seed-canvas: #12151f;
+    --seed-ink: #f2f4f7;
+    --seed-shadow: #000000;
+
+    /* Text on a solid primary fill */
+    --color-primary-on: #101828;
+
+    /* Mix scales */
+    --mix-tint: 18%;
+    --mix-hover: 12%;
+    --mix-border: 45%;
+    --mix-shadow: 40%;
+
+    /* The dark seeds are already lightened, so they need less help. */
+    --mix-text-shade: 10%;
+
+    --mix-text-subtle: 60%;
+  }
+}
+
+/* 3. User forced dark, regardless of system */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* Theme seed hues (lightened for dark ground) */
+  --seed-primary: #7d8ceb;
+  --seed-secondary: #2dd4bf;
+  --seed-success: #4ade80;
+  --seed-warning: #f59e0b;
+  --seed-danger: #f87171;
+
+  /* Neutrals */
+  --seed-surface: #1a1f2e;
+  --seed-canvas: #12151f;
+  --seed-ink: #f2f4f7;
+  --seed-shadow: #000000;
+
+  /* Text on a solid primary fill */
+  --color-primary-on: #101828;
+
+  /* Mix scales */
+  --mix-tint: 18%;
+  --mix-hover: 12%;
+  --mix-border: 45%;
+  --mix-shadow: 40%;
+
+  /* The dark seeds are already lightened, so they need less help. */
+  --mix-text-shade: 10%;
+
+  --mix-text-subtle: 60%;
+}
