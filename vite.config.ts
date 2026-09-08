@@ -91,6 +91,7 @@ function certContentPlugin(): Plugin {
 
 export default defineConfig({
   root: projectRoot,
+  base: "/cert-club/",
   publicDir: false,
   plugins: [react(), certContentPlugin()],
 });
