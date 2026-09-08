@@ -160,9 +160,10 @@ project worth building.
 - `sourceUrl`/`sourceNote` is the provenance mechanism — every question
   traces to a public doc, non-negotiable. This is the project's core
   differentiator (see README § The source boundary).
-- Decide file layout: `/certs/ccdv-f/questions.json` (single file is fine
-  at this size) plus `/certs/ccdv-f/manifest.json` for cert metadata
-  (name, blueprint domain weights, exam link, content license).
+- Decide file layout: `/certs/ccdv-f/questions/<domain-slug>.json`, one file
+  per blueprint domain, plus `/certs/ccdv-f/manifest.json` for cert metadata
+  (name, blueprint domain weights, exam link, content license). This started
+  as a single `questions.json` and was split per domain as the bank grew.
 
 **Deliverable, not deferred:** a validation script (zod or JSON Schema)
 plus the CI job that runs it, shipped *in this phase*. Validating content
@@ -323,9 +324,9 @@ folders and cert folders omitted from the catalog.
 - Target **AWS Certified Cloud Practitioner (CLF-C02)**. Re-check the current
   official AWS exam guide before authoring in case the exam code, domains, or
   weights have changed.
-- Add `/certs/aws-clf-c02/manifest.json` and `questions.json`, then register the
-  cert in `certs/catalog.json`. Do not add AWS-specific branches to the shared
-  quiz engine.
+- Add `/certs/aws-clf-c02/manifest.json` and its `questions/<domain-slug>.json`
+  files, then register the cert in `certs/catalog.json`. Do not add
+  AWS-specific branches to the shared quiz engine.
 - Build a set comparable to the AZ-900 forcing-function bank: **18 original,
   source-reviewed questions**, distributed proportionally across every current
   exam domain, with **six multiple-response items**.

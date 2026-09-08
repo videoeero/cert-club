@@ -60,7 +60,8 @@ certs/                  Question banks (JSON) and the cert catalog
   catalog.json          Lists every cert slug — must stay in sync with folders
   <slug>/
     manifest.json       Cert metadata, bank status, domain weights (sum to 100)
-    questions.json      Array of question objects
+    questions/          One JSON file per domain, named after its domain slug
+    review-progress.md  Standing record of how the bank was built and reviewed
   ADDING-A-CERT.md      Step-by-step guide for adding a new cert bank
 schemas/
   question-bank.mjs     Zod schemas — the canonical definition of all formats
@@ -92,15 +93,18 @@ step-by-step guide, field rules, and bias-guard constraints.
 
 Summary:
 
-1. Create `certs/<slug>/manifest.json` and `certs/<slug>/questions.json`
+1. Create `certs/<slug>/manifest.json`, then one
+   `certs/<slug>/questions/<domain-slug>.json` per domain the manifest declares
 2. Add the slug to `certs/catalog.json`
 3. Run `npm run check` — fix all errors before committing
 
 ## Licensing when creating files
 
-- **New `.ts` / `.tsx` / `.mjs` / config files** — MIT (no header required)
-- **New question content in `questions.json`** — CC BY-SA 4.0; implied by
-  the `contentLicense` field in the cert's `manifest.json`
+- **New `.ts` / `.tsx` / `.mjs` / config files, and `manifest.json`** — MIT
+  (no header required)
+- **New question content under `questions/`** — CC BY-SA 4.0; implied by
+  the `contentLicense` field in the cert's `manifest.json`. Full text in
+  [`LICENSE-CONTENT`](LICENSE-CONTENT)
 
 ## What not to touch
 
