@@ -22,8 +22,9 @@ Never source questions from:
 - Any material that requires an account to read. **The test is registration,
   not price** — a course that is free but asks you to register still fails,
   because "free to register" is not "open to read".
-- Paywalled or gated course content (Anthropic Academy and Partner Academy,
-  K21 Academy, Datrick, etc.)
+- Paywalled or gated course content, including the certification vendor's own
+  training — an official course is still gated content, and being official does
+  not make it citable
 
 Always source questions from public vendor documentation and official exam
 guides/blueprints only.
