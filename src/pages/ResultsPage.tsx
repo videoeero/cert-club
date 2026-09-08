@@ -1,13 +1,22 @@
 import { useState } from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { ErrorState, LoadingState } from "../components/PageStatus";
 import { useAsyncResource } from "../hooks/use-async-resource";
 import { loadCertContent } from "../lib/content";
-import { answerCountLabel, scoreAnswer } from "../lib/quiz";
-import { getAttempt, getAttempts } from "../lib/storage";
+import {
+  answerCountLabel,
+  getUnusedQuizQuestions,
+  scoreAnswer,
+} from "../lib/quiz";
+import {
+  getBookmarkedQuestionIds,
+  getMissedQuestionIds,
+  getAttempt,
+  getAttempts,
+} from "../lib/storage";
 import { formatUsedTime } from "../lib/time";
-import type { Question } from "../types";
+import type { Question, RetakeMode, RetakeNavigationState } from "../types";
 import styles from "./ResultsPage.module.css";
 
 interface QuestionReviewProps {
@@ -84,6 +93,7 @@ function QuestionReview({
 
 export function ResultsPage() {
   const { certSlug } = useParams<{ certSlug: string }>();
+  const navigate = useNavigate();
   const location = useLocation();
   const attemptId = new URLSearchParams(location.search).get("attempt");
   const [retryKey, setRetryKey] = useState(0);
@@ -103,7 +113,21 @@ export function ResultsPage() {
       );
     }
 
-    return { ...content, attempt };
+    let missedQuestionIds: string[] = [];
+    let bookmarkedQuestionIds: string[] = [];
+    try {
+      missedQuestionIds = getMissedQuestionIds(certSlug);
+      bookmarkedQuestionIds = getBookmarkedQuestionIds(certSlug);
+    } catch {
+      // Gracefully degrade with empty review sets if review storage cannot be read
+    }
+
+    return {
+      ...content,
+      attempt,
+      missedQuestionIds,
+      bookmarkedQuestionIds,
+    };
   }, [certSlug, retryKey, attemptId]);
 
   if (resource.status === "loading") {
@@ -125,7 +149,13 @@ export function ResultsPage() {
     );
   }
 
-  const { manifest, questions, attempt } = resource.data;
+  const {
+    manifest,
+    questions,
+    attempt,
+    missedQuestionIds,
+    bookmarkedQuestionIds,
+  } = resource.data;
   const domainNames = new Map(
     manifest.domains.map((domain) => [domain.slug, domain.name]),
   );
@@ -137,6 +167,29 @@ export function ResultsPage() {
     .filter((question): question is Question => question !== undefined);
   const missingQuestionCount =
     attempt.questionIds.length - reviewQuestions.length;
+  const availableExactCount = reviewQuestions.length;
+
+  const reviewContext = { missedQuestionIds, bookmarkedQuestionIds };
+  const unusedQuestions = getUnusedQuizQuestions(
+    questions,
+    attempt,
+    reviewContext,
+  );
+  const unusedCount = unusedQuestions.length;
+
+  function handleRetake(mode: RetakeMode): void {
+    const navigationState: RetakeNavigationState = {
+      retake: {
+        mode,
+        attemptId: attempt.id,
+        attempt,
+        reviewContext,
+      },
+    };
+    void navigate(`/quiz/${manifest.cert}`, {
+      state: navigationState,
+    });
+  }
 
   return (
     <section className="page-section">
@@ -231,13 +284,68 @@ export function ResultsPage() {
         )}
       </article>
 
+      <section
+        className={styles.retakeSection}
+        aria-labelledby="retake-heading"
+      >
+        <h2 id="retake-heading" className={styles.retakeTitle}>
+          Retake quiz
+        </h2>
+        <div className={styles.retakeGrid}>
+          <div className={styles.retakeItem}>
+            <button
+              type="button"
+              className="button button-primary"
+              disabled={availableExactCount === 0}
+              onClick={() => handleRetake("exact")}
+            >
+              Retake this exact quiz
+            </button>
+            <p className={styles.retakeHint}>
+              {availableExactCount === 0
+                ? "Questions from this attempt are no longer in the question bank."
+                : `Same ${availableExactCount} question${availableExactCount === 1 ? "" : "s"} in original order.`}
+            </p>
+          </div>
+
+          <div className={styles.retakeItem}>
+            <button
+              type="button"
+              className="button button-secondary"
+              onClick={() => handleRetake("random")}
+            >
+              Retake with random questions
+            </button>
+            <p className={styles.retakeHint}>
+              New randomized selection with the same settings.
+            </p>
+          </div>
+
+          <div className={styles.retakeItem}>
+            <button
+              type="button"
+              className="button button-secondary"
+              disabled={unusedCount === 0}
+              onClick={() => handleRetake("other")}
+            >
+              Retake with other questions
+            </button>
+            <p className={styles.retakeHint}>
+              {unusedCount === 0
+                ? "0 questions not used in this quiz."
+                : `${unusedCount} question${unusedCount === 1 ? "" : "s"} not used in this quiz.`}
+            </p>
+          </div>
+        </div>
+      </section>
+
       <div className={`page-heading ${styles.reviewHeading}`}>
         <div>
           <p className="eyebrow">Answer review</p>
           <h2>Explanations and sources</h2>
         </div>
         <Link className="text-link" to={`/quiz/${manifest.cert}`}>
-          Start another session
+          New practice setup
         </Link>
       </div>
 
@@ -253,8 +361,41 @@ export function ResultsPage() {
       </div>
 
       <div className="button-row">
-        <Link className="button button-primary" to={`/quiz/${manifest.cert}`}>
-          Start another session
+        <button
+          type="button"
+          className="button button-primary"
+          disabled={availableExactCount === 0}
+          onClick={() => handleRetake("exact")}
+          title={
+            availableExactCount === 0
+              ? "Questions from this attempt are no longer in the question bank."
+              : undefined
+          }
+        >
+          Retake this exact quiz
+        </button>
+        <button
+          type="button"
+          className="button button-secondary"
+          onClick={() => handleRetake("random")}
+        >
+          Retake with random questions
+        </button>
+        <button
+          type="button"
+          className="button button-secondary"
+          disabled={unusedCount === 0}
+          onClick={() => handleRetake("other")}
+          title={
+            unusedCount === 0
+              ? "0 questions not used in this quiz"
+              : `${unusedCount} question${unusedCount === 1 ? "" : "s"} not used in this quiz`
+          }
+        >
+          Retake with other questions
+        </button>
+        <Link className="button button-secondary" to={`/quiz/${manifest.cert}`}>
+          New practice setup
         </Link>
         <Link className="button button-secondary" to="/">
           Choose another certification

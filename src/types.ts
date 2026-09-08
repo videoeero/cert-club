@@ -93,6 +93,24 @@ export interface QuizConfig extends QuizSelectionConfig {
   revealMode: RevealMode;
 }
 
+export type RetakeMode = "exact" | "random" | "other";
+
+export interface RetakeReviewContext {
+  missedQuestionIds?: readonly string[];
+  bookmarkedQuestionIds?: readonly string[];
+}
+
+export interface RetakeRequest {
+  mode: RetakeMode;
+  attemptId: string;
+  attempt?: AttemptRecord;
+  reviewContext?: RetakeReviewContext;
+}
+
+export interface RetakeNavigationState {
+  retake?: RetakeRequest;
+}
+
 export type AnswerMap = Record<string, string[]>;
 
 export interface QuestionResult {

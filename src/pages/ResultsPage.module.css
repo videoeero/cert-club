@@ -92,6 +92,44 @@
   line-height: 1.5;
 }
 
+.retakeSection {
+  margin-top: 1.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: var(--color-bg-card);
+  box-shadow: var(--shadow-card);
+  padding: clamp(1.25rem, 3vw, 1.75rem);
+}
+
+.retakeTitle {
+  margin: 0 0 var(--space-md);
+  color: var(--color-text-heading);
+  font-size: 1.15rem;
+}
+
+.retakeGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-md);
+}
+
+.retakeItem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.retakeItem button {
+  width: 100%;
+}
+
+.retakeHint {
+  margin: 0;
+  color: var(--color-text-tertiary);
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
 .reviewHeading {
   margin-top: 4rem;
   margin-bottom: var(--space-lg);
@@ -211,6 +249,10 @@
 @media (max-width: 56.25rem) {
   .resultsGrid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .retakeGrid {
+    grid-template-columns: 1fr;
   }
 }
 

@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 
 import {
   ErrorState,
@@ -13,9 +13,10 @@ import pageStatusStyles from "../components/PageStatus.module.css";
 import { useAsyncResource } from "../hooks/use-async-resource";
 import { loadCertContent } from "../lib/content";
 import styles from "./QuizSessionPage.module.css";
-import { calculateQuizResults } from "../lib/quiz";
+import { calculateQuizResults, prepareRetakeSession } from "../lib/quiz";
 import {
   clearMissedQuestionIds,
+  getAttempt,
   getBookmarkedQuestionIds,
   getMissedQuestionIds,
   getPreferences,
@@ -24,7 +25,12 @@ import {
   setBookmarkedQuestionIds as persistBookmarkedQuestionIds,
   setPreferences as persistPreferences,
 } from "../lib/storage";
-import type { Question, QuizConfig, ScopeFilter } from "../types";
+import type {
+  Question,
+  QuizConfig,
+  RetakeNavigationState,
+  ScopeFilter,
+} from "../types";
 
 interface ActiveSession {
   questions: Question[];
@@ -42,6 +48,8 @@ const createAttemptId = () =>
 export function QuizSessionPage() {
   const { certSlug } = useParams<{ certSlug: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
+  const retakeKeyHandledRef = useRef<string | null>(null);
   const [retryKey, setRetryKey] = useState(0);
   const [currentTime, setCurrentTime] = useState(() => Date.now());
   const [questionIndex, setQuestionIndex] = useState(0);
@@ -58,6 +66,7 @@ export function QuizSessionPage() {
   const [missedQuestionIds, setMissedQuestionIds] = useState(new Set<string>());
   const [scopeFilter, setScopeFilter] = useState<ScopeFilter>("core-only");
   const [storageError, setStorageError] = useState<string | null>(null);
+  const [retakeError, setRetakeError] = useState<string | null>(null);
   const [finishError, setFinishError] = useState<string | null>(null);
 
   const resource = useAsyncResource(
@@ -75,6 +84,7 @@ export function QuizSessionPage() {
     setRevealedQuestionIds(new Set());
     setFinishError(null);
     setStorageError(null);
+    setRetakeError(null);
     if (!certSlug) {
       setBookmarkedQuestionIds(new Set());
       setMissedQuestionIds(new Set());
@@ -95,6 +105,60 @@ export function QuizSessionPage() {
     const interval = setInterval(() => setCurrentTime(Date.now()), 1000);
     return () => clearInterval(interval);
   }, [activeSession]);
+
+  const certContent = resource.status === "ready" ? resource.data : null;
+
+  useEffect(() => {
+    if (!certContent || !certSlug) return;
+    const state = location.state as RetakeNavigationState | null;
+
+    if (!state?.retake) return;
+
+    const retakeKey = `${state.retake.attemptId}:${state.retake.mode}`;
+    if (retakeKeyHandledRef.current === retakeKey) return;
+    retakeKeyHandledRef.current = retakeKey;
+
+    try {
+      const attempt =
+        state.retake.attempt ?? getAttempt(certSlug, state.retake.attemptId);
+      if (!attempt) {
+        throw new Error("The previous session could not be found.");
+      }
+      const reviewContext = state.retake.reviewContext ?? {
+        missedQuestionIds: [...missedQuestionIds],
+        bookmarkedQuestionIds: [...bookmarkedQuestionIds],
+      };
+      const session = prepareRetakeSession(
+        certContent.questions,
+        certContent.manifest.domains,
+        attempt,
+        state.retake.mode,
+        Math.random,
+        reviewContext,
+      );
+      setActiveSession({
+        questions: session.questions,
+        config: session.config,
+        startedAt: new Date().toISOString(),
+      });
+      setAnswers({});
+      setRevealedQuestionIds(new Set());
+      setQuestionIndex(0);
+      setFinishError(null);
+      setRetakeError(null);
+      void navigate(".", { replace: true, state: null });
+    } catch (error) {
+      setRetakeError(errorMessage(error));
+      void navigate(".", { replace: true, state: null });
+    }
+  }, [
+    certContent,
+    certSlug,
+    location.state,
+    missedQuestionIds,
+    bookmarkedQuestionIds,
+    navigate,
+  ]);
 
   if (resource.status !== "ready") {
     return (
@@ -164,6 +228,18 @@ export function QuizSessionPage() {
   }
 
   if (!activeSession) {
+    const hasPendingRetake =
+      Boolean((location.state as RetakeNavigationState | null)?.retake) &&
+      !retakeError &&
+      !storageError;
+    if (hasPendingRetake) {
+      return (
+        <section className="page-section">
+          <LoadingState message="Starting retake session..." />
+        </section>
+      );
+    }
+
     return (
       <section className="page-section">
         <div className="page-heading">
@@ -175,6 +251,15 @@ export function QuizSessionPage() {
             Change certification
           </Link>
         </div>
+        {retakeError && (
+          <p
+            id="retake-session-error"
+            className={styles.formError}
+            role="alert"
+          >
+            Failed to start retake session: {retakeError}
+          </p>
+        )}
         <QuizSetupForm
           manifest={manifest}
           questions={questions}
@@ -201,6 +286,7 @@ export function QuizSessionPage() {
             setRevealedQuestionIds(new Set());
             setQuestionIndex(0);
             setFinishError(null);
+            setRetakeError(null);
           }}
           onCompleteAttempt={(config, qs, ans) =>
             completeAttempt(config, qs, ans, new Date().toISOString())

@@ -6,6 +6,8 @@ import {
   calculateQuizResults,
   filterQuestionsByScope,
   filterReviewQuestions,
+  getUnusedQuizQuestions,
+  prepareRetakeSession,
   QuizSelectionError,
   scoreAnswer,
   selectQuestions,
@@ -643,4 +645,335 @@ test("only reaches a question with an undeclared subdomain once every declared s
     );
     assert.deepEqual(full.map((q) => q.id).sort(), ["a-1", "b-1", "orphan-1"]);
   }
+});
+
+test("getUnusedQuizQuestions excludes used questions and respects scope/domain", () => {
+  const bank = [
+    question("q1", "alpha"),
+    question("q2", "alpha"),
+    question("q3", "beta"),
+    { ...question("q4", "beta"), scope: "deep", scopeNote: "Advanced topic" },
+  ];
+
+  // Exclude seen questions
+  const unused1 = getUnusedQuizQuestions(bank, ["q1"], "core-only");
+  assert.deepEqual(
+    unused1.map((q) => q.id),
+    ["q2", "q3"],
+  );
+
+  // Deep questions included when scope is with-deep
+  const unused2 = getUnusedQuizQuestions(bank, ["q1"], "with-deep");
+  assert.deepEqual(
+    unused2.map((q) => q.id),
+    ["q2", "q3", "q4"],
+  );
+
+  // Domain filter applied
+  const unusedDomain = getUnusedQuizQuestions(
+    bank,
+    ["q1"],
+    "core-only",
+    "alpha",
+  );
+  assert.deepEqual(
+    unusedDomain.map((q) => q.id),
+    ["q2"],
+  );
+
+  // All questions used
+  const unusedAll = getUnusedQuizQuestions(
+    bank,
+    ["q1", "q2", "q3"],
+    "core-only",
+  );
+  assert.deepEqual(unusedAll, []);
+});
+
+test("prepareRetakeSession: exact retake reproduces questions in order", () => {
+  const bank = [
+    question("q1", "alpha"),
+    question("q2", "alpha"),
+    question("q3", "beta"),
+  ];
+  const attempt = {
+    config: {
+      mode: "random",
+      count: 2,
+      revealMode: "immediate",
+      scopeFilter: "core-only",
+    },
+    questionIds: ["q3", "q1"],
+  };
+
+  const retake = prepareRetakeSession(bank, domains, attempt, "exact");
+  assert.deepEqual(
+    retake.questions.map((q) => q.id),
+    ["q3", "q1"],
+  );
+  assert.equal(retake.config.count, 2);
+  assert.equal(retake.config.revealMode, "immediate");
+
+  // Handles missing question from bank
+  const partialBank = [question("q1", "alpha")];
+  const partialRetake = prepareRetakeSession(
+    partialBank,
+    domains,
+    attempt,
+    "exact",
+  );
+  assert.deepEqual(
+    partialRetake.questions.map((q) => q.id),
+    ["q1"],
+  );
+  assert.equal(partialRetake.config.count, 1);
+
+  // Throws if no questions available
+  assert.throws(
+    () => prepareRetakeSession([], domains, attempt, "exact"),
+    /The question bank is empty/,
+  );
+  assert.throws(
+    () =>
+      prepareRetakeSession(
+        [question("other", "alpha")],
+        domains,
+        attempt,
+        "exact",
+      ),
+    /No questions from the previous attempt are available/,
+  );
+});
+
+test("prepareRetakeSession: random retake re-runs selection with attempt config", () => {
+  const bank = [
+    question("q1", "alpha"),
+    question("q2", "alpha"),
+    question("q3", "beta"),
+  ];
+  const attempt = {
+    config: {
+      mode: "random",
+      count: 2,
+      revealMode: "end",
+      scopeFilter: "core-only",
+    },
+    questionIds: ["q1", "q2"],
+  };
+
+  const retake = prepareRetakeSession(bank, domains, attempt, "random");
+  assert.equal(retake.questions.length, 2);
+  assert.equal(retake.config.mode, "random");
+  assert.equal(retake.config.count, 2);
+  assert.equal(retake.config.revealMode, "end");
+
+  // Mode "all" is randomized with count set
+  const allAttempt = {
+    config: { mode: "all", revealMode: "immediate", scopeFilter: "core-only" },
+    questionIds: ["q1", "q2", "q3"],
+  };
+  const allRetake = prepareRetakeSession(bank, domains, allAttempt, "random");
+  assert.equal(allRetake.questions.length, 3);
+  assert.equal(allRetake.config.mode, "random");
+  assert.equal(allRetake.config.count, 3);
+});
+
+test("prepareRetakeSession: other retake selects from unseen questions", () => {
+  const bank = [
+    question("q1", "alpha"),
+    question("q2", "alpha"),
+    question("q3", "alpha"),
+    question("q4", "beta"),
+    question("q5", "beta"),
+  ];
+
+  // When unused questions >= previous count
+  const attempt1 = {
+    config: {
+      mode: "random",
+      count: 2,
+      revealMode: "immediate",
+      scopeFilter: "core-only",
+    },
+    questionIds: ["q1", "q2"],
+  };
+  const retake1 = prepareRetakeSession(bank, domains, attempt1, "other");
+  assert.equal(retake1.questions.length, 2);
+  assert.ok(retake1.questions.every((q) => q.id !== "q1" && q.id !== "q2"));
+  assert.equal(retake1.config.count, 2);
+
+  // When unused questions < previous count
+  const attempt2 = {
+    config: {
+      mode: "random",
+      count: 4,
+      revealMode: "immediate",
+      scopeFilter: "core-only",
+    },
+    questionIds: ["q1", "q2", "q3", "q4"],
+  };
+  const retake2 = prepareRetakeSession(bank, domains, attempt2, "other");
+  assert.equal(retake2.questions.length, 1);
+  assert.equal(retake2.questions[0].id, "q5");
+  assert.equal(retake2.config.count, 1);
+
+  // When attempt was domain-specific
+  const domainAttempt = {
+    config: {
+      mode: "domain",
+      domain: "alpha",
+      count: 1,
+      revealMode: "end",
+      scopeFilter: "core-only",
+    },
+    questionIds: ["q1"],
+  };
+  const domainRetake = prepareRetakeSession(
+    bank,
+    domains,
+    domainAttempt,
+    "other",
+  );
+  assert.equal(domainRetake.questions.length, 1);
+  assert.ok(domainRetake.questions[0].domain === "alpha");
+  assert.ok(domainRetake.questions[0].id !== "q1");
+  assert.equal(domainRetake.config.mode, "domain");
+  assert.equal(domainRetake.config.domain, "alpha");
+
+  // Throws when 0 unused questions are available
+  const fullAttempt = {
+    config: {
+      mode: "random",
+      count: 5,
+      revealMode: "immediate",
+      scopeFilter: "core-only",
+    },
+    questionIds: ["q1", "q2", "q3", "q4", "q5"],
+  };
+  assert.throws(
+    () => prepareRetakeSession(bank, domains, fullAttempt, "other"),
+    /No unused questions are available from this certification/,
+  );
+});
+
+test("prepareRetakeSession: throws on unsupported mode", () => {
+  const bank = [question("q1", "alpha")];
+  const attempt = {
+    config: {
+      mode: "random",
+      count: 1,
+      revealMode: "immediate",
+      scopeFilter: "core-only",
+    },
+    questionIds: ["q1"],
+  };
+  assert.throws(
+    () => prepareRetakeSession(bank, domains, attempt, "invalid-mode"),
+    /Unsupported retake mode "invalid-mode"/,
+  );
+});
+
+test("prepareRetakeSession: review mode retake respects reviewScope and domain in random and other modes", () => {
+  const bank = [
+    question("m1", "alpha"),
+    question("m2", "alpha"),
+    question("m3", "beta"),
+    question("b1", "alpha"),
+    question("clean", "alpha"),
+  ];
+
+  const reviewContext = {
+    missedQuestionIds: ["m1", "m2", "m3"],
+    bookmarkedQuestionIds: ["b1"],
+  };
+
+  // 1. "random" retake with review mode
+  const reviewAttempt = {
+    config: {
+      mode: "review",
+      reviewScope: "missed",
+      count: 2,
+      revealMode: "immediate",
+      scopeFilter: "core-only",
+    },
+    questionIds: ["m1", "m2"],
+  };
+
+  const randomRetake = prepareRetakeSession(
+    bank,
+    domains,
+    reviewAttempt,
+    "random",
+    Math.random,
+    reviewContext,
+  );
+  assert.equal(randomRetake.questions.length, 2);
+  assert.ok(
+    randomRetake.questions.every((q) => ["m1", "m2", "m3"].includes(q.id)),
+    "random retake included non-missed question",
+  );
+
+  // 2. "random" retake with review mode and domain filter
+  const domainReviewAttempt = {
+    config: {
+      mode: "review",
+      reviewScope: "missed",
+      domain: "alpha",
+      count: 2,
+      revealMode: "immediate",
+      scopeFilter: "core-only",
+    },
+    questionIds: ["m1", "m2"],
+  };
+
+  const domainRandomRetake = prepareRetakeSession(
+    bank,
+    domains,
+    domainReviewAttempt,
+    "random",
+    Math.random,
+    reviewContext,
+  );
+  assert.equal(domainRandomRetake.questions.length, 2);
+  assert.deepEqual(domainRandomRetake.questions.map((q) => q.id).sort(), [
+    "m1",
+    "m2",
+  ]);
+
+  // 3. "other" retake with review mode
+  const otherRetake = prepareRetakeSession(
+    bank,
+    domains,
+    reviewAttempt,
+    "other",
+    Math.random,
+    reviewContext,
+  );
+  assert.equal(otherRetake.questions.length, 1);
+  assert.equal(otherRetake.questions[0].id, "m3");
+  assert.equal(otherRetake.config.mode, "review");
+
+  // 4. "other" retake with review mode throws when all review questions were used
+  assert.throws(
+    () =>
+      prepareRetakeSession(
+        bank,
+        domains,
+        {
+          config: {
+            mode: "review",
+            reviewScope: "missed",
+            domain: "alpha",
+            count: 2,
+            revealMode: "immediate",
+            scopeFilter: "core-only",
+          },
+          questionIds: ["m1", "m2"],
+        },
+        "other",
+        Math.random,
+        reviewContext,
+      ),
+    /No unused questions are available from this certification/,
+  );
 });

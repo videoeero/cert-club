@@ -1,11 +1,15 @@
 import type {
   AnswerMap,
+  AttemptRecord,
   Domain,
   DomainBreakdown,
   Question,
   QuestionResult,
+  QuizConfig,
   QuizResults,
   QuizSelectionConfig,
+  RetakeMode,
+  RetakeReviewContext,
   ReviewScope,
   ScopeFilter,
   SimulationPreset,
@@ -559,4 +563,169 @@ export function simulateQuizAnswers(
   }
 
   return answers;
+}
+
+export function getUnusedQuizQuestions(
+  questions: readonly Question[],
+  attemptOrUsedIds:
+    Pick<AttemptRecord, "config" | "questionIds"> | readonly string[],
+  scopeFilterOrContext?: ScopeFilter | RetakeReviewContext,
+  domain?: string,
+): Question[] {
+  let config: QuizConfig;
+  let usedQuestionIds: readonly string[];
+
+  if ("config" in attemptOrUsedIds) {
+    usedQuestionIds = attemptOrUsedIds.questionIds;
+    config = attemptOrUsedIds.config;
+  } else {
+    usedQuestionIds = attemptOrUsedIds;
+    config = {
+      mode: domain ? "domain" : "random",
+      revealMode: "immediate",
+      scopeFilter:
+        typeof scopeFilterOrContext === "string"
+          ? scopeFilterOrContext
+          : undefined,
+      domain,
+    };
+  }
+
+  const reviewContext: RetakeReviewContext | undefined =
+    "config" in attemptOrUsedIds
+      ? (scopeFilterOrContext as RetakeReviewContext | undefined)
+      : undefined;
+
+  const scoped = filterQuestionsByScope(questions, config.scopeFilter);
+  const domainFilter =
+    config.mode === "domain" || config.mode === "review"
+      ? config.domain
+      : undefined;
+
+  let eligible: Question[];
+  if (config.mode === "review") {
+    const reviewScope = config.reviewScope ?? "missed-or-bookmarked";
+    const missed = reviewContext?.missedQuestionIds ?? [];
+    const bookmarked = reviewContext?.bookmarkedQuestionIds ?? [];
+    eligible = filterReviewQuestions(
+      scoped,
+      missed,
+      bookmarked,
+      reviewScope,
+      domainFilter,
+    );
+  } else if (domainFilter) {
+    eligible = scoped.filter((question) => question.domain === domainFilter);
+  } else {
+    eligible = scoped;
+  }
+
+  const used = new Set(usedQuestionIds);
+  return eligible.filter((question) => !used.has(question.id));
+}
+
+export function prepareRetakeSession(
+  questions: readonly Question[],
+  domains: readonly Domain[],
+  attempt: Pick<AttemptRecord, "config" | "questionIds">,
+  mode: RetakeMode,
+  random: RandomSource = Math.random,
+  reviewContext?: RetakeReviewContext,
+): { questions: Question[]; config: QuizConfig } {
+  if (questions.length === 0) {
+    throw new QuizSelectionError("The question bank is empty.");
+  }
+
+  if (mode === "exact") {
+    const questionMap = new Map(questions.map((q) => [q.id, q]));
+    const exactQuestions = attempt.questionIds
+      .map((id) => questionMap.get(id))
+      .filter((q): q is Question => q !== undefined);
+
+    if (exactQuestions.length === 0) {
+      throw new QuizSelectionError(
+        "No questions from the previous attempt are available.",
+      );
+    }
+
+    return {
+      questions: exactQuestions,
+      config: {
+        ...attempt.config,
+        count: exactQuestions.length,
+      },
+    };
+  }
+
+  if (mode === "random") {
+    let pool: Question[];
+    if (attempt.config.mode === "review") {
+      const scoped = filterQuestionsByScope(
+        questions,
+        attempt.config.scopeFilter,
+      );
+      const reviewScope = attempt.config.reviewScope ?? "missed-or-bookmarked";
+      const missed = reviewContext?.missedQuestionIds ?? [];
+      const bookmarked = reviewContext?.bookmarkedQuestionIds ?? [];
+      pool = filterReviewQuestions(
+        scoped,
+        missed,
+        bookmarked,
+        reviewScope,
+        attempt.config.domain,
+      );
+    } else {
+      pool = filterQuestionsByScope(questions, attempt.config.scopeFilter);
+    }
+
+    const configToUse: QuizConfig =
+      attempt.config.mode === "all"
+        ? {
+            ...attempt.config,
+            mode: "random",
+            count: attempt.questionIds.length,
+          }
+        : { ...attempt.config };
+
+    const selected = selectQuestions(pool, domains, configToUse, random);
+
+    return {
+      questions: selected,
+      config: configToUse,
+    };
+  }
+
+  if (mode === "other") {
+    const unused = getUnusedQuizQuestions(questions, attempt, reviewContext);
+
+    if (unused.length === 0) {
+      throw new QuizSelectionError(
+        "No unused questions are available from this certification.",
+      );
+    }
+
+    const targetCount = Math.min(
+      attempt.config.count ?? attempt.questionIds.length,
+      unused.length,
+    );
+
+    const selected = randomSample(unused, targetCount, random);
+    const newConfig: QuizConfig = {
+      ...attempt.config,
+      mode:
+        attempt.config.mode === "domain"
+          ? "domain"
+          : attempt.config.mode === "review"
+            ? "review"
+            : "random",
+      count: targetCount,
+    };
+
+    return {
+      questions: selected,
+      config: newConfig,
+    };
+  }
+
+  throw new QuizSelectionError(`Unsupported retake mode "${String(mode)}".`);
 }
