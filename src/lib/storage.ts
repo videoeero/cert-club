@@ -10,11 +10,19 @@ import type {
 export const STORAGE_VERSION = 1;
 export const MAX_ATTEMPT_HISTORY = 10;
 
+/**
+ * Renamed from the `cert-prep-open.*` prefix with no migration, deliberately:
+ * the app had not been deployed, so the only state at risk was a local dev
+ * browser's. Once this ships, that reasoning expires — a later key change
+ * silently empties real users' history, bookmarks and preferences, because a
+ * read miss is indistinguishable from a first visit. Bump STORAGE_VERSION and
+ * migrate on read instead.
+ */
 export const STORAGE_KEYS = {
-  attempts: "cert-prep-open.attempts",
-  bookmarks: "cert-prep-open.bookmarks",
-  missed: "cert-prep-open.missed",
-  preferences: "cert-prep-open.preferences",
+  attempts: "cert-club.attempts",
+  bookmarks: "cert-club.bookmarks",
+  missed: "cert-club.missed",
+  preferences: "cert-club.preferences",
 } as const;
 
 export const DEFAULT_PREFERENCES: Preferences = {

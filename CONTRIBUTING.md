@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for helping improve cert-prep-open. Contributions to the app and its
+Thanks for helping improve Cert Club. Contributions to the app and its
 question banks are welcome, provided they follow the source boundary in the
 README.
 

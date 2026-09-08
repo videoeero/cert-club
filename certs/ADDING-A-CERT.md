@@ -1,7 +1,7 @@
 # Adding a new certification bank
 
 This document is the authoritative guide for adding a certification to
-cert-prep-open — for human contributors and AI agents alike.
+Cert Club — for human contributors and AI agents alike.
 
 ## Before you start
 
@@ -119,8 +119,7 @@ A minimal single-select example:
     "type": "single",
     "domain": "domain-one",
     "difficulty": "medium",
-    "status": "draft",
-    "stem": "A team observes X and wants Y. What explains it?",
+      "stem": "A team observes X and wants Y. What explains it?",
     "options": [
       { "id": "opt-a", "text": "First option" },
       { "id": "opt-b", "text": "Second option" },

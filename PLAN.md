@@ -1,4 +1,4 @@
-# cert-prep-open — v1 Plan
+# Cert Club — v1 Plan
 
 Scope decision (locked for v1): **static frontend app + JSON question
 banks, no backend.** Progress/bookmarks/history live in the browser's
@@ -15,48 +15,25 @@ Ship **CCDV-F only** end-to-end before touching a second cert.
 
 ## Conventions
 
-Each phase carries a **Status** and a **Model** line.
-
-**Status** — one of:
+Each phase carries a **Status** line — one of:
 `PENDING` (not started) · `IN PROGRESS` · `BLOCKED` (say why) ·
 `DONE` (acceptance criteria met, not merely "code written")
 
-**Model** — which tier this phase actually warrants. The split that
-matters here is *reversibility*, not apparent difficulty:
-
-- **Opus** — for decisions that are expensive or impossible to walk back:
-  schema shape, content accuracy, abstraction boundaries. A subtle error
-  here surfaces 60 questions or 3 phases later, and the cost of the
-  mistake dwarfs any token savings.
-- **Luna (Max effort) / Sonnet** — for work where mistakes are loud,
-  local, and immediately visible: scaffolding, config, CI, styling,
-  component wiring. A compiler, a test, or the browser tells you within
-  seconds. This is the majority of the plan by volume.
-
-Rule of thumb: **if a mistake would be caught by a test, a type error, or
-a glance at the screen, use the cheaper model.** If it would be caught by
-a confused user six weeks from now, use Opus.
-
-| Phase | Status | Model |
-|---|---|---|
-| 0 — Repo foundations | PENDING | Luna (Max) |
-| 1 — Question schema | DONE | **Opus** (validator: Luna) |
-| 2 — Seed content | DONE | **Opus** |
-| 3 — Frontend scaffold | DONE | Luna (Max) |
-| 4 — Core quiz | DONE | Luna (Max), tests first |
-| 5 — Polish | DONE | Luna (Max) |
-| 6 — Second cert | DONE | **Opus** review, Luna wiring |
-| 7 — AWS Cloud Practitioner | DONE | **Opus** review, Luna wiring |
-| 8 — Deploy | PENDING | Luna (Max) |
-| 9 — Stretch | PENDING (deferred) | TBD |
+| Phase | Status |
+|---|---|
+| 0 — Repo foundations | DONE |
+| 1 — Question schema | DONE |
+| 2 — Seed content | DONE |
+| 3 — Frontend scaffold | DONE |
+| 4 — Core quiz | DONE |
+| 5 — Polish | DONE |
+| 6 — Second cert | DONE |
+| 7 — AWS Cloud Practitioner | DONE |
+| 8 — Deploy | PENDING |
+| 9 — Stretch | PENDING (deferred) |
 
 *(Summary only — the per-phase `Status:` lines below are canonical. If
 they disagree, trust the phase, not the table.)*
-
-Most phases are cheap-model work. Opus is reserved for schema decisions,
-content accuracy, and cross-cert abstraction review because errors there
-surface much later than ordinary wiring mistakes — and Phase 1 in particular
-has already proven it, having shipped two schema bugs in its first draft.
 
 ---
 
@@ -127,16 +104,11 @@ project worth building.
 ## Phase 0 — Repo foundations
 **Status:** DONE
 
-**Model:** Luna (Max) — boilerplate with one exception: the licence pair
-(code vs. content) is a genuine decision with downstream reuse
-consequences. Decide that yourself or with Opus; the file-writing is
-mechanical either way.
-
-- Pick and add a LICENSE: MIT (or Apache-2.0) for code.
-- Decide content license separately (e.g. CC-BY-SA 4.0) since question
-  text/explanations are a different kind of asset than code — add a
-  `CONTENT_LICENSE` note or section in README. *(README section exists
-  with both marked TBD; the actual choice is still open.)*
+- ~~Pick and add a LICENSE~~ **done**: MIT for code.
+- ~~Decide content license separately~~ **done**: CC BY-SA 4.0, since
+  question text/explanations are a different kind of asset than code.
+  Both are stated in the README licensing section and each cert's
+  `manifest.json` carries a `contentLicense` field.
 - ~~Expand README~~ **done**: what this is, what it isn't, the
   public-vs-gated source boundary table, exam facts, design principles.
   Absorbed the durable content from the old `HANDOFF.md`, which has been
@@ -149,47 +121,10 @@ mechanical either way.
   bar *before* the first drive-by PR, not after. README now states the
   principle; CONTRIBUTING needs the operational version of it (what a
   valid citation looks like, what gets a PR closed on sight).
-- `.gitignore`, basic repo hygiene. Note `PLAN.md`/`README.md` are
-  currently **untracked** — the initial commit contains only the old
-  README stub.
+- `.gitignore`, basic repo hygiene.
 
 ## Phase 1 — Question schema design
 **Status:** DONE
-
-**Model:** **Opus** — highest-leverage phase in the plan. This schema is
-load-bearing for 100 questions, the quiz engine, and every future cert; the
-`correctIndex` and single-select mistakes already caught here are exactly
-the failure mode, and both looked perfectly reasonable when written.
-*Exception:* once the shape is agreed, writing the zod validator and CI
-job is mechanical — hand that to Luna (Max).
-Design one JSON shape used by every cert, e.g. per-question:
-```json
-{
-  "id": "ccdv-f-0001",
-  "cert": "ccdv-f",
-  "schemaVersion": 1,
-  "type": "single",
-  "domain": "tools-and-mcps",
-  "subdomain": "mcp-architecture",
-  "difficulty": "medium",
-  "status": "reviewed",
-  "stem": "...",
-  "options": [
-    { "id": "a", "text": "..." },
-    { "id": "b", "text": "..." },
-    { "id": "c", "text": "..." },
-    { "id": "d", "text": "..." }
-  ],
-  "correct": ["c"],
-  "explanation": "...",
-  "distractorNotes": { "a": "why this is wrong", "b": "..." },
-  "sourceUrl": "https://docs.claude.com/...",
-  "sourceNote": "section on MCP tool schemas",
-  "sourceCheckedAt": "2026-09-03"
-}
-```
-Schema decisions worth calling out, because each one is expensive to
-change after ~100 questions exist:
 
 - **Stable option IDs, not `correctIndex`.** Phase 5 wants shuffled
   option order, and any hand-edit that reorders options would silently
@@ -242,17 +177,6 @@ domains, `cert` matches folder, `sourceUrl` non-empty and well-formed.
 ## Phase 2 — Seed content (CCDV-F)
 **Status:** DONE
 
-**Model:** **Opus** — the one phase where model quality shows up directly
-in the product. Writing a *plausible wrong answer* is the hard part of
-question authoring: distractors must be wrong for an interesting reason,
-not obviously wrong, and the explanation has to hold up against the cited
-doc. Weaker models produce banks where the correct answer is guessable
-from tone alone. Note this cuts against the usual token-cost instinct —
-it's 100 questions, so it's also the most expensive phase to run on Opus.
-Spend it anyway; a guessable bank is worthless.
-*Regardless of model:* human review is the actual accuracy gate, and no
-question ships at `status: draft`.
-
 - Pull the official CCDV-F exam guide's domain breakdown into
   `manifest.json` (see verified weights above — confirm first-hand).
 - **Target 100 questions for v1**, expanding the original 80-question target
@@ -295,13 +219,6 @@ validator. Before/after metrics are in `review-progress.md`.
 ## Phase 3 — Frontend scaffold
 **Status:** DONE
 
-**Model:** Luna (Max) — textbook cheap-model work. `npm create vite`,
-routing, a fetch call, three page shells. Every mistake is a build error
-or a blank screen, i.e. caught in seconds.
-*Runs in parallel with Phase 2, not after it.* Build against a ~6-question
-fixture file that satisfies the schema; content volume is irrelevant to
-every UI concern except pagination.
-
 - **Stack locked: Vite + React + TypeScript.** The quiz / review /
   results views share meaningful component and state logic, which is
   exactly where vanilla TS starts hand-rolling a worse React. Leaving
@@ -322,13 +239,6 @@ every UI concern except pagination.
 
 ## Phase 4 — Core quiz functionality
 **Status:** DONE
-
-**Model:** Luna (Max) — but write the tests *first* for scoring and
-weighted sampling. These are the two functions that can be subtly wrong
-while looking right (off-by-one in domain weighting, multi-response
-partial matches scoring as correct), and they're the reason the plan asks
-for unit tests at all. With tests in place this is comfortably cheap-model
-work; without them it isn't, whatever model you use.
 
 - Quiz session: pull N questions (config: all, by domain, random subset,
   weighted-by-domain), single- **and multi-select** answering, immediate
@@ -385,9 +295,6 @@ the per-domain target percentages this fix now holds to on every run.
 ## Phase 5 — Polish
 **Status:** DONE
 
-**Model:** Luna (Max) — visual and interaction work you're evaluating by
-looking at it. Fastest feedback loop in the project.
-
 - Review mode (only previously-missed/bookmarked questions).
 - Domain filter matching blueprint weights.
 - Basic accessibility pass (keyboard nav, focus states) and mobile
@@ -396,12 +303,6 @@ looking at it. Fastest feedback loop in the project.
 
 ## Phase 6 — Generalize to a second cert
 **Status:** DONE
-
-**Model:** **Opus** for the abstraction review, Luna (Max) for the content
-and wiring once it holds. This phase exists to detect CCDV-F assumptions
-that leaked into the shared engine — judging *whether* something is a leak
-or a legitimate per-cert difference is exactly the judgement call cheap
-models get wrong, usually by papering over it with a special case.
 
 - Only after CCDV-F works end-to-end. Onboard AZ-900 or AI-900 (mature
   public docs) purely as a forcing function to prove the schema/app
@@ -418,11 +319,6 @@ folders and cert folders omitted from the catalog.
 
 ## Phase 7 — Add AWS Certified Cloud Practitioner
 **Status:** DONE
-
-**Model:** **Opus** for source review and question quality, Luna (Max) for
-manifest/catalog wiring. This is content work against a stable abstraction:
-adding the third cert should remain data-only unless it exposes a genuine
-cross-cert requirement.
 
 - Target **AWS Certified Cloud Practitioner (CLF-C02)**. Re-check the current
   official AWS exam guide before authoring in case the exam code, domains, or
@@ -454,14 +350,11 @@ changes.
 ## Phase 8 — Deploy
 **Status:** PENDING
 
-**Model:** Luna (Max) — CI YAML and hosting config. Well-trodden ground,
-and CI failure is about as loud as feedback gets.
-
 - Static hosting: GitHub Pages (fits an open-source repo well) or
   Netlify/Vercel. Pick GitHub Pages by default — zero extra accounts,
   free, matches "no backend" philosophy.
 - Gotcha: project Pages serve from a subpath, so set Vite
-  `base: '/cert-prep-open/'` and make every question-bank `fetch()` path
+  `base: '/Cert Club/'` and make every question-bank `fetch()` path
   relative to it. This is the single most common way a working local
   build 404s in production.
 - CI already exists from Phase 1 (schema validation); extend it here with
@@ -469,9 +362,6 @@ and CI failure is about as loud as feedback gets.
 
 ## Phase 9 — Stretch / explicitly deferred
 **Status:** PENDING (deferred — not v1)
-
-**Model:** decide when scoped. Drift detection and lab-style questions are
-both design-heavy enough to want Opus at the design step.
 
 - Community-contributed questions (PR-based) — needs a review process
   first, deliberately not v1.

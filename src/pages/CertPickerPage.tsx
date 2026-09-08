@@ -19,6 +19,10 @@ export function CertPickerPage() {
           Choose a certification to start a focused practice session built from
           original questions and public documentation.
         </p>
+        <p className="hero-rule">
+          The first rule of Cert Club is you talk about Cert Club, because
+          you&rsquo;re stressed about the exam.
+        </p>
       </div>
 
       {resource.status === "loading" && (

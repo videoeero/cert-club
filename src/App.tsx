@@ -14,9 +14,9 @@ function AppLayout() {
       <header className="site-header">
         <div className="content-width header-content">
           <Link className="brand" to="/">
-            cert-prep-open
+            Cert Club
           </Link>
-          <span className="header-tagline">Practice in public</span>
+          <span className="header-tagline">Rule one: talk about it</span>
         </div>
       </header>
 
@@ -33,8 +33,8 @@ function AppLayout() {
         <div className="content-width footer-content">
           <p>
             Independent and unofficial. Not affiliated with, endorsed by, or
-            sponsored by Anthropic, Microsoft, GitHub, or any certification
-            body.
+            sponsored by Anthropic, Microsoft, Amazon Web Services, or any
+            certification body.
           </p>
           <p>No accounts, analytics, or telemetry.</p>
         </div>

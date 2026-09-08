@@ -4,7 +4,7 @@ Guidance for AI agents working in this repository.
 
 ## What this project is
 
-cert-prep-open is a static React/TypeScript quiz app backed by JSON question
+Cert Club is a static React/TypeScript quiz app backed by JSON question
 banks. There is no backend. Progress lives in `localStorage`. Code is MIT;
 question content is CC BY-SA 4.0.
 

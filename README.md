@@ -1,4 +1,7 @@
-# cert-prep-open
+# Cert Club
+
+> The first rule of Cert Club is you talk about Cert Club, because you're
+> stressed about the exam.
 
 Open, non-paywalled practice exams for vendor certifications whose study
 material is already public.
@@ -7,8 +10,8 @@ Currently includes **Claude Certified Developer – Foundations (CCDV-F)**,
 **Microsoft Certified: Azure Fundamentals (AZ-900)**, and
 **AWS Certified Cloud Practitioner (CLF-C02)**.
 
-> **Status: pre-alpha.** The core quiz flow and two certification banks are in
-> place; deployment remains. See [`PLAN.md`](./PLAN.md) for the v1 scope,
+> **Status: pre-alpha.** The core quiz flow and three certification banks are
+> in place; deployment remains. See [`PLAN.md`](./PLAN.md) for the v1 scope,
 > question schema, and phase-by-phase build order.
 
 ## Why this exists
@@ -133,6 +136,6 @@ the provenance requirements in [`CONTRIBUTING.md`](./CONTRIBUTING.md).
 ## Disclaimer
 
 Independent and unofficial. Not affiliated with, endorsed by, or sponsored by
-Anthropic, Microsoft, Amazon Web Services, GitHub, or any certification body.
+Anthropic, Microsoft, Amazon Web Services, or any certification body.
 "Claude", "Anthropic", "AWS", "Amazon Web Services", and all certification
 names are the marks of their respective owners.
