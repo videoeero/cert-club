@@ -6,12 +6,11 @@
 Open, non-paywalled practice exams for vendor certifications whose study
 material is already public.
 
-Currently includes **Claude Certified Developer – Foundations (CCDV-F)** at
-full coverage, plus **Microsoft Certified: Azure Fundamentals (AZ-900)** and
-**AWS Certified Cloud Practitioner (CLF-C02)** as **draft** banks — 18
-questions each, published to prove the schema generalises rather than to
-rehearse those exams. Each cert's `manifest.json` declares its `status`
-(`draft` | `stable`), and the app badges the draft ones.
+Each cert's `manifest.json` declares a bank `status`: `stable` means the bank
+covers its blueprint proportionally, `draft` means coverage is still partial —
+published to exercise the schema rather than to rehearse that exam. The app
+badges the draft ones. See [Certifications](#certifications) for what ships
+today.
 
 > **Status: pre-alpha.** The core quiz flow and three certification banks are
 > in place; deployment remains. See [`PLAN.md`](./PLAN.md) for the v1 scope,
@@ -41,62 +40,41 @@ If you are looking for exam dumps, this is the wrong repository.
 
 ### The source boundary
 
-For CCDV-F specifically:
+One rule, applied identically to every cert in the repository:
 
-| Source                                                           | Status                               | Usable?                      |
-| ---------------------------------------------------------------- | ------------------------------------ | ---------------------------- |
-| `platform.claude.com`, `code.claude.com` — API, Agent SDK, tools | Public                               | ✅ Primary source            |
-| `modelcontextprotocol.io` — MCP specification and concepts       | Public                               | ✅ Primary source            |
-| Official exam guide / blueprint (domains + weights)              | Public                               | ✅ Drives question weighting |
-| Anthropic Academy course _landing pages_ (syllabus, objectives)  | Public, no account                   | ⚠️ Coverage cross-check only |
-| Anthropic Academy / Partner Academy _course content_             | Requires registration, free or gated | ❌ Never                     |
-| Real exam items                                                  | Confidential                         | ❌ Never                     |
+| Source                                             | Usable?                      |
+| -------------------------------------------------- | ---------------------------- |
+| Official vendor documentation                      | ✅ Primary source            |
+| Official exam guide / blueprint (domains, weights) | ✅ Drives question weighting |
+| Public course landing pages (syllabus, objectives) | ⚠️ Coverage cross-check only |
+| Anything behind a registration wall or paywall     | ❌ Never                     |
+| Real exam items                                    | ❌ Never                     |
 
-Questions are written **only** from the rows marked as primary sources and the
-exam guide. The citation requirement (`sourceUrl` on every question) is what
-makes that auditable rather than merely claimed.
+Questions are written **only** from the primary sources and the exam guide. The
+citation requirement (`sourceUrl` on every question) is what makes that
+auditable rather than merely claimed.
 
-The boundary is drawn at the **gate, not the vendor**. Some Anthropic Academy
-courses cost nothing, but the lessons still sit behind a registration wall, so
-they are excluded on the same footing as paid ones. Their public landing pages
-are not behind that wall and may be read — but only to ask "is this skill
+The boundary is drawn at the **gate — not the vendor, and not the price.** A
+course that costs nothing but asks you to register still sits behind a wall, so
+it is excluded on the same footing as a paid one. A course's public landing page
+is not behind that wall and may be read — but only to ask "is this skill
 covered?", never as a citation, and never to calibrate how deep a question
-should go. Courses teach you to build; this exam tests what to choose.
+should go. Courses teach you to build; these exams test what to choose.
 
-## About the exam (CCDV-F)
+## Certifications
 
-One of four certifications in Anthropic's Claude Certification Program
-(Associate, Developer, Architect Foundations, Architect Professional).
+| Certification                            | Slug          | Bank status | How this bank was built                                 |
+| ---------------------------------------- | ------------- | ----------- | ------------------------------------------------------- |
+| Claude Certified Developer – Foundations | `ccdv-f`      | stable      | [review record](./certs/ccdv-f/review-progress.md)      |
+| Microsoft Certified: Azure Fundamentals  | `az-900`      | draft       | [review record](./certs/az-900/review-progress.md)      |
+| AWS Certified Cloud Practitioner         | `aws-clf-c02` | draft       | [review record](./certs/aws-clf-c02/review-progress.md) |
 
-- $125, delivered via Pearson VUE / OnVUE
-- 53 questions, 120 minutes, 720/1000 to pass
-- **Single-select and multiple-response** items
-- Tests hands-on skill, not just theory: API integration, Agent SDK,
-  tool use, MCP servers, structured output, prompt/context engineering,
-  evals, cost optimization, security, observability
-
-Domain weights are recorded in `certs/ccdv-f/manifest.json` (see
-`PLAN.md` § Verified exam facts).
-
-## About the exam (AZ-900)
-
-**Draft bank — 18 questions.** Coverage is proportional to the blueprint but
-far short of a full rehearsal.
-
-The AZ-900 bank follows Microsoft's July 20, 2026 skills outline. Because the
-official domain weights are ranges, the manifest normalizes their midpoints to
-28%, 39%, and 33% using the largest-remainder method. Every question cites the
-current public Microsoft Learn page that supports its answer.
-
-## About the exam (AWS Certified Cloud Practitioner)
-
-**Draft bank — 18 questions.** Coverage is proportional to the blueprint but
-far short of a full rehearsal.
-
-The AWS Certified Cloud Practitioner bank follows the current CLF-C02 exam
-guide. Its 18 questions use the official 24%, 30%, 34%, and 12% domain weights
-to produce a proportional 4/6/6/2 split, and six are multiple-response items.
-Every question cites the public AWS documentation that supports its answer.
+Each cert's `manifest.json` holds the authoritative metadata — official exam
+guide URL, question count, duration, and blueprint domain weights — and the app
+renders those directly, so they are not restated here. Each
+`review-progress.md` records where the questions came from, how the blueprint
+was translated into a question distribution, and the judgement calls a future
+author should not have to rediscover.
 
 ## Design principles
 

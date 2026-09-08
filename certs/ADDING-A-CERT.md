@@ -46,6 +46,11 @@ folder.
 }
 ```
 
+Then add a row to the Certifications table in the [root README](../README.md).
+Keep it to the certification name, slug, bank status, and a link to your review
+record — exam facts and domain weights belong in `manifest.json`, which the app
+reads directly, and must not be restated in the README.
+
 ## Step 2 — Write `manifest.json`
 
 ```json
