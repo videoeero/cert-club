@@ -94,7 +94,7 @@ longest option.
 
 ## Validate content changes
 
-Use Node.js 22 or newer, then run:
+Use Node.js 24 or newer, then run:
 
 ```sh
 npm ci

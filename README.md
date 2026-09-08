@@ -108,7 +108,7 @@ Every question cites the public AWS documentation that supports its answer.
 
 ## Running locally
 
-Requires Node.js 22 or newer:
+Requires Node.js 24 or newer:
 
 ```sh
 npm ci

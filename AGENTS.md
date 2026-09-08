@@ -8,7 +8,7 @@ Cert Club is a static React/TypeScript quiz app backed by JSON question
 banks. There is no backend. Progress lives in `localStorage`. Code is MIT;
 question content is CC BY-SA 4.0.
 
-Stack: Node ≥ 22 · Vite · React 19 · TypeScript · Zod · ESLint · Prettier.
+Stack: Node ≥ 24 · Vite · React 19 · TypeScript · Zod · ESLint · Prettier.
 
 ## Non-negotiable content rule
 
