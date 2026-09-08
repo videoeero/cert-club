@@ -31,9 +31,14 @@ breaking them fails CI rather than review.
   answer states something a competent reader might actually believe — usually
   a real mechanism applied to the wrong situation, or an intuition the docs
   explicitly overturn. Record that reason in `distractorNotes`.
-- **Aim for one obviously wrong option, one confidently wrong, and two that
+- **Aim for one clearly wrong option, one confidently wrong, and two that
   are genuinely hard to separate.** An item where three options are throwaways
   tests nothing but reading speed.
+- **No facepalm options.** "Clearly wrong" means a claim a real practitioner
+  could hold and the docs overturn — not an option no one would ever pick
+  ("merge the AI-generated PR without reviewing or testing it"). Real exams do
+  ship options like that; they are free eliminations and add nothing here but
+  reading load. Every option should cost the candidate a decision.
 - **Do not let the correct answer be the longest option.** Keys tend to grow
   because they carry the source doc's full hedged claim while distractors get
   written as crisp wrong assertions. Fix this by padding distractors with
@@ -51,6 +56,35 @@ breaking them fails CI rather than review.
 - Both bias guards only engage above a 20-question sample, so they will not
   fire on a small new cert bank. They are a bank-level regression check, not a
   per-question rule.
+
+### Difficulty calibration
+
+**Target at least the real exam's difficulty, and prefer somewhat above it.**
+A learner who scores well on a bank should find the live exam more
+comfortable — that is the useful direction for the error to run.
+
+Concretely, the real exams these banks target tend to be easier than the bank:
+most items can be reduced to a single surviving option by elimination alone,
+and the survivor is usually the one a competent practitioner would have picked
+on instinct. Bank questions may legitimately be harder than that. It is fine
+for an item to have no single stand-out option and to turn on separating two
+defensible answers, as long as the key is genuinely correct against its cited
+source and the reasoning is recoverable from the material.
+
+Two limits on that licence:
+
+- Harder must not mean *ambiguous*. If two options are both defensible against
+  the cited doc, the item is broken, not hard.
+- Harder must not mean *deeper*. Depth beyond the blueprint's cognitive level
+  belongs in `scope: "deep"` — see the depth anchors in
+  [`certs/ADDING-A-CERT.md`](certs/ADDING-A-CERT.md).
+
+**Formats the live exam does not use are still allowed if they are harder.**
+Multi-select is the standing example: a bank may carry multi-select items even
+for an exam that ships single-select only. All-or-nothing scoring over two or
+three independent facts is strictly more demanding than picking one, so it
+trains the material rather than the format. Record the divergence in the
+cert's review file so a future author reads it as intent, not as a defect.
 
 Reviewing your own answer key against its cited source is not sufficient to
 catch these — a key can be perfectly faithful to the doc and still be

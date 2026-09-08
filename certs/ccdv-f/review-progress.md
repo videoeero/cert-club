@@ -114,8 +114,9 @@ batch processing, Domain 7 prompt injection, Domain 8 MCP server) with answer
 keys and rationales. The guide calls them illustrative of "the style and
 cognitive level of the exam" and states they are not drawn from the live item
 bank. They are published in the guide itself, so they sit inside the sourcing
-boundary — a stronger anchor than the third-party practice set above, which is
-one sitter's reconstruction.
+boundary, which makes them the strongest anchor available: the practice set
+above is one author's reconstruction, while these three are published by the
+vendor itself as representative of the exam's style and cognitive level.
 
 All three share one shape: two or three sentences of concrete scenario with an
 explicit constraint, then "which approach best fits" or "which mitigation is
