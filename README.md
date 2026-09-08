@@ -6,15 +6,16 @@
 Open, non-paywalled practice exams for vendor certifications whose study
 material is already public.
 
+> **Live at [videoeero.github.io/cert-club](https://videoeero.github.io/cert-club/).**
+> No sign-up, nothing to install. Still early — the quiz flow is complete, but
+> bank coverage varies by certification. [`PLAN.md`](./PLAN.md) has the v1
+> scope, question schema, and phase-by-phase build order.
+
 Each cert's `manifest.json` declares a bank `status`: `stable` means the bank
 covers its blueprint proportionally, `draft` means coverage is still partial —
 published to exercise the schema rather than to rehearse that exam. The app
 badges the draft ones. See [Certifications](#certifications) for what ships
 today.
-
-> **Status: pre-alpha.** The core quiz flow and three certification banks are
-> in place; deployment remains. See [`PLAN.md`](./PLAN.md) for the v1 scope,
-> question schema, and phase-by-phase build order.
 
 ## Why this exists
 
