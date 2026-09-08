@@ -1,4 +1,4 @@
-import { cp, readFile } from "node:fs/promises";
+import { copyFile, cp, readFile } from "node:fs/promises";
 import { dirname, isAbsolute, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -89,9 +89,32 @@ function certContentPlugin(): Plugin {
   };
 }
 
+// GitHub Pages serves static files with no SPA rewrite, so a direct request for
+// a client-side route (a reload, bookmark, or shared link on /quiz/:certSlug)
+// never reaches index.html. Pages falls back to 404.html for unmatched paths, so
+// shipping a copy of the entry point under that name lets the router boot and
+// resolve the route itself.
+function spaFallbackPlugin(): Plugin {
+  return {
+    name: "spa-fallback",
+    async writeBundle(outputOptions) {
+      if (!outputOptions.dir) {
+        throw new Error(
+          "The SPA fallback plugin requires a directory build output.",
+        );
+      }
+
+      await copyFile(
+        resolve(outputOptions.dir, "index.html"),
+        resolve(outputOptions.dir, "404.html"),
+      );
+    },
+  };
+}
+
 export default defineConfig({
   root: projectRoot,
   base: "/cert-club/",
   publicDir: false,
-  plugins: [react(), certContentPlugin()],
+  plugins: [react(), certContentPlugin(), spaFallbackPlugin()],
 });
