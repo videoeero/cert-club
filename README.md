@@ -135,12 +135,19 @@ and the mandatory validation step.
 
 Two licenses, because code and question content are different assets:
 
-- **Code:** [MIT License](./LICENSE)
-- **Question content:** [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+- **Question content** — the files under `certs/*/questions/`:
+  [CC BY-SA 4.0](./LICENSE-CONTENT). Share or adapt it with attribution, and
+  license the adaptation alike.
+- **Everything else** — app source, content schemas, validation scripts, cert
+  manifests, and documentation: [MIT](./LICENSE).
 
-The content license applies to original question text, explanations,
-option text, and related question-bank metadata. Contributions must meet
-the provenance requirements in [`CONTRIBUTING.md`](./CONTRIBUTING.md).
+The boundary sits at the question files themselves. Cert manifests stay under
+MIT because their substance is public blueprint data — the domain names and
+exam weights published by the certification vendor — which this project
+reports rather than authors.
+
+Contributions must meet the provenance requirements in
+[`CONTRIBUTING.md`](./CONTRIBUTING.md).
 
 ## Disclaimer
 

@@ -277,5 +277,10 @@ unaffected.
 ## Content license
 
 Original question text, option text, explanations, and metadata in
-`questions/*.json` are licensed under **CC BY-SA 4.0**. By submitting a new bank
-you agree to that license for your content contributions.
+`questions/*.json` are licensed under **CC BY-SA 4.0** — see
+[`LICENSE-CONTENT`](../LICENSE-CONTENT). By submitting a new bank you agree to
+that license for your content contributions.
+
+`manifest.json` is not content: it is MIT-licensed like the rest of the
+repository, because its substance is the vendor's published blueprint data
+rather than original authorship.
