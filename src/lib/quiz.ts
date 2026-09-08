@@ -729,3 +729,81 @@ export function prepareRetakeSession(
 
   throw new QuizSelectionError(`Unsupported retake mode "${String(mode)}".`);
 }
+
+export function toggleStrikethrough(
+  struckOptionIds: readonly string[],
+  optionId: string,
+): string[] {
+  return struckOptionIds.includes(optionId)
+    ? struckOptionIds.filter((id) => id !== optionId)
+    : [...struckOptionIds, optionId];
+}
+
+export function removeStrikethrough(
+  struckOptionIds: readonly string[],
+  optionId: string,
+): string[] {
+  return struckOptionIds.filter((id) => id !== optionId);
+}
+
+export interface OptionInteractionResult {
+  selectedOptionIds: string[];
+  struckOptionIds: string[];
+}
+
+export function selectQuizOption(
+  currentSelected: readonly string[],
+  currentStruck: readonly string[],
+  optionId: string,
+  questionType: "single" | "multi",
+  requiredCount = 1,
+): OptionInteractionResult {
+  const unstruck = removeStrikethrough(currentStruck, optionId);
+
+  if (questionType === "single") {
+    return {
+      selectedOptionIds: [optionId],
+      struckOptionIds: unstruck,
+    };
+  }
+
+  if (currentSelected.includes(optionId)) {
+    return {
+      selectedOptionIds: currentSelected.filter((id) => id !== optionId),
+      struckOptionIds: [...currentStruck],
+    };
+  }
+
+  if (currentSelected.length >= requiredCount) {
+    return {
+      selectedOptionIds: [...currentSelected],
+      struckOptionIds: [...currentStruck],
+    };
+  }
+
+  return {
+    selectedOptionIds: [...currentSelected, optionId],
+    struckOptionIds: unstruck,
+  };
+}
+
+export function toggleStrikethroughOption(
+  currentSelected: readonly string[],
+  currentStruck: readonly string[],
+  optionId: string,
+): OptionInteractionResult {
+  const isStruck = currentStruck.includes(optionId);
+  const nextStruck = toggleStrikethrough(currentStruck, optionId);
+
+  if (isStruck) {
+    return {
+      selectedOptionIds: [...currentSelected],
+      struckOptionIds: nextStruck,
+    };
+  }
+
+  return {
+    selectedOptionIds: currentSelected.filter((id) => id !== optionId),
+    struckOptionIds: nextStruck,
+  };
+}

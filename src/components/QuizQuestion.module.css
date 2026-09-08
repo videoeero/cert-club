@@ -80,20 +80,19 @@
 }
 
 .answerOption {
-  display: grid;
-  grid-template-columns: 1.25rem 2.125rem 1fr;
-  align-items: start;
-  gap: 0.875rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   min-width: 0;
-  padding: var(--space-md);
+  background: var(--color-bg-card);
   color: var(--color-text-muted);
-  cursor: pointer;
   line-height: 1.5;
   transition:
     border-color 160ms ease,
-    background 160ms ease;
+    background 160ms ease,
+    opacity 160ms ease;
 }
 
 .answerOption:hover {
@@ -106,7 +105,18 @@
   outline-offset: 0.125rem;
 }
 
-.answerOption input {
+.answerOptionLabel {
+  display: grid;
+  grid-template-columns: 1.25rem 2.125rem 1fr;
+  align-items: start;
+  gap: 0.875rem;
+  min-width: 0;
+  flex: 1;
+  padding: var(--space-md) 0.5rem var(--space-md) var(--space-md);
+  cursor: pointer;
+}
+
+.answerOptionLabel input {
   width: 1.125rem;
   height: 1.125rem;
   margin: 0.3125rem 0 0;
@@ -118,14 +128,81 @@
   background: var(--color-primary-selected-bg);
 }
 
+.answerOption.isStruck {
+  background: var(--color-bg-subtle);
+  opacity: 0.65;
+}
+
+.answerOption.isStruck:hover {
+  opacity: 0.85;
+}
+
+.strikethroughText {
+  text-decoration-thickness: 1.5px;
+  color: var(--color-text-secondary);
+}
+
+.strikethroughButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  margin-right: var(--space-md);
+  margin-left: 0.25rem;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-card);
+  color: var(--color-text-tertiary);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.strikethroughButton:hover:not(:disabled) {
+  border-color: var(--color-border-hover);
+  background: var(--color-bg-hover);
+  color: var(--color-text);
+  transform: translateY(-1px);
+}
+
+.strikethroughButton:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 2px;
+  border-color: var(--color-primary);
+}
+
+.strikethroughButton.strikethroughButtonActive {
+  border-color: var(--color-primary-border);
+  background: var(--color-primary-light);
+  color: var(--color-primary-text);
+}
+
+.strikethroughButton:disabled {
+  cursor: default;
+  opacity: 0.5;
+  transform: none;
+}
+
+.strikethroughIcon {
+  display: block;
+}
+
 .answerOption.isCorrect {
   border-color: var(--color-success);
   background: var(--color-success-bg);
+  opacity: 1;
 }
 
 .answerOption.isIncorrect {
   border-color: var(--color-error);
   background: var(--color-error-bg);
+  opacity: 1;
 }
 
 .answerOption.isDisabled {
@@ -133,15 +210,30 @@
   opacity: 0.55;
 }
 
+.answerOption.isDisabled .answerOptionLabel {
+  cursor: not-allowed;
+}
+
 .answerOption.isDisabled:hover {
   border-color: var(--color-border);
 }
 
-.answerOptionList:disabled .answerOption {
+.answerOption.isStruck.isDisabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.answerOption.isStruck.isDisabled:hover {
+  border-color: var(--color-border);
+  opacity: 0.5;
+}
+
+.answerOptionList:disabled .answerOption,
+.answerOptionList:disabled .answerOptionLabel {
   cursor: default;
 }
 
-.answerOption > span:last-child {
+.answerOptionLabel > span:last-child {
   min-width: 0;
   overflow-wrap: anywhere;
 }
@@ -209,9 +301,15 @@
     margin-bottom: 0;
   }
 
-  .answerOption {
+  .answerOptionLabel {
     grid-template-columns: 1.125rem 1.75rem minmax(0, 1fr);
     gap: 0.625rem;
-    padding: 0.875rem 0.75rem;
+    padding: 0.875rem 0.25rem 0.875rem 0.75rem;
+  }
+
+  .strikethroughButton {
+    width: 2rem;
+    height: 2rem;
+    margin-right: 0.75rem;
   }
 }

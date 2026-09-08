@@ -9,9 +9,13 @@ import {
   getUnusedQuizQuestions,
   prepareRetakeSession,
   QuizSelectionError,
+  removeStrikethrough,
   scoreAnswer,
   selectQuestions,
+  selectQuizOption,
   simulateQuizAnswers,
+  toggleStrikethrough,
+  toggleStrikethroughOption,
 } from "../src/lib/quiz.ts";
 
 function question(id, domain, type = "single", correct = ["a"]) {
@@ -976,4 +980,63 @@ test("prepareRetakeSession: review mode retake respects reviewScope and domain i
       ),
     /No unused questions are available from this certification/,
   );
+});
+
+test("toggleStrikethrough adds un-struck option and removes already struck option", () => {
+  const initial = ["a", "b"];
+  const added = toggleStrikethrough(initial, "c");
+  assert.deepEqual(added, ["a", "b", "c"]);
+  assert.deepEqual(initial, ["a", "b"]); // preserves original
+
+  const removed = toggleStrikethrough(added, "b");
+  assert.deepEqual(removed, ["a", "c"]);
+
+  const emptyToggle = toggleStrikethrough([], "a");
+  assert.deepEqual(emptyToggle, ["a"]);
+});
+
+test("removeStrikethrough removes option from struck list", () => {
+  assert.deepEqual(removeStrikethrough(["a", "b", "c"], "b"), ["a", "c"]);
+  assert.deepEqual(removeStrikethrough(["a"], "b"), ["a"]);
+  assert.deepEqual(removeStrikethrough([], "a"), []);
+});
+
+test("selectQuizOption: selecting struck option in single-choice selects it and un-strikes it", () => {
+  const result = selectQuizOption([], ["a", "b"], "a", "single");
+  assert.deepEqual(result.selectedOptionIds, ["a"]);
+  assert.deepEqual(result.struckOptionIds, ["b"]);
+});
+
+test("selectQuizOption: selecting struck option in multi-choice selects it and un-strikes it", () => {
+  // Can select when under limit (1 of 2 selected)
+  const result = selectQuizOption(["c"], ["a", "b"], "a", "multi", 2);
+  assert.deepEqual(result.selectedOptionIds, ["c", "a"]);
+  assert.deepEqual(result.struckOptionIds, ["b"]);
+
+  // Cannot select when limit reached (2 of 2 selected); remains struck
+  const limitResult = selectQuizOption(["c", "d"], ["a", "b"], "a", "multi", 2);
+  assert.deepEqual(limitResult.selectedOptionIds, ["c", "d"]);
+  assert.deepEqual(limitResult.struckOptionIds, ["a", "b"]);
+
+  // Deselecting an already selected option
+  const deselectResult = selectQuizOption(["a", "b"], [], "a", "multi", 2);
+  assert.deepEqual(deselectResult.selectedOptionIds, ["b"]);
+  assert.deepEqual(deselectResult.struckOptionIds, []);
+});
+
+test("toggleStrikethroughOption: striking selected option deselects it and strikes it", () => {
+  // Option 'a' is selected; striking it deselects it
+  const result = toggleStrikethroughOption(["a", "b"], [], "a");
+  assert.deepEqual(result.selectedOptionIds, ["b"]);
+  assert.deepEqual(result.struckOptionIds, ["a"]);
+
+  // Striking an unselected option keeps selections intact
+  const unselectedResult = toggleStrikethroughOption(["b"], [], "c");
+  assert.deepEqual(unselectedResult.selectedOptionIds, ["b"]);
+  assert.deepEqual(unselectedResult.struckOptionIds, ["c"]);
+
+  // Toggling an already struck option un-strikes it without selecting it
+  const untoggleResult = toggleStrikethroughOption(["b"], ["c"], "c");
+  assert.deepEqual(untoggleResult.selectedOptionIds, ["b"]);
+  assert.deepEqual(untoggleResult.struckOptionIds, []);
 });

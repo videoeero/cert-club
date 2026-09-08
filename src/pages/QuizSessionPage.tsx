@@ -13,7 +13,12 @@ import pageStatusStyles from "../components/PageStatus.module.css";
 import { useAsyncResource } from "../hooks/use-async-resource";
 import { loadCertContent } from "../lib/content";
 import styles from "./QuizSessionPage.module.css";
-import { calculateQuizResults, prepareRetakeSession } from "../lib/quiz";
+import {
+  calculateQuizResults,
+  prepareRetakeSession,
+  selectQuizOption,
+  toggleStrikethroughOption,
+} from "../lib/quiz";
 import {
   clearMissedQuestionIds,
   getAttempt,
@@ -57,6 +62,9 @@ export function QuizSessionPage() {
     null,
   );
   const [answers, setAnswers] = useState<Record<string, string[]>>({});
+  const [strikethroughs, setStrikethroughs] = useState<
+    Record<string, string[]>
+  >({});
   const [revealedQuestionIds, setRevealedQuestionIds] = useState(
     new Set<string>(),
   );
@@ -81,6 +89,7 @@ export function QuizSessionPage() {
     setQuestionIndex(0);
     setActiveSession(null);
     setAnswers({});
+    setStrikethroughs({});
     setRevealedQuestionIds(new Set());
     setFinishError(null);
     setStorageError(null);
@@ -142,6 +151,7 @@ export function QuizSessionPage() {
         startedAt: new Date().toISOString(),
       });
       setAnswers({});
+      setStrikethroughs({});
       setRevealedQuestionIds(new Set());
       setQuestionIndex(0);
       setFinishError(null);
@@ -283,6 +293,7 @@ export function QuizSessionPage() {
               startedAt: new Date().toISOString(),
             });
             setAnswers({});
+            setStrikethroughs({});
             setRevealedQuestionIds(new Set());
             setQuestionIndex(0);
             setFinishError(null);
@@ -329,22 +340,32 @@ export function QuizSessionPage() {
   const canProceed =
     config.revealMode === "immediate" ? isRevealed : hasRequiredSelectionCount;
 
+  const questionStrikethroughs = strikethroughs[question.id] ?? [];
+
   function handleOptionChange(optionId: string): void {
     if (isRevealed) return;
-    if (question.type === "single") {
-      setAnswers((prev) => ({ ...prev, [question.id]: [optionId] }));
-      return;
-    }
-    if (
-      !selectedOptionIds.includes(optionId) &&
-      selectedOptionIds.length >= requiredAnswerCount
-    ) {
-      return;
-    }
-    const next = selectedOptionIds.includes(optionId)
-      ? selectedOptionIds.filter((id) => id !== optionId)
-      : [...selectedOptionIds, optionId];
-    setAnswers((prev) => ({ ...prev, [question.id]: next }));
+    const { selectedOptionIds: nextSelected, struckOptionIds: nextStruck } =
+      selectQuizOption(
+        selectedOptionIds,
+        questionStrikethroughs,
+        optionId,
+        question.type,
+        requiredAnswerCount,
+      );
+    setAnswers((prev) => ({ ...prev, [question.id]: nextSelected }));
+    setStrikethroughs((prev) => ({ ...prev, [question.id]: nextStruck }));
+  }
+
+  function handleToggleStrikethrough(optionId: string): void {
+    if (isRevealed) return;
+    const { selectedOptionIds: nextSelected, struckOptionIds: nextStruck } =
+      toggleStrikethroughOption(
+        selectedOptionIds,
+        questionStrikethroughs,
+        optionId,
+      );
+    setAnswers((prev) => ({ ...prev, [question.id]: nextSelected }));
+    setStrikethroughs((prev) => ({ ...prev, [question.id]: nextStruck }));
   }
 
   function handleFinish(): void {
@@ -385,6 +406,7 @@ export function QuizSessionPage() {
         domainName={domain?.name}
         isBookmarked={bookmarkedQuestionIds.has(question.id)}
         selectedOptionIds={selectedOptionIds}
+        struckOptionIds={questionStrikethroughs}
         isRevealed={isRevealed}
         revealMode={config.revealMode}
         onToggleBookmark={() => {
@@ -400,6 +422,7 @@ export function QuizSessionPage() {
           }
         }}
         onOptionChange={handleOptionChange}
+        onToggleStrikethrough={handleToggleStrikethrough}
       />
 
       {storageError && (
