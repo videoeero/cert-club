@@ -3,6 +3,17 @@
 The bank follows the official AZ-900 skills outline measured as of July 20,
 2026. Sources and the exam guide were checked on September 3, 2026.
 
+## Bank status: `draft`
+
+`manifest.status` is `draft`. Every question here is `reviewed` and sourced,
+but 18 questions against a 40-question exam is a schema-generalisation
+proof, not a rehearsal — the bank exists to show that another vendor’s
+blueprint, weights and sourcing rules fit the same schema as CCDV-F.
+
+Promote to `stable` when coverage is genuinely proportional across all
+domains, judged per domain against the manifest weights rather than by total
+question count, and record that reasoning here.
+
 ## Blueprint normalization
 
 Microsoft publishes domain ranges of 25-30%, 35-40%, and 30-35%. The manifest

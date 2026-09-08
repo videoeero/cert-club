@@ -3,6 +3,17 @@
 The bank follows the public AWS Certified Cloud Practitioner (CLF-C02) exam
 guide checked on September 3, 2026.
 
+## Bank status: `draft`
+
+`manifest.status` is `draft`. Every question here is `reviewed` and sourced,
+but 18 questions against a 65-question exam is a schema-generalisation
+proof, not a rehearsal — the bank exists to show that another vendor’s
+blueprint, weights and sourcing rules fit the same schema as CCDV-F.
+
+Promote to `stable` when coverage is genuinely proportional across all
+domains, judged per domain against the manifest weights rather than by total
+question count, and record that reasoning here.
+
 ## Blueprint and distribution
 
 The official guide still identifies the exam as CLF-C02 and assigns these

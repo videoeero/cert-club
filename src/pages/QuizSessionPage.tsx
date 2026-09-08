@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 
 import {
+  DraftNotice,
   ErrorState,
   LoadingState,
   QuizActions,
@@ -261,6 +262,7 @@ export function QuizSessionPage() {
             Change certification
           </Link>
         </div>
+        {manifest.status === "draft" && <DraftNotice />}
         {retakeError && (
           <p
             id="retake-session-error"

@@ -74,6 +74,7 @@ function isManifest(value: unknown): value is Manifest {
     value.schemaVersion === CONTENT_SCHEMA_VERSION &&
     typeof value.cert === "string" &&
     typeof value.name === "string" &&
+    (value.status === "draft" || value.status === "stable") &&
     typeof value.examUrl === "string" &&
     typeof value.contentLicense === "string" &&
     Array.isArray(value.domains) &&

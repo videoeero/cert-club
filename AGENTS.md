@@ -59,7 +59,7 @@ To fix formatting automatically: `npm run format`.
 certs/                  Question banks (JSON) and the cert catalog
   catalog.json          Lists every cert slug — must stay in sync with folders
   <slug>/
-    manifest.json       Cert metadata + domain weights (must sum to 100)
+    manifest.json       Cert metadata, bank status, domain weights (sum to 100)
     questions.json      Array of question objects
   ADDING-A-CERT.md      Step-by-step guide for adding a new cert bank
 schemas/
@@ -69,6 +69,15 @@ scripts/
 src/                    React app source
 dist/                   Build output — generated, never edit
 ```
+
+## Two different `status` fields
+
+`manifest.status` (`draft` | `stable`) is about a **bank's coverage** of the
+blueprint. A question's own `status` (`draft` | `reviewed`) is about whether
+**that item** was reviewed. They are independent — AZ-900 and CLF-C02 are
+`draft` banks made entirely of `reviewed` questions — so never derive one from
+the other, and never infer bank status from question count. See
+[`certs/ADDING-A-CERT.md`](certs/ADDING-A-CERT.md) § Bank status.
 
 ## Schema is the source of truth
 

@@ -53,6 +53,7 @@ folder.
   "schemaVersion": 1,
   "cert": "<slug>",
   "name": "Full certification name",
+  "status": "draft",
   "examUrl": "https://example.com/public-exam-guide.pdf",
   "contentLicense": "CC-BY-SA-4.0",
   "examQuestionCount": 50,
@@ -67,6 +68,8 @@ folder.
 **Rules enforced by the validator:**
 
 - `cert` must equal the folder name.
+- `status` must be `"draft"` or `"stable"` — see below. It is required, so a
+  new bank cannot ship as stable by leaving the field out.
 - `examUrl` must be a public HTTP/HTTPS URL.
 - `examQuestionCount` (optional) must be a positive integer matching the official exam question count.
 - `examDurationMinutes` (optional) must be a positive integer matching the official exam time limit in minutes.
@@ -74,6 +77,27 @@ folder.
 - `domains[*].weight` values must sum to exactly 100 (±0.001). When the
   official guide gives ranges, normalise their midpoints using the
   largest-remainder method.
+
+### Bank status: start at `draft`
+
+`status` is about the bank's **coverage of the blueprint**, which is a
+different question from whether its individual questions are any good. That
+one is `status` on each question object (`draft` | `reviewed`), and the two are
+independent: a bank can hold nothing but `reviewed` questions and still be a
+`draft` bank because it only covers a slice of the exam.
+
+- **`draft`** — the bank is published and usable, but its coverage is partial.
+  A new bank starts here. The app shows a "Draft" badge on the cert picker and
+  a notice on the setup and results screens saying a score is practice rather
+  than a readiness signal.
+- **`stable`** — coverage across the blueprint is there, so a session is a
+  fair rehearsal of the exam and a score means something.
+
+There is no mechanical threshold for the promotion, deliberately. Question
+count alone is the wrong test: a bank could reach the live exam's question
+count while leaving a domain barely touched. Judge it per domain against the
+weights in the manifest, record the reasoning in the cert's
+`review-progress.md`, and flip the field in the same commit.
 
 ### Optional: declare the skill breakdown
 
@@ -119,7 +143,8 @@ A minimal single-select example:
     "type": "single",
     "domain": "domain-one",
     "difficulty": "medium",
-      "stem": "A team observes X and wants Y. What explains it?",
+    "status": "draft",
+    "stem": "A team observes X and wants Y. What explains it?",
     "options": [
       { "id": "opt-a", "text": "First option" },
       { "id": "opt-b", "text": "Second option" },

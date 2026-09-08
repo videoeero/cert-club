@@ -11,10 +11,19 @@ export interface Domain {
   skills?: Skill[];
 }
 
+/**
+ * Bank-level completeness. "draft" means the bank is published but its
+ * coverage of the blueprint is still thin, so a score off it says little
+ * about exam readiness; "stable" means the coverage is there. Distinct from
+ * a question's own `status`, which is about whether that item was reviewed.
+ */
+export type CertStatus = "draft" | "stable";
+
 export interface Manifest {
   schemaVersion: number;
   cert: string;
   name: string;
+  status: CertStatus;
   examUrl: string;
   contentLicense: string;
   examQuestionCount?: number;

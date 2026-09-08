@@ -40,12 +40,19 @@ export function CertPickerPage() {
             <article className={styles.certCard} key={manifest.cert}>
               <div className={styles.cardHeading}>
                 <p className="eyebrow">Certification</p>
-                <span className={styles.slugChip}>{manifest.cert}</span>
+                <div className={styles.chips}>
+                  {manifest.status === "draft" && (
+                    <span className={styles.draftChip}>Draft</span>
+                  )}
+                  <span className={styles.slugChip}>{manifest.cert}</span>
+                </div>
               </div>
               <h2>{manifest.name}</h2>
               <p>
                 Practice questions grouped across {manifest.domains.length} exam
                 domains, with source links for every item.
+                {manifest.status === "draft" &&
+                  " Coverage of this blueprint is still partial."}
               </p>
               <ul className={styles.domainList} aria-label="Exam domains">
                 {manifest.domains.map((domain) => (

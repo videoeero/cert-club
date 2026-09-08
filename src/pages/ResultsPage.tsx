@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 
+import { DraftNotice } from "../components";
 import { ErrorState, LoadingState } from "../components/PageStatus";
 import { useAsyncResource } from "../hooks/use-async-resource";
 import { loadCertContent } from "../lib/content";
@@ -201,6 +202,8 @@ export function ResultsPage() {
           correct. Review every answer and its public source below.
         </p>
       </div>
+
+      {manifest.status === "draft" && <DraftNotice />}
 
       <article className={styles.resultsCard}>
         <dl className={styles.resultsGrid}>

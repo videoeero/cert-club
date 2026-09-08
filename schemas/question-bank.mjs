@@ -105,6 +105,11 @@ export const manifestSchema = z
     schemaVersion: z.literal(SCHEMA_VERSION),
     cert: slugSchema,
     name: z.string().min(1),
+    // Bank-level completeness, which per-question "status" cannot express: a
+    // bank can hold nothing but reviewed questions and still be a draft
+    // because its coverage of the blueprint is thin. Required, so a new bank
+    // cannot ship as stable by omission.
+    status: z.enum(["draft", "stable"]),
     examUrl: sourceUrlSchema,
     contentLicense: z.string().min(1),
     examQuestionCount: z.number().int().positive().optional(),

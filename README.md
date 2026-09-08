@@ -6,9 +6,12 @@
 Open, non-paywalled practice exams for vendor certifications whose study
 material is already public.
 
-Currently includes **Claude Certified Developer – Foundations (CCDV-F)**,
-**Microsoft Certified: Azure Fundamentals (AZ-900)**, and
-**AWS Certified Cloud Practitioner (CLF-C02)**.
+Currently includes **Claude Certified Developer – Foundations (CCDV-F)** at
+full coverage, plus **Microsoft Certified: Azure Fundamentals (AZ-900)** and
+**AWS Certified Cloud Practitioner (CLF-C02)** as **draft** banks — 18
+questions each, published to prove the schema generalises rather than to
+rehearse those exams. Each cert's `manifest.json` declares its `status`
+(`draft` | `stable`), and the app badges the draft ones.
 
 > **Status: pre-alpha.** The core quiz flow and three certification banks are
 > in place; deployment remains. See [`PLAN.md`](./PLAN.md) for the v1 scope,
@@ -77,12 +80,18 @@ Domain weights are recorded in `certs/ccdv-f/manifest.json` (see
 
 ## About the exam (AZ-900)
 
+**Draft bank — 18 questions.** Coverage is proportional to the blueprint but
+far short of a full rehearsal.
+
 The AZ-900 bank follows Microsoft's July 20, 2026 skills outline. Because the
 official domain weights are ranges, the manifest normalizes their midpoints to
 28%, 39%, and 33% using the largest-remainder method. Every question cites the
 current public Microsoft Learn page that supports its answer.
 
 ## About the exam (AWS Certified Cloud Practitioner)
+
+**Draft bank — 18 questions.** Coverage is proportional to the blueprint but
+far short of a full rehearsal.
 
 The AWS Certified Cloud Practitioner bank follows the current CLF-C02 exam
 guide. Its 18 questions use the official 24%, 30%, 34%, and 12% domain weights

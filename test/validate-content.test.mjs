@@ -170,6 +170,33 @@ test("requires the manifest cert to match its folder", async () => {
   );
 });
 
+test("requires every manifest to declare a bank status", async () => {
+  const { manifest, questions } = await validContent();
+  delete manifest.status;
+
+  assert.throws(
+    () => validateCertContent("ccdv-f", manifest, questions),
+    /manifest\.status/,
+  );
+});
+
+test("rejects an unknown manifest status", async () => {
+  const { manifest, questions } = await validContent();
+  manifest.status = "reviewed";
+
+  assert.throws(
+    () => validateCertContent("ccdv-f", manifest, questions),
+    /manifest\.status/,
+  );
+});
+
+test("accepts a draft bank", async () => {
+  const { manifest, questions } = await validContent();
+  manifest.status = "draft";
+
+  assert.doesNotThrow(() => validateCertContent("ccdv-f", manifest, questions));
+});
+
 test("requires well-formed HTTP or HTTPS source URLs", async () => {
   const { manifest, questions } = await validContent();
   questions[0].sourceUrl = "ftp://example.com/source";
