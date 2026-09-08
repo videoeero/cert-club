@@ -54,11 +54,19 @@ noted here because these are the targets it's now measured against.
 
 ## Why the scope split exists
 
-The bank was calibrated against the only public full-length CCDV-F practice
-set, `docs/claude_certified_developer_foundations_practice_exam.md`, written by
-someone who had sat the exam. That set is uniformly scenario-driven — situation,
-then recognise the governing principle — and almost never asks for a parameter
-name, a status code, or a field-level contract.
+The bank's question shape and depth were calibrated against a full-length
+CCDV-F practice set by Matthew Purcell
+([linkedin.com/in/purcellmatthew](https://linkedin.com/in/purcellmatthew)),
+written from Exam Guide v1.0 (July 2026) and published independently. It gave
+this bank a concrete target to aim at when no official practice material
+existed: uniformly scenario-driven — situation, then recognise the governing
+principle — and almost never asking for a parameter name, a status code, or a
+field-level contract.
+
+**Calibration only.** No question, option, or rationale here derives from that
+set, or from any other third-party bank. It informed how deep and how
+scenario-shaped a question should be, never what a question says. The same
+rule covers the prior-art bank recorded in `PLAN.md`.
 
 Measured against it, most of this bank matches. A tail did not: questions that
 turn on narrow documentation mechanics with no analogue anywhere in the
@@ -114,9 +122,9 @@ batch processing, Domain 7 prompt injection, Domain 8 MCP server) with answer
 keys and rationales. The guide calls them illustrative of "the style and
 cognitive level of the exam" and states they are not drawn from the live item
 bank. They are published in the guide itself, so they sit inside the sourcing
-boundary, which makes them the strongest anchor available: the practice set
-above is one author's reconstruction, while these three are published by the
-vendor itself as representative of the exam's style and cognitive level.
+boundary, which makes them the strongest anchor available: they are published
+by the vendor itself as representative of the exam's style and cognitive
+level, which is a claim no third-party set can carry.
 
 All three share one shape: two or three sentences of concrete scenario with an
 explicit constraint, then "which approach best fits" or "which mitigation is
