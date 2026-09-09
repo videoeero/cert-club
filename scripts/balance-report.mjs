@@ -1,6 +1,8 @@
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
+import { parsePositiveInteger } from "./lib/cli.mjs";
+import { skillKey } from "./lib/skills.mjs";
 import {
   listCertFolders,
   readCertQuestions,
@@ -31,12 +33,17 @@ export function buildBalanceReport(manifest, questions, options = {}) {
   const core = questions.filter(isCoreQuestion);
   const target = options.target ?? core.length;
 
+  // domainSchema enforces skill-slug uniqueness only within a domain, so two
+  // domains may both declare e.g. "overview". Keying on the subdomain alone
+  // pooled their questions together and misreported both targets. No shipped
+  // manifest collides yet, so this changes no current output.
   const counts = new Map();
   for (const question of core) {
     if (question.subdomain === undefined) {
       continue;
     }
-    counts.set(question.subdomain, (counts.get(question.subdomain) ?? 0) + 1);
+    const key = skillKey(question.domain, question.subdomain);
+    counts.set(key, (counts.get(key) ?? 0) + 1);
   }
 
   const skills = [];
@@ -44,7 +51,7 @@ export function buildBalanceReport(manifest, questions, options = {}) {
     for (const skill of domain.skills ?? []) {
       const ideal = (skill.weight / 100) * target;
       const skillTarget = Math.max(MINIMUM_SKILL_TARGET, Math.round(ideal));
-      const actual = counts.get(skill.slug) ?? 0;
+      const actual = counts.get(skillKey(domain.slug, skill.slug)) ?? 0;
       skills.push({
         domain: domain.slug,
         slug: skill.slug,
@@ -127,9 +134,9 @@ async function main() {
   const strict = argv.includes("--strict");
   const targetIndex = argv.indexOf("--target");
   const target =
-    targetIndex >= 0 ? Number.parseInt(argv[targetIndex + 1], 10) : undefined;
+    targetIndex >= 0 ? parsePositiveInteger(argv[targetIndex + 1]) : undefined;
 
-  if (target !== undefined && (!Number.isInteger(target) || target < 1)) {
+  if (targetIndex >= 0 && target === null) {
     console.error("--target must be a positive integer");
     process.exitCode = 1;
     return;
