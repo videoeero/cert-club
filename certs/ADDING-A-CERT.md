@@ -149,6 +149,7 @@ A minimal single-select example:
     "domain": "domain-one",
     "difficulty": "medium",
     "status": "draft",
+    "scope": "core",
     "stem": "A team observes X and wants Y. What explains it?",
     "options": [
       { "id": "opt-a", "text": "First option" },
@@ -180,6 +181,7 @@ A minimal single-select example:
 | `subdomain` | Optional, but required if the domain declares `skills` — must match one |
 | `difficulty` | `"easy"`, `"medium"`, or `"hard"` |
 | `status` | `"draft"` or `"reviewed"` |
+| `scope` | Required. `"core"` or `"deep"` — see [How deep should a question go?](#how-deep-should-a-question-go) below |
 | `correct` | Exactly one entry for `single`; two or more for `multi` |
 | `sourceUrl` | Public HTTP/HTTPS URL, no paywalled or gated links |
 | `sourceNote` | Section heading or topic that supports the answer; single line, max 140 characters |
@@ -250,21 +252,36 @@ problem largely dissolves. `npm run balance` is how you see it.
 
 ### Tagging instead of deleting
 
-Questions that overshoot need not be lost. Two optional fields keep them in the
-bank but out of exam-aligned practice:
+Questions that overshoot need not be lost. `scope` is a **required** field on
+every question — there is no default, so a new question cannot enter the bank
+without a decision — plus one optional field that goes with it:
 
 | Field | Purpose |
 | --- | --- |
-| `scope` | `"core"` (default when absent), `"deep"`, or `"out-of-scope"` |
-| `scopeNote` | Required whenever `scope` is not `core`; justifies the call against the blueprint |
+| `scope` | Required. `"core"` or `"deep"` |
+| `scopeNote` | Required when `scope` is `"deep"`; forbidden (the schema rejects it) when `scope` is `"core"`. Justifies the call against the blueprint |
 
-- **`deep`** — the topic is a real blueprint objective, but the discrimination
-  sits above the sample questions' level. Still worth studying for mastery, and
-  a candidate for rewriting down to conceptual discrimination later.
-- **`out-of-scope`** — not traceable to any blueprint objective at all.
+- **`core`** — traceable to a blueprint objective and pitched at the exam's
+  cognitive level.
+- **`deep`** — anything sound and sourced but not exam-aligned. Usually the
+  topic is a real blueprint objective whose discrimination sits above the
+  sample questions' level: still worth studying for mastery, and a candidate
+  for rewriting down to conceptual discrimination later. Since the taxonomy
+  collapsed to two values, `deep` also carries the off-objective case — a
+  question testing something no objective covers. `scopeNote` is where you say
+  which of the two you mean; `certs/ccdv-f/review-progress.md` has worked
+  examples of both.
+
+An earlier third value, `"out-of-scope"`, was dropped: it and `deep` were
+treated identically everywhere that read the field, so the third bucket bought
+nothing while letting a question sit unclassified by default. See
+`certs/ccdv-f/review-progress.md` for the full reasoning. An off-objective
+question therefore goes in as `deep` with the reason in its `scopeNote` — or
+does not go in at all, which is usually the better answer.
 
 Learners choose their appetite in the quiz setup form; the default excludes
-both. Untagged questions are unaffected, so existing banks need no migration.
+`deep`. Every question — old or new — must set `scope` explicitly; there is no
+untagged state.
 
 ## Step 4 — Validate
 
@@ -278,6 +295,33 @@ linter, and the formatter check. All must pass before opening a pull request.
 The balance check only constrains banks whose manifest declares `skills`. A
 bank without them is reported as aligned by definition, so existing banks are
 unaffected.
+
+### Supporting npm tasks
+
+Three tasks generate and audit content along the steps above; use them as the
+supported route through the work rather than hand-rolling it.
+
+- `npm run scaffold` — generates the `manifest.json` / `questions/*.json` /
+  `review-progress.md` file set for Step 1–2 from `--slug`, `--name`,
+  `--exam-url` and repeated `--domain` (and `--skill`) flags, optionally
+  appending the catalog entry (`--register`) or previewing with no writes
+  (`--dry-run`). Its `--normalize` sub-mode does the midpoint-and-largest-
+  remainder weight arithmetic described in Step 2 for you — pass `--target`
+  to allocate a question count across weights instead of allocating to 100.
+- `npm run metrics` — reports the composition and bias figures
+  (`review-progress.md`'s Composition table, the position/length/scope bias
+  guards, source-age buckets) for one or more cert slugs, as text, `--json`,
+  or `--markdown`.
+- `npm run check-sources` — reports citation staleness
+  (`sourceCheckedAt` age against a threshold, `--max-age-days`) and, unless
+  run with `--offline`, liveness (fetches every cited URL; tune with
+  `--concurrency` and `--timeout-ms`); `--strict` / `--strict-network` turn
+  its findings into a non-zero exit.
+
+None of the three is part of `npm run check`: `check-sources` hits the network
+by default, and the gate must stay runnable offline and deterministic in CI.
+`scaffold` and `metrics` are excluded alongside it for the same reason they
+aren't validators — they generate and report, they don't gate.
 
 ## Content license
 
