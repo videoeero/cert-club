@@ -29,7 +29,7 @@ Each phase carries a **Status** line — one of:
 | 5 — Polish | DONE |
 | 6 — Second cert | DONE |
 | 7 — AWS Cloud Practitioner | DONE |
-| 8 — Deploy | PENDING |
+| 8 — Deploy | DONE |
 | 9 — Stretch | PENDING (deferred) |
 
 *(Summary only — the per-phase `Status:` lines below are canonical. If
@@ -349,7 +349,7 @@ was checked on September 3, 2026, and the shared `src/` quiz engine required no
 changes.
 
 ## Phase 8 — Deploy
-**Status:** PENDING
+**Status:** DONE
 
 - Static hosting: GitHub Pages (fits an open-source repo well) or
   Netlify/Vercel. Pick GitHub Pages by default — zero extra accounts,
@@ -360,6 +360,15 @@ changes.
   build 404s in production.
 - CI already exists from Phase 1 (schema validation); extend it here with
   build + the Phase 4 unit tests on every PR.
+
+**Met.** Deployed via `.github/workflows/deploy.yml` (Node 24), which runs
+`npm run check` (validate + test + lint) and `npm run build` before
+publishing the `dist` artifact through `actions/deploy-pages`, on every
+push to `main`. Vite's `base: "/cert-club/"` and the `cert-content`/
+`spa-fallback` plugins in `vite.config.ts` handle the subpath and the
+client-side-route-reload 404 gotcha (a `404.html` copy of `index.html`).
+Live at https://videoeero.github.io/cert-club/ — verified serving (200)
+for both the app shell and `certs/catalog.json`.
 
 ## Phase 9 — Stretch / explicitly deferred
 **Status:** PENDING (deferred — not v1)
