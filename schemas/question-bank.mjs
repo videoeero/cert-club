@@ -302,7 +302,12 @@ function mean(values) {
   return values.reduce((sum, value) => sum + value, 0) / values.length;
 }
 
-function optionLengths(question) {
+/**
+ * Exported so scripts/bank-metrics.mjs can report the length-bias figures
+ * against the same key/distractor split the guard below enforces, rather than
+ * keeping a second definition of it in step by hand.
+ */
+export function optionLengths(question) {
   const correct = new Set(question.correct);
   const keys = [];
   const distractors = [];
