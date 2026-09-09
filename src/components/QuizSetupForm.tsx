@@ -655,6 +655,22 @@ export function QuizSetupForm({
             </label>
           </fieldset>
 
+          <div className={styles.sessionInstructions}>
+            <strong className={styles.sessionInstructionsHeading}>
+              Before you start:
+            </strong>
+            <ul className={styles.sessionInstructionsList}>
+              <li>
+                You must select the required number of options before
+                proceeding.
+              </li>
+              <li>
+                Right-clicking strikes through options to eliminate choices; it
+                does not select an answer itself.
+              </li>
+            </ul>
+          </div>
+
           {sessionError && (
             <p
               id="practice-session-error"
