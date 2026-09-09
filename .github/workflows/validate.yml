@@ -1,11 +1,19 @@
 name: Validate
 
 on:
+  # main is deliberately excluded: Deploy already runs `npm run check` before
+  # building, so validating it here would run the whole suite twice per push.
   push:
+    branches-ignore: [main]
   pull_request:
 
 permissions:
   contents: read
+
+# Supersede a branch's earlier run when it is pushed again mid-check.
+concurrency:
+  group: validate-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   content:
