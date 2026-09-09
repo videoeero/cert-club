@@ -1,0 +1,202 @@
+name: Source drift
+
+# `npm run check-sources` is the only task in the repository that needs the
+# network, which is exactly why it is not in `npm run check` — the gate stays
+# offline and deterministic. It still needs to run *somewhere*, or a citation
+# rots unnoticed between manual audits, so it runs here on its own schedule.
+#
+# It reports only when there is something to report. A monthly comment saying
+# every URL is fine is the kind of bot noise that gets muted, and a muted
+# channel is silent in the one month it matters.
+on:
+  schedule:
+    # 07:00 UTC on the 1st of each month. Vendor docs drift on the order of
+    # weeks, so a faster cadence would find nothing most mornings.
+    - cron: "0 7 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: source-drift
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    name: Citation staleness and liveness
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      # The script is invoked directly rather than through `npm run`: npm
+      # writes a banner to stdout, which would corrupt JSON being redirected
+      # to a file. No --strict either — a failed fetch is a lead, not a
+      # verdict, and a red run on a fetcher artefact teaches you to ignore red
+      # runs. A crash still fails the step; that is a real failure.
+      - name: Check sources
+        run: node scripts/check-sources.mjs --json > drift.json
+      - name: Report findings
+        uses: actions/github-script@v8
+        env:
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        with:
+          script: |
+            const fs = require("fs");
+            const data = JSON.parse(fs.readFileSync("drift.json", "utf8"));
+
+            const stale = data.reports.flatMap((report) =>
+              report.sources
+                .filter((source) => source.stale)
+                .map((source) => ({ cert: report.cert, ...source })),
+            );
+
+            // A redirect is a live page at a new address — a pin-versus-float
+            // judgement call, not drift. It is counted but never triggers a
+            // report, or the tracking issue would never close.
+            const UNREACHABLE = new Set([
+              "client-error",
+              "server-error",
+              "timeout",
+              "network-error",
+            ]);
+            // Liveness is keyed by the same URL the sources carry, so an
+            // unreachable page can name the banks that cite it — the stale
+            // list already does, and "which bank is this?" is the first
+            // question either list provokes.
+            const certsByUrl = new Map();
+            for (const report of data.reports) {
+              for (const source of report.sources) {
+                const certs = certsByUrl.get(source.url) ?? new Set();
+                certs.add(report.cert);
+                certsByUrl.set(source.url, certs);
+              }
+            }
+
+            const liveness = data.liveness ?? [];
+            const unreachable = liveness.filter((r) => UNREACHABLE.has(r.status));
+            const redirected = liveness.filter((r) => r.status === "redirected");
+
+            const TITLE = "Source drift report";
+            const { owner, repo } = context.repo;
+            const existing = await github.rest.issues.listForRepo({
+              owner,
+              repo,
+              state: "open",
+              labels: "source-drift",
+              per_page: 100,
+            });
+            // listForRepo returns pull requests as well as issues, and the
+            // label is not reserved — a person may put it on an issue of
+            // their own. Match this workflow's own issue by title so neither
+            // gets its description overwritten. Renaming it starts a new one.
+            const tracking = existing.data.find(
+              (item) => !item.pull_request && item.title === TITLE,
+            );
+
+            if (stale.length === 0 && unreachable.length === 0) {
+              const clean = `No stale or unreachable citations across ${data.reports.length} bank(s).`;
+              core.info(clean);
+              // Leaving the issue open would keep obsolete findings on display
+              // indefinitely, since nothing else ever revisits it.
+              if (tracking) {
+                await github.rest.issues.createComment({
+                  owner,
+                  repo,
+                  issue_number: tracking.number,
+                  body: `${clean} Closing; the next run that finds drift opens a fresh report.\n\nRun: ${process.env.RUN_URL}`,
+                });
+                await github.rest.issues.update({
+                  owner,
+                  repo,
+                  issue_number: tracking.number,
+                  state: "closed",
+                  state_reason: "completed",
+                });
+              }
+              return;
+            }
+
+            const lines = [
+              "Automated `npm run check-sources` run — findings are **leads, not**",
+              "**verdicts**. Never change a `sourceUrl` or bump `sourceCheckedAt`",
+              "on the strength of this report alone; reconfirm each page by hand,",
+              "then work the `audit-sources` workflow in `skills/`.",
+              "",
+              `Latest run: ${process.env.RUN_URL}`,
+            ];
+
+            if (unreachable.length > 0) {
+              lines.push("", `## Unreachable (${unreachable.length})`, "");
+              for (const result of unreachable) {
+                // detail can carry a multi-line error string, which would
+                // break out of the bullet it is rendered in.
+                const detail = String(result.detail ?? result.httpStatus ?? "")
+                  .replace(/\s+/g, " ")
+                  .trim();
+                const certs = [...(certsByUrl.get(result.url) ?? [])].sort();
+                const cited = certs.length > 0 ? ` — ${certs.join(", ")}` : "";
+                lines.push(
+                  `- ${result.url} — ${result.status}${detail ? ` ${detail}` : ""}${cited}`,
+                );
+              }
+              if (data.unreliabilityNote) {
+                lines.push("", `> ${data.unreliabilityNote}`);
+              }
+            }
+
+            if (stale.length > 0) {
+              lines.push("", `## Stale (${stale.length})`, "");
+              for (const source of stale) {
+                lines.push(
+                  `- ${source.url} — ${source.cert}, ${source.questionCount} question(s), oldest checked ${source.oldestCheckedAt} (${source.ageDays}d)`,
+                );
+              }
+            }
+
+            if (redirected.length > 0) {
+              lines.push(
+                "",
+                `${redirected.length} citation(s) redirect to a new address. Live, so not listed —`,
+                "pinning them is an `audit-sources` judgement call.",
+              );
+            }
+
+            // An issue body is capped at 65,536 characters.
+            const BODY_LIMIT = 60000;
+            const full = lines.join("\n");
+            const body =
+              full.length > BODY_LIMIT
+                ? `${full.slice(0, BODY_LIMIT)}\n\n… truncated — full report in the run log.`
+                : full;
+
+            if (tracking) {
+              await github.rest.issues.update({
+                owner,
+                repo,
+                issue_number: tracking.number,
+                body,
+              });
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: tracking.number,
+                body: `Refreshed from ${process.env.RUN_URL} — ${unreachable.length} unreachable, ${stale.length} stale.`,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner,
+                repo,
+                title: TITLE,
+                body,
+                labels: ["source-drift"],
+              });
+            }
