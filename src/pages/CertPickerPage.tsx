@@ -14,14 +14,15 @@ export function CertPickerPage() {
     <section className="page-section">
       <div className="hero">
         <p className="eyebrow">Open certification practice</p>
-        <h1>Study from the docs, not from a paywall.</h1>
-        <p className="hero-copy">
-          Choose a certification to start a focused practice session built from
-          original questions and public documentation.
-        </p>
+        <h1>Cert Club</h1>
         <p className="hero-rule">
           The first rule of Cert Club is you talk about Cert Club, because
           you&rsquo;re stressed about the exam.
+        </p>
+        <p className="hero-copy">
+          Study from the docs, not from a paywall. Choose a certification to
+          start a focused practice session built from original questions and
+          public documentation.
         </p>
       </div>
 
