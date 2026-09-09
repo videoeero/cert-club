@@ -1,6 +1,11 @@
-import { readFile, readdir } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+
+import {
+  listCertFolders,
+  readCertQuestions,
+  readJson,
+} from "./lib/read-certs.mjs";
 
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -101,32 +106,13 @@ function formatReport(report) {
   return lines.join("\n");
 }
 
-async function readJson(path) {
-  return JSON.parse(await readFile(path, "utf8"));
-}
-
-async function readCertQuestions(certPath) {
-  const questionsPath = join(certPath, "questions");
-  const entries = await readdir(questionsPath, { withFileTypes: true });
-  const files = entries
-    .filter((entry) => entry.isFile() && entry.name.endsWith(".json"))
-    .map((entry) => join(questionsPath, entry.name))
-    .sort();
-
-  const perFile = await Promise.all(files.map((file) => readJson(file)));
-  return perFile.flat();
-}
-
 export async function buildRepositoryReports(root = repositoryRoot, options) {
   const certsPath = join(root, "certs");
-  const entries = await readdir(certsPath, { withFileTypes: true });
-  const folders = entries
-    .filter((entry) => entry.isDirectory() && !entry.name.startsWith("."))
-    .sort((left, right) => left.name.localeCompare(right.name));
+  const folderNames = await listCertFolders(certsPath);
 
   const reports = [];
-  for (const folder of folders) {
-    const certPath = join(certsPath, folder.name);
+  for (const folderName of folderNames) {
+    const certPath = join(certsPath, folderName);
     const [manifest, questions] = await Promise.all([
       readJson(join(certPath, "manifest.json")),
       readCertQuestions(certPath),
@@ -149,7 +135,14 @@ async function main() {
     return;
   }
 
-  const reports = await buildRepositoryReports(repositoryRoot, { target });
+  let reports;
+  try {
+    reports = await buildRepositoryReports(repositoryRoot, { target });
+  } catch (error) {
+    console.error(error instanceof Error ? error.message : error);
+    process.exitCode = 1;
+    return;
+  }
   const withSkills = reports.filter((report) => report.skills.length > 0);
 
   for (const report of withSkills) {
