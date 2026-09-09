@@ -376,10 +376,17 @@ for both the app shell and `certs/catalog.json`.
 - Community-contributed questions (PR-based) — needs a review process
   first, deliberately not v1.
 - Doc-drift detection (scheduled re-fetch/diff of docs.claude.com vs.
-  exam guide) to flag stale questions.
+  exam guide) to flag stale questions. **Addressed:** `npm run check-sources`
+  reports `sourceCheckedAt` staleness and citation liveness, and the
+  `audit-sources` skill turns that triage into a disposition per question —
+  including the blueprint re-read, which is the drift no link checker sees.
+  Not in `npm run check`: the gate must stay offline.
 - Lab-style/hands-on questions (beyond MCQ) — noted in early research as the
   real differentiator, but explicitly a v2+ idea, not a blocker for
-  shipping MCQ v1.
+  shipping MCQ v1. Still deferred, but the route is now documented:
+  `certs/ADDING-A-QUESTION-TYPE.md` lists the layers a new answer shape has to
+  cross, and the `add-question-type` skill carries the hazards — starting with
+  the argument that multi-select usually expresses it already.
 
 ---
 

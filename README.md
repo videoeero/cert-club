@@ -110,6 +110,14 @@ See [`certs/ADDING-A-CERT.md`](./certs/ADDING-A-CERT.md) for the step-by-step
 guide covering file layout, manifest format, question schema, bias-guard rules,
 and the mandatory validation step.
 
+If you work with an AI coding agent, [`skills/`](./skills/) holds the recurring
+content procedures — assessing a proposed cert, authoring a batch, auditing
+coverage and citations — in the portable [Agent Skills](https://agentskills.io/)
+format. Read them directly, or run `npx skills add .` to install them for
+whichever agents you use; the install targets are gitignored. They are optional
+and carry no rules of their own — the guide above stays authoritative. See
+[`skills/README.md`](./skills/README.md).
+
 ## Licensing
 
 Two licenses, because code and question content are different assets:

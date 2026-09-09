@@ -104,6 +104,23 @@ npm run check
 The check validates every cert manifest and question bank, then runs the schema
 tests, including the deliberately invalid fixture that must be rejected.
 
+Three further tasks help with content work but are deliberately *not* part of
+the gate:
+
+```sh
+npm run scaffold        # generate a new bank's file set, and the weight arithmetic
+npm run metrics         # composition and bias figures for one or more banks
+npm run check-sources   # citation staleness, and liveness of every cited URL
+```
+
+`check-sources` fetches every source page, and `npm run check` has to stay
+offline and deterministic so it runs the same on a plane as it does in CI.
+`scaffold` and `metrics` sit outside it for the same reason they aren't
+validators: they generate and report, they don't gate. Run them while you
+work; run `npm run check` before you commit. See
+[`certs/ADDING-A-CERT.md`](certs/ADDING-A-CERT.md) § Supporting npm tasks for
+the flags.
+
 ## Pull requests
 
 Keep changes focused and explain the source or rationale for question and

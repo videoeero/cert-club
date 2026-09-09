@@ -99,6 +99,23 @@ Summary:
 2. Add the slug to `certs/catalog.json`
 3. Run `npm run check` — fix all errors before committing
 
+## Agent workflows
+
+[`skills/`](skills/) holds the recurring content workflows — recon for a new
+cert, authoring a batch, auditing coverage, auditing sources, and the gate on
+new question types. They are **procedural wrappers** over this file,
+[`CONTRIBUTING.md`](CONTRIBUTING.md) and
+[`certs/ADDING-A-CERT.md`](certs/ADDING-A-CERT.md): they say in what order to
+do the work and where the judgement calls are, and they carry no rules of
+their own. Where a workflow and one of those documents disagree, the document
+wins and the workflow is wrong.
+
+They are plain markdown in the portable [Agent Skills](https://agentskills.io/)
+layout, so read one directly at any time. `npx skills add .` symlinks them into
+whichever agent directories you use, which is what makes an agent retrieve them
+on its own; those targets are gitignored, since the agent is a per-developer
+choice. See [`skills/README.md`](skills/README.md).
+
 ## Licensing when creating files
 
 - **New `.ts` / `.tsx` / `.mjs` / config files, and `manifest.json`** — MIT
