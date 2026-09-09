@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
+import logoUrl from "../assets/logo.svg";
 import { ErrorState, LoadingState } from "../components/PageStatus";
 import { useAsyncResource } from "../hooks/use-async-resource";
 import { loadCertCatalog } from "../lib/content";
@@ -14,7 +15,15 @@ export function CertPickerPage() {
     <section className="page-section">
       <div className="hero">
         <p className="eyebrow">Open certification practice</p>
-        <h1>Cert Club</h1>
+        <div className={styles.heroTitle}>
+          <img
+            src={logoUrl}
+            alt=""
+            aria-hidden="true"
+            className={styles.heroLogo}
+          />
+          <h1>Cert Club</h1>
+        </div>
         <p className="hero-rule">
           The first rule of Cert Club is you talk about Cert Club, because
           you&rsquo;re stressed about the exam.

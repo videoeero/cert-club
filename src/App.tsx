@@ -1,5 +1,6 @@
 import { BrowserRouter, Link, Navigate, Route, Routes } from "react-router-dom";
 
+import logoUrl from "./assets/logo.svg";
 import { ThemeToggle } from "./components";
 import { CertPickerPage } from "./pages/CertPickerPage";
 import { QuizSessionPage } from "./pages/QuizSessionPage";
@@ -15,7 +16,15 @@ function AppLayout() {
       <header className="site-header">
         <div className="content-width header-content">
           <Link className="brand" to="/">
-            Cert Club
+            <img
+              src={logoUrl}
+              alt=""
+              aria-hidden="true"
+              className="brand-logo"
+              width="32"
+              height="32"
+            />
+            <span>Cert Club</span>
           </Link>
           <div className="header-actions">
             <span className="header-tagline">Rule one: talk about it</span>
@@ -35,12 +44,32 @@ function AppLayout() {
 
       <footer className="site-footer">
         <div className="content-width footer-content">
-          <p>
-            Independent and unofficial. Not affiliated with, endorsed by, or
-            sponsored by Anthropic, Microsoft, Amazon Web Services, or any
-            certification body.
+          <div className="footer-legal">
+            <p>
+              Independent and unofficial. Not affiliated with, endorsed by, or
+              sponsored by Anthropic, Microsoft, Amazon Web Services, or any
+              certification body.
+            </p>
+            <p>No accounts, analytics, or telemetry.</p>
+          </div>
+          <p className="footer-links">
+            <a
+              className="footer-link"
+              href="https://github.com/videoeero/cert-club"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Source on GitHub
+            </a>
+            <a
+              className="footer-link"
+              href="https://github.com/videoeero"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              The first member of Cert Club
+            </a>
           </p>
-          <p>No accounts, analytics, or telemetry.</p>
         </div>
       </footer>
     </div>

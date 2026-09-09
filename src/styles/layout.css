@@ -50,11 +50,21 @@
 }
 
 .brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
   color: var(--text-strong);
   font-size: var(--font-size-xl);
   font-weight: var(--font-weight-black);
   letter-spacing: -0.02em;
   text-decoration: none;
+}
+
+.brand-logo {
+  display: block;
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
 }
 
 .header-tagline,
@@ -132,6 +142,40 @@ main {
 
 .footer-content p {
   margin: 0;
+}
+
+.footer-legal {
+  display: grid;
+  gap: var(--space-xs);
+}
+
+.footer-links {
+  display: grid;
+  gap: var(--space-xs);
+  justify-items: end;
+  text-align: right;
+  /* Both lines are short, so keeping them unbroken sizes the grid track and
+     stops the legal column squeezing them mid-phrase. */
+  white-space: nowrap;
+}
+
+/* Global `a` inherits its colour, which leaves a muted footer link with no
+   affordance at all — so state it explicitly here. */
+.footer-link {
+  color: var(--text-default);
+  text-decoration: underline;
+  text-decoration-color: var(--border-default);
+  text-underline-offset: 0.2em;
+}
+
+.footer-link:hover {
+  color: var(--color-primary);
+  text-decoration-color: currentColor;
+}
+
+.footer-link:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
 }
 
 .sr-only {
