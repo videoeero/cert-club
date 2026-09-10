@@ -32,11 +32,11 @@ The guide publishes exact domain weights in Section 4. Normalized with `npm run 
 | Domain | Slug | Weight | Target | Bank Questions |
 | --- | --- | ---: | ---: | ---: |
 | Agentic Architecture & Orchestration | `agentic-architecture-and-orchestration` | 27% | 27 | 29 |
-| Tool Design & MCP Integration | `tool-design-and-mcp-integration` | 18% | 18 | 18 |
-| Claude Code Configuration & Workflows | `claude-code-configuration-and-workflows` | 20% | 20 | 20 |
-| Prompt Engineering & Structured Output | `prompt-engineering-and-structured-output` | 20% | 20 | 20 |
-| Context Management & Reliability | `context-management-and-reliability` | 15% | 15 | 15 |
-| **Total** | | **100%** | **100** | **102** |
+| Tool Design & MCP Integration | `tool-design-and-mcp-integration` | 18% | 18 | 20 |
+| Claude Code Configuration & Workflows | `claude-code-configuration-and-workflows` | 20% | 20 | 22 |
+| Prompt Engineering & Structured Output | `prompt-engineering-and-structured-output` | 20% | 20 | 22 |
+| Context Management & Reliability | `context-management-and-reliability` | 15% | 15 | 17 |
+| **Total** | | **100%** | **100** | **110** |
 
 Exam specs from blueprint:
 - Total items: 60 questions
@@ -369,4 +369,103 @@ Evaluated the 2 newly authored multi-select questions in Domain 1 (`agentic-arch
 #### Agentic Architecture & Orchestration
 - `ccar-f-agentic-architecture-and-orchestration-028`: confirmed (options `a` and `c`, Git status snapshot and CLAUDE.md hierarchy automatically loaded into non-fork subagent initial context; appended `(Select TWO.)` for stem clarity)
 - `ccar-f-agentic-architecture-and-orchestration-029`: confirmed (options `b` and `d`, PreToolUse hooks execute in parallel with aggregated additionalContext and resolve conflicting permissions via `deny` > `defer` > `ask` > `allow`; clarified stem phrasing with `(Select TWO.)`)
+
+## Multi-select authoring batch: 2026-09-10 (Domain: Tool Design & MCP Integration)
+
+Authored 2 new multi-select (`type: "multi"`) questions in `certs/ccar-f/questions/tool-design-and-mcp-integration.json` targeting subtopics where multiple independent technical facts naturally exist in the cited vendor documentation without artificial padding:
+
+- `ccar-f-tool-design-and-mcp-integration-019`: Operational and control models of MCP primitives (Tools vs Resources vs Prompts). Keys `b` and `d` (`["b", "d"]`): Resources provide application-controlled read-only context identified by fixed URIs or dynamic URI templates without model execution, whereas Tools provide model-controlled executable interfaces with JSON Schema definitions that the LLM autonomously calls to perform operations. Distractors reflect common misconceptions (Prompts acting as background event daemons, Resources executing state-changing write operations, and Tools being static user-selected menu items). Status: `draft` pending evaluation. Source verified against `https://modelcontextprotocol.io/docs/2025-06-18/learn/server-concepts.md` (*Core Server Features*).
+- `ccar-f-tool-design-and-mcp-integration-020`: Claude Code MCP scope hierarchy, precedence, and configuration isolation. Keys `a` and `c` (`["a", "c"]`): When identical server names overlap between local and project scopes, Claude Code uses the local definition exclusively without merging fields across scopes, and project-scoped servers in `.mcp.json` are committed to version control for team sharing while local- and user-scoped configurations remain private to the developer. Distractors reflect deep-merging across scopes, user scope overriding project scope, and unprompted automated execution bypassing security approval. Status: `draft` pending evaluation. Source verified against `https://code.claude.com/docs/en/mcp.md` (*MCP installation scopes* and *Scope hierarchy and precedence*).
+
+### Format mix & Bank metrics impact
+- **Domain format mix**: Domain 2 now contains 18 single-select items and 2 multi-select items (20 total questions; 90.0% single, 10.0% multi).
+- **Bank-wide format mix**: 100 single-select, 4 multi-select (104 total questions; 96.2% single, 3.8% multi).
+- **Single-select position distribution**: Unchanged at 25/26/25/24 (n=100).
+- **Option length bias**: Mean option length delta is -1.28 chars (median 0.58 chars), comfortably within the +/-10 char threshold.
+- **Longest option as key share**: 25/100 (25%), matching random baseline.
+- **Scope**: 104/104 core (100%), 0 deep (0%).
+- **Unreviewed / Draft items**: 2 questions (`ccar-f-tool-design-and-mcp-integration-019`, `020`), awaiting `evaluate-questions` pass.
+
+## Multi-select authoring batch: 2026-09-10 (Domain: Claude Code Configuration & Workflows)
+
+Authored 2 new multi-select (`type: "multi"`) questions in `certs/ccar-f/questions/claude-code-configuration-and-workflows.json` targeting subtopics where multiple independent technical facts naturally exist in the cited vendor documentation without artificial padding:
+
+- `ccar-f-claude-code-configuration-and-workflows-021`: Memory file discovery, concatenation hierarchy, and subdirectory scoping rules. Keys `a` and `c` (`["a", "c"]`): Claude Code discovers CLAUDE.md files from ancestor directories down to the working directory and concatenates them into context in root-to-leaf order rather than overriding parent files (so working directory instructions are evaluated last), and memory files in subdirectories below the working directory load on demand only when Claude reads files in those subdirectories rather than at session launch. Distractors reflect common tooling misconceptions (CLAUDE.local.md evaluated before project CLAUDE.md, managed policies bypassed via claudeMdExcludes, and nested CLAUDE.md completely shadowing parent instructions). Status: `draft` pending evaluation. Source verified against `https://code.claude.com/docs/en/memory.md` (*Choose where to put CLAUDE.md files* and *How CLAUDE.md files load*).
+- `ccar-f-claude-code-configuration-and-workflows-022`: Non-interactive headless execution invariants, bare mode context isolation, and credential handling. Keys `b` and `d` (`["b", "d"]`): Passing `--bare` skips auto-discovery of CLAUDE.md files, hooks, custom skills, and MCP servers to ensure clean and reproducible execution across CI runners, and in bare mode Claude Code never reads stored OAuth tokens or the system keychain, requiring explicit API key provisioning via environment variables or `--settings`. Distractors reflect interactive workspace trust prompts in CI, background subagents terminating after a 5-second grace period, and bare mode stripping core tools (Bash, Read, Edit). Status: `draft` pending evaluation. Source verified against `https://code.claude.com/docs/en/headless.md` (*Start faster with bare mode*, *Basic usage*, and *Background tasks at exit*).
+
+### Format mix & Bank metrics impact
+- **Domain format mix**: Domain 3 now contains 20 single-select items and 2 multi-select items (22 total questions; 90.9% single, 9.1% multi).
+- **Bank-wide format mix**: 100 single-select, 6 multi-select (106 total questions; 94.3% single, 5.7% multi).
+- **Single-select position distribution**: Unchanged at 25/26/25/24 (n=100).
+- **Option length bias**: Mean option length delta is -1.31 chars (median 0.42 chars), comfortably within the +/-10 char threshold.
+- **Longest option as key share**: 25/100 (25%), matching random baseline.
+- **Scope**: 106/106 core (100%), 0 deep (0%).
+- **Unreviewed / Draft items**: 4 questions (`ccar-f-tool-design-and-mcp-integration-019`, `020`, `ccar-f-claude-code-configuration-and-workflows-021`, `022`), awaiting `evaluate-questions` pass.
+
+## Multi-select authoring batch: 2026-09-10 (Domain: Prompt Engineering & Structured Output)
+
+Authored 2 new multi-select (`type: "multi"`) questions in `certs/ccar-f/questions/prompt-engineering-and-structured-output.json` targeting subtopics where multiple independent technical facts naturally exist in the cited vendor documentation without artificial padding:
+
+- `ccar-f-prompt-engineering-and-structured-output-021`: Structured outputs behavioral guarantees, property ordering invariants, and safety refusal precedence. Keys `b` and `d` (`["b", "d"]`): Properties in generated JSON objects maintain their declared schema order with the exception that all required properties are emitted before optional properties, and safety refusals (`stop_reason: "refusal"`) take precedence over schema constraints by returning an HTTP 200 status code with natural language refusal text that does not adhere to the requested schema. Distractors reflect common misconceptions regarding native schema compilation (grammar-level enforcement of numerical and string length constraints, exact character capitalization guarantees for string enums/consts, and HTTP 422 refusal aborts). Status: `draft` pending evaluation. Source verified against `https://platform.claude.com/docs/en/build-with-claude/structured-outputs.md` (*Property ordering* and *Invalid outputs*).
+- `ccar-f-prompt-engineering-and-structured-output-022`: Message Batches API execution lifecycle, failure isolation, and per-request billing rules. Keys `a` and `c` (`["a", "c"]`): Requests within a batch execute independently across four terminal states (`succeeded`, `errored`, `canceled`, `expired`) with callers billed exclusively for `succeeded` requests (errored, canceled, and expired requests incur zero token charges), and canceling an in-flight batch transitions status through `canceling` to `ended` while preserving downloadable results for all individual requests completed prior to cancellation. Distractors reflect common architectural traps (batch-level cascading aborts on single-item schema error, real-time SSE streaming support via `stream: true`, and upfront billing on batch acceptance). Status: `draft` pending evaluation. Source verified against `https://platform.claude.com/docs/en/build-with-claude/batch-processing.md` (*Retrieving batch results* and *Canceling a Message Batch*).
+
+### Format mix & Bank metrics impact
+- **Domain format mix**: Domain 4 now contains 20 single-select items and 2 multi-select items (22 total questions; 90.9% single, 9.1% multi).
+- **Bank-wide format mix**: 100 single-select, 8 multi-select (108 total questions; 92.6% single, 7.4% multi).
+- **Single-select position distribution**: Unchanged at 25/26/25/24 (n=100).
+- **Option length bias**: Mean option length delta is -1.26 chars (median 0.58 chars), comfortably within the +/-10 char threshold.
+- **Longest option as key share**: 25/100 (25%), matching random baseline.
+- **Scope**: 108/108 core (100%), 0 deep (0%).
+- **Unreviewed / Draft items**: 6 questions (`ccar-f-tool-design-and-mcp-integration-019`, `020`, `ccar-f-claude-code-configuration-and-workflows-021`, `022`, `ccar-f-prompt-engineering-and-structured-output-021`, `022`), awaiting `evaluate-questions` pass.
+
+## Multi-select authoring batch: 2026-09-10 (Domain: Context Management & Reliability)
+
+Authored 2 new multi-select (`type: "multi"`) questions in `certs/ccar-f/questions/context-management-and-reliability.json` targeting subtopics where multiple independent technical facts naturally exist in the cited vendor documentation without artificial padding:
+
+- `ccar-f-context-management-and-reliability-016`: Prompt caching prefix invalidation hierarchy, lookback window constraints, and breakpoint cost semantics. Keys `a` and `c` (`["a", "c"]`): Modifying `tool_choice` invalidates only the messages cache (leaving tools and system prompt caches valid for reuse), and the prefix lookback mechanism checks at most 20 positions backward from a breakpoint (requiring an intermediate breakpoint when conversation turns expand past 20 blocks). Distractors reflect common misconceptions (tool_choice invalidating tools and system caches, unbounded backward search traversal, and per-breakpoint management fees). Status: `draft` pending evaluation. Source verified against `https://platform.claude.com/docs/en/build-with-claude/prompt-caching.md` (*What invalidates the cache* and *How automatic prefix checking works*).
+- `ccar-f-context-management-and-reliability-017`: Native citations API uniform enablement constraint, media boundaries, and output token accounting. Keys `b` and `d` (`["b", "d"]`): Citations must be enabled uniformly across all documents within a request (`citations.enabled: true` cannot be mixed with un-cited documents) and are restricted to text content (image/diagram citations are unsupported), and `cited_text` returned within citation blocks is extracted directly from the source document without counting toward generated output token totals. Distractors reflect selective per-document citation enablement, output token metering of cited text, and visual bounding-box citations for PDF charts. Status: `draft` pending evaluation. Source verified against `https://platform.claude.com/docs/en/build-with-claude/citations.md` (*How citations work* and *Comparison with prompt-based approaches*).
+
+### Format mix & Bank metrics impact
+- **Domain format mix**: Domain 5 now contains 15 single-select items and 2 multi-select items (17 total questions; 88.2% single, 11.8% multi).
+- **Bank-wide format mix**: 100 single-select, 10 multi-select (110 total questions; 90.9% single, 9.1% multi).
+- **Single-select position distribution**: Unchanged at 25/26/25/24 (n=100).
+- **Option length bias**: Mean option length delta is -1.21 chars (median 0.67 chars), comfortably within the +/-10 char threshold.
+- **Longest option as key share**: 25/100 (25%), matching random baseline.
+- **Scope**: 110/110 core (100%), 0 deep (0%).
+- **Unreviewed / Draft items**: 0 (all 110 questions in CCAR-F are now confirmed and marked `reviewed`).
+
+## Correctness evaluation pass: 2026-09-10 (Multi-select batches across Domains 2–5, 8 questions)
+
+Evaluated the 8 newly authored multi-select questions across Domains 2, 3, 4, and 5. Each answer key set was cold-derived independently against the cited vendor documentation before checking against the stored `correct` array and `explanation`. Distractor plausibility and stem conventions were audited against `CONTRIBUTING.md`.
+
+### Summary of findings
+
+- **Scope**: 8 multi-select items across 4 domains (Tool Design: 2, Configuration & Workflows: 2, Prompt Engineering: 2, Context Management: 2)
+- **Total evaluated**: 8 questions
+- **Confirmed (`status: "reviewed"`)**: 8 questions (100%)
+- **Miskeyed**: 0
+- **Unsupported**: 0
+- **Weak distractors**: 0
+- **Unreviewed / Draft items remaining in bank**: 0 (all 110 questions in CCAR-F are now confirmed and marked `reviewed`)
+
+### Per-question dispositions
+
+#### Tool Design & MCP Integration
+- `ccar-f-tool-design-and-mcp-integration-019`: confirmed (options `b` and `d`, Resources are application-controlled read-only URI data sources without model execution, whereas Tools are model-controlled schema-defined executable interfaces)
+- `ccar-f-tool-design-and-mcp-integration-020`: confirmed (options `a` and `c`, Claude Code selects whole server definitions by precedence [local > project > user] without merging fields across scopes, and project `.mcp.json` is committed for team sharing while user configs remain private)
+
+#### Claude Code Configuration & Workflows
+- `ccar-f-claude-code-configuration-and-workflows-021`: confirmed (options `a` and `c`, discovered ancestor CLAUDE.md files concatenate root-to-leaf into context rather than overriding, and subdirectory memory files load on demand only when reading files in those subdirectories)
+- `ccar-f-claude-code-configuration-and-workflows-022`: confirmed (options `b` and `d`, `--bare` skips auto-discovery of CLAUDE.md, hooks, skills, and MCP servers for reproducible CI runs, and bare mode never reads stored OAuth tokens or system keychain, requiring explicit API keys)
+
+#### Prompt Engineering & Structured Output
+- `ccar-f-prompt-engineering-and-structured-output-021`: confirmed (options `b` and `d`, Structured Outputs preserve schema property order with required properties emitted first, and safety refusals return HTTP 200 with `stop_reason: "refusal"` and natural language text taking precedence over schema)
+- `ccar-f-prompt-engineering-and-structured-output-022`: confirmed (options `a` and `c`, Message Batches execute requests independently across four terminal states with billing exclusively for `succeeded` requests, and canceling transitions through `canceling` to `ended` while preserving partial results)
+
+#### Context Management & Reliability
+- `ccar-f-context-management-and-reliability-016`: confirmed (options `a` and `c`, modifying `tool_choice` invalidates only the messages cache leaving tools and system prompt caches valid, and the prefix lookback window checks at most 20 positions backward from a breakpoint)
+- `ccar-f-context-management-and-reliability-017`: confirmed (options `b` and `d`, citations must be enabled uniformly across all documents and are restricted to text content, and `cited_text` is extracted directly without counting toward generated output tokens)
+
+
+
 

@@ -838,5 +838,99 @@
     "sourceUrl": "https://code.claude.com/docs/en/headless.md",
     "sourceNote": "Using --output-format json and --json-schema for machine-readable pipeline integrations",
     "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-021",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "claude-md-hierarchy",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An architect designs the configuration hierarchy for a multi-package monorepo using Claude Code. The team wants to ensure project conventions, shared standards, and team-specific instructions load predictably without bloating context or causing silent configuration overrides. According to Claude Code's memory resolution architecture, which TWO statements accurately describe how CLAUDE.md files are discovered, ordered, and loaded across the project hierarchy? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Discovered CLAUDE.md files from ancestor directories down to the working directory are concatenated into context in root-to-leaf order rather than overriding each other."
+      },
+      {
+        "id": "b",
+        "text": "Personal preferences in CLAUDE.local.md are evaluated before project CLAUDE.md instructions at each level to ensure team standards take precedence over personal settings."
+      },
+      {
+        "id": "c",
+        "text": "Memory files residing in subdirectories below the working directory are loaded on demand when Claude Code reads files in those directories, rather than at session launch."
+      },
+      {
+        "id": "d",
+        "text": "Organization managed policy CLAUDE.md files can be selectively bypassed by individual repositories by specifying their absolute file paths in the claudeMdExcludes setting."
+      },
+      {
+        "id": "e",
+        "text": "Nested subdirectory CLAUDE.md files completely shadow and discard all instructions inherited from ancestor CLAUDE.md files located in parent directories across the project tree."
+      }
+    ],
+    "correct": [
+      "a",
+      "c"
+    ],
+    "explanation": "In Claude Code's memory hierarchy, discovered CLAUDE.md and CLAUDE.local.md files from the filesystem root down to the current working directory are concatenated together into the context window rather than overriding or shadowing each other; ordering root-to-leaf ensures that instructions closer to where the session launched are read last. Furthermore, memory files located in subdirectories beneath the working directory are not loaded at launch to prevent context bloat; they are included on demand when Claude Code reads files in those subdirectories.",
+    "distractorNotes": {
+      "b": "CLAUDE.local.md is appended after CLAUDE.md within each directory level, so personal notes are the last instructions injected into context at that level rather than loading first.",
+      "d": "Managed policy CLAUDE.md files deployed by IT or MDM apply unconditionally across all repositories on the machine and cannot be bypassed or excluded via claudeMdExcludes.",
+      "e": "Claude Code concatenates ancestor memory files together rather than shadowing them; instructions from parent folders remain active alongside subdirectory instructions."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/memory.md",
+    "sourceNote": "Concatenation hierarchy, subdirectory on-demand loading, and local override ordering",
+    "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-022",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "ci-cd-integration",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An infrastructure engineer configures automated Claude Code jobs in a continuous integration (CI/CD) pipeline using headless mode (claude -p). The team wants reproducible, secure script executions that prevent untrusted repository hooks from running and avoid interactive authentication prompts. According to vendor documentation, which TWO statements accurately describe the operational and security behavior of Claude Code in this non-interactive environment? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Running claude -p without the --bare flag suspends execution and prompts the runner console for interactive workspace trust before executing repository hooks."
+      },
+      {
+        "id": "b",
+        "text": "Passing the --bare flag skips auto-discovery of CLAUDE.md files, hooks, custom skills, and MCP servers, ensuring clean and reproducible execution in CI runners."
+      },
+      {
+        "id": "c",
+        "text": "Background subagents spawned during a claude -p run are abruptly terminated after a 5-second grace period following completion of the primary coordinator prompt turn."
+      },
+      {
+        "id": "d",
+        "text": "In bare mode, Claude Code never reads stored OAuth credentials or the system keychain, requiring explicit API key provisioning through environment variables."
+      },
+      {
+        "id": "e",
+        "text": "Bare mode restricts Claude Code to executing custom slash commands while completely stripping access to the built-in Bash shell and file editing tool primitives."
+      }
+    ],
+    "correct": [
+      "b",
+      "d"
+    ],
+    "explanation": "When running Claude Code in non-interactive CI/CD pipelines, passing `--bare` reduces startup overhead and enforces security by skipping auto-discovery of CLAUDE.md files, hooks, skills, MCP servers, and auto memory, preventing repository configurations from introducing non-deterministic behavior. In bare mode, Claude Code never reads OAuth credentials or the system keychain, so automated runners must supply authentication via `ANTHROPIC_API_KEY` (or `--settings`). Claude Code retains core file editing and Bash tools in bare mode, and while background Bash processes terminate after a 5-second grace period at exit, background subagents stay open until completion (up to a 10-minute timeout ceiling).",
+    "distractorNotes": {
+      "a": "Non-interactive claude -p runs never display interactive workspace trust prompts; without --bare, repository hooks in .claude/settings.json execute automatically.",
+      "c": "The 5-second grace period applies strictly to background Bash tasks; background subagents hold the claude -p process open until their work finishes.",
+      "e": "Bare mode skips custom skills and commands but maintains standard access to core primitive tools including Bash, file reading, and file editing."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/headless.md",
+    "sourceNote": "Bare mode startup isolation, authentication requirements, and headless lifecycle management",
+    "sourceCheckedAt": "2026-09-10"
   }
 ]

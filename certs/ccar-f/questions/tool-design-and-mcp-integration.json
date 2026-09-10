@@ -754,5 +754,99 @@
     "sourceUrl": "https://code.claude.com/docs/en/overview.md",
     "sourceNote": "Fallback to Read and Write when Edit fails on non-unique string matches",
     "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-tool-design-and-mcp-integration-019",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "tool-design-and-mcp-integration",
+    "subdomain": "mcp-resources",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An enterprise architecture team evaluates the Model Context Protocol (MCP) specification to integrate internal repositories and services into Claude. During review, the team contrasts how different MCP primitives operate and who controls their execution. Which TWO statements accurately describe the operational models and control planes of MCP primitives? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Prompts provide autonomous background event triggers that automatically initiate agent tool executions whenever underlying resource URIs change state on the remote MCP server."
+      },
+      {
+        "id": "b",
+        "text": "Resources provide application-controlled, read-only data access identified by fixed URIs or dynamic URI templates, allowing the host to supply context without model execution."
+      },
+      {
+        "id": "c",
+        "text": "Resources provide model-controlled execution endpoints that allow Claude to directly invoke state-changing database write operations and arbitrary operational shell scripts."
+      },
+      {
+        "id": "d",
+        "text": "Tools provide model-controlled executable interfaces with typed JSON Schema definitions, allowing the model to autonomously invoke operations that query or modify external systems."
+      },
+      {
+        "id": "e",
+        "text": "Tools provide static, parameter-free text snippets that users must manually select from an interactive client menu before an LLM can inspect their underlying schema definitions."
+      }
+    ],
+    "correct": [
+      "b",
+      "d"
+    ],
+    "explanation": "According to the Model Context Protocol (MCP) specification, MCP primitives have distinct control and operational models: Resources are application-controlled, read-only data sources addressed by fixed URIs or URI templates that the client retrieves to attach context to the model turn without model execution. Tools are model-controlled executable interfaces defined by JSON Schema that the LLM autonomously discovers and calls to perform queries or state-changing actions. Prompts are user-controlled, parameterized templates requiring explicit user invocation.",
+    "distractorNotes": {
+      "a": "Prompts are user-controlled templates requiring explicit invocation (such as via slash commands or UI palettes); they do not act as background event listeners or automatic triggers.",
+      "c": "Resources are passive, read-only data endpoints controlled by the application; active execution and state modifications must be implemented as Tools.",
+      "e": "Tools are schema-defined, parameterized interfaces discovered and invoked autonomously by the model, not static user-selected menu snippets (which describes Prompts)."
+    },
+    "sourceUrl": "https://modelcontextprotocol.io/docs/2025-06-18/learn/server-concepts.md",
+    "sourceNote": "Core Server Features table and operational control models for Tools, Resources, and Prompts",
+    "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-tool-design-and-mcp-integration-020",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "tool-design-and-mcp-integration",
+    "subdomain": "mcp-configuration",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A platform team standardizes Model Context Protocol (MCP) configuration across engineering projects using Claude Code. Developers configure servers across local scopes (~/.claude.json), project scopes (.mcp.json), and user scopes (~/.claude.json). Which TWO statements accurately describe Claude Code's scope precedence and configuration isolation rules? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "If a server name is defined in both local and project scopes, Claude Code uses the local definition exclusively, without merging configuration fields across scopes."
+      },
+      {
+        "id": "b",
+        "text": "Claude Code performs a deep merge across overlapping scopes, applying user-scoped headers and environment variables on top of project-level command declarations."
+      },
+      {
+        "id": "c",
+        "text": "Project-scoped servers in .mcp.json are committed to version control for team sharing, whereas local- and user-scoped configurations remain private to the developer."
+      },
+      {
+        "id": "d",
+        "text": "User-scoped servers defined in ~/.claude.json take precedence over project-scoped .mcp.json definitions to ensure personal settings override team defaults."
+      },
+      {
+        "id": "e",
+        "text": "Project-scoped .mcp.json servers execute with unrestricted automated permissions and bypass interactive approval prompts in untrusted project repositories."
+      }
+    ],
+    "correct": [
+      "a",
+      "c"
+    ],
+    "explanation": "Claude Code enforces a strict scope precedence hierarchy: Local scope > Project scope > User scope (followed by plugins and connectors). When the same server name appears across multiple scopes, Claude Code connects using the definition from the highest-precedence scope in its entirety without merging fields or environment variables. In addition, project-scoped servers defined in .mcp.json are tracked in git for team collaboration, whereas local- and user-scoped servers in ~/.claude.json remain strictly private to the individual developer.",
+    "distractorNotes": {
+      "b": "Claude Code selects the entire server definition from the highest-precedence source; configurations and environment variables are never deep-merged across scopes.",
+      "d": "The precedence hierarchy is local > project > user, so project-scoped configurations override user-scoped definitions, not the reverse.",
+      "e": "For security against untrusted repositories, Claude Code prompts for interactive user approval before connecting project-scoped servers declared in .mcp.json."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/mcp.md",
+    "sourceNote": "Scope hierarchy, precedence, and field isolation across local, project, and user scopes",
+    "sourceCheckedAt": "2026-09-10"
   }
 ]

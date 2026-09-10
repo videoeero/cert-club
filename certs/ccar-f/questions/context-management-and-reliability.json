@@ -628,5 +628,99 @@
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/citations.md",
     "sourceNote": "Preserving provenance and contextualizing conflicting statistics from credible sources",
     "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-context-management-and-reliability-016",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "context-management-and-reliability",
+    "subdomain": "context-management",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An enterprise platform architect designs a multi-turn conversational agent leveraging Claude's prompt caching feature to minimize latency and token costs. The system uses a shared set of static tool definitions, a project system prompt, and dynamic user turn histories. According to Anthropic documentation, which TWO statements accurately describe the prefix cache invalidation hierarchy and lookback window mechanics? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Modifying the tool_choice parameter invalidates only the messages cache, leaving the preceding tools and system prompt cache entries fully valid for reuse."
+      },
+      {
+        "id": "b",
+        "text": "Modifying the tool_choice parameter invalidates the entire cache hierarchy from the tools array downward, forcing a complete cache rewrite on the next call."
+      },
+      {
+        "id": "c",
+        "text": "The cache lookback window checks at most 20 positions backward from a breakpoint, requiring an intermediate breakpoint if a turn expands beyond that window."
+      },
+      {
+        "id": "d",
+        "text": "The cache lookback engine performs an unbounded backward search across the entire conversational history to locate the earliest matching prefix write."
+      },
+      {
+        "id": "e",
+        "text": "Declaring multiple cache breakpoints incurs an incremental per-breakpoint management fee, regardless of whether cached tokens are actually created or read."
+      }
+    ],
+    "correct": [
+      "a",
+      "c"
+    ],
+    "explanation": "In Claude's prompt caching architecture, cache prefixes follow a strict hierarchy: tools -> system -> messages. Modifying tool definitions invalidates the entire cache, but modifying the tool_choice parameter only invalidates message blocks, keeping tool and system prompt caches valid. Furthermore, the prefix lookback mechanism only checks up to 20 block positions backward from an active breakpoint; if a growing multi-turn conversation pushes a breakpoint 20 or more blocks beyond the last cached write, the lookback window misses it, requiring an intermediate breakpoint to maintain cache continuity.",
+    "distractorNotes": {
+      "b": "Changes to the tool_choice parameter only affect message blocks; the tools cache and system cache remain completely valid and reusable.",
+      "d": "The lookback window is strictly bounded to checking at most 20 positions per breakpoint rather than performing an unbounded historical search.",
+      "e": "Declaring cache breakpoints incurs zero extra cost; pricing is determined solely by cached tokens written, tokens read from cache, and regular uncached input tokens."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching.md",
+    "sourceNote": "Cache invalidation hierarchy across tools, system, and messages, and 20-block lookback limits",
+    "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-context-management-and-reliability-017",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "context-management-and-reliability",
+    "subdomain": "provenance-and-uncertainty",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An engineering team implements an enterprise knowledge retrieval system using Claude's native citations API to ground responses in source documents. When integrating citations into the application's document pipeline and billing monitor, which TWO statements accurately describe the operational constraints and token accounting rules of the citations feature? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Citations can be selectively enabled on designated primary documents while leaving supplementary reference documents un-cited within the same request payload."
+      },
+      {
+        "id": "b",
+        "text": "Citations must be enabled uniformly across all documents provided in a request, and citations are currently supported only for text content rather than images."
+      },
+      {
+        "id": "c",
+        "text": "Every character included in the cited_text property of a citation block is metered and billed at the model's standard output token generation pricing tier."
+      },
+      {
+        "id": "d",
+        "text": "The exact cited_text returned within citation blocks is extracted directly from the source document and does not count toward generated output token limits."
+      },
+      {
+        "id": "e",
+        "text": "When processing PDF documents with citations enabled, the API extracts coordinate bounding boxes to produce visual citations for embedded diagram figures."
+      }
+    ],
+    "correct": [
+      "b",
+      "d"
+    ],
+    "explanation": "According to Anthropic's citations documentation, citations must be enabled uniformly across all documents in a request (setting citations.enabled: true on each document; mixing cited and un-cited documents is not supported), and citations are restricted to text content (image and visual diagram citations are not supported). Additionally, the cited_text returned within citation blocks is extracted directly from the source document and is not counted toward output token consumption, providing cost savings and eliminating hallucinated quote spans.",
+    "distractorNotes": {
+      "a": "Citations must be enabled on all or none of the documents in a request; selective per-document citation enablement is currently rejected.",
+      "c": "The cited_text returned within citation blocks is exempt from output token accounting and is not billed as generated output tokens.",
+      "e": "Citations currently extract and reference textual content only; extracting bounding boxes or generating visual citations for images from PDFs is not supported."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/citations.md",
+    "sourceNote": "Uniform citation enablement constraint and output token billing exemption for cited_text",
+    "sourceCheckedAt": "2026-09-10"
   }
 ]

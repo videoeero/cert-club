@@ -838,5 +838,99 @@
     "sourceUrl": "https://code.claude.com/docs/en/code-review.md",
     "sourceNote": "Structuring multi-pass code reviews into localized file passes and cross-file integration passes",
     "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-prompt-engineering-and-structured-output-021",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "prompt-engineering-and-structured-output",
+    "subdomain": "structured-outputs",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An architect designs an extraction service using Claude's Structured Outputs feature (output_config.format and strict: true tool definitions). The team must handle edge cases in downstream pipelines, including safety refusals, property ordering expectations, and schema compilation limits. According to Anthropic documentation, which TWO statements accurately describe the behavioral guarantees and constraints of Claude's Structured Outputs engine? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Standard JSON Schema numerical limits (minimum, maximum) and string length bounds (minLength, maxLength) are compiled natively into the token decoding grammar engine."
+      },
+      {
+        "id": "b",
+        "text": "Properties in generated JSON objects maintain their declared schema order, except that all required properties are emitted before optional properties across the output payload."
+      },
+      {
+        "id": "c",
+        "text": "String enum and const definitions are guaranteed to match the exact character capitalization declared in the schema, preventing case discrepancies in downstream systems."
+      },
+      {
+        "id": "d",
+        "text": "When Claude refuses a request on safety grounds, the API returns HTTP 200 with stop_reason set to refusal and natural language text that does not conform to the schema."
+      },
+      {
+        "id": "e",
+        "text": "Safety refusals under structured outputs immediately terminate generation and return an HTTP 422 status code to prevent invalid schema payloads from reaching downstream callers."
+      }
+    ],
+    "correct": [
+      "b",
+      "d"
+    ],
+    "explanation": "According to the official Structured Outputs documentation, properties in generated JSON objects follow the schema's defined order, with one critical invariant: required properties always appear first, followed by optional properties. Furthermore, when Claude refuses a prompt for safety reasons, the refusal message takes precedence over schema constraints; the API returns an HTTP 200 status code with `stop_reason: 'refusal'`, billing for tokens generated, and output text that does not adhere to the schema.",
+    "distractorNotes": {
+      "a": "Numerical constraints (minimum, maximum, multipleOf) and string length constraints (minLength, maxLength) are not supported natively by the structured outputs engine and return a 400 error unless an SDK automatically transforms them into field descriptions.",
+      "c": "Structured outputs do not guarantee capitalization of string enum and const values (Claude may return title-cased words); applications must compare enum values case-insensitively.",
+      "e": "Safety refusals return HTTP 200 with stop_reason: 'refusal', not HTTP 422 Unprocessable Entity."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs.md",
+    "sourceNote": "Property ordering guarantees and safety refusal precedence under structured outputs",
+    "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-prompt-engineering-and-structured-output-022",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "prompt-engineering-and-structured-output",
+    "subdomain": "batch-processing",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An architect designs an asynchronous pipeline using the Message Batches API to process tens of thousands of extraction requests overnight. The engineering team establishes operational policies for handling batch cancellations, request-level failures, and cost tracking. According to vendor documentation, which TWO statements accurately describe the execution lifecycle, billing rules, and failure isolation of the Message Batches API? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Requests within a batch execute independently across four terminal states (succeeded, errored, canceled, expired), and callers are billed exclusively for requests that reach succeeded."
+      },
+      {
+        "id": "b",
+        "text": "If an individual request encounters a schema validation or server error, the entire batch aborts immediately to prevent downstream consumers from ingesting partial output datasets."
+      },
+      {
+        "id": "c",
+        "text": "Canceling an in-flight batch transitions its status to canceling and then ended, preserving downloadable results for all individual requests completed prior to cancellation."
+      },
+      {
+        "id": "d",
+        "text": "Batch requests support setting stream: true to deliver Server-Sent Events (SSE) as each message finishes, enabling real-time streaming ingestion prior to final batch completion."
+      },
+      {
+        "id": "e",
+        "text": "Workspaces are billed at the 50% discounted batch rate for the full estimated token volume of all submitted requests immediately upon batch acceptance, regardless of outcome."
+      }
+    ],
+    "correct": [
+      "a",
+      "c"
+    ],
+    "explanation": "According to the Message Batches API documentation, individual requests in a batch are processed independently and conclude in one of four states: succeeded, errored, canceled, or expired. Workspaces are billed exclusively for succeeded requests (at 50% discount); errored, canceled, and expired requests incur no token charges. When an active batch is canceled via the API, its status transitions to canceling and then ended, and the results URL retains partial results for all requests that completed before cancellation.",
+    "distractorNotes": {
+      "b": "Requests in a batch are handled independently; a validation error or server failure in one request has no impact on sibling requests in the batch.",
+      "d": "Message Batches do not support stream: true because results are returned as a single downloadable JSONL file rather than an SSE stream; including stream: true returns a validation error.",
+      "e": "Workspaces are only billed for requests that successfully complete; billing is not charged upfront or assessed on failed, canceled, or expired items."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/batch-processing.md",
+    "sourceNote": "Message Batches result types, per-request billing, and cancellation partial results",
+    "sourceCheckedAt": "2026-09-10"
   }
 ]
