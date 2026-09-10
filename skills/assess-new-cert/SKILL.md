@@ -10,13 +10,26 @@ Decide whether a cert can be banked **from public sources alone**, and if so
 on what terms. `AGENTS.md` § Non-negotiable content rule and
 `certs/ADDING-A-CERT.md` are authoritative; read them first.
 
+## What this skill may write
+
+Only the scaffolded tree, `certs/catalog.json`, and the cert's row in the
+README table — the four steps in `ADDING-A-CERT.md`, nothing past them. Create
+no file under `certs/` by hand; every one comes out of `npm run scaffold`, so
+the layout has one author and this skill edits only what the scaffold made.
+
+**Never edit the test suite.** A test enumerating real banks may legitimately
+need the new slug, but a recon changing its own gate marks its own homework.
+Report it and let a human make that edit.
+
 ## Stages
 
 1. **Preflight the slug.** Read `certs/catalog.json` and the `certs/` folders.
    An existing slug means this is an authoring or audit job, not recon — stop
    and say so.
-2. **Find the official guide, then find the _current_ one.** Fetch it with no
-   credentials; if reading it needs an account, the recon is already in NO-GO
+2. **Find the official guide, then find the _current_ one.** Read
+   `certs/VENDORS.md` first — if this vendor has a profile it names where the
+   guides live, which documentation hosts are citable, and which of its
+   properties must not be cited. Then fetch the guide with no credentials; if reading it needs an account, the recon is already in NO-GO
    territory. Vendors leave old revisions up indefinitely, and a superseded
    guide passes every other test in this skill — so read the version and date
    block and record both verbatim. A `Version 0.1` from last year is not the
@@ -32,10 +45,10 @@ on what terms. `AGENTS.md` § Non-negotiable content rule and
    citable, readable-but-not-citable (a course's public landing page is the
    standing example — it evidences coverage, never a fact), or excluded, and
    say which axis excluded it.
-4. **Derive the weights mechanically** when the guide publishes ranges:
-   `npm run scaffold -- --normalize "25-30,35-40,30-35"` does the
-   midpoint-and-largest-remainder arithmetic, and prose arithmetic does not.
-   Exact integers need no normalising — check they sum to 100 and move on.
+4. **Weights.** If the guide publishes exact integers, check they sum to 100
+   and move on — there is nothing to normalise. Only if it publishes _ranges_
+   run `npm run scaffold -- --normalize "25-30,35-40,30-35"`, which does the
+   midpoint-and-largest-remainder arithmetic that prose does not.
 5. **Record the skill breakdown if the guide publishes one.** Declaring
    `skills` opts the bank into per-skill weighted sampling _and_ into the
    `--strict` balance gate. Say that out loud — it is a commitment, not a
@@ -62,14 +75,11 @@ on what terms. `AGENTS.md` § Non-negotiable content rule and
    Record the answer either way, including "none" — a bank with no calibration
    set and no official samples is a constraint the next author must know about.
 
-9. **Stop-and-ask: the verdict.** Present findings and one of:
-   - **GO** — official guide public, blueprint extractable, enough citable
-     documentation to cover every declared domain.
-   - **GO-WITH-CONSTRAINTS** — viable, but name each constraint concretely
-     (a domain with thin public docs, no sample questions, no calibration).
-   - **NO-GO** — the blueprint or the material behind it is gated. Say which.
-
-   Get the verdict approved before anything is written.
+9. **Stop-and-ask: the verdict**, approved before anything is written.
+   **GO** — guide public, blueprint extractable, citable documentation for
+   every domain. **GO-WITH-CONSTRAINTS** — viable, but name each constraint
+   concretely: a domain with thin public docs, no samples, no calibration.
+   **NO-GO** — the blueprint or the material behind it is gated; say which.
 
 10. **On GO, scaffold.** Run `npm run scaffold` with `--slug`, `--name`,
     `--exam-url`, one `--domain "<slug>:<name>:<weight>"` per domain (plus
@@ -77,26 +87,18 @@ on what terms. `AGENTS.md` § Non-negotiable content rule and
     `--register`. Preview with `--dry-run` first. Then fill the recon findings
     into the seeded `review-progress.md`: source classification, sample
     inventory, calibration answer, and the constraints from the verdict.
-11. **Seed one real question per domain**, `scope: "core"` and
-    `status: "draft"` — you wrote them, so nobody has reviewed them — each
-    citing a page you fetched in stage 3. This is not authoring the bank; it
+11. **Seed one real question per domain.** Each one:
+    - `scope: "core"`
+    - `status: "draft"` — you wrote it, so nobody has reviewed it
+    - `sourceUrl` a page you fetched in stage 3, and `sourceCheckedAt` the
+      date you fetched it
+
+    This is not authoring the bank; it
     is the smoke test of the sourcing plan you just wrote, and the only way
     to learn before handing off that a documentation host you named is wrong.
     Nothing is a placeholder: a question with an invented `sourceUrl` is
     worse than an empty file. If a domain has no citable page, that is a
     constraint the verdict missed — go back and say so.
-
-## What this skill may write
-
-The scaffolded tree, `certs/catalog.json`, and the cert's row in the README
-table — the four steps in `certs/ADDING-A-CERT.md`, nothing beyond them.
-Create no file under `certs/` by hand: every one comes out of
-`npm run scaffold`, so the layout has one author, and this skill only edits
-what the scaffold already made — hence `Edit` but not `Write`.
-
-**Never edit the test suite.** A test that enumerates real banks may
-legitimately need the new slug, but a recon changing its own gate is a recon
-marking its own homework. Report it and let a human make that edit.
 
 ## Done when
 
