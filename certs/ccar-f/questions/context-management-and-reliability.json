@@ -217,25 +217,25 @@
     "domain": "context-management-and-reliability",
     "subdomain": "escalation-and-reliability",
     "difficulty": "hard",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "A support agent achieves poor first-contact resolution because it escalates simple return requests while attempting to resolve complex policy exceptions autonomously. An engineer suggests having the model self-report a confidence score (1-10) and escalating whenever confidence is low. Why is this proposal flawed?",
     "options": [
       {
         "id": "a",
-        "text": "Claude models cannot output Arabic numerals between 1 and 10 when prompted inside conversational system instructions."
+        "text": "Confidence scoring requires analyzing token log-probabilities; requesting self-reported ratings in text prompts causes the Messages API to fail validation."
       },
       {
         "id": "b",
-        "text": "Claude models cannot output Arabic numerals between 1 and 10 when prompted inside conversational system instructions under default parameters."
+        "text": "Self-reported confidence scores from language models are poorly calibrated; explicit escalation criteria and few-shot examples establish reliable boundaries."
       },
       {
         "id": "c",
-        "text": "The Messages API strictly forbids declaring confidence scoring fields in system prompts or tool parameter schemas."
+        "text": "Prompting for numerical self-evaluation forces the model into greedy decoding, preventing it from applying contextual rules defined in the system prompt."
       },
       {
         "id": "d",
-        "text": "Confidence scoring causes the model to consume ten times more GPU memory and introduces multi-second token latency."
+        "text": "Confidence calibration requires a separate external classifier subagent; single-model instances cannot output numerical ratings in conversational turns."
       }
     ],
     "correct": [
@@ -243,9 +243,9 @@
     ],
     "explanation": "Self-reported confidence scores from language models are notoriously uncalibrated. A model suffering from hallucinations or misunderstanding a complex policy exception will frequently output high confidence (e.g. 9/10), while being overly cautious on unfamiliar phrasing for simple tasks. Explicit escalation criteria with few-shot examples provide far better boundary calibration.",
     "distractorNotes": {
-      "a": "Claude handles numbers and ratings with high fluency.",
-      "c": "The Messages API places no restrictions on prompting for confidence scores or ratings.",
-      "d": "Outputting a number has normal token costs and does not multiply GPU memory consumption."
+      "a": "The Messages API accepts prompts requesting ratings or scores without validation errors; log-probability inspection is not a prerequisite for generating text.",
+      "c": "Prompting for confidence numbers does not change the model's decoding strategy or suppress system prompt guidelines.",
+      "d": "Single-model instances can readily output ratings and evaluate situations, but their self-reported confidence numbers remain poorly calibrated."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices.md",
     "sourceNote": "Unreliability of self-reported LLM confidence versus explicit escalation criteria",
@@ -259,25 +259,25 @@
     "domain": "context-management-and-reliability",
     "subdomain": "escalation-and-reliability",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "A customer initiates a chat session with: 'I demand to speak to a human representative right now.' What is the proper architectural response for an automated support resolution agent?",
     "options": [
       {
         "id": "a",
-        "text": "Refuse the escalation and force the customer through three mandatory automated diagnostic questions before escalating."
+        "text": "Prompt the customer to describe their technical issue first so the agent can attempt automated resolution before offering human transfer."
       },
       {
         "id": "b",
-        "text": "Pretend to be a human agent named 'Bob' to placate the customer and avoid routing to human representative queues."
+        "text": "Require the customer to complete an automated account authentication questionnaire before initiating any transfer to human support queues."
       },
       {
         "id": "c",
-        "text": "Refuse the escalation and force the customer through three mandatory automated diagnostic questions before escalating to human queues."
+        "text": "Immediately route the customer to a human representative queue without deflection, passing along existing session and context metadata."
       },
       {
         "id": "d",
-        "text": "Disconnect the chat session and block the user's IP address from accessing future customer support services."
+        "text": "Present a curated menu of self-service knowledge base articles and require the customer to confirm that self-service failed to help."
       }
     ],
     "correct": [
@@ -285,9 +285,9 @@
     ],
     "explanation": "Customer service best practices and AI safety guidelines dictate that explicit customer demands for human assistance must be honored immediately. Attempting to deflect or force automated investigation when a user explicitly requests a human causes intense frustration and harms customer satisfaction.",
     "distractorNotes": {
-      "a": "Forcing diagnostic surveys against explicit user demands destroys customer satisfaction and escalates anger.",
-      "b": "Deceiving users by impersonating a human violates AI ethics, brand trust, and regulatory transparency laws.",
-      "d": "Terminating the session and blocking the user treats a legitimate support request as malicious activity."
+      "a": "Forcing automated resolution after an explicit demand for human assistance creates severe user frustration and degrades customer satisfaction.",
+      "b": "Blocking transfer behind mandatory automated questionnaires violates escalation principles and increases friction when a user demands human help.",
+      "d": "Deflecting users to self-service documentation when they have explicitly requested a human agent damages customer trust and brand loyalty."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices.md",
     "sourceNote": "Immediately honoring explicit user requests for human escalation without forced deflection",
@@ -385,25 +385,25 @@
     "domain": "context-management-and-reliability",
     "subdomain": "error-propagation",
     "difficulty": "hard",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "A subagent searching academic repositories encounters an HTTP 429 rate limit error after retrieving three initial papers. How should it propagate this failure back to the coordinator?",
     "options": [
       {
         "id": "a",
-        "text": "Discard the three retrieved papers and return a generic 'Service unavailable' error string with zero diagnostic context."
+        "text": "Return the three retrieved papers in a standard success response, omitting the 429 error to avoid triggering coordinator recovery."
       },
       {
         "id": "b",
-        "text": "Discard the three retrieved papers and return a generic 'Service unavailable' error string with zero diagnostic context to the coordinator."
+        "text": "Return a structured payload containing the three retrieved papers, the 429 status, failed search queries, and retry metadata."
       },
       {
         "id": "c",
-        "text": "Suppress the 429 error and return the three papers marked as complete research without mentioning the rate limit."
+        "text": "Block subagent execution in an internal retry loop until the 429 rate limit clears, keeping the coordinator waiting indefinitely."
       },
       {
         "id": "d",
-        "text": "Crash the process immediately and print a raw stack trace to standard output without notifying the coordinator."
+        "text": "Discard the three retrieved papers and return a generic error string, forcing the coordinator to re-dispatch the entire search task."
       }
     ],
     "correct": [
@@ -411,9 +411,9 @@
     ],
     "explanation": "Effective error propagation in multi-agent systems returns rich structured context: the nature of the error (e.g. rate limit), partial results already collected, what queries failed, and retry metadata. This enables the coordinator to make intelligent decisions—such as utilizing partial findings, delegating remaining queries to an alternative subagent, or scheduling a retry.",
     "distractorNotes": {
-      "a": "Throwing away partial findings wastes work and hides actionable details from the coordinator.",
-      "c": "Falsely claiming research is complete when half the queries failed conceals coverage gaps.",
-      "d": "Crashing the process breaks orchestration pipelines and halts the user session."
+      "a": "Concealing the 429 error causes the coordinator to assume research completed fully, creating silent coverage blind spots in synthesis.",
+      "c": "Blocking synchronously inside the subagent starves orchestration resources and prevents the coordinator from scheduling fallback actions.",
+      "d": "Discarding partial results wastes valid work and returning generic error strings deprives the coordinator of diagnostic recovery context."
     },
     "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
     "sourceNote": "Propagating structured error context and partial results to enable coordinator recovery",
@@ -427,25 +427,25 @@
     "domain": "context-management-and-reliability",
     "subdomain": "error-propagation",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "In a research synthesis system, the financial data subagent is unable to fetch balance sheet records due to an authentication failure on an external API. How should the final synthesized report reflect this?",
     "options": [
       {
         "id": "a",
-        "text": "Fabricate plausible financial figures using historical industry averages without mentioning the API failure in the report."
+        "text": "Extrapolate balance sheet metrics using historical industry averages, presenting them as current data without disclosure notes."
       },
       {
         "id": "b",
-        "text": "Abort the entire report generation process and return an empty refusal response to the user due to the missing source."
+        "text": "Halt report synthesis and return a fatal error, refusing to deliver any findings until the external API credentials are restored."
       },
       {
         "id": "c",
-        "text": "Fabricate plausible financial figures using historical industry averages without mentioning the API failure in the synthesized report."
+        "text": "Synthesize valid findings from successful subagents while explicitly documenting the missing financial data as a limitation."
       },
       {
         "id": "d",
-        "text": "Delete all other research gathered from successful subagents and output only the raw HTTP 401 unauthorized status code."
+        "text": "Silently omit the financial analysis without disclosure notes, presenting the remaining topics as an exhaustive research report."
       }
     ],
     "correct": [
@@ -453,9 +453,9 @@
     ],
     "explanation": "When specific data sources fail in a multi-source research workflow, the report should deliver the valid findings gathered from successful sources while explicitly documenting coverage gaps and data limitations. This transparency ensures credibility without abandoning the entire research task.",
     "distractorNotes": {
-      "a": "Fabricating financial numbers creates serious legal liability and destroys report veracity.",
-      "b": "Discarding valid qualitative research because one data source failed is unnecessarily destructive.",
-      "d": "Outputting raw error codes provides no value to end users seeking research insights."
+      "a": "Fabricating financial numbers or extrapolating unverified metrics creates severe compliance risks and destroys report veracity.",
+      "b": "Aborting the entire synthesis discards valid research from other subagents; partial reporting with clear caveats is preferred.",
+      "d": "Omitting failed sections without disclosure conceals known coverage limitations and misleads consumers about report scope."
     },
     "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
     "sourceNote": "Annotating coverage gaps in synthesis reports when upstream data sources fail",
@@ -469,25 +469,25 @@
     "domain": "context-management-and-reliability",
     "subdomain": "codebase-exploration-context",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "During an extended Claude Code session exploring a repository with 500,000 lines of code, the model begins confusing file paths and referencing generic design patterns rather than the actual classes discovered earlier. What technique prevents this context degradation?",
     "options": [
       {
         "id": "a",
-        "text": "Repeat the entire directory tree in every user prompt to continuously remind the model of project organization."
+        "text": "Inject the full directory tree into the system prompt to keep file hierarchies continuously visible throughout the session."
       },
       {
         "id": "b",
-        "text": "Disable git tracking in the repository to prevent the model from inspecting branch history during exploration."
+        "text": "Run conversational compaction after every individual tool execution to aggressively compress dialogue history into summaries."
       },
       {
         "id": "c",
-        "text": "Set model temperature to 1.5 to stimulate creative associations across disparate legacy codebase components."
+        "text": "Re-read all previously inspected source files from disk on each turn to refresh model attention with original source code."
       },
       {
         "id": "d",
-        "text": "Repeat the entire directory tree in every user prompt to continuously remind the model of project organization and module boundaries."
+        "text": "Maintain a structured scratchpad file on disk recording architectural findings that the model can reference and update."
       }
     ],
     "correct": [
@@ -495,9 +495,9 @@
     ],
     "explanation": "In long exploration sessions, earlier tool outputs and file readings slide back into context history and suffer from context degradation. Having the agent maintain a structured scratchpad file on disk recording key discoveries (core classes, architecture patterns, entry points) provides a persistent source of truth that can be re-read and updated as needed.",
     "distractorNotes": {
-      "a": "Pasting giant directory trees repeatedly consumes massive token budgets and accelerates context exhaustion.",
-      "b": "Disabling git tracking has no effect on model prompt context and breaks version control.",
-      "c": "Increasing temperature increases hallucinations, worsening path confusion."
+      "a": "Injecting full directory hierarchies consumes massive token budgets on every turn and accelerates context exhaustion.",
+      "b": "Aggressive compaction after every tool call destroys immediate working state, execution details, and recent diagnostics.",
+      "c": "Re-reading all visited source files floods the context window with raw tokens, rapidly triggering context window limits."
     },
     "sourceUrl": "https://code.claude.com/docs/en/large-codebases.md",
     "sourceNote": "Using scratchpad files to persist key architectural findings against context degradation",
@@ -595,25 +595,25 @@
     "domain": "context-management-and-reliability",
     "subdomain": "provenance-and-uncertainty",
     "difficulty": "hard",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "During research synthesis on solar panel efficiency, two highly credible sources report conflicting statistics: Source A reports 24.2% maximum laboratory efficiency (published 2025), while Source B reports 22.1% (published 2023). How should the synthesis agent report this finding?",
     "options": [
       {
         "id": "a",
-        "text": "Silently calculate the mathematical average (23.15%) and present it as the authoritative figure without citing either source."
+        "text": "Calculate the mathematical average (23.15%) and report it as the consensus laboratory efficiency figure across both sources."
       },
       {
         "id": "b",
-        "text": "Discard Source B entirely and claim that laboratory efficiency has always been 24.2%, ignoring historical context."
+        "text": "Discard the 2023 source entirely, asserting that only the most recently published figure represents valid empirical data."
       },
       {
         "id": "c",
-        "text": "Silently calculate the mathematical average (23.15%) and present it as the authoritative figure without citing either source in the report."
+        "text": "Cite both statistics with publication dates, noting the variance reflects efficiency gains achieved between 2023 and 2025."
       },
       {
         "id": "d",
-        "text": "Refuse to generate the report due to detected logical contradiction between credible external reference sources."
+        "text": "Halt report generation and flag an unresolvable data conflict, refusing to proceed until a human adjudicates the discrepancy."
       }
     ],
     "correct": [
@@ -621,9 +621,9 @@
     ],
     "explanation": "When credible sources present conflicting data, the synthesis agent must preserve provenance and context. Attributing both figures with their respective publication dates and experimental parameters allows readers to understand the temporal context (e.g. recent efficiency improvements) rather than creating a fabricated average or arbitrarily discarding valid historical data.",
     "distractorNotes": {
-      "a": "Averaging conflicting numbers fabricates a synthetic data point that neither source published.",
-      "b": "Discarding historical context erases the progression and ignores source context.",
-      "d": "Differing measurements in research are normal and should be synthesized with attribution, not treated as fatal errors."
+      "a": "Averaging disparate measurements fabricates an artificial statistic that neither research laboratory ever published.",
+      "b": "Discarding historical data erases longitudinal research progression and conceals the empirical baseline from consumers.",
+      "d": "Differences between measurements across years represent normal temporal progress, not fatal logical contradictions."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/citations.md",
     "sourceNote": "Preserving provenance and contextualizing conflicting statistics from credible sources",

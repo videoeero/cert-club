@@ -469,35 +469,35 @@
     "domain": "claude-code-configuration-and-workflows",
     "subdomain": "path-specific-rules",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "A repository has unit test files co-located next to implementation files across 60 directories (e.g. src/utils/format.test.ts next to format.ts). Why are path-specific rules in .claude/rules/ preferred over directory-level CLAUDE.md files for testing conventions?",
     "options": [
       {
         "id": "a",
-        "text": "Directory-level CLAUDE.md files are strictly forbidden by git specifications and cause merge conflicts across worktrees."
+        "text": "Directory-level CLAUDE.md files override the root project configuration, discarding global build commands whenever test files are read."
       },
       {
         "id": "b",
-        "text": "Directory-level CLAUDE.md files are strictly forbidden by git specifications and cause merge conflicts across worktrees during pull requests."
+        "text": "A single rule file using a glob pattern matches all test files across the repository, avoiding duplicated maintenance across 60 folders."
       },
       {
         "id": "c",
-        "text": "Path-specific rules execute 100 times faster because they run in GPU hardware acceleration rather than CLI software."
+        "text": "Directory-level CLAUDE.md files require explicit @path import statements in the root CLAUDE.md to be loaded during codebase exploration."
       },
       {
         "id": "d",
-        "text": "Directory-level CLAUDE.md files only work when written in German or French due to legacy internationalization bugs."
+        "text": "Path-specific rules enforce strict sandbox constraints that prevent edits to non-test files, whereas CLAUDE.md files are strictly ignored."
       }
     ],
     "correct": [
       "b"
     ],
-    "explanation": "When files of a specific type (such as test files) are distributed throughout many subdirectories, directory-level CLAUDE.md files require creating and maintaining duplicate configuration files in every single directory. A single rule file with a glob pattern like `paths: ['**/*.test.ts']` automatically applies to all matching files regardless of their directory location.",
+    "explanation": "When files sharing conventions (such as test files) are distributed throughout many subdirectories, relying on directory-level CLAUDE.md files requires creating and maintaining duplicate configuration files across every directory. In contrast, a single rule file in `.claude/rules/` with a glob pattern like `paths: ['**/*.test.ts']` automatically applies to all matching files across the entire repository while loading only when relevant files are inspected.",
     "distractorNotes": {
-      "a": "Git has no concept of CLAUDE.md and does not restrict file placement.",
-      "c": "Path-specific rules are text configuration files evaluated by the CLI; GPU hardware execution is false.",
-      "d": "Claude Code supports markdown in any natural language."
+      "a": "Claude Code concatenates ancestor CLAUDE.md files down the directory tree from root to leaf; nested files supplement root instructions rather than overriding or discarding them.",
+      "c": "Claude Code automatically discovers and loads nested CLAUDE.md files on demand when reading files in those subdirectories; explicit @ imports in root CLAUDE.md are not required.",
+      "d": "Path-specific rules provide contextual guidance to the model rather than hard sandbox enforcement; blocking tool actions requires settings or hooks."
     },
     "sourceUrl": "https://code.claude.com/docs/en/memory.md",
     "sourceNote": "Glob-based path matching versus maintaining numerous directory-level memory files",
@@ -637,35 +637,35 @@
     "domain": "claude-code-configuration-and-workflows",
     "subdomain": "iterative-refinement",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "A team asks Claude Code to implement a complex date formatting function using a lengthy natural language prompt, but the generated output repeatedly fails edge cases. What is the most effective prompt engineering refinement?",
     "options": [
       {
         "id": "a",
-        "text": "Repeat the natural language prompt four times in uppercase letters to emphasize the importance of handling edge cases."
+        "text": "Expand the prompt with an exhaustive list of negative constraints describing every forbidden date format output."
       },
       {
         "id": "b",
-        "text": "Repeat the natural language prompt four times in uppercase letters to emphasize the critical importance of handling edge cases properly."
+        "text": "Provide concrete input and output examples that demonstrate expected transformations across tricky edge cases."
       },
       {
         "id": "c",
-        "text": "Switch to an older legacy model checkpoint from three years ago that relied heavily on hardcoded rule engines."
+        "text": "Increase the sampling temperature to 1.0 to encourage diverse probabilistic exploration of date arithmetic paths."
       },
       {
         "id": "d",
-        "text": "Threaten the model with severe performance penalties and negative consequences if it fails any upcoming unit tests."
+        "text": "Append general quality modifiers instructing the model to think carefully and write bug-free enterprise-grade code."
       }
     ],
     "correct": [
       "b"
     ],
-    "explanation": "When natural language specifications are ambiguous or prone to misinterpretation, providing concrete input/output examples is the single most effective technique for clarifying transformation rules and edge-case behavior (e.g. handling leap years or formatting boundaries).",
+    "explanation": "When natural language specifications are complex or ambiguous, providing concrete input/output examples (multishot prompting) is the most reliable way to clarify expected transformations and boundary behavior. Examples ground the model in exact data shapes and edge cases far more effectively than stacking negative constraints, raising temperature, or adding generic quality adjectives.",
     "distractorNotes": {
-      "a": "Repeating text in all-caps increases token waste without clarifying ambiguous edge cases.",
-      "c": "Older models have inferior reasoning capabilities and higher failure rates.",
-      "d": "Anthropomorphic threats do not improve transformer output precision and violate professional standards."
+      "a": "Negative constraints ('do not do X') are harder for language models to parse consistently than positive specifications and concrete input/output demonstrations.",
+      "c": "Increasing temperature increases output variance and randomness, which is counterproductive for deterministic formatting and edge-case logic.",
+      "d": "Vague quality modifiers and generic exhortations ('think carefully', 'write enterprise-grade code') do not provide concrete specifications for ambiguous edge cases."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices.md",
     "sourceNote": "Using concrete input/output examples to disambiguate complex transformation requirements",
@@ -679,35 +679,35 @@
     "domain": "claude-code-configuration-and-workflows",
     "subdomain": "iterative-refinement",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "When iterating with Claude Code to resolve a complex test suite failure, which approach enables the fastest and most accurate convergence on the fix?",
     "options": [
       {
         "id": "a",
-        "text": "Write a brand new prompt describing the entire application from memory without mentioning the failing test or stack trace."
+        "text": "Clear session context and describe the intended feature behavior in natural language without the error output."
       },
       {
         "id": "b",
-        "text": "Delete the failing tests from the test suite so the build passes and the pipeline marks the deployment as successful."
+        "text": "Instruct Claude Code to modify the test assertions so that the test suite passes against current buggy output."
       },
       {
         "id": "c",
-        "text": "Write a brand new prompt describing the entire application from memory without mentioning the failing test or stack trace details."
+        "text": "Feed the actual test failure output and stack traces to Claude Code so it can diagnose root causes from errors."
       },
       {
         "id": "d",
-        "text": "Manually rewrite all business logic in an interactive shell session rather than providing test feedback to the model."
+        "text": "Instruct Claude Code to rewrite the entire affected module from scratch without inspecting test failure outputs."
       }
     ],
     "correct": [
       "c"
     ],
-    "explanation": "Test-driven iteration works best by feeding actual test execution outputs (stack traces, expected vs actual values) directly to Claude Code. The model uses the concrete error details to diagnose root causes and make targeted corrections until the test suite passes.",
+    "explanation": "Test-driven debugging in Claude Code converges fastest when the model is provided with concrete diagnostic feedback, such as terminal test outputs, stack traces, and expected-versus-actual assertion diffs. Claude Code uses these exact error details to trace code execution paths and apply targeted corrections, rather than guessing from abstract descriptions or rewriting entire modules.",
     "distractorNotes": {
-      "a": "Re-describing the application from memory discards diagnostic error information and wastes tokens.",
-      "b": "Deleting failing tests hides bugs and destroys quality assurance integrity.",
-      "d": "Manual rewriting circumvents AI assistance and does not resolve the automated iteration loop."
+      "a": "Starting over and re-describing requirements in natural language discards the precise diagnostic symptoms needed to isolate the bug.",
+      "b": "Modifying test assertions to accommodate failing output subverts the test suite's validation purpose and masks underlying defects.",
+      "d": "Rewriting entire modules from scratch introduces massive regression risk and discards established, working implementation logic."
     },
     "sourceUrl": "https://code.claude.com/docs/en/overview.md",
     "sourceNote": "Feeding test failure traces to guide targeted, test-driven iterative fixes",

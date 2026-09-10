@@ -595,13 +595,13 @@
     "domain": "tool-design-and-mcp-integration",
     "subdomain": "mcp-configuration",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "A developer wants to experiment with a personal SQLite MCP server without sharing it with team members in git, while keeping existing project-level MCP tools active. How should this be configured?",
     "options": [
       {
         "id": "a",
-        "text": "Overwrite .mcp.json and run git update-index --assume-unchanged on the repository to prevent git from tracking the modification."
+        "text": "Add the SQLite server to .mcp.json and run git update-index --assume-unchanged on the repository to avoid committing local changes."
       },
       {
         "id": "b",
@@ -613,7 +613,7 @@
       },
       {
         "id": "d",
-        "text": "Overwrite .mcp.json and run git update-index --assume-unchanged on the repository to prevent git from tracking the local modification."
+        "text": "Configure the SQLite server in ~/.claude.json, allowing Claude Code to load it alongside project-level servers from .mcp.json."
       }
     ],
     "correct": [
@@ -621,7 +621,7 @@
     ],
     "explanation": "Claude Code supports a multi-tier MCP configuration hierarchy. Project-scoped servers committed to version control live in `.mcp.json`, while user-scoped personal servers reside in `~/.claude.json`. Claude Code loads and exposes tools from all configured scopes simultaneously at startup.",
     "distractorNotes": {
-      "a": "Git index manipulation is brittle and easily overwritten by team merges or branch checkouts.",
+      "a": "Git index manipulation is brittle and easily overwritten by team merges, branch checkouts, or clean clones.",
       "b": "CLAUDE.md provides natural language instructions, not structured JSON MCP server configurations.",
       "c": "MCP hosts connect to multiple servers concurrently and merge all exposed tools into the session."
     },

@@ -91,7 +91,7 @@
     "domain": "prompt-engineering-and-structured-output",
     "subdomain": "review-criteria-design",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "A newly deployed code review system produces high-value security bug reports, but also floods developers with noisy, low-value style nitpicks, causing developers to distrust and dismiss the entire tool. What is the best immediate operational strategy?",
     "options": [
@@ -101,7 +101,7 @@
       },
       {
         "id": "b",
-        "text": "Delete the security review rules entirely and run only the style checks to focus on code consistency across the codebase."
+        "text": "Downgrade all style findings to nits while continuing to post every comment inline across all incoming pull requests."
       },
       {
         "id": "c",
@@ -109,17 +109,17 @@
       },
       {
         "id": "d",
-        "text": "Force developers to fix all flagged style issues before their PRs can be merged, treating every finding as a blocking error in the CI pipeline."
+        "text": "Temporarily disable the noisy style review category in REVIEW.md while keeping the high-value security checks active."
       }
     ],
     "correct": [
       "d"
     ],
-    "explanation": "When automated review tools produce high false-positive rates in specific categories, developer fatigue quickly leads to ignoring all findings, including critical security alerts. Temporarily disabling the noisy category preserves developer trust in the security rules while the team refines and evaluates better prompting for the disabled checks.",
+    "explanation": "When automated review tools produce high false-positive rates in specific categories, developer fatigue quickly leads to ignoring all findings, including critical security alerts. Temporarily disabling the noisy category (for example, via skip rules in REVIEW.md) preserves developer trust in the security rules while the team refines and evaluates better prompting for the disabled checks.",
     "distractorNotes": {
-      "a": "Forcing developers to fix false-positive style nitpicks causes severe friction and team rebellion.",
-      "b": "Disabling security rules eliminates the highest-value capability of the tool.",
-      "c": "Telling developers to ignore the bot defeats the entire investment in automated review."
+      "a": "Forcing developers to resolve false-positive style nitpicks creates severe workflow friction and developer resistance.",
+      "b": "Downgrading style issues to nits still floods PRs with inline comments, leaving comment fatigue and distrust unaddressed.",
+      "c": "Telling developers to ignore bot comments teaches the team to disregard automated feedback, including critical security alerts."
     },
     "sourceUrl": "https://code.claude.com/docs/en/code-review.md",
     "sourceNote": "Managing review rule categories to protect developer trust and tool adoption",
@@ -217,35 +217,35 @@
     "domain": "prompt-engineering-and-structured-output",
     "subdomain": "few-shot-prompting",
     "difficulty": "hard",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "An agent must choose between two tools: `search_customers` and `search_orders`. In borderline cases (e.g. 'Track order for customer Jane Doe'), model tool selection fluctuates unpredictably. How should few-shot examples be designed to fix this?",
     "options": [
       {
         "id": "a",
-        "text": "Include 50 obvious, non-ambiguous examples where the user query clearly contains only an order number and zero customer details."
+        "text": "Provide dozens of obvious, non-ambiguous examples where user queries reference only a single explicit identifier."
       },
       {
         "id": "b",
-        "text": "Provide examples where both search tools are executed simultaneously on every query to ensure comprehensive data retrieval."
+        "text": "Include examples where both search tools are called in parallel on every borderline query to ensure complete data."
       },
       {
         "id": "c",
-        "text": "Include 50 obvious, non-ambiguous examples where the user query clearly contains only an order number and zero customer details in the prompt."
+        "text": "Provide targeted few-shot boundary examples that demonstrate the disambiguation reasoning for borderline queries."
       },
       {
         "id": "d",
-        "text": "Include examples from completely unrelated domains like weather forecasting to broaden general model instruction following."
+        "text": "Include negative few-shot examples demonstrating which tool must never be invoked when ambiguous terms are present."
       }
     ],
     "correct": [
       "c"
     ],
-    "explanation": "Targeted few-shot examples that address ambiguous boundary cases and explicitly demonstrate the reasoning used to select one tool over another allow the model to learn the discrimination logic and generalize to novel, ambiguous user requests.",
+    "explanation": "Targeted few-shot examples that address ambiguous boundary cases and explicitly demonstrate the reasoning used to select one tool over another allow the model to learn the discrimination logic and generalize to novel, ambiguous user requests. Adding obvious non-ambiguous examples fails to teach the model how to resolve edge cases where multiple tools appear viable.",
     "distractorNotes": {
-      "a": "Trivial examples do not train the model on how to resolve edge cases where multiple tools appear viable.",
-      "b": "Executing both tools wastes backend resources and violates the goal of selecting the right tool.",
-      "d": "Unrelated domain examples provide no discrimination context for customer/order routing."
+      "a": "Trivial non-ambiguous examples do not train the model on how to discriminate borderline cases where multiple tools appear viable.",
+      "b": "Calling both tools wastes latency and tokens, failing to resolve the fundamental tool selection ambiguity.",
+      "d": "Negative examples showing what not to do are less effective than positive examples showing the desired reasoning and selection."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices.md",
     "sourceNote": "Designing targeted few-shot examples demonstrating decision reasoning for ambiguous boundary cases",
@@ -385,35 +385,35 @@
     "domain": "prompt-engineering-and-structured-output",
     "subdomain": "structured-outputs",
     "difficulty": "hard",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "A financial extraction pipeline uses strict JSON schemas via tool use. An invoice is processed where the extracted line items sum to $850, but the extracted total_amount field is $1,200. Why did strict JSON schema enforcement fail to prevent this discrepancy?",
     "options": [
       {
         "id": "a",
-        "text": "The Claude API strict tool use feature has a known bug that alters floating point numbers during network transmission."
+        "text": "The sampling temperature was set above 0.0, which disables constrained decoding and relaxes numeric validation rules in strict mode."
       },
       {
         "id": "b",
-        "text": "The line item prices were formatted as integers rather than floating point numbers, disabling arithmetic validation in JSON schema."
+        "text": "The line item prices were defined as numbers rather than integers, which disables arithmetic equality checks in JSON Schema engines."
       },
       {
         "id": "c",
-        "text": "The line item prices were formatted as integers rather than floating point numbers, disabling arithmetic validation in the JSON schema engine."
+        "text": "JSON schemas enforce data types and structural syntax, but cannot compute or validate semantic cross-field arithmetic invariants."
       },
       {
         "id": "d",
-        "text": "JSON schema specifications explicitly forbid declaring mathematical fields alongside array properties in the same object."
+        "text": "Strict mode was configured with additionalProperties set to false, which suppresses validation across nested line item array objects."
       }
     ],
     "correct": [
       "c"
     ],
-    "explanation": "JSON schemas enforce structural and type constraints (e.g. `total_amount` must be a number, `items` must be an array of objects). They cannot validate semantic cross-field logic (e.g. that line item prices must sum up to `total_amount`). Semantic consistency requires programmatic post-validation or self-consistency checking.",
+    "explanation": "JSON schemas enforce structural and type constraints (such as requiring total_amount to be a number and items to be an array of objects). They cannot validate semantic cross-field logic (such as ensuring that individual line item prices sum up to total_amount). Validating semantic consistency requires programmatic post-validation or multi-turn reflection.",
     "distractorNotes": {
-      "a": "The API does not alter numbers during transmission; the discrepancy is in the extracted values.",
-      "b": "Data type formatting does not enforce arithmetic equality across multiple fields.",
-      "d": "JSON schemas support numeric fields; they simply do not compute runtime arithmetic cross-field invariants."
+      "a": "Temperature influences token sampling variance, but constrained decoding strictly enforces schema constraints regardless of temperature.",
+      "b": "JSON Schema data types (number vs integer) enforce value formats, but standard schemas cannot compute cross-field arithmetic sums.",
+      "d": "The additionalProperties: false parameter restricts undeclared properties, but has no effect on validating cross-field arithmetic."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs.md",
     "sourceNote": "Distinction between schema syntax/type enforcement and semantic cross-field validation",
@@ -553,35 +553,35 @@
     "domain": "prompt-engineering-and-structured-output",
     "subdomain": "validation-and-feedback",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "An extraction tool call produces a semantic validation error: the extracted line items sum to $450, but the invoice header total is $500. How should the application implement an automated retry loop?",
     "options": [
       {
         "id": "a",
-        "text": "Resend the exact same initial prompt without any error context, relying on stochastic sampling to generate correct math."
+        "text": "Resend the initial prompt in a new conversation without error feedback, relying on stochastic variance to produce matching numbers."
       },
       {
         "id": "b",
-        "text": "Silently round the invoice header total down to $450 in the database to force agreement with the line item sum."
+        "text": "Catch the validation failure and overwrite the invoice header total in the database with the calculated sum of the line items."
       },
       {
         "id": "c",
-        "text": "Resend the exact same initial prompt without any error context, relying on stochastic sampling to generate correct arithmetic in follow-ups."
+        "text": "Append the failed tool call turn and return a tool_result detailing the validation mismatch so the model can inspect and self-correct."
       },
       {
         "id": "d",
-        "text": "Terminate the application and send an urgent alert to executive leadership on every minor mathematical discrepancy."
+        "text": "Reset the conversation history and re-execute the extraction with sampling temperature increased to 1.0 to explore varied token outputs."
       }
     ],
     "correct": [
       "c"
     ],
-    "explanation": "In a retry-with-error-feedback loop, the application appends the failed extraction turn and a user message containing the specific programmatic validation error (e.g. 'Line item sum $450 does not match header total $500; please re-inspect the discount or tax lines'). Claude uses this feedback to re-inspect the source document and self-correct.",
+    "explanation": "In a retry-with-error-feedback loop, the application appends the assistant's failed tool call and returns a tool_result block detailing the specific discrepancy (e.g. line item sum $450 does not match header total $500). Claude uses this explicit feedback to re-inspect the source text and self-correct its extraction.",
     "distractorNotes": {
-      "a": "Resending the exact same prompt without feedback frequently yields the exact same flawed output.",
-      "b": "Silently modifying financial data introduces accounting errors and audit failure.",
-      "d": "Alerting executives on routine extraction discrepancies is an operational anti-pattern."
+      "a": "Resending the exact same prompt without error context forces the model to repeat the same extraction path and assumptions.",
+      "b": "Silently modifying financial data corrupts record integrity and violates regulatory accounting requirements.",
+      "d": "Increasing temperature increases stochastic variance and hallucination risk without explaining what failed in the previous attempt."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/troubleshooting-tool-use.md",
     "sourceNote": "Implementing retry-with-error-feedback loops for semantic self-correction",
@@ -679,35 +679,35 @@
     "domain": "prompt-engineering-and-structured-output",
     "subdomain": "batch-processing",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "A batch job processing 10,000 PDF invoices with the Message Batches API completes with 9,920 successes and 80 errors due to context length exceedance on oversized files. How should the application handle this partial failure?",
     "options": [
       {
         "id": "a",
-        "text": "Discard the entire 10,000 result batch and resubmit all 10,000 files from scratch, incurring duplicate token spend."
+        "text": "Cancel the batch job and resubmit all 10,000 requests from scratch, discarding successful outputs to ensure dataset uniformity."
       },
       {
         "id": "b",
-        "text": "Discard the entire 10,000 result batch and resubmit all 10,000 files from scratch, incurring duplicate token spend across the entire dataset."
+        "text": "Identify failed records via their custom_id, chunk or summarize the 80 oversized files, and submit only those 80 in a new batch."
       },
       {
         "id": "c",
-        "text": "Mark the 80 failed invoices as paid in the database without extracting details to avoid delaying vendor payments."
+        "text": "Poll the batch results URL with exponential backoff until the 80 failed requests automatically re-execute and return valid JSON."
       },
       {
         "id": "d",
-        "text": "Delete the 80 supplier accounts from the corporate vendor directory and ban them from submitting future invoices."
+        "text": "Migrate the entire 10,000 document workload to synchronous Messages API calls with streaming enabled to bypass batch limits."
       }
     ],
     "correct": [
       "b"
     ],
-    "explanation": "In the Message Batches API, each request includes a client-supplied `custom_id`. When a batch finishes with partial errors, the application matches failed records via `custom_id`, applies targeted remediations (such as chunking or summarizing oversized files), and resubmits only the failed subset, preserving the 9,920 successful extractions.",
+    "explanation": "In the Message Batches API, each request is tracked by a client-defined custom_id. When a batch completes with partial errors, the application retrieves the results JSONL, identifies the failed records by their custom_id, applies appropriate remediations (such as chunking or summarizing oversized files), and resubmits only the 80 failed items in a new batch, preserving the 9,920 successful extractions.",
     "distractorNotes": {
-      "a": "Resubmitting the entire batch of 10,000 items wastes 9,920 calls' worth of tokens and money.",
-      "c": "Marking unextracted invoices as paid introduces financial fraud and audit failure.",
-      "d": "Deleting supplier accounts is destructive and unrelated to processing oversized PDFs."
+      "a": "Resubmitting the entire batch of 10,000 files wastes tokens and cost on the 9,920 successfully completed requests.",
+      "c": "Once a batch has reached the ended status, errored requests are terminal and will not be re-executed by polling.",
+      "d": "Abandoning batch processing for the entire workload forfeits the 50% cost discount when only a tiny fraction failed."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/batch-processing.md",
     "sourceNote": "Resubmitting failed batch requests by custom_id after applying document chunking",
