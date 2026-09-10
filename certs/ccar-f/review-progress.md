@@ -48,6 +48,46 @@ Exam specs from blueprint:
 
 Section 6 of the exam guide outlines 30 task statements across the five domains (1.1–1.7, 2.1–2.5, 3.1–3.6, 4.1–4.6, 5.1–5.6), but does not publish individual percentage weights for task statements. Consequently, manifest domain entries do not declare `skills`, matching the pattern in `az-900` and `aws-clf-c02`.
 
+## Coverage audit: 2026-09-10
+
+`npm run validate`, `npm run balance -- --strict`, and `npm run metrics -- ccar-f --markdown` all clean.
+
+110 questions, all at `status: reviewed`. Bank is 100% `core` (no `deep`-scope questions tagged).
+
+| Domain | Core | Share | Weight |
+| --- | ---: | ---: | ---: |
+| Agentic Architecture & Orchestration | 29 | 26.4% | 27% |
+| Tool Design & MCP Integration | 20 | 18.2% | 18% |
+| Claude Code Configuration & Workflows | 22 | 20% | 20% |
+| Prompt Engineering & Structured Output | 22 | 20% | 20% |
+| Context Management & Reliability | 17 | 15.5% | 15% |
+
+Every domain sits within 1 percentage point of its manifest weight. No domain
+declares `skills` (see "Skill breakdown" above), so there is no second-level
+check to run — domain level is the finest granularity the guide supports.
+`npm run balance -- --strict` does not report ccar-f for this reason (matches
+`az-900` and `aws-clf-c02`); domain balance is judged via `bank-metrics.mjs`
+instead.
+
+Format mix: 100 single-select, 10 multi-select (10 select-2), one to two per
+domain, authored organically rather than to a fixed quota.
+
+All four bias guards pass: `positionBias`, `lengthBiasMeanDelta`,
+`longestOptionIsKey`, `scopeCoreShare`.
+
+### Coverage limits
+
+- Depth: 0/110 `deep`-scope questions, vs. ccdv-f's 28/177. Deferred by
+  explicit user decision (2026-09-10, "no need to add deep questions") — not
+  a current gap, listed for completeness.
+- Task-statement granularity: the guide's 30 task statements carry no
+  published percentage weights, so coverage is verified at domain level only,
+  not below it.
+
+`manifest.status` remains `draft`; all 110 questions are individually
+`reviewed`. These two flags are independent — see "Bank status" above.
+Promotion is a human decision, not automatic on this audit passing.
+
 ## Source classification
 
 Evaluated against the repository's two non-negotiable tests (Gate and Authority):
