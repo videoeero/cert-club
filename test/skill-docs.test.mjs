@@ -29,7 +29,13 @@ import test from "node:test";
 
 const workflowsRoot = fileURLToPath(new URL("../skills", import.meta.url));
 
-const MAX_LINES = 80;
+// Raised from 80 deliberately, once: assess-new-cert grew a second
+// classification axis and a stage that seeds one sourced question per domain,
+// after a real run cited a documentation host this repository does not use.
+// That is judgement, which is what belongs here — the budget exists to catch
+// repo-doc content being pasted in, not to force prose into unreadability.
+// Raise it again only for the same reason, never to fit a restatement.
+const MAX_LINES = 95;
 
 /**
  * Deliberately narrow. These match a bare percentage or character count used

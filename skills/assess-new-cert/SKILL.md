@@ -1,6 +1,6 @@
 ---
 name: assess-new-cert
-description: Recon a proposed new certification before any bank exists — locate the official exam guide, classify every candidate source against the registration test, derive domain weights, and record a GO / GO-WITH-CONSTRAINTS / NO-GO verdict. Use when asked whether a cert is viable, or to start one. Not for authoring or revising questions in a bank that already exists, and not for auditing coverage or sources.
+description: Recon a proposed new certification before any bank exists — locate the official exam guide, classify every candidate source on gate and authority, derive domain weights, record a GO / GO-WITH-CONSTRAINTS / NO-GO verdict, and on GO scaffold the bank and seed one sourced question per domain. Use when asked whether a cert is viable, or to start one. Not for authoring or revising questions in a bank that already exists, and not for auditing coverage or sources.
 allowed-tools: Read, Edit, Glob, Grep, WebSearch, WebFetch, AskUserQuestion, Bash
 ---
 
@@ -10,8 +10,9 @@ Decide whether a cert can be banked **from public sources alone**, and if so on
 what terms. `AGENTS.md` § Non-negotiable content rule and
 `certs/ADDING-A-CERT.md` are authoritative; read them first. Create no file
 under `certs/` by hand — every one comes out of `npm run scaffold`, so the
-layout has one author. Filling in the review file it seeds is the only edit
-this skill makes, which is why it has `Edit` but not `Write`.
+layout has one author. It edits only files the scaffold has already made —
+the review file and the empty domain files — which is why it has `Edit` but
+not `Write`.
 
 ## Stages
 
@@ -20,12 +21,18 @@ this skill makes, which is why it has `Edit` but not `Write`.
    and say so.
 2. **Find the official guide.** Search for the vendor's own exam guide or
    blueprint, then fetch it with no credentials. If reading it needs an
-   account, the recon is already in NO-GO territory.
-3. **Gate-classify every candidate source.** The test is **registration, not
-   price**, and the vendor's own official course fails it however official it
-   is. This gets re-litigated every time; classify each URL explicitly as
+   account, the recon is already in NO-GO territory. Where does a vendor keep
+   its guides? Look at where an existing bank's `examUrl` points — the same
+   CDN usually serves the rest.
+3. **Classify every candidate source on both axes.** _Gate_: the test is
+   **registration, not price**, and the vendor's own official course fails it
+   however official it is. _Authority_: is the publisher the party that owns
+   the fact? A copy of the guide in a public repository passes the gate and
+   fails authority — it is unciteable, and as `examUrl` it would put the whole
+   blueprint on a mirror. Both get re-litigated every time. Label each URL
    citable, readable-but-not-citable (a course's public landing page is the
-   standing example — it evidences coverage, never a fact), or gated.
+   standing example — it evidences coverage, never a fact), or excluded, and
+   say which axis excluded it.
 4. **Derive the weights mechanically.** Never do it in prose:
    `npm run scaffold -- --normalize "25-30,35-40,30-35"` does the
    midpoint-and-largest-remainder arithmetic.
@@ -65,14 +72,20 @@ this skill makes, which is why it has `Edit` but not `Write`.
     `--exam-url`, one `--domain "<slug>:<name>:<weight>"` per domain (plus
     `--skill "<domain>/<skill>:<name>:<weight>"` if stage 5 applies), and
     `--register`. Preview with `--dry-run` first. Then fill the recon findings
-    into the seeded `review-progress.md`: gate classification, sample
+    into the seeded `review-progress.md`: source classification, sample
     inventory, calibration answer, and the constraints from the verdict.
+11. **Seed one real question per domain**, `scope: "core"`, each citing a page
+    you fetched in stage 3. This is not authoring the bank — it is the smoke
+    test of the sourcing plan you just wrote, and it is the only way to learn
+    before handing off that a documentation host you named is wrong. Nothing
+    is a placeholder: a question with an invented `sourceUrl` is worse than an
+    empty file. If a domain has no citable page, that is a constraint the
+    verdict missed — go back and say so.
 
 ## Done when
 
-A verdict is recorded. On GO, the manifest validates against `manifestSchema`
-with domain weights summing to 100, and the review file carries the reasoning.
-
-This is **not** a green gate. A scaffolded tree cannot pass `npm run validate`
-until every declared domain holds a question — the scaffold does not fabricate
-questions or source URLs. Hand off to `author-questions`.
+A verdict is recorded. On NO-GO nothing exists under `certs/`. On GO the
+review file carries the reasoning, and `npm run check` is green — the seed
+question per domain is what makes that possible, since a bank with an empty
+domain file cannot validate. Then hand off to `author-questions`, which sizes
+its first real batch from `npm run balance`.
