@@ -29,13 +29,18 @@ import test from "node:test";
 
 const workflowsRoot = fileURLToPath(new URL("../skills", import.meta.url));
 
-// Raised from 80 deliberately, once: assess-new-cert grew a second
-// classification axis and a stage that seeds one sourced question per domain,
-// after a real run cited a documentation host this repository does not use.
-// That is judgement, which is what belongs here — the budget exists to catch
-// repo-doc content being pasted in, not to force prose into unreadability.
-// Raise it again only for the same reason, never to fit a restatement.
-const MAX_LINES = 95;
+// Raised twice, both times for assess-new-cert, both times after a real run
+// failed in a way nothing here anticipated: 80 -> 95 when it cited a
+// documentation host this repository does not use, and 95 -> 110 when it
+// picked a superseded revision of an exam guide that passed every other test.
+// That is judgement earned from evidence, which is what belongs in a
+// workflow; the budget exists to catch repo-doc content being pasted in.
+//
+// It is also a trend. Recon has more distinct ways to go wrong than the other
+// four workflows combined, and at some point the answer stops being a bigger
+// budget. If a third raise comes up, split the skill instead — source
+// classification and blueprint extraction are separable jobs.
+const MAX_LINES = 110;
 
 /**
  * Deliberately narrow. These match a bare percentage or character count used
