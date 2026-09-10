@@ -7,7 +7,7 @@
     "domain": "claude-code-configuration-and-workflows",
     "subdomain": "path-specific-rules",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "A project has test files distributed across multiple subdirectories alongside source code. The team wants uniform testing conventions to apply automatically whenever Claude Code works on test files, without loading those conventions during unrelated edits. What is the recommended configuration?",
     "options": [
@@ -49,7 +49,7 @@
     "domain": "claude-code-configuration-and-workflows",
     "subdomain": "claude-md-hierarchy",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "A tech lead configures testing conventions for a repository, but newly onboarded engineers report that Claude Code ignores these conventions on their fresh checkouts. The lead's own environment follows the conventions perfectly. What is the most likely configuration error?",
     "options": [
@@ -91,7 +91,7 @@
     "domain": "claude-code-configuration-and-workflows",
     "subdomain": "claude-md-hierarchy",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "A monorepo contains several distinct packages maintained by different squads. The team wants to keep the root CLAUDE.md concise while importing specialized package standards maintained in separate files. What syntax should be used?",
     "options": [
@@ -133,7 +133,7 @@
     "domain": "claude-code-configuration-and-workflows",
     "subdomain": "claude-md-hierarchy",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "A monolithic CLAUDE.md file has expanded to over 4,000 lines, covering frontend styling, database migration rules, Docker setup, and API security. Developers notice slower startup and frequent token waste on unrelated tasks. What is the recommended architectural remedy?",
     "options": [
@@ -157,7 +157,7 @@
     "correct": [
       "b"
     ],
-    "explanation": "Monolithic memory files inflate context windows and consume tokens regardless of task relevance. Decomposing instructions into topic-specific files under `.claude/rules/`\u2014and leveraging YAML frontmatter paths to conditionally load them only when editing relevant files\u2014keeps context focused and reduces overhead.",
+    "explanation": "Monolithic memory files inflate context windows and consume tokens regardless of task relevance. Decomposing instructions into topic-specific files under `.claude/rules/`—and leveraging YAML frontmatter paths to conditionally load them only when editing relevant files—keeps context focused and reduces overhead.",
     "distractorNotes": {
       "a": "Deleting conventions and relying on manual pasting is error-prone, inconsistent, and highly burdensome.",
       "c": "LLMs cannot read gzip binary strings without decompression; this renders the configuration completely unreadable.",
@@ -175,7 +175,7 @@
     "domain": "claude-code-configuration-and-workflows",
     "subdomain": "claude-md-hierarchy",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "An engineer edits a file in a deeply nested subdirectory and observes unexpected model behavior. How can the engineer inspect which memory files and rules are currently loaded in the active session?",
     "options": [
@@ -217,7 +217,7 @@
     "domain": "claude-code-configuration-and-workflows",
     "subdomain": "commands-and-skills",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "A team wants to define a custom slash command /e2e-check that runs end-to-end regression tests and generates a summary. All developers on the project should have access to it immediately upon git pull. Where must the command file be placed?",
     "options": [
@@ -259,7 +259,7 @@
     "domain": "claude-code-configuration-and-workflows",
     "subdomain": "commands-and-skills",
     "difficulty": "hard",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "An engineer authors a custom skill in .claude/skills/audit-architecture/SKILL.md that performs extensive codebase exploration, reading dozens of files and generating lengthy diagnostic trees. What frontmatter configuration prevents this exploratory context from polluting the main conversation?",
     "options": [
@@ -301,7 +301,7 @@
     "domain": "claude-code-configuration-and-workflows",
     "subdomain": "commands-and-skills",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "A skill is created to generate architectural documentation. To ensure that invoking this skill can never inadvertently modify or delete source code files, how should the skill frontmatter be configured?",
     "options": [
@@ -343,7 +343,7 @@
     "domain": "claude-code-configuration-and-workflows",
     "subdomain": "commands-and-skills",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "A skill requires a mandatory ticket number argument when invoked (e.g. /deploy-check PROJ-123). What frontmatter property prompts the developer for the required argument if they invoke the skill without parameters?",
     "options": [
@@ -385,7 +385,7 @@
     "domain": "claude-code-configuration-and-workflows",
     "subdomain": "commands-and-skills",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "An architect needs to establish guidelines for when to place instructions in CLAUDE.md versus when to package them as a custom Skill. What is the fundamental distinction?",
     "options": [
@@ -427,7 +427,7 @@
     "domain": "claude-code-configuration-and-workflows",
     "subdomain": "path-specific-rules",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "A full-stack project has strict Terraform security policies that are completely irrelevant when editing React UI components. How can the team ensure Terraform rules load only when infrastructure files are being modified?",
     "options": [
@@ -511,7 +511,7 @@
     "domain": "claude-code-configuration-and-workflows",
     "subdomain": "plan-mode-workflows",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "An architect is tasked with upgrading an authentication library across 45 files, which requires evaluating two competing breaking changes and establishing cross-module token refresh contracts. How should the work be initiated in Claude Code?",
     "options": [
@@ -553,7 +553,7 @@
     "domain": "claude-code-configuration-and-workflows",
     "subdomain": "plan-mode-workflows",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "A CI failure points to a single null pointer exception in src/utils/date.ts with an explicit line number and stack trace. Which interaction mode is most efficient?",
     "options": [
@@ -595,7 +595,7 @@
     "domain": "claude-code-configuration-and-workflows",
     "subdomain": "plan-mode-workflows",
     "difficulty": "hard",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "During a large refactoring task in Claude Code, extensive exploration of legacy source trees threatens to fill the context window with file contents. How does Claude Code's Explore subagent protect session context?",
     "options": [
@@ -721,7 +721,7 @@
     "domain": "claude-code-configuration-and-workflows",
     "subdomain": "iterative-refinement",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "An engineer needs Claude Code to design a high-throughput caching layer for an unfamiliar domain. Which prompt pattern helps uncover architectural failure modes and design trade-offs before writing code?",
     "options": [
@@ -731,7 +731,7 @@
       },
       {
         "id": "b",
-        "text": "Request Claude to produce 10,000 lines of boilerplate caching code in raw assembly language for maximum execution speed."
+        "text": "Instruct Claude to benchmark all available open-source caching libraries without defining eviction rules."
       },
       {
         "id": "c",
@@ -763,7 +763,7 @@
     "domain": "claude-code-configuration-and-workflows",
     "subdomain": "ci-cd-integration",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "A CI/CD pipeline step invokes Claude Code to review incoming pull requests: `claude 'Review this PR for security vulnerabilities'`. The CI build hangs indefinitely and times out. What flag is required to run Claude Code in non-interactive CI environments?",
     "options": [
@@ -805,7 +805,7 @@
     "domain": "claude-code-configuration-and-workflows",
     "subdomain": "ci-cd-integration",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "An automated pipeline runs Claude Code to perform security scanning on PRs and needs to parse the results programmatically to post GitHub inline comments. What CLI flags ensure reliable, structured output?",
     "options": [

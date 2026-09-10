@@ -7,7 +7,7 @@
     "domain": "tool-design-and-mcp-integration",
     "subdomain": "mcp-configuration",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "A software team wants to configure a shared Model Context Protocol (MCP) server across their repository so all teammates can access it, while ensuring API secrets are not committed to version control. Where should this configuration be placed?",
     "options": [
@@ -49,7 +49,7 @@
     "domain": "tool-design-and-mcp-integration",
     "subdomain": "tool-interface-design",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "An agent has access to two tools: get_customer ('Retrieves customer information') and lookup_order ('Retrieves order details'). Production logs show that when users ask 'Check status of order #98721', the agent frequently invokes get_customer instead of lookup_order. What is the most effective first step to resolve this issue?",
     "options": [
@@ -91,13 +91,13 @@
     "domain": "tool-design-and-mcp-integration",
     "subdomain": "tool-interface-design",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "An agent has two tools with high functional overlap: analyze_content and analyze_document. Claude frequently chooses the wrong tool or calls both redundantly. How should the architect refactor the tool definitions?",
     "options": [
       {
         "id": "a",
-        "text": "Duplicate the tools in the API registration payload so the model has four identical choices to distribute call load across backends evenly."
+        "text": "Set model temperature to 0.0 so the model deterministically selects between the two overlapping tools."
       },
       {
         "id": "b",
@@ -133,7 +133,7 @@
     "domain": "tool-design-and-mcp-integration",
     "subdomain": "tool-interface-design",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "A developer provides a single generic manage_data tool that accepts an 'action' parameter with twelve possible operations ('create', 'read', 'update', 'delete', 'export', 'archive', etc.) and thirty optional fields. The agent frequently hallucinates parameters. What is the recommended refactoring?",
     "options": [
@@ -175,7 +175,7 @@
     "domain": "tool-design-and-mcp-integration",
     "subdomain": "tool-interface-design",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "An agent has well-designed tools for customer queries, but the system prompt contains the sentence: 'Always use search to find user details.' As a result, Claude calls the general web search tool instead of the specialized lookup_customer tool. What explains this failure?",
     "options": [
@@ -217,7 +217,7 @@
     "domain": "tool-design-and-mcp-integration",
     "subdomain": "mcp-error-handling",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "An MCP server tool encounters a backend database connection timeout. How should the tool return this error to the agent according to Model Context Protocol standards?",
     "options": [
@@ -259,7 +259,7 @@
     "domain": "tool-design-and-mcp-integration",
     "subdomain": "mcp-error-handling",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "An agent calls process_refund, but the customer's purchase exceeds the 30-day return policy window. How should the tool response be structured to prevent the agent from repeatedly retrying the failed call?",
     "options": [
@@ -301,7 +301,7 @@
     "domain": "tool-design-and-mcp-integration",
     "subdomain": "mcp-error-handling",
     "difficulty": "hard",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "In a multi-agent system, a web search subagent experiences a transient network timeout on an external provider. How should error recovery be partitioned between the subagent and coordinator?",
     "options": [
@@ -343,7 +343,7 @@
     "domain": "tool-design-and-mcp-integration",
     "subdomain": "mcp-error-handling",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "An agent queries a customer directory tool with search_users(email='unknown@example.com'). The database finds no matching records. How should the tool respond?",
     "options": [
@@ -385,7 +385,7 @@
     "domain": "tool-design-and-mcp-integration",
     "subdomain": "tool-distribution",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "An engineering team binds twenty-five distinct enterprise tools to a single general-purpose agent. During evaluation, tool selection accuracy drops from 94% to 68%. What architectural factor explains this degradation?",
     "options": [
@@ -427,7 +427,7 @@
     "domain": "tool-design-and-mcp-integration",
     "subdomain": "tool-distribution",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "In a research system, the report synthesis subagent frequently attempts to run broad web searches when it encounters missing context, exceeding its latency budget and duplicating the search agent's work. What configuration enforces proper boundaries?",
     "options": [
@@ -469,7 +469,7 @@
     "domain": "tool-design-and-mcp-integration",
     "subdomain": "tool-distribution",
     "difficulty": "hard",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "During report drafting, a synthesis agent needs to perform quick verification of isolated facts (e.g. verifying a founding date). Routing every verification back through the coordinator to the search agent adds 2-3 round trips and 40% latency. What is the optimal architecture?",
     "options": [
@@ -511,7 +511,7 @@
     "domain": "tool-design-and-mcp-integration",
     "subdomain": "tool-choice-configuration",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "An extraction workflow requires that the agent must invoke the extract_metadata tool on the first turn before any enrichment tools can be considered. How should the API request be configured?",
     "options": [
@@ -553,7 +553,7 @@
     "domain": "tool-design-and-mcp-integration",
     "subdomain": "tool-choice-configuration",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "A system provides three specialized extraction tools (extract_invoice, extract_receipt, extract_contract). The input document type is unknown in advance, but the application requires that Claude MUST execute one of the tools rather than returning conversational text. Which setting guarantees this?",
     "options": [
@@ -637,7 +637,7 @@
     "domain": "tool-design-and-mcp-integration",
     "subdomain": "mcp-resources",
     "difficulty": "hard",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "An MCP server provides access to an issue tracker. To understand existing components, the agent currently executes 4-6 exploratory search tool calls per session. How can the MCP server reduce this latency and token overhead?",
     "options": [
@@ -679,7 +679,7 @@
     "domain": "tool-design-and-mcp-integration",
     "subdomain": "mcp-configuration",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "A team adds an MCP server providing a Jira integration tool, but Claude Code consistently uses Grep and Bash to find issue details in local git logs instead of calling the Jira tool. What is the most likely cause?",
     "options": [
@@ -721,13 +721,13 @@
     "domain": "tool-design-and-mcp-integration",
     "subdomain": "builtin-tools",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "While modifying a configuration file, Claude Code's Edit tool repeatedly fails with an error stating that the target text chunk is not unique. What is the standard tool-based fallback mechanism?",
     "options": [
       {
         "id": "a",
-        "text": "Repeatedly invoke Edit with allowMultiple: true to overwrite all matching occurrences across the file without anchoring lines in context."
+        "text": "Delete the file and instruct Claude to regenerate the entire file from memory using the Write tool."
       },
       {
         "id": "b",

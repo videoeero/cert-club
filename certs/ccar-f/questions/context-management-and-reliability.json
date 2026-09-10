@@ -7,7 +7,7 @@
     "domain": "context-management-and-reliability",
     "subdomain": "context-window-optimization",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "An agent assisting with customer returns queries an order database that returns forty fields per line item, although the return logic only requires item ID, quantity, purchase date, and return eligibility. As conversations lengthen, the agent exhibits context rot and degraded recall. What is the most effective architectural remedy?",
     "options": [
@@ -49,7 +49,7 @@
     "domain": "context-management-and-reliability",
     "subdomain": "context-management",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "An agent managing long support conversations uses naive conversational summarization every ten turns. Over time, customers complain that the agent misremembers exact refund amounts, order numbers, and specific dates. What inherent risk of progressive summarization explains this failure?",
     "options": [
@@ -91,13 +91,13 @@
     "domain": "context-management-and-reliability",
     "subdomain": "context-management",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "To prevent context rot in multi-turn support interactions while preserving critical order facts, which architectural pattern is most effective?",
     "options": [
       {
         "id": "a",
-        "text": "Delete all history between turns and force the customer to re-enter their order number and details on every message to ensure data isolation."
+        "text": "Retain complete raw conversation transcripts without any summarization or pruning to prevent data loss."
       },
       {
         "id": "b",
@@ -133,13 +133,13 @@
     "domain": "context-management-and-reliability",
     "subdomain": "context-management",
     "difficulty": "hard",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "An analyst compiles a 150-page research briefing from multiple subagents into a single prompt for Claude to synthesize. Evaluations show that findings placed in the middle pages are frequently overlooked, while beginning and end sections receive thorough coverage. What prompt layout strategy mitigates this effect?",
     "options": [
       {
         "id": "a",
-        "text": "Reverse the alphabetical order of all words in the document to force the model to attend equally to all positions across the context window."
+        "text": "Strip all formatting, markdown headers, and punctuation from the document to minimize total token count."
       },
       {
         "id": "b",
@@ -175,7 +175,7 @@
     "domain": "context-management-and-reliability",
     "subdomain": "context-management",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "In a research pipeline, three upstream subagents return extensive raw HTML scrapes and verbose chain-of-thought traces, which quickly exhausts the report coordinator's context budget. What should the architect modify?",
     "options": [
@@ -301,13 +301,13 @@
     "domain": "context-management-and-reliability",
     "subdomain": "escalation-and-reliability",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "A customer requests a price match against an unauthorized third-party marketplace listing. The company policy documentation explicitly addresses own-site adjustments, but is completely silent regarding third-party marketplaces. How should the agent proceed?",
     "options": [
       {
         "id": "a",
-        "text": "Accuse the customer of policy abuse and fraudulent behavior, immediately terminating their corporate account access and revoking discounts."
+        "text": "Invent an arbitrary discretionary discount to match the marketplace price and retain customer goodwill."
       },
       {
         "id": "b",
@@ -343,7 +343,7 @@
     "domain": "context-management-and-reliability",
     "subdomain": "escalation-and-reliability",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "An agent queries lookup_customer(name='John Smith') and the backend returns three distinct accounts with identical names. How should the agent resolve this ambiguity?",
     "options": [
@@ -409,7 +409,7 @@
     "correct": [
       "b"
     ],
-    "explanation": "Effective error propagation in multi-agent systems returns rich structured context: the nature of the error (e.g. rate limit), partial results already collected, what queries failed, and retry metadata. This enables the coordinator to make intelligent decisions\u2014such as utilizing partial findings, delegating remaining queries to an alternative subagent, or scheduling a retry.",
+    "explanation": "Effective error propagation in multi-agent systems returns rich structured context: the nature of the error (e.g. rate limit), partial results already collected, what queries failed, and retry metadata. This enables the coordinator to make intelligent decisions—such as utilizing partial findings, delegating remaining queries to an alternative subagent, or scheduling a retry.",
     "distractorNotes": {
       "a": "Throwing away partial findings wastes work and hides actionable details from the coordinator.",
       "c": "Falsely claiming research is complete when half the queries failed conceals coverage gaps.",
@@ -511,7 +511,7 @@
     "domain": "context-management-and-reliability",
     "subdomain": "codebase-exploration-context",
     "difficulty": "hard",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "A multi-agent codebase migration pipeline processes a large repository over several hours. To support crash recovery and resumption without re-running completed analysis, what state management pattern should be used?",
     "options": [
@@ -553,7 +553,7 @@
     "domain": "context-management-and-reliability",
     "subdomain": "human-review-workflows",
     "difficulty": "hard",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "A document extraction pipeline achieves an aggregate 98% accuracy across 100,000 processed forms. The operations team plans to completely eliminate human review for high-confidence extractions. What auditing practice should be retained to detect hidden systemic failure modes?",
     "options": [

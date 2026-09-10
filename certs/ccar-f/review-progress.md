@@ -124,3 +124,144 @@ Every question cites authoritative, open vendor documentation verified live on 2
 3. **Key rotation**: Position distribution across single-select answers is evenly balanced: 25 A (25%), 26 B (26%), 25 C (25%), 24 D (24%), strictly avoiding position bias (ceiling 50%).
 4. **Distractor notes**: 100% of distractors have complete `distractorNotes` entries detailing why the alternative is plausible but incorrect against the cited vendor documentation.
 5. **Format and thin areas**: All 100 items are currently single-select. Future authoring passes can introduce multi-select items (select-2 / select-3) to further test multi-aspect architectural decisions.
+
+## Correctness evaluation pass: 2026-09-10 (Full bank, 100 questions)
+
+Conducted an adversarial per-question correctness evaluation across all 100 questions in the CCAR-F bank. Each answer key was cold-derived independently against the cited vendor documentation before comparing against the stored `correct` field and `explanation`. Distractor quality was audited against `CONTRIBUTING.md` to eliminate facepalm options and near-duplicate distractors.
+
+### Summary of findings
+
+- **Scope**: Full bank (100 single-select items across 5 domains)
+- **Total evaluated**: 100 questions
+- **Confirmed (`status: "reviewed"`)**: 85 questions (85%)
+  - Clean confirmed: 76 questions
+  - Confirmed with distractor polish: 9 questions (rewrote near-duplicate or facepalm distractors into plausible alternatives while maintaining length balance)
+- **Unsupported (`status: "draft"`)**: 15 questions (15%)
+  - **Defect pattern**: An authoring/balancing artifact clobbered the intended correct answer option with a padded clone of a distractor. Consequently, the true architectural solution articulated in the explanation is completely missing from the ballot, and the stored `correct` key points to an incorrect distractor that actively teaches the wrong practice.
+  - Per skill constraints, unsupported questions cannot be repaired by key-swapping; they require re-authoring or option reconstruction via `author-questions` and remain `draft`.
+
+### Disposition counts by domain
+
+| Domain | Total | Confirmed (Reviewed) | Unsupported (Draft) |
+| --- | ---: | ---: | ---: |
+| Agentic Architecture & Orchestration | 27 | 27 (100%) | 0 (0%) |
+| Tool Design & MCP Integration | 18 | 17 (94%) | 1 (6%) |
+| Claude Code Configuration & Workflows | 20 | 17 (85%) | 3 (15%) |
+| Prompt Engineering & Structured Output | 20 | 15 (75%) | 5 (25%) |
+| Context Management & Reliability | 15 | 9 (60%) | 6 (40%) |
+| **Total** | **100** | **85** | **15** |
+
+### Per-question dispositions
+
+#### Agentic Architecture & Orchestration (27 items)
+- `ccar-f-agentic-architecture-and-orchestration-001`: confirmed
+- `ccar-f-agentic-architecture-and-orchestration-002`: confirmed
+- `ccar-f-agentic-architecture-and-orchestration-003`: confirmed
+- `ccar-f-agentic-architecture-and-orchestration-004`: confirmed
+- `ccar-f-agentic-architecture-and-orchestration-005`: confirmed
+- `ccar-f-agentic-architecture-and-orchestration-006`: confirmed
+- `ccar-f-agentic-architecture-and-orchestration-007`: confirmed
+- `ccar-f-agentic-architecture-and-orchestration-008`: confirmed
+- `ccar-f-agentic-architecture-and-orchestration-009`: confirmed
+- `ccar-f-agentic-architecture-and-orchestration-010`: confirmed
+- `ccar-f-agentic-architecture-and-orchestration-011`: confirmed
+- `ccar-f-agentic-architecture-and-orchestration-012`: confirmed
+- `ccar-f-agentic-architecture-and-orchestration-013`: confirmed
+- `ccar-f-agentic-architecture-and-orchestration-014`: confirmed
+- `ccar-f-agentic-architecture-and-orchestration-015`: confirmed
+- `ccar-f-agentic-architecture-and-orchestration-016`: confirmed
+- `ccar-f-agentic-architecture-and-orchestration-017`: confirmed
+- `ccar-f-agentic-architecture-and-orchestration-018`: confirmed
+- `ccar-f-agentic-architecture-and-orchestration-019`: confirmed
+- `ccar-f-agentic-architecture-and-orchestration-020`: confirmed
+- `ccar-f-agentic-architecture-and-orchestration-021`: confirmed
+- `ccar-f-agentic-architecture-and-orchestration-022`: confirmed
+- `ccar-f-agentic-architecture-and-orchestration-023`: confirmed
+- `ccar-f-agentic-architecture-and-orchestration-024`: confirmed
+- `ccar-f-agentic-architecture-and-orchestration-025`: confirmed
+- `ccar-f-agentic-architecture-and-orchestration-026`: confirmed
+- `ccar-f-agentic-architecture-and-orchestration-027`: confirmed
+
+#### Tool Design & MCP Integration (18 items)
+- `ccar-f-tool-design-and-mcp-integration-001`: confirmed
+- `ccar-f-tool-design-and-mcp-integration-002`: confirmed
+- `ccar-f-tool-design-and-mcp-integration-003`: confirmed (rewrote duplicate distractor a to set temperature 0.0)
+- `ccar-f-tool-design-and-mcp-integration-004`: confirmed
+- `ccar-f-tool-design-and-mcp-integration-005`: confirmed
+- `ccar-f-tool-design-and-mcp-integration-006`: confirmed
+- `ccar-f-tool-design-and-mcp-integration-007`: confirmed
+- `ccar-f-tool-design-and-mcp-integration-008`: confirmed
+- `ccar-f-tool-design-and-mcp-integration-009`: confirmed
+- `ccar-f-tool-design-and-mcp-integration-010`: confirmed
+- `ccar-f-tool-design-and-mcp-integration-011`: confirmed
+- `ccar-f-tool-design-and-mcp-integration-012`: confirmed
+- `ccar-f-tool-design-and-mcp-integration-013`: confirmed
+- `ccar-f-tool-design-and-mcp-integration-014`: confirmed
+- `ccar-f-tool-design-and-mcp-integration-015`: unsupported (real answer [configure personal server in ~/.claude.json] missing from options; key teaches brittle git index manipulation)
+- `ccar-f-tool-design-and-mcp-integration-016`: confirmed
+- `ccar-f-tool-design-and-mcp-integration-017`: confirmed
+- `ccar-f-tool-design-and-mcp-integration-018`: confirmed (rewrote duplicate distractor a to delete file and regenerate)
+
+#### Claude Code Configuration & Workflows (20 items)
+- `ccar-f-claude-code-configuration-and-workflows-001`: confirmed
+- `ccar-f-claude-code-configuration-and-workflows-002`: confirmed
+- `ccar-f-claude-code-configuration-and-workflows-003`: confirmed
+- `ccar-f-claude-code-configuration-and-workflows-004`: confirmed
+- `ccar-f-claude-code-configuration-and-workflows-005`: confirmed
+- `ccar-f-claude-code-configuration-and-workflows-006`: confirmed
+- `ccar-f-claude-code-configuration-and-workflows-007`: confirmed
+- `ccar-f-claude-code-configuration-and-workflows-008`: confirmed
+- `ccar-f-claude-code-configuration-and-workflows-009`: confirmed
+- `ccar-f-claude-code-configuration-and-workflows-010`: confirmed
+- `ccar-f-claude-code-configuration-and-workflows-011`: confirmed
+- `ccar-f-claude-code-configuration-and-workflows-012`: unsupported (real answer [single glob rule vs 60 duplicate files] missing from options; key teaches directory CLAUDE.md forbidden by git)
+- `ccar-f-claude-code-configuration-and-workflows-013`: confirmed
+- `ccar-f-claude-code-configuration-and-workflows-014`: confirmed
+- `ccar-f-claude-code-configuration-and-workflows-015`: confirmed
+- `ccar-f-claude-code-configuration-and-workflows-016`: unsupported (real answer [provide concrete input/output examples] missing from options; key teaches repeating prompt 4 times in all-caps)
+- `ccar-f-claude-code-configuration-and-workflows-017`: unsupported (real answer [feed actual test failure stack traces] missing from options; key teaches describing app from memory)
+- `ccar-f-claude-code-configuration-and-workflows-018`: confirmed (rewrote duplicate distractor b to benchmark open source caching)
+- `ccar-f-claude-code-configuration-and-workflows-019`: confirmed
+- `ccar-f-claude-code-configuration-and-workflows-020`: confirmed
+
+#### Prompt Engineering & Structured Output (20 items)
+- `ccar-f-prompt-engineering-and-structured-output-001`: confirmed
+- `ccar-f-prompt-engineering-and-structured-output-002`: confirmed
+- `ccar-f-prompt-engineering-and-structured-output-003`: unsupported (real answer [temporarily disable noisy review category] missing from options; key teaches forcing developers to fix all style issues before merge)
+- `ccar-f-prompt-engineering-and-structured-output-004`: confirmed
+- `ccar-f-prompt-engineering-and-structured-output-005`: confirmed
+- `ccar-f-prompt-engineering-and-structured-output-006`: unsupported (real answer [targeted few-shot boundary examples] missing from options; key teaches adding 50 obvious non-ambiguous examples)
+- `ccar-f-prompt-engineering-and-structured-output-007`: confirmed
+- `ccar-f-prompt-engineering-and-structured-output-008`: confirmed
+- `ccar-f-prompt-engineering-and-structured-output-009`: confirmed
+- `ccar-f-prompt-engineering-and-structured-output-010`: unsupported (real answer [JSON schema enforces syntax/types not cross-field arithmetic] missing from options; key teaches integer formatting disabled validation in schema engine)
+- `ccar-f-prompt-engineering-and-structured-output-011`: confirmed (rewrote duplicate distractor b to remove field descriptions)
+- `ccar-f-prompt-engineering-and-structured-output-012`: confirmed
+- `ccar-f-prompt-engineering-and-structured-output-013`: confirmed
+- `ccar-f-prompt-engineering-and-structured-output-014`: unsupported (real answer [append failed turn and validation error feedback] missing from options; key teaches resending exact prompt without error context)
+- `ccar-f-prompt-engineering-and-structured-output-015`: confirmed
+- `ccar-f-prompt-engineering-and-structured-output-016`: confirmed
+- `ccar-f-prompt-engineering-and-structured-output-017`: unsupported (real answer [match failed records via custom_id and resubmit only failed subset] missing from options; key teaches discarding entire 10k batch)
+- `ccar-f-prompt-engineering-and-structured-output-018`: confirmed (rewrote facepalm postal mail distractors a and b to plausible cloud/gateway alternatives)
+- `ccar-f-prompt-engineering-and-structured-output-019`: confirmed (rewrote facepalm quantum hardware distractors b and c to plausible API/temperature alternatives)
+- `ccar-f-prompt-engineering-and-structured-output-020`: confirmed
+
+#### Context Management & Reliability (15 items)
+- `ccar-f-context-management-and-reliability-001`: confirmed
+- `ccar-f-context-management-and-reliability-002`: confirmed
+- `ccar-f-context-management-and-reliability-003`: confirmed (rewrote duplicate distractor a to retain full raw transcripts)
+- `ccar-f-context-management-and-reliability-004`: confirmed (rewrote duplicate distractor a to strip formatting/headers)
+- `ccar-f-context-management-and-reliability-005`: confirmed
+- `ccar-f-context-management-and-reliability-006`: unsupported (real answer [self-reported confidence unreliability vs explicit criteria] missing from options; key teaches Claude cannot output numerals 1-10)
+- `ccar-f-context-management-and-reliability-007`: unsupported (real answer [immediately honor human escalation] missing from options; key teaches refusing escalation and forcing diagnostic questions)
+- `ccar-f-context-management-and-reliability-008`: confirmed (rewrote duplicate distractor a to invent arbitrary discount)
+- `ccar-f-context-management-and-reliability-009`: confirmed
+- `ccar-f-context-management-and-reliability-010`: unsupported (real answer [return structured error with partial results] missing from options; key teaches discarding results and returning generic error)
+- `ccar-f-context-management-and-reliability-011`: unsupported (real answer [report valid findings while documenting coverage gaps] missing from options; key teaches fabricating financial figures)
+- `ccar-f-context-management-and-reliability-012`: unsupported (real answer [maintain structured scratchpad file on disk] missing from options; key teaches repeating entire directory tree in every prompt)
+- `ccar-f-context-management-and-reliability-013`: confirmed
+- `ccar-f-context-management-and-reliability-014`: confirmed
+- `ccar-f-context-management-and-reliability-015`: unsupported (real answer [attribute both figures with publication dates] missing from options; key teaches silently calculating mathematical average)
+
+### Remaining unreviewed / Draft items
+The 15 unsupported items remain in `status: "draft"`. They cannot be promoted or marked as reviewed until their answer options are properly re-authored to reflect the correct technical claim established in the vendor documentation.
