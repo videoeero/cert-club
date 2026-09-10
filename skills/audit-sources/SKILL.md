@@ -15,10 +15,12 @@ field's whole value is that it means what it says.
 
 ## Stages
 
-1. **Mechanical triage.** `npm run check-sources -- <slug>` reports staleness
-   (`--max-age-days`) and liveness. Use `--json` when feeding the output into
-   a plan, `--offline` when only staleness matters. This is triage input, not
-   a verdict.
+1. **Mechanical triage, always repo-wide.** Run `npm run check-sources` with
+   no slug. It builds one URL set across every bank before fetching, so the
+   whole repository costs less than the banks run separately — and only a
+   repo-wide pass shows that a _host_ moved rather than a page. `--json` to
+   feed a plan, `--offline` when only staleness matters. Triage input, not a
+   verdict.
 2. **False-negative discipline, before any edit.** A single failed fetch is
    **never** grounds for changing a `sourceUrl`. Reconfirm by a second method
    before believing a page is gone. `certs/ccdv-f/review-progress.md` records
@@ -33,8 +35,13 @@ field's whole value is that it means what it says.
    A weight change invalidates the balance arithmetic for the entire bank, and
    no amount of link checking will reveal it. Do this before spending any
    effort on individual pages.
-4. **Page-level drift on live URLs.** Prioritise by `sourceCheckedAt` age
-   multiplied by how load-bearing the claim is — a citation carrying the whole
+4. **Page-level drift on live URLs. Scope the work by host, not by cert.**
+   Drift arrives per host: a documentation reorganisation hits every question
+   citing it, across banks, and one moved page deserves one disposition
+   applied everywhere — not the same judgement made twice on different days.
+   Certs of one vendor share hosts while sharing almost no URLs, so the host
+   is the unit. Within it, prioritise by `sourceCheckedAt` age multiplied by
+   how load-bearing the claim is: a citation carrying the whole
    discrimination between two options matters more than one supporting a
    detail. Re-answer the key **cold** against the cited section: read the
    section, answer the question, then compare to the recorded key. Adjudicate
@@ -48,6 +55,13 @@ field's whole value is that it means what it says.
 6. **Record the pass in `review-progress.md`**: the date, and the scope
    covered. State what was **not** covered just as explicitly, so the next
    pass knows where it is starting rather than assuming the bank was swept.
+7. **Update `certs/VENDORS.md`.** This workflow owns that file, because
+   fetching every cited host on a schedule is the only thing positioned to
+   notice a vendor moved. Correct any host that has changed, add a newly
+   discovered legacy or gated property to the vendor's do-not-cite list, and
+   re-date the entry — but only for what this pass actually re-confirmed. A
+   date moved without a check makes the file exactly the kind of
+   authoritative-looking trap it exists to prevent.
 
 ## Stop and ask
 
@@ -61,4 +75,5 @@ field's whole value is that it means what it says.
 
 Every question the triage flagged has one recorded disposition, no
 `sourceCheckedAt` moved without its page being read, the pass and its scope
-are in `review-progress.md`, and `npm run check` is green.
+are in `review-progress.md`, `certs/VENDORS.md` matches what this pass found,
+and `npm run check` is green.
