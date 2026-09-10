@@ -40,5 +40,803 @@
     "sourceUrl": "https://code.claude.com/docs/en/memory.md",
     "sourceNote": "Path-specific rules in .claude/rules/ using YAML frontmatter paths glob patterns",
     "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-002",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "claude-md-hierarchy",
+    "difficulty": "medium",
+    "status": "draft",
+    "scope": "core",
+    "stem": "A tech lead configures testing conventions for a repository, but newly onboarded engineers report that Claude Code ignores these conventions on their fresh checkouts. The lead's own environment follows the conventions perfectly. What is the most likely configuration error?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Claude Code requires a paid enterprise multi-seat license before loading markdown conventions on more than one machine checkout."
+      },
+      {
+        "id": "b",
+        "text": "The new engineers did not compile the TypeScript source code of Claude Code locally before executing project commands."
+      },
+      {
+        "id": "c",
+        "text": "CLAUDE.md files must be cryptographically signed by an organizational certificate authority to be loaded into session memory."
+      },
+      {
+        "id": "d",
+        "text": "The conventions were saved in ~/.claude/CLAUDE.md on the lead's machine rather than in the repository's root CLAUDE.md."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Claude Code's configuration hierarchy includes user-scoped memory (`~/.claude/CLAUDE.md`) and project-scoped memory (`CLAUDE.md` or `.claude/CLAUDE.md` in the project root). Instructions placed in `~/.claude/` only affect that individual user's machine. To share conventions across all developers, they must be placed in the project repository and committed to version control.",
+    "distractorNotes": {
+      "a": "Configuration loading behavior is standard across all tiers and does not depend on multi-seat licensing.",
+      "b": "Claude Code is distributed as a packaged binary/CLI; users do not need to compile its TypeScript source.",
+      "c": "CLAUDE.md files are plain markdown files and do not require certificate authority signing."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/memory.md",
+    "sourceNote": "Distinguishing user-scoped ~/.claude/CLAUDE.md from project-scoped CLAUDE.md",
+    "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-003",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "claude-md-hierarchy",
+    "difficulty": "medium",
+    "status": "draft",
+    "scope": "core",
+    "stem": "A monorepo contains several distinct packages maintained by different squads. The team wants to keep the root CLAUDE.md concise while importing specialized package standards maintained in separate files. What syntax should be used?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Use the @import syntax (e.g. @import ./packages/billing/CLAUDE.md) inside the project markdown configuration."
+      },
+      {
+        "id": "b",
+        "text": "Embed bash curl scripts inside HTML comments that download the standards at runtime whenever the project directory is loaded."
+      },
+      {
+        "id": "c",
+        "text": "Create filesystem hard links across all package directories using the ln utility to duplicate the documentation physically."
+      },
+      {
+        "id": "d",
+        "text": "Configure an external webhook in package.json to stream markdown blocks over gRPC directly into Claude Code's session context."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Claude Code supports modular memory through the `@import` syntax in CLAUDE.md files. This enables referencing external markdown files across packages or documentation trees, keeping the root memory clean and maintainable while pulling in domain-specific standards.",
+    "distractorNotes": {
+      "b": "Claude Code does not execute arbitrary shell curl commands hidden inside HTML comments.",
+      "c": "Filesystem hard links do not work across git checkouts and break version control tracking.",
+      "d": "package.json webhooks are not part of Claude Code's memory or configuration resolution system."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/memory.md",
+    "sourceNote": "Using @import syntax to create modular, maintainable CLAUDE.md configurations",
+    "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-004",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "claude-md-hierarchy",
+    "difficulty": "medium",
+    "status": "draft",
+    "scope": "core",
+    "stem": "A monolithic CLAUDE.md file has expanded to over 4,000 lines, covering frontend styling, database migration rules, Docker setup, and API security. Developers notice slower startup and frequent token waste on unrelated tasks. What is the recommended architectural remedy?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Delete all project documentation and instruct engineers to paste relevant conventions into their prompts manually on each turn."
+      },
+      {
+        "id": "b",
+        "text": "Split the monolithic file into focused topic files inside .claude/rules/ (e.g. testing.md, db.md) using conditional path scoping where appropriate."
+      },
+      {
+        "id": "c",
+        "text": "Compress the text with gzip and paste the resulting binary string into CLAUDE.md to save context tokens during prompt execution."
+      },
+      {
+        "id": "d",
+        "text": "Convert the markdown rules into compiled C++ shared object libraries that hook into the Claude Code binary execution path."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Monolithic memory files inflate context windows and consume tokens regardless of task relevance. Decomposing instructions into topic-specific files under `.claude/rules/`\u2014and leveraging YAML frontmatter paths to conditionally load them only when editing relevant files\u2014keeps context focused and reduces overhead.",
+    "distractorNotes": {
+      "a": "Deleting conventions and relying on manual pasting is error-prone, inconsistent, and highly burdensome.",
+      "c": "LLMs cannot read gzip binary strings without decompression; this renders the configuration completely unreadable.",
+      "d": "Claude Code memory is based on text and markdown, not compiled binary shared objects."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/memory.md",
+    "sourceNote": "Splitting monolithic CLAUDE.md files into topic-specific rule files in .claude/rules/",
+    "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-005",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "claude-md-hierarchy",
+    "difficulty": "medium",
+    "status": "draft",
+    "scope": "core",
+    "stem": "An engineer edits a file in a deeply nested subdirectory and observes unexpected model behavior. How can the engineer inspect which memory files and rules are currently loaded in the active session?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Inspect the local operating system kernel dmesg log buffer to identify filesystem read events triggered by the CLI process."
+      },
+      {
+        "id": "b",
+        "text": "Reboot the developer workstation in single-user recovery mode and examine the Claude Code configuration cache on disk."
+      },
+      {
+        "id": "c",
+        "text": "Run the /memory slash command to inspect active memory files and diagnostic rule loading status."
+      },
+      {
+        "id": "d",
+        "text": "Send an email to Anthropic customer support with the session timestamp to request a manual trace of loaded project files."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Claude Code provides the `/memory` command (or `/context`) to inspect what memory sources, CLAUDE.md files, and path-specific rules are currently loaded into context. This provides immediate visibility into configuration resolution.",
+    "distractorNotes": {
+      "a": "Kernel dmesg buffers record device driver and kernel events, not application-level LLM prompt context.",
+      "b": "Rebooting the workstation does not diagnose configuration loading or memory resolution.",
+      "d": "Customer support does not inspect local client-side configuration states in real-time."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/memory.md",
+    "sourceNote": "Using /memory to inspect active memory files and rule resolution diagnostics",
+    "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-006",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "commands-and-skills",
+    "difficulty": "medium",
+    "status": "draft",
+    "scope": "core",
+    "stem": "A team wants to define a custom slash command /e2e-check that runs end-to-end regression tests and generates a summary. All developers on the project should have access to it immediately upon git pull. Where must the command file be placed?",
+    "options": [
+      {
+        "id": "a",
+        "text": "In ~/.claude/commands/e2e-check.md on the lead developer's machine, relying on background cloud synchronization across accounts."
+      },
+      {
+        "id": "b",
+        "text": "Inside the root package.json under a 'slashCommands' key configured with raw bash execution scripts for pipeline automation."
+      },
+      {
+        "id": "c",
+        "text": "In a cloud storage bucket configured via AWS IAM roles and referenced by a custom environment variable in developer profiles."
+      },
+      {
+        "id": "d",
+        "text": "In the project repository under .claude/commands/e2e-check.md"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Project-scoped custom slash commands are stored in `.claude/commands/` within the repository root. When committed to git, any team member who pulls the repository gets the custom command automatically available in their Claude Code sessions.",
+    "distractorNotes": {
+      "a": "Files placed in ~/.claude/commands/ are user-scoped and not shared through project git repositories.",
+      "b": "Claude Code does not parse package.json for custom slash command definitions.",
+      "c": "Slash commands are resolved from local repository paths, not external AWS IAM buckets."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/skills.md",
+    "sourceNote": "Project-scoped custom slash commands in .claude/commands/ for version-controlled team sharing",
+    "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-007",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "commands-and-skills",
+    "difficulty": "hard",
+    "status": "draft",
+    "scope": "core",
+    "stem": "An engineer authors a custom skill in .claude/skills/audit-architecture/SKILL.md that performs extensive codebase exploration, reading dozens of files and generating lengthy diagnostic trees. What frontmatter configuration prevents this exploratory context from polluting the main conversation?",
+    "options": [
+      {
+        "id": "a",
+        "text": "context: fork"
+      },
+      {
+        "id": "b",
+        "text": "sandbox: docker-root, which wraps the skill in a privileged container that isolates all filesystem operations and logs."
+      },
+      {
+        "id": "c",
+        "text": "isolation: true, which disables all tool outputs from appearing in standard output while logging them to a hidden file."
+      },
+      {
+        "id": "d",
+        "text": "tokens: discard-all, which clears all conversation tokens upon skill completion and resets the session to a clean state."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Setting `context: fork` in a skill's YAML frontmatter instructs Claude Code to run the skill inside an isolated sub-agent context. The exploratory reading and voluminous intermediate outputs remain confined to the fork, and only the final synthesis is returned to the main conversation.",
+    "distractorNotes": {
+      "b": "sandbox: docker-root is an invented parameter; skill execution context is controlled via context: fork.",
+      "c": "isolation: true is not a valid Agent Skills frontmatter property.",
+      "d": "tokens: discard-all is not an option in Claude Code skill frontmatter."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/skills.md",
+    "sourceNote": "Using context: fork frontmatter to isolate verbose skill execution from main conversation context",
+    "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-008",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "commands-and-skills",
+    "difficulty": "medium",
+    "status": "draft",
+    "scope": "core",
+    "stem": "A skill is created to generate architectural documentation. To ensure that invoking this skill can never inadvertently modify or delete source code files, how should the skill frontmatter be configured?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Instruct Claude in the skill text: 'Please do not edit files, we strictly forbid any write operations during this task.'"
+      },
+      {
+        "id": "b",
+        "text": "Configure allowed-tools to include only read and search tools (such as Read, Grep, Glob), omitting Write and Edit."
+      },
+      {
+        "id": "c",
+        "text": "Set file permissions on the entire repository to chmod 000 before each invocation to physically prevent write operations."
+      },
+      {
+        "id": "d",
+        "text": "Configure git pre-commit hooks to reject all commits on the current branch during the duration of the skill execution."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "The `allowed-tools` frontmatter field in a skill explicitly defines which tools are accessible during its execution. By restricting `allowed-tools` to read-only utilities (`Read`, `Grep`, `Glob`), the model is deterministically prevented from calling write or modification tools (`Write`, `Edit`, `Bash`).",
+    "distractorNotes": {
+      "a": "Prompt instructions are probabilistic and do not offer deterministic security guarantees.",
+      "c": "chmod 000 breaks developer access and prevents normal development workflows.",
+      "d": "Git commit rejection does not prevent the agent from modifying working tree files on disk."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/skills.md",
+    "sourceNote": "Restricting tool access during skill execution using allowed-tools frontmatter",
+    "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-009",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "commands-and-skills",
+    "difficulty": "medium",
+    "status": "draft",
+    "scope": "core",
+    "stem": "A skill requires a mandatory ticket number argument when invoked (e.g. /deploy-check PROJ-123). What frontmatter property prompts the developer for the required argument if they invoke the skill without parameters?",
+    "options": [
+      {
+        "id": "a",
+        "text": "required-param: true, throwing a runtime validation error if the parameter is omitted in the shell"
+      },
+      {
+        "id": "b",
+        "text": "ask-input: yes, pausing execution to prompt the developer for missing arguments interactively"
+      },
+      {
+        "id": "c",
+        "text": "argument-hint: '<ticket-number>', displaying an interactive prompt when invoked without arguments"
+      },
+      {
+        "id": "d",
+        "text": "prompt-user: on, displaying a modal dialog in the terminal when arguments are not provided"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "In Agent Skills, the `argument-hint` frontmatter property provides an autocompletion and prompting hint in the CLI. When a developer types the command without arguments, Claude Code displays the argument hint to prompt for required parameters.",
+    "distractorNotes": {
+      "a": "required-param is not a valid Agent Skills frontmatter specification.",
+      "b": "ask-input is not a recognized property in Claude Code skills.",
+      "d": "prompt-user is not supported in the skill frontmatter schema."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/skills.md",
+    "sourceNote": "Using argument-hint frontmatter to prompt users for required parameters in skills",
+    "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-010",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "commands-and-skills",
+    "difficulty": "medium",
+    "status": "draft",
+    "scope": "core",
+    "stem": "An architect needs to establish guidelines for when to place instructions in CLAUDE.md versus when to package them as a custom Skill. What is the fundamental distinction?",
+    "options": [
+      {
+        "id": "a",
+        "text": "CLAUDE.md can only contain valid JSON specifications, whereas Skills only accept YAML frontmatter and markdown descriptions."
+      },
+      {
+        "id": "b",
+        "text": "Skills are only executable on Linux and containerized environments, while CLAUDE.md works only on macOS and Windows hosts."
+      },
+      {
+        "id": "c",
+        "text": "CLAUDE.md is executed as a bash shell script at startup, while Skills are compiled into binary shared objects by GCC."
+      },
+      {
+        "id": "d",
+        "text": "CLAUDE.md holds universal project conventions loaded continually, while Skills package task-specific workflows invoked on demand."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "CLAUDE.md provides ambient, persistent context (coding standards, architectural invariants, testing commands) loaded into every session. Skills provide specialized, on-demand procedural capabilities (such as code review checklists, database migration audits, or release notes generators) invoked when specific tasks are performed.",
+    "distractorNotes": {
+      "a": "CLAUDE.md is standard markdown, not JSON; Skills are markdown files with YAML frontmatter.",
+      "b": "Both CLAUDE.md and Skills are cross-platform and work across macOS, Linux, and Windows.",
+      "c": "Neither is compiled or executed as binary scripts; both are interpreted by Claude Code's agent runtime."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/skills.md",
+    "sourceNote": "Architectural distinction between ambient CLAUDE.md instructions and on-demand Skills",
+    "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-011",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "path-specific-rules",
+    "difficulty": "medium",
+    "status": "draft",
+    "scope": "core",
+    "stem": "A full-stack project has strict Terraform security policies that are completely irrelevant when editing React UI components. How can the team ensure Terraform rules load only when infrastructure files are being modified?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Create .claude/rules/terraform.md with YAML frontmatter paths: ['terraform/**/*', '**/*.tf']."
+      },
+      {
+        "id": "b",
+        "text": "Instruct developers to switch to a separate git branch before modifying Terraform code to isolate infrastructure context."
+      },
+      {
+        "id": "c",
+        "text": "Append the Terraform documentation to the end of every frontend source file so conventions are co-located with code."
+      },
+      {
+        "id": "d",
+        "text": "Rename all .tf files to .ts files to deceive Claude Code into applying general TypeScript coding conventions."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Files placed in `.claude/rules/` support YAML frontmatter with a `paths` property. By specifying glob patterns (e.g. `paths: ['terraform/**/*', '**/*.tf']`), Claude Code conditionally loads the rule file into context only when files matching those paths are being inspected or edited, preserving context tokens during frontend work.",
+    "distractorNotes": {
+      "b": "Switching branches is inefficient and does not prevent rule loading if conventions sit in a monolithic CLAUDE.md.",
+      "c": "Appending documentation to source files ruins code quality and triggers linter errors.",
+      "d": "Renaming file extensions breaks Terraform compilers and tooling."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/memory.md",
+    "sourceNote": "Using YAML frontmatter paths in .claude/rules/ to conditionally load path-scoped conventions",
+    "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-012",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "path-specific-rules",
+    "difficulty": "medium",
+    "status": "draft",
+    "scope": "core",
+    "stem": "A repository has unit test files co-located next to implementation files across 60 directories (e.g. src/utils/format.test.ts next to format.ts). Why are path-specific rules in .claude/rules/ preferred over directory-level CLAUDE.md files for testing conventions?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Directory-level CLAUDE.md files are strictly forbidden by git specifications and cause merge conflicts across worktrees."
+      },
+      {
+        "id": "b",
+        "text": "Directory-level CLAUDE.md files are strictly forbidden by git specifications and cause merge conflicts across worktrees during pull requests."
+      },
+      {
+        "id": "c",
+        "text": "Path-specific rules execute 100 times faster because they run in GPU hardware acceleration rather than CLI software."
+      },
+      {
+        "id": "d",
+        "text": "Directory-level CLAUDE.md files only work when written in German or French due to legacy internationalization bugs."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "When files of a specific type (such as test files) are distributed throughout many subdirectories, directory-level CLAUDE.md files require creating and maintaining duplicate configuration files in every single directory. A single rule file with a glob pattern like `paths: ['**/*.test.ts']` automatically applies to all matching files regardless of their directory location.",
+    "distractorNotes": {
+      "a": "Git has no concept of CLAUDE.md and does not restrict file placement.",
+      "c": "Path-specific rules are text configuration files evaluated by the CLI; GPU hardware execution is false.",
+      "d": "Claude Code supports markdown in any natural language."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/memory.md",
+    "sourceNote": "Glob-based path matching versus maintaining numerous directory-level memory files",
+    "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-013",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "plan-mode-workflows",
+    "difficulty": "medium",
+    "status": "draft",
+    "scope": "core",
+    "stem": "An architect is tasked with upgrading an authentication library across 45 files, which requires evaluating two competing breaking changes and establishing cross-module token refresh contracts. How should the work be initiated in Claude Code?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Begin in direct execution mode and immediately edit the core security module, letting unit tests reveal broken dependencies."
+      },
+      {
+        "id": "b",
+        "text": "Ask Claude Code to write a high-level summary of the upgrade before manually editing all 45 files in an external IDE."
+      },
+      {
+        "id": "c",
+        "text": "Use plan mode to explore the codebase, assess dependencies, and establish an approved design before executing changes."
+      },
+      {
+        "id": "d",
+        "text": "Disable all unit tests and TypeScript compiler checks to avoid encountering breaking changes during direct code generation."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Plan mode is designed specifically for complex, multi-file tasks involving architectural choices, trade-offs, and broad refactoring. It allows Claude Code to safely inspect the codebase, identify dependencies, evaluate alternative approaches, and present a structured implementation plan for user review before committing any changes.",
+    "distractorNotes": {
+      "a": "Jumping directly into execution on complex tasks without planning risks breaking dependencies and causes costly rework.",
+      "b": "Social media summaries do not accomplish technical software engineering tasks.",
+      "d": "Disabling tests destroys quality assurance and hides regressions."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/overview.md",
+    "sourceNote": "Using plan mode for complex multi-file architectural analysis before committing modifications",
+    "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-014",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "plan-mode-workflows",
+    "difficulty": "medium",
+    "status": "draft",
+    "scope": "core",
+    "stem": "A CI failure points to a single null pointer exception in src/utils/date.ts with an explicit line number and stack trace. Which interaction mode is most efficient?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Full plan mode with an exhaustive architectural review and comprehensive dependency mapping across all modules."
+      },
+      {
+        "id": "b",
+        "text": "Spawning an external swarm of twelve subagents across multiple cloud clusters to analyze the entire repository history."
+      },
+      {
+        "id": "c",
+        "text": "Rewriting the entire date library from scratch in Rust to prevent any possible future null pointer exceptions."
+      },
+      {
+        "id": "d",
+        "text": "Direct execution mode, allowing Claude to inspect the specific file and apply the targeted fix immediately."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Direct execution mode is optimal for well-defined, localized tasks where the problem and target file are already known (e.g. a simple bug fix with a clear stack trace). Entering plan mode for small, well-scoped fixes adds unnecessary conversational overhead and planning latency.",
+    "distractorNotes": {
+      "a": "Entering plan mode for a single-line null check adds unnecessary steps and slows developer velocity.",
+      "b": "Multi-agent cloud swarms for a trivial localized bug represent massive over-engineering and token waste.",
+      "c": "Rewriting unaffected libraries violates task scope and introduces vast regression risk."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/overview.md",
+    "sourceNote": "Direct execution mode for well-scoped, localized bug fixes with known stack traces",
+    "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-015",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "plan-mode-workflows",
+    "difficulty": "hard",
+    "status": "draft",
+    "scope": "core",
+    "stem": "During a large refactoring task in Claude Code, extensive exploration of legacy source trees threatens to fill the context window with file contents. How does Claude Code's Explore subagent protect session context?",
+    "options": [
+      {
+        "id": "a",
+        "text": "It isolates verbose file searching and reading inside a child context, returning only high-level findings to the main session."
+      },
+      {
+        "id": "b",
+        "text": "It uploads all repository files to an external third-party indexing service that performs cloud semantic search."
+      },
+      {
+        "id": "c",
+        "text": "It replaces source code files on disk with zero-byte placeholders during searches to avoid reading large files into system RAM."
+      },
+      {
+        "id": "d",
+        "text": "It restricts Claude Code to reading only the first two characters of every file to drastically reduce token consumption."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "The Explore subagent operates in an isolated context window. When tasked with locating files, patterns, or architectural relationships, it performs verbose searches and file inspections within its own window and passes only concise summaries back to the parent session, preventing main context window exhaustion.",
+    "distractorNotes": {
+      "b": "Claude Code processes exploration locally using configured tools without unauthorized third-party uploads.",
+      "c": "Replacing local files with zero-byte placeholders destroys project source code.",
+      "d": "Reading only two characters makes code analysis impossible."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
+    "sourceNote": "Isolating verbose codebase exploration in subagents to preserve main session context",
+    "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-016",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "iterative-refinement",
+    "difficulty": "medium",
+    "status": "draft",
+    "scope": "core",
+    "stem": "A team asks Claude Code to implement a complex date formatting function using a lengthy natural language prompt, but the generated output repeatedly fails edge cases. What is the most effective prompt engineering refinement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Repeat the natural language prompt four times in uppercase letters to emphasize the importance of handling edge cases."
+      },
+      {
+        "id": "b",
+        "text": "Repeat the natural language prompt four times in uppercase letters to emphasize the critical importance of handling edge cases properly."
+      },
+      {
+        "id": "c",
+        "text": "Switch to an older legacy model checkpoint from three years ago that relied heavily on hardcoded rule engines."
+      },
+      {
+        "id": "d",
+        "text": "Threaten the model with severe performance penalties and negative consequences if it fails any upcoming unit tests."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "When natural language specifications are ambiguous or prone to misinterpretation, providing concrete input/output examples is the single most effective technique for clarifying transformation rules and edge-case behavior (e.g. handling leap years or formatting boundaries).",
+    "distractorNotes": {
+      "a": "Repeating text in all-caps increases token waste without clarifying ambiguous edge cases.",
+      "c": "Older models have inferior reasoning capabilities and higher failure rates.",
+      "d": "Anthropomorphic threats do not improve transformer output precision and violate professional standards."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices.md",
+    "sourceNote": "Using concrete input/output examples to disambiguate complex transformation requirements",
+    "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-017",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "iterative-refinement",
+    "difficulty": "medium",
+    "status": "draft",
+    "scope": "core",
+    "stem": "When iterating with Claude Code to resolve a complex test suite failure, which approach enables the fastest and most accurate convergence on the fix?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Write a brand new prompt describing the entire application from memory without mentioning the failing test or stack trace."
+      },
+      {
+        "id": "b",
+        "text": "Delete the failing tests from the test suite so the build passes and the pipeline marks the deployment as successful."
+      },
+      {
+        "id": "c",
+        "text": "Write a brand new prompt describing the entire application from memory without mentioning the failing test or stack trace details."
+      },
+      {
+        "id": "d",
+        "text": "Manually rewrite all business logic in an interactive shell session rather than providing test feedback to the model."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Test-driven iteration works best by feeding actual test execution outputs (stack traces, expected vs actual values) directly to Claude Code. The model uses the concrete error details to diagnose root causes and make targeted corrections until the test suite passes.",
+    "distractorNotes": {
+      "a": "Re-describing the application from memory discards diagnostic error information and wastes tokens.",
+      "b": "Deleting failing tests hides bugs and destroys quality assurance integrity.",
+      "d": "Manual rewriting circumvents AI assistance and does not resolve the automated iteration loop."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/overview.md",
+    "sourceNote": "Feeding test failure traces to guide targeted, test-driven iterative fixes",
+    "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-018",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "iterative-refinement",
+    "difficulty": "medium",
+    "status": "draft",
+    "scope": "core",
+    "stem": "An engineer needs Claude Code to design a high-throughput caching layer for an unfamiliar domain. Which prompt pattern helps uncover architectural failure modes and design trade-offs before writing code?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Request Claude to produce 10,000 lines of boilerplate caching code in raw assembly language for maximum runtime execution speed."
+      },
+      {
+        "id": "b",
+        "text": "Request Claude to produce 10,000 lines of boilerplate caching code in raw assembly language for maximum execution speed."
+      },
+      {
+        "id": "c",
+        "text": "Execute a random shell command to inspect the system hardware clock and let the model infer caching requirements."
+      },
+      {
+        "id": "d",
+        "text": "The interview pattern: ask Claude to interview the engineer with clarifying questions about invalidation, consistency, and traffic patterns."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "The interview pattern instructs Claude to probe the user with targeted questions regarding requirements, failure modes, scale constraints, and invalidation strategies before writing code. This surfaces critical architectural considerations that the developer might not have anticipated.",
+    "distractorNotes": {
+      "a": "Writing code without clarifying requirements leads to poor assumptions and architectural rework.",
+      "b": "Generating massive assembly code is unusable for web caching architectures.",
+      "c": "Random shell execution provides no architectural insight."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices.md",
+    "sourceNote": "Using the interview pattern to surface requirements and design considerations before implementation",
+    "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-019",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "ci-cd-integration",
+    "difficulty": "medium",
+    "status": "draft",
+    "scope": "core",
+    "stem": "A CI/CD pipeline step invokes Claude Code to review incoming pull requests: `claude 'Review this PR for security vulnerabilities'`. The CI build hangs indefinitely and times out. What flag is required to run Claude Code in non-interactive CI environments?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The -p (or --print) flag to run non-interactively, stream or return results to stdout, and exit cleanly."
+      },
+      {
+        "id": "b",
+        "text": "The --daemon flag to detach the process into a background systemd unit that runs detached from the terminal session."
+      },
+      {
+        "id": "c",
+        "text": "The --gui flag to render an electron browser window inside headless Docker to emulate human terminal interactions."
+      },
+      {
+        "id": "d",
+        "text": "The --infinite-loop flag to keep the terminal connection alive until an external kill signal terminates the container."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "By default, Claude Code runs as an interactive terminal application awaiting user prompts. In automated pipelines and scripts, the `-p` (or `--print`) flag runs Claude Code non-interactively in headless mode, processing the prompt, outputting the result, and exiting immediately.",
+    "distractorNotes": {
+      "b": "Claude Code does not use a --daemon flag for CI/CD runs.",
+      "c": "Headless CI environments do not support GUI/Electron interfaces.",
+      "d": "--infinite-loop is an anti-pattern that guarantees build timeouts."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/headless.md",
+    "sourceNote": "Running Claude Code non-interactively in automated pipelines with the -p flag",
+    "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-020",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "ci-cd-integration",
+    "difficulty": "medium",
+    "status": "draft",
+    "scope": "core",
+    "stem": "An automated pipeline runs Claude Code to perform security scanning on PRs and needs to parse the results programmatically to post GitHub inline comments. What CLI flags ensure reliable, structured output?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Instruct Claude in the prompt to format output as XML and parse stdout using custom regular expressions in bash scripts."
+      },
+      {
+        "id": "b",
+        "text": "Use --output-format json with --json-schema to enforce structured, machine-parseable JSON adhering to the review schema."
+      },
+      {
+        "id": "c",
+        "text": "Take a screenshot of the terminal window and parse findings using Optical Character Recognition (OCR) in the CI runner."
+      },
+      {
+        "id": "d",
+        "text": "Pipe standard error through grep and awk to extract line numbers and file paths from compiler and linter stack traces."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Running Claude Code in CI with `--output-format json` and `--json-schema` enforces structured outputs matching a defined schema. This guarantees that findings (file paths, line numbers, severity, descriptions) are returned as valid JSON that downstream CI scripts can reliably parse and post as inline comments.",
+    "distractorNotes": {
+      "a": "Parsing unstructured text or informal XML with regex is brittle and prone to breakage.",
+      "c": "OCR of terminal screenshots is slow, error-prone, and unnecessary when JSON output is supported natively.",
+      "d": "Piping stderr with awk fails when review findings are conversational or multi-line."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/headless.md",
+    "sourceNote": "Using --output-format json and --json-schema for machine-readable pipeline integrations",
+    "sourceCheckedAt": "2026-09-10"
   }
 ]

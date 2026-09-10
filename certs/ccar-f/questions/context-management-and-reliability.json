@@ -40,5 +40,593 @@
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/context-windows.md",
     "sourceNote": "Curating context window contents and trimming tool output fields to prevent context rot",
     "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-context-management-and-reliability-002",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "context-management-and-reliability",
+    "subdomain": "context-management",
+    "difficulty": "medium",
+    "status": "draft",
+    "scope": "core",
+    "stem": "An agent managing long support conversations uses naive conversational summarization every ten turns. Over time, customers complain that the agent misremembers exact refund amounts, order numbers, and specific dates. What inherent risk of progressive summarization explains this failure?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The Messages API automatically inverts all numeric values and dates during conversational summarization passes."
+      },
+      {
+        "id": "b",
+        "text": "Summarization compresses or drops critical discrete transactional entities like numbers, dates, and IDs into vague narrative prose."
+      },
+      {
+        "id": "c",
+        "text": "Summarization causes conversation context windows to double in size on each turn, rapidly exceeding context limits and exhausting token quotas."
+      },
+      {
+        "id": "d",
+        "text": "Claude cannot read or process text that has been passed through more than one progressive summarization cycle."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Progressive text summarization inherently prioritizes high-level narrative flow while discarding or generalizing discrete transactional details like monetary amounts, dates, tracking numbers, and account identifiers. When the model relies solely on summarized history, these exact values are lost or corrupted.",
+    "distractorNotes": {
+      "a": "The API does not alter or invert numbers; the loss of detail is a natural consequence of linguistic compression.",
+      "c": "Summarization reduces context size; it does not double context windows.",
+      "d": "Claude reads summarized text without difficulty, but cannot reconstruct facts that were omitted from the summary."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/context-windows.md",
+    "sourceNote": "Loss of discrete transactional details during progressive conversational summarization",
+    "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-context-management-and-reliability-003",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "context-management-and-reliability",
+    "subdomain": "context-management",
+    "difficulty": "medium",
+    "status": "draft",
+    "scope": "core",
+    "stem": "To prevent context rot in multi-turn support interactions while preserving critical order facts, which architectural pattern is most effective?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Delete all history between turns and force the customer to re-enter their order number and details on every message to ensure data isolation."
+      },
+      {
+        "id": "b",
+        "text": "Delete all history between turns and force the customer to re-enter their order number and details on every message."
+      },
+      {
+        "id": "c",
+        "text": "Maintain a persistent, structured 'case facts' block (IDs, amounts, dates, statuses) injected into every prompt outside the summarized history."
+      },
+      {
+        "id": "d",
+        "text": "Store order facts in an encrypted cookie sent in the browser HTTP headers, outside the model conversation context."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Decoupling persistent transactional facts from conversational history into a dedicated 'case facts' context block ensures that critical values (order IDs, verified refund amounts, timestamps, escalation states) remain exact and uncorrupted across turns, even when the dialogue history is summarized or compacted.",
+    "distractorNotes": {
+      "a": "Retaining raw transcripts causes token exhaustion, slows response latency, and introduces context rot.",
+      "b": "Wiping history frustrates customers by forcing them to repeat information on every single message.",
+      "d": "Browser cookies are transport artifacts that do not place information into Claude's prompt context."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/context-windows.md",
+    "sourceNote": "Maintaining a persistent structured case facts block outside summarized history",
+    "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-context-management-and-reliability-004",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "context-management-and-reliability",
+    "subdomain": "context-management",
+    "difficulty": "hard",
+    "status": "draft",
+    "scope": "core",
+    "stem": "An analyst compiles a 150-page research briefing from multiple subagents into a single prompt for Claude to synthesize. Evaluations show that findings placed in the middle pages are frequently overlooked, while beginning and end sections receive thorough coverage. What prompt layout strategy mitigates this effect?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Reverse the alphabetical order of all words in the document to force the model to attend equally to all positions across the context window."
+      },
+      {
+        "id": "b",
+        "text": "Reverse the alphabetical order of all words in the document to force the model to attend equally to all positions."
+      },
+      {
+        "id": "c",
+        "text": "Instruct Claude to ignore the first and last 50 pages of the document to focus exclusively on middle sections."
+      },
+      {
+        "id": "d",
+        "text": "Place an executive summary of key findings at the beginning, organize content with clear section headers, and repeat critical instructions at the end."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "The 'lost in the middle' phenomenon occurs because transformer attention mechanisms exhibit recency and primacy biases, attending most strongly to the beginning and end of long inputs. Placing key summaries up front, structuring sections with explicit headers, and reiterating critical synthesis instructions at the end counteracts attention decay across long inputs.",
+    "distractorNotes": {
+      "a": "Stripping formatting and punctuation destroys semantic readability and severely degrades model comprehension.",
+      "b": "Reversing word order creates nonsense text that ruins model reasoning.",
+      "c": "Ignoring the start and end discards the sections where attention is naturally strongest."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/context-windows.md",
+    "sourceNote": "Mitigating lost-in-the-middle attention effects with structured front-loaded summaries and clear headers",
+    "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-context-management-and-reliability-005",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "context-management-and-reliability",
+    "subdomain": "context-management",
+    "difficulty": "medium",
+    "status": "draft",
+    "scope": "core",
+    "stem": "In a research pipeline, three upstream subagents return extensive raw HTML scrapes and verbose chain-of-thought traces, which quickly exhausts the report coordinator's context budget. What should the architect modify?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Configure upstream subagents to return structured data (key factual claims, citation metadata, relevance scores) rather than raw verbose traces."
+      },
+      {
+        "id": "b",
+        "text": "Reduce the coordinator's max_tokens limit to 100 tokens to force it to write compact reports without reading details from upstream subagents."
+      },
+      {
+        "id": "c",
+        "text": "Instruct the coordinator to delete all subagent responses without reading them and generate synthetic conclusions."
+      },
+      {
+        "id": "d",
+        "text": "Switch from Claude to a 1990s rule-based regex script to parse unstructured research papers and industry reports."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Subagents should act as information filters and compressors. Rather than passing raw web dumps or verbose internal thoughts to the coordinator, subagents should extract and return structured summaries containing key claims, relevant excerpts, and citations, respecting the downstream coordinator's context budget.",
+    "distractorNotes": {
+      "b": "Restricting the coordinator to 100 tokens prevents it from generating comprehensive reports.",
+      "c": "Deleting subagent responses leaves the coordinator with zero data to synthesize.",
+      "d": "Rule-based regexes cannot synthesize semantic research findings."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
+    "sourceNote": "Structuring subagent outputs into concise facts and citations to conserve coordinator context",
+    "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-context-management-and-reliability-006",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "context-management-and-reliability",
+    "subdomain": "escalation-and-reliability",
+    "difficulty": "hard",
+    "status": "draft",
+    "scope": "core",
+    "stem": "A support agent achieves poor first-contact resolution because it escalates simple return requests while attempting to resolve complex policy exceptions autonomously. An engineer suggests having the model self-report a confidence score (1-10) and escalating whenever confidence is low. Why is this proposal flawed?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Claude models cannot output Arabic numerals between 1 and 10 when prompted inside conversational system instructions."
+      },
+      {
+        "id": "b",
+        "text": "Claude models cannot output Arabic numerals between 1 and 10 when prompted inside conversational system instructions under default parameters."
+      },
+      {
+        "id": "c",
+        "text": "The Messages API strictly forbids declaring confidence scoring fields in system prompts or tool parameter schemas."
+      },
+      {
+        "id": "d",
+        "text": "Confidence scoring causes the model to consume ten times more GPU memory and introduces multi-second token latency."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Self-reported confidence scores from language models are notoriously uncalibrated. A model suffering from hallucinations or misunderstanding a complex policy exception will frequently output high confidence (e.g. 9/10), while being overly cautious on unfamiliar phrasing for simple tasks. Explicit escalation criteria with few-shot examples provide far better boundary calibration.",
+    "distractorNotes": {
+      "a": "Claude handles numbers and ratings with high fluency.",
+      "c": "The Messages API places no restrictions on prompting for confidence scores or ratings.",
+      "d": "Outputting a number has normal token costs and does not multiply GPU memory consumption."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices.md",
+    "sourceNote": "Unreliability of self-reported LLM confidence versus explicit escalation criteria",
+    "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-context-management-and-reliability-007",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "context-management-and-reliability",
+    "subdomain": "escalation-and-reliability",
+    "difficulty": "medium",
+    "status": "draft",
+    "scope": "core",
+    "stem": "A customer initiates a chat session with: 'I demand to speak to a human representative right now.' What is the proper architectural response for an automated support resolution agent?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Refuse the escalation and force the customer through three mandatory automated diagnostic questions before escalating."
+      },
+      {
+        "id": "b",
+        "text": "Pretend to be a human agent named 'Bob' to placate the customer and avoid routing to human representative queues."
+      },
+      {
+        "id": "c",
+        "text": "Refuse the escalation and force the customer through three mandatory automated diagnostic questions before escalating to human queues."
+      },
+      {
+        "id": "d",
+        "text": "Disconnect the chat session and block the user's IP address from accessing future customer support services."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Customer service best practices and AI safety guidelines dictate that explicit customer demands for human assistance must be honored immediately. Attempting to deflect or force automated investigation when a user explicitly requests a human causes intense frustration and harms customer satisfaction.",
+    "distractorNotes": {
+      "a": "Forcing diagnostic surveys against explicit user demands destroys customer satisfaction and escalates anger.",
+      "b": "Deceiving users by impersonating a human violates AI ethics, brand trust, and regulatory transparency laws.",
+      "d": "Terminating the session and blocking the user treats a legitimate support request as malicious activity."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices.md",
+    "sourceNote": "Immediately honoring explicit user requests for human escalation without forced deflection",
+    "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-context-management-and-reliability-008",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "context-management-and-reliability",
+    "subdomain": "escalation-and-reliability",
+    "difficulty": "medium",
+    "status": "draft",
+    "scope": "core",
+    "stem": "A customer requests a price match against an unauthorized third-party marketplace listing. The company policy documentation explicitly addresses own-site adjustments, but is completely silent regarding third-party marketplaces. How should the agent proceed?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Accuse the customer of policy abuse and fraudulent behavior, immediately terminating their corporate account access and revoking discounts."
+      },
+      {
+        "id": "b",
+        "text": "Accuse the customer of policy abuse and fraudulent behavior, immediately terminating their corporate account access."
+      },
+      {
+        "id": "c",
+        "text": "Assume that anything not explicitly forbidden by written policy is automatically authorized for autonomous approval."
+      },
+      {
+        "id": "d",
+        "text": "Escalate the case to human review because the request falls into an unaddressed policy gap where the agent lacks decision authority."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "When an agent encounters a policy gap or ambiguity (a scenario not covered by documented business rules), the agent must not invent unauthorized policies or speculate. Escalating the case to a human supervisor ensures appropriate policy interpretation while identifying areas where corporate documentation needs updates.",
+    "distractorNotes": {
+      "a": "Inventing unauthorized discounting rules violates financial controls and risks significant revenue loss.",
+      "b": "A customer asking about price matching is routine inquiries, not evidence of account fraud.",
+      "c": "Assuming silence implies full authorization creates severe financial and legal exposure."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices.md",
+    "sourceNote": "Escalating policy gaps and ambiguous business rules to human review",
+    "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-context-management-and-reliability-009",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "context-management-and-reliability",
+    "subdomain": "escalation-and-reliability",
+    "difficulty": "medium",
+    "status": "draft",
+    "scope": "core",
+    "stem": "An agent queries lookup_customer(name='John Smith') and the backend returns three distinct accounts with identical names. How should the agent resolve this ambiguity?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Prompt the customer to provide a secondary identifier (such as email address, phone number, or account ID) to disambiguate the account."
+      },
+      {
+        "id": "b",
+        "text": "Pick the first John Smith record in the list and process their refund immediately to maintain low handle time."
+      },
+      {
+        "id": "c",
+        "text": "Merge all three accounts into a single unified database profile to eliminate name duplication in the backend."
+      },
+      {
+        "id": "d",
+        "text": "Select the account that has the highest outstanding balance, assuming it represents the most important customer relationship to prioritize."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "When lookup tools return multiple matching records for common names, guessing or picking arbitrarily risks exposing other customers' PII or altering the wrong account. The agent must prompt the user for secondary unique identifiers (e.g. order number, billing zip code, or email address) to disambiguate the entity safely.",
+    "distractorNotes": {
+      "b": "Arbitrarily picking an account breaches privacy regulations and risks modifying another customer's data.",
+      "c": "Merging independent customer accounts destroys database integrity and conflates distinct individuals.",
+      "d": "Selecting by balance is an arbitrary heuristic that exacerbates privacy and financial violations."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/how-tool-use-works.md",
+    "sourceNote": "Resolving entity ambiguity by prompting for secondary identifiers rather than heuristic selection",
+    "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-context-management-and-reliability-010",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "context-management-and-reliability",
+    "subdomain": "error-propagation",
+    "difficulty": "hard",
+    "status": "draft",
+    "scope": "core",
+    "stem": "A subagent searching academic repositories encounters an HTTP 429 rate limit error after retrieving three initial papers. How should it propagate this failure back to the coordinator?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Discard the three retrieved papers and return a generic 'Service unavailable' error string with zero diagnostic context."
+      },
+      {
+        "id": "b",
+        "text": "Discard the three retrieved papers and return a generic 'Service unavailable' error string with zero diagnostic context to the coordinator."
+      },
+      {
+        "id": "c",
+        "text": "Suppress the 429 error and return the three papers marked as complete research without mentioning the rate limit."
+      },
+      {
+        "id": "d",
+        "text": "Crash the process immediately and print a raw stack trace to standard output without notifying the coordinator."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Effective error propagation in multi-agent systems returns rich structured context: the nature of the error (e.g. rate limit), partial results already collected, what queries failed, and retry metadata. This enables the coordinator to make intelligent decisions\u2014such as utilizing partial findings, delegating remaining queries to an alternative subagent, or scheduling a retry.",
+    "distractorNotes": {
+      "a": "Throwing away partial findings wastes work and hides actionable details from the coordinator.",
+      "c": "Falsely claiming research is complete when half the queries failed conceals coverage gaps.",
+      "d": "Crashing the process breaks orchestration pipelines and halts the user session."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
+    "sourceNote": "Propagating structured error context and partial results to enable coordinator recovery",
+    "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-context-management-and-reliability-011",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "context-management-and-reliability",
+    "subdomain": "error-propagation",
+    "difficulty": "medium",
+    "status": "draft",
+    "scope": "core",
+    "stem": "In a research synthesis system, the financial data subagent is unable to fetch balance sheet records due to an authentication failure on an external API. How should the final synthesized report reflect this?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Fabricate plausible financial figures using historical industry averages without mentioning the API failure in the report."
+      },
+      {
+        "id": "b",
+        "text": "Abort the entire report generation process and return an empty refusal response to the user due to the missing source."
+      },
+      {
+        "id": "c",
+        "text": "Fabricate plausible financial figures using historical industry averages without mentioning the API failure in the synthesized report."
+      },
+      {
+        "id": "d",
+        "text": "Delete all other research gathered from successful subagents and output only the raw HTTP 401 unauthorized status code."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "When specific data sources fail in a multi-source research workflow, the report should deliver the valid findings gathered from successful sources while explicitly documenting coverage gaps and data limitations. This transparency ensures credibility without abandoning the entire research task.",
+    "distractorNotes": {
+      "a": "Fabricating financial numbers creates serious legal liability and destroys report veracity.",
+      "b": "Discarding valid qualitative research because one data source failed is unnecessarily destructive.",
+      "d": "Outputting raw error codes provides no value to end users seeking research insights."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
+    "sourceNote": "Annotating coverage gaps in synthesis reports when upstream data sources fail",
+    "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-context-management-and-reliability-012",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "context-management-and-reliability",
+    "subdomain": "codebase-exploration-context",
+    "difficulty": "medium",
+    "status": "draft",
+    "scope": "core",
+    "stem": "During an extended Claude Code session exploring a repository with 500,000 lines of code, the model begins confusing file paths and referencing generic design patterns rather than the actual classes discovered earlier. What technique prevents this context degradation?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Repeat the entire directory tree in every user prompt to continuously remind the model of project organization."
+      },
+      {
+        "id": "b",
+        "text": "Disable git tracking in the repository to prevent the model from inspecting branch history during exploration."
+      },
+      {
+        "id": "c",
+        "text": "Set model temperature to 1.5 to stimulate creative associations across disparate legacy codebase components."
+      },
+      {
+        "id": "d",
+        "text": "Repeat the entire directory tree in every user prompt to continuously remind the model of project organization and module boundaries."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "In long exploration sessions, earlier tool outputs and file readings slide back into context history and suffer from context degradation. Having the agent maintain a structured scratchpad file on disk recording key discoveries (core classes, architecture patterns, entry points) provides a persistent source of truth that can be re-read and updated as needed.",
+    "distractorNotes": {
+      "a": "Pasting giant directory trees repeatedly consumes massive token budgets and accelerates context exhaustion.",
+      "b": "Disabling git tracking has no effect on model prompt context and breaks version control.",
+      "c": "Increasing temperature increases hallucinations, worsening path confusion."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/large-codebases.md",
+    "sourceNote": "Using scratchpad files to persist key architectural findings against context degradation",
+    "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-context-management-and-reliability-013",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "context-management-and-reliability",
+    "subdomain": "codebase-exploration-context",
+    "difficulty": "hard",
+    "status": "draft",
+    "scope": "core",
+    "stem": "A multi-agent codebase migration pipeline processes a large repository over several hours. To support crash recovery and resumption without re-running completed analysis, what state management pattern should be used?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Each agent exports structured state manifests (completed files, AST summaries, pending queue) to disk so the coordinator can resume from checkpoints."
+      },
+      {
+        "id": "b",
+        "text": "Keep all state strictly in volatile Node.js process RAM, accepting that process crashes require starting analysis over from the beginning."
+      },
+      {
+        "id": "c",
+        "text": "Take periodic screenshots of the terminal emulator window and parse them using optical character recognition on reboot."
+      },
+      {
+        "id": "d",
+        "text": "Rely entirely on browser localStorage to persist multi-agent orchestration state across backend server crashes."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Long-running agentic pipelines require durable state persistence for resilience. Exporting structured checkpoint manifests (tracking completed items, intermediate findings, and remaining tasks) allows the coordinator to reconstruct state on resumption after a crash or timeout without having to repeat expensive exploration.",
+    "distractorNotes": {
+      "b": "Volatile in-memory state means any process crash, network interruption, or OOM wipes all work.",
+      "c": "Terminal screenshots are fragile, lossy, and completely inadequate for structured pipeline recovery.",
+      "d": "Browser localStorage is not available to headless server-side agent processes."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/large-codebases.md",
+    "sourceNote": "Structured state manifest exports to support crash recovery and checkpoint resumption",
+    "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-context-management-and-reliability-014",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "context-management-and-reliability",
+    "subdomain": "human-review-workflows",
+    "difficulty": "hard",
+    "status": "draft",
+    "scope": "core",
+    "stem": "A document extraction pipeline achieves an aggregate 98% accuracy across 100,000 processed forms. The operations team plans to completely eliminate human review for high-confidence extractions. What auditing practice should be retained to detect hidden systemic failure modes?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Review forms only when the server CPU temperature exceeds 80 degrees Celsius to correlate audits with system load."
+      },
+      {
+        "id": "b",
+        "text": "Implement stratified random sampling across document types and field segments to verify accuracy and catch novel error patterns."
+      },
+      {
+        "id": "c",
+        "text": "Send all 100,000 documents to human reviewers every week, eliminating the cost and efficiency benefits of automated machine processing."
+      },
+      {
+        "id": "d",
+        "text": "Inspect documents only if the customer submits a formal regulatory lawsuit regarding an erroneous extraction field."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "High aggregate accuracy (e.g. 98%) can easily mask severe localized failure rates (e.g. 40% failure on handwritten dates or rare form variants). Stratified random sampling continuously audits a small percentage of extractions across all form segments and confidence tiers, catching silent drift and systemic errors.",
+    "distractorNotes": {
+      "a": "Hardware temperature has no correlation with data extraction quality.",
+      "c": "Reviewing 100% of documents eliminates the efficiency benefits of AI automation.",
+      "d": "Waiting for lawsuits before auditing represents catastrophic risk management and legal negligence."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs.md",
+    "sourceNote": "Using stratified random sampling to audit high-confidence extractions and detect hidden errors",
+    "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-context-management-and-reliability-015",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "context-management-and-reliability",
+    "subdomain": "provenance-and-uncertainty",
+    "difficulty": "hard",
+    "status": "draft",
+    "scope": "core",
+    "stem": "During research synthesis on solar panel efficiency, two highly credible sources report conflicting statistics: Source A reports 24.2% maximum laboratory efficiency (published 2025), while Source B reports 22.1% (published 2023). How should the synthesis agent report this finding?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Silently calculate the mathematical average (23.15%) and present it as the authoritative figure without citing either source."
+      },
+      {
+        "id": "b",
+        "text": "Discard Source B entirely and claim that laboratory efficiency has always been 24.2%, ignoring historical context."
+      },
+      {
+        "id": "c",
+        "text": "Silently calculate the mathematical average (23.15%) and present it as the authoritative figure without citing either source in the report."
+      },
+      {
+        "id": "d",
+        "text": "Refuse to generate the report due to detected logical contradiction between credible external reference sources."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "When credible sources present conflicting data, the synthesis agent must preserve provenance and context. Attributing both figures with their respective publication dates and experimental parameters allows readers to understand the temporal context (e.g. recent efficiency improvements) rather than creating a fabricated average or arbitrarily discarding valid historical data.",
+    "distractorNotes": {
+      "a": "Averaging conflicting numbers fabricates a synthetic data point that neither source published.",
+      "b": "Discarding historical context erases the progression and ignores source context.",
+      "d": "Differing measurements in research are normal and should be synthesized with attribution, not treated as fatal errors."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/citations.md",
+    "sourceNote": "Preserving provenance and contextualizing conflicting statistics from credible sources",
+    "sourceCheckedAt": "2026-09-10"
   }
 ]

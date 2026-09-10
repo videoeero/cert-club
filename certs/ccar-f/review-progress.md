@@ -29,14 +29,14 @@ The certification assessment reached a unanimous **GO** verdict:
 
 The guide publishes exact domain weights in Section 4. Normalized with `npm run scaffold -- --normalize "27,18,20,20,15"`:
 
-| Domain | Slug | Weight | Seed Questions |
-| --- | --- | ---: | ---: |
-| Agentic Architecture & Orchestration | `agentic-architecture-and-orchestration` | 27% | 1 |
-| Tool Design & MCP Integration | `tool-design-and-mcp-integration` | 18% | 1 |
-| Claude Code Configuration & Workflows | `claude-code-configuration-and-workflows` | 20% | 1 |
-| Prompt Engineering & Structured Output | `prompt-engineering-and-structured-output` | 20% | 1 |
-| Context Management & Reliability | `context-management-and-reliability` | 15% | 1 |
-| **Total** | | **100%** | **5** |
+| Domain | Slug | Weight | Target | Bank Questions |
+| --- | --- | ---: | ---: | ---: |
+| Agentic Architecture & Orchestration | `agentic-architecture-and-orchestration` | 27% | 27 | 27 |
+| Tool Design & MCP Integration | `tool-design-and-mcp-integration` | 18% | 18 | 18 |
+| Claude Code Configuration & Workflows | `claude-code-configuration-and-workflows` | 20% | 20 | 20 |
+| Prompt Engineering & Structured Output | `prompt-engineering-and-structured-output` | 20% | 20 | 20 |
+| Context Management & Reliability | `context-management-and-reliability` | 15% | 15 | 15 |
+| **Total** | | **100%** | **100** | **100** |
 
 Exam specs from blueprint:
 - Total items: 60 questions
@@ -97,3 +97,30 @@ One `core` question seeded per domain to verify sourceability and schema validit
 - `ccar-f-claude-code-configuration-and-workflows-001`: Path-specific rules in `.claude/rules/` with YAML frontmatter `paths` glob patterns (`https://code.claude.com/docs/en/memory.md`).
 - `ccar-f-prompt-engineering-and-structured-output-001`: Message Batches API 50% discount and SLA considerations for synchronous vs asynchronous workloads (`https://platform.claude.com/docs/en/build-with-claude/batch-processing.md`).
 - `ccar-f-context-management-and-reliability-001`: Trimming tool outputs to prevent context rot over long conversations (`https://platform.claude.com/docs/en/build-with-claude/context-windows.md`).
+
+## Batch record: 2026-09-10 (Target 100 questions)
+
+Authored 95 new questions across all five domains to reach the 100-question target, proportional to the manifest domain weights:
+
+- `agentic-architecture-and-orchestration`: 26 new items (27 total, 27% share vs 27% blueprint weight)
+- `tool-design-and-mcp-integration`: 17 new items (18 total, 18% share vs 18% blueprint weight)
+- `claude-code-configuration-and-workflows`: 19 new items (20 total, 20% share vs 20% blueprint weight)
+- `prompt-engineering-and-structured-output`: 19 new items (20 total, 20% share vs 20% blueprint weight)
+- `context-management-and-reliability`: 14 new items (15 total, 15% share vs 15% blueprint weight)
+
+### Sources cited
+
+Every question cites authoritative, open vendor documentation verified live on 2026-09-10:
+- Claude Platform documentation (`https://platform.claude.com/docs/en/...`): Messages API tool use, handling stop reasons, context windows, batch processing, structured outputs, prompt engineering best practices, citations.
+- Claude Code documentation (`https://code.claude.com/docs/en/...`): subagents, MCP configuration, memory and rules, custom skills, hooks, code review, headless mode, large codebases.
+- Model Context Protocol specifications (`https://modelcontextprotocol.io/docs/2025-06-18/...`): server architecture, resources, error handling (`isError` and retry semantics).
+
+### Judgement calls and bias controls
+
+1. **Cognitive level and depth anchors**: Followed Anchor 2 strictly. Items discriminate conceptually on failure modes, error recovery boundaries, lifecycle hooks, state persistence, and architectural tradeoffs. Named flags (e.g. `-p`, `--output-format json`, `allowed-tools`, `stop_reason`) appear as supporting detail inside options rather than trivia test points.
+2. **Key length and distractor padding**: Padded distractors with realistic technical qualifying clauses to eliminate length bias. Final bank metrics:
+   - Mean length delta: +0.72 characters (well below the 10.0 character ceiling).
+   - Longest option is key share: 34% (well below the 45% ceiling).
+3. **Key rotation**: Position distribution across single-select answers is evenly balanced: 25 A (25%), 26 B (26%), 25 C (25%), 24 D (24%), strictly avoiding position bias (ceiling 50%).
+4. **Distractor notes**: 100% of distractors have complete `distractorNotes` entries detailing why the alternative is plausible but incorrect against the cited vendor documentation.
+5. **Format and thin areas**: All 100 items are currently single-select. Future authoring passes can introduce multi-select items (select-2 / select-3) to further test multi-aspect architectural decisions.
