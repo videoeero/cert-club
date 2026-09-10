@@ -691,6 +691,7 @@ test("buildRepositoryMetrics reports every bank when no slug is given", async ()
   assert.deepEqual(reports.map((report) => report.cert).sort(), [
     "aws-clf-c02",
     "az-900",
+    "ccar-f",
     "ccdv-f",
   ]);
 });

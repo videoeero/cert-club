@@ -1,0 +1,44 @@
+[
+  {
+    "id": "ccar-f-context-management-and-reliability-001",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "context-management-and-reliability",
+    "subdomain": "context-window-optimization",
+    "difficulty": "medium",
+    "status": "draft",
+    "scope": "core",
+    "stem": "An agent assisting with customer returns queries an order database that returns forty fields per line item, although the return logic only requires item ID, quantity, purchase date, and return eligibility. As conversations lengthen, the agent exhibits context rot and degraded recall. What is the most effective architectural remedy?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Upgrade to a larger context window tier while instructing the agent in its system prompt to prioritize recent user inputs."
+      },
+      {
+        "id": "b",
+        "text": "Store all raw tool outputs in conversation history and instruct the model to perform self-consistency validation on each turn."
+      },
+      {
+        "id": "c",
+        "text": "Clear the entire conversation history between turns and inject only the customer's initial message into subsequent API calls."
+      },
+      {
+        "id": "d",
+        "text": "Trim tool outputs before appending them to the conversation history, retaining only the fields required for return decisions."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Accumulating verbose tool outputs consumes context tokens rapidly and degrades model recall over extended turns (context rot). Trimming tool outputs to only the fields relevant to the task before appending them to the conversation history prevents context dilution while preserving essential decision data.",
+    "distractorNotes": {
+      "a": "Larger context windows do not prevent context rot or attention dilution caused by accumulating redundant data.",
+      "b": "Retaining raw outputs exacerbates token exhaustion and self-consistency prompts increase token consumption further.",
+      "c": "Clearing conversation history destroys multi-turn conversational coherence and loses track of prior tool interactions."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/context-windows.md",
+    "sourceNote": "Curating context window contents and trimming tool output fields to prevent context rot",
+    "sourceCheckedAt": "2026-09-10"
+  }
+]

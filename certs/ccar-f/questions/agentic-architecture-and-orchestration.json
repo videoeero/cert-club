@@ -1,0 +1,44 @@
+[
+  {
+    "id": "ccar-f-agentic-architecture-and-orchestration-001",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agentic-architecture-and-orchestration",
+    "subdomain": "subagent-invocation",
+    "difficulty": "medium",
+    "status": "draft",
+    "scope": "core",
+    "stem": "A coordinator agent orchestrates a research workflow by delegating topic synthesis to a specialized subagent. Why must the coordinator explicitly include prior findings, source references, and relevant excerpts within the subagent's prompt?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Subagents execute in an isolated context window and do not automatically inherit the coordinator's prior conversation history."
+      },
+      {
+        "id": "b",
+        "text": "The Agent SDK enforces a shared global cache that overwrites coordinator history whenever a subagent is spawned."
+      },
+      {
+        "id": "c",
+        "text": "Subagents can only access external data sources through direct API calls and reject conversation-level parameters."
+      },
+      {
+        "id": "d",
+        "text": "Spawning a subagent automatically resets the model's system prompt and deletes previous tool call definitions."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Subagents run in their own isolated context windows and do not inherit the coordinator's conversation history automatically. The coordinator must explicitly provide all relevant facts, prior research findings, and metadata in the prompt when invoking the subagent.",
+    "distractorNotes": {
+      "b": "There is no shared global cache that overwrites coordinator history during subagent creation.",
+      "c": "Subagents accept natural language prompts and structured parameters from the invoking agent.",
+      "d": "Subagent spawning does not reset system prompts or delete existing tool definitions in the session."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
+    "sourceNote": "Subagents execute with isolated context and require explicit context passing from the coordinator",
+    "sourceCheckedAt": "2026-09-10"
+  }
+]

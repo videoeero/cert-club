@@ -1,0 +1,44 @@
+[
+  {
+    "id": "ccar-f-tool-design-and-mcp-integration-001",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "tool-design-and-mcp-integration",
+    "subdomain": "mcp-configuration",
+    "difficulty": "medium",
+    "status": "draft",
+    "scope": "core",
+    "stem": "A software team wants to configure a shared Model Context Protocol (MCP) server across their repository so all teammates can access it, while ensuring API secrets are not committed to version control. Where should this configuration be placed?",
+    "options": [
+      {
+        "id": "a",
+        "text": "In the global ~/.claude.json file with static credentials encrypted by the local operating system keychain."
+      },
+      {
+        "id": "b",
+        "text": "In the project-level .mcp.json file using environment variable expansion for the required authentication tokens."
+      },
+      {
+        "id": "c",
+        "text": "In the repository's root CLAUDE.md file using a markdown code block tagged with the @mcp-auth directive."
+      },
+      {
+        "id": "d",
+        "text": "In a directory-level .claude/config.json file referencing tokens stored in a plaintext git credential helper."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Shared MCP servers should be declared in the project-level .mcp.json file, which is committed to version control so team members share the server definition. Sensitive credentials should be referenced via environment variable expansion (such as ${GITHUB_TOKEN}) so secrets remain out of the repository.",
+    "distractorNotes": {
+      "a": "The global ~/.claude.json file is user-specific and is not shared across teammates via version control.",
+      "c": "CLAUDE.md files provide guidelines and project context, not structured MCP server declarations.",
+      "d": "Claude Code does not recognize .claude/config.json or git credential helpers for configuring MCP servers."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/mcp.md",
+    "sourceNote": "Configure MCP servers in project-scoped .mcp.json with environment variable expansion",
+    "sourceCheckedAt": "2026-09-10"
+  }
+]

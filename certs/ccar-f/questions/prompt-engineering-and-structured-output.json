@@ -1,0 +1,44 @@
+[
+  {
+    "id": "ccar-f-prompt-engineering-and-structured-output-001",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "prompt-engineering-and-structured-output",
+    "subdomain": "batch-processing",
+    "difficulty": "medium",
+    "status": "draft",
+    "scope": "core",
+    "stem": "An engineering team wants to reduce API expenses across their automated systems. They operate two workloads: a blocking pull request check that developers wait on before merging, and an overnight technical debt analysis report. How should the team evaluate using the Message Batches API?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Retain synchronous API calls for both workflows because the Message Batches API cannot correlate individual responses with requests."
+      },
+      {
+        "id": "b",
+        "text": "Adopt the Message Batches API for the overnight report only, while keeping synchronous API calls for the blocking pull request check."
+      },
+      {
+        "id": "c",
+        "text": "Adopt the Message Batches API for both workflows with short polling intervals to guarantee immediate returns on blocking checks."
+      },
+      {
+        "id": "d",
+        "text": "Adopt the Message Batches API for both workflows while setting a client-side timeout that cancels delayed batch jobs after five minutes."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "The Message Batches API offers a 50% cost discount but processes asynchronously with completion windows up to 24 hours and no real-time latency guarantee. This makes it ideal for latency-tolerant, non-blocking overnight reports, but inappropriate for blocking pre-merge checks where developers need immediate feedback.",
+    "distractorNotes": {
+      "a": "The Message Batches API correlates request and response records reliably using custom_id fields.",
+      "c": "Polling cannot force the Message Batches API to return immediate results for blocking pull request checks.",
+      "d": "Client-side timeouts cannot accelerate batch completion and will simply abort viable batch requests."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/batch-processing.md",
+    "sourceNote": "Message Batches API 50% discount and 24-hour SLA considerations for synchronous vs asynchronous workloads",
+    "sourceCheckedAt": "2026-09-10"
+  }
+]

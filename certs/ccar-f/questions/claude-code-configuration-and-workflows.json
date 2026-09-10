@@ -1,0 +1,44 @@
+[
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-001",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "path-specific-rules",
+    "difficulty": "medium",
+    "status": "draft",
+    "scope": "core",
+    "stem": "A project has test files distributed across multiple subdirectories alongside source code. The team wants uniform testing conventions to apply automatically whenever Claude Code works on test files, without loading those conventions during unrelated edits. What is the recommended configuration?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Add nested CLAUDE.md files in every test subdirectory instructing Claude Code to inspect neighboring source files."
+      },
+      {
+        "id": "b",
+        "text": "Define a custom slash command in .claude/commands/ that runs an interactive linter check before every write operation."
+      },
+      {
+        "id": "c",
+        "text": "Create rule files in .claude/rules/ with YAML frontmatter specifying paths glob patterns matching the test files."
+      },
+      {
+        "id": "d",
+        "text": "Configure the root CLAUDE.md file with an @include-glob directive pointing to the workspace test configuration file."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Rule files placed in .claude/rules/ support YAML frontmatter with a paths field containing glob patterns (such as **/*.test.ts). Claude Code conditionally loads these rules only when editing matching files, ensuring conventions apply across all directories without bloating context for non-test tasks.",
+    "distractorNotes": {
+      "a": "Subdirectory CLAUDE.md files do not scale when test files are distributed throughout dozens of folders.",
+      "b": "Slash commands require manual invocation and do not provide automatic convention loading during edits.",
+      "d": "CLAUDE.md supports @import for file inclusion, but does not support an @include-glob directive for path matching."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/memory.md",
+    "sourceNote": "Path-specific rules in .claude/rules/ using YAML frontmatter paths glob patterns",
+    "sourceCheckedAt": "2026-09-10"
+  }
+]
