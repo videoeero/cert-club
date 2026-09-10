@@ -31,12 +31,12 @@ The guide publishes exact domain weights in Section 4. Normalized with `npm run 
 
 | Domain | Slug | Weight | Target | Bank Questions |
 | --- | --- | ---: | ---: | ---: |
-| Agentic Architecture & Orchestration | `agentic-architecture-and-orchestration` | 27% | 27 | 27 |
+| Agentic Architecture & Orchestration | `agentic-architecture-and-orchestration` | 27% | 27 | 29 |
 | Tool Design & MCP Integration | `tool-design-and-mcp-integration` | 18% | 18 | 18 |
 | Claude Code Configuration & Workflows | `claude-code-configuration-and-workflows` | 20% | 20 | 20 |
 | Prompt Engineering & Structured Output | `prompt-engineering-and-structured-output` | 20% | 20 | 20 |
 | Context Management & Reliability | `context-management-and-reliability` | 15% | 15 | 15 |
-| **Total** | | **100%** | **100** | **100** |
+| **Total** | | **100%** | **100** | **102** |
 
 Exam specs from blueprint:
 - Total items: 60 questions
@@ -335,5 +335,38 @@ Evaluated the 15 redrafted questions previously set to `status: "draft"` across 
 - `ccar-f-context-management-and-reliability-012`: confirmed (option `d`, maintaining structured scratchpad file on disk against context degradation)
 - `ccar-f-context-management-and-reliability-015`: confirmed (option `c`, citing both statistics with publication dates to preserve provenance)
 
+## Multi-select authoring batch: 2026-09-10 (Domain: Agentic Architecture & Orchestration)
 
+Authored 2 new multi-select (`type: "multi"`) questions in `certs/ccar-f/questions/agentic-architecture-and-orchestration.json` targeting subtopics where multiple independent technical facts naturally exist in the cited vendor documentation without artificial padding:
+
+- `ccar-f-agentic-architecture-and-orchestration-028`: Custom subagent initial context window startup components vs parent session isolation. Keys `a` and `c` (`["a", "c"]`): Git repository status snapshot captured at session start and the active CLAUDE.md hierarchy (project instructions, CLAUDE.local.md, managed policies). Distractors reflect common misconceptions regarding subagent inheritance (coordinator conversation history transcripts, auto memory, file buffers). Status: `draft` pending evaluation. Source verified against `https://code.claude.com/docs/en/sub-agents.md` (*What loads at startup*).
+- `ccar-f-agentic-architecture-and-orchestration-029`: PreToolUse hook concurrency and permission decision hierarchy. Keys `b` and `d` (`["b", "d"]`): All matching hooks execute concurrently to completion with `additionalContext` payloads aggregated together, and conflicting permission decisions enforce the deterministic precedence hierarchy `deny` > `defer` > `ask` > `allow`. Distractors reflect sequential short-circuiting, interactive-only execution, and allow-overrides-deny misconceptions. Status: `draft` pending evaluation. Source verified against `https://code.claude.com/docs/en/hooks-guide.md` (*Combine results from multiple hooks*).
+
+### Format mix & Bank metrics impact
+- **Domain format mix**: Domain 1 now contains 27 single-select items and 2 multi-select items (29 total questions; 93.1% single, 6.9% multi).
+- **Bank-wide format mix**: 100 single-select, 2 multi-select (102 total questions; 98.0% single, 2.0% multi).
+- **Single-select position distribution**: Unchanged at 25/26/25/24 (n=100).
+- **Option length bias**: Mean option length delta is -1.40 chars (median 0.42 chars), comfortably passing the +/-10 char threshold.
+- **Longest option as key share**: 25/100 (25%), matching random baseline.
+- **Scope**: 102/102 core (100%), 0 deep (0%).
+
+## Correctness evaluation pass: 2026-09-10 (Multi-select batch, 2 questions)
+
+Evaluated the 2 newly authored multi-select questions in Domain 1 (`agentic-architecture-and-orchestration`). Each answer key set was cold-derived independently against the cited vendor documentation before checking against the stored `correct` array and `explanation`. Distractor plausibility and stem conventions were audited against `CONTRIBUTING.md`.
+
+### Summary of findings
+
+- **Scope**: 2 multi-select items in Domain 1 (`ccar-f-agentic-architecture-and-orchestration-028`, `029`)
+- **Total evaluated**: 2 questions
+- **Confirmed (`status: "reviewed"`)**: 2 questions (100%)
+- **Miskeyed**: 0
+- **Unsupported**: 0
+- **Weak distractors**: 0
+- **Unreviewed / Draft items remaining in bank**: 0 (all 102 questions in CCAR-F are now confirmed and marked `reviewed`)
+
+### Per-question dispositions
+
+#### Agentic Architecture & Orchestration
+- `ccar-f-agentic-architecture-and-orchestration-028`: confirmed (options `a` and `c`, Git status snapshot and CLAUDE.md hierarchy automatically loaded into non-fork subagent initial context; appended `(Select TWO.)` for stem clarity)
+- `ccar-f-agentic-architecture-and-orchestration-029`: confirmed (options `b` and `d`, PreToolUse hooks execute in parallel with aggregated additionalContext and resolve conflicting permissions via `deny` > `defer` > `ask` > `allow`; clarified stem phrasing with `(Select TWO.)`)
 

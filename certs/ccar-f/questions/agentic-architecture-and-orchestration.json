@@ -1132,5 +1132,99 @@
     "sourceUrl": "https://code.claude.com/docs/en/memory.md",
     "sourceNote": "Handling stale session context after external repository modifications",
     "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-agentic-architecture-and-orchestration-028",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "agentic-architecture-and-orchestration",
+    "subdomain": "subagent-invocation",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An architect designs a multi-agent workflow in Claude Code where a coordinator agent delegates code analysis tasks to a custom project subagent. When Claude Code spawns this custom subagent, which TWO state components are automatically included in its initial context window without explicit prompt injection? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "The repository's Git status snapshot captured at the start of the parent session."
+      },
+      {
+        "id": "b",
+        "text": "The full transcript of prior conversation turns and tool outputs from the coordinator."
+      },
+      {
+        "id": "c",
+        "text": "Active CLAUDE.md hierarchy configurations, including project and local policy rules."
+      },
+      {
+        "id": "d",
+        "text": "The coordinator agent's auto memory storage and runtime output style configurations."
+      },
+      {
+        "id": "e",
+        "text": "Cached in-memory buffers of source files read by the coordinator earlier in the turn."
+      }
+    ],
+    "correct": [
+      "a",
+      "c"
+    ],
+    "explanation": "When Claude Code spawns a custom subagent, its initial context window is isolated from the coordinator's conversational turn history and prior tool outputs, but it automatically loads every level of the active CLAUDE.md hierarchy (such as project instructions and CLAUDE.local.md) along with a Git status snapshot from the start of the parent session. Prior conversation transcripts, file contents read by the coordinator, auto memory, and output styles do not reach the subagent unless explicitly passed in the delegation prompt.",
+    "distractorNotes": {
+      "b": "Subagents execute in an isolated context window and do not inherit prior conversation turns or tool call transcripts from the coordinator.",
+      "d": "Parent auto memory and output styles are not loaded into a non-fork subagent context window.",
+      "e": "Subagents start fresh and must read files independently using their allowed tools; parent file read buffers are not retained."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
+    "sourceNote": "Custom subagents load the CLAUDE.md hierarchy and git status into their initial context window",
+    "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-agentic-architecture-and-orchestration-029",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "agentic-architecture-and-orchestration",
+    "subdomain": "agent-sdk-hooks",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An enterprise platform team configures multiple automated PreToolUse hooks in Claude Code settings to enforce compliance and safety policies on file operations and shell commands. When an agent initiates a tool call that triggers multiple matching hooks, which TWO statements accurately describe how Claude Code coordinates their execution and resolves their verdicts? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Claude Code executes hooks sequentially in listed order and stops immediately once the first hook returns a decision."
+      },
+      {
+        "id": "b",
+        "text": "Conflicting permission decisions resolve to the most restrictive verdict following the order deny, defer, ask, allow."
+      },
+      {
+        "id": "c",
+        "text": "Hooks evaluate when the session is in interactive mode and are bypassed when automated permissions are configured."
+      },
+      {
+        "id": "d",
+        "text": "Matching hooks execute in parallel to completion, and returned additionalContext payloads are aggregated together."
+      },
+      {
+        "id": "e",
+        "text": "An explicit allow verdict takes precedence over sibling denials to prevent automated workflow execution deadlocks."
+      }
+    ],
+    "correct": [
+      "b",
+      "d"
+    ],
+    "explanation": "When a tool call matches multiple PreToolUse hooks, Claude Code executes all matching hooks in parallel to completion rather than stopping on the first response. Output text from additionalContext across all hooks is aggregated and provided to Claude. If hooks return conflicting permission decisions, Claude Code deterministically enforces the most restrictive verdict in the hierarchy: deny > defer > ask > allow.",
+    "distractorNotes": {
+      "a": "Hooks run in parallel to completion rather than sequentially; a deny verdict in one hook does not halt execution of sibling hooks.",
+      "c": "PreToolUse hooks fire across all permission modes, including dontAsk and bypassPermissions, providing non-bypassable policy enforcement.",
+      "e": "Claude Code resolves conflicting decisions toward the most restrictive outcome (deny > defer > ask > allow), so allow never overrides deny."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/hooks-guide.md",
+    "sourceNote": "PreToolUse hooks execute in parallel and enforce the most restrictive permission decision",
+    "sourceCheckedAt": "2026-09-10"
   }
 ]
