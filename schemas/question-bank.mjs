@@ -202,6 +202,10 @@ export const questionSchema = z
     }
 
     const optionIds = new Set();
+    // Option text is compared case- and whitespace-insensitively: two options
+    // differing only in spacing read as identical to a candidate, and the
+    // question silently has one fewer distractor than it appears to.
+    const optionTexts = new Map();
 
     question.options.forEach((option, index) => {
       if (optionIds.has(option.id)) {
@@ -212,6 +216,18 @@ export const questionSchema = z
         });
       }
       optionIds.add(option.id);
+
+      const normalized = option.text.trim().replace(/\s+/g, " ").toLowerCase();
+      const firstSeen = optionTexts.get(normalized);
+      if (firstSeen !== undefined) {
+        context.addIssue({
+          code: "custom",
+          path: ["options", index, "text"],
+          message: `duplicate option text: identical to option "${firstSeen}". A repeated option is not a distractor — it removes one, and if the repeat is the key the item has two correct answers`,
+        });
+      } else {
+        optionTexts.set(normalized, option.id);
+      }
     });
 
     const correctIds = new Set();

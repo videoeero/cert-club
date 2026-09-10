@@ -131,6 +131,31 @@ test("requires answer keys to reference real option IDs", async () => {
   );
 });
 
+test("rejects an option repeated as another option", async () => {
+  const { manifest, questions } = await validContent();
+  const [first, second] = questions[0].options;
+  second.text = first.text;
+
+  assert.throws(
+    () => validateCertContent("ccdv-f", manifest, questions),
+    /duplicate option text/,
+  );
+});
+
+test("treats options differing only in case or spacing as duplicates", async () => {
+  // How a candidate reads them, not how they compare byte-for-byte: an
+  // authoring pass that clobbers one option with another rarely reproduces
+  // the whitespace exactly, and the item still has one fewer distractor.
+  const { manifest, questions } = await validContent();
+  const [first, second] = questions[0].options;
+  second.text = `  ${first.text.toUpperCase()}  `;
+
+  assert.throws(
+    () => validateCertContent("ccdv-f", manifest, questions),
+    /duplicate option text/,
+  );
+});
+
 test("requires question domains and certs to match the manifest", async () => {
   const { manifest, questions } = await validContent();
   questions[0].domain = "unknown-domain";
@@ -291,10 +316,13 @@ function lengthBiasBank(count, keyText, prefix) {
     // The key rotates through every position, so only length is exploitable.
     options: positions.map((id) => ({
       id,
+      // Distinct per option, and all the same length: the bank-level length
+      // guards these fixtures exercise measure means, so uniform padding
+      // leaves the arithmetic alone while keeping the options non-identical.
       text:
         id === positions[index % positions.length]
           ? keyText
-          : "A short distractor.",
+          : `A short distractor ${id}.`,
     })),
     correct: [positions[index % positions.length]],
     explanation: "The key is the correct option.",
@@ -331,7 +359,7 @@ test("rejects a bank whose correct answers are systematically shorter", async ()
       text:
         option.text === "Short."
           ? option.text
-          : "A distractor carrying a great deal more qualifying detail than the key does.",
+          : `A distractor carrying a great deal more qualifying detail ${option.id}.`,
     })),
   }));
 

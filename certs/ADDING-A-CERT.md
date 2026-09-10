@@ -189,7 +189,11 @@ A minimal single-select example:
 
 **Per-question structural rules:**
 
-- Option IDs must be unique within a question.
+- Option IDs must be unique within a question, and so must option **texts** —
+  compared case- and whitespace-insensitively, since two options a candidate
+  reads as identical are one option however they differ in bytes. A repeated
+  option is not a distractor: it removes one, and if the repeat is the key the
+  item has two correct answers.
 - `correct` entries must reference IDs that exist in `options`.
 - For `multi` questions: the correct set must not be exactly the leading
   run of options in listed order (e.g. `["opt-a", "opt-b"]` when options
