@@ -29,7 +29,17 @@ Never source questions from:
 Always source questions from public vendor documentation and official exam
 guides/blueprints only.
 
-The rule is about the gate, never about the vendor. A course's **public
+Two independent tests, and a source must pass both. The first is the gate
+above: can anyone open it without an account? The second is **authority**: is
+it published by the party that owns the fact? A copy of a vendor's exam guide
+in someone's public GitHub repository passes the gate perfectly and fails
+authority — it is a mirror that can be stale, partial or edited, and nothing
+in this repository would reveal it. Cite the vendor's own copy, always, and
+`manifest.examUrl` most of all: every domain name and weight in a bank derives
+from it. Third-party material may be read as calibration, never cited; see the
+firewall in `certs/ccdv-f/review-progress.md`.
+
+The gate test is about the gate, never about the vendor. A course's **public
 landing page** — syllabus, learning objectives, prerequisites — is genuinely
 open and may be read, but only as a cross-check on whether a skill is
 covered. It is still not a valid `sourceUrl`, because it states what a course

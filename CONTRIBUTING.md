@@ -13,6 +13,17 @@ README.
 - A valid citation identifies the official documentation or exam
   guide/blueprint URL, the relevant section or topic, and the date it was
   checked. A bare home-page link or an uncited claim is not sufficient.
+- The source must be published by whoever owns the fact. Open is not enough:
+  a vendor's exam guide re-hosted in someone's public repository is a copy,
+  and a copy can be stale or edited. Cite the vendor's own page.
+- **Cite the URL that serves the page, not one that redirects to it.** Vendor
+  docs get reorganised, and a legacy URL degrades quietly: at the time of
+  writing `docs.anthropic.com/en/docs/agents-and-tools/claude-code/overview`
+  still answers, but lands on `code.claude.com/docs` — a section root, which
+  no longer establishes the specific claim. Follow the redirect while you are
+  reading the page and record where you actually landed. (This applies to new
+  citations. Existing ones that have since started redirecting are a
+  pin-versus-float judgement for a source audit, not a bulk rewrite.)
 - Explanations should show why the correct answer is correct and, when useful,
   why the distractors are wrong.
 

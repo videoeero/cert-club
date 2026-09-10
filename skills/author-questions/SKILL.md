@@ -22,9 +22,13 @@ both; this skill is the order of operations, not a second copy.
    drafting — writing ten pushes the skill out the other side.
 
 2. **Sources first, questions second.** Find the documentation that
-   establishes the fact, fetch each page, and confirm it opens with no
-   account. A redirect to a login or a signup wall is a gated source: drop it
-   and find another page. `sourceCheckedAt` is the date you actually read it.
+   establishes the fact, fetch each page, and confirm two things: that it
+   opens with no account, and that the vendor publishes it. A redirect to a
+   login or a signup wall is a gated source; a copy of vendor material on
+   someone else's site is unciteable however open it is. Record the URL you
+   actually landed on, not the one you typed — a legacy URL that redirects
+   today can degrade to a section root tomorrow, which no longer establishes
+   the claim. `sourceCheckedAt` is the date you actually read the page.
 3. **Depth gate, per question.** Apply the three anchors in
    `ADDING-A-CERT.md` § How deep should a question go?. Anchor 2 is the one
    that gets missed, and it reduces to one testable rule:

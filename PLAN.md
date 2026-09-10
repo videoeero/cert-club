@@ -54,8 +54,9 @@ Checked against the public CCDV-F exam guide before locking the schema:
 Re-verify these against the official guide before Phase 2 authoring
 begins; treat the weights above as provisional until read first-hand.
 **Cross-checked** against `Amey-Thakur/CLAUDE-CERTIFICATIONS` (see below),
-which reproduces identical domains/weights and hosts the official
-`exam-guide.pdf` — two independent sources now agree.
+which reproduces identical domains/weights — two independent readings now
+agree. It also holds copies of the exam-guide PDFs; those are cross-checks
+only and must never be cited, see the firewall below.
 
 The blueprint also publishes **sub-domain weights** (e.g. within
 Applications & Integration: Claude application design 8.6%, Software
@@ -67,6 +68,17 @@ see the `subdomain` field in Phase 1.
 ---
 
 ## Prior art: `Amey-Thakur/CLAUDE-CERTIFICATIONS`
+
+> **Calibration only — never a `sourceUrl` or `examUrl`.** This repository is
+> a third party. It is open to read, so it passes the gate test, and it fails
+> the authority test in `AGENTS.md`: the exam-guide PDFs it hosts are copies,
+> and a copy can be stale, partial or edited with nothing here to reveal it.
+> Cite Anthropic's own copy — the Partner Academy certification page links the
+> guide on Anthropic's Everpath CDN, the same host `certs/ccdv-f` cites. This
+> record informed how deep and how scenario-shaped a question should be, never
+> what a question says. An agent has already been led from this section to the
+> wrong `examUrl`; that is why the rule is stated here and not only in
+> `certs/ccdv-f/review-progress.md`.
 
 Flagged in the initial research notes as unverified. **Now verified** —
 it is real, MIT licensed, actively maintained, and contains 320 questions
