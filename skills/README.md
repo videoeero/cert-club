@@ -1,8 +1,9 @@
 # Agent workflows
 
 Procedures for the recurring content work: recon a proposed certification,
-author a batch of questions, audit a bank's coverage, audit its citations for
-drift, and the gate on adding a new question type.
+author a batch of questions, evaluate a batch's per-question correctness,
+audit a bank's coverage, audit its citations for drift, and the gate on
+adding a new question type.
 
 ## Install
 
@@ -42,10 +43,11 @@ wins and the workflow is wrong — fix it rather than following it.
 Do not add a rule to this folder. A rule stated in two places drifts, and this
 repository has already had to repair one instance of exactly that.
 
-| Workflow                                          | Use it when                                                            |
-| ------------------------------------------------- | ---------------------------------------------------------------------- |
-| [`assess-new-cert`](assess-new-cert/SKILL.md)     | Deciding whether a proposed cert can be banked from public sources     |
-| [`author-questions`](author-questions/SKILL.md)   | Writing or revising a batch of questions                               |
-| [`audit-coverage`](audit-coverage/SKILL.md)       | Checking coverage against the blueprint, or judging `draft` → `stable` |
-| [`audit-sources`](audit-sources/SKILL.md)         | Re-checking citations for staleness, dead links or doc drift           |
-| [`add-question-type`](add-question-type/SKILL.md) | Considering an answer shape beyond single and multi select             |
+| Workflow                                            | Use it when                                                            |
+| --------------------------------------------------- | ---------------------------------------------------------------------- |
+| [`assess-new-cert`](assess-new-cert/SKILL.md)       | Deciding whether a proposed cert can be banked from public sources     |
+| [`author-questions`](author-questions/SKILL.md)     | Writing or revising a batch of questions                               |
+| [`evaluate-questions`](evaluate-questions/SKILL.md) | Checking a batch's answer keys and distractors are actually correct    |
+| [`audit-coverage`](audit-coverage/SKILL.md)         | Checking coverage against the blueprint, or judging `draft` → `stable` |
+| [`audit-sources`](audit-sources/SKILL.md)           | Re-checking citations for staleness, dead links or doc drift           |
+| [`add-question-type`](add-question-type/SKILL.md)   | Considering an answer shape beyond single and multi select             |

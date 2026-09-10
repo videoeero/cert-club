@@ -69,3 +69,7 @@ both; this skill is the order of operations, not a second copy.
 - Every new question's `sourceCheckedAt` is the date its page was read.
 - The target skill's delta is inside tolerance in `npm run balance -- --strict`.
 - `review-progress.md` is updated in the same change.
+
+Green here means schema-valid, not correct — every key was written by the
+same pass that will judge it correct. Run `evaluate-questions` next, ideally
+in a session that didn't draft this batch, before treating it as reviewed.
