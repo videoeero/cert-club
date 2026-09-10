@@ -12,6 +12,14 @@ both; this skill is the order of operations, not a second copy.
 
 ## Stages
 
+0. **One domain per invocation.** A request spanning several domains — a
+   from-scratch scaffold, say — is several invocations of this skill, one per
+   domain, never one pass drafting all of them. Holding an entire bank's
+   worth of sources and depth judgements in one session's head is exactly how
+   ccar-f shipped 15 questions where a padded distractor wore the `correct`
+   key instead of the real answer — caught by `evaluate-questions`, not by
+   this skill. Loop this skill per domain yourself, or fan the domains out
+   with `Agent`/`Workflow` if the orchestrating session has one.
 1. **Orient.** Read the cert's `manifest.json`, the target `questions/*.json`,
    and `review-progress.md` — the review file records earlier judgement calls
    as intent, and re-deciding them silently is the main failure mode here.
@@ -69,6 +77,12 @@ both; this skill is the order of operations, not a second copy.
 - Every new question's `sourceCheckedAt` is the date its page was read.
 - The target skill's delta is inside tolerance in `npm run balance -- --strict`.
 - `review-progress.md` is updated in the same change.
+
+When several domains were drafted as separate invocations, `npm run check`'s
+position- and length-bias guards are still whole-bank, not per-domain — a
+later domain's invocation can fail on skew a different domain's batch
+introduced. Fix it the same way regardless of who authored the offending
+item: pad a distractor, don't touch a key.
 
 Green here means schema-valid, not correct — every key was written by the
 same pass that will judge it correct. Run `evaluate-questions` next, ideally
