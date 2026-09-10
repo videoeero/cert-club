@@ -10,13 +10,25 @@ They are plain markdown and can simply be read. To have your agent retrieve
 them by itself, symlink them into its skills directory:
 
 ```sh
-npx skills add .            # this checkout, for the agents you have
-npx skills add . --list     # see them without installing
-npx skills remove --all     # undo
+npx skills@1.5.25 add .            # this checkout, for the agents you have
+npx skills@1.5.25 add . --list     # see them without installing
+npx skills@1.5.25 remove --all     # undo
 ```
 
 The install targets are gitignored: which agent you use is your choice, not
 repository content.
+
+The version is pinned on purpose. `npx skills` without one runs whatever was
+published most recently, on your machine, the first time anyone sets up — bump
+it here deliberately instead. npx will offer to download the package if you do
+not have it cached; that prompt is expected.
+
+The CLI reports usage telemetry to `add-skill.vercel.sh` when it installs from
+GitHub or another remote source. Installing from a local path, as above, sends
+nothing: it derives no source identifier for a local path, and the telemetry
+call is gated on having one. Verified by reading `dist/cli.mjs` at 1.5.25 —
+worth re-checking if you bump the pin. `DO_NOT_TRACK=1` or `DISABLE_TELEMETRY=1`
+disables it either way.
 
 ## These are procedures, not rules
 

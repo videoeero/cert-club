@@ -121,10 +121,11 @@ their own. Where a workflow and one of those documents disagree, the document
 wins and the workflow is wrong.
 
 They are plain markdown in the portable [Agent Skills](https://agentskills.io/)
-layout, so read one directly at any time. `npx skills add .` symlinks them into
-whichever agent directories you use, which is what makes an agent retrieve them
-on its own; those targets are gitignored, since the agent is a per-developer
-choice. See [`skills/README.md`](skills/README.md).
+layout, so read one directly at any time. `npx skills@1.5.25 add .` symlinks them
+into whichever agent directories you use, which is what makes an agent retrieve
+them on its own; those targets are gitignored, since the agent is a
+per-developer choice. The version is pinned deliberately, and the CLI has
+telemetry worth knowing about — see [`skills/README.md`](skills/README.md).
 
 ## Licensing when creating files
 
