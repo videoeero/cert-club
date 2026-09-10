@@ -393,6 +393,42 @@ for both the app shell and `certs/catalog.json`.
   `audit-sources` skill turns that triage into a disposition per question —
   including the blueprint re-read, which is the drift no link checker sees.
   Not in `npm run check`: the gate must stay offline.
+- Sharing questions between certs of one vendor — **deferred, and the first
+  measurement argues against it.** Vendor blueprints overlap topically, so
+  maintaining near-duplicate questions across banks looks like an obvious
+  cost. Measured against the two Anthropic banks on 2026-09-10: **no
+  identical domain slugs, and zero shared `sourceUrl`s** (70 in `ccdv-f`, 5
+  in `ccar-f`'s seed batch — a small sample, but zero).
+
+  The domains rhyme while the weights diverge hard: Claude Code is **3.1% of
+  the developer blueprint and 20% of the architect blueprint**, a 6.5x swing.
+  Same subject, different resolution — which `scope` encodes and cannot share.
+  `scope: core | deep` is defined relative to *one* blueprint: at 3.1% most
+  Claude Code mechanics are `deep` for `ccdv-f`, which is why its review file
+  tags 28 questions that way, and at 20% the same mechanics are `core` for
+  `ccar-f`. One question object cannot hold one truthful `scope`. `subdomain`
+  has the same problem — it must match a skill declared in *that* manifest.
+  So sharing needs per-cert overrides on exactly the two fields that carry the
+  judgement, which costs about what writing two questions costs, with less
+  clarity.
+
+  Underneath that sit invariants a shared pool breaks: `id` must be prefixed
+  `<slug>-`, `cert` must equal `manifest.cert`, the app fetches one file per
+  manifest domain, and `AttemptRecord` is keyed by question id in
+  `localStorage` — sharing would silently merge a learner's progress across
+  two certs and require a migration.
+
+  Note also that the strongest argument *for* a shared pool has been answered
+  separately: "a doc moves, now fix N banks" is handled by `audit-sources`
+  scoping its judgement pass by host rather than by cert, so one moved page
+  gets one disposition applied everywhere it is cited.
+
+  Revisit on evidence, not on schedule. Once `ccar-f` holds a real batch,
+  measure shared `sourceUrl`s across the two banks, near-duplicate stems, and
+  — the part that decides it — how many of those duplicates carry the *same*
+  `scope`. Only those are genuinely shareable. A cross-cert duplicate report
+  in the shape of `scripts/bank-metrics.mjs` gives that visibility with no
+  schema change and no commitment; build it before designing anything.
 - Lab-style/hands-on questions (beyond MCQ) — noted in early research as the
   real differentiator, but explicitly a v2+ idea, not a blocker for
   shipping MCQ v1. Still deferred, but the route is now documented:
