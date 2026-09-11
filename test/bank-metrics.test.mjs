@@ -591,7 +591,7 @@ test("reproduces az-900's hand-computed review numbers against the real bank", a
   assert.equal(metrics.positionDistribution.total, 12);
 });
 
-test("reproduces aws-clf-c02's hand-computed review numbers against the real bank", async () => {
+test("reproduces aws-clf-c02's review numbers against the real bank", async () => {
   const { readCertQuestions, readJson } =
     await import("../scripts/lib/read-certs.mjs");
   const certUrl = new URL("../certs/aws-clf-c02/", import.meta.url);
@@ -604,13 +604,13 @@ test("reproduces aws-clf-c02's hand-computed review numbers against the real ban
 
   const metrics = buildBankMetrics(manifestData, questions);
 
-  assert.equal(metrics.questionCount, 18);
-  assert.ok(Math.abs(metrics.lengthBias.meanDelta - -3.08) < 0.01);
-  assert.equal(metrics.longestOptionIsKey.count, 4);
-  assert.equal(metrics.longestOptionIsKey.sampleSize, 12);
+  assert.equal(metrics.questionCount, 130);
+  assert.ok(Math.abs(metrics.lengthBias.meanDelta - -0.88) < 0.01);
+  assert.equal(metrics.longestOptionIsKey.count, 19);
+  assert.equal(metrics.longestOptionIsKey.sampleSize, 107);
   assert.deepEqual(
     metrics.positionDistribution.entries.map((e) => e.count),
-    [3, 3, 3, 3],
+    [28, 27, 26, 26],
   );
 });
 

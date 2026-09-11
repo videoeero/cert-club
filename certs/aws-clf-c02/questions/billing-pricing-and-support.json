@@ -87,5 +87,603 @@
     "sourceUrl": "https://docs.aws.amazon.com/cost-management/latest/userguide/what-is-costmanagement.html",
     "sourceNote": "AWS Billing and Cost Management - Budgets sets custom cost/usage budgets and alerts when thresholds are exceeded",
     "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "aws-clf-c02-billing-pricing-and-support-003",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "billing-pricing-and-support",
+    "subdomain": "technical-resources",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An operations team wants to identify underutilized resources, potential security weaknesses, and opportunities to optimize costs across their AWS environment. They need automated, real-time guidance based on AWS best practices across categories including cost optimization, performance, security, and service quotas. Which AWS tool meets these requirements?",
+    "options": [
+      {
+        "id": "a",
+        "text": "AWS Trusted Advisor, which inspects your environment and offers best-practice recommendations across multiple categories"
+      },
+      {
+        "id": "b",
+        "text": "AWS Cost Explorer, which visualizes historical spending trends and generates forecasts for future cloud resource consumption"
+      },
+      {
+        "id": "c",
+        "text": "AWS CloudTrail, which logs API calls and account activity across services to maintain compliance auditing and governance tracking"
+      },
+      {
+        "id": "d",
+        "text": "AWS Systems Manager, which manages operational configuration, automated patching, and command execution across server instances"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "AWS Trusted Advisor draws upon best practices learned from serving AWS customers. It inspects your AWS environment and provides real-time recommendations to help optimize costs, increase performance, improve security, maintain fault tolerance, and monitor service quotas.",
+    "distractorNotes": {
+      "b": "AWS Cost Explorer visualizes, understands, and manages AWS costs and usage over time, and forecasts future spend, rather than evaluating configurations against security, fault tolerance, or service quota best practices.",
+      "c": "AWS CloudTrail tracks and logs user activity and API calls for governance and compliance auditing, but does not evaluate infrastructure against best practices or provide optimization recommendations.",
+      "d": "AWS Systems Manager is an operations hub used to track and resolve operational issues, automate maintenance tasks, and manage node configurations, not a best-practice recommendation advisor across cloud architecture categories."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/awssupport/latest/user/trusted-advisor.html",
+    "sourceNote": "AWS Trusted Advisor - Inspects AWS environment to provide recommendations for cost optimization, security, and performance",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-billing-pricing-and-support-004",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "billing-pricing-and-support",
+    "subdomain": "billing-management",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A multinational enterprise operates separate AWS accounts for its subsidiaries. The finance department wants to aggregate resource usage across all member accounts to qualify for tiered volume pricing discounts, while receiving a single monthly invoice paid by the parent company. Which AWS Organizations capability satisfies this requirement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "AWS Budgets, which tracks cumulative expenses against monthly cost thresholds and delivers automated notification alerts"
+      },
+      {
+        "id": "b",
+        "text": "Cost allocation tags, which apply key-value metadata labels to resources to categorize and track billing lines by business unit"
+      },
+      {
+        "id": "c",
+        "text": "Consolidated billing, which combines usage across member accounts to share volume discounts and issue one combined payment bill"
+      },
+      {
+        "id": "d",
+        "text": "AWS Cost Anomaly Detection, which uses machine learning models to identify unusual and unexpected cloud spending patterns"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Consolidated billing is a feature of AWS Organizations that combines the billing and payment across multiple AWS accounts under a single management (payer) account. A key benefit is combined usage, where AWS aggregates usage across all member accounts in the organization, enabling the organization to reach higher volume discount tiers (such as tiered pricing for Amazon S3 storage) and share Reserved Instance and Savings Plans discounts.",
+    "distractorNotes": {
+      "a": "AWS Budgets tracks cost and usage against configured budgets and sends alert notifications when thresholds are approached or exceeded, but does not aggregate billing or unlock tiered volume pricing across accounts.",
+      "b": "Cost allocation tags organize and categorize costs on a detailed billing report using custom key-value pairs, but tagging does not consolidate invoices or combine usage to achieve multi-account volume discounts.",
+      "d": "AWS Cost Anomaly Detection uses machine learning to detect unusual spending patterns and determine root causes, but does not provide billing consolidation or volume discount aggregation."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/consolidated-billing.html",
+    "sourceNote": "Consolidated billing for AWS Organizations - Combines usage across accounts to qualify for volume pricing discounts on a single bill",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-billing-pricing-and-support-005",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "billing-pricing-and-support",
+    "subdomain": "cost-management",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A cloud architect is designing a migration plan for an on-premises data center to AWS. Before any infrastructure is provisioned or any AWS resources are launched, management requires an itemized monthly operational cost estimate and a total cost projection to seek budget approval. Which AWS tool should the architect use?",
+    "options": [
+      {
+        "id": "a",
+        "text": "AWS Cost Explorer, which visualizes historical consumption trends and generates forward-looking spend projections for active workloads"
+      },
+      {
+        "id": "b",
+        "text": "AWS Pricing Calculator, which models proposed cloud architectures and generates estimated operational costs prior to deployment"
+      },
+      {
+        "id": "c",
+        "text": "AWS Budgets, which configures custom cost thresholds and triggers automated alert notifications when actual expenses exceed targets"
+      },
+      {
+        "id": "d",
+        "text": "AWS Cost and Usage Report, which publishes granular hourly billing records and resource metadata to an Amazon S3 bucket for analysis"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "AWS Pricing Calculator is a free web-based planning tool that allows users to create cost estimates for using AWS services before building or deploying workloads. It enables architects to model proposed architectural solutions, explore price points and calculations, and export estimates to support planning and financial budgeting.",
+    "distractorNotes": {
+      "a": "AWS Cost Explorer enables viewing, analyzing, and forecasting costs for already provisioned and running AWS resources, not pre-deployment estimates for unlaunched environments.",
+      "c": "AWS Budgets sets custom budgets to track cost and usage over time and issues alerts when thresholds are reached, but does not generate pre-deployment cost modeling for new architectures.",
+      "d": "AWS Cost and Usage Reports (CUR) exports comprehensive, line-item billing data for active account usage to Amazon S3, rather than projecting costs before workloads exist."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/pricing-calculator/latest/userguide/what-is-pricing-calculator.html",
+    "sourceNote": "What is AWS Pricing Calculator - Web-based planning tool to create cost estimates for using AWS services before building",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-billing-pricing-and-support-006",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "billing-pricing-and-support",
+    "subdomain": "pricing-models",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A startup is reviewing its monthly AWS bill to understand how Free Tier allowances are applied. The founders want to know which Free Tier category continues to provide a recurring monthly usage quota (such as 1,000,000 AWS Lambda requests) without expiring after the first 12 months following account creation. Which AWS Free Tier offer type provides this ongoing benefit?",
+    "options": [
+      {
+        "id": "a",
+        "text": "12 Months Free offers, which provide complimentary resource allowances exclusively during the initial year following account setup"
+      },
+      {
+        "id": "b",
+        "text": "Free Trial offers, which provide short-term trial access to selected paid services beginning when a specific service is activated"
+      },
+      {
+        "id": "c",
+        "text": "Promotional credit offers, which apply temporary billing offsets that expire automatically on a predetermined calendar deadline"
+      },
+      {
+        "id": "d",
+        "text": "Always Free offers, which provide recurring monthly usage quotas that never expire for all active AWS accounts regardless of age"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "AWS Free Tier includes three offer types: Always Free, 12 Months Free, and Short-Term Trials. Always Free offers do not expire and are available to all AWS customers indefinitely, providing recurring monthly allowances for qualifying services such as AWS Lambda, Amazon DynamoDB, and Amazon SNS.",
+    "distractorNotes": {
+      "a": "12 Months Free offers are available only for the first 12 months following the initial AWS signup date (such as 750 hours of Amazon EC2 t2.micro/t3.micro), after which standard rates apply.",
+      "b": "Free Trial offers provide short-term access for a specific period (e.g., 30 or 60 days) or up to a fixed usage limit starting when the service is first activated, rather than recurring indefinitely.",
+      "c": "Promotional credits are monetary balances applied directly to reduce billable charges and carry fixed expiration dates, rather than structural Free Tier product allowances."
+    },
+    "sourceUrl": "https://aws.amazon.com/free/",
+    "sourceNote": "AWS Free Tier - Always free offers do not expire and are available to all AWS customers regardless of account age",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-billing-pricing-and-support-007",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "billing-pricing-and-support",
+    "subdomain": "cost-management",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A finance director wants to review AWS infrastructure spending across the last six months to understand seasonal cost drivers, and needs a predictive projection of anticipated cloud expenditure for the next 90 days based on these historical consumption patterns. Which AWS tool should the finance director consult?",
+    "options": [
+      {
+        "id": "a",
+        "text": "AWS Cost Explorer, which provides visualization graphs of past usage and generates cost forecasts for future billing cycles"
+      },
+      {
+        "id": "b",
+        "text": "AWS Pricing Calculator, which estimates operational costs for hypothetical cloud architectures before resource deployment begins"
+      },
+      {
+        "id": "c",
+        "text": "AWS Cost and Usage Report, which delivers raw line-item billing metadata and resource IDs directly to an Amazon S3 storage bucket"
+      },
+      {
+        "id": "d",
+        "text": "AWS CloudTrail, which audits and records administrative API activity and user operations across all provisioned cloud resources"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "AWS Cost Explorer allows users to view, analyze, and graph historical costs and usage over time (up to the past 12 months) and generate forecasts for future spending up to 12 months ahead based on historical statistical trends.",
+    "distractorNotes": {
+      "b": "AWS Pricing Calculator is intended for pre-deployment planning to estimate costs for new services and hypothetical workloads, not for analyzing actual account spending history or historical forecasting.",
+      "c": "AWS Cost and Usage Reports (CUR) exports comprehensive raw CSV/Parquet billing data to Amazon S3 for custom data querying, but does not provide built-in interactive forecasting charts.",
+      "d": "AWS CloudTrail records account API activity for governance and compliance auditing, not financial reporting or cost forecasting."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/cost-management/latest/userguide/ce-forecast.html",
+    "sourceNote": "Forecasting with Cost Explorer - Uses historical usage data to predict future AWS costs and usage up to 12 months ahead",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-billing-pricing-and-support-008",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "billing-pricing-and-support",
+    "subdomain": "pricing-models",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A company runs a web application on Amazon EC2 instances located in a single AWS Region. The instances continuously ingest large volumes of raw telemetry data uploaded by external IoT devices over the internet, and simultaneously serve dynamic HTTP web responses back to global end users. Which data transfer traffic flow incurs NO data transfer charges from AWS?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Outbound data transfer from Amazon EC2 instances sent across the internet to global end users"
+      },
+      {
+        "id": "b",
+        "text": "Inter-Region data transfer between Amazon EC2 instances located across different AWS Regions"
+      },
+      {
+        "id": "c",
+        "text": "Inbound data transfer from the internet to Amazon EC2 instances located within the AWS Region"
+      },
+      {
+        "id": "d",
+        "text": "Inter-AZ data transfer between Amazon EC2 instances deployed across distinct Availability Zones"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Inbound data transfer into Amazon EC2 (and across AWS services generally) from the internet is completely free ($0.00 per GB). In contrast, outbound data transfer to the internet beyond free tier allowances, data transfer between AWS Regions, and data transfer across different Availability Zones within a Region all incur standard per-GB data transfer charges.",
+    "distractorNotes": {
+      "a": "Data transfer out from Amazon EC2 to the internet is a billable component priced on tiered rates per GB beyond the global 100 GB monthly free allowance.",
+      "b": "Data transfer between instances located in different AWS Regions traverses inter-region network backbones and incurs standard cross-Region data transfer rates.",
+      "d": "Data transferred between instances in different Availability Zones within the same AWS Region incurs inter-AZ data transfer charges for both inbound and outbound traffic."
+    },
+    "sourceUrl": "https://aws.amazon.com/ec2/pricing/on-demand/",
+    "sourceNote": "Amazon EC2 On-Demand Pricing - Data Transfer IN To Amazon EC2 From Internet is free ($0.00 per GB) across all services",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-billing-pricing-and-support-009",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "billing-pricing-and-support",
+    "subdomain": "cost-management",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A data analytics team needs to conduct comprehensive cost governance audits across an enterprise AWS environment. They require the most granular billing dataset AWS produces—including line items for every individual resource ID, hourly usage metrics, and cost allocation tags—exported automatically in CSV or Parquet format into an Amazon S3 bucket for SQL querying. Which AWS tool delivers this dataset?",
+    "options": [
+      {
+        "id": "a",
+        "text": "AWS Billing console monthly bills, which provide consolidated high-level service invoice summaries formatted for executive review"
+      },
+      {
+        "id": "b",
+        "text": "AWS Cost and Usage Report, which publishes the most comprehensive, granular usage line items and resource IDs to an S3 bucket"
+      },
+      {
+        "id": "c",
+        "text": "AWS Cost Explorer, which visualizes aggregated spending trends and historical patterns through interactive dashboard chart views"
+      },
+      {
+        "id": "d",
+        "text": "AWS Trusted Advisor, which inspects architectural configurations against foundational security, quota, and cost best practices"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "AWS Cost and Usage Reports (AWS CUR) delivers the most comprehensive set of cost and usage data available. It can publish hourly or daily billing reports directly to a specified Amazon S3 bucket, breaking down costs by individual resource IDs, products, pricing tiers, and custom tags, and can be queried directly using Amazon Athena.",
+    "distractorNotes": {
+      "a": "The AWS Billing console provides monthly invoices and high-level service summaries, but lacks hourly per-resource line-item exports for automated external querying.",
+      "c": "AWS Cost Explorer provides high-level visual charts, trends, and forecasts via the console, but does not produce the raw file-level comprehensive resource dataset delivered by CUR.",
+      "d": "AWS Trusted Advisor provides automated recommendations against best practices rather than generating raw billing and usage export files."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/cur/latest/userguide/what-is-cur.html",
+    "sourceNote": "What are AWS Cost and Usage Reports - Contains the most comprehensive set of cost and usage data, published to Amazon S3",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-billing-pricing-and-support-010",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "billing-pricing-and-support",
+    "subdomain": "pricing-models",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An enterprise has dynamic compute workloads running on Amazon EC2 across multiple instance families (such as c6i and m6g) and across several AWS Regions. The company also intends to migrate some containerized microservices to AWS Fargate and AWS Lambda over the next year. Which purchasing option provides commitment-based savings that automatically apply across all of these changing instance families, Regions, and compute services?",
+    "options": [
+      {
+        "id": "a",
+        "text": "EC2 Instance Savings Plans, which provide larger discounts but restrict commitments to an individual instance family in one Region"
+      },
+      {
+        "id": "b",
+        "text": "Standard Reserved Instances, which commit to a specific instance configuration and operating system within a single Availability Zone"
+      },
+      {
+        "id": "c",
+        "text": "Spot Instances, which provide spare compute capacity at steep discounts without requiring any upfront or ongoing term commitments"
+      },
+      {
+        "id": "d",
+        "text": "Compute Savings Plans, which automatically apply discounts across EC2 instance families, AWS Regions, Fargate, and Lambda runtimes"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Compute Savings Plans provide the greatest flexibility among commitment discounts. In exchange for a consistent hourly spend commitment (measured in USD/hour for 1 or 3 years), Compute Savings Plans automatically apply discounts to Amazon EC2 instances regardless of instance family, size, operating system, tenancy, or AWS Region, and also apply seamlessly to AWS Fargate and AWS Lambda usage.",
+    "distractorNotes": {
+      "a": "EC2 Instance Savings Plans offer higher discounts (up to 72%) but require committing to an individual instance family within a specific AWS Region (e.g., m6g in us-east-1), and do not apply to Fargate or Lambda.",
+      "b": "Standard Reserved Instances lock the commitment into a specific instance type and attributes in an Availability Zone or Region, offering no cross-family or serverless compute flexibility.",
+      "c": "Spot Instances offer discounts on spare capacity that AWS can reclaim with a two-minute notice; they are interruptible and do not represent a commitment-based purchasing plan."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/savingsplans/latest/userguide/what-is-savings-plans.html",
+    "sourceNote": "What are Savings Plans - Compute Savings Plans provide discounts across EC2 families, Regions, Fargate, and Lambda",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-billing-pricing-and-support-011",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "billing-pricing-and-support",
+    "subdomain": "cost-management",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An engineering organization wants to track AWS resource expenditures by business unit and environment (such as Department=Billing and Stage=Production). Developers have applied these key-value tags across their Amazon EC2 instances and Amazon S3 buckets, but the tags do not yet appear as filtering dimensions in AWS Cost Explorer or on monthly billing reports. What required step must an administrator perform in the AWS Management Console to resolve this?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Activate the user-defined cost allocation tags in the AWS Billing and Cost Management console"
+      },
+      {
+        "id": "b",
+        "text": "Store the tag metadata keys in an AWS Systems Manager Parameter Store configuration parameter"
+      },
+      {
+        "id": "c",
+        "text": "Enable AWS CloudTrail event logging to record all tag creation API calls across AWS accounts"
+      },
+      {
+        "id": "d",
+        "text": "Attach a Service Control Policy to mandate tag inheritance across all AWS member accounts"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Applying resource tags via service consoles or APIs does not automatically expose them on cost allocation reports. An administrator must navigate to the AWS Billing and Cost Management console and explicitly activate the specific user-defined cost allocation tags. Once activated, AWS begins tracking and grouping costs by those tag keys on reports and in AWS Cost Explorer.",
+    "distractorNotes": {
+      "b": "AWS Systems Manager Parameter Store is a configuration management and secrets storage service; it has no operational integration with cost allocation reporting or billing dimensions.",
+      "c": "AWS CloudTrail logs API calls for governance and security auditing, but enabling CloudTrail does not activate tags for billing categorization.",
+      "d": "Service Control Policies (SCPs) define permission guardrails within AWS Organizations; they cannot activate resource tags as billing dimensions."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html",
+    "sourceNote": "Cost allocation tags - After you apply user-defined tags, you must activate them in Billing console to appear in reports",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-billing-pricing-and-support-012",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "billing-pricing-and-support",
+    "subdomain": "technical-resources",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An operations engineer receives an email notification that Amazon EC2 underlying hardware hosting several production virtual instances is scheduled for maintenance next week. Where in the AWS Management Console can the engineer view personalized alerts, affected resource ARNs, and operational guidance specific to their active AWS environment?",
+    "options": [
+      {
+        "id": "a",
+        "text": "AWS Trusted Advisor, which analyzes architectural configurations to provide recommendations for cost and performance"
+      },
+      {
+        "id": "b",
+        "text": "AWS Support Center, which provides a dedicated portal for opening technical support cases and tracking open tickets"
+      },
+      {
+        "id": "c",
+        "text": "AWS Health Dashboard, which provides personalized notifications and guidance for events affecting specific account resources"
+      },
+      {
+        "id": "d",
+        "text": "AWS Cost Anomaly Detection, which uses machine learning to identify unexpected spikes and anomalies in cloud expenditure"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "The AWS Health Dashboard provides ongoing visibility into resource performance and the availability of AWS services and accounts. When signed in, it displays personalized alerts, scheduled maintenance events, and remediation guidance specifically relevant to the resources deployed in that account.",
+    "distractorNotes": {
+      "a": "AWS Trusted Advisor evaluates infrastructure against best-practice checks across cost, security, fault tolerance, performance, and service quotas, rather than tracking specific hardware maintenance events.",
+      "b": "AWS Support Center is used to create and manage technical support cases, not to browse scheduled operational lifecycle notices for account instances.",
+      "d": "AWS Cost Anomaly Detection identifies unusual spending patterns using machine learning models, having nothing to do with infrastructure maintenance schedules."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/health/latest/ug/what-is-aws-health.html",
+    "sourceNote": "What is AWS Health - AWS Health Dashboard delivers personalized alerts and guidance for events affecting your AWS resources",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-billing-pricing-and-support-013",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "billing-pricing-and-support",
+    "subdomain": "cost-management",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A development team wants an automated mechanism that detects unusual or runaway AWS spending spikes—such as an accidental recursive function creating thousands of database queries—without requiring engineers to manually guess, calculate, and configure static dollar or percentage alert thresholds. Which AWS service addresses this need?",
+    "options": [
+      {
+        "id": "a",
+        "text": "AWS Budgets, which tracks expenditure against manually configured static budget limits and triggers threshold alert emails"
+      },
+      {
+        "id": "b",
+        "text": "AWS Cost Anomaly Detection, which uses machine learning models to detect unusual spend and identify underlying root causes"
+      },
+      {
+        "id": "c",
+        "text": "AWS Pricing Calculator, which creates pre-deployment operational cost estimates and projections for planned cloud workloads"
+      },
+      {
+        "id": "d",
+        "text": "AWS Billing Conductor, which models customized pro forma billing rates and groups for complex internal chargeback accounting"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "AWS Cost Anomaly Detection uses advanced machine learning algorithms to identify anomalous and unexpected spending patterns across AWS services without requiring static dollar limits. It evaluates organic usage trends, isolates anomalies, and determines root cause factors (such as account ID, service, or Region).",
+    "distractorNotes": {
+      "a": "AWS Budgets requires administrators to explicitly specify fixed cost or usage limits (e.g., $500/month or 80% threshold) rather than dynamically detecting anomalies via machine learning.",
+      "c": "AWS Pricing Calculator generates financial cost projections for hypothetical future architectures, not runtime anomaly detection on active spending.",
+      "d": "AWS Billing Conductor allows organizations to define custom pricing rules and pro forma billing views for chargeback and showback, not automated spend anomaly alerting."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/cost-management/latest/userguide/manage-ad.html",
+    "sourceNote": "Detecting unusual spend with AWS Cost Anomaly Detection - Uses machine learning to detect and alert on anomalous spend patterns",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-billing-pricing-and-support-014",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "billing-pricing-and-support",
+    "subdomain": "technical-resources",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A software company needs to procure and deploy a third-party security firewall appliance built by an Independent Software Vendor (ISV) onto their Amazon VPC. The procurement team wants to avoid negotiating separate commercial contracts with individual vendors, and requires that all third-party subscription software charges appear directly on their consolidated monthly AWS invoice. Which AWS service should they use?",
+    "options": [
+      {
+        "id": "a",
+        "text": "AWS Service Catalog, which enables enterprises to create and manage catalogs of approved internal AWS software products"
+      },
+      {
+        "id": "b",
+        "text": "AWS Systems Manager, which manages operational configuration, software inventory, and automated patching on server nodes"
+      },
+      {
+        "id": "c",
+        "text": "AWS AppConfig, which creates, manages, and quickly deploys application configurations to EC2 instances and containers"
+      },
+      {
+        "id": "d",
+        "text": "AWS Marketplace, a curated digital catalog for purchasing third-party software with charges integrated into the AWS bill"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "AWS Marketplace is a curated digital catalog offering thousands of software listings from independent software vendors. It allows customers to easily discover, test, buy, and deploy third-party software (such as AMIs, SaaS, and container products), with software fees billed directly through the customer's existing AWS invoice.",
+    "distractorNotes": {
+      "a": "AWS Service Catalog allows administrators to govern and publish internally approved AWS service templates and architectural products for organizational users, not procure external third-party ISV vendor software.",
+      "b": "AWS Systems Manager provides operational tooling for configuring, managing, and patching operating systems on instances, but is not a commercial software procurement marketplace.",
+      "c": "AWS AppConfig deploys runtime application configurations safely without code releases; it does not handle software procurement or vendor licensing."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/marketplace/latest/userguide/what-is-marketplace.html",
+    "sourceNote": "What is AWS Marketplace - Curated digital catalog to find, buy, deploy, and manage third-party software with unified AWS billing",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-billing-pricing-and-support-015",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "billing-pricing-and-support",
+    "subdomain": "pricing-models",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A financial enterprise must host an application on isolated physical hardware to comply with regulatory mandates. Additionally, the company owns existing perpetual Microsoft Windows Server and SQL Server software licenses tied to physical CPU sockets and cores that it wants to bring to AWS (BYOL). Which TWO capabilities are unique to Amazon EC2 Dedicated Hosts compared to Dedicated Instances? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Visibility and control over physical server sockets and cores to support per-core software licensing requirements"
+      },
+      {
+        "id": "b",
+        "text": "Physical hardware isolation from other AWS customer accounts running workloads on shared multitenant infrastructure"
+      },
+      {
+        "id": "c",
+        "text": "Automated seamless migration across physical server hardware in the event of an underlying host hardware failure"
+      },
+      {
+        "id": "d",
+        "text": "Control over instance placement affinity to ensure instances consistently relaunch on the exact same physical server"
+      },
+      {
+        "id": "e",
+        "text": "Complete elimination of customer operational responsibility for applying guest operating system security patches"
+      }
+    ],
+    "correct": [
+      "a",
+      "d"
+    ],
+    "explanation": "Amazon EC2 Dedicated Hosts provide customers with physical servers dedicated entirely to their use, with visibility and control over sockets and physical cores to support Bring-Your-Own-License (BYOL) per-socket/per-core terms, as well as host affinity to control instance placement on specific physical servers. In contrast, Dedicated Instances run on dedicated hardware at the host level but do not provide socket/core visibility or instance placement affinity.",
+    "distractorNotes": {
+      "b": "Both Dedicated Hosts and Dedicated Instances run on single-tenant hardware physically isolated from other customer accounts, so hardware isolation is not unique to Dedicated Hosts.",
+      "c": "Dedicated Hosts bind instances to a specific allocated physical host machine; automatic migration to replacement hardware is characteristic of standard virtualized instances rather than dedicated host pinning.",
+      "e": "Under the AWS Shared Responsibility Model, customers remain fully responsible for patching and securing the guest operating system on both Dedicated Hosts and Dedicated Instances."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/dedicated-hosts-overview.html",
+    "sourceNote": "Dedicated Hosts - Gives visibility and control of sockets and cores for BYOL and host affinity for instance placement",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-billing-pricing-and-support-016",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "billing-pricing-and-support",
+    "subdomain": "cost-management",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A cloud financial operations manager wants to set up automated governance controls in AWS Budgets to prevent cost overruns across an organization. Which TWO statements accurately describe the tracking and alerting capabilities provided by AWS Budgets? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "It creates pre-deployment total cost estimates for hypothetical workloads before any resources are launched"
+      },
+      {
+        "id": "b",
+        "text": "It automatically discovers unusual spending anomalies by applying statistical machine learning to past usage"
+      },
+      {
+        "id": "c",
+        "text": "It can monitor costs, usage metrics, and utilization or coverage levels for Reserved Instances and Savings Plans"
+      },
+      {
+        "id": "d",
+        "text": "It publishes raw line-item billing records containing individual resource IDs to an Amazon S3 bucket every day"
+      },
+      {
+        "id": "e",
+        "text": "It can send notifications via Amazon SNS or email when actual or forecasted expenses exceed a defined threshold"
+      }
+    ],
+    "correct": [
+      "c",
+      "e"
+    ],
+    "explanation": "AWS Budgets supports multiple budget types including cost budgets, usage budgets, and reservation/Savings Plans coverage and utilization budgets. It evaluates actual and forecasted spending or usage against user-defined threshold targets and triggers notifications via Amazon Simple Notification Service (Amazon SNS) or email.",
+    "distractorNotes": {
+      "a": "Generating pre-deployment cost models and financial projections for unlaunched architectures is performed by AWS Pricing Calculator, not AWS Budgets.",
+      "b": "Applying machine learning to uncover unexpected spending anomalies without static thresholds is the specific capability of AWS Cost Anomaly Detection.",
+      "d": "Publishing daily raw line-item billing data with resource IDs to Amazon S3 is the responsibility of AWS Cost and Usage Reports (CUR)."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/cost-management/latest/userguide/budgets-managing-costs.html",
+    "sourceNote": "Managing your costs with AWS Budgets - Tracks cost, usage, and RI/SP coverage/utilization, and sends alerts via email or SNS",
+    "sourceCheckedAt": "2026-09-11"
   }
 ]

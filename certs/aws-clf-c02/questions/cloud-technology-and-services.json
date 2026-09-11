@@ -265,5 +265,1631 @@
     "sourceUrl": "https://docs.aws.amazon.com/whitepapers/latest/aws-overview/application-integration.html",
     "sourceNote": "AWS Overview application integration - SQS message queuing without losing messages; SNS topics fan out to many subscribers",
     "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-007",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "deployment-and-provisioning",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A company needs to provision identical environments containing VPCs, EC2 instances, and RDS databases across multiple AWS accounts and Regions. The architecture team wants to manage these resources predictably using version-controlled configuration templates. Which AWS service should the team use?",
+    "options": [
+      {
+        "id": "a",
+        "text": "AWS Elastic Beanstalk, which automatically configures platform runtime environments from application code"
+      },
+      {
+        "id": "b",
+        "text": "AWS Systems Manager, which manages operational configurations and executes commands on running instances"
+      },
+      {
+        "id": "c",
+        "text": "AWS CodeDeploy, which automates software package deployments to existing EC2 instances and on-premises servers"
+      },
+      {
+        "id": "d",
+        "text": "AWS CloudFormation, which provisions and manages collections of AWS resources using declarative templates"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "AWS CloudFormation allows you to model, provision, and manage AWS and third-party resources by treating infrastructure as code. You describe your desired resources and dependencies in declarative JSON or YAML templates, enabling predictable, automated, and repeatable deployments across accounts and Regions.",
+    "distractorNotes": {
+      "a": "Elastic Beanstalk is a platform-as-a-service (PaaS) offering that deploys and scales web applications, abstracting the infrastructure rather than providing a general-purpose declarative template system for arbitrary AWS resources.",
+      "b": "Systems Manager provides operational management, inventory tracking, patch automation, and command execution on existing compute resources, but does not serve as an infrastructure-as-code provisioning tool.",
+      "c": "CodeDeploy automates application software deployments to compute services like EC2 instances, ECS, Lambda, or on-premises servers, but does not provision or define the underlying cloud infrastructure itself."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/Welcome.html",
+    "sourceNote": "What is AWS CloudFormation - Model, provision, and manage AWS resources by treating infrastructure as code with declarative templates",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-008",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "analytics",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A data analyst needs to perform ad-hoc analysis on several terabytes of raw log files stored in an Amazon S3 bucket. The analyst wants to run standard SQL queries directly against the files without provisioning database servers, managing clusters, or loading the data into a warehouse. Which AWS service fits this requirement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon QuickSight, a business intelligence service used to deliver interactive dashboards and visual reports"
+      },
+      {
+        "id": "b",
+        "text": "Amazon Athena, a serverless interactive query service that analyzes data in Amazon S3 using standard SQL"
+      },
+      {
+        "id": "c",
+        "text": "Amazon Redshift, a managed data warehouse service optimized for complex multi-table enterprise queries"
+      },
+      {
+        "id": "d",
+        "text": "Amazon EMR, a managed big-data platform for running distributed processing frameworks such as Apache Spark"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Amazon Athena is a serverless, interactive query service that enables users to analyze data directly in Amazon S3 using standard SQL. Because Athena is serverless, there is no infrastructure to set up, manage, or provision, and users pay only for the queries they run.",
+    "distractorNotes": {
+      "a": "QuickSight is a business intelligence (BI) and data visualization service designed to create dashboards and reports, not an interactive SQL query engine for directly querying raw files in S3.",
+      "c": "Redshift is a petabyte-scale data warehouse requiring clusters (or serverless warehouse workgroups) and data modeling, designed for structured analytical workloads rather than serverless ad-hoc SQL directly against raw files in S3.",
+      "d": "EMR is a managed cluster platform for running distributed data frameworks like Apache Spark and Hadoop, which involves provisioning compute instances and cluster management rather than serverless ad-hoc SQL querying."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/athena/latest/ug/what-is.html",
+    "sourceNote": "What is Amazon Athena - Analyze data in Amazon S3 using standard SQL with a serverless query engine",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-009",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "compute",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A company currently runs containerized applications in an on-premises data center using Kubernetes. The company plans to migrate these workloads to AWS while maintaining compatibility with existing Kubernetes APIs, manifest files, and tooling. Which AWS service should the company use to run these workloads without managing the Kubernetes control plane?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon EKS"
+      },
+      {
+        "id": "b",
+        "text": "Amazon ECS"
+      },
+      {
+        "id": "c",
+        "text": "AWS Fargate"
+      },
+      {
+        "id": "d",
+        "text": "Amazon EC2"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Amazon Elastic Kubernetes Service (Amazon EKS) is a managed Kubernetes service that automates the availability and scalability of the Kubernetes control plane. It provides full compatibility with standard Kubernetes open-source tooling, APIs, and manifests, allowing teams to migrate existing Kubernetes workloads to AWS without refactoring their deployment workflows or operating control plane nodes.",
+    "distractorNotes": {
+      "b": "Amazon ECS is an AWS-native container orchestration service that uses AWS-specific task definitions and APIs rather than open-source Kubernetes APIs and tooling.",
+      "c": "AWS Fargate is a serverless compute engine for containers that runs tasks or pods without managing underlying EC2 instances, but it is not a container orchestrator and does not provide Kubernetes APIs on its own.",
+      "d": "Amazon EC2 provides unmanaged virtual servers, requiring the customer to manually install, configure, scale, and maintain the Kubernetes control plane and cluster nodes."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/eks/latest/userguide/what-is-eks.html",
+    "sourceNote": "What is Amazon EKS - Managed Kubernetes service that operates the control plane with open-source Kubernetes compatibility",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-010",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "machine-learning",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A company wants to develop a customer service application that incorporates generative AI capabilities to summarize user interactions. The development team wants to evaluate and deploy high-performing foundation models from multiple leading AI providers using a single unified API, without managing server infrastructure or training models from scratch. Which AWS service should the company use?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon SageMaker"
+      },
+      {
+        "id": "b",
+        "text": "Amazon Comprehend"
+      },
+      {
+        "id": "c",
+        "text": "Amazon Bedrock"
+      },
+      {
+        "id": "d",
+        "text": "Amazon Rekognition"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Amazon Bedrock is a fully managed service that provides access to high-performing foundation models (FMs) from leading AI companies through a single unified API. It enables developers to build and scale generative AI applications quickly without managing underlying compute infrastructure or training machine learning models from scratch.",
+    "distractorNotes": {
+      "a": "Amazon SageMaker is an end-to-end machine learning platform used to build, train, tune, and deploy custom ML models, requiring data science workflow management rather than offering multi-provider foundation models via a serverless API.",
+      "b": "Amazon Comprehend is a managed natural language processing (NLP) service that performs specialized text analysis such as sentiment detection and entity extraction, rather than providing foundation models for generative text summarization.",
+      "d": "Amazon Rekognition is a managed computer vision service that analyzes images and video for objects, faces, and scenes, not a generative AI service for text summarization."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-bedrock.html",
+    "sourceNote": "What is Amazon Bedrock - Fully managed service offering foundation models from leading AI companies via a unified API",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-011",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "deployment-and-operating",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A developer wants to automate the creation and configuration of AWS resources by running command-line scripts across multiple operating systems. Which AWS interface tool should the developer use?",
+    "options": [
+      {
+        "id": "a",
+        "text": "AWS CLI, an open-source tool to interact with AWS services through commands in a command-line shell"
+      },
+      {
+        "id": "b",
+        "text": "AWS Management Console, a web-based graphical user interface for managing and accessing AWS resources"
+      },
+      {
+        "id": "c",
+        "text": "AWS CloudShell, a browser-based, pre-authenticated shell that is launched directly inside the AWS Console"
+      },
+      {
+        "id": "d",
+        "text": "AWS OpsWorks, a configuration management service that provides managed instances of Chef and Puppet"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "The AWS Command Line Interface (AWS CLI) is an open-source tool that enables developers to interact with and control AWS services using commands in a command-line shell. It supports cross-platform automation and scripting across Linux, macOS, and Windows environments.",
+    "distractorNotes": {
+      "b": "The AWS Management Console is a browser-based visual GUI intended for manual interactions rather than command-line automated scripting.",
+      "c": "AWS CloudShell runs in a web browser without local installation, but is intended for ad-hoc browser shell sessions rather than automated local cross-platform scripting.",
+      "d": "AWS OpsWorks is a configuration management service for Chef and Puppet automation, not a general command-line utility for running AWS commands."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-welcome.html",
+    "sourceNote": "AWS CLI User Guide - Unified tool to manage AWS services from command-line shell scripts",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-012",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "deployment-and-operating",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A startup wants to deploy and scale a web application developed in Node.js. The team wants AWS to automatically handle capacity provisioning, load balancing, and Auto Scaling while retaining full control over the underlying AWS resources. Which service meets these needs?",
+    "options": [
+      {
+        "id": "a",
+        "text": "AWS CloudFormation, which models, provisions, and manages AWS resources using declarative JSON or YAML configuration templates"
+      },
+      {
+        "id": "b",
+        "text": "AWS Elastic Beanstalk, which deploys and scales web applications with automated platform provisioning"
+      },
+      {
+        "id": "c",
+        "text": "AWS CodeDeploy, which automates application deployments to existing compute instances and on-premises servers"
+      },
+      {
+        "id": "d",
+        "text": "AWS Lambda, which executes stateless event-driven code without persistent server infrastructure"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "AWS Elastic Beanstalk is an easy-to-use platform-as-a-service (PaaS) offering for deploying and scaling web applications and services developed with Java, .NET, Node.js, Python, and other platforms. You simply upload your code, and Elastic Beanstalk automatically handles deployment, provisioning, load balancing, and auto-scaling while allowing full access to underlying resources.",
+    "distractorNotes": {
+      "a": "CloudFormation requires authors to define every infrastructure resource and dependency explicitly in templates rather than automatically managing web application runtime stacks.",
+      "c": "CodeDeploy handles deployment packages to existing server fleets but does not provision or scale the underlying infrastructure or load balancers.",
+      "d": "Lambda runs serverless event-driven code functions rather than continuous long-running Node.js web application server stacks."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/Welcome.html",
+    "sourceNote": "AWS Elastic Beanstalk Developer Guide - Deploy and scale web applications and services quickly",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-013",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "global-infrastructure",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A media enterprise serves video streams to a worldwide audience. To deliver content with the lowest possible latency and prevent high load on the origin servers, the enterprise wants to cache content at geographically dispersed locations closer to end users. Which component of AWS global infrastructure makes this possible?",
+    "options": [
+      {
+        "id": "a",
+        "text": "AWS Availability Zones, which provide redundant, isolated data center clusters located within a single AWS Region"
+      },
+      {
+        "id": "b",
+        "text": "AWS Regional Caches, which pool data across multiple Availability Zones to safeguard against instance termination"
+      },
+      {
+        "id": "c",
+        "text": "AWS Edge Locations, which serve cached copies of web content through a global network of Points of Presence"
+      },
+      {
+        "id": "d",
+        "text": "AWS Local Zones, which place compute and storage closer to large population centers for local processing"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "AWS Edge Locations are points of presence (PoPs) located in major cities around the world. Services like Amazon CloudFront and AWS Global Accelerator use these edge locations to cache and distribute data, videos, applications, and APIs to users with low latency and high transfer speeds.",
+    "distractorNotes": {
+      "a": "Availability Zones are isolated locations within a single Region, not edge sites distributed globally near viewers.",
+      "b": "Regional Caches sit between CloudFront edge locations and origin servers, but edge locations are the primary points of presence that deliver cached content directly to end users.",
+      "d": "Local Zones extend an AWS Region to deliver single-digit millisecond latency for compute and storage in specific metropolitan areas, not global edge content caching."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html",
+    "sourceNote": "Amazon CloudFront Developer Guide - Global network of Edge Locations and Points of Presence for low-latency delivery",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-014",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "global-infrastructure",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A healthcare provider has legacy medical equipment that requires ultra-low latency connectivity to local processing hardware inside its private hospital facility. The IT staff wants to run native AWS compute and storage services directly inside their on-premises data center using the same AWS APIs and tools. Which AWS offering should they choose?",
+    "options": [
+      {
+        "id": "a",
+        "text": "AWS Storage Gateway, a software appliance that connects on-premises applications to AWS cloud storage"
+      },
+      {
+        "id": "b",
+        "text": "AWS Direct Connect, a dedicated private physical fiber-optic telecommunications circuit connecting an on-premises data center to AWS"
+      },
+      {
+        "id": "c",
+        "text": "AWS Snowball Edge, a ruggedized physical data transport device used for edge compute and data transfer"
+      },
+      {
+        "id": "d",
+        "text": "AWS Outposts, a fully managed service extending AWS infrastructure, services, and APIs to on-premises facilities"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "AWS Outposts is a fully managed service that offers the same AWS infrastructure, AWS services, APIs, and tools to virtually any datacenter, co-location space, or on-premises facility for a truly consistent hybrid experience. It provides local compute and storage for workloads requiring ultra-low latency access to on-premises systems.",
+    "distractorNotes": {
+      "a": "AWS Storage Gateway provides hybrid storage integration (files, volumes, virtual tapes), not full native AWS compute and database infrastructure on-premises.",
+      "b": "Direct Connect establishes a dedicated private network circuit from on-premises to an AWS Region, but does not deploy AWS compute infrastructure inside the customer's data center.",
+      "c": "Snowball Edge is an offline transport appliance with edge computing capabilities for migrations and remote edge sites, not a permanent rack-scale extension of the AWS cloud."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/outposts/latest/userguide/what-is-outposts.html",
+    "sourceNote": "AWS Outposts User Guide - Deliver AWS infrastructure and services to virtually any on-premises or edge location",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-015",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "compute",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An online retailer expects unpredictable spikes in web traffic during seasonal promotional events. Which TWO statements describe key benefits of using Amazon EC2 Auto Scaling? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "It automatically converts unmanaged EC2 instances into serverless AWS Lambda execution functions"
+      },
+      {
+        "id": "b",
+        "text": "It automatically launches or terminates EC2 instances in response to changing demand conditions"
+      },
+      {
+        "id": "c",
+        "text": "It maintains application availability by replacing unhealthy or failing instances automatically"
+      },
+      {
+        "id": "d",
+        "text": "It converts relational databases on EC2 instances into multi-master NoSQL document clusters"
+      },
+      {
+        "id": "e",
+        "text": "It replicates EC2 instance storage volumes to external on-premises storage arrays continuously"
+      }
+    ],
+    "correct": [
+      "b",
+      "c"
+    ],
+    "explanation": "Amazon EC2 Auto Scaling helps ensure that you have the correct number of Amazon EC2 instances available to handle the load for your application. It maintains application availability by replacing unhealthy instances automatically, and optimizes costs by adding or removing EC2 instances dynamically based on demand.",
+    "distractorNotes": {
+      "a": "Auto Scaling manages EC2 instance counts; it does not rewrite or transform EC2 applications into Lambda functions.",
+      "d": "Auto Scaling adjusts compute instance capacity; it does not convert or re-architect database engines.",
+      "e": "Auto Scaling does not synchronize or replicate EBS storage volumes to external on-premises storage devices."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html",
+    "sourceNote": "Amazon EC2 Auto Scaling User Guide - Automatically add or remove EC2 instances and replace unhealthy instances",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-016",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "compute",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A small business owner wants to host a simple WordPress blog on AWS. The owner lacks cloud architecture experience and seeks an easy-to-use service that bundles a virtual server, SSD storage, DNS management, and a static IP address at a predictable, low monthly fee. Which AWS service is best suited for this use case?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon Lightsail, an easy-to-use virtual private server service with bundled resources at a fixed monthly price"
+      },
+      {
+        "id": "b",
+        "text": "Amazon EC2, a highly configurable web service providing resizable virtual compute capacity, manual networking, and hourly billing"
+      },
+      {
+        "id": "c",
+        "text": "AWS Elastic Beanstalk, an orchestration platform for deploying web applications across managed AWS resources"
+      },
+      {
+        "id": "d",
+        "text": "AWS Fargate, a serverless compute engine that runs containers without managing the underlying servers"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Amazon Lightsail is designed to be the easiest way to launch and manage a virtual private server on AWS. Lightsail plans bundle memory, vCPUs, SSD storage, a static IP, DNS management, and data transfer allowance into a predictable, low-cost monthly package.",
+    "distractorNotes": {
+      "b": "Amazon EC2 requires manual configuration of networking (VPCs, subnets, route tables), security groups, and storage volumes, without bundled flat monthly pricing.",
+      "c": "Elastic Beanstalk deploys application code onto configurable underlying AWS resources and requires cloud configuration knowledge.",
+      "d": "AWS Fargate is a serverless container execution engine, not a pre-packaged virtual private server bundle with fixed monthly billing."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/lightsail/latest/userguide/what-is-amazon-lightsail.html",
+    "sourceNote": "Amazon Lightsail User Guide - Simplest way to get started on AWS with bundled compute, storage, and networking",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-017",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "compute",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A research laboratory needs to process hundreds of thousands of scientific simulation jobs each night. The computing workloads run in Docker containers and require dynamic provisioning of optimal compute resources across various instance types based on job queue volume. Which AWS service manages this batch processing workload?",
+    "options": [
+      {
+        "id": "a",
+        "text": "AWS Step Functions, a visual workflow orchestrator for coordinating distributed microservices, serverless tasks, and error handling"
+      },
+      {
+        "id": "b",
+        "text": "AWS Batch, a managed service that plans, schedules, and executes containerized batch workloads at scale"
+      },
+      {
+        "id": "c",
+        "text": "Amazon EMR, a managed cluster platform that runs distributed big-data frameworks like Hadoop and Spark"
+      },
+      {
+        "id": "d",
+        "text": "AWS App Runner, a fully managed service that builds and runs containerized web applications directly"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "AWS Batch enables developers, scientists, and engineers to easily and efficiently run hundreds of thousands of batch computing jobs on AWS. AWS Batch dynamically provisions the optimal quantity and type of compute resources (such as CPU or memory-optimized instances) based on the volume and specific resource requirements of the submitted batch jobs.",
+    "distractorNotes": {
+      "a": "Step Functions orchestrates state machine workflows across services, but does not manage the dynamic provisioning and job execution queue for batch compute clusters.",
+      "c": "Amazon EMR focuses on big data analytics using frameworks like Hadoop, Spark, and Presto, rather than general containerized batch job scheduling.",
+      "d": "AWS App Runner is designed for deploying long-running HTTP containerized web applications and APIs, not high-volume scheduled batch jobs."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/batch/latest/userguide/what-is-batch.html",
+    "sourceNote": "AWS Batch User Guide - Fully managed batch processing service that dynamically scales compute resources",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-018",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "compute",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A financial analytics firm runs large-scale Monte Carlo risk simulations that can be paused and resumed without impacting business operations. Which Amazon EC2 purchasing option offers the deepest cost discount for these fault-tolerant, interruptible workloads?",
+    "options": [
+      {
+        "id": "a",
+        "text": "On-Demand Instances, which offer flexible pay-as-you-go pricing without long-term commitments"
+      },
+      {
+        "id": "b",
+        "text": "Dedicated Hosts, which provide dedicated physical servers for regulatory and licensing compliance"
+      },
+      {
+        "id": "c",
+        "text": "Spot Instances, which leverage spare Amazon EC2 compute capacity at steep discounts with interruptions"
+      },
+      {
+        "id": "d",
+        "text": "Reserved Instances, which provide significant discounts in exchange for a one- or three-year commitment"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Amazon EC2 Spot Instances allow customers to take advantage of unused EC2 capacity in the AWS Cloud at steep discounts (up to 90% off On-Demand prices). Spot Instances are ideal for stateless, fault-tolerant, or flexible applications, such as batch processing, big data analysis, and containerized workloads, because AWS can reclaim them with a two-minute notification.",
+    "distractorNotes": {
+      "a": "On-Demand Instances charge standard hourly or per-second rates without discounts and are intended for workloads that cannot be interrupted.",
+      "b": "Dedicated Hosts are dedicated physical servers intended for bring-your-own-license (BYOL) compliance, and carry higher costs rather than deep discounts.",
+      "d": "Reserved Instances require 1- or 3-year steady-state capacity commitments rather than exploiting unused spare capacity for interruptible batch processing."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-spot-instances.html",
+    "sourceNote": "Amazon EC2 User Guide - Spot Instances use spare EC2 capacity at steep discounts for fault-tolerant workloads",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-019",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "databases",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A gaming company needs a fully managed database for storing player session states and leaderboard data. The database must deliver consistent, single-digit millisecond latency at massive scale, support a flexible key-value document data model, and scale throughput automatically without server management. Which AWS service should the company choose?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon RDS for PostgreSQL, a managed relational database offering ACID transactions, complex joins, and rigid relational SQL schemas"
+      },
+      {
+        "id": "b",
+        "text": "Amazon Redshift, a column-oriented cloud data warehouse for running complex aggregation queries"
+      },
+      {
+        "id": "c",
+        "text": "Amazon Aurora, a high-performance relational database engine compatible with MySQL and PostgreSQL"
+      },
+      {
+        "id": "d",
+        "text": "Amazon DynamoDB, a serverless NoSQL key-value and document database delivering micro-latency at scale"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Amazon DynamoDB is a fully managed, serverless, key-value and document NoSQL database designed for single-digit millisecond performance at any scale. It handles millions of requests per second, supports automated scaling of throughput capacity, and eliminates database administration tasks such as hardware provisioning, patching, and cluster setup.",
+    "distractorNotes": {
+      "a": "Amazon RDS for PostgreSQL is a relational SQL database requiring fixed instance sizing and relational schemas, not a serverless key-value NoSQL engine.",
+      "b": "Redshift is a column-store analytical data warehouse designed for complex analytics, not high-throughput, single-digit millisecond session lookups.",
+      "c": "Aurora is an enterprise relational database with structured relational tables, not a schemaless key-value document NoSQL store."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html",
+    "sourceNote": "Amazon DynamoDB Developer Guide - Fully managed serverless NoSQL key-value database delivering single-digit millisecond latency",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-020",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "databases",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An engineering team evaluates Amazon Aurora for an enterprise relational database migration. Which TWO statements describe architectural capabilities of Amazon Aurora? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "It is fully compatible with open-source MySQL and PostgreSQL database engines"
+      },
+      {
+        "id": "b",
+        "text": "It automatically converts unstructured video files into relational SQL database tables"
+      },
+      {
+        "id": "c",
+        "text": "It replaces Amazon S3 as the default object storage layer for web application assets"
+      },
+      {
+        "id": "d",
+        "text": "It features a distributed, self-healing storage system that replicates data across three Availability Zones"
+      },
+      {
+        "id": "e",
+        "text": "It operates exclusively as an in-memory Redis-compatible caching layer for microsecond reads"
+      }
+    ],
+    "correct": [
+      "a",
+      "d"
+    ],
+    "explanation": "Amazon Aurora is a MySQL and PostgreSQL-compatible relational database built for the cloud. It features a distributed, fault-tolerant, self-healing storage system that replicates six copies of data across three Availability Zones and automatically grows storage up to 128 TiB.",
+    "distractorNotes": {
+      "b": "Aurora does not process or parse unstructured multimedia video files into relational tables.",
+      "c": "Aurora is a relational database service, not a general-purpose object storage layer like Amazon S3.",
+      "e": "Aurora is a relational database system, whereas ElastiCache provides Redis-compatible in-memory caching."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html",
+    "sourceNote": "Amazon Aurora User Guide - MySQL and PostgreSQL compatibility with distributed 3-AZ auto-repairing storage",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-021",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "databases",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A multinational retail chain wants to migrate its on-premises Oracle database to Amazon Aurora PostgreSQL. The migration must keep the source database fully operational during the data replication process to minimize application downtime. Which AWS service facilitates this database migration?",
+    "options": [
+      {
+        "id": "a",
+        "text": "AWS Database Migration Service (AWS DMS), which migrates databases to AWS while keeping the source operational"
+      },
+      {
+        "id": "b",
+        "text": "AWS Application Discovery Service, an agent-based and agentless discovery tool that inventories on-premises servers to plan cloud migrations"
+      },
+      {
+        "id": "c",
+        "text": "AWS DataSync, which accelerates automated data transfers of files and object stores over the network"
+      },
+      {
+        "id": "d",
+        "text": "AWS Snowcone, a compact edge computing and data transfer device for physically moving bulk files"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "AWS Database Migration Service (AWS DMS) helps you migrate databases to AWS quickly and securely. The source database remains fully operational during the migration, minimizing downtime to applications that rely on the database. AWS DMS supports homogeneous migrations (such as Oracle to Oracle) and heterogeneous migrations (such as Oracle to Amazon Aurora PostgreSQL) when paired with the AWS Schema Conversion Tool (AWS SCT).",
+    "distractorNotes": {
+      "b": "AWS Application Discovery Service scans and catalogs on-premises infrastructure to plan migrations, but does not replicate or migrate databases.",
+      "c": "AWS DataSync transfers file systems and object storage data between storage systems, not database records or transactions.",
+      "d": "AWS Snowcone is a portable hardware appliance for physical data transport and edge compute, not an active database replication service."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/dms/latest/userguide/Welcome.html",
+    "sourceNote": "AWS DMS User Guide - Replicates and migrates relational databases and data warehouses with minimal downtime",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-022",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "databases",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A social media platform needs a database to store user profiles, friend connections, recommendation graphs, and interaction histories. The engineering team needs to run complex traversal queries to discover relationships and connections between users with millisecond response times. Which AWS database service is designed specifically for this use case?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon DocumentDB, a fully managed document database service designed for storing, indexing, and querying JSON document collections at scale"
+      },
+      {
+        "id": "b",
+        "text": "Amazon Neptune, a fast, reliable graph database built for applications with highly connected datasets"
+      },
+      {
+        "id": "c",
+        "text": "Amazon Timestream, a fast, scalable serverless time-series database for IoT metrics and telemetry"
+      },
+      {
+        "id": "d",
+        "text": "Amazon Quantum Ledger Database (QLDB), an immutable, cryptographically verifiable ledger database"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Amazon Neptune is a fast, reliable, fully managed graph database service built for applications that work with highly connected datasets, such as social networking, fraud detection, and recommendation engines. Neptune supports popular open-source graph query languages like Apache TinkerPop Gremlin and SPARQL.",
+    "distractorNotes": {
+      "a": "DocumentDB is a MongoDB-compatible document database for JSON documents, not an optimized graph engine for traversing interconnected relationship graphs.",
+      "c": "Timestream is optimized for time-series data (like sensor telemetry and application logs ordered by time), not graph relationship queries.",
+      "d": "Amazon QLDB provides an append-only, cryptographically verifiable transaction log, not a graph relationship query engine."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/neptune/latest/userguide/intro.html",
+    "sourceNote": "Amazon Neptune User Guide - Fast, reliable graph database service built for applications with connected datasets",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-023",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "networking",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "Backend EC2 instances located in a private subnet need to download operating system security patches from repositories on the public internet. However, security policy strictly forbids any external systems on the internet from initiating inbound network connections to these backend instances. Which VPC component enables this outbound-only connectivity?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Internet Gateway, a horizontally scaled, redundant VPC component that enables bi-directional communication between instances and the public internet"
+      },
+      {
+        "id": "b",
+        "text": "VPC Peering connection, which routes private traffic between two virtual private clouds using IP addresses"
+      },
+      {
+        "id": "c",
+        "text": "NAT Gateway, which enables private subnet instances to reach the internet while blocking inbound connections"
+      },
+      {
+        "id": "d",
+        "text": "AWS Direct Connect gateway, which connects a virtual private gateway to direct network circuits"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "A Network Address Translation (NAT) Gateway allows instances in a private subnet to connect to services outside your VPC (such as the internet for software updates and patches), but prevents external hosts from initiating connections directly to those private instances.",
+    "distractorNotes": {
+      "a": "An Internet Gateway allows bi-directional traffic, meaning instances with public IPs can receive inbound connections from the internet.",
+      "b": "A VPC Peering connection connects two VPCs together internally, but does not provide outbound internet access for downloading external software patches.",
+      "d": "Direct Connect gateway links on-premises corporate data centers with AWS VPCs, not outbound public internet connectivity for software patch repositories."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html",
+    "sourceNote": "Amazon VPC User Guide - NAT gateways enable instances in private subnets to connect to the internet but prevent inbound connections",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-024",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "networking",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A financial institution must transfer large volumes of confidential transaction data daily between its corporate on-premises data center and its AWS VPC. Due to compliance and performance requirements, the institution requires a dedicated, private physical network connection that completely bypasses the public internet and provides consistent network performance. Which AWS service fulfills this requirement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "AWS Site-to-Site VPN, an encrypted IPsec virtual private network connection that transmits network traffic over the public internet"
+      },
+      {
+        "id": "b",
+        "text": "Amazon Route 53, which provides DNS routing and domain registration across cloud resources"
+      },
+      {
+        "id": "c",
+        "text": "Amazon CloudFront, which caches and accelerates web asset delivery using global edge locations"
+      },
+      {
+        "id": "d",
+        "text": "AWS Direct Connect, which creates a dedicated private physical network link from on-premises to AWS"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "AWS Direct Connect links an internal network directly to an AWS Direct Connect location over a standard Ethernet fiber-optic cable. This dedicated private connection bypasses internet service providers, resulting in a more consistent network experience, reduced bandwidth costs, and enhanced data privacy.",
+    "distractorNotes": {
+      "a": "Site-to-Site VPN transmits traffic across the public internet inside an encrypted tunnel, which is subject to variable internet latency and bandwidth constraints.",
+      "b": "Route 53 is a cloud DNS service for mapping domain names to IP addresses, not a physical network connectivity link.",
+      "c": "CloudFront is a content delivery network for caching web assets, not a dedicated private enterprise circuit for corporate data center connectivity."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/directconnect/latest/UserGuide/Welcome.html",
+    "sourceNote": "AWS Direct Connect User Guide - Dedicated private network connection from premises to AWS bypassing the public internet",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-025",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "networking",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An organization operates hundreds of Amazon VPCs across multiple business units alongside multiple on-premises corporate data centers. Which TWO benefits does AWS Transit Gateway provide to simplify this network architecture? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "It eliminates the need for security groups and network ACLs inside all connected VPCs"
+      },
+      {
+        "id": "b",
+        "text": "It acts as a central cloud router connecting thousands of VPCs and on-premises networks"
+      },
+      {
+        "id": "c",
+        "text": "It automatically translates SQL database queries into NoSQL JSON document structures"
+      },
+      {
+        "id": "d",
+        "text": "It hosts static website files directly at edge locations without requiring S3 buckets"
+      },
+      {
+        "id": "e",
+        "text": "It reduces operational complexity by replacing complex pairwise VPC peering mesh connections"
+      }
+    ],
+    "correct": [
+      "b",
+      "e"
+    ],
+    "explanation": "AWS Transit Gateway is a network transit hub that you can use to interconnect your virtual private clouds (VPCs) and on-premises networks. As your cloud footprint expands, Transit Gateway simplifies your network by replacing complex point-to-point peering relationships with a centralized hub-and-spoke routing architecture.",
+    "distractorNotes": {
+      "a": "Transit Gateway is a network routing hub; it does not replace or disable firewall rules like security groups or network ACLs.",
+      "c": "Transit Gateway routes network IP packets; it has no database query translation capabilities.",
+      "d": "Transit Gateway does not store or host web files; that is the role of Amazon S3 and Amazon CloudFront."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/vpc/latest/tgw/what-is-transit-gateway.html",
+    "sourceNote": "AWS Transit Gateway Guide - Central hub to connect VPCs and on-premises networks, simplifying network topologies",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-026",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "networking",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An administrator wants to configure DNS routing to direct user requests to the AWS Region with the lowest network latency for each user. In addition, if the primary application endpoint becomes unreachable, traffic must automatically route to a secondary failover endpoint. Which AWS service provides these capabilities?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon Route 53, a highly available cloud DNS web service offering latency and failover routing policies"
+      },
+      {
+        "id": "b",
+        "text": "AWS Transit Gateway, a central network hub that manages packet routing between VPCs and on-premises sites"
+      },
+      {
+        "id": "c",
+        "text": "AWS CloudTrail, an auditing service that tracks and logs administrative actions across all AWS services"
+      },
+      {
+        "id": "d",
+        "text": "AWS Certificate Manager (ACM), a service that provisions and manages SSL/TLS certificates for websites"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Amazon Route 53 is a highly available and scalable cloud Domain Name System (DNS) web service. It provides advanced traffic routing policies, including latency-based routing (directing traffic to the Region with the lowest latency) and failover routing based on automated health checks.",
+    "distractorNotes": {
+      "b": "Transit Gateway routes traffic between VPCs and on-premises networks at the IP layer, but does not perform public DNS resolution or DNS-based failover.",
+      "c": "CloudTrail records API calls and governance activity, but does not manage network traffic or DNS records.",
+      "d": "AWS Certificate Manager generates and renews SSL/TLS certificates, not DNS routing or endpoint health monitoring."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/Welcome.html",
+    "sourceNote": "Amazon Route 53 Developer Guide - Scalable cloud DNS service providing latency-based routing and health-check failover",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-027",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "networking",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A gaming company runs a multiplayer real-time game hosted on EC2 instances in multiple AWS Regions using non-HTTP protocols (UDP and custom TCP). The company wants to provide users with static Anycast IP addresses that route traffic over the congestion-free AWS global private network to the nearest healthy regional endpoint. Which AWS service should the company implement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon CloudFront, a global content delivery network that caches and distributes HTTP and HTTPS web assets from edge locations worldwide"
+      },
+      {
+        "id": "b",
+        "text": "AWS Global Accelerator, which provides static Anycast IPs to route TCP and UDP traffic over the AWS network"
+      },
+      {
+        "id": "c",
+        "text": "AWS Direct Connect, which provisions dedicated private physical fiber circuits to corporate facilities"
+      },
+      {
+        "id": "d",
+        "text": "AWS Site-to-Site VPN, which tunnels IPsec traffic between customer gateways and virtual private gateways"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "AWS Global Accelerator uses static Anycast IP addresses that serve as single fixed entry points for your application. It directs user traffic over the AWS global network to the optimal regional endpoint based on health, client location, and routing policies, improving performance for TCP and UDP workloads.",
+    "distractorNotes": {
+      "a": "CloudFront is primarily an HTTP/HTTPS/WebSocket content delivery network that caches content, whereas Global Accelerator provides static IP entry points for TCP/UDP protocols without caching.",
+      "c": "Direct Connect establishes dedicated enterprise circuits to corporate data centers, not Anycast internet acceleration for global retail gamers.",
+      "d": "Site-to-Site VPN is an encrypted tunnel connecting corporate offices, not a public-facing Anycast routing service for global gaming traffic."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/global-accelerator/latest/dg/what-is-global-accelerator.html",
+    "sourceNote": "AWS Global Accelerator Guide - Uses static Anycast IP addresses and AWS global network to improve performance for TCP/UDP",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-028",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "storage",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A systems administrator needs block-level storage for an Amazon EC2 instance hosting a database. The data must persist across instance stops and starts, and the volume must support point-in-time snapshot backups to Amazon S3. Which storage option should the administrator choose?",
+    "options": [
+      {
+        "id": "a",
+        "text": "EC2 Instance Store, which provides temporary, non-persistent block-level storage physically attached to the underlying host hardware system"
+      },
+      {
+        "id": "b",
+        "text": "Amazon S3 Standard, which provides scalable object storage accessed through RESTful HTTP web APIs"
+      },
+      {
+        "id": "c",
+        "text": "Amazon Elastic Block Store (EBS), which provides persistent block storage volumes independent of instance lifecycle"
+      },
+      {
+        "id": "d",
+        "text": "Amazon Elastic File System (EFS), which provides serverless shared file storage over the NFS protocol"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Amazon Elastic Block Store (Amazon EBS) provides high-performance, block-level storage volumes for use with Amazon EC2 instances. EBS volumes persist independently of the life of the instance, withstand instance stops and starts, and support incremental point-in-time snapshot backups saved durably in Amazon S3.",
+    "distractorNotes": {
+      "a": "EC2 Instance Store is ephemeral; all stored data is permanently lost when the associated EC2 instance is stopped or terminated.",
+      "b": "Amazon S3 is an object storage service accessed over HTTP/HTTPS APIs, not a block device suitable for mounting as a native database filesystem.",
+      "d": "Amazon EFS is a shared network file system (NFS), not a dedicated low-latency block storage volume for raw database drives."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-volume-types.html",
+    "sourceNote": "Amazon EC2 User Guide - EBS volumes provide persistent block-level storage independent of the instance life cycle",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-029",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "storage",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A fleet of dozens of Linux-based Amazon EC2 instances running across multiple Availability Zones needs concurrent access to a shared file system. The storage solution must automatically scale in capacity as files are added or removed, support standard POSIX file permissions, and require zero storage provisioning. Which AWS service meets these criteria?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon EBS, which provides dedicated, persistent block storage volumes formatted and attached to an individual EC2 instance in a single zone"
+      },
+      {
+        "id": "b",
+        "text": "Amazon S3 Glacier, which provides low-cost archive storage for cold data requiring hours for retrieval"
+      },
+      {
+        "id": "c",
+        "text": "AWS Storage Gateway, which integrates on-premises software appliances with cloud object and volume storage"
+      },
+      {
+        "id": "d",
+        "text": "Amazon Elastic File System (EFS), which provides elastic, serverless POSIX-compliant shared file storage for Linux"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Amazon Elastic File System (Amazon EFS) is a serverless, fully elastic file system that lets you share file data without provisioning or managing storage capacity. It can be mounted concurrently by hundreds of EC2 instances spanning multiple Availability Zones and provides standard POSIX file system semantics.",
+    "distractorNotes": {
+      "a": "Standard Amazon EBS volumes operate inside a single Availability Zone and cannot be mounted across dozens of EC2 instances spanning multiple AZs.",
+      "b": "Amazon S3 Glacier is an archival object storage service, not a POSIX-compliant file system mountable by EC2 instances.",
+      "c": "AWS Storage Gateway connects on-premises environments to AWS cloud storage, rather than acting as a cloud-native shared file system for EC2."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/efs/latest/ug/whatisefs.html",
+    "sourceNote": "Amazon EFS User Guide - Simple, serverless, set-and-forget elastic file system for use with AWS compute services",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-030",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "storage",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An enterprise plans to migrate legacy file-based workloads to AWS. Which TWO use cases represent appropriate applications for Amazon FSx file systems? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Providing fully managed native Microsoft Windows file storage using the SMB protocol and Active Directory integration"
+      },
+      {
+        "id": "b",
+        "text": "Storing static website images for global public distribution via web browser HTTP GET requests"
+      },
+      {
+        "id": "c",
+        "text": "Querying raw CSV log files in place using serverless SQL statements without infrastructure"
+      },
+      {
+        "id": "d",
+        "text": "Delivering microsecond in-memory key-value caching to offload relational database queries"
+      },
+      {
+        "id": "e",
+        "text": "Delivering high-performance storage optimized for compute-intensive workloads such as machine learning and HPC"
+      }
+    ],
+    "correct": [
+      "a",
+      "e"
+    ],
+    "explanation": "Amazon FSx makes it easy and cost-effective to launch, run, and scale feature-rich, high-performance file systems. Amazon FSx for Windows File Server provides fully managed native Microsoft Windows file storage accessible over SMB with Active Directory support. Amazon FSx for Lustre delivers sub-millisecond latencies and high throughput for compute-intensive workloads such as high-performance computing (HPC) and machine learning.",
+    "distractorNotes": {
+      "b": "Public web distribution of static image files is the primary use case for Amazon S3 and Amazon CloudFront.",
+      "c": "Running SQL queries against raw files in place without provisioning servers describes Amazon Athena, not Amazon FSx.",
+      "d": "In-memory sub-millisecond key-value caching is handled by Amazon ElastiCache or MemoryDB, not a network file system."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/fsx/latest/WindowsGuide/what-is.html",
+    "sourceNote": "Amazon FSx User Guide - Fully managed third-party file systems including Windows File Server and Lustre for HPC",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-031",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "storage",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An enterprise wants to maintain its existing on-premises backup software and local file shares while seamlessly offloading data backups to cost-effective Amazon S3 cloud storage. The local office requires low-latency access to frequently accessed files using a local cache. Which hybrid cloud service fulfills this requirement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "AWS Storage Gateway, a hybrid cloud storage service that connects on-premises environments to cloud storage"
+      },
+      {
+        "id": "b",
+        "text": "AWS Direct Connect, a dedicated private physical network connection linking corporate premises directly to AWS without public internet transit"
+      },
+      {
+        "id": "c",
+        "text": "Amazon EBS, a block storage service providing persistent virtual disks attached to Amazon EC2 instances"
+      },
+      {
+        "id": "d",
+        "text": "AWS Snowball, a physical edge hardware device used to transport petabytes of data offline into AWS"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "AWS Storage Gateway connects an on-premises software appliance with cloud-based storage to provide seamless data transfer between the customer's datacenter and AWS. It provides low-latency data access through local caching while storing durable backup copies in Amazon S3.",
+    "distractorNotes": {
+      "b": "Direct Connect is a physical network connectivity link; it does not provide storage caching or protocol integration (like NFS/SMB/iSCSI) for on-premises applications.",
+      "c": "EBS volumes are cloud-only block devices attached to EC2 instances in an AWS data center, not accessible from local on-premises servers.",
+      "d": "AWS Snowball is a physical appliance used for bulk one-off data transport, not continuous hybrid file caching and backup offloading."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/storagegateway/latest/userguide/WhatIsStorageGateway.html",
+    "sourceNote": "AWS Storage Gateway User Guide - Connects on-premises software appliances with AWS cloud storage seamlessly",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-032",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "storage",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A compliance auditor requires an organization to centrally define, enforce, and monitor automated backup schedules and retention rules across Amazon EBS volumes, Amazon RDS databases, Amazon DynamoDB tables, and Amazon EFS file systems. Which AWS service provides this centralized backup management?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon CloudWatch, a monitoring and observability service that collects operational metrics and logs"
+      },
+      {
+        "id": "b",
+        "text": "AWS Backup, a fully managed service that centralizes and automates data protection across AWS services"
+      },
+      {
+        "id": "c",
+        "text": "AWS CloudTrail, a service that records governance, compliance, and operational auditing events for AWS accounts"
+      },
+      {
+        "id": "d",
+        "text": "AWS Systems Manager, an operations hub for managing software patching and configurations on servers"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "AWS Backup is a fully managed policy-based service that makes it easy to centralize and automate data protection across AWS services in the cloud and on premises. You can configure backup policies that define schedules, retention rules, and cross-Region/cross-account replication for services like EBS, RDS, DynamoDB, and EFS.",
+    "distractorNotes": {
+      "a": "CloudWatch monitors performance metrics and triggers alerts, but does not centrally schedule or manage cross-service backup snapshots and retention lifecycles.",
+      "c": "CloudTrail audits and logs API activity for compliance tracking, but does not take or retain data backup copies.",
+      "d": "Systems Manager automates node management and configuration scripts, but does not provide centralized multi-service data protection policies."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html",
+    "sourceNote": "AWS Backup Developer Guide - Centrally manage and automate data protection across AWS services and hybrid workloads",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-033",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "storage",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A law firm stores client case documents in Amazon S3 Standard. Case files are accessed frequently during the first 30 days, accessed rarely for the next 60 days, and must be retained in an ultra-low-cost archive for seven years before deletion. How can the firm automate this process with minimal operational effort?",
+    "options": [
+      {
+        "id": "a",
+        "text": "By writing a custom AWS Lambda function that executes on a nightly schedule to inspect metadata tags and copy objects between different buckets"
+      },
+      {
+        "id": "b",
+        "text": "By deploying an Amazon EC2 cron job that executes AWS CLI synchronization scripts across different storage tiers"
+      },
+      {
+        "id": "c",
+        "text": "By configuring S3 Lifecycle configuration rules that automatically transition objects to cheaper tiers and expire them"
+      },
+      {
+        "id": "d",
+        "text": "By enabling S3 Versioning and S3 Object Lock to prevent document modification during the seven-year period"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Amazon S3 Lifecycle configuration provides automated rules to manage objects so that they are stored cost-effectively throughout their lifecycle. You can define rules to transition objects from S3 Standard to S3 Standard-IA, down to S3 Glacier Deep Archive, and eventually expire and delete them after the retention window ends, without any custom coding or servers.",
+    "distractorNotes": {
+      "a": "Writing custom Lambda functions adds ongoing development, maintenance, and execution costs for a capability natively provided by S3.",
+      "b": "Running EC2 cron scripts requires managing server infrastructure, network bandwidth, and custom scripting, violating the minimal operational effort goal.",
+      "d": "S3 Versioning and Object Lock protect objects from accidental deletion or modification, but do not transition data across storage classes to optimize costs."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lifecycle-mgmt.html",
+    "sourceNote": "Amazon S3 User Guide - Manage object lifecycle to transition objects to cost-effective storage classes or expire them",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-034",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "machine-learning",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A team of data scientists wants to build, train, tune, and deploy custom machine learning models using automated algorithms, managed Jupyter notebooks, and scalable distributed training clusters without managing the underlying compute instances. Which AWS service provides this comprehensive machine learning environment?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon Comprehend, a pre-trained natural language processing service that extracts sentiment and entities"
+      },
+      {
+        "id": "b",
+        "text": "Amazon Rekognition, a pre-trained computer vision service that analyzes visual objects and faces"
+      },
+      {
+        "id": "c",
+        "text": "Amazon Lex, a conversational artificial intelligence service for building voice and text chatbots"
+      },
+      {
+        "id": "d",
+        "text": "Amazon SageMaker, a fully managed platform to build, train, and deploy custom machine learning models"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Amazon SageMaker is a fully managed machine learning service with tools that enable developers and data scientists to build, train, and deploy machine learning models quickly. SageMaker eliminates the heavy lifting from each step of the machine learning process to make it easier to develop high-quality models.",
+    "distractorNotes": {
+      "a": "Amazon Comprehend is a pre-trained natural language processing API for analyzing text, not an end-to-end platform for training custom ML models from raw datasets.",
+      "b": "Amazon Rekognition provides pre-trained vision APIs, rather than a development and training environment for data scientists to build custom models.",
+      "c": "Amazon Lex is specialized for building conversational chatbots, not for general machine learning model training and hyperparameter tuning."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/whatis.html",
+    "sourceNote": "Amazon SageMaker Developer Guide - Comprehensive platform to prepare, build, train, and deploy machine learning models",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-035",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "machine-learning",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An education company wants to enhance its mobile learning application by adding pre-built artificial intelligence capabilities. Which TWO AWS services provide pre-trained AI capabilities without requiring machine learning expertise? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon EMR, which provisions distributed Hadoop clusters for big data MapReduce processing"
+      },
+      {
+        "id": "b",
+        "text": "AWS Glue, which extracts, transforms, and catalogs data across relational data lakes"
+      },
+      {
+        "id": "c",
+        "text": "Amazon Rekognition, which detects objects, faces, text, and inappropriate content in images and videos"
+      },
+      {
+        "id": "d",
+        "text": "Amazon Athena, which executes ad-hoc serverless SQL queries directly against raw files in S3"
+      },
+      {
+        "id": "e",
+        "text": "Amazon Polly, which converts written text into lifelike spoken audio in dozens of languages"
+      }
+    ],
+    "correct": [
+      "c",
+      "e"
+    ],
+    "explanation": "Amazon Rekognition and Amazon Polly are pre-trained AWS AI services that provide advanced machine learning capabilities via simple API calls without requiring custom model training or machine learning expertise. Rekognition adds image and video analysis, while Polly provides lifelike text-to-speech voice generation.",
+    "distractorNotes": {
+      "a": "Amazon EMR is an analytics big data processing framework, not a pre-trained artificial intelligence API service.",
+      "b": "AWS Glue is a serverless data integration and ETL service, not an AI service for content analysis or synthesis.",
+      "d": "Amazon Athena is an interactive SQL analytics service for querying S3 files, not a pre-trained machine learning service."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/rekognition/latest/dg/what-is.html",
+    "sourceNote": "Amazon Rekognition Developer Guide - Pre-trained computer vision service that analyzes images and videos",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-036",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "machine-learning",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A bank wants to build an automated conversational virtual assistant that can understand voice and text inquiries from mobile app users to check account balances and schedule appointments. Which AWS service provides the natural language understanding and speech recognition needed for this bot?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon Lex, a service for building conversational interfaces into applications using voice and text"
+      },
+      {
+        "id": "b",
+        "text": "Amazon Transcribe, an automatic speech recognition service that converts audio speech to text files"
+      },
+      {
+        "id": "c",
+        "text": "Amazon Polly, a text-to-speech service that turns written text into lifelike spoken voice output"
+      },
+      {
+        "id": "d",
+        "text": "Amazon Translate, a neural machine translation service that delivers fast language translation"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Amazon Lex is an AWS service for building conversational interfaces into any application using voice and text. Powered by the same conversational engine as Amazon Alexa, Lex provides automatic speech recognition (ASR) and natural language understanding (NLU) to recognize user intent and manage conversational dialogs.",
+    "distractorNotes": {
+      "b": "Amazon Transcribe converts recorded audio speech to written text transcripts, but does not handle conversational dialog logic or user intents.",
+      "c": "Amazon Polly converts text into speech audio, but does not process user speech input or understand conversational intent.",
+      "d": "Amazon Translate translates text between human languages, but does not provide conversational chatbot state management."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/lexv2/latest/dg/what-is.html",
+    "sourceNote": "Amazon Lex Developer Guide - Build conversational interfaces into applications using voice and text",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-037",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "analytics",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An analytics department has data scattered across multiple Amazon S3 buckets, Amazon RDS databases, and on-premises storage. The team needs a serverless data integration service that automatically discovers data schemas, catalogs the metadata in a central registry, and extracts, transforms, and loads (ETL) the data for analytics. Which AWS service should the team use?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon QuickSight, a cloud-powered business intelligence service for creating, sharing, and embedding interactive analytical dashboards"
+      },
+      {
+        "id": "b",
+        "text": "AWS Glue, a serverless data integration service that discovers, catalogs, and transforms data for analytics"
+      },
+      {
+        "id": "c",
+        "text": "Amazon Kinesis Data Streams, a scalable streaming service for capturing real-time continuous data flows"
+      },
+      {
+        "id": "d",
+        "text": "Amazon OpenSearch Service, a managed search and analytics engine for log analytics and full-text search"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "AWS Glue is a serverless data integration service that makes it simple to discover, prepare, move, and integrate data from multiple sources. It includes the AWS Glue Data Catalog for central metadata management and automated crawlers that infer schemas and populate catalog tables for extract, transform, and load (ETL) pipelines.",
+    "distractorNotes": {
+      "a": "QuickSight is a business intelligence tool used to visualize data and build dashboards, not a serverless ETL data integration engine.",
+      "c": "Kinesis Data Streams captures real-time data streams (like clickstreams and IoT events), but does not perform metadata cataloging and batch ETL data preparation.",
+      "d": "OpenSearch Service is used for real-time application search and log monitoring, not centralized metadata discovery and ETL transformation."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/glue/latest/dg/what-is-glue.html",
+    "sourceNote": "AWS Glue Developer Guide - Serverless data integration service that discovers, prepares, and combines data for analytics",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-038",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "analytics",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A ride-sharing application generates real-time GPS telemetry from millions of mobile devices simultaneously. The engineering team must continuously capture, buffer, and process this gigabyte-per-second streaming data in real time to calculate live traffic updates. Which AWS service is specifically designed for ingesting real-time streaming data?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon Athena, an interactive serverless query service that analyzes unstructured, semi-structured, and structured data in Amazon S3 using standard SQL"
+      },
+      {
+        "id": "b",
+        "text": "AWS Batch, a managed service that schedules and executes batch computing jobs across EC2 fleets"
+      },
+      {
+        "id": "c",
+        "text": "Amazon Kinesis Data Streams, a massively scalable service for collecting and processing real-time data streams"
+      },
+      {
+        "id": "d",
+        "text": "Amazon Redshift, a column-oriented petabyte-scale data warehouse for structured business analytics"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Amazon Kinesis Data Streams is a massively scalable and durable real-time data streaming service. It can continuously capture gigabytes of data per second from hundreds of thousands of sources, such as website clickstreams, financial transactions, and IoT telemetry feeds, and make it available for real-time processing.",
+    "distractorNotes": {
+      "a": "Athena is a serverless interactive query engine for querying stored static data in S3, not a real-time data ingestion and streaming buffer.",
+      "b": "AWS Batch runs scheduled batch jobs on compute instances, not real-time continuous data stream processing.",
+      "d": "Redshift is an enterprise data warehouse for complex analytical SQL queries against historical data, not a low-latency real-time streaming ingestion pipeline."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/streams/latest/dev/introduction.html",
+    "sourceNote": "Amazon Kinesis Developer Guide - Collect and process large streams of data records in real time",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-039",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "management-and-governance",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An operations engineer needs to monitor the CPU utilization and disk performance of EC2 instances, collect application log files, and automatically trigger an alert when memory usage exceeds a specified threshold. Which AWS service is built for this monitoring and alerting requirement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "AWS CloudTrail, which logs and tracks all API calls and user actions made across the AWS infrastructure"
+      },
+      {
+        "id": "b",
+        "text": "AWS Config, which continually evaluates and assesses resource configurations for compliance adherence"
+      },
+      {
+        "id": "c",
+        "text": "AWS Trusted Advisor, which provides best-practice recommendations for cost, security, and performance"
+      },
+      {
+        "id": "d",
+        "text": "Amazon CloudWatch, which collects metrics and logs, sets alarms, and monitors application performance"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Amazon CloudWatch is a monitoring and management service that provides data and actionable insights for AWS, hybrid, and on-premises applications. CloudWatch collects monitoring metrics and logs, enables custom dashboards, and allows you to set alarms that trigger automated actions (such as EC2 Auto Scaling or SNS notifications) when thresholds are crossed.",
+    "distractorNotes": {
+      "a": "CloudTrail records API activity (who made what API call, when, and from what IP address) for auditing, but does not monitor server performance metrics like CPU or memory.",
+      "b": "AWS Config evaluates configuration state changes against compliance rules, but does not capture performance metrics or generate metric alarms.",
+      "c": "Trusted Advisor inspects accounts against best practices and service limits, but does not collect application logs or monitor real-time resource utilization."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html",
+    "sourceNote": "Amazon CloudWatch User Guide - Monitor AWS resources and applications in real time with metrics, logs, and alarms",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-040",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "management-and-governance",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A cloud operations team wants to streamline administrative tasks across a hybrid fleet of EC2 instances and on-premises virtual servers. Which TWO operational capabilities are provided by AWS Systems Manager? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Registering public domain names and routing internet DNS queries to closest edge locations"
+      },
+      {
+        "id": "b",
+        "text": "Automating operating system and software patch installations across instances at scheduled times"
+      },
+      {
+        "id": "c",
+        "text": "Creating multi-region active-active relational database replicas with synchronous writes"
+      },
+      {
+        "id": "d",
+        "text": "Running administrative commands securely across instances without opening inbound SSH or RDP ports"
+      },
+      {
+        "id": "e",
+        "text": "Compressing raw multimedia video recordings into multiple mobile streaming formats"
+      }
+    ],
+    "correct": [
+      "b",
+      "d"
+    ],
+    "explanation": "AWS Systems Manager is an operations hub that simplifies resource management at scale across AWS and hybrid environments. Features like Patch Manager automate the installation of security and operating system patches across fleets, while Run Command and Session Manager allow administrators to execute scripts and maintain shell access securely without opening inbound firewall ports.",
+    "distractorNotes": {
+      "a": "Public domain registration and DNS routing are features of Amazon Route 53, not AWS Systems Manager.",
+      "c": "Multi-region active-active database replication is an architectural database capability (e.g. DynamoDB global tables), not an instance operations tool.",
+      "e": "Video transcoding and compression are handled by AWS Elemental MediaConvert, not an infrastructure operations service."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/systems-manager/latest/userguide/what-is-systems-manager.html",
+    "sourceNote": "AWS Systems Manager User Guide - Operational hub to automate patching and execute commands securely across instances",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-041",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "application-integration",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An e-commerce platform needs to orchestrate a multi-step order processing workflow that involves invoking AWS Lambda functions, checking payment status, waiting for warehouse approvals, and branching on error conditions. Which AWS service provides visual workflow state machines to coordinate these distributed components?",
+    "options": [
+      {
+        "id": "a",
+        "text": "AWS Step Functions, a visual workflow service that orchestrates distributed application components"
+      },
+      {
+        "id": "b",
+        "text": "Amazon Simple Queue Service (Amazon SQS), a distributed message queue that decouples microservice components"
+      },
+      {
+        "id": "c",
+        "text": "Amazon Simple Notification Service (Amazon SNS), a pub/sub messaging service that fans out notifications"
+      },
+      {
+        "id": "d",
+        "text": "AWS CodePipeline, a continuous integration and delivery service that automates software deployment stages"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "AWS Step Functions is a visual workflow service that allows developers to coordinate distributed applications, automate business processes, build microservice architectures, and orchestrate serverless computing tasks. It provides state machines with automated retries, error handling, parallel execution, and branching logic.",
+    "distractorNotes": {
+      "b": "Amazon SQS provides asynchronous message queues to decouple components, but does not coordinate multi-step state machine workflows with branching logic.",
+      "c": "Amazon SNS publishes and fans out messages to multiple subscribers, but does not manage workflow state transitions or error retry state machines.",
+      "d": "AWS CodePipeline automates software release phases (build, test, deploy), not business application runtime workflow orchestration."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html",
+    "sourceNote": "AWS Step Functions Developer Guide - Visual workflow service that coordinates distributed applications and microservices",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-042",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "application-integration",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A developer wants to build an event-driven architecture that automatically routes real-time events emitted by third-party SaaS applications (such as Zendesk or Datadog) and AWS services to various downstream targets like AWS Lambda and Amazon SNS. Which AWS service serves as this serverless event bus?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon API Gateway, a fully managed service that makes it easy for developers to create, publish, maintain, monitor, and secure REST and WebSocket APIs"
+      },
+      {
+        "id": "b",
+        "text": "Amazon EventBridge, a serverless event bus that ingests and routes events from SaaS apps and AWS services"
+      },
+      {
+        "id": "c",
+        "text": "Amazon Route 53, a scalable cloud Domain Name System (DNS) web service for domain name routing"
+      },
+      {
+        "id": "d",
+        "text": "AWS Direct Connect, a dedicated network link connecting on-premises infrastructure to AWS VPCs"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Amazon EventBridge is a serverless event bus that enables developers to build event-driven applications by routing data from sources such as SaaS applications, custom applications, and AWS services to targets such as AWS Lambda, Amazon SQS, and Amazon SNS.",
+    "distractorNotes": {
+      "a": "Amazon API Gateway exposes and manages HTTP/REST/WebSocket endpoints for external clients, not a serverless event bus that routes SaaS events.",
+      "c": "Amazon Route 53 translates human-readable domain names into IP addresses, not an event routing bus.",
+      "d": "AWS Direct Connect is a physical network circuit connecting data centers to AWS, not an application-level event routing bus."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-what-is-how-it-works.html",
+    "sourceNote": "Amazon EventBridge User Guide - Serverless event bus that routes events from SaaS applications and AWS services",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-043",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "end-user-computing",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A financial services firm wants to enable remote call center employees to access a secure, cloud-hosted Windows or Linux desktop environment from their personal home computers. The solution must provide persistent desktop sessions, support integration with corporate Active Directory, and eliminate local data storage on user devices. Which AWS service fulfills this requirement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "AWS App Runner, a fully managed container service that makes it easy to build, deploy, and run containerized web applications and APIs quickly at scale"
+      },
+      {
+        "id": "b",
+        "text": "Amazon Lightsail, an easy-to-use virtual private server bundle with compute, storage, and networking"
+      },
+      {
+        "id": "c",
+        "text": "Amazon WorkSpaces, a fully managed Desktop-as-a-Service solution that delivers persistent cloud desktops"
+      },
+      {
+        "id": "d",
+        "text": "Amazon EC2 Auto Scaling, an automated capacity management service that adjusts instance fleet sizes"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Amazon WorkSpaces is a fully managed, secure Desktop-as-a-Service (DaaS) solution that enables users to access virtual cloud desktops anywhere from supported devices. It provides persistent desktop storage, integrates with existing corporate directories, and keeps sensitive corporate data off personal client hardware.",
+    "distractorNotes": {
+      "a": "AWS App Runner deploys containerized web applications and backend APIs, not virtual desktop sessions for office workers.",
+      "b": "Amazon Lightsail is a simple virtual private server (VPS) for web apps and databases, not an enterprise Desktop-as-a-Service solution.",
+      "d": "EC2 Auto Scaling scales server fleets dynamically, but does not provide end-user desktop streaming with Active Directory integration."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/workspaces/latest/adminguide/amazon-workspaces.html",
+    "sourceNote": "Amazon WorkSpaces Administration Guide - Fully managed Desktop-as-a-Service solution for secure persistent virtual desktops",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-technology-and-services-044",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-technology-and-services",
+    "subdomain": "developer-tools",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A software team wants to automate its software release process. Whenever an engineer pushes code changes to a Git repository, the solution must automatically compile source code, run automated unit tests, and deploy the updated application package across staging and production environments. Which AWS service orchestrates this continuous integration and continuous delivery (CI/CD) workflow?",
+    "options": [
+      {
+        "id": "a",
+        "text": "AWS CloudFormation, an infrastructure-as-code service that models, provisions, and automates collections of cloud resources from declarative templates"
+      },
+      {
+        "id": "b",
+        "text": "AWS Systems Manager, an operations service that executes operational commands and manages server patches"
+      },
+      {
+        "id": "c",
+        "text": "Amazon CloudWatch, a monitoring service that collects infrastructure metrics and triggers alarm actions"
+      },
+      {
+        "id": "d",
+        "text": "AWS CodePipeline, a fully managed continuous delivery service that automates build, test, and deploy phases"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "AWS CodePipeline is a fully managed continuous delivery service that helps you automate your release pipelines for fast and reliable application and infrastructure updates. CodePipeline automates the build, test, and deploy phases of your release process every time there is a code change.",
+    "distractorNotes": {
+      "a": "CloudFormation models and provisions AWS infrastructure resources declaratively, but does not manage the software release lifecycle pipeline.",
+      "b": "Systems Manager handles server configuration and operational maintenance, not continuous integration and deployment pipelines for application code.",
+      "c": "CloudWatch monitors performance metrics and application logs, but does not orchestrate software build and deployment release pipelines."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/codepipeline/latest/userguide/welcome.html",
+    "sourceNote": "AWS CodePipeline User Guide - Automates continuous delivery pipelines for fast and reliable application and infrastructure updates",
+    "sourceCheckedAt": "2026-09-11"
   }
 ]

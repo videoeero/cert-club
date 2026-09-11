@@ -171,5 +171,1159 @@
     "sourceUrl": "https://docs.aws.amazon.com/wellarchitected/latest/framework/general-design-principles.html",
     "sourceNote": "Well-Architected Framework - general design principle: stop guessing your capacity needs",
     "sourceCheckedAt": "2026-09-03"
+  },
+  {
+    "id": "aws-clf-c02-cloud-concepts-005",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-concepts",
+    "subdomain": "cloud-adoption-framework",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An enterprise is planning a large-scale migration to the AWS Cloud. The leadership team wants to establish training roadmaps, upskill existing staff on cloud technologies, and adapt its organizational culture and team structures to support the new operating model. Which AWS Cloud Adoption Framework (AWS CAF) perspective primarily addresses these capabilities?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Business perspective, which focuses on aligning cloud investments with digital transformation ambitions and business outcomes"
+      },
+      {
+        "id": "b",
+        "text": "Platform perspective, which focuses on building an enterprise-grade scalable cloud environment and modernizing workloads"
+      },
+      {
+        "id": "c",
+        "text": "Governance perspective, which focuses on orchestrating cloud initiatives, managing portfolios, and minimizing project risk"
+      },
+      {
+        "id": "d",
+        "text": "People perspective, which focuses on evolving culture, organizational structure, leadership, and workforce development"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "The People perspective of the AWS Cloud Adoption Framework (AWS CAF) serves as the bridge between technology and business, focusing on evolving organizational culture, structure, leadership, and workforce capability. It encompasses capabilities such as cloud fluency, workforce upskilling, and organizational change management. The Business, Platform, and Governance perspectives address strategic investment alignment, technical cloud infrastructure, and risk/portfolio governance, respectively.",
+    "distractorNotes": {
+      "a": "The Business perspective focuses on ensuring cloud investments align with business outcomes and strategic digital transformation ambitions, not on organizational training or workforce skills.",
+      "b": "The Platform perspective focuses on technical architecture, platform engineering, and workload modernization, not on employee upskilling or organizational culture.",
+      "c": "The Governance perspective focuses on portfolio management, risk mitigation, and cloud investment orchestration, not on human resources or talent enablement."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/whitepapers/latest/overview-aws-cloud-adoption-framework/foundational-capabilities.html",
+    "sourceNote": "AWS CAF - foundational capabilities and six perspectives",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-concepts-006",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-concepts",
+    "subdomain": "cloud-economics",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A software startup wants to accelerate experimentation by allowing engineering teams to provision and tear down complete development and testing environments in minutes rather than waiting weeks for physical hardware procurement. Which advantage of cloud computing does this improvement primarily reflect?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Benefiting from massive economies of scale, aggregating usage across customers to lower variable pricing"
+      },
+      {
+        "id": "b",
+        "text": "Increasing speed and agility, reducing resource provisioning time to lower the cost and barrier of experimentation"
+      },
+      {
+        "id": "c",
+        "text": "Achieving high availability, engineering redundant architecture to maintain continuous uptime during outages"
+      },
+      {
+        "id": "d",
+        "text": "Eliminating data center maintenance, removing the physical facility operational burden of server racking and power"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "AWS defines increasing speed and agility as a core advantage of cloud computing: because new IT resources are only a click away, the time required to make resources available to developers drops from weeks to minutes. This lowers the cost and time of experimentation, allowing organizations to innovate more rapidly. Economies of scale lower usage prices, high availability ensures fault-tolerant operation, and eliminating data center management removes physical infrastructure overhead.",
+    "distractorNotes": {
+      "a": "Massive economies of scale refers to AWS aggregating usage across hundreds of thousands of customers to achieve lower pay-as-you-go pricing, not the speed of developer provisioning.",
+      "c": "High availability refers to designing resilient systems that remain accessible and operational through component failures, not reducing provisioning lead times for testing.",
+      "d": "Stopping spending money on data centers relieves the burden of facility management and hardware installation, but the rapid on-demand provisioning and testing velocity specifically defines agility."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/whitepapers/latest/aws-overview/six-advantages-of-cloud-computing.html",
+    "sourceNote": "Six advantages of cloud computing - increase speed and agility",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-concepts-007",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-concepts",
+    "subdomain": "benefits-of-cloud",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A ticketing platform experiences sudden, unpredictable surges in user traffic during flash sales that last 20 minutes, followed by an immediate drop to baseline traffic. The company needs infrastructure that automatically provisions capacity during spikes and deprovisions it when traffic subsides to minimize idle resource costs. Which AWS Cloud attribute provides this dynamic behavior?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Scalability, which accommodates long-term workload growth by continually adding storage and processing capacity"
+      },
+      {
+        "id": "b",
+        "text": "Elasticity, which dynamically acquires and releases computing resources in response to immediate demand changes"
+      },
+      {
+        "id": "c",
+        "text": "Reliability, which ensures that an application recovers consistently from transient network and service disruptions"
+      },
+      {
+        "id": "d",
+        "text": "Agility, which reduces the time required for engineering teams to develop and deploy new software applications"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Elasticity is the ability to dynamically acquire resources when needed and release them when no longer required, matching capacity directly to fluctuating demand and avoiding paying for idle resources. Scalability refers to handling larger workloads over time, reliability focuses on recovering from failures, and agility relates to rapid software development and deployment.",
+    "distractorNotes": {
+      "a": "Scalability refers to an architecture's capability to handle increasing workloads over time by expanding capacity, but elasticity specifically describes dynamically scaling in and out in real time.",
+      "c": "Reliability focuses on an application's ability to operate consistently and recover from failures, not the dynamic scaling of resources.",
+      "d": "Agility describes the speed with which organizations can develop, test, and launch new applications, not automated resource provisioning."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/whitepapers/latest/aws-overview/six-advantages-of-cloud-computing.html",
+    "sourceNote": "Six advantages of cloud computing - stop guessing capacity needs",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-concepts-008",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-concepts",
+    "subdomain": "benefits-of-cloud",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A startup based in Australia wants to expand its streaming service to customers across Europe and North America. The engineering team wants to deliver low-latency playback to international users without purchasing physical servers or negotiating international data center co-location leases. Which advantage of cloud computing does this reflect?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Massive economies of scale, aggregating worldwide customer usage to negotiate cheaper telecommunication rates"
+      },
+      {
+        "id": "b",
+        "text": "Eliminating data center maintenance, removing routine operating system patching tasks from application developers"
+      },
+      {
+        "id": "c",
+        "text": "Going global in minutes, deploying applications across multiple AWS Regions worldwide to provide lower latency"
+      },
+      {
+        "id": "d",
+        "text": "Trading fixed expense for variable expense, converting annual subscription license fees into metered hourly costs"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "AWS defines 'go global in minutes' as a core advantage of cloud computing: organizations can easily deploy applications in multiple AWS Regions around the world with a few clicks, providing lower latency and an improved experience for global customers at minimal cost.",
+    "distractorNotes": {
+      "a": "Massive economies of scale refers to AWS achieving higher purchasing power and lower pay-as-you-go prices due to aggregate customer usage, not geographic deployment speed.",
+      "b": "Eliminating data center maintenance relieves organizations from physical facility operations, but global multi-region deployment speed specifically defines going global in minutes.",
+      "d": "Trading fixed expense for variable expense refers to the financial model shift from upfront capital commitments to consumption billing, not multi-region geographic reach."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/whitepapers/latest/aws-overview/six-advantages-of-cloud-computing.html",
+    "sourceNote": "Six advantages of cloud computing - go global in minutes",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-concepts-009",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-concepts",
+    "subdomain": "benefits-of-cloud",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A financial services application is deployed across multiple Availability Zones behind an Application Load Balancer. If a hardware failure causes an entire Availability Zone to become unavailable, incoming traffic is automatically redirected to healthy instances in the remaining Availability Zones with no service interruption. Which architectural characteristic does this design demonstrate?",
+    "options": [
+      {
+        "id": "a",
+        "text": "High availability, maintaining uninterrupted operational uptime by eliminating single points of failure"
+      },
+      {
+        "id": "b",
+        "text": "Elasticity, dynamically resizing compute instances in real time to handle fluctuating user request volumes"
+      },
+      {
+        "id": "c",
+        "text": "Agility, accelerating the deployment pipeline so developers can push critical bug fixes to production safely"
+      },
+      {
+        "id": "d",
+        "text": "Economy of scale, pooling compute capacity across multiple accounts to minimize hourly infrastructure bills"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "High availability is the characteristic of a system designed to remain accessible and operational without interruption despite component failures, typically achieved by deploying redundant resources across multiple Availability Zones and removing single points of failure. Elasticity is dynamic scaling, agility is speed of innovation, and economies of scale relate to shared cloud purchasing power.",
+    "distractorNotes": {
+      "b": "Elasticity describes dynamically growing and shrinking resource capacity in response to fluctuating load, not surviving infrastructure zone failures.",
+      "c": "Agility relates to organizational and developer speed in building and shipping software, not architectural fault mitigation.",
+      "d": "Economies of scale refers to cost savings derived from AWS's massive customer aggregation, not multi-AZ application resiliency."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/availability.html",
+    "sourceNote": "Reliability pillar - Availability definition and multi-AZ resilience",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-concepts-010",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-concepts",
+    "subdomain": "benefits-of-cloud",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A healthcare provider's leadership team wants its technology personnel to stop spending time managing HVAC cooling systems, physical perimeter security, diesel backup generators, and server rack installations, and instead dedicate their time to clinical software innovation. Which AWS Cloud benefit directly addresses this shift?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Increasing speed and agility, allowing software developers to deploy test environments in minutes"
+      },
+      {
+        "id": "b",
+        "text": "Benefiting from massive economies of scale, lowering per-unit storage costs through pooled purchasing"
+      },
+      {
+        "id": "c",
+        "text": "Trading fixed expense for variable expense, replacing metered utility bills with long-term contracts"
+      },
+      {
+        "id": "d",
+        "text": "Stopping spending money running and maintaining data centers, eliminating physical infrastructure burdens"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "AWS defines 'stop spending money running and maintaining data centers' as a primary advantage of cloud computing. By shifting physical infrastructure management—such as power, cooling, real estate, and server racking—to AWS, businesses eliminate undifferentiated heavy lifting and focus resources on projects that differentiate their business.",
+    "distractorNotes": {
+      "a": "Increasing speed and agility refers to rapid on-demand provisioning and software deployment speed, not the elimination of physical facilities maintenance.",
+      "b": "Massive economies of scale refers to lower usage pricing resulting from AWS's aggregate purchasing power, not the removal of physical data center tasks.",
+      "c": "Trading fixed expense for variable expense is a financial cash flow advantage; furthermore, cloud computing replaces upfront capital investments with metered consumption, not the reverse."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/whitepapers/latest/aws-overview/six-advantages-of-cloud-computing.html",
+    "sourceNote": "Six advantages of cloud computing - stop spending money running data centers",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-concepts-011",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "cloud-concepts",
+    "subdomain": "benefits-of-cloud",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An organization is building an executive business case to justify migrating its legacy workloads to the AWS Cloud. Which TWO of the following are documented in the AWS Cloud value proposition as core advantages of cloud computing? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Eliminating all operating system patching responsibilities for Amazon EC2 virtual machine instances"
+      },
+      {
+        "id": "b",
+        "text": "Benefiting from massive economies of scale, yielding lower pay-as-you-go prices from aggregate usage"
+      },
+      {
+        "id": "c",
+        "text": "Guaranteeing zero latency for all worldwide network transactions through dedicated physical circuits"
+      },
+      {
+        "id": "d",
+        "text": "Eliminating variable operational expenses by prepaying fixed lifetime hardware maintenance contracts"
+      },
+      {
+        "id": "e",
+        "text": "Stopping guessing capacity needs, scaling dynamically to prevent idle capacity and underprovisioning"
+      }
+    ],
+    "correct": [
+      "b",
+      "e"
+    ],
+    "explanation": "The six advantages of cloud computing documented by AWS include: (1) trade fixed expense for variable expense, (2) benefit from massive economies of scale, (3) stop guessing capacity, (4) increase speed and agility, (5) stop spending money running and maintaining data centers, and (6) go global in minutes. EC2 guest OS patching remains a customer responsibility under the Shared Responsibility Model, zero latency is physically impossible, and cloud computing replaces fixed prepayments with variable expenses.",
+    "distractorNotes": {
+      "a": "Under the AWS Shared Responsibility Model, customers remain fully responsible for patching the guest operating system on Amazon EC2 instances.",
+      "c": "The cloud provides global infrastructure and low latency, but cannot guarantee zero network latency due to physical limits.",
+      "d": "Cloud computing shifts costs from fixed upfront capital investments to variable pay-as-you-go operating expenses, not the reverse."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/whitepapers/latest/aws-overview/six-advantages-of-cloud-computing.html",
+    "sourceNote": "Six advantages of cloud computing - economies of scale and capacity",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-concepts-012",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-concepts",
+    "subdomain": "well-architected-framework",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An architecture team wants guidance on designing systems that can automatically recover from infrastructure or service disruptions, dynamically acquire computing resources to meet fluctuating demand, and mitigate disruptions such as misconfigurations or transient network issues. Which AWS Well-Architected Framework pillar focuses on these capabilities?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Reliability, which focuses on performing intended functions correctly and consistently while recovering from failures"
+      },
+      {
+        "id": "b",
+        "text": "Operational excellence, which focuses on running workloads effectively and gaining continuous operational insight"
+      },
+      {
+        "id": "c",
+        "text": "Performance efficiency, which focuses on structured computing resource selection and maintaining high throughput"
+      },
+      {
+        "id": "d",
+        "text": "Cost optimization, which focuses on maximizing business value delivery at the lowest sustainable price point"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "The Reliability pillar of the AWS Well-Architected Framework encompasses the ability of a workload to perform its intended function correctly and consistently when expected. This includes the ability to operate and test the workload through its total lifecycle, automatically recover from disruptions, and dynamically allocate compute capacity to meet demand.",
+    "distractorNotes": {
+      "b": "Operational excellence focuses on executing operations as code, continuously refining operations procedures, and delivering business value.",
+      "c": "Performance efficiency focuses on using computing resources efficiently to meet system requirements and maintaining that efficiency as demand changes.",
+      "d": "Cost optimization focuses on avoiding unnecessary spending and understanding where money is being spent across cloud workloads."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/wellarchitected/latest/framework/reliability.html",
+    "sourceNote": "Well-Architected Framework - Reliability pillar overview",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-concepts-013",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-concepts",
+    "subdomain": "well-architected-framework",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A software engineering department wants to establish operational standards where all infrastructure configurations are defined as code, systems are updated using frequent, small, reversible changes, and operational failures are treated as learning opportunities through structured root-cause analysis. Which AWS Well-Architected Framework pillar encompasses these design principles?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Security, which focuses on establishing least privilege access and applying multi-layered defense-in-depth"
+      },
+      {
+        "id": "b",
+        "text": "Operational excellence, which focuses on running workloads effectively and continually improving processes"
+      },
+      {
+        "id": "c",
+        "text": "Sustainability, which focuses on minimizing environmental impacts and reducing energy consumption footprints"
+      },
+      {
+        "id": "d",
+        "text": "Performance efficiency, which focuses on adopting serverless architectures to streamline processing throughput"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "The Operational Excellence pillar of the AWS Well-Architected Framework focuses on running and monitoring systems to deliver business value and continually improving processes and procedures. Its key design principles include: perform operations as code, make frequent, small, reversible changes, refine operations procedures frequently, anticipate failure, and learn from all operational failures.",
+    "distractorNotes": {
+      "a": "The Security pillar focuses on protecting information, systems, and assets while delivering business value through risk assessments and mitigation strategies.",
+      "c": "The Sustainability pillar focuses on minimizing the environmental impact of running cloud workloads, with a primary focus on energy reduction.",
+      "d": "The Performance Efficiency pillar focuses on the structured selection and efficient utilization of compute, storage, and networking resources."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/wellarchitected/latest/framework/operational-excellence.html",
+    "sourceNote": "Well-Architected Framework - Operational Excellence pillar design principles",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-concepts-014",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-concepts",
+    "subdomain": "well-architected-framework",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A bank is migrating its core payment gateway to AWS. The security compliance team requires that the architecture enforce strict least privilege access, apply multi-layer defense-in-depth across edge and network boundaries, enable automated audit logging for all API calls, and protect data both in transit and at rest. Which AWS Well-Architected Framework pillar outlines these principles?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Reliability, which outlines best practices for recovering from network partitions and server hardware failures"
+      },
+      {
+        "id": "b",
+        "text": "Operational excellence, which outlines procedures for automating runbooks and managing daily production releases"
+      },
+      {
+        "id": "c",
+        "text": "Security, which outlines practices for protecting information, user identities, systems, and sensitive assets"
+      },
+      {
+        "id": "d",
+        "text": "Sustainability, which outlines methodologies for reducing carbon emissions and managing compute energy metrics"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "The Security pillar of the AWS Well-Architected Framework focuses on protecting information, systems, and assets while delivering business value through risk assessments and mitigation strategies. Its foundational design principles include implementing a strong identity foundation, enabling traceability, applying security at all layers, protecting data in transit and at rest, and preparing for security events.",
+    "distractorNotes": {
+      "a": "Reliability focuses on workload resiliency, fault tolerance, and automated failure recovery, not confidentiality or data protection.",
+      "b": "Operational excellence focuses on process refinement, release automation, and system health observability.",
+      "d": "Sustainability focuses on understanding environmental footprints and maximizing energy efficiency across cloud resources."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/wellarchitected/latest/framework/security.html",
+    "sourceNote": "Well-Architected Framework - Security pillar design principles",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-concepts-015",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-concepts",
+    "subdomain": "well-architected-framework",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A data analytics company is designing an image recognition pipeline. The lead architect wants to democratize advanced technologies by utilizing managed AI/ML services rather than training custom models, adopt serverless compute to eliminate server management overhead, and benchmark architecture components across different Regions to maintain low latency. Which AWS Well-Architected Framework pillar guides these choices?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Cost optimization, which focuses on practicing financial governance and negotiating bulk commitment discounts"
+      },
+      {
+        "id": "b",
+        "text": "Operational excellence, which focuses on automating operations as code and documenting team runbook procedures"
+      },
+      {
+        "id": "c",
+        "text": "Sustainability, which focuses on selecting energy-efficient instance processors to reduce greenhouse emissions"
+      },
+      {
+        "id": "d",
+        "text": "Performance efficiency, which focuses on selecting optimal computing resources to sustain evolving demand needs"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "The Performance Efficiency pillar focuses on using computing resources efficiently to meet system requirements and maintaining that efficiency as demand changes and technologies evolve. Its design principles include: democratize advanced technologies (adopting managed services), go global in minutes, use serverless architectures, experiment more often, and consider mechanical sympathy.",
+    "distractorNotes": {
+      "a": "Cost optimization focuses on cloud financial management and eliminating unneeded expenditure, not technology selection for throughput and efficiency.",
+      "b": "Operational excellence focuses on operational procedures, runbooks, and continuous process improvements.",
+      "c": "Sustainability focuses on minimizing environmental and energy impacts, not on optimizing workload performance and compute resource selection."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/wellarchitected/latest/framework/performance-efficiency.html",
+    "sourceNote": "Well-Architected Framework - Performance Efficiency pillar principles",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-concepts-016",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-concepts",
+    "subdomain": "well-architected-framework",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A company wants to avoid spending money on unneeded cloud resources. The finance and engineering teams agree to adopt a consumption-based pricing model, measure workload return on investment, attribute costs directly to individual business units, and decommission underutilized development instances. Which AWS Well-Architected Framework pillar encompasses these practices?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Cost optimization, which focuses on running systems to deliver maximum business value at the lowest price point"
+      },
+      {
+        "id": "b",
+        "text": "Reliability, which focuses on dynamically acquiring compute resources to prevent performance degradation"
+      },
+      {
+        "id": "c",
+        "text": "Operational excellence, which focuses on structuring continuous integration and automated deployment pipelines"
+      },
+      {
+        "id": "d",
+        "text": "Security, which focuses on establishing comprehensive identity boundaries and encrypting stored data volumes"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "The Cost Optimization pillar of the AWS Well-Architected Framework focuses on avoiding unnecessary costs. Its core design principles include: practice cloud financial management, adopt a consumption model, measure overall efficiency, stop spending money on undifferentiated heavy lifting, and analyze and attribute expenditure.",
+    "distractorNotes": {
+      "b": "The Reliability pillar focuses on workload availability, fault tolerance, and failure recovery.",
+      "c": "The Operational Excellence pillar focuses on operational runbooks, automation, and ongoing process improvement.",
+      "d": "The Security pillar focuses on data protection, access controls, vulnerability mitigation, and compliance."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost-optimization.html",
+    "sourceNote": "Well-Architected Framework - Cost Optimization pillar design principles",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-concepts-017",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "cloud-concepts",
+    "subdomain": "well-architected-framework",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An IT leadership team is establishing enterprise cloud architectural guidelines. Which TWO of the following are recognized general design principles of the AWS Well-Architected Framework? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Automate to make architectural experimentation easier, creating and replicating systems at minimal cost"
+      },
+      {
+        "id": "b",
+        "text": "Standardize on monolithic application architectures to streamline cross-service logging and monitoring"
+      },
+      {
+        "id": "c",
+        "text": "Drive architectures using data, analyzing telemetry about workload behavior to make empirical decisions"
+      },
+      {
+        "id": "d",
+        "text": "Provision maximum estimated peak capacity upfront to avoid automated resource scaling initialization delays"
+      },
+      {
+        "id": "e",
+        "text": "Transfer all regulatory data governance and security compliance duties entirely to the cloud vendor"
+      }
+    ],
+    "correct": [
+      "a",
+      "c"
+    ],
+    "explanation": "The AWS Well-Architected Framework establishes six general design principles: (1) stop guessing your capacity needs, (2) test systems at production scale, (3) automate to make architectural experimentation easier, (4) allow for evolutionary architectures, (5) drive architectures using data, and (6) improve through game days. Monolithic standardization is not a design principle, overprovisioning violates stopping guessing capacity, and compliance is shared under the Shared Responsibility Model.",
+    "distractorNotes": {
+      "b": "AWS encourages loosely coupled, evolutionary architectures rather than standardizing on monolithic application designs.",
+      "d": "AWS advocates 'stop guessing your capacity needs' and using elasticity to scale automatically, rather than overprovisioning peak capacity upfront.",
+      "e": "Compliance is a shared responsibility between AWS and the customer; customers always retain responsibility for their own data governance."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/wellarchitected/latest/framework/general-design-principles.html",
+    "sourceNote": "Well-Architected Framework - general design principles overview",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-concepts-018",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-concepts",
+    "subdomain": "well-architected-framework",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An engineering team is designing a new cloud platform. Rather than making static, one-time technology decisions that lock the business into rigid technical debt, the architects leverage on-demand cloud automation to test, evolve, and swap architectural components incrementally as business requirements change. Which AWS Well-Architected general design principle does this approach implement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Improve through game days, scheduling simulated incident exercises to evaluate operational responses"
+      },
+      {
+        "id": "b",
+        "text": "Allow for evolutionary architectures, using automation and on-demand testing to evolve designs safely"
+      },
+      {
+        "id": "c",
+        "text": "Test systems at production scale, duplicating complete production fleets on demand for performance testing"
+      },
+      {
+        "id": "d",
+        "text": "Stop guessing capacity needs, configuring dynamic auto-scaling policies to handle variable daily demand"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Allow for evolutionary architectures is a Well-Architected general design principle. In a traditional environment, architectural decisions are often permanent, one-way doors that result in legacy technical debt. In the cloud, the capability to automate and test on demand lowers the risk of impact from design changes, allowing systems to evolve over time to take advantage of new innovations.",
+    "distractorNotes": {
+      "a": "Improve through game days is the design principle of regularly simulating production events to test architectures and operational procedures, not evolving system designs.",
+      "c": "Test systems at production scale is the principle of creating full-scale test environments on demand and decommissioning them after testing.",
+      "d": "Stop guessing capacity needs focuses on eliminating overprovisioning and underprovisioning through elasticity, not architectural evolution."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/wellarchitected/latest/framework/general-design-principles.html",
+    "sourceNote": "Well-Architected Framework - general design principle: allow for evolutionary architectures",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-concepts-019",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-concepts",
+    "subdomain": "well-architected-framework",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "Before a major annual promotional event, an e-commerce company wants to test whether its ordering system can process five times normal peak volume. In its former on-premises environment, building a full-size duplicate testing laboratory was cost-prohibitive. In AWS, the team provisions a production-scale test environment, completes performance validation over four hours, and immediately decommissions the environment. Which general design principle does this demonstrate?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Improve through game days, simulating production operational outages to test team response runbooks"
+      },
+      {
+        "id": "b",
+        "text": "Drive architectures using data, aggregating metrics from user clickstreams to make caching decisions"
+      },
+      {
+        "id": "c",
+        "text": "Test systems at production scale, creating full-capacity environments on demand for testing and then deleting them"
+      },
+      {
+        "id": "d",
+        "text": "Automate to make architectural experimentation easier, running automated regression scripts across microservices"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Test systems at production scale is a Well-Architected general design principle. In traditional on-premises environments, testing at full production scale is rarely done because of the capital expense of duplicate hardware. In the cloud, you can create a production-scale environment on demand, complete your testing, and then decommission the resources, paying only for the hours consumed.",
+    "distractorNotes": {
+      "a": "Game days simulate production operational incidents to validate team procedures and organizational resilience, not full-scale load testing.",
+      "b": "Driving architectures using data is about collecting empirical workload telemetry to guide design choices.",
+      "d": "Automating experimentation enables rapid replication of architectures to test novel ideas, but testing full-scale production load specifically embodies testing at production scale."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/wellarchitected/latest/framework/general-design-principles.html",
+    "sourceNote": "Well-Architected Framework - general design principle: test systems at production scale",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-concepts-020",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-concepts",
+    "subdomain": "cloud-adoption-framework",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An enterprise is orchestrating a multi-department cloud adoption program. The leadership team needs a framework capability to coordinate cloud initiatives across business units, manage cloud software license and vendor portfolios, establish program management governance, and evaluate cloud key performance indicators (KPIs) against business goals. Which AWS Cloud Adoption Framework (AWS CAF) perspective focuses on these capabilities?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Platform perspective, which focuses on deploying enterprise cloud landing zones and application runtimes"
+      },
+      {
+        "id": "b",
+        "text": "People perspective, which focuses on evolving organizational culture, training paths, and cloud upskilling"
+      },
+      {
+        "id": "c",
+        "text": "Operations perspective, which focuses on day-to-day service health monitoring, runbooks, and incident response"
+      },
+      {
+        "id": "d",
+        "text": "Governance perspective, which focuses on program management, portfolio management, and strategic cloud oversight"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "The Governance perspective of the AWS Cloud Adoption Framework (AWS CAF) focuses on orchestrating cloud initiatives while maximizing organizational benefits and minimizing transformation-related risks. Foundational capabilities within the Governance perspective include program and project management, cloud financial management, portfolio management, and strategic benefits realization.",
+    "distractorNotes": {
+      "a": "The Platform perspective focuses on technical architecture, platform engineering, provisioning environments, and modernizing workloads.",
+      "b": "The People perspective focuses on evolving culture, talent development, training roadmaps, and organizational change enablement.",
+      "c": "The Operations perspective focuses on day-to-day workload health, observability, event management, and operational incident response."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/whitepapers/latest/overview-aws-cloud-adoption-framework/governance-perspective.html",
+    "sourceNote": "AWS CAF - Governance perspective overview and foundational capabilities",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-concepts-021",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-concepts",
+    "subdomain": "cloud-adoption-framework",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An organization’s Chief Executive Officer and business development executives want to ensure that cloud technology investments align directly with strategic business outcomes, accelerate the monetization of new digital products, and optimize customer relationship models. Which AWS Cloud Adoption Framework (AWS CAF) perspective addresses these strategic capabilities?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Business perspective, which focuses on aligning cloud transformation with strategic commercial outcomes"
+      },
+      {
+        "id": "b",
+        "text": "Operations perspective, which focuses on maintaining agreed service levels and continuous infrastructure health"
+      },
+      {
+        "id": "c",
+        "text": "Platform perspective, which focuses on architecting multi-account cloud environments and data pipelines"
+      },
+      {
+        "id": "d",
+        "text": "Security perspective, which focuses on establishing data confidentiality and vulnerability response mechanisms"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "The Business perspective of the AWS Cloud Adoption Framework (AWS CAF) helps ensure that cloud investments accelerate digital transformation ambitions and business outcomes. Foundational capabilities include strategy and business model innovation, product and service monetization, customer journey transformation, and strategic portfolio alignment.",
+    "distractorNotes": {
+      "b": "The Operations perspective focuses on service management, infrastructure observability, runbook execution, and incident handling.",
+      "c": "The Platform perspective focuses on technical engineering, cloud infrastructure architecture, and workload modernization.",
+      "d": "The Security perspective focuses on data protection, identity access management, compliance posture, and threat detection."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/whitepapers/latest/overview-aws-cloud-adoption-framework/business-perspective.html",
+    "sourceNote": "AWS CAF - Business perspective overview and capabilities",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-concepts-022",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-concepts",
+    "subdomain": "cloud-adoption-framework",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An IT infrastructure department is establishing operating procedures for workloads hosted in AWS. The team needs guidelines on defining service-level agreements (SLAs), monitoring application telemetry and system health dashboards, automating patch maintenance, and managing operational incident remediation. Which AWS Cloud Adoption Framework (AWS CAF) perspective encompasses these operational capabilities?",
+    "options": [
+      {
+        "id": "a",
+        "text": "People perspective, which focuses on restructuring human resources policies and establishing career ladders"
+      },
+      {
+        "id": "b",
+        "text": "Operations perspective, which focuses on delivering cloud services at agreed levels and managing daily health"
+      },
+      {
+        "id": "c",
+        "text": "Governance perspective, which focuses on enterprise risk assessment and coordinating cloud steering committees"
+      },
+      {
+        "id": "d",
+        "text": "Platform perspective, which focuses on provisioning scalable network subnets and continuous build environments"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "The Operations perspective of the AWS Cloud Adoption Framework (AWS CAF) focuses on ensuring that cloud services are delivered at a level that meets the needs of the business. Foundational capabilities include observability and monitoring, event and incident management, service level management, patch management, change management, and disaster recovery.",
+    "distractorNotes": {
+      "a": "The People perspective focuses on organizational culture, workforce upskilling, leadership enablement, and change management.",
+      "c": "The Governance perspective focuses on portfolio management, program governance, and cloud financial management.",
+      "d": "The Platform perspective focuses on cloud architecture, technical infrastructure provisioning, and workload migration tooling."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/whitepapers/latest/overview-aws-cloud-adoption-framework/operations-perspective.html",
+    "sourceNote": "AWS CAF - Operations perspective overview and capabilities",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-concepts-023",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-concepts",
+    "subdomain": "cloud-adoption-framework",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A Chief Information Security Officer (CISO) is defining the organizational roadmap for establishing zero-trust access controls, continuous vulnerability assessment, automated compliance auditing, and threat detection across cloud environments. Which AWS Cloud Adoption Framework (AWS CAF) perspective guides these capabilities?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Business perspective, which focuses on commercial product monetization and strategic customer journeys"
+      },
+      {
+        "id": "b",
+        "text": "Platform perspective, which focuses on building automated container clusters and microservices infrastructure"
+      },
+      {
+        "id": "c",
+        "text": "Security perspective, which focuses on achieving confidentiality, integrity, and data protection in the cloud"
+      },
+      {
+        "id": "d",
+        "text": "Governance perspective, which focuses on managing cloud vendor contracts and program steering committees"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "The Security perspective of the AWS Cloud Adoption Framework (AWS CAF) helps organizations achieve the confidentiality, integrity, and availability of their data and cloud workloads. Its foundational capabilities include identity and access management, security governance, vulnerability management, infrastructure and data protection, and security incident response.",
+    "distractorNotes": {
+      "a": "The Business perspective focuses on commercial outcomes, business strategy, and revenue growth through cloud adoption.",
+      "b": "The Platform perspective focuses on technical architecture, platform engineering, and provisioning infrastructure.",
+      "d": "The Governance perspective focuses on program management, cloud financial management, and business portfolio oversight."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/whitepapers/latest/overview-aws-cloud-adoption-framework/security-perspective.html",
+    "sourceNote": "AWS CAF - Security perspective overview and capabilities",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-concepts-024",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-concepts",
+    "subdomain": "migration-strategies",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An enterprise operates several hundred virtual machines running on an on-premises VMware vSphere infrastructure. The organization wants to move these workloads to AWS quickly without purchasing new hardware, rewriting software, changing existing IP addresses, or converting virtual machine disk formats. Which of the 7 Rs migration strategies does this approach represent?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Rehost, which involves capturing disk images and recreating instances using standard Amazon EC2 AMIs"
+      },
+      {
+        "id": "b",
+        "text": "Repurchase, which involves dropping custom legacy software and switching to an enterprise SaaS platform"
+      },
+      {
+        "id": "c",
+        "text": "Refactor, which involves redesigning monolithic software components into serverless microservice functions"
+      },
+      {
+        "id": "d",
+        "text": "Relocate, which involves transferring servers to a cloud-based hypervisor platform without format conversion"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Relocate (also called hypervisor-level lift and shift) involves moving servers or workloads to AWS without purchasing new hardware, rewriting software, or modifying existing operations. The classic example documented by AWS is relocating VMware-based virtual machines directly to VMware Cloud on AWS, which avoids virtual machine conversions and preserves IP addressing and configuration.",
+    "distractorNotes": {
+      "a": "Rehost (lift and shift) moves applications to Amazon EC2 without changes to the application itself, but does not use hypervisor-level migration (e.g. VMware Cloud on AWS) and typically requires disk format translation.",
+      "b": "Repurchase (drop and shop) involves abandoning custom on-premises software and purchasing an off-the-shelf product or SaaS application.",
+      "c": "Refactor involves fundamentally re-architecting an application to leverage cloud-native features and serverless services."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/prescriptive-guidance/latest/large-migration-guide/migration-strategies.html",
+    "sourceNote": "AWS Prescriptive Guidance - 7 Rs migration strategies, relocate definition",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-concepts-025",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "cloud-concepts",
+    "subdomain": "migration-strategies",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "During a comprehensive cloud migration assessment, an enterprise catalogs its software portfolio. Application 1 has been superseded by an existing internal platform and has no active users. Application 2 is subject to strict national data sovereignty laws that prohibit cloud hosting, so management decides not to move it. Which TWO of the 7 Rs migration strategies describe the dispositions for these applications? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Rehost, transferring the application to Amazon EC2 virtual instances without modifying the codebase"
+      },
+      {
+        "id": "b",
+        "text": "Retire, explicitly decommissioning and shutting down applications that no longer deliver business value"
+      },
+      {
+        "id": "c",
+        "text": "Refactor, re-architecting the application to use cloud-native managed services and container pipelines"
+      },
+      {
+        "id": "d",
+        "text": "Retain, keeping applications in their source environment when migration is blocked or unfeasible"
+      },
+      {
+        "id": "e",
+        "text": "Repurchase, abandoning the proprietary application in favor of an off-the-shelf SaaS alternative"
+      }
+    ],
+    "correct": [
+      "b",
+      "d"
+    ],
+    "explanation": "In the AWS 7 Rs migration framework: Retire means decommissioning or archiving applications that are no longer needed (Application 1). Retain (sometimes called revisit) means keeping applications in the source environment because migration is blocked by compliance/regulatory constraints, technical dependencies, or lack of business justification (Application 2).",
+    "distractorNotes": {
+      "a": "Rehost involves migrating an application unchanged to AWS (lift and shift), which neither application will do.",
+      "c": "Refactor involves re-architecting applications to take advantage of cloud-native capabilities.",
+      "e": "Repurchase involves replacing custom applications with off-the-shelf SaaS products."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/prescriptive-guidance/latest/large-migration-guide/migration-strategies.html",
+    "sourceNote": "AWS Prescriptive Guidance - the 7 Rs migration strategies, retain and retire",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-concepts-026",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-concepts",
+    "subdomain": "migration-strategies",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A geological survey team needs to transfer 120 TB of raw sensor data collected at a remote mountain research facility into Amazon S3. The facility connects to the internet over a slow, metered satellite uplink that would require over eighteen months to transmit the dataset over the network. Which AWS service provides a physical appliance to migrate this data securely?",
+    "options": [
+      {
+        "id": "a",
+        "text": "AWS Snowball Edge, shipping a ruggedized physical hardware storage appliance to copy data offline"
+      },
+      {
+        "id": "b",
+        "text": "AWS Storage Gateway, establishing an on-premises virtual software appliance for hybrid file caching"
+      },
+      {
+        "id": "c",
+        "text": "AWS Direct Connect, installing a dedicated high-bandwidth private fiber line to the nearest AWS Region"
+      },
+      {
+        "id": "d",
+        "text": "AWS DataSync, running an automated software agent over public network connections to synchronize storage"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "AWS Snowball Edge is a physical data migration and edge computing device that comes in storage-optimized configurations (up to 80 TB or 210 TB usable storage). It is designed to move petabytes of data into and out of AWS securely when transferring data over the network is impractical due to limited bandwidth, high connectivity costs, or remote environments.",
+    "distractorNotes": {
+      "b": "AWS Storage Gateway connects on-premises environments to cloud storage over existing network connections, which would be throttled by the satellite link.",
+      "c": "AWS Direct Connect provides dedicated physical telecommunications circuits, but cannot be provisioned to remote temporary field stations.",
+      "d": "AWS DataSync accelerates data transfers over existing network links, which remains constrained by the limited satellite bandwidth."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/snowball/latest/developer-guide/what-is-snowball.html",
+    "sourceNote": "AWS Snowball Developer Guide - What is AWS Snowball?",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-concepts-027",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-concepts",
+    "subdomain": "cloud-economics",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A company’s Chief Financial Officer is preparing the financial transition plan for migrating on-premises workloads to AWS. In the on-premises model, the business purchased servers, storage arrays, and network switches every five years, depreciating these assets over their lifespan. In AWS, how does this expenditure structure fundamentally transform?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Operational expenses (OpEx) become capital expenses (CapEx), requiring multi-year upfront cloud commitments"
+      },
+      {
+        "id": "b",
+        "text": "Capital expenses (CapEx) become operational expenses (OpEx), paying only for consumed resources as incurred"
+      },
+      {
+        "id": "c",
+        "text": "All infrastructure expenditures are eliminated because AWS provides computing infrastructure free of charge"
+      },
+      {
+        "id": "d",
+        "text": "Fixed infrastructure depreciation is replaced by a mandatory flat monthly fee for unlimited resource usage"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Migrating to AWS represents a transition from Capital Expenditures (CapEx) to Operational Expenditures (OpEx). CapEx involves large upfront cash outlays to acquire physical assets that are capitalized and depreciated over several years. In contrast, cloud computing operates on an OpEx model where organizations pay only for the ongoing computing capacity they consume on a pay-as-you-go basis.",
+    "distractorNotes": {
+      "a": "Cloud computing shifts CapEx into OpEx, not OpEx into CapEx; furthermore, multi-year upfront commitments are optional (Savings Plans/Reserved Instances), not mandatory.",
+      "c": "AWS is a paid utility service; infrastructure spending does not disappear, but transitions to consumption-based operating expense.",
+      "d": "AWS bills based on metered granular resource consumption (e.g. per second, minute, or GB), not a mandatory flat unlimited monthly fee."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/whitepapers/latest/aws-overview/six-advantages-of-cloud-computing.html",
+    "sourceNote": "Six advantages of cloud computing - trade fixed expense for variable expense",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-concepts-028",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-concepts",
+    "subdomain": "cloud-economics",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A company is conducting a Total Cost of Ownership (TCO) analysis to compare running a database on premises versus on Amazon RDS. When calculating the true cost of the on-premises environment, which operational and facility cost factors must be included beyond the purchase price of the database server hardware?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Only the initial purchase invoices for server rack hardware and operating system software licenses"
+      },
+      {
+        "id": "b",
+        "text": "Only the recurring monthly fees paid to external software application developers and QA consultants"
+      },
+      {
+        "id": "c",
+        "text": "Power electricity, cooling systems, rack space, physical security guards, and hardware maintenance"
+      },
+      {
+        "id": "d",
+        "text": "Outbound internet data transfer rates and AWS premium enterprise technical support subscription tiers"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Total Cost of Ownership (TCO) encompasses all direct and indirect expenses associated with building and operating an environment. For on-premises data centers, TCO includes real estate floor space, power and electricity, cooling infrastructure (HVAC), physical security personnel, rack mounting, network hardware, server maintenance, spare parts, and labor for hardware operations.",
+    "distractorNotes": {
+      "a": "Considering only hardware and initial OS licenses ignores massive ongoing facilities, electrical, cooling, and operational staffing overhead.",
+      "b": "Application software development contractor fees are application-layer costs that exist regardless of hosting platform and do not represent infrastructure facility TCO.",
+      "d": "AWS data transfer and enterprise support fees are cloud expenses, not components of the on-premises baseline."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/migrationhub/latest/ug/migration-evaluator.html",
+    "sourceNote": "Migration Hub User Guide - Migration Evaluator and TCO assessment factors",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-concepts-029",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-concepts",
+    "subdomain": "cloud-economics",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An enterprise holds existing perpetual Microsoft SQL Server and Windows Server software licenses with active Software Assurance from its on-premises environment. When migrating these workloads to Amazon EC2, the company wants to continue using its existing licenses rather than paying AWS for newly bundled licenses in the hourly instance rate. Which cloud licensing approach fulfills this requirement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "License Included, which bundles all third-party software licensing costs into the hourly compute charge"
+      },
+      {
+        "id": "b",
+        "text": "Free Tier licensing, which waives vendor license compliance for all instances deployed in non-production"
+      },
+      {
+        "id": "c",
+        "text": "Open-source substitution, which automatically converts proprietary database engines to PostgreSQL engines"
+      },
+      {
+        "id": "d",
+        "text": "Bring Your Own License (BYOL), which allows customers to use existing eligible software licenses on AWS"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Bring Your Own License (BYOL) is a licensing model that allows customers to migrate existing eligible enterprise software licenses (such as Microsoft Windows Server, SQL Server, or Oracle) to AWS (such as on Amazon EC2 Dedicated Hosts or supported EC2 instances), utilizing their existing software investments and avoiding recurring license fees bundled by AWS.",
+    "distractorNotes": {
+      "a": "License Included is the model where AWS provides the software license as part of the hourly compute rate, which would duplicate the company's existing licenses.",
+      "b": "AWS Free Tier provides introductory usage for eligible services, but does not provide free third-party enterprise database software licenses.",
+      "c": "Open-source substitution involves migrating to an open-source database (such as PostgreSQL or MySQL), which requires schema and application changes rather than reusing existing licenses."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/license-manager/latest/userguide/license-manager.html",
+    "sourceNote": "AWS License Manager User Guide - Bring Your Own License (BYOL) overview",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-concepts-030",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "cloud-concepts",
+    "subdomain": "cloud-economics",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A company migrated a suite of internal applications from on-premises physical servers to Amazon EC2 instances by matching the exact CPU and memory specifications of the old hardware. After three months of operations, AWS Cost Explorer reports that the instances consistently average under 8% CPU utilization and 15% memory usage. What cost optimization practice should the company perform first before purchasing commitment discounts?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Rightsizing, modifying instance types and sizes to match actual workload performance and resource demands"
+      },
+      {
+        "id": "b",
+        "text": "Purchasing 3-year All Upfront Reserved Instances for the existing instance fleet to lock in maximum discounts"
+      },
+      {
+        "id": "c",
+        "text": "Deploying instances into an additional Availability Zone to distribute the idle compute load geographically"
+      },
+      {
+        "id": "d",
+        "text": "Converting the instances to Amazon EC2 Spot Instances to ensure continuous uninterrupted processing capacity"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Rightsizing is the process of matching instance types and sizes to actual workload performance and capacity requirements at the lowest possible cost. AWS best practices mandate rightsizing overprovisioned instances first before purchasing commitment-based pricing options (such as Savings Plans or Reserved Instances) so that you do not commit to paying for oversized capacity.",
+    "distractorNotes": {
+      "b": "Purchasing Reserved Instances for oversized instances locks the organization into paying for unneeded capacity for multiple years.",
+      "c": "Adding another Availability Zone increases infrastructure redundancy and cost, but does not solve resource overprovisioning.",
+      "d": "Spot Instances can be interrupted with two minutes' notice when AWS needs the capacity back, and using Spot does not eliminate the fundamental waste of oversized resource configurations."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/cost-management/latest/userguide/ce-rightsizing.html",
+    "sourceNote": "Cost Management User Guide - Rightsizing recommendations in Cost Explorer",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-cloud-concepts-031",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "cloud-concepts",
+    "subdomain": "cloud-adoption-framework",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "According to the AWS Cloud Adoption Framework (AWS CAF), cloud transformation enables organizations to achieve measurable business outcomes beyond basic infrastructure modernization. Which TWO of the following are recognized AWS CAF business outcomes? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Guaranteed elimination of all variable operating expenses across all production environments"
+      },
+      {
+        "id": "b",
+        "text": "Complete exemption from industry regulatory compliance audits when storing customer records"
+      },
+      {
+        "id": "c",
+        "text": "Reduced business risk, improving security posture, operational resilience, and compliance"
+      },
+      {
+        "id": "d",
+        "text": "Immediate 100% depreciation of all cloud software expenditures within the initial fiscal year"
+      },
+      {
+        "id": "e",
+        "text": "Increased operational efficiency, lowering unit costs and automating routine operations tasks"
+      }
+    ],
+    "correct": [
+      "c",
+      "e"
+    ],
+    "explanation": "The AWS Cloud Adoption Framework (AWS CAF) identifies four core business outcomes driven by cloud transformation: (1) Reduced business risk (improving security, resilience, and compliance), (2) Increased operational efficiency (lowering unit costs and improving productivity), (3) Accelerated business agility and revenue growth, and (4) Environmental, Social, and Governance (ESG) performance improvement.",
+    "distractorNotes": {
+      "a": "The cloud introduces consumption-based variable operating expenses rather than eliminating them.",
+      "b": "Customers remain subject to industry regulatory compliance audits under the Shared Responsibility Model.",
+      "d": "Cloud operating expenses are ongoing operational costs rather than depreciable capital assets."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/whitepapers/latest/overview-aws-cloud-adoption-framework/cloud-acceleration-outcomes.html",
+    "sourceNote": "AWS CAF - Cloud acceleration outcomes and business benefits",
+    "sourceCheckedAt": "2026-09-11"
   }
 ]

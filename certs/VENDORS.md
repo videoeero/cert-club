@@ -69,14 +69,18 @@ _Checked 2026-09-03 · bank: `az-900`_
 
 ## AWS
 
-_Checked 2026-09-03 · bank: `aws-clf-c02`_
+_Checked 2026-09-11 · bank: `aws-clf-c02`_
 
 - **Exam guides** are HTML on the AWS docs site:
   `https://docs.aws.amazon.com/aws-certification/latest/<guide-slug>/<guide-slug>.html`
 - **Citable documentation:** `https://docs.aws.amazon.com/*`, and
   `https://aws.amazon.com/*` for product and compliance pages that state a
   verifiable fact.
-- No excluded properties recorded yet. Same caveat as Microsoft.
+- **Do not cite:**
+  - `explore.skillbuilder.aws` / AWS Skill Builder — gated behind account
+    registration. Official practice question sets and exam prep materials may
+    be reviewed as calibration for difficulty and question style, but must
+    never be cited as a `sourceUrl`.
 
 ## Google
 
