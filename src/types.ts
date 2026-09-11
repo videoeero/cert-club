@@ -24,6 +24,7 @@ export interface Manifest {
   cert: string;
   name: string;
   status: CertStatus;
+  updatedAt: string;
   examUrl: string;
   contentLicense: string;
   examQuestionCount?: number;

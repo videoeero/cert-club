@@ -73,6 +73,25 @@ export function validateCertContent(folderName, manifestInput, questionsInput) {
     }
   }
 
+  let latestQuestion = null;
+  for (const question of questions) {
+    if (
+      latestQuestion === null ||
+      question.sourceCheckedAt > latestQuestion.sourceCheckedAt
+    ) {
+      latestQuestion = question;
+    }
+  }
+
+  if (
+    latestQuestion !== null &&
+    latestQuestion.sourceCheckedAt > manifest.updatedAt
+  ) {
+    messages.push(
+      `manifest.updatedAt: "${manifest.updatedAt}" is older than question ${latestQuestion.id}'s sourceCheckedAt "${latestQuestion.sourceCheckedAt}" (latest source check in bank)`,
+    );
+  }
+
   questions.forEach((question, index) => {
     if (question.cert !== manifest.cert) {
       messages.push(

@@ -101,6 +101,20 @@ test("buildManifest output parses clean under manifestSchema", () => {
   const manifest = buildManifest(baseSpec());
   assert.doesNotThrow(() => manifestSchema.parse(manifest));
   assert.equal(manifest.status, "draft");
+  assert.equal(manifest.updatedAt, "2026-09-09");
+});
+
+test("buildManifest defaults updatedAt to today's date when spec.today is omitted", () => {
+  const spec = baseSpec();
+  delete spec.today;
+  const before = new Date().toISOString().slice(0, 10);
+  const manifest = buildManifest(spec);
+  const after = new Date().toISOString().slice(0, 10);
+  assert.match(manifest.updatedAt, /^\d{4}-\d{2}-\d{2}$/);
+  assert.ok(
+    manifest.updatedAt === before || manifest.updatedAt === after,
+    `expected ${manifest.updatedAt} to match ${before} or ${after}`,
+  );
 });
 
 test("buildManifest always sets status to draft even if a spec tries otherwise", () => {

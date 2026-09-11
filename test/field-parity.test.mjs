@@ -3,7 +3,7 @@ import { registerHooks } from "node:module";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
 
-import { questionSchema } from "../schemas/question-bank.mjs";
+import { manifestSchema, questionSchema } from "../schemas/question-bank.mjs";
 
 /**
  * The question shape has two independent sources of truth: the zod
@@ -59,7 +59,7 @@ const hooks = registerHooks({
 });
 globalThis.__FIELD_PARITY_IMPORT_META_ENV__ = { BASE_URL: "/" };
 
-const { loadCertContent } = await import(contentPath);
+const { loadCertContent, loadCertManifest } = await import(contentPath);
 
 // The module is loaded and cached, so the hook has done its job. Leaving it
 // registered would put every later module load in this process through it.
@@ -75,12 +75,19 @@ function requiredQuestionFields() {
     .map(([key]) => key);
 }
 
+function requiredManifestFields() {
+  return Object.entries(manifestSchema.shape)
+    .filter(([, field]) => !field.isOptional())
+    .map(([key]) => key);
+}
+
 function validManifest() {
   return {
     schemaVersion: 1,
     cert: "test-cert",
     name: "Test certification",
     status: "stable",
+    updatedAt: "2026-09-03",
     examUrl: "https://example.com/exam-guide",
     contentLicense: "CC-BY-SA-4.0",
     domains: [{ slug: "alpha", name: "Alpha", weight: 100 }],
@@ -240,4 +247,107 @@ test("the runtime guard tolerates an unrecognized extra field the schema rejects
     fetcherFor(validManifest(), [question]),
   );
   assert.equal(content.questions.length, 1);
+});
+
+test("the required-manifest-field set is actually derived from the schema", () => {
+  const fields = requiredManifestFields();
+
+  for (const field of [
+    "schemaVersion",
+    "cert",
+    "name",
+    "status",
+    "updatedAt",
+    "examUrl",
+    "contentLicense",
+    "domains",
+  ]) {
+    assert.ok(
+      fields.includes(field),
+      `expected "${field}" to be required on manifest`,
+    );
+  }
+  assert.ok(
+    !fields.includes("examQuestionCount") &&
+      !fields.includes("examDurationMinutes"),
+    "optional manifest fields must not be treated as required",
+  );
+});
+
+for (const field of requiredManifestFields()) {
+  test(`loadCertManifest rejects a manifest missing the required field "${field}"`, async () => {
+    const manifest = validManifest();
+    delete manifest[field];
+
+    await assert.rejects(
+      loadCertManifest("test-cert", fetcherFor(manifest, [validQuestion()])),
+      {
+        name: "ContentLoadError",
+        message: /certification manifest does not match the expected schema/,
+      },
+    );
+  });
+}
+
+test("loadCertManifest accepts a manifest carrying every optional field", async () => {
+  const manifest = {
+    ...validManifest(),
+    examQuestionCount: 50,
+    examDurationMinutes: 90,
+  };
+  assert.equal(manifestSchema.safeParse(manifest).success, true);
+
+  const loaded = await loadCertManifest(
+    "test-cert",
+    fetcherFor(manifest, [validQuestion()]),
+  );
+  assert.equal(loaded.examQuestionCount, 50);
+  assert.equal(loaded.examDurationMinutes, 90);
+});
+
+test("loadCertManifest rejects a manifest with an invalid optional field type", async () => {
+  const badCountManifest = {
+    ...validManifest(),
+    examQuestionCount: "50",
+  };
+  await assert.rejects(
+    loadCertManifest(
+      "test-cert",
+      fetcherFor(badCountManifest, [validQuestion()]),
+    ),
+    {
+      name: "ContentLoadError",
+      message: /certification manifest does not match the expected schema/,
+    },
+  );
+
+  const badDurationManifest = {
+    ...validManifest(),
+    examDurationMinutes: "90",
+  };
+  await assert.rejects(
+    loadCertManifest(
+      "test-cert",
+      fetcherFor(badDurationManifest, [validQuestion()]),
+    ),
+    {
+      name: "ContentLoadError",
+      message: /certification manifest does not match the expected schema/,
+    },
+  );
+});
+
+test("manifestSchema rejects a manifest with an unrecognized extra field", () => {
+  const manifest = { ...validManifest(), unexpectedField: "surprise" };
+  const result = manifestSchema.safeParse(manifest);
+  assert.equal(result.success, false);
+});
+
+test("the runtime guard tolerates an unrecognized extra manifest field the schema rejects", async () => {
+  const manifest = { ...validManifest(), unexpectedField: "surprise" };
+  const loaded = await loadCertManifest(
+    "test-cert",
+    fetcherFor(manifest, [validQuestion()]),
+  );
+  assert.equal(loaded.cert, "test-cert");
 });

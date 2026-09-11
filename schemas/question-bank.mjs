@@ -110,6 +110,7 @@ export const manifestSchema = z
     // because its coverage of the blueprint is thin. Required, so a new bank
     // cannot ship as stable by omission.
     status: z.enum(["draft", "stable"]),
+    updatedAt: checkedDateSchema,
     examUrl: sourceUrlSchema,
     contentLicense: z.string().min(1),
     examQuestionCount: z.number().int().positive().optional(),

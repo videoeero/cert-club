@@ -329,11 +329,13 @@ export function parseSpec(argv) {
  * is worse than no scaffold.
  */
 export function buildManifest(spec) {
+  const today = spec.today ?? new Date().toISOString().slice(0, 10);
   const manifest = {
     schemaVersion: SCHEMA_VERSION,
     cert: spec.slug,
     name: spec.name,
     status: "draft",
+    updatedAt: today,
     examUrl: spec.examUrl,
     contentLicense: spec.contentLicense ?? DEFAULT_CONTENT_LICENSE,
     domains: spec.domains.map((domain) => ({

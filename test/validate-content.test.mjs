@@ -205,6 +205,50 @@ test("requires every manifest to declare a bank status", async () => {
   );
 });
 
+test("requires every manifest to declare an updatedAt date", async () => {
+  const { manifest, questions } = await validContent();
+  delete manifest.updatedAt;
+
+  assert.throws(
+    () => validateCertContent("ccdv-f", manifest, questions),
+    /manifest\.updatedAt/,
+  );
+});
+
+test("rejects an updatedAt date older than a question's sourceCheckedAt", async () => {
+  const { manifest, questions } = await validContent();
+  manifest.updatedAt = "2020-01-01";
+
+  assert.throws(
+    () => validateCertContent("ccdv-f", manifest, questions),
+    /manifest\.updatedAt: "2020-01-01" is older than question/,
+  );
+});
+
+test("reports the latest question sourceCheckedAt when manifest.updatedAt is older", async () => {
+  const { manifest, questions } = await validContent();
+  questions[0].sourceCheckedAt = "2026-05-01";
+  questions[1].sourceCheckedAt = "2026-09-08";
+  manifest.updatedAt = "2026-08-01";
+
+  assert.throws(
+    () => validateCertContent("ccdv-f", manifest, questions),
+    new RegExp(
+      `manifest\\.updatedAt: "2026-08-01" is older than question ${questions[1].id}'s sourceCheckedAt "2026-09-08"`,
+    ),
+  );
+});
+
+test("rejects an unparsable or malformed updatedAt date", async () => {
+  const { manifest, questions } = await validContent();
+  manifest.updatedAt = "not-a-date";
+
+  assert.throws(
+    () => validateCertContent("ccdv-f", manifest, questions),
+    /manifest\.updatedAt/,
+  );
+});
+
 test("rejects an unknown manifest status", async () => {
   const { manifest, questions } = await validContent();
   manifest.status = "reviewed";

@@ -75,8 +75,13 @@ function isManifest(value: unknown): value is Manifest {
     typeof value.cert === "string" &&
     typeof value.name === "string" &&
     (value.status === "draft" || value.status === "stable") &&
+    typeof value.updatedAt === "string" &&
     typeof value.examUrl === "string" &&
     typeof value.contentLicense === "string" &&
+    (value.examQuestionCount === undefined ||
+      typeof value.examQuestionCount === "number") &&
+    (value.examDurationMinutes === undefined ||
+      typeof value.examDurationMinutes === "number") &&
     Array.isArray(value.domains) &&
     value.domains.every(
       (domain) =>

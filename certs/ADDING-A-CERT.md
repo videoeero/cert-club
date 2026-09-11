@@ -59,6 +59,7 @@ reads directly, and must not be restated in the README.
   "cert": "<slug>",
   "name": "Full certification name",
   "status": "draft",
+  "updatedAt": "2026-09-11",
   "examUrl": "https://example.com/public-exam-guide.pdf",
   "contentLicense": "CC-BY-SA-4.0",
   "examQuestionCount": 50,
@@ -75,6 +76,8 @@ reads directly, and must not be restated in the README.
 - `cert` must equal the folder name.
 - `status` must be `"draft"` or `"stable"` — see below. It is required, so a
   new bank cannot ship as stable by leaving the field out.
+- `updatedAt` must be a valid calendar date in `YYYY-MM-DD` format and cannot be
+  older than any question's `sourceCheckedAt` in that bank.
 - `examUrl` must be a public HTTP/HTTPS URL.
 - `examQuestionCount` (optional) must be a positive integer matching the official exam question count.
 - `examDurationMinutes` (optional) must be a positive integer matching the official exam time limit in minutes.
