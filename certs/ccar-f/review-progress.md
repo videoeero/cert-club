@@ -547,3 +547,395 @@ absurd option swapped; plus a few low-priority API/frontmatter-recall swaps):
 Status unchanged: `manifest.status` stays `draft`; question `status` values were
 not promoted — this pass hardened distractor plausibility only and does not
 substitute for a fresh correctness pass on the affected items.
+
+## Difficulty-calibration pass: 2026-09-11 (Domain: Agentic Architecture & Orchestration)
+
+Applied `harden-domain-questions` to the domain against the guide's own sample
+inventory (Section 9). Samples 1, 7 and 9 map here (Domain 1): scenario-grounded
+architectural judgements where *all four* options are plausible and the
+discrimination is a tradeoff, not a factual elimination.
+
+Measured against that anchor, five items sat below it — the key stood out or a
+distractor was eliminable by absurdity (raise temperature + capitalised
+warnings; instruct the user to close their browser; terminate with a fatal
+status). Hardened by enriching stems with concrete constraints/metrics and
+replacing the soft distractors with near-misses, per `CONTRIBUTING.md`
+§ Difficulty calibration and § Writing good questions:
+
+- `-009` (iterative refinement): new near-miss — ship the draft with a noted
+  limitation instead of looping. Difficulty medium → hard.
+- `-015` (verify-before-transaction; mirrors sample 1): distractors recast as
+  real approaches (stronger prompt + few-shot, reviewer model, tool-ordering
+  hints) — all probabilistic vs. the deterministic gate. Already hard.
+- `-016` (multi-concern): new near-miss — parallel subagents returning
+  unsynthesised replies. medium → hard.
+- `-017` (escalation handoff): distractors recast as plausible (full transcript
+  / bare session link / re-run to avoid anchoring). medium → hard.
+- `-022` (token redaction): new near-misses — PreToolUse block (overbroad) and
+  prompt caching (does not redact). Already medium.
+
+Invariants: no `correct` key, `sourceUrl`, or `sourceNote` changed; distractors
+padded rather than keys trimmed; `npm run check` green (length/position guards
+still pass). Remaining 24 items disposed **calibrated — no change**: they
+already meet or exceed the sample anchor. Domain now sits at or slightly above
+its anchor. `manifest.status` and question `status` unchanged — this is a
+difficulty pass, not a fresh correctness pass.
+
+## Difficulty-calibration pass: 2026-09-11 (Domain: Prompt Engineering & Structured Output)
+
+Applied `harden-domain-questions` to the domain against the guide's official
+sample inventory (Section 9). Samples 11 and 12 map here (Domain 4):
+- Sample 11: Evaluating proposal to switch real-time calls to Message Batches
+  API (tradeoff analysis between 24-hr SLA / 50% discount vs blocking pre-merge
+  checks).
+- Sample 12: Multi-file PR review architecture (splitting into localized
+  per-file passes followed by a cross-file integration pass).
+
+Both sample questions are concrete architectural tradeoff judgements where all
+four options are plausible engineering patterns without giveaways. Measured
+against that anchor, several single-select items sat below it due to facepalm
+throwaways (e.g. translating prompts to Latin, extracting the first integer as
+a date, marking all findings critical, capping batches at 1 request, reviewing
+only commit messages), an extreme length tell on -013, or abstract definition
+stems.
+
+Hardened 16 items by tightening stems into concrete situations and replacing
+weak or absurd distractors with technical near-misses, per `CONTRIBUTING.md`
+§ Difficulty calibration and § Writing good questions:
+
+- `-002`: hardened (weak distractor — replaced high-temperature distractor with
+  negative prompt constraints near-miss in `b`).
+- `-003`: hardened (weak distractors — replaced blocking PRs on style nitpicks
+  in `a` and ignoring bot comments in `c` with self-filtering directives and
+  collapsed summary comments).
+- `-004`: hardened (weak distractor / facepalm — replaced marking all findings
+  critical in `d` with abstract prose definitions without exemplars in `b`,
+  confidence-score proxy in `c`, and diff size proxy in `d`. Difficulty
+  medium → hard).
+- `-005`: hardened (facepalm distractor — replaced translation to Latin in `c`
+  with XML formatting tags and negative constraints).
+- `-007`: hardened (weak distractors — replaced rejecting non-IEEE papers in `a`
+  and converting PDF to HTML DOM in `b` with regex prompt parsing rules in `a`
+  and markdown footnote normalization in `b`).
+- `-008`: hardened (weak distractors / facepalm — replaced default to today's
+  date, extracting first integer string, and schema field deletion with
+  negative constraints in `b`, keyword anchor restrictions in `c`, and elevated
+  temperature in `d`. Difficulty medium → hard).
+- `-009`: hardened (weak distractors — replaced all-caps prompt pleading in `a`
+  and regex parsing in `d` with XML schema self-validation in `a` and opening
+  brace prefill in `d`).
+- `-011`: hardened (weak distractor — replaced removing field descriptions in `b`
+  with default empty string trap on a required schema property).
+- `-012`: hardened (weak distractors / facepalm — replaced enumerating every
+  conceivable mechanism in `b` and forcing arbitration in `d` with `anyOf` union
+  in `b` and `additionalProperties: true` in `c`).
+- `-013`: hardened (length tell / weak distractors — eliminated 18-char key tell
+  by expanding to full Anthropic `tool_choice: {'type': 'any'}` syntax with
+  explanatory clauses; replaced `stream: true` in `c` with
+  `tool_choice: {'type': 'auto'}` near-miss. Difficulty medium → hard).
+- `-014`: hardened (weak distractor — replaced database overwrite in `b` with
+  omitting preceding assistant message and tool call from conversation history).
+- `-015`: hardened (definition-prompt stem / obvious key — tightened stem into a
+  concrete document extraction pipeline scenario; replaced generic option texts
+  with realistic failure modes distinguishing absent merchant tax registration
+  from recoverable layout/format errors. Difficulty medium → hard).
+- `-016`: hardened (weak distractor — replaced 50% token discount in `b` with
+  dynamic sub-prompt routing).
+- `-017`: hardened (weak distractors — replaced resubmitting 10,000 files in `a`
+  and migrating away from batch in `d` with automated batch retry endpoint in `a`
+  and query parameter filtering in `d`. Difficulty medium → hard).
+- `-018`: hardened (weak distractor / facepalm — replaced single-request batch
+  cap in `b` with FIFO queue head-of-line blocking in `a` and prompt caching
+  breakpoint trap in `b`).
+- `-020`: hardened (facepalm distractor — replaced reviewing only commit
+  messages in `c` with arbitrary file chunking and majority voting).
+
+Dispositions for remaining 6 items:
+- `-001`: calibrated — no change (mirrors Sample 11).
+- `-006`: calibrated — no change (targeted boundary examples with disambiguation
+  reasoning).
+- `-010`: calibrated — no change (cross-field arithmetic invariants vs schema
+  syntax).
+- `-019`: calibrated — no change (generative confirmation bias in self-critique).
+- `-021`: calibrated — no change (multi-select on structured outputs property
+  ordering and safety refusal precedence).
+- `-022`: calibrated — no change (multi-select on Message Batches terminal
+  states, per-request billing, and cancellation partial results).
+
+Invariants: no `correct` key, `sourceUrl`, or `sourceNote` changed; distractors
+padded rather than keys trimmed; `npm run check` green (all 4 bias guards pass:
+position distribution 25/26/25/24, mean length delta -4.73 chars, longest option
+is key 19%). Domain now sits firmly at or slightly above its sample anchor.
+`manifest.status` and question `status` unchanged — this is a difficulty pass,
+not a fresh correctness pass.
+
+## Difficulty-calibration pass: 2026-09-11 (Domain: Context Management & Reliability)
+
+Applied `harden-domain-questions` to the domain against the guide's official
+sample inventory (Section 9). Samples 3 and 8 map directly here (Domain 5):
+- Sample 3: Escalation calibration — why self-reported confidence scores fail
+  vs. explicit escalation criteria and concrete few-shot boundary examples.
+- Sample 8: Error propagation from web search timeout to coordinator — returning
+  a structured error payload (failure type, attempted queries, partial results,
+  retry metadata) to enable intelligent coordinator recovery.
+
+Both samples are scenario-grounded architectural judgements where options
+represent realistic architectural and operational tradeoffs without giveaway
+clues. Measured against that anchor, nine single-select items sat below it due
+to facepalm options (e.g. reversing alphabetical word order, Claude unable to
+read text through multiple summarization cycles, deleting subagent outputs and
+synthesizing conclusions), giveaway phrasing ("arbitrary discount", "accepting
+process crashes require starting over", "eliminating automation benefits"),
+weak throwaways (clearing entire conversation history between turns, picking
+the first customer record to reduce handle time), or definition stems.
+
+Hardened 9 items by tightening stems into concrete scenarios and replacing soft
+distractors with technical near-misses, per `CONTRIBUTING.md` § Difficulty
+calibration and § Writing good questions:
+
+- `-001`: hardened (weak distractor — replaced throwaway history-clearing option
+  in `c` with prompt caching capacity misconception where cached tokens still
+  occupy context space and dilute attention).
+- `-002`: hardened (facepalm distractor — replaced absurd claim in `d` that Claude
+  cannot read text across multiple cycles with compounding semantic drift
+  near-miss).
+- `-003`: hardened (definition-prompt stem / facepalm distractor — tightened stem
+  into a concrete 20+ turn returns workflow; replaced re-entering order details
+  on every message in `b` with semantic vector store retrieval trap. Difficulty
+  medium → hard).
+- `-004`: hardened (facepalm / crude distractors — replaced reversing word order
+  in `b` and back-to-back document duplication in `a` with natural language
+  uniform-attention directive trap in `a` and synthetic dialogue turn markers
+  trap in `b`).
+- `-005`: hardened (facepalm distractor — replaced deleting subagent responses
+  and generating synthetic conclusions in `c` with prompt caching context
+  capacity trap. Difficulty medium → hard).
+- `-008`: hardened (giveaway phrase — replaced giveaway "arbitrary discount" in
+  `a` with standard discretionary concession limit near-miss. Difficulty
+  medium → hard).
+- `-009`: hardened (facepalm distractor — replaced picking first record to lower
+  handle time in `b` with transaction recency heuristic trap. Difficulty
+  medium → hard).
+- `-013`: hardened (giveaway phrase — replaced self-disqualifying "accepting
+  crashes require starting over" in `b` with Git branch diff inspection trap).
+- `-014`: hardened (giveaway phrase — replaced self-disqualifying "eliminating
+  automation benefits" in `c` with highest-volume form template quota trap).
+
+Dispositions for remaining 8 items:
+- `-006`: calibrated — no change (self-reported confidence unreliability vs.
+  explicit escalation criteria; mirrors Sample 3).
+- `-007`: calibrated — no change (immediately routing explicit human escalation
+  without deflection).
+- `-010`: calibrated — no change (structured error payload with partial results
+  and retry metadata; mirrors Sample 8).
+- `-011`: calibrated — no change (partial synthesis and documenting coverage
+  gaps on upstream subagent failure).
+- `-012`: calibrated — no change (structured scratchpad file on disk for 500k LOC
+  codebase exploration).
+- `-015`: calibrated — no change (preserving provenance and publication dates
+  for conflicting empirical statistics).
+- `-016`: calibrated — no change (multi-select on prompt caching invalidation
+  hierarchy and 20-block lookback limit).
+- `-017`: calibrated — no change (multi-select on native citations uniform
+  enablement and output token billing exemption).
+
+Invariants: no `correct` key, `sourceUrl`, or `sourceNote` changed; distractors
+padded rather than keys trimmed; `npm run check` green (all 4 bias guards pass:
+single-select position distribution 25/26/25/24, mean length delta -4.28 chars,
+longest option is key 19%). Domain now sits firmly at or slightly above its
+sample anchor. `manifest.status` and question `status` unchanged — this is a
+difficulty pass, not a fresh correctness pass.
+
+## Difficulty-calibration pass: 2026-09-11 (Domain: Claude Code Configuration & Workflows)
+
+Applied `harden-domain-questions` to the domain against the guide's official
+sample inventory (Section 9). Samples 4, 5, 6, and 10 map directly here
+(Domain 3):
+- Sample 4: Location for project-scoped custom slash command (`.claude/commands/`
+  in project repository).
+- Sample 5: Monolith to microservices restructuring (using plan mode for complex
+  multi-file architectural changes).
+- Sample 6: Applying conventions across test files located throughout repo
+  (`.claude/rules/` with YAML frontmatter glob patterns).
+- Sample 10: Running Claude Code non-interactively in automated CI pipeline
+  (`-p` flag).
+
+All four sample questions are scenario-grounded architectural judgements where
+options represent realistic mechanisms without giveaway clues. Measured against
+that anchor, several single-select items sat below it due to absurd facepalm
+options (e.g. CA certificate signing of markdown files, gRPC stream webhooks,
+deleting all documentation, rebooting workstation in single-user recovery mode,
+appending Terraform docs to React source files, disabling all unit tests to avoid
+breaking changes, replacing source files with zero-byte placeholders, modifying
+test assertions to match buggy output, 10,000 lines of raw assembly language,
+and rendering electron browser windows in headless Docker) or an extreme length
+tell on -007.
+
+Hardened 11 items by replacing weak or absurd distractors with technical
+near-misses, per `CONTRIBUTING.md` § Difficulty calibration and § Writing good
+questions:
+
+- `-002`: hardened (facepalm distractor — replaced CA cryptographic signing in
+  `c` with `--project` CLI startup flag near-miss).
+- `-003`: hardened (facepalm / stem-contradicting distractors — replaced inlining
+  full contents into root file in `b` with standard Markdown link auto-inline
+  trap, and replaced gRPC webhook in `d` with `.claude/settings.json` imports
+  array trap).
+- `-004`: hardened (facepalm distractor — replaced deleting all documentation
+  and manual pasting in `a` with personal `CLAUDE.local.md` delegation trap).
+- `-005`: hardened (facepalm distractor — replaced rebooting workstation in
+  single-user recovery mode in `b` with `/rules` slash command near-miss).
+- `-007`: hardened (length tell / weak distractors — eliminated 13-char key
+  outlier by expanding `context: fork` to full descriptive phrasing; replaced
+  container sandbox and hidden log distractors with plausible
+  `context: background` and `output: silent` frontmatter near-misses).
+- `-011`: hardened (facepalm distractors — replaced switching git branches in
+  `b` and appending Terraform docs to React components in `c` with
+  `claudeMdExcludes` settings trap and PreToolUse hook path inspection trap).
+- `-013`: hardened (facepalm / throwaway distractors — replaced manual editing
+  in external IDE in `b` with subagent fork immediate execution, and replaced
+  disabling unit tests and compiler checks in `d` with headless `claude -p`
+  background migration trap. Difficulty medium → hard).
+- `-015`: hardened (facepalm distractor — replaced destructive zero-byte file
+  placeholders on disk in `c` with automatic main session `/compact` context
+  compaction trap).
+- `-017`: hardened (facepalm distractor — replaced modifying test assertions to
+  pass against buggy output in `b` with entering plan mode for broad
+  architectural test framework review trap).
+- `-018`: hardened (facepalm distractor / note mismatch — replaced 10,000 lines
+  of raw assembly language in `a` and unguided library benchmarking in `b` with
+  persona pattern and few-shot pattern near-misses. Difficulty medium → hard).
+- `-019`: hardened (facepalm distractor — replaced rendering electron browser
+  window inside headless Docker in `c` with `--batch` background worker queue
+  flag trap).
+
+Dispositions for remaining 11 items:
+- `-001`: calibrated — no change (path-specific rules in `.claude/rules/` with
+  glob patterns; mirrors Sample 6).
+- `-006`: calibrated — no change (project-scoped custom slash command in
+  `.claude/commands/`; mirrors Sample 4).
+- `-008`: calibrated — no change (restricting tool access via `allowed-tools`
+  frontmatter).
+- `-009`: calibrated — no change (interactive prompt parameter hinting via
+  `argument-hint` frontmatter).
+- `-010`: calibrated — no change (architectural distinction between ambient
+  `CLAUDE.md` and on-demand custom skills).
+- `-012`: calibrated — no change (path-specific rules in `.claude/rules/` vs
+  duplicated directory-level memory files).
+- `-014`: calibrated — no change (direct execution mode vs plan mode overhead
+  for localized single-file bug fix).
+- `-016`: calibrated — no change (concrete input/output edge-case examples vs
+  negative constraints or elevated temperature).
+- `-020`: calibrated — no change (structured machine-parseable output in CI via
+  `--output-format json` and `--json-schema`).
+- `-021`: calibrated — no change (multi-select on CLAUDE.md ancestor discovery
+  order, root-to-leaf concatenation, and on-demand subdirectory loading).
+- `-022`: calibrated — no change (multi-select on headless CI execution
+  invariants, `--bare` discovery suppression, and authentication requirements;
+  mirrors Sample 10).
+
+Invariants: no `correct` key, `sourceUrl`, or `sourceNote` changed; distractors
+padded rather than keys trimmed; `npm run check` green (all 4 bias guards pass:
+single-select position distribution 25/26/25/24, mean length delta -3.28 chars,
+longest option is key 20%). Domain now sits firmly at or slightly above its
+sample anchor. `manifest.status` and question `status` unchanged — this is a
+difficulty pass, not a fresh correctness pass.
+
+## Difficulty-calibration pass: 2026-09-11 (Domain: Tool Design & MCP Integration)
+
+Applied `harden-domain-questions` to the domain against the guide's official
+sample inventory (Section 9). Sample 2 maps directly here (Domain 2):
+- Sample 2: Distinguishing `get_customer` vs `lookup_order` when both have
+  minimal descriptions (expanding tool descriptions with input formats, example
+  queries, edge cases, and explicit operational boundaries).
+
+Sample 2 is a scenario-grounded architectural judgement focusing on boundary
+definitions, semantic confusion, and deterministic tool selection. Measured
+against that anchor, several single-select items sat below it due to absurd
+facepalm throwaways (e.g. instructing users in chat to specify backend API
+functions, 5,000-word prompt, older legacy model checkpoint, process-crashing
+unhandled exceptions, raw stderr disconnection, approving unauthorized refunds
+to a spreadsheet to keep chat flow going, returning fabricated search snippets,
+unhandled NullPointerExceptions, mock customer profiles with random numbers,
+1,000-character JSON schema limits, Wikipedia pre-fetching on every noun,
+all-caps pleading prompts, "MCP strictly forbids multiple servers", dumping
+100,000 issues into system prompt, instructing the model to hallucinate, Jira
+incompatible with JSON, git repos disabling MCP, deleting files to regenerate
+from memory, and interactive hexadecimal disk editors) or an extreme length
+tell on -014 (key was 18 chars vs 111–147 chars).
+
+Hardened 13 items by tightening stems into concrete production scenarios,
+padding short keys, and replacing weak or absurd distractors with technical
+near-misses, per `CONTRIBUTING.md` § Difficulty calibration and § Writing good
+questions:
+
+- `-003`: hardened (facepalm distractor — replaced asking chat users to specify
+  backend function endpoints in `c` with a negative system prompt constraint
+  trap).
+- `-004`: hardened (definition stem / facepalm distractors — tightened stem to
+  a concrete production parameter confusion scenario; replaced 5,000-word
+  prompt in `b`, untyped strings in `c`, and legacy model checkpoint in `d` with
+  `oneOf` conditional schema complexity in `b`, system prompt few-shot examples
+  in `c`, and client-side validation retry loop in `d`).
+- `-006`: hardened (facepalm distractors — replaced process-crashing unhandled
+  exception in `a` and raw stderr socket disconnection in `d` with
+  protocol-level JSON-RPC error code (-32000) misconception in `a` and unflagged
+  markdown error text (`isError: false`) in `d`).
+- `-007`: hardened (facepalm distractor — replaced approving unauthorized
+  refund to audit spreadsheet in `c` with unflagged empty payload prompting
+  probabilistic inference trap).
+- `-008`: hardened (facepalm distractor — replaced fabricated search snippets in
+  `c` with unverified stale local cache fallback trap).
+- `-009`: hardened (definition stem / facepalm distractors — tightened stem to
+  a database zero-row match scenario; replaced fatal 500 in `a`,
+  NullPointerException in `c`, and mock profile with fake phone numbers in `d`
+  with HTTP 404 tool result trap in `a`, empty content block trap in `c`, and
+  JSON-RPC invalid params (-32602) error in `d`).
+- `-010`: hardened (invented limit distractor — replaced 1,000-character schema
+  limit in `d` with sequential tool array ordering bypass trap).
+- `-012`: hardened (facepalm distractor — replaced pre-fetching Wikipedia
+  articles on every noun in `d` with asynchronous speculative search subagent
+  trap).
+- `-013`: hardened (all-caps pleading distractor — replaced shouting prompt in
+  `c` with strict system prompt execution directive near-miss).
+- `-014`: hardened (length tell / syntax inconsistency — eliminated 18-char key
+  tell by padding `tool_choice: {'type': 'any'}` to 158 chars with full
+  operational clauses matching distractors; harmonized JSON object syntax across
+  all options).
+- `-015`: hardened (absolute claim distractor — replaced "MCP strictly forbids
+  multiple servers" in `c` with `.mcp.local.json` auto-discovery misconception
+  trap).
+- `-016`: hardened (facepalm distractors — replaced 100,000 issue prompt dump
+  in `b`, manual numeric ID typing in `c`, and "instruct model to hallucinate"
+  in `d` with tool description taxonomy bloat in `b`, dynamic SQL Prompt
+  template in `c`, and server-side memory caching in `d`).
+- `-017`: hardened (facepalm / absolute distractors — replaced built-in always
+  precedes MCP in `a`, Jira incompatible with JSON in `c`, and git repos
+  disabling MCP in `d` with user-scope deprioritization trap in `a`, nested
+  schema complexity trap in `c`, and stdio keyword restrictions in `d`).
+- `-018`: hardened (facepalm distractors — replaced deleting file and
+  regenerating from memory in `a` and hexadecimal editor in `d` with Bash `sed`
+  line replacement in `a` and Glob/`force: true` bypass in `d`).
+
+Dispositions for remaining 7 items:
+- `-001`: calibrated — no change (project `.mcp.json` with env var expansion vs
+  global ~/.claude.json, root CLAUDE.md, and git config).
+- `-002`: calibrated — no change (mirrors Sample 2; expanding tool descriptions
+  with formats, examples, and boundaries vs few-shot, regex routing, and tool
+  consolidation).
+- `-005`: calibrated — no change (system prompt keyword bias overriding tool
+  descriptions vs lexical similarity and capability breadth; hardened in
+  2026-09-11 pass).
+- `-011`: calibrated — no change (restricting subagent `allowedTools` for least
+  privilege vs prompt warnings, temperature 0, and routing classifier).
+- `-019`: calibrated — no change (multi-select on MCP primitive control and
+  operational models: Resources vs Tools vs Prompts).
+- `-020`: calibrated — no change (multi-select on Claude Code MCP scope
+  precedence hierarchy and configuration isolation).
+
+Invariants: no `correct` key, `sourceUrl`, or `sourceNote` changed; distractors
+padded rather than keys trimmed; `npm run check` green (all 4 bias guards pass:
+single-select position distribution 25/26/25/24, mean length delta -3.43 chars,
+longest option is key 20%). Domain now sits firmly at or slightly above its
+sample anchor. `manifest.status` and question `status` unchanged — this is a
+difficulty pass, not a fresh correctness pass.

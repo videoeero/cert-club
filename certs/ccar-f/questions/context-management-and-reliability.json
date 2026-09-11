@@ -21,7 +21,7 @@
       },
       {
         "id": "c",
-        "text": "Clear the entire conversation history between turns and inject only the customer's initial message into subsequent API calls."
+        "text": "Enable prompt caching on the full 40-field database responses so that the unneeded line item fields do not consume active attention capacity."
       },
       {
         "id": "d",
@@ -35,7 +35,7 @@
     "distractorNotes": {
       "a": "Larger context windows do not prevent context rot or attention dilution caused by accumulating redundant data.",
       "b": "Retaining raw outputs exacerbates token exhaustion and self-consistency prompts increase token consumption further.",
-      "c": "Clearing conversation history destroys multi-turn conversational coherence and loses track of prior tool interactions."
+      "c": "Prompt caching reduces latency and token billing for repeated prefixes, but cached tokens still occupy context window space and cause attention dilution and context rot."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/context-windows.md",
     "sourceNote": "Curating context window contents and trimming tool output fields to prevent context rot",
@@ -67,7 +67,7 @@
       },
       {
         "id": "d",
-        "text": "Claude cannot read or process text that has been passed through more than one progressive summarization cycle."
+        "text": "Progressive summarization accumulates compounding semantic drift where dialogue context is subtly distorted across multiple compression cycles."
       }
     ],
     "correct": [
@@ -77,7 +77,7 @@
     "distractorNotes": {
       "a": "The loss is not simple recency weighting — even recently stated numbers vanish once summarized; linguistic compression drops discrete transactional entities regardless of when they appeared.",
       "c": "Progressive summarization replaces prior turns with the summary rather than accumulating alongside them; the misremembered facts are ones the summary compressed out, not ones truncated by growth.",
-      "d": "Claude reads summarized text without difficulty, but cannot reconstruct facts that were omitted from the summary."
+      "d": "Semantic drift distorts narrative nuances across multiple passes, but the specific loss of exact numbers and dates occurs because text compression discards discrete transactional entities."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/context-windows.md",
     "sourceNote": "Loss of discrete transactional details during progressive conversational summarization",
@@ -90,26 +90,26 @@
     "type": "single",
     "domain": "context-management-and-reliability",
     "subdomain": "context-management",
-    "difficulty": "medium",
+    "difficulty": "hard",
     "status": "reviewed",
     "scope": "core",
-    "stem": "To prevent context rot in multi-turn support interactions while preserving critical order facts, which architectural pattern is most effective?",
+    "stem": "A customer support agent handles complex return workflows that often exceed 20 turns. When conversation history is progressively summarized to prevent context rot, the agent loses track of verified order IDs and approved refund amounts. What architectural pattern preserves these critical entities across turns?",
     "options": [
       {
         "id": "a",
-        "text": "Retain complete raw conversation transcripts without any summarization or pruning to prevent data loss."
+        "text": "Retain complete raw conversation transcripts across all turns without summarization or pruning to avoid data loss."
       },
       {
         "id": "b",
-        "text": "Delete all history between turns and force the customer to re-enter their order number and details on every message."
+        "text": "Store past conversational turns in a vector store and retrieve relevant dialogue snippets via semantic search on each turn."
       },
       {
         "id": "c",
-        "text": "Maintain a persistent, structured 'case facts' block (IDs, amounts, dates, statuses) injected into every prompt outside the summarized history."
+        "text": "Maintain a persistent, structured 'case facts' block (IDs, amounts, dates, statuses) injected into every turn outside the summary."
       },
       {
         "id": "d",
-        "text": "Store the order facts in an external database and rely on the model to remember to query it whenever it needs them, without injecting them into the prompt."
+        "text": "Store the order facts in an external database and rely on the model to autonomously query lookup tools when values are needed."
       }
     ],
     "correct": [
@@ -117,9 +117,9 @@
     ],
     "explanation": "Decoupling persistent transactional facts from conversational history into a dedicated 'case facts' context block ensures that critical values (order IDs, verified refund amounts, timestamps, escalation states) remain exact and uncorrupted across turns, even when the dialogue history is summarized or compacted.",
     "distractorNotes": {
-      "a": "Retaining raw transcripts causes token exhaustion, slows response latency, and introduces context rot.",
-      "b": "Wiping history frustrates customers by forcing them to repeat information on every single message.",
-      "d": "Leaving retrieval to the model's discretion means the facts are absent whenever it fails to call the lookup; a structured case-facts block injected every turn guarantees they are present."
+      "a": "Retaining raw transcripts causes token exhaustion, increases API latency, and degrades model attention over extended sessions.",
+      "b": "Semantic similarity retrieval over conversation turns frequently misses exact entity lookups when user queries lack keywords matching the earlier transactional turn.",
+      "d": "Leaving entity retrieval to the model's autonomous tool calls risks omitted or forgotten lookups; injecting a structured case-facts block guarantees presence."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/context-windows.md",
     "sourceNote": "Maintaining a persistent structured case facts block outside summarized history",
@@ -139,11 +139,11 @@
     "options": [
       {
         "id": "a",
-        "text": "Duplicate the entire document back-to-back in the prompt so the middle pages appear twice and receive more attention."
+        "text": "Prepend an explicit directive in the system prompt instructing the model to distribute its attention weight uniformly across all sections."
       },
       {
         "id": "b",
-        "text": "Reverse the alphabetical order of all words in the document to force the model to attend equally to all positions."
+        "text": "Insert synthetic user and assistant conversational turn markers between sections to repeatedly reset the model's positional attention curve."
       },
       {
         "id": "c",
@@ -159,8 +159,8 @@
     ],
     "explanation": "The 'lost in the middle' phenomenon occurs because transformer attention mechanisms exhibit recency and primacy biases, attending most strongly to the beginning and end of long inputs. Placing key summaries up front, structuring sections with explicit headers, and reiterating critical synthesis instructions at the end counteracts attention decay across long inputs.",
     "distractorNotes": {
-      "a": "Repeating the whole document doubles token cost and simply creates a new middle that is still under-attended; positioning key findings at the start and end is what counters the lost-in-the-middle effect.",
-      "b": "Reversing word order creates nonsense text that ruins model reasoning.",
+      "a": "Natural language directives commanding uniform attention cannot override transformer architectural attention biases (primacy and recency effects); layout structuring is required.",
+      "b": "Inserting artificial conversational turn markers within reference text disrupts semantic coherence and does not reset the underlying attention decay across the cumulative context.",
       "c": "Content in the system prompt is subject to the same positional attention effects; the mitigation is layout — an executive summary up front, clear headers, and critical instructions repeated at the end."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/context-windows.md",
@@ -174,7 +174,7 @@
     "type": "single",
     "domain": "context-management-and-reliability",
     "subdomain": "context-management",
-    "difficulty": "medium",
+    "difficulty": "hard",
     "status": "reviewed",
     "scope": "core",
     "stem": "In a research pipeline, three upstream subagents return extensive raw HTML scrapes and verbose chain-of-thought traces, which quickly exhausts the report coordinator's context budget. What should the architect modify?",
@@ -189,7 +189,7 @@
       },
       {
         "id": "c",
-        "text": "Instruct the coordinator to delete all subagent responses without reading them and generate synthetic conclusions."
+        "text": "Enable prompt caching on the coordinator so that accumulating raw HTML dumps and reasoning traces avoid exhausting the context budget."
       },
       {
         "id": "d",
@@ -202,7 +202,7 @@
     "explanation": "Subagents should act as information filters and compressors. Rather than passing raw web dumps or verbose internal thoughts to the coordinator, subagents should extract and return structured summaries containing key claims, relevant excerpts, and citations, respecting the downstream coordinator's context budget.",
     "distractorNotes": {
       "b": "A larger window still fills with verbose low-value tokens, diluting attention and inflating cost; the fix is having subagents emit compact structured data, not holding more raw text.",
-      "c": "Deleting subagent responses leaves the coordinator with zero data to synthesize.",
+      "c": "Prompt caching reduces latency and token billing for repeated prefixes, but cached tokens still occupy context window capacity and do not prevent context window exhaustion.",
       "d": "Making the overloaded coordinator ingest and summarize every raw scrape still spends its context budget on low-value tokens; compaction belongs upstream where each subagent returns structured claims and citations."
     },
     "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
@@ -300,14 +300,14 @@
     "type": "single",
     "domain": "context-management-and-reliability",
     "subdomain": "escalation-and-reliability",
-    "difficulty": "medium",
+    "difficulty": "hard",
     "status": "reviewed",
     "scope": "core",
     "stem": "A customer requests a price match against an unauthorized third-party marketplace listing. The company policy documentation explicitly addresses own-site adjustments, but is completely silent regarding third-party marketplaces. How should the agent proceed?",
     "options": [
       {
         "id": "a",
-        "text": "Invent an arbitrary discretionary discount to match the marketplace price and retain customer goodwill."
+        "text": "Apply a discretionary courtesy discount up to the agent's standard concession limit to match the price and preserve customer goodwill."
       },
       {
         "id": "b",
@@ -327,7 +327,7 @@
     ],
     "explanation": "When an agent encounters a policy gap or ambiguity (a scenario not covered by documented business rules), the agent must not invent unauthorized policies or speculate. Escalating the case to a human supervisor ensures appropriate policy interpretation while identifying areas where corporate documentation needs updates.",
     "distractorNotes": {
-      "a": "Inventing unauthorized discounting rules violates financial controls and risks significant revenue loss.",
+      "a": "Applying unverified courtesy concessions to match unauthorized third-party marketplaces exceeds agent policy authority and incurs financial risk when policy is silent.",
       "b": "Automatically denying on silence is the mirror error of automatically approving — the policy gap is genuinely unresolved and needs human judgment, not a default 'no' from the agent.",
       "c": "Assuming silence implies full authorization creates severe financial and legal exposure."
     },
@@ -342,7 +342,7 @@
     "type": "single",
     "domain": "context-management-and-reliability",
     "subdomain": "escalation-and-reliability",
-    "difficulty": "medium",
+    "difficulty": "hard",
     "status": "reviewed",
     "scope": "core",
     "stem": "An agent queries lookup_customer(name='John Smith') and the backend returns three distinct accounts with identical names. How should the agent resolve this ambiguity?",
@@ -353,7 +353,7 @@
       },
       {
         "id": "b",
-        "text": "Pick the first John Smith record in the list and process their refund immediately to maintain low handle time."
+        "text": "Select the account with the most recent transaction activity, assuming the customer is contacting support regarding their latest order."
       },
       {
         "id": "c",
@@ -369,7 +369,7 @@
     ],
     "explanation": "When lookup tools return multiple matching records for common names, guessing or picking arbitrarily risks exposing other customers' PII or altering the wrong account. The agent must prompt the user for secondary unique identifiers (e.g. order number, billing zip code, or email address) to disambiguate the entity safely.",
     "distractorNotes": {
-      "b": "Arbitrarily picking an account breaches privacy regulations and risks modifying another customer's data.",
+      "b": "Selecting by transaction recency is an unverified heuristic that risks modifying another customer's account and exposing unauthorized PII; ambiguous lookups require secondary identifier verification.",
       "c": "Reciting even masked details of all three accounts discloses other customers' information to the caller; the customer should supply a secondary identifier so only their own record is surfaced.",
       "d": "Selecting by balance is an arbitrary heuristic that exacerbates privacy and financial violations."
     },
@@ -521,7 +521,7 @@
       },
       {
         "id": "b",
-        "text": "Keep all state strictly in volatile Node.js process RAM, accepting that process crashes require starting analysis over from the beginning."
+        "text": "Commit intermediate file diffs to a temporary Git branch after each step and inspect the branch diff on restart to infer completed tasks."
       },
       {
         "id": "c",
@@ -537,7 +537,7 @@
     ],
     "explanation": "Long-running agentic pipelines require durable state persistence for resilience. Exporting structured checkpoint manifests (tracking completed items, intermediate findings, and remaining tasks) allows the coordinator to reconstruct state on resumption after a crash or timeout without having to repeat expensive exploration.",
     "distractorNotes": {
-      "b": "Volatile in-memory state means any process crash, network interruption, or OOM wipes all work.",
+      "b": "Inspecting Git branch diffs only reveals modified files on disk, failing to capture intermediate AST summaries, analysis queues, or non-file progress required to resume without re-running analysis.",
       "c": "Replaying an unstructured log through the model on every restart is slow, costly, and ambiguous about what actually finished; structured state manifests give the coordinator a precise, machine-readable checkpoint.",
       "d": "An in-memory store with no persistence configured loses the same state on its own restart or eviction; durable crash recovery requires the checkpoints to reach disk."
     },
@@ -567,7 +567,7 @@
       },
       {
         "id": "c",
-        "text": "Send all 100,000 documents to human reviewers every week, eliminating the cost and efficiency benefits of automated machine processing."
+        "text": "Audit a fixed quota of extractions drawn exclusively from the highest-volume form template to maximize human review efficiency."
       },
       {
         "id": "d",
@@ -580,7 +580,7 @@
     "explanation": "High aggregate accuracy (e.g. 98%) can easily mask severe localized failure rates (e.g. 40% failure on handwritten dates or rare form variants). Stratified random sampling continuously audits a small percentage of extractions across all form segments and confidence tiers, catching silent drift and systemic errors.",
     "distractorNotes": {
       "a": "Sampling only low-confidence outputs misses exactly the hidden failure mode in question — systematic errors the model reports with high confidence; stratified sampling covers confident extractions too.",
-      "c": "Reviewing 100% of documents eliminates the efficiency benefits of AI automation.",
+      "c": "Sampling exclusively from the highest-volume template fails to detect systemic failures and edge-case errors in lower-volume form variants and specialized field segments; sampling must be stratified.",
       "d": "A systematic bias yields the same wrong output on both runs, so run-to-run disagreement never surfaces it; stratified sampling against ground truth is what catches consistent errors."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs.md",

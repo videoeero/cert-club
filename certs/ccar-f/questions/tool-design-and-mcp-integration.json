@@ -105,7 +105,7 @@
       },
       {
         "id": "c",
-        "text": "Instruct users in the chat interface to explicitly specify which underlying tool function and backend endpoint they want invoked."
+        "text": "Add a negative constraint in the system prompt explicitly instructing Claude never to invoke analyze_document when analyze_content could apply."
       },
       {
         "id": "d",
@@ -119,7 +119,7 @@
     "distractorNotes": {
       "a": "Zero temperature does not resolve semantic ambiguity between overlapping tools; it simply makes the arbitrary misselection deterministic.",
       "b": "Priority hints do not remove the underlying semantic overlap; Claude still cannot tell which tool fits a given input, so it keeps misselecting or calling both.",
-      "c": "Exposing internal tool names to end users forces technical implementation details onto non-technical users."
+      "c": "Negative prompt instructions do not resolve semantic ambiguity between tools with identical capability descriptions; the model still struggles to determine which tool genuinely applies to a given input."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools.md",
     "sourceNote": "Eliminating functional overlap in tool naming and descriptions to prevent misselection",
@@ -135,7 +135,7 @@
     "difficulty": "medium",
     "status": "reviewed",
     "scope": "core",
-    "stem": "A developer provides a single generic manage_data tool that accepts an 'action' parameter with twelve possible operations ('create', 'read', 'update', 'delete', 'export', 'archive', etc.) and thirty optional fields. The agent frequently hallucinates parameters. What is the recommended refactoring?",
+    "stem": "An engineering team exposes a single monolithic manage_data tool that accepts an 'action' parameter covering twelve CRUD operations and thirty optional fields. In production, Claude frequently confuses parameter combinations, passing update arguments during read operations and hallucinating missing fields. How should the architect refactor this interface?",
     "options": [
       {
         "id": "a",
@@ -143,15 +143,15 @@
       },
       {
         "id": "b",
-        "text": "Write an exhaustive 5,000-word system prompt detailing all twelve action permutations, parameter interactions, and boundary rules."
+        "text": "Retain the monolithic tool but define conditional oneOf schema blocks to enforce valid parameter combinations for each action at runtime."
       },
       {
         "id": "c",
-        "text": "Change all thirty parameter types to untyped strings to prevent schema validation errors and let the backend perform runtime type coercion."
+        "text": "Add comprehensive few-shot examples to the system prompt illustrating valid parameter sets for each action while keeping the single tool schema."
       },
       {
         "id": "d",
-        "text": "Switch to an older legacy model checkpoint that does not enforce strict JSON schema requirements during tool execution calls."
+        "text": "Implement a client-side wrapper that intercepts failed tool executions and feeds backend validation error traces back to Claude for re-prompting."
       }
     ],
     "correct": [
@@ -159,9 +159,9 @@
     ],
     "explanation": "Monolithic tools with complex conditional parameters create immense cognitive complexity and schema ambiguity. Splitting the generic tool into distinct, single-purpose tools (e.g. `create_record`, `read_record`, `archive_record`) with focused, strongly typed schemas allows Claude to evaluate exact parameters without confusing irrelevant fields.",
     "distractorNotes": {
-      "b": "Massive system prompts increase token costs and cognitive load without fixing schema ambiguity.",
-      "c": "Weakening parameter types to untyped strings encourages hallucinated and malformed parameter values.",
-      "d": "Older legacy models have worse instruction-following and tool-use capabilities."
+      "b": "While JSON Schema supports conditional constructs like oneOf, deeply nested schemas significantly increase model cognitive complexity and error rates compared to discrete, focused tools.",
+      "c": "Few-shot prompting increases prompt token consumption and latency without resolving the underlying schema ambiguity of a 30-parameter monolithic tool.",
+      "d": "Client-side error retry loops are reactive, add latency, and waste tokens attempting to recover from failures that proper tool decomposition prevents deterministically."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools.md",
     "sourceNote": "Splitting monolithic tools into focused, single-purpose tools with tight schemas",
@@ -223,7 +223,7 @@
     "options": [
       {
         "id": "a",
-        "text": "Throw an unhandled runtime exception that terminates the MCP server process immediately, closing all active pipe transports."
+        "text": "Return a protocol-level JSON-RPC error response with code -32000 (Server error) to indicate that the tool execution failed."
       },
       {
         "id": "b",
@@ -235,7 +235,7 @@
       },
       {
         "id": "d",
-        "text": "Output a raw stack trace to standard error and close the transport connection to force the client to detect socket disconnection immediately."
+        "text": "Return a normal tool execution result with isError: false and format the timeout exception message as plain markdown in the text content."
       }
     ],
     "correct": [
@@ -243,9 +243,9 @@
     ],
     "explanation": "In MCP, tool execution failures should be communicated by returning a result object with `isError: true` and descriptive content. Providing structured error context (such as error category, whether the error is transient/retryable, and details) enables Claude to reason about appropriate recovery strategies rather than crashing or guessing.",
     "distractorNotes": {
-      "a": "Crashing the server process breaks the MCP transport connection and halts the entire agent session.",
+      "a": "In the Model Context Protocol, protocol-level JSON-RPC errors are reserved for transport or framing failures (such as invalid JSON or unknown methods); tool execution failures must be returned as a standard CallToolResult with isError: true so the LLM can inspect and handle the error.",
       "b": "Masking failures as successful empty responses misleads the agent into believing data does not exist.",
-      "d": "Writing to stderr without returning a structured MCP error leaves the agent waiting or causes transport desynchronization."
+      "d": "Returning error messages with isError: false misinforms the client framework that the tool invocation succeeded, preventing automated error handling and recovery workflows."
     },
     "sourceUrl": "https://modelcontextprotocol.io/docs/2025-06-18/develop/build-server.md",
     "sourceNote": "Returning structured error responses with isError: true and recovery metadata in MCP tools",
@@ -273,7 +273,7 @@
       },
       {
         "id": "c",
-        "text": "Approve the refund anyway and log a warning to an internal audit spreadsheet to avoid breaking conversational flow with the user."
+        "text": "Return a tool execution result with isError: false and an empty payload, prompting the agent in the system prompt to infer policy rejection."
       },
       {
         "id": "d",
@@ -287,7 +287,7 @@
     "distractorNotes": {
       "a": "Generic failure messages cause the model to assume a transient glitch and waste tokens on futile retries.",
       "b": "Marking a permanent policy violation as retryable makes the agent waste tokens on retries that can never succeed before finally failing without a clear explanation for the customer.",
-      "c": "Violating financial policy corrupts business accounting and bypasses authorization controls."
+      "c": "Returning isError: false for a failed business rule violation misinforms the agent that the operation succeeded and forces unreliable probabilistic inference from missing fields."
     },
     "sourceUrl": "https://modelcontextprotocol.io/docs/2025-06-18/develop/build-server.md",
     "sourceNote": "Using isRetryable: false in tool error payloads to halt futile retry loops",
@@ -315,7 +315,7 @@
       },
       {
         "id": "c",
-        "text": "The subagent swallows the timeout and returns fabricated search snippets to satisfy the coordinator without revealing the error."
+        "text": "The subagent falls back immediately to an unverified local cache, returning stale search results without error metadata to maintain latency."
       },
       {
         "id": "d",
@@ -328,7 +328,7 @@
     "explanation": "Local error recovery handles transient, self-contained issues (like a brief network glitch) within the subagent via localized retries. If recovery fails, propagating structured error context (what failed, attempted queries, partial results) back to the coordinator allows the coordinator to decide high-level recovery (e.g. trying an alternative provider or proceeding with partial results).",
     "distractorNotes": {
       "b": "Centralizing all retries forces a cross-agent round trip for glitches the subagent could resolve itself, adding latency; transient, self-contained failures should be retried locally before escalating.",
-      "c": "Fabricating synthetic search snippets introduces hallucinations and destroys research validity.",
+      "c": "Silently returning stale unverified cached data masks operational failures from the coordinator and risks propagating inaccurate or obsolete facts into synthesis.",
       "d": "Re-invoking the whole subagent throws away partial progress and structured failure context and treats every failure as retryable; recovery should begin locally and propagate structured context upward."
     },
     "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
@@ -345,11 +345,11 @@
     "difficulty": "medium",
     "status": "reviewed",
     "scope": "core",
-    "stem": "An agent queries a customer directory tool with search_users(email='unknown@example.com'). The database finds no matching records. How should the tool respond?",
+    "stem": "An agent queries a customer directory tool using search_users(email='unknown@example.com'). The underlying database query executes successfully but matches zero rows. According to tool design best practices, how should the tool response be structured?",
     "options": [
       {
         "id": "a",
-        "text": "Return isError: true with a fatal 500 server error code to indicate that the user lookup operation encountered a missing entity."
+        "text": "Return a tool result with isError: true and an HTTP 404 status code indicating that the requested customer record was not found."
       },
       {
         "id": "b",
@@ -357,11 +357,11 @@
       },
       {
         "id": "c",
-        "text": "Throw an unhandled NullPointerException in the server runtime to signal to the client framework that zero records were retrieved."
+        "text": "Return an empty tool result omitting the content block entirely, allowing the client framework to handle missing data through default null values."
       },
       {
         "id": "d",
-        "text": "Return a mock user profile with randomly generated phone numbers and addresses to keep the customer conversation moving forward."
+        "text": "Return a protocol-level JSON-RPC error with code -32602 (Invalid params) indicating that the provided email parameter is unresolvable."
       }
     ],
     "correct": [
@@ -369,9 +369,9 @@
     ],
     "explanation": "A valid search that yields zero matches is a successful query with an empty result set, not an operational failure. Returning `isError: false` with an empty array or clear status allows Claude to recognize that the user does not exist and formulate an appropriate response, rather than treating the result as an infrastructure crash.",
     "distractorNotes": {
-      "a": "Returning isError: true misrepresents a valid empty query as an infrastructure malfunction.",
-      "c": "Throwing unhandled exceptions crashes the server and breaks tool communication.",
-      "d": "Returning mock data fabricates customer identity and causes serious data corruption."
+      "a": "A search that successfully finds zero matches is not an error; setting isError: true misleads Claude into treating a valid non-existent user query as an operational failure requiring retry or debugging.",
+      "c": "Omitting the content block violates MCP tool result schemas and causes client deserialization failures instead of cleanly conveying empty results.",
+      "d": "The parameters passed were syntactically and semantically valid; returning an invalid-params protocol error misrepresents a successful database query as a client formatting defect."
     },
     "sourceUrl": "https://modelcontextprotocol.io/docs/2025-06-18/develop/build-server.md",
     "sourceNote": "Distinguishing successful empty query results from operational tool execution errors",
@@ -403,7 +403,7 @@
       },
       {
         "id": "d",
-        "text": "Claude cannot process more than 1,000 characters of JSON schema in a single request without degrading internal attention heads."
+        "text": "The Messages API evaluates tool schemas in sequential array order, causing tools defined near the end of large registries to be systematically bypassed."
       }
     ],
     "correct": [
@@ -413,7 +413,7 @@
     "distractorNotes": {
       "a": "The API validates each tool call against that tool's own schema independently; overlapping field names across different tools do not cause rejections. The degradation is selection difficulty, not schema validation failures.",
       "b": "Twenty-five tool schemas do not exhaust the context window; accuracy falls because of decision complexity and semantic overlap among similar tools, not because conversational context was crowded out.",
-      "d": "Claude handles large context windows and extensive schemas well beyond 1,000 characters."
+      "d": "Tool selection evaluates the entire tool catalog simultaneously using semantic relevance; tool definitions are not evaluated in a sequential or short-circuiting array order."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools.md",
     "sourceNote": "Cognitive complexity and selection degradation from tool over-provisioning",
@@ -487,7 +487,7 @@
       },
       {
         "id": "d",
-        "text": "Require the search agent to pre-fetch Wikipedia articles on every noun mentioned in the source documents before synthesis begins."
+        "text": "Configure the coordinator to run an asynchronous background subagent that issues speculative web searches for every proper noun in the outline."
       }
     ],
     "correct": [
@@ -497,7 +497,7 @@
     "distractorNotes": {
       "b": "Granting full search and browser tools to synthesis violates separation of concerns and leads to role drift.",
       "c": "Cached prior results are stale and incomplete for the isolated new facts that surface during drafting; a scoped verify_fact tool answers fresh lookups without a coordinator round trip.",
-      "d": "Pre-fetching arbitrary Wikipedia articles causes massive context bloat and token waste."
+      "d": "Speculative background queries for every proper noun create massive token waste, rate limit exhaustion, and context bloat without knowing which specific facts need verification."
     },
     "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
     "sourceNote": "Providing scoped helper tools for frequent minor verifications without role bloat",
@@ -525,7 +525,7 @@
       },
       {
         "id": "c",
-        "text": "Write 'PLEASE RUN EXTRACT_METADATA FIRST' in the user prompt, relying on conversational emphasis to dictate execution sequence."
+        "text": "Include a strict execution directive in the system prompt instructing Claude to always execute extract_metadata before calling any other tool."
       },
       {
         "id": "d",
@@ -538,7 +538,7 @@
     "explanation": "The Messages API supports forced tool selection via `tool_choice: {'type': 'tool', 'name': 'tool_name'}`. This forces Claude to generate a call to the specified tool on that turn, guaranteeing that `extract_metadata` executes before subsequent turns allow other tools.",
     "distractorNotes": {
       "a": "tool_choice: 'auto' allows the model to choose whether and which tool to call; it does not guarantee execution order.",
-      "c": "Prompt-based pleading is probabilistic and can fail in edge cases.",
+      "c": "System prompt directives are probabilistic; while they guide model reasoning, they do not guarantee deterministic tool selection or execution order like the tool_choice parameter does.",
       "d": "tool_choice: 'any' forces the model to call some tool but lets it pick which one; it does not pin the first call to extract_metadata specifically."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls.md",
@@ -559,29 +559,29 @@
     "options": [
       {
         "id": "a",
-        "text": "tool_choice: 'none', which disables tool calling and instructs the model to return plain text without generating tool calls."
+        "text": "tool_choice: {'type': 'none'}, which disables tool calling entirely and forces the model to respond with plain conversational text instead of a structured tool call."
       },
       {
         "id": "b",
-        "text": "tool_choice: 'auto', which allows Claude to decide whether to call a tool or respond with plain conversational text to the user."
+        "text": "tool_choice: {'type': 'auto'}, which lets Claude decide for each document whether to invoke an extraction tool or respond with plain conversational text instead."
       },
       {
         "id": "c",
-        "text": "tool_choice: 'any'"
+        "text": "tool_choice: {'type': 'any'}, which forces Claude to invoke one of the provided tools while allowing it to select which extraction schema fits the document."
       },
       {
         "id": "d",
-        "text": "tool_choice: {'type': 'tool', 'name': 'extract_invoice'}, which forces a tool call while still letting the model adapt to whatever document type arrives."
+        "text": "tool_choice: {'type': 'tool', 'name': 'extract_invoice'}, which guarantees a tool call but forces invoice extraction even on receipt or contract documents."
       }
     ],
     "correct": [
       "c"
     ],
-    "explanation": "Setting `tool_choice: 'any'` (or `required`) forces Claude to invoke at least one tool from the available tools list, but allows the model to select which specific tool best matches the input document. This guarantees structured tool invocation while preserving dynamic tool selection.",
+    "explanation": "Setting `tool_choice: {'type': 'any'}` forces Claude to invoke at least one tool from the available tools list, but allows the model to select which specific tool best matches the input document. This guarantees structured tool invocation while preserving dynamic tool selection.",
     "distractorNotes": {
-      "a": "tool_choice: 'none' prevents Claude from calling any tools, forcing text-only generation.",
-      "b": "tool_choice: 'auto' allows Claude to choose whether to call a tool or respond with plain conversational text.",
-      "d": "Forcing a specific named tool ignores the unknown document type and would run extract_invoice on receipts and contracts too; 'any' forces a call while preserving dynamic selection among the three tools."
+      "a": "tool_choice: {'type': 'none'} disables tool use entirely, forcing text-only responses.",
+      "b": "tool_choice: {'type': 'auto'} lets Claude choose whether to execute a tool or respond conversationally, failing the requirement to guarantee tool execution.",
+      "d": "Forcing a specific tool name guarantees execution but eliminates dynamic tool selection, inappropriately forcing extract_invoice on receipts and contracts."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls.md",
     "sourceNote": "Guaranteeing tool calling over conversational text using tool_choice: any",
@@ -609,7 +609,7 @@
       },
       {
         "id": "c",
-        "text": "MCP specifications strictly forbid configuring more than one active server per user or connecting across multiple JSON scopes."
+        "text": "Define the SQLite server in a project-root .mcp.local.json file, which Claude Code automatically loads while keeping it excluded from git."
       },
       {
         "id": "d",
@@ -623,7 +623,7 @@
     "distractorNotes": {
       "a": "Git index manipulation is brittle and easily overwritten by team merges, branch checkouts, or clean clones.",
       "b": "CLAUDE.md provides natural language instructions, not structured JSON MCP server configurations.",
-      "c": "MCP hosts connect to multiple servers concurrently and merge all exposed tools into the session."
+      "c": "Claude Code does not recognize .mcp.local.json; local private configurations must be placed in ~/.claude.json to remain separate from the shared project .mcp.json."
     },
     "sourceUrl": "https://code.claude.com/docs/en/mcp.md",
     "sourceNote": "Configuring personal MCP servers in ~/.claude.json alongside project .mcp.json",
@@ -647,15 +647,15 @@
       },
       {
         "id": "b",
-        "text": "Prepend the entire 100,000 issue database dump to every prompt as a system message to ensure all components are pre-loaded in context memory."
+        "text": "Embed the complete component taxonomy directly inside the description field of the issue creation tool schema so it loads on every turn."
       },
       {
         "id": "c",
-        "text": "Disable search tools and force users to type numeric component IDs manually before the agent can assist with issue tracking."
+        "text": "Implement an MCP Prompt template that executes a dynamic client-side SQL query against the issue database on each user turn."
       },
       {
         "id": "d",
-        "text": "Instruct the model to hallucinate plausible component names based on general industry terminology instead of looking them up."
+        "text": "Configure the MCP server to cache prior exploratory search results in local server memory across independent agent sessions."
       }
     ],
     "correct": [
@@ -663,9 +663,9 @@
     ],
     "explanation": "MCP Resources provide a standardized mechanism for servers to expose read-only data, schemas, or catalog hierarchies via URIs. Exposing catalog data as resources allows the client/agent to read the structured taxonomy directly or attach it as context, eliminating repetitive exploratory tool invocations.",
     "distractorNotes": {
-      "b": "Dumping 100,000 issues overwhelms context windows, degrades performance, and explodes token costs.",
-      "c": "Disabling search severely damages user experience and system usability.",
-      "d": "Hallucinating component names leads to invalid database queries and corrupted issue references."
+      "b": "Embedding large taxonomies in tool descriptions inflates prompt token consumption on every turn regardless of whether the tool is invoked.",
+      "c": "Prompts are user-controlled, interactive prompt templates requiring explicit invocation; they do not provide standardized application-attached context data.",
+      "d": "Server-side caching may speed up backend database queries but does not eliminate the client-agent round trips or token costs of the 4-6 exploratory tool invocations."
     },
     "sourceUrl": "https://modelcontextprotocol.io/docs/2025-06-18/learn/server-concepts.md",
     "sourceNote": "Using MCP Resources to expose structured catalogs and schemas without exploratory tool calls",
@@ -685,7 +685,7 @@
     "options": [
       {
         "id": "a",
-        "text": "Built-in tools always take precedence over MCP tools in all LLM architectures regardless of how well described the tools are."
+        "text": "The Jira MCP server is installed in user scope (~/.claude.json), which Claude Code deprioritizes behind system commands unless explicitly invoked."
       },
       {
         "id": "b",
@@ -693,11 +693,11 @@
       },
       {
         "id": "c",
-        "text": "Jira APIs are fundamentally incompatible with JSON formatting, preventing MCP servers from communicating with Atlassian systems reliably."
+        "text": "The Jira MCP tool schema defines complex nested parameters without default values, causing Claude Code to bypass the tool to avoid validation errors."
       },
       {
         "id": "d",
-        "text": "Claude Code disables all MCP tools whenever a git repository is detected in the current working directory to prevent data leaks."
+        "text": "MCP tools connecting over stdio transports are restricted to read-only commands whenever local repository files match query keywords."
       }
     ],
     "correct": [
@@ -705,9 +705,9 @@
     ],
     "explanation": "When an MCP tool has an impoverished or generic description (e.g. 'Jira operations'), the model cannot discern its utility and falls back on built-in tools like Grep and Bash whose capabilities and outputs are well understood. Writing rich, descriptive tool documentation solves this preference bias.",
     "distractorNotes": {
-      "a": "MCP tools are equal citizens in the tool registry; models choose tools based on description quality and relevance.",
-      "c": "Jira APIs return standard REST JSON and are fully compatible with MCP servers.",
-      "d": "Claude Code is designed specifically to integrate MCP servers within git repositories."
+      "a": "MCP scope precedence governs configuration overrides when server names collide; it does not deprioritize user-scoped tools behind built-in tools.",
+      "c": "Claude selects tools based on description relevance and capability matching before evaluating parameter schemas; schema complexity does not cause silent fallback to Grep and Bash.",
+      "d": "Claude Code does not restrict stdio MCP tools based on query keyword matches against local repository files."
     },
     "sourceUrl": "https://code.claude.com/docs/en/mcp.md",
     "sourceNote": "Crafting rich MCP tool descriptions to prevent fallback to generic built-in tools",
@@ -727,7 +727,7 @@
     "options": [
       {
         "id": "a",
-        "text": "Delete the file and instruct Claude to regenerate the entire file from memory using the Write tool."
+        "text": "Invoke the Bash tool to execute a sed replacement command targeting the line numbers reported in the Edit error message."
       },
       {
         "id": "b",
@@ -739,7 +739,7 @@
       },
       {
         "id": "d",
-        "text": "Switch to an interactive hexadecimal editor in a sub-shell session to modify binary byte offsets directly on the storage disk."
+        "text": "Execute the Glob tool to locate duplicate occurrences, then invoke Edit with force: true to bypass the uniqueness constraint."
       }
     ],
     "correct": [
@@ -747,9 +747,9 @@
     ],
     "explanation": "The Edit tool requires a unique string match to ensure targeted replacements. When the target content occurs multiple times and cannot be uniquely anchored, the documented fallback is to use Read to obtain the full file context, apply the modifications in memory, and use Write to save the updated file safely.",
     "distractorNotes": {
-      "a": "Deleting the file destroys working tree state and user progress.",
+      "a": "Invoking sed via Bash is fragile, platform-dependent, and bypasses Claude Code's safe file editing lifecycle; the documented fallback uses Read and Write.",
       "b": "Enabling allowMultiple across non-unique chunks will unintentionally alter unrelated sections of code.",
-      "d": "Hexadecimal editing is unnecessary and error-prone for standard source files."
+      "d": "The Edit tool does not support a force: true flag to override uniqueness checks."
     },
     "sourceUrl": "https://code.claude.com/docs/en/overview.md",
     "sourceNote": "Fallback to Read and Write when Edit fails on non-unique string matches",

@@ -345,33 +345,33 @@
     "difficulty": "hard",
     "status": "reviewed",
     "scope": "core",
-    "stem": "In a research pipeline, the synthesis subagent returns an initial draft stating that data regarding regulatory approval timelines in Japan is missing. How should the coordinator implement an iterative refinement loop?",
+    "stem": "A multi-agent research pipeline produces a synthesis draft that explicitly notes it could not find data on regulatory approval timelines in Japan, though the underlying sources for that topic do exist and were simply never retrieved. The coordinator still holds the search subagent and the original findings in context. How should the coordinator best close this gap?",
     "options": [
       {
         "id": "a",
-        "text": "Discard the synthesis draft, restart the entire multi-agent pipeline from scratch, and increase the model temperature to 1.0."
+        "text": "Re-run the entire multi-agent pipeline from the top with a higher temperature so the search subagent explores more sources on its next pass."
       },
       {
         "id": "b",
-        "text": "Instruct the synthesis subagent to extrapolate plausible regulatory approval dates using published European benchmarks to fill the identified coverage gap."
+        "text": "Have the synthesis subagent estimate the missing Japanese approval timelines by extrapolating from the European regulatory benchmarks it already retrieved."
       },
       {
         "id": "c",
-        "text": "Append an error block to the conversation history and terminate the session with a fatal status code without delivering the draft."
+        "text": "Accept the draft as final, appending an explicit 'data unavailable for Japan' limitation note so the gap is disclosed rather than silently hidden."
       },
       {
         "id": "d",
-        "text": "Identify the specific coverage gap, re-delegate a targeted query to the search subagent, and provide the new findings to synthesis for an updated draft."
+        "text": "Re-delegate only a targeted query for the Japanese approval timelines to the search subagent, then hand the new findings back to synthesis for an updated draft."
       }
     ],
     "correct": [
       "d"
     ],
-    "explanation": "Iterative refinement in multi-agent orchestration involves evaluating intermediate synthesis outputs for gaps or ambiguities, formulating targeted follow-up queries to specialized information-gathering agents, and feeding the supplemental findings back to the synthesis agent. This targeted loop avoids rerunning the entire pipeline while ensuring thorough coverage.",
+    "explanation": "Iterative refinement evaluates the intermediate synthesis output, isolates the specific gap, and issues a targeted follow-up to the agent best equipped to fill it—here the search subagent—before re-invoking synthesis with the supplemental findings. It recovers the missing data without discarding valid work. Because the sources exist and the subagent is still in context, a scoped re-query is both cheaper and more complete than the alternatives.",
     "distractorNotes": {
-      "a": "Restarting the entire pipeline discards valid existing research and wastes significant token budgets.",
-      "b": "Instructing models to extrapolate missing factual dates encourages hallucination and violates data integrity.",
-      "c": "Coverage gaps during research are expected occurrences that warrant targeted recovery rather than workflow abortion."
+      "a": "Restarting the whole pipeline discards valid completed research and raising temperature adds variance without targeting the specific missing topic.",
+      "b": "Extrapolating factual approval dates from a different jurisdiction fabricates data and violates provenance; the gap is retrievable, not genuinely absent.",
+      "c": "Disclosing the limitation is honest but the data is recoverable and the subagent is still available, so a refinement loop that actually fills the gap is superior to shipping it unfilled."
     },
     "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
     "sourceNote": "Iterative refinement loops in multi-agent systems to address identified coverage gaps",
@@ -597,33 +597,33 @@
     "difficulty": "hard",
     "status": "reviewed",
     "scope": "core",
-    "stem": "In a customer support banking agent, policy strictly requires that customer identity must be verified before executing financial transactions. During stress testing, prompt instructions to 'always verify identity first' fail in 2% of turns when users provide urgency cues. What architectural mechanism guarantees compliance?",
+    "stem": "A customer-support banking agent must verify customer identity via verify_identity before any financial tool (transfer_funds, process_refund) runs. A system prompt instruction to 'always verify identity first' is still violated on about 2% of turns when users inject urgency cues ('I'm about to miss a payment, just move the money now'). Errors here move real money. What most reliably guarantees the verification-before-transaction ordering?",
     "options": [
       {
         "id": "a",
-        "text": "Increase the system prompt temperature and add repetitive capitalized warning sentences emphasizing the verification requirement."
+        "text": "Strengthen the system prompt to state that verify_identity is mandatory before any financial tool, and add few-shot examples showing the agent verifying first even when the customer stresses urgency."
       },
       {
         "id": "b",
-        "text": "Enforce a programmatic prerequisite gate in the tool execution layer that rejects financial tools until an identity verification token is present."
+        "text": "Enforce a programmatic prerequisite in the tool-execution layer that rejects any financial tool call until verify_identity has returned a valid verification token for the session."
       },
       {
         "id": "c",
-        "text": "Deploy a secondary classification model to predict whether the customer is lying about their urgency before routing to tools."
+        "text": "Add a second Claude call after each turn that reviews the transcript and blocks the transaction if it cannot confirm that verification occurred earlier in the conversation."
       },
       {
         "id": "d",
-        "text": "Prepend five few-shot examples of urgent customer requests to the user input on every turn to steer probabilistic model compliance in production."
+        "text": "Reorder the tool schema so verify_identity is declared first and mark each financial tool's description as 'requires prior identity verification' so the model consistently calls them in order."
       }
     ],
     "correct": [
       "b"
     ],
-    "explanation": "When compliance is safety-critical or financially consequential, relying on prompt instructions or few-shot examples carries a non-zero failure rate due to the probabilistic nature of LLMs. A programmatic prerequisite gate implemented in code deterministically blocks execution of sensitive tools (e.g. process_refund, transfer_funds) until preceding verification tools have executed successfully.",
+    "explanation": "When a required tool sequence protects safety-critical or financially consequential logic, prompt-, example-, and description-based approaches all rely on probabilistic model compliance and retain a non-zero failure rate—exactly the 2% observed. A programmatic prerequisite enforced in code gives a deterministic guarantee: the financial tool physically cannot execute until the verification token exists, independent of how the model is steered.",
     "distractorNotes": {
-      "a": "Increasing temperature increases output variance, and repetitive capitalized text does not provide deterministic guarantees.",
-      "c": "Adding an auxiliary sentiment classifier adds latency and failure points without deterministically preventing tool execution.",
-      "d": "Few-shot examples improve model probability but still cannot guarantee 100% compliance in safety-critical operations."
+      "a": "Better prompting and few-shot examples reduce but never eliminate the failure rate; the 2% gap under urgency cues is precisely the probabilistic weakness prompts cannot close.",
+      "c": "A reviewer model is itself probabilistic and adds latency and cost; it mitigates rather than deterministically prevents an unverified transaction from executing.",
+      "d": "Tool ordering and description hints only influence the model's choice—they do not enforce it—so the same non-deterministic failure under urgency cues remains."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling.md",
     "sourceNote": "Programmatic prerequisite enforcement for safety-critical tool sequencing",
@@ -636,36 +636,36 @@
     "type": "single",
     "domain": "agentic-architecture-and-orchestration",
     "subdomain": "workflow-enforcement",
-    "difficulty": "medium",
+    "difficulty": "hard",
     "status": "reviewed",
     "scope": "core",
-    "stem": "A user contacts customer support with three distinct concerns: a late shipment, an unexpected recurring charge, and an inquiry about updating their email address. How should the agent architecturally handle this multi-concern request?",
+    "stem": "In a single message a customer raises three distinct concerns: a late shipment, an unexpected recurring charge, and a request to update their email address. Each needs a different tool (shipment tracking, subscription lookup, account update). How should the agent architecturally handle the request to maximize first-contact resolution?",
     "options": [
       {
         "id": "a",
-        "text": "Address only the first issue mentioned and instruct the customer to submit separate tickets for the remaining inquiries individually through the web portal."
+        "text": "Address only the first concern mentioned and instruct the customer to open separate tickets for the other two through the web portal."
       },
       {
         "id": "b",
-        "text": "Handle the three concerns in three fully separate agent sessions with no shared context, returning three independent replies to the customer."
+        "text": "Spawn three parallel subagents, one per concern, and return each subagent's independent reply to the customer verbatim as three separate messages."
       },
       {
         "id": "c",
-        "text": "Decompose the message into distinct issues, investigate them using appropriate tools, and synthesize a single coherent resolution covering all items."
+        "text": "Decompose the message into the three concerns, investigate each with the appropriate tool, and synthesize one coherent response that resolves all three."
       },
       {
         "id": "d",
-        "text": "Ask the customer to pick which single concern is most important and defer the other two to a follow-up conversation."
+        "text": "Handle the highest-priority concern now and queue the other two as asynchronous follow-ups the agent will return to in a later turn."
       }
     ],
     "correct": [
       "c"
     ],
-    "explanation": "Best practices for multi-concern requests involve decomposing the user's input into independent concerns, executing relevant investigative tool calls (such as shipment tracking and subscription lookup), and synthesizing a structured, comprehensive response addressing each concern clearly.",
+    "explanation": "The agent should decompose the input into independent concerns, run the relevant tool for each (shipment tracking, subscription lookup, account update), and synthesize a single structured reply that addresses all three. Internal decomposition improves thoroughness, while synthesizing one coherent resolution is what preserves first-contact resolution and a clean customer experience.",
     "distractorNotes": {
-      "a": "Forcing users to open multiple tickets creates high friction and severely degrades first-contact resolution metrics.",
-      "b": "Splitting into three isolated sessions loses shared context and forces the customer to stitch together three replies; decomposing internally and synthesizing one resolution is the coherent approach.",
-      "d": "Deferring two of the three concerns still fragments resolution and lowers first-contact success; the agent should decompose and address all three in one response."
+      "a": "Forcing separate tickets fragments a solvable request and directly harms first-contact resolution.",
+      "b": "Decomposing to parallel subagents is reasonable internally, but returning three unsynthesized replies verbatim pushes the integration burden onto the customer instead of delivering one coherent resolution.",
+      "d": "Deferring two of the three concerns still splits the resolution across turns and lowers first-contact success when all three could be handled now."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/how-tool-use-works.md",
     "sourceNote": "Decomposing multi-concern user requests and synthesizing unified resolutions",
@@ -678,36 +678,36 @@
     "type": "single",
     "domain": "agentic-architecture-and-orchestration",
     "subdomain": "workflow-enforcement",
-    "difficulty": "medium",
+    "difficulty": "hard",
     "status": "reviewed",
     "scope": "core",
-    "stem": "An autonomous returns agent reaches an unresolvable policy exception and must escalate the session to a human tier-2 representative. How should the agent formulate the handoff payload?",
+    "stem": "An autonomous returns agent hits a policy exception it cannot resolve and must hand the session to a human tier-2 representative. The agent has already verified the customer's identity and collected the order facts. How should it formulate the handoff so the human resolves the case fastest without redundant work?",
     "options": [
       {
         "id": "a",
-        "text": "Dump the raw API JSON logs and entire conversational token stream into the human agent's chat interface for manual inspection and debugging."
+        "text": "Forward the complete verbatim conversation transcript and all raw tool-call JSON so the human has the full record and nothing is lost."
       },
       {
         "id": "b",
-        "text": "Delete all collected session history to protect user privacy and ask the human agent to start the inquiry over from scratch."
+        "text": "Send a one-line notice naming the exception plus a link to the session, letting the human open the session and pull whatever details they need on demand."
       },
       {
         "id": "c",
-        "text": "Send a generic notification stating 'Case Escalated' without details to avoid biasing the human agent's independent judgment."
+        "text": "Provide only the customer's original message and have the human independently re-run the lookups, so the human's judgment is not anchored by the agent's findings."
       },
       {
         "id": "d",
-        "text": "Compile a structured summary containing customer identifiers, verified order facts, specific exception triggers, and recommended next actions."
+        "text": "Compile a structured summary: customer identifiers, the verified order facts already gathered, the specific exception that triggered escalation, and recommended next actions."
       }
     ],
     "correct": [
       "d"
     ],
-    "explanation": "Effective human-in-the-loop escalation requires a concise, structured handoff payload. It should summarize the customer's identity, verified facts collected via tools, the exact reason for escalation (e.g. policy boundary exceeded), and recommended actions. This minimizes human handle time and prevents asking the user to repeat already established facts.",
+    "explanation": "An effective human-in-the-loop handoff is a concise structured summary: who the customer is, the facts already verified via tools, the exact reason for escalation, and recommended next steps. It lets the representative act immediately without re-deriving context or asking the customer to repeat themselves, minimizing handle time.",
     "distractorNotes": {
-      "a": "Dumping raw JSON logs forces human representatives to sift through verbose technical payloads, slowing resolution.",
-      "b": "Deleting context forces the customer to repeat their entire story, severely degrading customer satisfaction.",
-      "c": "Omitting case details provides no context, forcing the representative to perform redundant investigations."
+      "a": "A full verbatim transcript plus raw JSON is complete but unstructured, forcing the human to sift for the salient facts and slowing resolution.",
+      "b": "A bare pointer to the session defers all the work to the human, who must reconstruct the context the agent already has—wasting the facts already gathered.",
+      "c": "Discarding the verified facts to avoid 'anchoring' forces the human to redo lookups the agent already completed, adding effort and customer friction for no real benefit."
     },
     "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
     "sourceNote": "Structured handoff protocols for human escalation in agentic workflows",
@@ -891,33 +891,33 @@
     "difficulty": "medium",
     "status": "reviewed",
     "scope": "core",
-    "stem": "An agent executes database queries that occasionally return sensitive customer authentication tokens in the metadata column. How should the engineering team prevent these tokens from entering the conversation history?",
+    "stem": "An agent runs database queries whose results occasionally include a customer authentication token in the metadata column. The team needs the query results to remain usable but must keep the token out of the conversation history and prompt cache. What is the most effective mechanism?",
     "options": [
       {
         "id": "a",
-        "text": "Add a PostToolUse hook that redacts the authentication token field from the query output before appending it to messages."
+        "text": "Add a PostToolUse hook that strips or masks the authentication-token field from the query output before the result is appended to the message history."
       },
       {
         "id": "b",
-        "text": "Ask Claude in the system prompt to ignore the metadata column whenever it writes a response, trusting the model to filter secrets."
+        "text": "Instruct Claude in the system prompt to ignore the metadata column when it responds, trusting the model not to surface the token."
       },
       {
         "id": "c",
-        "text": "Increase context window size to allow the tokens to be pushed out of active model attention into historical context buffers."
+        "text": "Add a PreToolUse hook that blocks any query selecting the metadata column, so a token can never be returned in the first place."
       },
       {
         "id": "d",
-        "text": "Instruct the user to close their browser window whenever sensitive queries run to prevent credentials from being rendered locally."
+        "text": "Enable prompt caching on the tool results so the token-bearing responses are stored in the cache tier and kept out of the active context window."
       }
     ],
     "correct": [
       "a"
     ],
-    "explanation": "A PostToolUse hook allows programmatic inspection and modification of tool execution outputs. By stripping or masking sensitive keys (like auth tokens, passwords, or secrets) in the hook before constructing the tool_result message block, the credentials never enter the conversation history or prompt cache.",
+    "explanation": "A PostToolUse hook runs deterministic code on the raw tool output before it becomes a tool_result message, so it can redact just the token field while leaving the rest of the query result intact and usable. The secret never enters the conversation history or prompt cache, which is exactly the requirement.",
     "distractorNotes": {
-      "b": "Telling Claude to ignore tokens still leaves the raw secrets in the prompt history, risking leakage and violating compliance.",
-      "c": "Larger context windows do not hide tokens from model attention or audit logs.",
-      "d": "User actions cannot prevent server-side LLM session history from storing returned sensitive tokens."
+      "b": "A system-prompt instruction is probabilistic and, even if followed, the raw token still sits in the message history and cache—the leak the team must prevent.",
+      "c": "Blocking every query that touches the metadata column is overbroad: it discards legitimate result data and breaks queries that need other metadata fields, whereas the goal is to keep the results and remove only the token.",
+      "d": "Prompt caching stores content for reuse; it does not redact anything, so the token remains present in cached context rather than being removed."
     },
     "sourceUrl": "https://code.claude.com/docs/en/hooks-guide.md",
     "sourceNote": "Scrubbing sensitive credentials and tokens in tool results using PostToolUse hooks",
