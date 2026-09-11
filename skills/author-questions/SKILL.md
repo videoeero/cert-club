@@ -88,3 +88,5 @@ item: pad a distractor, don't touch a key.
 Green here means schema-valid, not correct — every key was written by the
 same pass that will judge it correct. Run `evaluate-questions` next, ideally
 in a session that didn't draft this batch, before treating it as reviewed.
+Green also does not mean _calibrated_: whether the batch sits at the guide's
+sample-question difficulty is `harden-domain-questions`, a separate pass.

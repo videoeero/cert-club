@@ -54,6 +54,10 @@ source; decide the answer cold; only then compare against what is stored.
    run to five and six options. Flag facepalm options nobody would pick, and
    check every `distractorNotes` entry states a real reason a competent
    reader might believe it, not a restatement that it's false.
+   This step judges each distractor in isolation for correctness. Whether the
+   domain is _collectively_ too soft against the guide's sample questions —
+   sound items that still solve by elimination — is a difficulty-calibration
+   call, and belongs to `harden-domain-questions`, not here.
 5. **Record one disposition per question**: confirmed, miskeyed (name the
    right option), unsupported (no option matches the source/explanation), or
    weak-distractors. Every disposition needs its own line — silently fixing

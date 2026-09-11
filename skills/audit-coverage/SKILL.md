@@ -40,7 +40,9 @@ them.
      domain with one question tests nothing reliably.
    - ccdv-f's difficulty headroom above the guide's sample questions is
      **intent, not defect** — its review file says "do not fix it". Do not
-     recommend flattening a bank toward its samples.
+     recommend flattening a bank toward its samples. Difficulty standing is
+     `harden-domain-questions`' dated note in the review file, not a coverage
+     finding — read it as an input to the promotion call, do not re-derive it.
 5. **Write the reasoning into `review-progress.md`**, into the existing
    composition and coverage-limits sections. Name what is _not_ covered as
    plainly as what is — a coverage audit that only reports strengths is
