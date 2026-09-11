@@ -75,6 +75,10 @@ function hasKeysAndDistractors(question) {
   return keys.length > 0 && distractors.length > 0;
 }
 
+// Mirrors the schema guard in questionBankSchema: the key must be strictly
+// longer than every distractor (a tie for longest does not count as the key
+// being the uniquely longest option). Contrast with scoreAlwaysLongestOption
+// below, which splits ties evenly for simulation scoring.
 function isLongestOptionKey(question) {
   const key = question.options.find(
     (option) => option.id === question.correct[0],

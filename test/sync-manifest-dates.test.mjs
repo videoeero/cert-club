@@ -79,6 +79,24 @@ test("deriveCertUpdatedDate ignores uncommitted changes if only manifest.json is
   assert.equal(date, "2026-09-08");
 });
 
+test("deriveCertUpdatedDate handles quoted paths in status output", () => {
+  const manifest = { cert: "test-cert", updatedAt: "2026-09-01" };
+  const questions = [{ id: "q1", sourceCheckedAt: "2026-09-05" }];
+  const gitRunner = (args) => {
+    if (args.includes("status")) {
+      return ' M "certs/test-cert/manifest.json"\n';
+    }
+    if (args.includes("log")) return "2026-09-08";
+    return "";
+  };
+
+  const date = deriveCertUpdatedDate("test-cert", manifest, questions, {
+    gitRunner,
+    today: "2026-09-15",
+  });
+  assert.equal(date, "2026-09-08");
+});
+
 test("deriveCertUpdatedDate treats other *-manifest.json files as uncommitted changes", () => {
   const manifest = { cert: "test-cert", updatedAt: "2026-09-01" };
   const questions = [{ id: "q1", sourceCheckedAt: "2026-09-05" }];

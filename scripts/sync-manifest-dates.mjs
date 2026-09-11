@@ -85,7 +85,8 @@ export function deriveCertUpdatedDate(
     if (line.length < 4) {
       return false;
     }
-    const filePath = line.slice(3).trim().split(" -> ").pop();
+    const rawPath = line.slice(3).trim().split(" -> ").pop();
+    const filePath = rawPath.replace(/^"|"$/g, "");
     return filePath !== manifestRelativePath;
   });
 

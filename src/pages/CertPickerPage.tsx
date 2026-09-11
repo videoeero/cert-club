@@ -54,9 +54,9 @@ function CertCard({ manifest }: { manifest: Manifest }) {
 
 function CertSections({ certs }: { certs: Manifest[] }) {
   const stableCerts = certs.filter((manifest) => manifest.status === "stable");
-  const draftCerts = certs.filter((manifest) => manifest.status === "draft");
+  const draftCerts = certs.filter((manifest) => manifest.status !== "stable");
 
-  if (stableCerts.length === 0 && draftCerts.length === 0) {
+  if (certs.length === 0) {
     return (
       <div className={styles.emptyState}>
         <p>No certifications available.</p>

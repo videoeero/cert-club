@@ -69,7 +69,7 @@ should go. Courses teach you to build; these exams test what to choose.
 | Claude Certified Developer – Foundations | `ccdv-f`      | stable      | [review record](./certs/ccdv-f/review-progress.md)      |
 | Claude Certified Architect – Foundations | `ccar-f`      | draft       | [review record](./certs/ccar-f/review-progress.md)      |
 | Microsoft Certified: Azure Fundamentals  | `az-900`      | draft       | [review record](./certs/az-900/review-progress.md)      |
-| AWS Certified Cloud Practitioner         | `aws-clf-c02` | draft       | [review record](./certs/aws-clf-c02/review-progress.md) |
+| AWS Certified Cloud Practitioner         | `aws-clf-c02` | stable      | [review record](./certs/aws-clf-c02/review-progress.md) |
 
 Each cert's `manifest.json` holds the authoritative metadata — official exam
 guide URL, question count, duration, and blueprint domain weights — and the app
