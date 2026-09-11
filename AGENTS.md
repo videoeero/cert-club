@@ -59,9 +59,11 @@ npm run dev   # Vite dev server
 npm run check
 ```
 
-This runs, in order: content validation → blueprint balance → Node test runner →
-ESLint → Prettier check. All five must pass. Do not commit if any step fails.
+This runs, in order: sync manifest dates check → content validation → blueprint balance →
+Node test runner → ESLint → Prettier check. All must pass. Do not commit if any
+step fails.
 
+To sync manifest dates automatically: `npm run sync-dates`.
 To fix formatting automatically: `npm run format`.
 
 ## Repository layout
