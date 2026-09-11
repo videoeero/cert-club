@@ -7,6 +7,13 @@ this file holds the reasons.
 The bank follows the Claude Certified Developer – Foundations Exam Guide v1.0
 (July 2026). Sources were last checked on September 7, 2026.
 
+## Bank status: `stable`
+
+`manifest.status` is `stable`. All 177 questions are `reviewed` (0 draft). Coverage
+is fully proportional across all eight domains and 25 declared skills, with 149
+`core` questions providing complete blueprint alignment and a 28-question `deep`
+practice pool. All quality, balance, and bias guards pass cleanly.
+
 ## Composition
 
 177 questions, all at `status: reviewed`.
@@ -41,16 +48,6 @@ nothing reliably.
 
 Core formats: 97 single-select, 52 multi-select (36 select-TWO, 16
 select-THREE). 65 distinct source pages across the whole bank.
-
-These target percentages are what a "Weighted by blueprint" quiz run is
-supposed to reproduce per session, not just on average. The sampler now
-enforces that: every domain's per-run count lands on floor-or-ceil of its
-exact target (e.g. applications-and-integration always draws 17 or 18 of 53,
-never the 12–23 spread the previous draw-by-draw sampler produced). See the
-Phase 4 addendum in `PLAN.md` for the algorithm and why a fixed
-largest-remainder rounding was rejected in favour of randomized rounding.
-This is shared sampler code (`src/lib/quiz.ts`), not ccdv-f-specific, but is
-noted here because these are the targets it's now measured against.
 
 ## Why the scope split exists
 
@@ -89,15 +86,14 @@ Tagged `deep` (28):
 | agents-and-workflows             | 002, 010                                      |
 | security-and-safety              | 010, 012                                      |
 
-Two of these (`eval-testing-and-debugging-001` and `-005`) are tagged for a
-different reason from the rest: they are not merely deep but off-objective,
-testing success-criteria and A/B methodology where the Domain 4 objective
-covers error identification, recovery, and trace analysis. An earlier
-`out-of-scope` scope value recorded that distinction. It was removed in favour
-of a two-value taxonomy, because a third bucket bought nothing the UI or the
-arithmetic used — both treated `deep` and `out-of-scope` identically — while
-letting a question sit unclassified by default. `scope` is now mandatory, so a
-new question cannot enter the bank without a decision.
+Two of these (`eval-testing-and-debugging-001` and `-005`) illustrate the
+off-objective case: they test success-criteria and A/B methodology where the
+Domain 4 objective covers error identification, recovery, and trace analysis.
+Under the two-value taxonomy (`core` and `deep`), off-objective questions sit in
+`deep` with their distinction recorded in `scopeNote` — a separate
+`out-of-scope` value was dropped because the UI and sampler arithmetic treat
+them identically to `deep`, while a mandatory two-value enum forces an explicit
+scoping decision on every question.
 
 ### The 80% floor
 
@@ -146,31 +142,26 @@ the "which documented pattern fits" family (`agents-and-workflows-005`,
 Cognitively, about a quarter of `core` sits **above** the samples, along four
 identifiable axes:
 
-1. **Distractor subtlety.** Where the samples allow elimination by judgement,
-   these turn on recalling one specific documented rule: `claude-code-003`
-   (deny rules bind in `bypassPermissions`, allow rules do not),
-   `security-and-safety-005` (deny → ask → allow, first match wins regardless
-   of specificity), `model-selection-and-optimization-013` (input alone over
-   the window is always a 400; input + `max_tokens` over may be accepted and
-   stopped mid-generation), `-015` (thinking tokens: subset of `max_tokens`,
-   billed as output, count toward window *and* rate limits),
-   `applications-and-integration-002` (adjacent same-role messages are
-   combined, not rejected), `-003` (the exact error class for unsupported
-   prefill), `agents-and-workflows-001` (hinges on there being no default turn
-   ceiling), `tools-and-mcps-008` (one client per server connection, plus
-   transport mapping), `eval-testing-and-debugging-006` (telemetry is opt-in
-   and needs your own collector).
+1. **Distractor subtlety.** Where the samples allow elimination by high-level
+   judgement, these turn on recalling specific documented rules. Representative
+   examples:
+   - `claude-code-003`: deny rules bind in `bypassPermissions`, allow rules do not.
+   - `security-and-safety-005`: deny → ask → allow precedence; first match wins regardless of specificity.
+   - `model-selection-and-optimization-013`: input over window is a 400; input + `max_tokens` over window may be accepted and stopped mid-generation.
+   - `model-selection-and-optimization-015`: thinking tokens count against `max_tokens`, window, and rate limits.
+   - `applications-and-integration-002`: adjacent same-role messages are combined rather than rejected.
+   - `agents-and-workflows-001`: hinges on there being no default turn ceiling.
+   - `tools-and-mcps-008`: one client per server connection, plus transport mapping.
+   - `eval-testing-and-debugging-006`: telemetry is opt-in and requires your own collector.
 2. **Multi-select share.** 52 of 149 (35%), of which 16 are select-THREE and 5
    of those are also `hard`. All three samples are single-select; the guide
    confirms the exam mixes both formats but publishes no ratio, so 35% is an
    unanchored choice. Under all-or-nothing scoring a select-THREE needs three
    independent facts to land.
-3. **Compound stems.** Nine ask two things at once — `agents-and-workflows-003`,
-   `applications-and-integration-001`, `-003`, `-008`, `-047`,
-   `model-selection-and-optimization-012`,
-   `prompt-and-context-engineering-010`, `security-and-safety-005`, `-015`.
-   The samples ask exactly one thing. This is what drives mean option length
-   to 20.3 words against the samples' ~15.
+3. **Compound stems.** Nine questions ask two things simultaneously (e.g.
+   `applications-and-integration-001`, `-003`, `-047`, `security-and-safety-005`,
+   `-015`, `agents-and-workflows-003`), driving mean option length to 20.3 words
+   against the samples' ~15.
 4. **Self-reported difficulty.** `core` is 24 easy/single, 56 medium/single,
    33 medium/multi, 17 hard/single, 19 hard/multi. The samples are
    easy-to-medium single on this bank's own scale, so the 36 `hard` items
