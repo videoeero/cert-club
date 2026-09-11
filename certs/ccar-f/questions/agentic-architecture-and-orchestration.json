@@ -17,11 +17,11 @@
       },
       {
         "id": "b",
-        "text": "The Agent SDK enforces a shared global cache that overwrites coordinator history whenever a subagent is spawned."
+        "text": "Passing the excerpts is only a performance optimization; the subagent could retrieve the coordinator's history itself, but re-sending avoids an extra lookup round trip."
       },
       {
         "id": "c",
-        "text": "Subagents can only access external data sources through direct API calls and reject conversation-level parameters."
+        "text": "Subagents share the coordinator's context window but read it in reverse order, so prior findings must be restated to appear near the start of their prompt."
       },
       {
         "id": "d",
@@ -33,8 +33,8 @@
     ],
     "explanation": "Subagents run in their own isolated context windows and do not inherit the coordinator's conversation history automatically. The coordinator must explicitly provide all relevant facts, prior research findings, and metadata in the prompt when invoking the subagent.",
     "distractorNotes": {
-      "b": "There is no shared global cache that overwrites coordinator history during subagent creation.",
-      "c": "Subagents accept natural language prompts and structured parameters from the invoking agent.",
+      "b": "The subagent cannot reach back into the coordinator's history at all — it runs in an isolated context — so including the excerpts is necessary, not merely an optimization.",
+      "c": "Subagents do not share the coordinator's context window in any order; each runs in its own isolated window, so required context must be passed explicitly in the prompt.",
       "d": "Subagent spawning does not reset system prompts or delete existing tool definitions in the session."
     },
     "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
@@ -109,7 +109,7 @@
       },
       {
         "id": "d",
-        "text": "Send an asynchronous HTTP POST request to an external callback endpoint with the active session ID, bypassing the conversation payload."
+        "text": "Send a new user message containing the order JSON as plain text, without a tool_result block or the tool_use_id."
       }
     ],
     "correct": [
@@ -119,7 +119,7 @@
     "distractorNotes": {
       "a": "The system prompt provides static instructions; mutating it with dynamic tool outputs degrades prompt caching and violates API patterns.",
       "c": "Tool outputs must be provided in user messages with type 'tool_result', not as fabricated assistant messages.",
-      "d": "The Messages API is a stateless request/response protocol; it does not support asynchronous out-of-band callback endpoints."
+      "d": "Plain text in a user message does not satisfy the pending tool_use and leaves the tool call unresolved; the API requires a tool_result block referencing the matching tool_use_id."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls.md",
     "sourceNote": "Returning tool_result content blocks in user messages paired with tool_use_id",
@@ -189,7 +189,7 @@
       },
       {
         "id": "c",
-        "text": "Automatically append stop_reason: 'end_turn' to the assistant response and commit the database transaction without parameter validation."
+        "text": "Retry the identical request unchanged, assuming the max_tokens cutoff was a transient glitch that will not recur."
       },
       {
         "id": "d",
@@ -203,7 +203,7 @@
     "distractorNotes": {
       "a": "Executing truncated JSON parameters leads to syntax errors, incomplete records, or unintended database corruption.",
       "b": "Truncated responses represent incomplete operations and must not be presented as finished resolutions.",
-      "c": "stop_reason is an output metadata field from the API, not a client-side setting that can validate or complete transactions."
+      "c": "An unchanged retry hits the same max_tokens ceiling and truncates again; recovery means raising the limit or chunking, and rejecting the truncated call rather than executing it."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons.md",
     "sourceNote": "Detecting and recovering from max_tokens stop reason during tool execution",
@@ -227,11 +227,11 @@
       },
       {
         "id": "b",
-        "text": "Peer-to-peer agent meshes eliminate all API token costs by sharing a single distributed memory pool across independent models."
+        "text": "A hub-and-spoke topology lets the coordinator run all four subagents inside a single shared context window, which a peer mesh cannot provide."
       },
       {
         "id": "c",
-        "text": "Subagents cannot invoke external tools unless connected directly to an active client WebSocket managed by the front-end user interface."
+        "text": "In a peer-to-peer mesh, a failing subagent's error cannot be caught at all, because only a coordinator is technically capable of receiving a tool error result."
       },
       {
         "id": "d",
@@ -243,8 +243,8 @@
     ],
     "explanation": "In multi-agent systems, the hub-and-spoke pattern channels all inter-agent delegation through a coordinator agent. This architecture ensures complete observability of subagent tasks, prevents chaotic circular delegations, simplifies audit logging, enforces uniform error recovery policies, and prevents context bloating from unstructured peer-to-peer chatter.",
     "distractorNotes": {
-      "b": "Peer-to-peer communication increases token consumption due to redundant point-to-point message exchanges.",
-      "c": "Subagent tool execution is handled through standard tool definitions and SDK mechanisms, not client WebSockets.",
+      "b": "Hub-and-spoke does not merge subagents into one shared window — each stays isolated; its advantage is centralized observability and error containment, not a shared context.",
+      "c": "Any agent can receive structured errors; the mesh problem is that failures propagate unpredictably across many links, whereas a coordinator contains and observes them centrally.",
       "d": "Subagents receive prompts from the invoking agent; the architecture choice is driven by governance and reliability, not SDK syntax blocks."
     },
     "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
@@ -319,7 +319,7 @@
       },
       {
         "id": "d",
-        "text": "Execute subagents sequentially in reverse order of model size regardless of query intent, falling back to direct tool use on errors."
+        "text": "Route every query to a single large subagent first and only fan out to the others if that agent reports low confidence in its answer."
       }
     ],
     "correct": [
@@ -329,7 +329,7 @@
     "distractorNotes": {
       "a": "Spawning the full multi-agent pipeline for simple factual queries wastes substantial tokens and adds unnecessary multi-second latency.",
       "b": "Manual tagging defeats the purpose of an autonomous orchestrator and impairs user experience.",
-      "d": "Execution ordering should match data dependency flows, not arbitrary model size hierarchies."
+      "d": "Funneling every query through one large subagent first adds latency and cost to simple lookups; analyzing complexity up front lets simple queries go straight to direct tool calls."
     },
     "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
     "sourceNote": "Dynamic coordinator delegation based on query complexity to reduce unnecessary subagent overhead",
@@ -399,7 +399,7 @@
       },
       {
         "id": "c",
-        "text": "Restrict each subagent to search in a different alphabetical letter range of the top ten search engine domains across web indexes."
+        "text": "Give each subagent the same broad topic but a different time window (last month, last year, last decade) to divide the work."
       },
       {
         "id": "d",
@@ -412,7 +412,7 @@
     "explanation": "Partitioning research scope by distinct conceptual dimensions, subtopics, or orthogonal source categories ensures that subagents explore non-overlapping domains. This maximizes informational coverage while preventing redundant search queries, duplicate web scraping, and wasted tokens.",
     "distractorNotes": {
       "b": "Giving identical prompts to parallel agents results in nearly identical search calls and wasted token expenditure.",
-      "c": "Partitioning by alphabetical domain letters is arbitrary, unworkable with search APIs, and ignores thematic organization.",
+      "c": "Slicing one broad topic by time window still returns heavily overlapping evergreen results; partitioning by distinct thematic dimensions is what actually eliminates duplicate retrieval.",
       "d": "Changing role descriptions without constraining research topics still results in overlapping search execution."
     },
     "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
@@ -433,7 +433,7 @@
     "options": [
       {
         "id": "a",
-        "text": "The coordinator's system prompt must include the full binary executable code of each subagent serialized as a base64 encoded string."
+        "text": "The coordinator must embed each subagent's full system prompt inside its own system prompt, since the SDK cannot load subagent definitions separately."
       },
       {
         "id": "b",
@@ -441,7 +441,7 @@
       },
       {
         "id": "c",
-        "text": "The host environment must run in privileged root container mode with multi-threading and inter-process shared memory enabled."
+        "text": "The coordinator must set a maxSubagents concurrency limit in its options, or the SDK refuses to spawn any subagent at all."
       },
       {
         "id": "d",
@@ -453,8 +453,8 @@
     ],
     "explanation": "In the Claude Agent SDK, spawning subagents is mediated by the 'Task' tool. For a coordinator or parent agent to delegate tasks to subagents, 'Task' must be included in its allowedTools list. Without this tool permission, the coordinator cannot emit subagent delegation calls.",
     "distractorNotes": {
-      "a": "Subagents are defined via AgentDefinition or agent configurations, not compiled binary code in system prompts.",
-      "c": "The Agent SDK runs within standard Node.js/Python runtimes and does not require root privileges or kernel multi-threading.",
+      "a": "Subagents are declared through AgentDefinition or agent configuration, not by inlining their prompts into the coordinator; what is mandatory is exposing the 'Task' tool in allowedTools.",
+      "c": "There is no mandatory concurrency-limit option gating subagent spawning; delegation requires that the 'Task' tool be present in allowedTools.",
       "d": "Subagents do not communicate via shared SQLite databases; delegation is managed in-memory by the SDK runtime."
     },
     "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
@@ -475,7 +475,7 @@
     "options": [
       {
         "id": "a",
-        "text": "By opening three independent HTTP sockets from inside the system prompt template and polling their file descriptors concurrently."
+        "text": "By setting a parallel: true flag on a single Task tool call and listing all three agents in its arguments."
       },
       {
         "id": "b",
@@ -495,7 +495,7 @@
     ],
     "explanation": "Claude supports parallel tool execution. To invoke multiple subagents concurrently, the coordinator emits multiple Task tool use content blocks in a single assistant turn. The orchestration runtime executes these tool requests in parallel, gathers their outputs, and returns all tool_result blocks together for the next coordinator turn.",
     "distractorNotes": {
-      "a": "System prompts are static strings and cannot execute networking code or open HTTP sockets.",
+      "a": "There is no parallel flag on a single Task call that fans out to multiple agents; concurrency comes from emitting three separate Task tool calls in one assistant message.",
       "b": "The Task tool schema defines parameters for a single subagent execution; batching comma-separated names bypasses typed parameters.",
       "d": "External message broker polling is unnecessary when parallel tool calling is natively supported by the model and SDK."
     },
@@ -521,11 +521,11 @@
       },
       {
         "id": "b",
-        "text": "Store the findings in an external temporary file and pass only the local operating system inode address in the subagent's prompt."
+        "text": "Write each finding to a shared database and pass only the row IDs, letting the synthesis subagent fetch the full text and citations as needed."
       },
       {
         "id": "c",
-        "text": "Encode the entire document analysis transcript as a raw base64 string appended to the system prompt of the synthesis subagent."
+        "text": "Concatenate all findings into one block and prepend a single 'Sources' list at the top, letting the synthesis agent map claims to citations by inference."
       },
       {
         "id": "d",
@@ -538,8 +538,8 @@
     "explanation": "When passing context between subagents, structured data formats (such as JSON or clearly marked XML blocks) that decouple factual assertions from attribution metadata (URLs, document titles, page numbers, publication dates) allow the downstream synthesis agent to cite sources accurately without hallucinating or losing provenance.",
     "distractorNotes": {
       "a": "Removing citations destroys provenance, making it impossible for the synthesis agent to generate verifiable references.",
-      "b": "Passing raw OS inode pointers provides no usable context to an LLM subagent executing in a cloud or sandbox environment.",
-      "c": "Base64 encoding prevents the model from reasoning over findings during token generation and inflates token counts."
+      "b": "Passing bare row IDs assumes the synthesis subagent shares database access and adds retrieval round trips; the reliable pattern is to include each claim with its source metadata directly in the handoff.",
+      "c": "A single sources list forces the synthesis agent to guess which source backs which claim; pairing each claim with its own source metadata is what prevents attribution loss."
     },
     "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
     "sourceNote": "Formatting subagent findings with structured claim and metadata separation to preserve provenance",
@@ -567,7 +567,7 @@
       },
       {
         "id": "c",
-        "text": "Send an empty prompt to ensure the subagent's generation is completely unbiased by prior coordinator reasoning and discoveries."
+        "text": "Hand the subagent only the coordinator's full raw reasoning transcript and let it infer the refactoring task from that context."
       },
       {
         "id": "d",
@@ -580,7 +580,7 @@
     "explanation": "Effective delegation prompts clearly define goals, acceptance criteria, constraints, and relevant context while allowing the subagent to evaluate code structure and adapt implementation decisions as concrete dependencies are discovered. Over-prescribing rigid procedural instructions causes brittleness when the code deviates from the coordinator's initial assumptions.",
     "distractorNotes": {
       "b": "Micromanaging procedural instructions prevents the subagent from adapting when unexpected edge cases or dependencies emerge.",
-      "c": "An empty prompt provides no task specification, causing the subagent to fail or ask for clarification.",
+      "c": "Forwarding the raw transcript gives the subagent no explicit goal, test criteria, or constraints and buries the task in noise; a focused specification of goals and criteria yields better results.",
       "d": "Skipping tests compromises software reliability and prevents the subagent from validating its refactoring."
     },
     "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
@@ -647,7 +647,7 @@
       },
       {
         "id": "b",
-        "text": "Immediately escalate the entire session to a human supervisor because multi-issue queries indicate potential fraudulent intent."
+        "text": "Handle the three concerns in three fully separate agent sessions with no shared context, returning three independent replies to the customer."
       },
       {
         "id": "c",
@@ -655,7 +655,7 @@
       },
       {
         "id": "d",
-        "text": "Execute a database reset script across all three customer service systems to ensure a clean transaction state before responding."
+        "text": "Ask the customer to pick which single concern is most important and defer the other two to a follow-up conversation."
       }
     ],
     "correct": [
@@ -664,8 +664,8 @@
     "explanation": "Best practices for multi-concern requests involve decomposing the user's input into independent concerns, executing relevant investigative tool calls (such as shipment tracking and subscription lookup), and synthesizing a structured, comprehensive response addressing each concern clearly.",
     "distractorNotes": {
       "a": "Forcing users to open multiple tickets creates high friction and severely degrades first-contact resolution metrics.",
-      "b": "Multi-issue requests are routine customer behavior and do not warrant immediate escalation or fraud classification.",
-      "d": "Executing database resets is destructive and entirely unrelated to resolving customer questions."
+      "b": "Splitting into three isolated sessions loses shared context and forces the customer to stitch together three replies; decomposing internally and synthesizing one resolution is the coherent approach.",
+      "d": "Deferring two of the three concerns still fragments resolution and lowers first-contact success; the agent should decompose and address all three in one response."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/how-tool-use-works.md",
     "sourceNote": "Decomposing multi-concern user requests and synthesizing unified resolutions",
@@ -735,11 +735,11 @@
       },
       {
         "id": "c",
-        "text": "Require the model to guess the invoice ID using random UUID generation in client-side JavaScript before sending the approval tool call."
+        "text": "Have submit_approval accept the entire raw create_invoice tool_result blob as one string parameter and parse the ID out inside the backend."
       },
       {
         "id": "d",
-        "text": "Merge both tools into an undocumented shell script executed via Bash to bypass typed parameter contracts and conversational turns across steps."
+        "text": "Store the invoice ID in a module-level global variable after create_invoice runs and have submit_approval read it implicitly instead of taking a parameter."
       }
     ],
     "correct": [
@@ -748,8 +748,8 @@
     "explanation": "When tool actions depend on outputs from earlier tools, the upstream tool should return a structured result with clear field names (e.g. `invoice_id`), and the downstream tool's JSON schema should declare that field as a required parameter. The model observes the return value in the tool_result and supplies it into the subsequent call.",
     "distractorNotes": {
       "b": "The invoice ID is generated dynamically at runtime; it cannot be known in advance before session creation.",
-      "c": "Generating random UUIDs does not link to the actual backend database record created by the upstream tool.",
-      "d": "Hiding multi-step business logic inside undocumented shell scripts prevents model reasoning and structured error recovery."
+      "c": "Forwarding the whole raw result as an opaque string drops parameter typing and validation and makes the model's linkage error-prone; declaring invoice_id as a required typed parameter is the reliable contract.",
+      "d": "Relying on a hidden global variable removes the linkage from the model's visible tool contract and breaks under concurrent invoices; the identifier should flow explicitly as a required parameter."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls.md",
     "sourceNote": "Managing data dependencies between sequential tool calls via structured inputs and outputs",
@@ -777,11 +777,11 @@
       },
       {
         "id": "c",
-        "text": "In a client-side browser extension that intercepts web traffic after the model response is rendered to the customer."
+        "text": "In each MCP server's own code, but only for the two servers you control, leaving the third-party server's format for the model to interpret."
       },
       {
         "id": "d",
-        "text": "By executing a separate fine-tuning job on the Claude base model weights for each legacy date format encountered in backends."
+        "text": "In a downstream reporting layer that reformats dates after the agent has already produced its answer."
       }
     ],
     "correct": [
@@ -790,8 +790,8 @@
     "explanation": "PostToolUse hooks in the Agent SDK intercept tool results after execution but before they are returned to the model context. Transforming heterogeneous data formats (such as dates, currencies, and status codes) into uniform representations in a hook ensures consistent model reasoning while eliminating prompt bloat.",
     "distractorNotes": {
       "a": "Prompting the model to handle multiple date formats adds token overhead and increases the probability of parsing errors.",
-      "c": "Browser extensions run after the LLM has already completed its generation, having zero effect on agent reasoning.",
-      "d": "Fine-tuning base models for basic format normalization is wildly cost-ineffective and impractical."
+      "c": "Normalizing only in the servers you control leaves the third server's format reaching the model; a PostToolUse hook normalizes every tool output uniformly regardless of source.",
+      "d": "Reformatting after the agent answers is too late — the model has already reasoned over inconsistent dates; normalization must happen in a PostToolUse hook before the model sees the output."
     },
     "sourceUrl": "https://code.claude.com/docs/en/hooks-guide.md",
     "sourceNote": "PostToolUse hooks for normalizing heterogeneous tool output data formats",
@@ -853,11 +853,11 @@
     "options": [
       {
         "id": "a",
-        "text": "System prompts cannot be inspected or attended to by Claude when tools are declared active in the Messages API session payload during active turns."
+        "text": "System prompts are stripped from the payload whenever a tool result is returned, so any redaction instruction is lost mid-conversation."
       },
       {
         "id": "b",
-        "text": "Hooks reduce API pricing by 75% for all requests that process personal identification data under official enterprise tiers."
+        "text": "Hooks execute inside Anthropic's servers before inference, so redacted data never leaves the vendor's trust boundary the way a system prompt does."
       },
       {
         "id": "c",
@@ -873,8 +873,8 @@
     ],
     "explanation": "Compliance and regulatory standards like GDPR require deterministic guarantees. Prompt-based redaction is probabilistic and susceptible to omission or leakage. Agent SDK hooks run compiled deterministic code that can strip, mask, or hash sensitive fields (PII, SSNs, credit cards) before data enters model context or persistence logs.",
     "distractorNotes": {
-      "a": "System prompts remain active and present in context during tool calling turns.",
-      "b": "Hooks are client-side SDK code mechanisms; they do not alter vendor token pricing tiers.",
+      "a": "The system prompt persists across tool-calling turns and is not stripped when results return; the reason hooks win is that they run deterministic code on payloads rather than relying on probabilistic instruction-following.",
+      "b": "Hooks are client-side SDK code that run in your own runtime, not inside the vendor's servers; their advantage is deterministic scrubbing of tool payloads before the data reaches model context or storage.",
       "c": "GDPR governs data protection and lawful processing; it does not ban language models from reading text."
     },
     "sourceUrl": "https://code.claude.com/docs/en/hooks-guide.md",
@@ -949,7 +949,7 @@
       },
       {
         "id": "d",
-        "text": "An unconstrained multi-agent swarm where agents vote on which legal rules to evaluate based on consensus algorithms across turns."
+        "text": "A supervisor agent that re-plans the stage order at each step to optimize for whichever checks it predicts will fail first."
       }
     ],
     "correct": [
@@ -959,7 +959,7 @@
     "distractorNotes": {
       "a": "Dynamic decomposition introduces unnecessary variability and failure modes into a strictly standardized process.",
       "c": "Packing 500 complex auditing criteria into a single prompt leads to severe attention dilution and missed violations.",
-      "d": "Swarm voting models add massive latency and cost without providing legal compliance guarantees."
+      "d": "Re-planning the stage order defeats the requirement that the five legal stages always run in the same fixed sequence; a deterministic prompt chain preserves that order."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices.md",
     "sourceNote": "Prompt chaining for predictable sequential workflows versus dynamic decomposition",
@@ -983,7 +983,7 @@
       },
       {
         "id": "b",
-        "text": "Truncate the PR review to only inspect the first three files alphabetically, assuming other files share the same code characteristics."
+        "text": "Review only the files with the largest diffs, assuming the smaller changes are low-risk and can be skipped."
       },
       {
         "id": "c",
@@ -1000,7 +1000,7 @@
     "explanation": "Evaluating many files simultaneously causes attention dilution. Decomposing the review into focused passes—first analyzing each file individually for local syntax, logic, and conventions, then conducting a separate integration pass focused strictly on cross-file contracts and data flows—ensures thorough coverage and eliminates contradictions.",
     "distractorNotes": {
       "a": "Thinking mode helps reasoning depth but does not solve input attention dilution across 18 disparate files.",
-      "b": "Truncating the review leaves 15 files completely unreviewed, creating critical security risks.",
+      "b": "Prioritizing only large diffs leaves smaller changes unreviewed, and a one-line change can introduce a critical bug; the fix is per-file passes plus a cross-file integration pass, not skipping files.",
       "d": "Requiring 5-pass consensus would suppress intermittent detections of real bugs and multiply token costs fivefold."
     },
     "sourceUrl": "https://code.claude.com/docs/en/code-review.md",
@@ -1029,7 +1029,7 @@
       },
       {
         "id": "c",
-        "text": "Execute a global grep for 'assert' and delete all files that do not match to force clean compilation before test design."
+        "text": "Generate one enormous test file covering every method at once, then run it and fix failures until the suite passes."
       },
       {
         "id": "d",
@@ -1043,7 +1043,7 @@
     "distractorNotes": {
       "a": "Generating mocks without inspecting implementation produces invalid, non-executable test code.",
       "b": "Rewriting legacy systems without tests destroys existing functionality and violates scope.",
-      "c": "Deleting code files based on grep patterns is destructive and catastrophic."
+      "c": "A single big-bang test file over an unfamiliar service skips architecture mapping and critical-path prioritization and produces brittle tests; systematic decomposition maps entry points first and builds tests iteratively."
     },
     "sourceUrl": "https://code.claude.com/docs/en/large-codebases.md",
     "sourceNote": "Systematic task decomposition for open-ended exploration and testing in large codebases",
@@ -1075,7 +1075,7 @@
       },
       {
         "id": "d",
-        "text": "Export the conversation to a PDF document and ask the model to read it using computer vision tools across subsequent session turns."
+        "text": "Copy the key findings into two brand-new prompts started from scratch, re-establishing the schema context manually in each."
       }
     ],
     "correct": [
@@ -1085,7 +1085,7 @@
     "distractorNotes": {
       "b": "Interleaving competing proposals in a single session causes context confusion and hallucinations regarding shared state.",
       "c": "/clear wipes session context entirely; Claude cannot remember cleared history without reinjecting it.",
-      "d": "Exporting to PDF and using vision is inefficient, expensive, and loses structured code metadata."
+      "d": "Manually re-pasting findings into two fresh sessions is lossy and drops the detailed prior context; fork_session branches both explorations from the exact baseline analysis without that effort or loss."
     },
     "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
     "sourceNote": "Using session forking to explore divergent architectural approaches from a shared baseline",
@@ -1117,7 +1117,7 @@
       },
       {
         "id": "d",
-        "text": "Delete the entire .git directory and reinitialize the repository to clear cached branch pointers and file modification metadata."
+        "text": "Ask Claude to run git pull inside the resumed session and assume its cached view of the files updates automatically to match."
       }
     ],
     "correct": [
@@ -1127,7 +1127,7 @@
     "distractorNotes": {
       "a": "Claude Code does not automatically diff session history against git remote heads on resume without explicit commands.",
       "c": "Reverting teammates' commits destroys team collaboration to accommodate stale session state.",
-      "d": "Deleting the git directory destroys repository history and configuration."
+      "d": "Pulling the changes updates the working tree but not the session's already-loaded snapshots of those files; the resumed session must be explicitly told which files changed, or started fresh."
     },
     "sourceUrl": "https://code.claude.com/docs/en/memory.md",
     "sourceNote": "Handling stale session context after external repository modifications",

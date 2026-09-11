@@ -55,7 +55,7 @@
     "options": [
       {
         "id": "a",
-        "text": "The Messages API automatically inverts all numeric values and dates during conversational summarization passes."
+        "text": "Summarizing every ten turns re-anchors the model on the most recent turns, so it weights recency and forgets facts stated earlier in the conversation."
       },
       {
         "id": "b",
@@ -63,7 +63,7 @@
       },
       {
         "id": "c",
-        "text": "Summarization causes conversation context windows to double in size on each turn, rapidly exceeding context limits and exhausting token quotas."
+        "text": "Each summary accumulates on top of the full transcript rather than replacing it, so token usage grows until earlier turns are truncated and lost."
       },
       {
         "id": "d",
@@ -75,8 +75,8 @@
     ],
     "explanation": "Progressive text summarization inherently prioritizes high-level narrative flow while discarding or generalizing discrete transactional details like monetary amounts, dates, tracking numbers, and account identifiers. When the model relies solely on summarized history, these exact values are lost or corrupted.",
     "distractorNotes": {
-      "a": "The API does not alter or invert numbers; the loss of detail is a natural consequence of linguistic compression.",
-      "c": "Summarization reduces context size; it does not double context windows.",
+      "a": "The loss is not simple recency weighting — even recently stated numbers vanish once summarized; linguistic compression drops discrete transactional entities regardless of when they appeared.",
+      "c": "Progressive summarization replaces prior turns with the summary rather than accumulating alongside them; the misremembered facts are ones the summary compressed out, not ones truncated by growth.",
       "d": "Claude reads summarized text without difficulty, but cannot reconstruct facts that were omitted from the summary."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/context-windows.md",
@@ -109,7 +109,7 @@
       },
       {
         "id": "d",
-        "text": "Store order facts in an encrypted cookie sent in the browser HTTP headers, outside the model conversation context."
+        "text": "Store the order facts in an external database and rely on the model to remember to query it whenever it needs them, without injecting them into the prompt."
       }
     ],
     "correct": [
@@ -119,7 +119,7 @@
     "distractorNotes": {
       "a": "Retaining raw transcripts causes token exhaustion, slows response latency, and introduces context rot.",
       "b": "Wiping history frustrates customers by forcing them to repeat information on every single message.",
-      "d": "Browser cookies are transport artifacts that do not place information into Claude's prompt context."
+      "d": "Leaving retrieval to the model's discretion means the facts are absent whenever it fails to call the lookup; a structured case-facts block injected every turn guarantees they are present."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/context-windows.md",
     "sourceNote": "Maintaining a persistent structured case facts block outside summarized history",
@@ -139,7 +139,7 @@
     "options": [
       {
         "id": "a",
-        "text": "Strip all formatting, markdown headers, and punctuation from the document to minimize total token count."
+        "text": "Duplicate the entire document back-to-back in the prompt so the middle pages appear twice and receive more attention."
       },
       {
         "id": "b",
@@ -147,7 +147,7 @@
       },
       {
         "id": "c",
-        "text": "Instruct Claude to ignore the first and last 50 pages of the document to focus exclusively on middle sections."
+        "text": "Move all 150 pages into the system prompt instead of the user turn, since system-prompt content is immune to positional attention bias."
       },
       {
         "id": "d",
@@ -159,9 +159,9 @@
     ],
     "explanation": "The 'lost in the middle' phenomenon occurs because transformer attention mechanisms exhibit recency and primacy biases, attending most strongly to the beginning and end of long inputs. Placing key summaries up front, structuring sections with explicit headers, and reiterating critical synthesis instructions at the end counteracts attention decay across long inputs.",
     "distractorNotes": {
-      "a": "Stripping formatting and punctuation destroys semantic readability and severely degrades model comprehension.",
+      "a": "Repeating the whole document doubles token cost and simply creates a new middle that is still under-attended; positioning key findings at the start and end is what counters the lost-in-the-middle effect.",
       "b": "Reversing word order creates nonsense text that ruins model reasoning.",
-      "c": "Ignoring the start and end discards the sections where attention is naturally strongest."
+      "c": "Content in the system prompt is subject to the same positional attention effects; the mitigation is layout — an executive summary up front, clear headers, and critical instructions repeated at the end."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/context-windows.md",
     "sourceNote": "Mitigating lost-in-the-middle attention effects with structured front-loaded summaries and clear headers",
@@ -185,7 +185,7 @@
       },
       {
         "id": "b",
-        "text": "Reduce the coordinator's max_tokens limit to 100 tokens to force it to write compact reports without reading details from upstream subagents."
+        "text": "Raise the coordinator to the largest available context-window tier so it can hold all of the raw HTML and reasoning traces at once."
       },
       {
         "id": "c",
@@ -193,7 +193,7 @@
       },
       {
         "id": "d",
-        "text": "Switch from Claude to a 1990s rule-based regex script to parse unstructured research papers and industry reports."
+        "text": "Have the coordinator itself summarize each subagent's raw HTML and chain-of-thought on arrival before it synthesizes the report."
       }
     ],
     "correct": [
@@ -201,9 +201,9 @@
     ],
     "explanation": "Subagents should act as information filters and compressors. Rather than passing raw web dumps or verbose internal thoughts to the coordinator, subagents should extract and return structured summaries containing key claims, relevant excerpts, and citations, respecting the downstream coordinator's context budget.",
     "distractorNotes": {
-      "b": "Restricting the coordinator to 100 tokens prevents it from generating comprehensive reports.",
+      "b": "A larger window still fills with verbose low-value tokens, diluting attention and inflating cost; the fix is having subagents emit compact structured data, not holding more raw text.",
       "c": "Deleting subagent responses leaves the coordinator with zero data to synthesize.",
-      "d": "Rule-based regexes cannot synthesize semantic research findings."
+      "d": "Making the overloaded coordinator ingest and summarize every raw scrape still spends its context budget on low-value tokens; compaction belongs upstream where each subagent returns structured claims and citations."
     },
     "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
     "sourceNote": "Structuring subagent outputs into concise facts and citations to conserve coordinator context",
@@ -311,7 +311,7 @@
       },
       {
         "id": "b",
-        "text": "Accuse the customer of policy abuse and fraudulent behavior, immediately terminating their corporate account access."
+        "text": "Deny the request outright, telling the customer that anything not explicitly permitted by written policy is prohibited."
       },
       {
         "id": "c",
@@ -328,7 +328,7 @@
     "explanation": "When an agent encounters a policy gap or ambiguity (a scenario not covered by documented business rules), the agent must not invent unauthorized policies or speculate. Escalating the case to a human supervisor ensures appropriate policy interpretation while identifying areas where corporate documentation needs updates.",
     "distractorNotes": {
       "a": "Inventing unauthorized discounting rules violates financial controls and risks significant revenue loss.",
-      "b": "A customer asking about price matching is routine inquiries, not evidence of account fraud.",
+      "b": "Automatically denying on silence is the mirror error of automatically approving — the policy gap is genuinely unresolved and needs human judgment, not a default 'no' from the agent.",
       "c": "Assuming silence implies full authorization creates severe financial and legal exposure."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices.md",
@@ -357,7 +357,7 @@
       },
       {
         "id": "c",
-        "text": "Merge all three accounts into a single unified database profile to eliminate name duplication in the backend."
+        "text": "Read the masked details of all three accounts back to the customer and ask them to confirm which one is theirs."
       },
       {
         "id": "d",
@@ -370,7 +370,7 @@
     "explanation": "When lookup tools return multiple matching records for common names, guessing or picking arbitrarily risks exposing other customers' PII or altering the wrong account. The agent must prompt the user for secondary unique identifiers (e.g. order number, billing zip code, or email address) to disambiguate the entity safely.",
     "distractorNotes": {
       "b": "Arbitrarily picking an account breaches privacy regulations and risks modifying another customer's data.",
-      "c": "Merging independent customer accounts destroys database integrity and conflates distinct individuals.",
+      "c": "Reciting even masked details of all three accounts discloses other customers' information to the caller; the customer should supply a secondary identifier so only their own record is surfaced.",
       "d": "Selecting by balance is an arbitrary heuristic that exacerbates privacy and financial violations."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/how-tool-use-works.md",
@@ -525,11 +525,11 @@
       },
       {
         "id": "c",
-        "text": "Take periodic screenshots of the terminal emulator window and parse them using optical character recognition on reboot."
+        "text": "Append every agent action to a single unstructured plain-text log and re-parse the whole log with the model on restart to infer what was completed."
       },
       {
         "id": "d",
-        "text": "Rely entirely on browser localStorage to persist multi-agent orchestration state across backend server crashes."
+        "text": "Persist orchestration state to an in-memory Redis cache with no disk snapshotting, relying on the store to survive coordinator restarts."
       }
     ],
     "correct": [
@@ -538,8 +538,8 @@
     "explanation": "Long-running agentic pipelines require durable state persistence for resilience. Exporting structured checkpoint manifests (tracking completed items, intermediate findings, and remaining tasks) allows the coordinator to reconstruct state on resumption after a crash or timeout without having to repeat expensive exploration.",
     "distractorNotes": {
       "b": "Volatile in-memory state means any process crash, network interruption, or OOM wipes all work.",
-      "c": "Terminal screenshots are fragile, lossy, and completely inadequate for structured pipeline recovery.",
-      "d": "Browser localStorage is not available to headless server-side agent processes."
+      "c": "Replaying an unstructured log through the model on every restart is slow, costly, and ambiguous about what actually finished; structured state manifests give the coordinator a precise, machine-readable checkpoint.",
+      "d": "An in-memory store with no persistence configured loses the same state on its own restart or eviction; durable crash recovery requires the checkpoints to reach disk."
     },
     "sourceUrl": "https://code.claude.com/docs/en/large-codebases.md",
     "sourceNote": "Structured state manifest exports to support crash recovery and checkpoint resumption",
@@ -559,7 +559,7 @@
     "options": [
       {
         "id": "a",
-        "text": "Review forms only when the server CPU temperature exceeds 80 degrees Celsius to correlate audits with system load."
+        "text": "Audit only the extractions the model itself flags as low-confidence, trusting every high-confidence result without sampling."
       },
       {
         "id": "b",
@@ -571,7 +571,7 @@
       },
       {
         "id": "d",
-        "text": "Inspect documents only if the customer submits a formal regulatory lawsuit regarding an erroneous extraction field."
+        "text": "Re-run the same extraction model a second time on each form and audit only the cases where the two runs disagree."
       }
     ],
     "correct": [
@@ -579,9 +579,9 @@
     ],
     "explanation": "High aggregate accuracy (e.g. 98%) can easily mask severe localized failure rates (e.g. 40% failure on handwritten dates or rare form variants). Stratified random sampling continuously audits a small percentage of extractions across all form segments and confidence tiers, catching silent drift and systemic errors.",
     "distractorNotes": {
-      "a": "Hardware temperature has no correlation with data extraction quality.",
+      "a": "Sampling only low-confidence outputs misses exactly the hidden failure mode in question — systematic errors the model reports with high confidence; stratified sampling covers confident extractions too.",
       "c": "Reviewing 100% of documents eliminates the efficiency benefits of AI automation.",
-      "d": "Waiting for lawsuits before auditing represents catastrophic risk management and legal negligence."
+      "d": "A systematic bias yields the same wrong output on both runs, so run-to-run disagreement never surfaces it; stratified sampling against ground truth is what catches consistent errors."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs.md",
     "sourceNote": "Using stratified random sampling to audit high-confidence extractions and detect hidden errors",

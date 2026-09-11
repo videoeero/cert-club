@@ -9,12 +9,13 @@ Foundations Exam Guide v1.0 (Effective July 2026, Exam code: CCAR-F).
 
 ## Bank status: `draft`
 
-`manifest.status` is `draft`. The bank currently holds 5 seed questions (1 per domain)
-authored during the initial recon to verify sourceability and schema compliance.
+`manifest.status` is `draft`. All 110 questions are `reviewed` (0 draft). Coverage is
+tightly proportional across all five domains, with each domain within 1 percentage
+point of its blueprint weight. The bank is held at `draft` by deliberate decision
+pending evaluation of `deep`-scope coverage (currently 100% `core`, 0 `deep`).
 
-Promote to `stable` only when coverage is genuinely proportional across all
-domains, judged per domain against the manifest weights rather than by total
-question count, and record that reasoning here.
+Promote to `stable` only on an explicit human decision weighing that standing depth
+limitation, and record that reasoning here.
 
 ## Recon verdict: `GO`
 
@@ -48,32 +49,28 @@ Exam specs from blueprint:
 
 Section 6 of the exam guide outlines 30 task statements across the five domains (1.1–1.7, 2.1–2.5, 3.1–3.6, 4.1–4.6, 5.1–5.6), but does not publish individual percentage weights for task statements. Consequently, manifest domain entries do not declare `skills`, matching the pattern in `az-900` and `aws-clf-c02`.
 
-## Coverage audit: 2026-09-10
+## Coverage audit: 2026-09-10 (re-audited 2026-09-11)
 
-`npm run validate`, `npm run balance -- --strict`, and `npm run metrics -- ccar-f --markdown` all clean.
+Initial audit on 2026-09-10; re-verified on 2026-09-11 against an unchanged bank.
+`npm run validate`, `npm run metrics -- ccar-f --markdown`, and `npm run check` all clean (258
+tests, ESLint and Prettier green). `npm run balance -- --strict` does
+not list ccar-f — expected, as no domain declares `skills`.
 
-110 questions, all at `status: reviewed`. Bank is 100% `core` (no `deep`-scope questions tagged).
+Composition is unchanged and remains tightly proportional; every domain sits
+within ~1 point of its weight, so no domain is the coverage floor:
 
-| Domain | Core | Share | Weight |
-| --- | ---: | ---: | ---: |
-| Agentic Architecture & Orchestration | 29 | 26.4% | 27% |
-| Tool Design & MCP Integration | 20 | 18.2% | 18% |
-| Claude Code Configuration & Workflows | 22 | 20% | 20% |
-| Prompt Engineering & Structured Output | 22 | 20% | 20% |
-| Context Management & Reliability | 17 | 15.5% | 15% |
+| Domain | Core | Share | Weight | Δ |
+| --- | ---: | ---: | ---: | ---: |
+| Agentic Architecture & Orchestration | 29 | 26.4% | 27% | −0.6 |
+| Tool Design & MCP Integration | 20 | 18.2% | 18% | +0.2 |
+| Claude Code Configuration & Workflows | 22 | 20% | 20% | 0 |
+| Prompt Engineering & Structured Output | 22 | 20% | 20% | 0 |
+| Context Management & Reliability | 17 | 15.5% | 15% | +0.5 |
 
-Every domain sits within 1 percentage point of its manifest weight. No domain
-declares `skills` (see "Skill breakdown" above), so there is no second-level
-check to run — domain level is the finest granularity the guide supports.
-`npm run balance -- --strict` does not report ccar-f for this reason (matches
-`az-900` and `aws-clf-c02`); domain balance is judged via `bank-metrics.mjs`
-instead.
-
-Format mix: 100 single-select, 10 multi-select (10 select-2), one to two per
-domain, authored organically rather than to a fixed quota.
-
-All four bias guards pass: `positionBias`, `lengthBiasMeanDelta`,
-`longestOptionIsKey`, `scopeCoreShare`.
+Supporting figures: 110 questions, 100 single / 10 multi (select-2), 84
+medium / 26 hard, 23 distinct source pages, 100% `core` scope. All four bias
+guards pass (`positionBias`, `lengthBiasMeanDelta`, `longestOptionIsKey`,
+`scopeCoreShare`); longest-option-is-key 25%, length-delta mean −1.21 chars.
 
 ### Coverage limits
 
@@ -86,7 +83,12 @@ All four bias guards pass: `positionBias`, `lengthBiasMeanDelta`,
 
 `manifest.status` remains `draft`; all 110 questions are individually
 `reviewed`. These two flags are independent — see "Bank status" above.
-Promotion is a human decision, not automatic on this audit passing.
+
+Recommendation: **hold at `draft`.** Coverage is proportional and the bank is
+audit-clean, but promotion to `stable` is a human decision with no mechanical
+threshold, and the standing depth limitation (0 `deep` questions) is a
+reasonable thing to weigh before promoting. Flip `manifest.status` only on an
+explicit go.
 
 ## Source classification
 
@@ -506,6 +508,42 @@ Evaluated the 8 newly authored multi-select questions across Domains 2, 3, 4, an
 - `ccar-f-context-management-and-reliability-016`: confirmed (options `a` and `c`, modifying `tool_choice` invalidates only the messages cache leaving tools and system prompt caches valid, and the prefix lookback window checks at most 20 positions backward from a breakpoint)
 - `ccar-f-context-management-and-reliability-017`: confirmed (options `b` and `d`, citations must be enabled uniformly across all documents and are restricted to text content, and `cited_text` is extracted directly without counting toward generated output tokens)
 
+## Redraft batch: 2026-09-11 (Facepalm-distractor hardening — all 5 domains, 93 options)
 
+Goal: raise distractor plausibility to match the difficulty of Anthropic's 12
+official sample questions (extracted from `manifest.examUrl`). The bank was
+easier than the official set because many distractors were absurd or
+technobabble and eliminable on sight. This pass rewrote giveaway options into
+plausible-but-wrong real techniques (few-shot, routing classifiers, confidence
+scoring, retry/backoff, tool_choice, hooks, context scoping, etc.), following
+the "1 obviously wrong, 1 confidently wrong, 2 hard-to-separate" target.
 
+Scope and invariants:
+- 93 distractor option texts rewritten, each with its matching `distractorNotes`
+  entry updated. **No** `correct` key, `stem`, question `status`, option id, or
+  correct-answer text was changed (verified programmatically against HEAD).
+- Padded distractors rather than trimming correct answers; per-bank length- and
+  position-bias guards still pass under `npm run validate` and `npm test`.
+- The ~40 already-exam-quality items (all multi-selects plus the singles noted
+  in the correctness pass) were left untouched and used as the style reference.
+  `agentic-...-024` distractor `b` was additionally softened from an
+  alphabetical-truncation giveaway to a "largest-diffs only" trap.
 
+Per-domain items touched (Tier 1 = >=2 giveaways rewritten; Tier 2 = single
+absurd option swapped; plus a few low-priority API/frontmatter-recall swaps):
+- Agentic Architecture & Orchestration: 001, 006, 011, 013, 016, 018, 019, 021
+  (Tier 1); 003, 005, 008, 010, 012, 014, 023, 024, 025, 026, 027 (Tier 2).
+- Tool Design & MCP Integration: 005, 008, 010, 011 (Tier 1); 001, 003, 007,
+  012, 013 (Tier 2); 014 (low priority).
+- Claude Code Configuration & Workflows: 002, 003, 004, 005, 010, 014, 015
+  (Tier 1); 006, 008, 011, 018, 019, 020 (Tier 2); 007, 009 (low priority).
+  012 left as-is (its distractors were already plausible loading-semantics traps).
+- Prompt Engineering & Structured Output: 005, 016, 018, 019, 020 (Tier 1);
+  002, 004, 011, 012 (Tier 2); 013 (low priority). Also fixed a mismatched
+  `distractorNotes.c` on -019 (previously referenced "quantum computing").
+- Context Management & Reliability: 002, 004, 005, 013, 014 (Tier 1); 003, 008,
+  009 (Tier 2).
+
+Status unchanged: `manifest.status` stays `draft`; question `status` values were
+not promoted — this pass hardened distractor plausibility only and does not
+substitute for a fresh correctness pass on the affected items.

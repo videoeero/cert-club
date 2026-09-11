@@ -21,7 +21,7 @@
       },
       {
         "id": "c",
-        "text": "In the repository's root CLAUDE.md file using a markdown code block tagged with the @mcp-auth directive."
+        "text": "In the repository's root CLAUDE.md file, embedding the server command and token inside a fenced json code block that Claude Code parses on startup."
       },
       {
         "id": "d",
@@ -34,7 +34,7 @@
     "explanation": "Shared MCP servers should be declared in the project-level .mcp.json file, which is committed to version control so team members share the server definition. Sensitive credentials should be referenced via environment variable expansion (such as ${GITHUB_TOKEN}) so secrets remain out of the repository.",
     "distractorNotes": {
       "a": "The global ~/.claude.json file is user-specific and is not shared across teammates via version control.",
-      "c": "CLAUDE.md files provide guidelines and project context, not structured MCP server declarations.",
+      "c": "CLAUDE.md supplies natural-language project context and is not parsed as a structured MCP server declaration, and hardcoding the token there still commits the secret to version control.",
       "d": "Claude Code does not recognize .claude/config.json or git credential helpers for configuring MCP servers."
     },
     "sourceUrl": "https://code.claude.com/docs/en/mcp.md",
@@ -101,7 +101,7 @@
       },
       {
         "id": "b",
-        "text": "Duplicate the tools in the API registration payload so the model has four identical choices to distribute call load across backends."
+        "text": "Add explicit priority hints to each tool description telling Claude to prefer analyze_document over analyze_content whenever both could apply."
       },
       {
         "id": "c",
@@ -118,7 +118,7 @@
     "explanation": "Overlapping tool names and vague descriptions create semantic confusion for the model. Renaming tools to clearly indicate their specific operational scope (e.g. distinguishing web scraping from PDF parsing) and eliminating overlapping responsibilities in their descriptions gives Claude unambiguous criteria for tool selection.",
     "distractorNotes": {
       "a": "Zero temperature does not resolve semantic ambiguity between overlapping tools; it simply makes the arbitrary misselection deterministic.",
-      "b": "Adding more redundant tools exacerbates cognitive load and increases selection errors.",
+      "b": "Priority hints do not remove the underlying semantic overlap; Claude still cannot tell which tool fits a given input, so it keeps misselecting or calling both.",
       "c": "Exposing internal tool names to end users forces technical implementation details onto non-technical users."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools.md",
@@ -181,7 +181,7 @@
     "options": [
       {
         "id": "a",
-        "text": "The lookup_customer tool schema is automatically invalidated and disabled whenever web search tools are present in the registry."
+        "text": "Tool selection is resolved purely by lexical similarity between the user's wording and each tool's registered name, so the wording of the system prompt has no bearing on which tool Claude picks."
       },
       {
         "id": "b",
@@ -189,7 +189,7 @@
       },
       {
         "id": "c",
-        "text": "Claude cannot distinguish between internal customer databases and public search engines under any circumstances without retraining."
+        "text": "The web_search tool advertises a broader capability surface, and Claude's selection logic prefers the more general tool whenever two tools could plausibly satisfy a request."
       },
       {
         "id": "d",
@@ -201,8 +201,8 @@
     ],
     "explanation": "Directives in the system prompt strongly influence model behavior. Using generic terms like 'search' when an actual tool named 'web_search' exists creates a semantic bias where Claude prioritizes the literal keyword match over a specialized tool like 'lookup_customer'. System prompts should reference specific tool names or use precise domain terminology.",
     "distractorNotes": {
-      "a": "Multiple tools exist independently and do not invalidate one another's schemas.",
-      "c": "Claude easily distinguishes tool types when instructions and descriptions are harmonized.",
+      "a": "Tool selection weighs the combined semantics of the system prompt, the tool descriptions, and the query — it is not name-only lexical matching, and here the system prompt directive is exactly what biased the choice.",
+      "c": "Claude does not automatically favor the 'broader' tool; with clear descriptions it selects the specialized one. The regression here comes from the generic 'search' directive in the system prompt, not from capability breadth.",
       "d": "Tool selection is based on semantic relevance and schema matching, not alphabetical ordering."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools.md",
@@ -269,7 +269,7 @@
       },
       {
         "id": "b",
-        "text": "Drop the network packet to simulate an upstream gateway timeout, forcing the agent orchestration layer to try alternative routes."
+        "text": "Return isError: true with isRetryable: true and a generic message, letting the agent's exponential backoff eventually give up after its maximum retry count."
       },
       {
         "id": "c",
@@ -286,7 +286,7 @@
     "explanation": "Business rule violations (like expired return windows) are permanent, non-retryable errors. Returning structured error metadata with `isRetryable: false` and an explicit policy explanation informs Claude that further retries will not succeed, allowing it to explain the policy clearly to the customer or offer human escalation.",
     "distractorNotes": {
       "a": "Generic failure messages cause the model to assume a transient glitch and waste tokens on futile retries.",
-      "b": "Simulating timeouts causes unnecessary retries and delays the customer response.",
+      "b": "Marking a permanent policy violation as retryable makes the agent waste tokens on retries that can never succeed before finally failing without a clear explanation for the customer.",
       "c": "Violating financial policy corrupts business accounting and bypasses authorization controls."
     },
     "sourceUrl": "https://modelcontextprotocol.io/docs/2025-06-18/develop/build-server.md",
@@ -311,7 +311,7 @@
       },
       {
         "id": "b",
-        "text": "The subagent crashes immediately and forces the coordinator to reboot the entire application container and reinitialize state."
+        "text": "The subagent forwards every transient error straight to the coordinator without any local retry, so that all backoff and retry policy lives centrally in one place."
       },
       {
         "id": "c",
@@ -319,7 +319,7 @@
       },
       {
         "id": "d",
-        "text": "The coordinator polls the subagent's operating system memory space and directly executes curl commands via low-level shell calls without waiting."
+        "text": "The coordinator wraps the subagent in its own exponential-backoff loop and re-invokes the entire subagent on any failure, discarding partial results between attempts."
       }
     ],
     "correct": [
@@ -327,9 +327,9 @@
     ],
     "explanation": "Local error recovery handles transient, self-contained issues (like a brief network glitch) within the subagent via localized retries. If recovery fails, propagating structured error context (what failed, attempted queries, partial results) back to the coordinator allows the coordinator to decide high-level recovery (e.g. trying an alternative provider or proceeding with partial results).",
     "distractorNotes": {
-      "b": "Crashing containers for transient network glitches causes severe service instability and downtime.",
+      "b": "Centralizing all retries forces a cross-agent round trip for glitches the subagent could resolve itself, adding latency; transient, self-contained failures should be retried locally before escalating.",
       "c": "Fabricating synthetic search snippets introduces hallucinations and destroys research validity.",
-      "d": "Coordinators interact with subagents through prompts and tool calls, not raw memory inspection or shell injection."
+      "d": "Re-invoking the whole subagent throws away partial progress and structured failure context and treats every failure as retryable; recovery should begin locally and propagate structured context upward."
     },
     "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
     "sourceNote": "Partitioning local subagent error recovery versus coordinator escalation",
@@ -391,11 +391,11 @@
     "options": [
       {
         "id": "a",
-        "text": "Tool definition schemas are truncated by the API when total tool count exceeds eight, causing subsequent definitions to be ignored."
+        "text": "The additional tools introduce overlapping parameter schemas, and JSON Schema validation conflicts between similarly named fields cause the API to reject roughly a third of the tool calls."
       },
       {
         "id": "b",
-        "text": "The Messages API automatically disables tool calling entirely if more than ten tools are declared active in the request payload."
+        "text": "Each added tool schema proportionally shrinks the context left for the user's request, so the model loses the conversational detail it needs to choose correctly."
       },
       {
         "id": "c",
@@ -411,8 +411,8 @@
     ],
     "explanation": "Providing an excessive number of tools to a single agent increases cognitive complexity, expands prompt context with tool schemas, and introduces semantic overlap between similar operations. Restricting agents to a focused set of 4-6 tools aligned with their specific role dramatically improves selection accuracy.",
     "distractorNotes": {
-      "a": "The API does not truncate tool definitions at eight tools; schema size is limited only by request token limits.",
-      "b": "The Messages API supports dozens of tools without disabling them, but model selection accuracy suffers.",
+      "a": "The API validates each tool call against that tool's own schema independently; overlapping field names across different tools do not cause rejections. The degradation is selection difficulty, not schema validation failures.",
+      "b": "Twenty-five tool schemas do not exhaust the context window; accuracy falls because of decision complexity and semantic overlap among similar tools, not because conversational context was crowded out.",
       "d": "Claude handles large context windows and extensive schemas well beyond 1,000 characters."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools.md",
@@ -437,11 +437,11 @@
       },
       {
         "id": "b",
-        "text": "Set model max_tokens to 50 to prevent the synthesis agent from having enough output tokens to write complex search queries."
+        "text": "Lower the synthesis agent's temperature to 0 so it deterministically stops issuing search calls whenever it detects that context is missing."
       },
       {
         "id": "c",
-        "text": "Run the synthesis agent on an isolated offline computer disconnected from the local network to physically block search traffic."
+        "text": "Place a routing classifier in front of the synthesis agent that inspects each turn and returns any search request to the coordinator instead of executing it."
       },
       {
         "id": "d",
@@ -454,8 +454,8 @@
     "explanation": "The principle of least privilege in agent architecture dictates that each subagent should only have access to the tools necessary for its dedicated role. Removing web search tools from the synthesis agent's `allowedTools` configuration deterministically prevents it from deviating into information retrieval.",
     "distractorNotes": {
       "a": "Prompt warnings are probabilistic and do not prevent tool calling when the model feels information is missing.",
-      "b": "Restricting max_tokens truncates the final report synthesis rather than preventing tool use.",
-      "c": "Physically disconnecting machines is an operational absurdity when tool scoping in software handles permissions cleanly."
+      "b": "Temperature controls sampling randomness, not tool availability; a low-temperature model still calls a search tool it has access to when it judges that context is missing.",
+      "c": "An external classifier adds latency and complexity and only reactively blocks calls after the model has decided to make them; removing the tools from allowedTools prevents the behavior deterministically at the source."
     },
     "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
     "sourceNote": "Restricting subagent tool sets via allowedTools to enforce functional separation of concerns",
@@ -483,7 +483,7 @@
       },
       {
         "id": "c",
-        "text": "Instruct the synthesis agent to fabricate unverifiable dates and names to avoid latency, annotating them as simulated figures."
+        "text": "Have the synthesis agent cache the coordinator's earlier search results and reuse them for verification rather than adding a dedicated tool."
       },
       {
         "id": "d",
@@ -496,7 +496,7 @@
     "explanation": "Providing a scoped, dedicated tool (`verify_fact`) for high-frequency, simple lookups addresses the common case (85% of needs) with low latency, while preserving the coordinator pattern for complex, multi-source investigation without over-provisioning the agent with broad exploratory tools.",
     "distractorNotes": {
       "b": "Granting full search and browser tools to synthesis violates separation of concerns and leads to role drift.",
-      "c": "Fabricating data destroys factual accuracy and creates severe compliance liability.",
+      "c": "Cached prior results are stale and incomplete for the isolated new facts that surface during drafting; a scoped verify_fact tool answers fresh lookups without a coordinator round trip.",
       "d": "Pre-fetching arbitrary Wikipedia articles causes massive context bloat and token waste."
     },
     "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
@@ -529,7 +529,7 @@
       },
       {
         "id": "d",
-        "text": "Set model temperature to 2.0 to stimulate compliance with tool execution requirements across all prompt parameters."
+        "text": "Set tool_choice: 'any' so the model is forced to call a tool, which guarantees extract_metadata runs before any other tool on the first turn."
       }
     ],
     "correct": [
@@ -539,7 +539,7 @@
     "distractorNotes": {
       "a": "tool_choice: 'auto' allows the model to choose whether and which tool to call; it does not guarantee execution order.",
       "c": "Prompt-based pleading is probabilistic and can fail in edge cases.",
-      "d": "High temperature causes chaotic output and increases failure rates."
+      "d": "tool_choice: 'any' forces the model to call some tool but lets it pick which one; it does not pin the first call to extract_metadata specifically."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls.md",
     "sourceNote": "Forcing specific tool invocation using tool_choice parameter",
@@ -571,7 +571,7 @@
       },
       {
         "id": "d",
-        "text": "stream: false, which disables streaming mode and forces the server to buffer the complete response before returning it."
+        "text": "tool_choice: {'type': 'tool', 'name': 'extract_invoice'}, which forces a tool call while still letting the model adapt to whatever document type arrives."
       }
     ],
     "correct": [
@@ -581,7 +581,7 @@
     "distractorNotes": {
       "a": "tool_choice: 'none' prevents Claude from calling any tools, forcing text-only generation.",
       "b": "tool_choice: 'auto' allows Claude to choose whether to call a tool or respond with plain conversational text.",
-      "d": "The stream parameter controls HTTP chunk streaming, not model tool calling decisions."
+      "d": "Forcing a specific named tool ignores the unknown document type and would run extract_invoice on receipts and contracts too; 'any' forces a call while preserving dynamic selection among the three tools."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls.md",
     "sourceNote": "Guaranteeing tool calling over conversational text using tool_choice: any",

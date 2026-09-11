@@ -67,7 +67,7 @@
       },
       {
         "id": "d",
-        "text": "Filter out findings by deleting any generated review comment containing more than three words during automated post-processing runs."
+        "text": "Add a second Claude pass that re-scores each flagged comment's confidence and drops any below a fixed threshold."
       }
     ],
     "correct": [
@@ -77,7 +77,7 @@
     "distractorNotes": {
       "a": "Vague directives like 'be conservative' fail to define concrete decision boundaries for ambiguous cases.",
       "b": "Increasing temperature increases stochastic variance and generates more false positives.",
-      "d": "Filtering by word count is an arbitrary heuristic that discards valid bug reports."
+      "d": "A confidence re-scoring pass still relies on the same undefined notion of 'accurate'; without concrete contradiction criteria it keeps most of the false positives it inherited."
     },
     "sourceUrl": "https://code.claude.com/docs/en/code-review.md",
     "sourceNote": "Defining explicit review criteria to increase precision and reduce false positive findings",
@@ -147,7 +147,7 @@
       },
       {
         "id": "c",
-        "text": "Assign severity based on the alphabetical order of the affected file name, marking earlier files as higher severity."
+        "text": "Ask Claude to assign severity from how many lines each finding touches, treating larger diffs as higher severity."
       },
       {
         "id": "d",
@@ -160,7 +160,7 @@
     "explanation": "Ambiguous severity ratings occur when models rely on subjective interpretations of terms like 'major' or 'minor'. Defining a concrete classification matrix paired with code examples for each level (e.g. unhandled exceptions on critical paths = critical; missing type hints = minor) calibrates model judgment consistently.",
     "distractorNotes": {
       "b": "Subjective numerical scales exhibit high variance and poor calibration without clear anchoring rubrics.",
-      "c": "File names bear no relationship to code defect severity.",
+      "c": "The amount of affected code does not track defect severity — a single-line injection can be critical while a large refactor is minor; consistent rating needs a criteria matrix, not a size proxy.",
       "d": "Marking everything critical causes alert fatigue and destroys prioritization."
     },
     "sourceUrl": "https://code.claude.com/docs/en/code-review.md",
@@ -181,7 +181,7 @@
     "options": [
       {
         "id": "a",
-        "text": "Repeat the word 'FORMATTING' twenty times in the system prompt to emphasize the importance of output structure."
+        "text": "Expand the natural-language description of the four fields and repeatedly stress that the output must always be valid, well-formed structure."
       },
       {
         "id": "b",
@@ -193,7 +193,7 @@
       },
       {
         "id": "d",
-        "text": "Append an exclamation mark to every instruction sentence to increase model attention on output formatting requirements."
+        "text": "Lower the temperature to 0 so the model produces the same formatting deterministically on every run."
       }
     ],
     "correct": [
@@ -201,9 +201,9 @@
     ],
     "explanation": "Few-shot examples are the most effective technique for establishing consistent structural and stylistic formatting in LLM outputs. Providing 2-3 complete examples demonstrating the expected fields, tone, and formatting anchors the generation pattern far more reliably than prose instructions alone.",
     "distractorNotes": {
-      "a": "Word repetition wastes tokens and does not clarify structure.",
+      "a": "Adding more prose instructions is the approach that already failed to stabilize the format; concrete exemplars anchor structure far more reliably than longer descriptions.",
       "c": "Translating to Latin degrades reasoning quality.",
-      "d": "Exclamation marks provide no structural guidance."
+      "d": "Lowering temperature reduces sampling randomness but does not define the target structure; with the format still underspecified the model keeps varying between JSON, bullets, and prose."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices.md",
     "sourceNote": "Using few-shot examples to achieve consistent output formatting and structure",
@@ -441,7 +441,7 @@
       },
       {
         "id": "c",
-        "text": "Increase model max_tokens to 10,000 to give the model more generation capacity to find the missing tax identification numbers."
+        "text": "Provide a few-shot example showing a placeholder value like 'N/A' for tax_id so the required string field is always satisfied."
       },
       {
         "id": "d",
@@ -455,7 +455,7 @@
     "distractorNotes": {
       "a": "Keeping it required still forces the model to generate a string, causing validation failures or endless retries.",
       "b": "Removing descriptions worsens extraction accuracy and provides no guidance on nullability.",
-      "c": "Increasing max_tokens does not address schema constraint violations."
+      "c": "Filling a required field with a placeholder like 'N/A' still emits a fabricated non-null value that downstream consumers must special-case; declaring the field nullable lets the model return an explicit null."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs.md",
     "sourceNote": "Using nullable or optional schema fields to prevent hallucination when source data is missing",
@@ -479,7 +479,7 @@
       },
       {
         "id": "b",
-        "text": "Permit arbitrary binary strings in the enum definition to capture unpredicted dispute mechanisms at the byte level."
+        "text": "Add every conceivable dispute mechanism you can enumerate to the enum up front so no unexpected value can ever occur."
       },
       {
         "id": "c",
@@ -495,7 +495,7 @@
     ],
     "explanation": "The 'other' enum value plus a companion detail string field (e.g. `dispute_type: enum['arbitration', 'litigation', 'mediation', 'other']`, `other_description: string | null`) is the standard extensible schema pattern. It retains the benefits of strict categorical indexing for known types while safely capturing edge cases.",
     "distractorNotes": {
-      "b": "JSON schemas do not support binary strings as enum definitions.",
+      "b": "An exhaustive enum can never anticipate every real-world mechanism and grows unmaintainable; an 'other' option with a free-text detail field captures the long tail without validation errors.",
       "c": "Removing the enum loses all advantages of structured categorization for downstream analytics.",
       "d": "Forcing false categorization corrupts the dataset and causes legal misrepresentation."
     },
@@ -529,7 +529,7 @@
       },
       {
         "id": "d",
-        "text": "stop_sequences: ['\\n'], which halts generation on newline characters without enforcing tool selection constraints."
+        "text": "tool_choice: {'type': 'tool', 'name': 'extract_layout_a'}, which forces a tool call and lets the model handle any incoming layout."
       }
     ],
     "correct": [
@@ -539,7 +539,7 @@
     "distractorNotes": {
       "a": "tool_choice: 'none' forbids all tool use, forcing text-only output.",
       "c": "The stream parameter controls HTTP streaming chunks, not tool selection decisions.",
-      "d": "Stop sequences truncate output at newlines and do not enforce tool execution."
+      "d": "Forcing one named tool would run the layout-A extractor on every document regardless of its actual layout; 'any' forces a tool call while letting the model pick the matching one."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls.md",
     "sourceNote": "Using tool_choice: 'any' to enforce structured tool output across multiple schemas",
@@ -651,11 +651,11 @@
       },
       {
         "id": "c",
-        "text": "It automatically rewrites git commit history to remove committed code smells and security antipatterns without human intervention."
+        "text": "It lets the pipeline automatically suppress any finding whose detected_pattern was ever dismissed before, guaranteeing zero false positives going forward."
       },
       {
         "id": "d",
-        "text": "It converts JavaScript source code into native WebAssembly modules for high-performance execution."
+        "text": "It guarantees the model returns identical severity scores across runs because each pattern identifier is bound to a fixed numeric severity."
       }
     ],
     "correct": [
@@ -664,8 +664,8 @@
     "explanation": "Including a structured pattern tag (`detected_pattern`) in review findings allows the engineering team to track developer feedback and dismissal rates across specific rules. Categories with high dismissal rates can be isolated, audited, and improved via targeted prompt criteria, few-shot examples, or temporary suppression.",
     "distractorNotes": {
       "b": "Rule tags in output JSON do not reduce API token pricing tiers.",
-      "c": "Pattern tagging provides analytics; it does not rewrite git commit history.",
-      "d": "Review finding tags have no relationship to WebAssembly compilation."
+      "c": "Blanket-suppressing every previously dismissed pattern would discard valid future findings; the tags enable measuring per-rule dismissal rates and refining criteria, not automatic suppression.",
+      "d": "A pattern identifier labels what was found; it does not pin a severity to the finding or make scoring deterministic across runs."
     },
     "sourceUrl": "https://code.claude.com/docs/en/code-review.md",
     "sourceNote": "Tracking rule dismissal rates via structured pattern tags to drive prompt improvements",
@@ -731,7 +731,7 @@
       },
       {
         "id": "b",
-        "text": "The Message Batches API requires dedicated on-premises hardware gateways and private lease lines."
+        "text": "The Message Batches API caps each batch at a single request, so it cannot sustain the ongoing request volume an interactive agent generates."
       },
       {
         "id": "c",
@@ -739,7 +739,7 @@
       },
       {
         "id": "d",
-        "text": "The Message Batches API only runs on weekends during scheduled batch processing maintenance windows."
+        "text": "The 50% batch discount applies only to prompts under 1,000 tokens, so a support agent's long conversation context would forfeit the savings entirely."
       }
     ],
     "correct": [
@@ -748,8 +748,8 @@
     "explanation": "The Message Batches API is designed for latency-tolerant, offline workloads with turnaround windows up to 24 hours and no real-time latency SLA. Furthermore, it operates on single-request payloads and cannot execute interactive multi-turn agentic loops where tool results are returned mid-conversation to guide subsequent actions.",
     "distractorNotes": {
       "a": "The Message Batches API processes standard text prompts, multimodal inputs, and tool definitions.",
-      "b": "The API is a RESTful cloud service, not physical mail.",
-      "d": "The API is available 24/7/365, not restricted to weekends."
+      "b": "The Batches API is built for high-volume asynchronous workloads, not limited to one request per batch; the real blocker is asynchronous turnaround, not batch size.",
+      "d": "The batch discount is not gated on prompt size; the architectural mismatch is the asynchronous, non-interactive turnaround, not a lost discount."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/batch-processing.md",
     "sourceNote": "Workload fit and conversational tool-use limitations of the Message Batches API",
@@ -769,15 +769,15 @@
     "options": [
       {
         "id": "a",
-        "text": "Large language models cannot evaluate code that was written in Python due to indentation parsing constraints."
+        "text": "The model has a fixed output token budget, so a combined generate-then-review session exhausts its tokens before it can analyze the code deeply."
       },
       {
         "id": "b",
-        "text": "The Messages API disables tool execution and file inspection when a prompt asks for self-critique."
+        "text": "Asking a model to critique its own output triggers a safety refusal, so it returns a shallow, non-committal review instead of flagging flaws."
       },
       {
         "id": "c",
-        "text": "Self-review requires configuring a dedicated temperature of 0.0 to prevent token sampling variation."
+        "text": "Reviewing code requires a dedicated review system prompt, and reusing the generation system prompt silently disables the model's analytical evaluation mode."
       },
       {
         "id": "d",
@@ -789,9 +789,9 @@
     ],
     "explanation": "When an agent reviews its own code within the same conversation context, the preceding chain-of-thought and rationales remain in the prompt history. The model exhibits strong self-confirmation bias, rationalizing its earlier decisions rather than evaluating the code with a fresh, adversarial perspective. Running an independent review instance without the generative history resolves this.",
     "distractorNotes": {
-      "a": "Claude excels at evaluating Python and all major programming languages.",
-      "b": "API tool capabilities are identical across self-review and initial generation.",
-      "c": "Quantum computing is unrelated to LLM inference and review architectures."
+      "a": "A review prompt begins a fresh generation with its own token budget; the weakness is confirmation bias from the shared reasoning history, not exhausted tokens.",
+      "b": "Self-critique prompts are not refused; the review is shallow because the session already holds the generator's own justifications, biasing it toward agreement.",
+      "c": "There is no separate 'analytical mode' that a shared system prompt disables; the failure is confirmation bias, because the reviewer sees its own prior reasoning and tends to ratify it."
     },
     "sourceUrl": "https://code.claude.com/docs/en/code-review.md",
     "sourceNote": "Overcoming generative confirmation bias by using independent review instances",
@@ -815,7 +815,7 @@
       },
       {
         "id": "b",
-        "text": "Pass all files into a single prompt repeated ten times in parallel and average the resulting token embeddings across passes for consensus."
+        "text": "Concatenate every file into a single large prompt and run one comprehensive review pass, relying on the long context window to hold all files at once."
       },
       {
         "id": "c",
@@ -823,7 +823,7 @@
       },
       {
         "id": "d",
-        "text": "Instruct the model to read the code backwards from the last line to the first line to disrupt standard pattern matching."
+        "text": "Summarize each file into a short synopsis first, then review only the concatenated summaries to keep the total prompt small."
       }
     ],
     "correct": [
@@ -831,9 +831,9 @@
     ],
     "explanation": "Multi-pass review architectures separate local analysis from integration analysis. In the first pass, individual files are evaluated for localized bugs, logic errors, and style conformance. In the second pass, the cross-file diff, data flow, and interface contracts are evaluated. This division prevents attention dilution and guarantees depth across both scopes.",
     "distractorNotes": {
-      "b": "Averaging token embeddings across identical monolithic passes does not resolve input attention dilution.",
+      "b": "Loading all files into one monolithic pass is exactly what causes attention dilution on large PRs; focused per-file passes plus an integration pass preserve review depth.",
       "c": "Reviewing only commit messages ignores actual code implementation defects and security risks.",
-      "d": "Reading code backwards destroys syntax and semantic structure, making comprehension impossible."
+      "d": "Reviewing only summaries discards the line-level detail needed to catch real defects; the per-file passes must see actual code, with a later pass for cross-file concerns."
     },
     "sourceUrl": "https://code.claude.com/docs/en/code-review.md",
     "sourceNote": "Structuring multi-pass code reviews into localized file passes and cross-file integration passes",

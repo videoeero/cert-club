@@ -55,11 +55,11 @@
     "options": [
       {
         "id": "a",
-        "text": "Claude Code requires a paid enterprise multi-seat license before loading markdown conventions on more than one machine checkout."
+        "text": "The lead placed the conventions in a nested subdirectory's CLAUDE.md that only their own working directory touches, so root-level sessions on fresh checkouts never load it."
       },
       {
         "id": "b",
-        "text": "The new engineers did not compile the TypeScript source code of Claude Code locally before executing project commands."
+        "text": "The new engineers must run a one-time claude init command to register the repository's CLAUDE.md before it takes effect on their machines."
       },
       {
         "id": "c",
@@ -75,8 +75,8 @@
     ],
     "explanation": "Claude Code's configuration hierarchy includes user-scoped memory (`~/.claude/CLAUDE.md`) and project-scoped memory (`CLAUDE.md` or `.claude/CLAUDE.md` in the project root). Instructions placed in `~/.claude/` only affect that individual user's machine. To share conventions across all developers, they must be placed in the project repository and committed to version control.",
     "distractorNotes": {
-      "a": "Configuration loading behavior is standard across all tiers and does not depend on multi-seat licensing.",
-      "b": "Claude Code is distributed as a packaged binary/CLI; users do not need to compile its TypeScript source.",
+      "a": "A nested CLAUDE.md is still committed and pulled, and Claude Code loads it when working in that subtree; the symptom points to a user-scoped ~/.claude/CLAUDE.md that never leaves the lead's machine.",
+      "b": "Claude Code auto-discovers the repository's CLAUDE.md with no init or registration step; it works for everyone once it lives at the repo root and is committed.",
       "c": "CLAUDE.md files are plain markdown files and do not require certificate authority signing."
     },
     "sourceUrl": "https://code.claude.com/docs/en/memory.md",
@@ -101,11 +101,11 @@
       },
       {
         "id": "b",
-        "text": "Embed bash curl scripts inside HTML comments that download the standards at runtime whenever the project directory is loaded."
+        "text": "Paste the full contents of every package's standards file into the root CLAUDE.md so all squads' rules live in one place."
       },
       {
         "id": "c",
-        "text": "Create filesystem hard links across all package directories using the ln utility to duplicate the documentation physically."
+        "text": "Add each package's CLAUDE.md path to a 'memory' array in the repository's package.json so Claude Code loads them at startup."
       },
       {
         "id": "d",
@@ -117,8 +117,8 @@
     ],
     "explanation": "Claude Code supports modular memory through the `@import` syntax in CLAUDE.md files. This enables referencing external markdown files across packages or documentation trees, keeping the root memory clean and maintainable while pulling in domain-specific standards.",
     "distractorNotes": {
-      "b": "Claude Code does not execute arbitrary shell curl commands hidden inside HTML comments.",
-      "c": "Filesystem hard links do not work across git checkouts and break version control tracking.",
+      "b": "Inlining every package's standards into the root file is exactly what the team wants to avoid — it bloats the root CLAUDE.md; the @import directive references the separate files instead.",
+      "c": "package.json is not part of Claude Code's memory resolution; specialized files are pulled in with the @import directive inside the markdown, not a package.json array.",
       "d": "package.json webhooks are not part of Claude Code's memory or configuration resolution system."
     },
     "sourceUrl": "https://code.claude.com/docs/en/memory.md",
@@ -147,11 +147,11 @@
       },
       {
         "id": "c",
-        "text": "Compress the text with gzip and paste the resulting binary string into CLAUDE.md to save context tokens during prompt execution."
+        "text": "Move the entire 4,000-line file into a system prompt via settings so it loads once and is cached, rather than keeping it as CLAUDE.md."
       },
       {
         "id": "d",
-        "text": "Convert the markdown rules into compiled C++ shared object libraries that hook into the Claude Code binary execution path."
+        "text": "Keep the single file but wrap each section in HTML comments so Claude Code skips the irrelevant sections automatically."
       }
     ],
     "correct": [
@@ -160,8 +160,8 @@
     "explanation": "Monolithic memory files inflate context windows and consume tokens regardless of task relevance. Decomposing instructions into topic-specific files under `.claude/rules/`—and leveraging YAML frontmatter paths to conditionally load them only when editing relevant files—keeps context focused and reduces overhead.",
     "distractorNotes": {
       "a": "Deleting conventions and relying on manual pasting is error-prone, inconsistent, and highly burdensome.",
-      "c": "LLMs cannot read gzip binary strings without decompression; this renders the configuration completely unreadable.",
-      "d": "Claude Code memory is based on text and markdown, not compiled binary shared objects."
+      "c": "Relocating the same 4,000 lines into a system prompt still injects all of it every turn; the remedy is splitting into focused, path-scoped topic files so only relevant rules load.",
+      "d": "HTML comments do not make Claude Code skip or unload a section — the text is still read and tokenized; conditional path scoping across separate rule files is what limits what loads."
     },
     "sourceUrl": "https://code.claude.com/docs/en/memory.md",
     "sourceNote": "Splitting monolithic CLAUDE.md files into topic-specific rule files in .claude/rules/",
@@ -181,7 +181,7 @@
     "options": [
       {
         "id": "a",
-        "text": "Inspect the local operating system kernel dmesg log buffer to identify filesystem read events triggered by the CLI process."
+        "text": "Run /doctor to validate the installation, which also lists every CLAUDE.md and rule file loaded into the current session."
       },
       {
         "id": "b",
@@ -193,7 +193,7 @@
       },
       {
         "id": "d",
-        "text": "Send an email to Anthropic customer support with the session timestamp to request a manual trace of loaded project files."
+        "text": "Add --verbose to the launch command so startup logs print every configuration file path, then read them from the terminal scrollback."
       }
     ],
     "correct": [
@@ -201,9 +201,9 @@
     ],
     "explanation": "Claude Code provides the `/memory` command (or `/context`) to inspect what memory sources, CLAUDE.md files, and path-specific rules are currently loaded into context. This provides immediate visibility into configuration resolution.",
     "distractorNotes": {
-      "a": "Kernel dmesg buffers record device driver and kernel events, not application-level LLM prompt context.",
+      "a": "/doctor diagnoses installation and environment health; it does not enumerate the memory files loaded for the session — that is what /memory reports.",
       "b": "Rebooting the workstation does not diagnose configuration loading or memory resolution.",
-      "d": "Customer support does not inspect local client-side configuration states in real-time."
+      "d": "Verbose launch logging is not the documented way to inspect resolved memory and does not show which rules are active mid-session; the /memory command reports the loaded memory files directly."
     },
     "sourceUrl": "https://code.claude.com/docs/en/memory.md",
     "sourceNote": "Using /memory to inspect active memory files and rule resolution diagnostics",
@@ -231,7 +231,7 @@
       },
       {
         "id": "c",
-        "text": "In a cloud storage bucket configured via AWS IAM roles and referenced by a custom environment variable in developer profiles."
+        "text": "Committed to the repository root as e2e-check.md alongside the README, where Claude Code auto-discovers top-level command files."
       },
       {
         "id": "d",
@@ -245,7 +245,7 @@
     "distractorNotes": {
       "a": "Files placed in ~/.claude/commands/ are user-scoped and not shared through project git repositories.",
       "b": "Claude Code does not parse package.json for custom slash command definitions.",
-      "c": "Slash commands are resolved from local repository paths, not external AWS IAM buckets."
+      "c": "Claude Code resolves project slash commands from .claude/commands/, not from arbitrary top-level markdown files; placing it at the repo root does not register the command."
     },
     "sourceUrl": "https://code.claude.com/docs/en/skills.md",
     "sourceNote": "Project-scoped custom slash commands in .claude/commands/ for version-controlled team sharing",
@@ -277,7 +277,7 @@
       },
       {
         "id": "d",
-        "text": "tokens: discard-all, which clears all conversation tokens upon skill completion and resets the session to a clean state."
+        "text": "context: isolated, which runs the skill in the main conversation but hides its intermediate tool output from the transcript."
       }
     ],
     "correct": [
@@ -287,7 +287,7 @@
     "distractorNotes": {
       "b": "sandbox: docker-root is an invented parameter; skill execution context is controlled via context: fork.",
       "c": "isolation: true is not a valid Agent Skills frontmatter property.",
-      "d": "tokens: discard-all is not an option in Claude Code skill frontmatter."
+      "d": "'context: isolated' is not a valid value, and running in the main conversation would not protect it; 'context: fork' runs the skill in a separate child context whose exploration stays out of the main transcript."
     },
     "sourceUrl": "https://code.claude.com/docs/en/skills.md",
     "sourceNote": "Using context: fork frontmatter to isolate verbose skill execution from main conversation context",
@@ -315,7 +315,7 @@
       },
       {
         "id": "c",
-        "text": "Set file permissions on the entire repository to chmod 000 before each invocation to physically prevent write operations."
+        "text": "Add a hook that runs after each Edit or Write and reverts any change the skill makes to source files."
       },
       {
         "id": "d",
@@ -328,7 +328,7 @@
     "explanation": "The `allowed-tools` frontmatter field in a skill explicitly defines which tools are accessible during its execution. By restricting `allowed-tools` to read-only utilities (`Read`, `Grep`, `Glob`), the model is deterministically prevented from calling write or modification tools (`Write`, `Edit`, `Bash`).",
     "distractorNotes": {
       "a": "Prompt instructions are probabilistic and do not offer deterministic security guarantees.",
-      "c": "chmod 000 breaks developer access and prevents normal development workflows.",
+      "c": "A revert-after-write hook still lets the skill perform writes and only undoes them afterward, leaving a window for damage; omitting Write and Edit from allowed-tools prevents the writes entirely.",
       "d": "Git commit rejection does not prevent the agent from modifying working tree files on disk."
     },
     "sourceUrl": "https://code.claude.com/docs/en/skills.md",
@@ -361,7 +361,7 @@
       },
       {
         "id": "d",
-        "text": "prompt-user: on, displaying a modal dialog in the terminal when arguments are not provided"
+        "text": "arguments: required, which blocks invocation and returns an error until the developer supplies the ticket number."
       }
     ],
     "correct": [
@@ -371,7 +371,7 @@
     "distractorNotes": {
       "a": "required-param is not a valid Agent Skills frontmatter specification.",
       "b": "ask-input is not a recognized property in Claude Code skills.",
-      "d": "prompt-user is not supported in the skill frontmatter schema."
+      "d": "There is no 'arguments: required' property; Claude Code uses 'argument-hint' to show the expected argument when a skill is invoked without one."
     },
     "sourceUrl": "https://code.claude.com/docs/en/skills.md",
     "sourceNote": "Using argument-hint frontmatter to prompt users for required parameters in skills",
@@ -391,15 +391,15 @@
     "options": [
       {
         "id": "a",
-        "text": "CLAUDE.md can only contain valid JSON specifications, whereas Skills only accept YAML frontmatter and markdown descriptions."
+        "text": "CLAUDE.md is loaded only in interactive sessions, whereas Skills are the only mechanism that works in non-interactive or CI runs."
       },
       {
         "id": "b",
-        "text": "Skills are only executable on Linux and containerized environments, while CLAUDE.md works only on macOS and Windows hosts."
+        "text": "Skills can bundle helper scripts and resources, whereas CLAUDE.md can hold at most a few hundred words before Claude Code truncates it."
       },
       {
         "id": "c",
-        "text": "CLAUDE.md is executed as a bash shell script at startup, while Skills are compiled into binary shared objects by GCC."
+        "text": "CLAUDE.md conventions apply to every model, while a Skill activates only when the user picks it from a mandatory dropdown before each session."
       },
       {
         "id": "d",
@@ -411,9 +411,9 @@
     ],
     "explanation": "CLAUDE.md provides ambient, persistent context (coding standards, architectural invariants, testing commands) loaded into every session. Skills provide specialized, on-demand procedural capabilities (such as code review checklists, database migration audits, or release notes generators) invoked when specific tasks are performed.",
     "distractorNotes": {
-      "a": "CLAUDE.md is standard markdown, not JSON; Skills are markdown files with YAML frontmatter.",
-      "b": "Both CLAUDE.md and Skills are cross-platform and work across macOS, Linux, and Windows.",
-      "c": "Neither is compiled or executed as binary scripts; both are interpreted by Claude Code's agent runtime."
+      "a": "Both CLAUDE.md and Skills are available in interactive and non-interactive runs; the real distinction is that CLAUDE.md loads continuously while a Skill is invoked on demand.",
+      "b": "CLAUDE.md is not truncated at a few hundred words; while Skills can bundle resources, the fundamental distinction is continuous project conventions versus on-demand task workflows.",
+      "c": "Skills are invoked on demand by the model or user when relevant, not selected from a mandatory pre-session dropdown; CLAUDE.md holds always-loaded conventions and Skills package task-specific workflows."
     },
     "sourceUrl": "https://code.claude.com/docs/en/skills.md",
     "sourceNote": "Architectural distinction between ambient CLAUDE.md instructions and on-demand Skills",
@@ -445,7 +445,7 @@
       },
       {
         "id": "d",
-        "text": "Rename all .tf files to .ts files to deceive Claude Code into applying general TypeScript coding conventions."
+        "text": "Add a conditional at the top of the root CLAUDE.md instructing Claude to apply the Terraform rules only when it notices it is editing infrastructure files."
       }
     ],
     "correct": [
@@ -455,7 +455,7 @@
     "distractorNotes": {
       "b": "Switching branches is inefficient and does not prevent rule loading if conventions sit in a monolithic CLAUDE.md.",
       "c": "Appending documentation to source files ruins code quality and triggers linter errors.",
-      "d": "Renaming file extensions breaks Terraform compilers and tooling."
+      "d": "A natural-language conditional in the root CLAUDE.md still loads the Terraform rules into every session and relies on the model to self-apply them; path frontmatter in a rules file loads them only when matching files are touched."
     },
     "sourceUrl": "https://code.claude.com/docs/en/memory.md",
     "sourceNote": "Using YAML frontmatter paths in .claude/rules/ to conditionally load path-scoped conventions",
@@ -563,11 +563,11 @@
       },
       {
         "id": "b",
-        "text": "Spawning an external swarm of twelve subagents across multiple cloud clusters to analyze the entire repository history."
+        "text": "Launch a general codebase-exploration subagent to map the full dependency graph of date.ts before touching the reported line."
       },
       {
         "id": "c",
-        "text": "Rewriting the entire date library from scratch in Rust to prevent any possible future null pointer exceptions."
+        "text": "Turn on extended thinking with a large reasoning budget to reason exhaustively about every edge case before editing the single line."
       },
       {
         "id": "d",
@@ -580,8 +580,8 @@
     "explanation": "Direct execution mode is optimal for well-defined, localized tasks where the problem and target file are already known (e.g. a simple bug fix with a clear stack trace). Entering plan mode for small, well-scoped fixes adds unnecessary conversational overhead and planning latency.",
     "distractorNotes": {
       "a": "Entering plan mode for a single-line null check adds unnecessary steps and slows developer velocity.",
-      "b": "Multi-agent cloud swarms for a trivial localized bug represent massive over-engineering and token waste.",
-      "c": "Rewriting unaffected libraries violates task scope and introduces vast regression risk."
+      "b": "The stack trace already localizes the defect to one line, so mapping the whole dependency graph first adds exploration overhead with no benefit; direct execution fixes it immediately.",
+      "c": "A pinpointed null-pointer fix does not need a large extended-thinking budget; direct inspection and a targeted edit resolve it without the added latency and tokens."
     },
     "sourceUrl": "https://code.claude.com/docs/en/overview.md",
     "sourceNote": "Direct execution mode for well-scoped, localized bug fixes with known stack traces",
@@ -605,7 +605,7 @@
       },
       {
         "id": "b",
-        "text": "It uploads all repository files to an external third-party indexing service that performs cloud semantic search."
+        "text": "It summarizes each file with a smaller, cheaper model and injects those summaries directly into the main session's context."
       },
       {
         "id": "c",
@@ -613,7 +613,7 @@
       },
       {
         "id": "d",
-        "text": "It restricts Claude Code to reading only the first two characters of every file to drastically reduce token consumption."
+        "text": "It caps the main session to a fixed number of files per task, refusing to open additional files once the limit is reached."
       }
     ],
     "correct": [
@@ -621,9 +621,9 @@
     ],
     "explanation": "The Explore subagent operates in an isolated context window. When tasked with locating files, patterns, or architectural relationships, it performs verbose searches and file inspections within its own window and passes only concise summaries back to the parent session, preventing main context window exhaustion.",
     "distractorNotes": {
-      "b": "Claude Code processes exploration locally using configured tools without unauthorized third-party uploads.",
+      "b": "The protection comes from isolating the verbose reading in a separate child context and returning only findings, not from summarizing files with a cheaper model into the main session.",
       "c": "Replacing local files with zero-byte placeholders destroys project source code.",
-      "d": "Reading only two characters makes code analysis impossible."
+      "d": "The Explore subagent does not enforce a hard per-task file cap on the main session; it offloads verbose searching and reading into a child context and returns only high-level findings."
     },
     "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
     "sourceNote": "Isolating verbose codebase exploration in subagents to preserve main session context",
@@ -735,7 +735,7 @@
       },
       {
         "id": "c",
-        "text": "Execute a random shell command to inspect the system hardware clock and let the model infer caching requirements."
+        "text": "Ask Claude to immediately produce a complete caching implementation from its best assumptions, then fix problems as they surface in testing."
       },
       {
         "id": "d",
@@ -749,7 +749,7 @@
     "distractorNotes": {
       "a": "Writing code without clarifying requirements leads to poor assumptions and architectural rework.",
       "b": "Generating massive assembly code is unusable for web caching architectures.",
-      "c": "Random shell execution provides no architectural insight."
+      "c": "Jumping straight to an implementation on assumed requirements is exactly what the interview pattern avoids; surfacing invalidation, consistency, and traffic questions first prevents costly rework."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices.md",
     "sourceNote": "Using the interview pattern to surface requirements and design considerations before implementation",
@@ -781,7 +781,7 @@
       },
       {
         "id": "d",
-        "text": "The --infinite-loop flag to keep the terminal connection alive until an external kill signal terminates the container."
+        "text": "Set a CLAUDE_NONINTERACTIVE=1 environment variable, which suppresses the interactive prompt while keeping the default REPL running."
       }
     ],
     "correct": [
@@ -791,7 +791,7 @@
     "distractorNotes": {
       "b": "Claude Code does not use a --daemon flag for CI/CD runs.",
       "c": "Headless CI environments do not support GUI/Electron interfaces.",
-      "d": "--infinite-loop is an anti-pattern that guarantees build timeouts."
+      "d": "No environment variable turns the interactive REPL into a clean one-shot run; the -p/--print flag is what makes Claude Code execute non-interactively and exit."
     },
     "sourceUrl": "https://code.claude.com/docs/en/headless.md",
     "sourceNote": "Running Claude Code non-interactively in automated pipelines with the -p flag",
@@ -819,7 +819,7 @@
       },
       {
         "id": "c",
-        "text": "Take a screenshot of the terminal window and parse findings using Optical Character Recognition (OCR) in the CI runner."
+        "text": "Set --output-format text and parse the human-readable summary with a downstream LLM call that converts it into JSON."
       },
       {
         "id": "d",
@@ -832,7 +832,7 @@
     "explanation": "Running Claude Code in CI with `--output-format json` and `--json-schema` enforces structured outputs matching a defined schema. This guarantees that findings (file paths, line numbers, severity, descriptions) are returned as valid JSON that downstream CI scripts can reliably parse and post as inline comments.",
     "distractorNotes": {
       "a": "Parsing unstructured text or informal XML with regex is brittle and prone to breakage.",
-      "c": "OCR of terminal screenshots is slow, error-prone, and unnecessary when JSON output is supported natively.",
+      "c": "Converting free-text output to JSON with a second LLM call adds cost and a new failure point; --output-format json with a schema produces machine-parseable results directly.",
       "d": "Piping stderr with awk fails when review findings are conversational or multi-line."
     },
     "sourceUrl": "https://code.claude.com/docs/en/headless.md",
