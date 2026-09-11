@@ -1,6 +1,7 @@
 ---
 name: evaluate-questions
 description: Adversarial per-question correctness pass over an existing bank — cold-derive each answer independently of the stored key and explanation, judge distractor quality against CONTRIBUTING.md, and set a question's status to reviewed once it survives or back to draft when it does not. Use after author-questions lands a batch, or whenever asked if questions are actually correct rather than merely schema-valid. Not for authoring new questions, not for coverage-vs-blueprint or citation-staleness passes.
+argument-hint: "<cert-slug> [domain-slug | --diff]"
 allowed-tools: Read, Edit, Glob, Grep, WebSearch, WebFetch, AskUserQuestion, Bash
 ---
 

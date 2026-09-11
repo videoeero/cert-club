@@ -1,6 +1,7 @@
 ---
 name: assess-new-cert
 description: Recon a proposed new certification before any bank exists — locate the official exam guide, classify every candidate source on gate and authority, derive domain weights, record a GO / GO-WITH-CONSTRAINTS / NO-GO verdict, and on GO scaffold the bank and seed one sourced question per domain. Use when asked whether a cert is viable, or to start one. Not for authoring or revising questions in a bank that already exists, and not for auditing coverage or sources.
+argument-hint: "<cert-slug-or-name> [exam-guide-url]"
 allowed-tools: Read, Edit, Glob, Grep, WebSearch, WebFetch, AskUserQuestion, Bash
 ---
 

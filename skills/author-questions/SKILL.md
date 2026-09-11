@@ -1,6 +1,7 @@
 ---
 name: author-questions
 description: Write or revise a batch of questions for one domain or skill of an existing cert bank — size the batch from the balance report, cite public sources, apply the depth anchors, and land the batch green. Use when asked to add, extend, rewrite or fix questions. Not for deciding whether a new cert is viable, not for the draft-to-stable promotion decision, and not for the recurring source-drift pass.
+argument-hint: "<cert-slug> <domain-slug> [skill-slug]"
 allowed-tools: Read, Write, Edit, Glob, Grep, WebSearch, WebFetch, AskUserQuestion, Bash
 ---
 

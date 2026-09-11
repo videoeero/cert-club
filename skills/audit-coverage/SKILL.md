@@ -1,6 +1,7 @@
 ---
 name: audit-coverage
 description: Offline audit of a cert bank's coverage against its blueprint, and the recommendation on promoting it from draft to stable. Judges each domain against its manifest weight, reports the bias and composition figures, and writes the reasoning into the review file. Use after a batch lands or when asked whether a bank is ready. Not for checking whether cited pages are still live or accurate, and not for authoring questions.
+argument-hint: "<cert-slug>"
 allowed-tools: Read, Edit, Glob, Grep, Bash
 ---
 

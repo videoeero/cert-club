@@ -1,6 +1,7 @@
 ---
 name: extract-blueprint
 description: Given a certification's located and versioned exam guide, derive its domain and skill weights, inventory its sample questions as the cognitive-level anchor, and audit its stated item format. Use only as the second phase of assess-new-cert's recon, after classify-sources has settled the guide and its sources. Not for revising an existing bank's blueprint — a weight or domain change there belongs to audit-sources — and not for authoring questions.
+argument-hint: "<exam-guide-url-or-file> [cert-slug]"
 allowed-tools: Read, WebFetch, Bash
 ---
 

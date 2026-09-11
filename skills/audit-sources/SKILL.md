@@ -1,6 +1,7 @@
 ---
 name: audit-sources
 description: Recurring drift pass over a bank's citations — triage staleness and liveness, re-read the blueprint for weight or domain changes, re-answer keys cold against their cited sections, and record one disposition per affected question. Use when citations may have gone stale, a link looks broken, or a vendor doc has moved. Not for measuring coverage against the blueprint, and not for authoring new questions.
+argument-hint: "[cert-slug | host]"
 allowed-tools: Read, Edit, Glob, Grep, WebSearch, WebFetch, AskUserQuestion, Bash
 ---
 

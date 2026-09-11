@@ -129,4 +129,22 @@ for (const { name, text, cause } of skills) {
       "frontmatter name must match the directory name",
     );
   });
+
+  test(`${name} argument-hint is valid when declared`, () => {
+    const frontmatter = text.match(/^---\n([\s\S]*?)\n---\n/);
+    assert.ok(frontmatter, `skills/${name}/SKILL.md has no frontmatter block`);
+    const hintMatch = frontmatter[1].match(/^argument-hint:(.*)$/m);
+    if (hintMatch) {
+      const hint = hintMatch[1].trim();
+      assert.ok(
+        hint.length > 0 && hint !== '""',
+        `skills/${name}/SKILL.md declares an empty argument-hint`,
+      );
+      assert.match(
+        hint,
+        /^"[^"]+"$/,
+        `skills/${name}/SKILL.md argument-hint must be a double-quoted string`,
+      );
+    }
+  });
 }

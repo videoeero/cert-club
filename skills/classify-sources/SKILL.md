@@ -1,6 +1,7 @@
 ---
 name: classify-sources
 description: Locate a proposed certification's current official exam guide and classify every candidate documentation source on gate and authority. Use only as the first phase of assess-new-cert's recon, before any bank exists. Not for the recurring citation-drift pass on an existing bank — that's audit-sources — and not for sourcing individual questions during authoring.
+argument-hint: "<cert-slug-or-name> [exam-guide-url]"
 allowed-tools: Read, Glob, Grep, WebSearch, WebFetch, Bash
 ---
 

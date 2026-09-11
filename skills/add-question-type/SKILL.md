@@ -1,6 +1,7 @@
 ---
 name: add-question-type
 description: Gate and hazard list for introducing a new question type (ordering, match-pairs, fill-in) beyond single and multi select. Starts by arguing the change is unnecessary, then names the hazards a file list does not surface. Use only when a new answer shape is genuinely under consideration. Not for authoring questions in the existing types, and not for schema changes unrelated to question shape.
+argument-hint: "<type-name>"
 allowed-tools: Read, Write, Edit, Glob, Grep, AskUserQuestion, Bash
 ---
 
