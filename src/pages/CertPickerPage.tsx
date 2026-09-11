@@ -5,6 +5,7 @@ import logoUrl from "../assets/logo.svg";
 import { ErrorState, LoadingState } from "../components/PageStatus";
 import { useAsyncResource } from "../hooks/use-async-resource";
 import { loadCertCatalog } from "../lib/content";
+import { formatCalendarDate } from "../lib/time";
 import type { Manifest } from "../types";
 import styles from "./CertPickerPage.module.css";
 
@@ -35,10 +36,18 @@ function CertCard({ manifest }: { manifest: Manifest }) {
           </li>
         ))}
       </ul>
-      <Link className="button button-primary" to={`/quiz/${manifest.cert}`}>
-        Start practice
-        <span aria-hidden="true">→</span>
-      </Link>
+      <div className={styles.cardFooter}>
+        <p className={styles.lastUpdated}>
+          Updated{" "}
+          <time dateTime={manifest.updatedAt}>
+            {formatCalendarDate(manifest.updatedAt)}
+          </time>
+        </p>
+        <Link className="button button-primary" to={`/quiz/${manifest.cert}`}>
+          Start practice
+          <span aria-hidden="true">→</span>
+        </Link>
+      </div>
     </article>
   );
 }

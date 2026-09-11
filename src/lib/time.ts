@@ -44,3 +44,36 @@ export function formatUsedTime(startedAt: string, completedAt: string): string {
   }
   return parts.join(" ");
 }
+
+const CALENDAR_DATE_FORMATTER = new Intl.DateTimeFormat("en-US", {
+  month: "short",
+  day: "numeric",
+  year: "numeric",
+  timeZone: "UTC",
+});
+
+/**
+ * Formats a calendar date string (YYYY-MM-DD) into a human-readable string (e.g. "Sep 7, 2026").
+ * Evaluated in UTC so local timezone offsets do not cause day-shifting artifacts.
+ * Returns the original string untouched if the input is malformed, out of bounds, or rolls over.
+ */
+export function formatCalendarDate(dateString: string): string {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+    return dateString;
+  }
+  const parts = dateString.split("-");
+  const [year, month, day] = parts.map(Number);
+  if (!year || !month || !day) {
+    return dateString;
+  }
+  const date = new Date(Date.UTC(year, month - 1, day));
+  if (
+    Number.isNaN(date.getTime()) ||
+    date.getUTCFullYear() !== year ||
+    date.getUTCMonth() !== month - 1 ||
+    date.getUTCDate() !== day
+  ) {
+    return dateString;
+  }
+  return CALENDAR_DATE_FORMATTER.format(date);
+}
