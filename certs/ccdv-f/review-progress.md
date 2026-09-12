@@ -262,23 +262,41 @@ learnable reason: throughput 429s carry retry-after guidance and recover, spend-
 six-option multi-selects where one gift costs proportionally less. Worth
 doing; not urgent.
 
-## Other pattern tells — measured, not acted on
+## Other pattern tells — measured, and one acted on
 
 **Absolute qualifiers** (`always`, `never`, `only`, `must`, `every`, `cannot`,
-`all`, `any`, `no`) appear in **49% of distractors against 29% of keys**. The
+`all`, `any`, `no`) appear in **48% of distractors against 29% of keys**. The
 corresponding strategy — eliminate every option containing an absolute, then
-guess among what is left — scores an expected **30% against a 25% baseline**,
-and uniquely identifies the key in only 7 of 109 single-select items.
+guess among what is left — scores an expected **27% against a 25% baseline**,
+and uniquely identifies the key in **0 of 109** single-select items.
 
-**This is deliberately left alone.** A +5pp edge is an order of magnitude
-weaker than the length bias was (+36pp), it cannot carry anyone to 720/1000,
-and the skew is largely *legitimate*: the cited docs state correct behaviour
-with genuine hedging, while a distractor is frequently wrong precisely because
-it over-claims. Removing the pattern would mean either writing hedged
-falsehoods or flattening accurate qualifiers out of keys — both trade factual
-fidelity for cosmetics, which is the trade this project's provenance rule
-declines to make. It is recorded so the number is known rather than assumed,
-and so a future author does not "discover" it as a new defect.
+**The distribution is deliberately left alone**, and that has not changed. The
+residual edge is an order of magnitude weaker than the length bias was
+(+36pp), it cannot carry anyone to 720/1000, and the skew is largely
+*legitimate*: the cited docs state correct behaviour with genuine hedging,
+while a distractor is frequently wrong precisely because it over-claims.
+Flattening it would mean either writing hedged falsehoods or stripping
+accurate qualifiers out of keys — both trade factual fidelity for cosmetics,
+which is the trade this project's provenance rule declines to make. It is
+recorded so the number is known rather than assumed, and so a future author
+does not "discover" it as a new defect.
+
+**The decisive items were not left alone.** This measurement first read 30%
+expected and **7 of 109 uniquely identified** — seven items where the key was
+the sole option carrying no absolute, so eliminating absolutes answered them
+outright with no subject knowledge at all. On 2026-09-12 each of those seven
+had one distractor rewritten, and `questionSchema` now rejects the shape, so
+it cannot reappear unnoticed.
+
+That is a narrower intervention than the one this section declines, and it is
+not the same trade. Every rewrite left the distractor exactly as false as it
+was and changed only the register it was false in — "Only a single image is
+ever allowed per request, and it must always be positioned after all of the
+text content" became "A single image per request is the documented limit, and
+it belongs after the text content". No key was touched, and no hedged
+falsehood was written. A distractor that is wrong on substance rather than
+wrong on style is the better distractor whatever the strategy scores against
+it.
 
 ## Near-duplicate adjudications
 

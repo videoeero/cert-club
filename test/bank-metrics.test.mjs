@@ -669,12 +669,19 @@ test("reproduces ccdv-f's hand-computed adversarial baselines", async () => {
   const metrics = buildBankMetrics(manifestData, questions);
 
   // review-progress.md § "Other pattern tells": the absolutes strategy "scores
-  // an expected 30% against a 25% baseline, and uniquely identifies the key in
-  // only 7 of 109 single-select items".
+  // an expected 27% against a 25% baseline, and uniquely identifies the key in
+  // 0 of 109 single-select items".
+  //
+  // Both numbers moved when the seven decisive items were rewritten (30% and
+  // 7 before). They are pinned here so the pair cannot drift apart silently:
+  // the review file is a hand-written record, and a figure nothing re-derives
+  // is a figure that quietly stops being true. Editing one without the other
+  // is what this assertion exists to catch — so if it fails, check which of
+  // the two is actually wrong before touching either.
   const absolutes = metrics.baselines.eliminateAbsoluteQualifiers;
   assert.equal(absolutes.sampleSize, 109);
-  assert.ok(Math.abs(absolutes.expectedScore - 0.3) < 0.005);
-  assert.equal(absolutes.uniqueIdentifyCount, 7);
+  assert.ok(Math.abs(absolutes.expectedScore - 0.27) < 0.005);
+  assert.equal(absolutes.uniqueIdentifyCount, 0);
 
   // Same file records the longest-option tell at 19% after the rewrite pass.
   assert.equal(metrics.longestOptionIsKey.sampleSize, 109);
