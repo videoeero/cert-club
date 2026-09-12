@@ -152,6 +152,32 @@ export const optionSchema = z
   })
   .strict();
 
+/**
+ * Words that let a candidate discard an option without reading it closely.
+ *
+ * Defined here rather than in scripts/bank-metrics.mjs, which reports the
+ * guessing baseline these words drive, because the guard below and that report
+ * have to mean the same thing by "absolute qualifier". When they were allowed
+ * to disagree the report would say a bank was clean while the gate called it
+ * biased, and there is no way to tell from either output which one is wrong.
+ */
+export const ABSOLUTE_QUALIFIER_WORDS = [
+  "always",
+  "never",
+  "only",
+  "must",
+  "every",
+  "cannot",
+  "all",
+  "any",
+  "no",
+];
+
+export const ABSOLUTE_QUALIFIER_PATTERN = new RegExp(
+  `\\b(${ABSOLUTE_QUALIFIER_WORDS.join("|")})\\b`,
+  "i",
+);
+
 export const questionSchema = z
   .object({
     id: slugSchema,
@@ -284,6 +310,40 @@ export const questionSchema = z
           path: ["correct"],
           message:
             "correct options must not be exactly the first options in listed order, which makes the answer guessable from position alone",
+        });
+      }
+    }
+
+    // The same family as the check above: an item answerable without knowing
+    // the subject. Cross out every option containing an absolute qualifier,
+    // and if exactly the key survives, the wording alone has given it away.
+    //
+    // Note what this does *not* police. Absolutes are far commoner in
+    // distractors than in keys across every bank here, and that skew is
+    // largely legitimate — the cited docs state correct behaviour with genuine
+    // hedging, while a distractor is frequently wrong precisely because it
+    // over-claims. Flattening the distribution would mean writing hedged
+    // falsehoods or stripping true qualifiers out of keys, which trades
+    // factual fidelity for cosmetics; certs/ccdv-f/review-progress.md
+    // § "Other pattern tells" records that decision and its reasoning. Only
+    // the decisive case is an error, and its fix costs neither of those things.
+    //
+    // Single-select only. The multi-select analogue — the surviving set being
+    // exactly the key set — is a far weaker signal across five or six options,
+    // and nothing in this repository has measured it.
+    if (question.type === "single" && question.correct.length === 1) {
+      const unqualified = question.options.filter(
+        (option) => !ABSOLUTE_QUALIFIER_PATTERN.test(option.text),
+      );
+
+      if (
+        unqualified.length === 1 &&
+        unqualified[0].id === question.correct[0]
+      ) {
+        context.addIssue({
+          code: "custom",
+          path: ["options"],
+          message: `correct option "${unqualified[0].id}" is the only one carrying no absolute qualifier (${ABSOLUTE_QUALIFIER_WORDS.join(", ")}), so eliminating the absolutes answers this item without knowing the subject. Soften the over-claim in one distractor so it is wrong on substance rather than on style, or add a qualifier to another option where it is true — do not hedge the key into a weaker claim than its source supports`,
         });
       }
     }

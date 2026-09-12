@@ -58,6 +58,17 @@ breaking them fails CI rather than review.
   mean key length may not exceed mean distractor length by more than 10
   characters in either direction, and the key may be the single longest option
   in at most 45% of single-select items.*
+- **Do not let the key be the only option without an absolute qualifier**
+  (`always`, `never`, `only`, `must`, `every`, `cannot`, `all`, `any`, `no`).
+  Distractors carry these far more often than keys do, for a good reason — a
+  docs page hedges where it is accurate, and a distractor is frequently wrong
+  precisely because it over-claims — so the general skew is left alone. But
+  when the key is the *sole* survivor of crossing out the absolutes, the item
+  answers itself with no knowledge of the subject. Fix it by softening one
+  distractor so it is wrong on substance rather than on style, or by adding a
+  qualifier to another option where it is true; never by hedging the key into
+  a weaker claim than its source supports. *Enforced per question,
+  single-select only.*
 - **Vary the answer position.** No single position may hold more than 50% of
   single-select answers. *Enforced.*
 - **Do not make a multi-select key the leading run of options** (`a`+`b`, or

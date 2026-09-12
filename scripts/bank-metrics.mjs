@@ -9,6 +9,7 @@ import {
   readJson,
 } from "./lib/read-certs.mjs";
 import {
+  ABSOLUTE_QUALIFIER_PATTERN,
   LENGTH_BIAS_MAX_LONGEST_SHARE,
   LENGTH_BIAS_MAX_MEAN_DELTA,
   LENGTH_BIAS_MIN_SAMPLE,
@@ -29,12 +30,6 @@ export class BankMetricsError extends AggregateMessageError {
     this.name = "BankMetricsError";
   }
 }
-
-// Words that let a test-taker discard an option without reading it closely.
-// This is the same list ccdv-f/review-progress.md used for its by-hand
-// "eliminate the absolutes, then guess" measurement.
-const ABSOLUTE_QUALIFIER_PATTERN =
-  /\b(always|never|only|must|every|cannot|all|any|no)\b/i;
 
 const DIFFICULTIES = ["easy", "medium", "hard"];
 const TYPES = ["single", "multi"];

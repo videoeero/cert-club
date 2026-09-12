@@ -156,6 +156,57 @@ test("treats options differing only in case or spacing as duplicates", async () 
   );
 });
 
+test("rejects a single-select item whose key is the only unqualified option", async () => {
+  const { manifest, questions } = await validContent();
+  const [distractor] = questions[0].options;
+  distractor.text = "This one is always wrong";
+
+  assert.throws(
+    () => validateCertContent("ccdv-f", manifest, questions),
+    /only one carrying no absolute qualifier/,
+  );
+});
+
+test("accepts the same item once one distractor drops its absolute", async () => {
+  // The documented fix, exercised end to end: softening the over-claim in a
+  // single distractor is enough, because the strategy then leaves two options
+  // standing and no longer answers the item on its own.
+  const { manifest, questions } = await validContent();
+  const [first] = questions[0].options;
+  first.text = "This one is always wrong";
+  questions[0].options.push({ id: "c", text: "This one is wrong too" });
+  questions[0].distractorNotes = {
+    ...questions[0].distractorNotes,
+    c: "Wrong for a second reason.",
+  };
+
+  assert.doesNotThrow(() => validateCertContent("ccdv-f", manifest, questions));
+});
+
+test("ignores an absolute qualifier that the key itself carries", async () => {
+  // The key is not the survivor here, so the strategy gains nothing. Keys are
+  // allowed their absolutes: a source often states a genuinely universal rule,
+  // and hedging the key to satisfy a word list would make it less true.
+  const { manifest, questions } = await validContent();
+  const [distractor, key] = questions[0].options;
+  distractor.text = "This one is always wrong";
+  key.text = "This one is never wrong";
+
+  assert.doesNotThrow(() => validateCertContent("ccdv-f", manifest, questions));
+});
+
+test("leaves multi-select items outside the absolute-qualifier check", async () => {
+  const { manifest, questions } = await validContent();
+  const multi = questions.find((question) => question.type === "multi");
+  for (const option of multi.options) {
+    if (!multi.correct.includes(option.id)) {
+      option.text = `${option.text} in every case`;
+    }
+  }
+
+  assert.doesNotThrow(() => validateCertContent("ccdv-f", manifest, questions));
+});
+
 test("requires question domains and certs to match the manifest", async () => {
   const { manifest, questions } = await validContent();
   questions[0].domain = "unknown-domain";
