@@ -1,0 +1,43 @@
+[
+  {
+    "id": "ccar-p-stakeholder-communication-and-lifecycle-management-001",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "stakeholder-communication-and-lifecycle-management",
+    "difficulty": "medium",
+    "status": "draft",
+    "scope": "core",
+    "stem": "During an architecture review with executive stakeholders, an engineering lead proposes replacing an existing production customer FAQ classifier with a multi-agent autonomous swarm. The existing system uses a single Claude Haiku call with prompt caching and achieves 96% customer resolution with 300ms p95 latency. The multi-agent proposal promises marginal reasoning gains but would increase p95 latency to 4.5 seconds and quintuple operational API costs. How should the architect frame this decision to stakeholders based on Anthropic architectural principles?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Advise adopting the multi-agent swarm immediately because Anthropic recommends multi-agent architectures as the standard baseline for all production workloads."
+      },
+      {
+        "id": "opt-b",
+        "text": "Recommend migrating the FAQ system to an asynchronous batch processing queue to hide the 4.5-second latency from real-time customer interactions."
+      },
+      {
+        "id": "opt-c",
+        "text": "Recommend retaining the simple pattern because agentic autonomy trades latency and cost for flexibility, which is unjustified when a simpler pattern meets SLAs."
+      },
+      {
+        "id": "opt-d",
+        "text": "Approve the multi-agent swarm on the condition that all worker agents are upgraded to larger models to offset the compounding error probability."
+      }
+    ],
+    "correct": [
+      "opt-c"
+    ],
+    "explanation": "Anthropic's core architectural principle for agentic systems is simplicity: 'When building applications with LLMs, we recommend finding the simplest solution possible, and only increasing complexity when needed. Agentic systems often trade latency and cost for better task performance, and you should consider when this tradeoff makes sense.' Because the FAQ classifier is already meeting resolution requirements with 300ms latency, adding agentic complexity violates core architectural guidance by introducing compounding errors, cost, and latency without demonstrable business justification.",
+    "distractorNotes": {
+      "opt-a": "Anthropic explicitly advises against starting with complex agentic frameworks and recommends single optimized LLM calls whenever sufficient.",
+      "opt-b": "Asynchronous batch processing cannot serve real-time customer FAQ interactions, where users expect synchronous interactive responses.",
+      "opt-d": "Upgrading to larger models increases cost and latency even further, worsening the primary SLA violation without solving the mismatch."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
+    "sourceNote": "When (and when not) to use agents / Summary principles",
+    "sourceCheckedAt": "2026-09-12"
+  }
+]

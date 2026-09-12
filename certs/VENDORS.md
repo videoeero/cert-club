@@ -25,7 +25,7 @@ fabrication problem in a new place.
 
 ## Anthropic
 
-_Checked 2026-09-10 · banks: `ccdv-f`, `ccar-f`_
+_Checked 2026-09-12 · banks: `ccdv-f`, `ccar-f`, `ccar-p`_
 
 - **Exam guides** are PDFs on Anthropic's Everpath CDN, all under one
   instructor path, with adjacent numeric IDs per guide:

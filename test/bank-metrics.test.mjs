@@ -715,6 +715,7 @@ test("buildRepositoryMetrics reports every bank when no slug is given", async ()
     "aws-clf-c02",
     "az-900",
     "ccar-f",
+    "ccar-p",
     "ccdv-f",
   ]);
 });

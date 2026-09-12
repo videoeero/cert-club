@@ -1,0 +1,43 @@
+[
+  {
+    "id": "ccar-p-solution-design-and-architecture-001",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "solution-design-and-architecture",
+    "difficulty": "medium",
+    "status": "draft",
+    "scope": "core",
+    "stem": "An enterprise architect is designing an automated invoice processing system. Incoming PDF invoices follow a strict schema, and the required sequence of steps (OCR extraction, field validation against ERP vendor master, and posting to accounting API) is deterministic and never varies. The engineering team proposes building an autonomous agent that dynamically decides which tools to invoke and plans its next action per invoice. Which architectural recommendation best aligns with Anthropic's guidance?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Approve the autonomous agent design because autonomous loop patterns achieve higher reasoning quality on repetitive enterprise workflows."
+      },
+      {
+        "id": "opt-b",
+        "text": "Replace the autonomous agent with a prompt chaining workflow because deterministic, fixed-subtask processes achieve higher consistency and lower latency."
+      },
+      {
+        "id": "opt-c",
+        "text": "Implement an orchestrator-workers pattern with dynamic task delegation to allow Claude to generate custom invoice schemas per vendor."
+      },
+      {
+        "id": "opt-d",
+        "text": "Deploy an evaluator-optimizer loop that repeatedly re-runs OCR extraction until a secondary Claude evaluator approves the visual confidence score."
+      }
+    ],
+    "correct": [
+      "opt-b"
+    ],
+    "explanation": "Anthropic's 'Building effective agents' guidance explicitly distinguishes between workflows and agents: workflows orchestrate LLMs through predefined code paths, whereas agents dynamically direct their own processes and tool usage. For well-defined, predictable tasks with fixed subtasks like invoice validation, workflows (such as prompt chaining) provide predictability, consistency, lower cost, and lower latency, while agents trade predictability and latency for autonomy where flexibility is required.",
+    "distractorNotes": {
+      "opt-a": "Autonomous agents add latency, cost, and compounding error risk without benefit when the execution sequence is fixed and predictable.",
+      "opt-c": "Orchestrator-workers is designed for complex tasks where subtasks cannot be predicted in advance, not for rigid schema validation.",
+      "opt-d": "Evaluator-optimizer loops introduce unnecessary multiple round trips and cost for deterministic validation that programmatic gates can perform."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
+    "sourceNote": "When (and when not) to use agents / Workflow: Prompt chaining",
+    "sourceCheckedAt": "2026-09-12"
+  }
+]

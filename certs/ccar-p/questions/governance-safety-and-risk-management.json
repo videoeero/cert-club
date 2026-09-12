@@ -1,0 +1,43 @@
+[
+  {
+    "id": "ccar-p-governance-safety-and-risk-management-001",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "governance-safety-and-risk-management",
+    "difficulty": "medium",
+    "status": "draft",
+    "scope": "core",
+    "stem": "A healthcare technology provider is deploying a Claude-powered clinical summary assistant via api.anthropic.com. Due to stringent regulatory requirements and HIPAA compliance obligations, the customer requires that patient data contained in API prompts and completions must not be retained at rest after the API response is returned. Which architectural data handling arrangement must the architect verify with Anthropic?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Add a client-side hashing pre-processor to hash all clinical text into irreversible MD5 tokens before calling the standard consumer API."
+      },
+      {
+        "id": "opt-b",
+        "text": "Enable a Zero Data Retention (ZDR) agreement for the commercial organization, ensuring prompts and completions are not retained at rest."
+      },
+      {
+        "id": "opt-c",
+        "text": "Rely on default consumer terms of service, which guarantee immediate memory wipe for all interactive Claude web and API requests."
+      },
+      {
+        "id": "opt-d",
+        "text": "Configure the API request with the ephemeral-retention HTTP request header to bypass server-side database storage."
+      }
+    ],
+    "correct": [
+      "opt-b"
+    ],
+    "explanation": "Under Anthropic's Zero Data Retention (ZDR) arrangement for commercial organizations, Anthropic does not store customer prompts or responses at rest after the API response is returned. ZDR covers eligible features on the Messages and Token Counting APIs for Commercial API keys and enterprise accounts. In contrast, consumer plans and non-ZDR arrangements follow standard retention policies, and invented headers or client-side irreversible hashing do not satisfy regulatory requirements.",
+    "distractorNotes": {
+      "opt-a": "Hashing clinical text irreversibly destroys the semantic content required for Claude to generate clinical summaries.",
+      "opt-c": "Consumer terms do not offer ZDR or HIPAA business associate terms, and consumer conversation data follows different consumer retention policies.",
+      "opt-d": "There is no ephemeral-retention HTTP request header; ZDR is an organizational contractual and account-level configuration."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/manage-claude/api-and-data-retention",
+    "sourceNote": "Zero data retention (ZDR) scope and commitments",
+    "sourceCheckedAt": "2026-09-12"
+  }
+]

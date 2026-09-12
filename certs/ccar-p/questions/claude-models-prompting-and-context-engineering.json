@@ -1,0 +1,43 @@
+[
+  {
+    "id": "ccar-p-claude-models-prompting-and-context-engineering-001",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-models-prompting-and-context-engineering",
+    "difficulty": "medium",
+    "status": "draft",
+    "scope": "core",
+    "stem": "A legal tech solution uses Claude to analyze contracts against a static 15,000-token corporate policy document. The system prompt contains the policy document, but each request currently prefixes the prompt with a dynamic timestamp and user session ID before the policy text. Latency and token costs are unacceptable. How should the architect reorganize the prompt structure to enable effective prompt caching?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Place cache control breakpoints on every message object while keeping the dynamic session ID at the very start of the system prompt."
+      },
+      {
+        "id": "opt-b",
+        "text": "Split the 15,000-token policy document into 500-token chunks distributed across user messages so they bypass prefix ordering constraints."
+      },
+      {
+        "id": "opt-c",
+        "text": "Move the dynamic timestamp and session metadata after the static policy document so the invariant prefix matches across requests."
+      },
+      {
+        "id": "opt-d",
+        "text": "Configure the API request to use zero-shot instructions only, because prompt caching is automatically disabled whenever system prompts exceed 10,000 tokens."
+      }
+    ],
+    "correct": [
+      "opt-c"
+    ],
+    "explanation": "Claude's prompt caching relies on exact prefix matching from the very beginning of the prompt. If variable content (such as timestamps or session IDs) appears before static content (such as large policy documents or system instructions), the cache prefix is broken on every call, resulting in cache misses. Moving variable elements after the static prefix ensures high cache hit rates, reducing latency and input token costs.",
+    "distractorNotes": {
+      "opt-a": "Breakpoints cannot rescue cache hits if the prefix preceding them changes on every request, because cache lookups require byte-for-byte prefix continuity.",
+      "opt-b": "Chunking into user messages fragments the policy and still requires identical prefix ordering for caching, while adding context management overhead.",
+      "opt-d": "Prompt caching supports system prompts well beyond 10,000 tokens (minimum cacheable prefix is 1,024 or 2,048 tokens depending on model); it is not disabled."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+    "sourceNote": "Prompt caching / Structure your prompt",
+    "sourceCheckedAt": "2026-09-12"
+  }
+]

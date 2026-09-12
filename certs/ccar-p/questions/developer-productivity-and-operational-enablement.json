@@ -1,0 +1,43 @@
+[
+  {
+    "id": "ccar-p-developer-productivity-and-operational-enablement-001",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "developer-productivity-and-operational-enablement",
+    "difficulty": "medium",
+    "status": "draft",
+    "scope": "core",
+    "stem": "An enterprise platform team is rolling out Claude Code to 200 developers working across a monorepo. The platform team needs to enforce mandatory corporate repository coding guidelines and prevent developers from accidentally running dangerous destructive commands (such as git push --force or rm -rf), while allowing Claude to learn individual developer preferences across sessions. Which combination of mechanisms should the platform architect configure?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Place all guidelines and command restrictions in auto memory, and disable CLAUDE.md so Claude can override rules dynamically based on developer prompts."
+      },
+      {
+        "id": "opt-b",
+        "text": "Rely exclusively on prompt engineering within system prompts, because Claude Code cannot read local configuration files or execute custom lifecycle hooks."
+      },
+      {
+        "id": "opt-c",
+        "text": "Hardcode destructive command blocklists into .claude/rules/*.md files, which programmatically prevent tool execution before the tool call reaches the OS shell."
+      },
+      {
+        "id": "opt-d",
+        "text": "Use project-level CLAUDE.md files for coding guidelines, auto memory for individual preferences, and PreToolUse hooks to deterministically block destructive commands."
+      }
+    ],
+    "correct": [
+      "opt-d"
+    ],
+    "explanation": "In Claude Code's architectural memory and control model: CLAUDE.md files provide persistent instructions and project context; auto memory allows Claude to record individual developer preferences and patterns across sessions; and PreToolUse hooks provide deterministic programmatic guards that can inspect and block tool calls (such as destructive shell commands) before execution. Claude treats memory files as context rather than absolute programmatic constraints, so blocking actions deterministically requires a hook.",
+    "distractorNotes": {
+      "opt-a": "Auto memory is written by Claude to record learnings and preferences; it is not meant for team-wide architectural guidelines and cannot enforce security restrictions.",
+      "opt-b": "Claude Code natively supports hierarchical CLAUDE.md files, .claude/rules/, and lifecycle hooks.",
+      "opt-c": "Rules files in .claude/rules/ are loaded as context into the prompt, not hard deterministic execution barriers; deterministic blocking requires PreToolUse hooks."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/memory.md",
+    "sourceNote": "CLAUDE.md vs auto memory / PreToolUse hooks for blocking",
+    "sourceCheckedAt": "2026-09-12"
+  }
+]

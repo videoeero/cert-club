@@ -1,0 +1,43 @@
+[
+  {
+    "id": "ccar-p-integration-001",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "integration",
+    "difficulty": "medium",
+    "status": "draft",
+    "scope": "core",
+    "stem": "A software engineering team is integrating internal enterprise databases and developer documentation into Claude Desktop and Claude Code using the Model Context Protocol (MCP). The team needs to expose read-only database schemas as contextual reference data, while also exposing executable query functions that modify records. Under the MCP architectural specification, which combination of MCP primitives should the MCP server implement for these two requirements?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Expose database schemas as MCP Resources and expose executable update operations as MCP Tools."
+      },
+      {
+        "id": "opt-b",
+        "text": "Expose database schemas as MCP Prompts and expose executable update operations as MCP Resources."
+      },
+      {
+        "id": "opt-c",
+        "text": "Expose database schemas as MCP Sampling calls and expose executable update operations as MCP Roots."
+      },
+      {
+        "id": "opt-d",
+        "text": "Expose database schemas as MCP Tools and expose executable update operations as MCP Transports."
+      }
+    ],
+    "correct": [
+      "opt-a"
+    ],
+    "explanation": "In the Model Context Protocol (MCP) architecture, Resources represent read-only, passive data or content that clients can read and attach as context (analogous to GET endpoints or files, such as database schemas). Tools represent executable functions that perform operations and can have side effects (such as modifying records or running database queries), which the LLM can decide to invoke. Prompts are reusable templates, Roots define filesystem boundaries, and Sampling allows servers to request completions from the client LLM.",
+    "distractorNotes": {
+      "opt-b": "Prompts are pre-written interaction templates, and Resources are strictly read-only data, so Resources cannot perform update operations.",
+      "opt-c": "Sampling is a server-to-client LLM completion mechanism, and Roots define filesystem boundary URIs, neither of which fits data or operations.",
+      "opt-d": "Transports represent communication mechanisms (stdio, SSE) rather than capability primitives, and Resources are the idiomatic fit for passive schemas."
+    },
+    "sourceUrl": "https://modelcontextprotocol.io/docs/learn/architecture",
+    "sourceNote": "Core Architecture / MCP Primitives (Resources and Tools)",
+    "sourceCheckedAt": "2026-09-12"
+  }
+]

@@ -1,0 +1,43 @@
+[
+  {
+    "id": "ccar-p-evaluation-testing-and-optimization-001",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "evaluation-testing-and-optimization",
+    "difficulty": "medium",
+    "status": "draft",
+    "scope": "core",
+    "stem": "An AI team runs daily compliance auditing over 50,000 customer service transcripts every night. The audit results must be ready by 08:00 the following morning, but individual transcripts do not require real-time processing. Currently, the team runs concurrent synchronous /v1/messages calls, frequently hitting rate limits and incurring standard token costs. Which architectural change should the architect recommend to optimize cost and throughput?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Downgrade all transcripts to Claude Haiku without evaluation to lower the token pricing tier under synchronous endpoints."
+      },
+      {
+        "id": "opt-b",
+        "text": "Implement exponential backoff retries on the synchronous /v1/messages endpoint while keeping the immediate processing model."
+      },
+      {
+        "id": "opt-c",
+        "text": "Send all 50,000 transcripts concatenated into a single synchronous Messages request with max output tokens set to maximum."
+      },
+      {
+        "id": "opt-d",
+        "text": "Migrate the nightly evaluation pipeline to the Message Batches API to receive a 50% token cost discount and separate throughput pools."
+      }
+    ],
+    "correct": [
+      "opt-d"
+    ],
+    "explanation": "The Anthropic Message Batches API is designed specifically for high-volume, non-real-time asynchronous workloads (such as evals, nightly audits, and batch analysis). Requests submitted via Message Batches receive a 50% discount on input and output token pricing, process within a target turnaround time of 24 hours (most finishing in under 1 hour), and operate with separate batch throughput allocations that prevent hitting standard API rate limits.",
+    "distractorNotes": {
+      "opt-a": "Downgrading the model blindly risks audit accuracy and compliance quality without leveraging the 50% batch discount on the appropriate model.",
+      "opt-b": "Retries handle rate limit errors but do not address cost inefficiency or the fundamental mismatch between real-time calls and batch workloads.",
+      "opt-c": "A single request exceeds context limits, lacks granular per-transcript error recovery, and risks complete failure if one transcript fails."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/batch-processing",
+    "sourceNote": "Message Batches API overview and benefits",
+    "sourceCheckedAt": "2026-09-12"
+  }
+]
