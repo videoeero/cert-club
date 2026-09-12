@@ -1079,23 +1079,23 @@
     "difficulty": "easy",
     "status": "reviewed",
     "scope": "core",
-    "stem": "A geological survey team needs to transfer 120 TB of raw sensor data collected at a remote mountain research facility into Amazon S3. The facility connects to the internet over a slow, metered satellite uplink that would require over eighteen months to transmit the dataset over the network. Which AWS service provides a physical appliance to migrate this data securely?",
+    "stem": "A geological survey team needs to transfer 120 TB of raw sensor data collected at a remote mountain research facility into Amazon S3. The facility connects to the internet over a slow, metered satellite uplink that would require over eighteen months to transmit the dataset over the network. Which AWS service should the team use to complete this data migration securely within a few days?",
     "options": [
       {
         "id": "a",
-        "text": "AWS Snowball Edge, shipping a ruggedized physical hardware storage appliance to copy data offline"
+        "text": "AWS Snowball Edge, using a ruggedized physical storage device to migrate petabyte-scale data offline"
       },
       {
         "id": "b",
-        "text": "AWS Storage Gateway, establishing an on-premises virtual software appliance for hybrid file caching"
+        "text": "AWS Storage Gateway, deploying a local hybrid storage virtual appliance to cache data to Amazon S3"
       },
       {
         "id": "c",
-        "text": "AWS Direct Connect, installing a dedicated high-bandwidth private fiber line to the nearest AWS Region"
+        "text": "AWS Direct Connect, provisioning a dedicated private telecommunications circuit to bypass the satellite link"
       },
       {
         "id": "d",
-        "text": "AWS DataSync, running an automated software agent over public network connections to synchronize storage"
+        "text": "AWS DataSync, scheduling automated parallel network transfers over the existing satellite connection"
       }
     ],
     "correct": [
@@ -1103,9 +1103,9 @@
     ],
     "explanation": "AWS Snowball Edge is a physical data migration and edge computing device that comes in storage-optimized configurations (up to 80 TB or 210 TB usable storage). It is designed to move petabytes of data into and out of AWS securely when transferring data over the network is impractical due to limited bandwidth, high connectivity costs, or remote environments.",
     "distractorNotes": {
-      "b": "AWS Storage Gateway connects on-premises environments to cloud storage over existing network connections, which would be throttled by the satellite link.",
-      "c": "AWS Direct Connect provides dedicated physical telecommunications circuits, but cannot be provisioned to remote temporary field stations.",
-      "d": "AWS DataSync accelerates data transfers over existing network links, which remains constrained by the limited satellite bandwidth."
+      "b": "AWS Storage Gateway connects on-premises environments to cloud storage over existing network connections, which would remain bottlenecked by the slow satellite link.",
+      "c": "AWS Direct Connect provides dedicated physical telecommunications circuits between customer data centers and AWS, but cannot be provisioned to remote temporary mountain research sites.",
+      "d": "AWS DataSync accelerates data transfers over existing network links, but cannot overcome the physical throughput limitations of an 18-month satellite uplink."
     },
     "sourceUrl": "https://docs.aws.amazon.com/snowball/latest/developer-guide/what-is-snowball.html",
     "sourceNote": "AWS Snowball Developer Guide - What is AWS Snowball?",
@@ -1125,19 +1125,19 @@
     "options": [
       {
         "id": "a",
-        "text": "Operational expenses (OpEx) become capital expenses (CapEx), requiring multi-year upfront cloud commitments"
+        "text": "Operational expenses (OpEx) become capital expenses (CapEx), requiring multi-year upfront commitments to secure capacity"
       },
       {
         "id": "b",
-        "text": "Capital expenses (CapEx) become operational expenses (OpEx), paying only for consumed resources as incurred"
+        "text": "Capital expenses (CapEx) become operational expenses (OpEx), paying only for consumed resources as they are used"
       },
       {
         "id": "c",
-        "text": "All infrastructure expenditures are eliminated because AWS provides computing infrastructure free of charge"
+        "text": "Capital expenses are retained by purchasing long-term server hardware leases directly from AWS financial services"
       },
       {
         "id": "d",
-        "text": "Fixed infrastructure depreciation is replaced by a mandatory flat monthly fee for unlimited resource usage"
+        "text": "Infrastructure depreciation is replaced by fixed monthly software subscription fees regardless of compute usage"
       }
     ],
     "correct": [
@@ -1145,9 +1145,9 @@
     ],
     "explanation": "Migrating to AWS represents a transition from Capital Expenditures (CapEx) to Operational Expenditures (OpEx). CapEx involves large upfront cash outlays to acquire physical assets that are capitalized and depreciated over several years. In contrast, cloud computing operates on an OpEx model where organizations pay only for the ongoing computing capacity they consume on a pay-as-you-go basis.",
     "distractorNotes": {
-      "a": "Cloud computing shifts CapEx into OpEx, not OpEx into CapEx; furthermore, multi-year upfront commitments are optional (Savings Plans/Reserved Instances), not mandatory.",
-      "c": "AWS is a paid utility service; infrastructure spending does not disappear, but transitions to consumption-based operating expense.",
-      "d": "AWS bills based on metered granular resource consumption (e.g. per second, minute, or GB), not a mandatory flat unlimited monthly fee."
+      "a": "Cloud computing shifts CapEx into OpEx, not OpEx into CapEx; furthermore, multi-year commitments are optional discount instruments rather than mandatory requirements.",
+      "c": "AWS does not lease physical server hardware to customers; computing resources are provisioned as on-demand utility services.",
+      "d": "AWS infrastructure services are billed on granular metered consumption rather than fixed monthly subscription fees that remain flat regardless of usage."
     },
     "sourceUrl": "https://docs.aws.amazon.com/whitepapers/latest/aws-overview/six-advantages-of-cloud-computing.html",
     "sourceNote": "Six advantages of cloud computing - trade fixed expense for variable expense",
@@ -1167,19 +1167,19 @@
     "options": [
       {
         "id": "a",
-        "text": "Only the initial purchase invoices for server rack hardware and operating system software licenses"
+        "text": "Direct capital server hardware depreciation and commercial hypervisor software maintenance license agreements"
       },
       {
         "id": "b",
-        "text": "Only the recurring monthly fees paid to external software application developers and QA consultants"
+        "text": "Application development contractor salaries, end-user desktop hardware, and corporate office real estate leases"
       },
       {
         "id": "c",
-        "text": "Power electricity, cooling systems, rack space, physical security guards, and hardware maintenance"
+        "text": "Data center power, HVAC cooling, rack floor space, physical security, and ongoing server hardware maintenance"
       },
       {
         "id": "d",
-        "text": "Outbound internet data transfer rates and AWS premium enterprise technical support subscription tiers"
+        "text": "Third-party software quality assurance testing tools, business analytics consultants, and marketing platform retainers"
       }
     ],
     "correct": [
@@ -1187,9 +1187,9 @@
     ],
     "explanation": "Total Cost of Ownership (TCO) encompasses all direct and indirect expenses associated with building and operating an environment. For on-premises data centers, TCO includes real estate floor space, power and electricity, cooling infrastructure (HVAC), physical security personnel, rack mounting, network hardware, server maintenance, spare parts, and labor for hardware operations.",
     "distractorNotes": {
-      "a": "Considering only hardware and initial OS licenses ignores massive ongoing facilities, electrical, cooling, and operational staffing overhead.",
-      "b": "Application software development contractor fees are application-layer costs that exist regardless of hosting platform and do not represent infrastructure facility TCO.",
-      "d": "AWS data transfer and enterprise support fees are cloud expenses, not components of the on-premises baseline."
+      "a": "Considering only direct server hardware depreciation and hypervisor licensing severely undercounts on-premises TCO by ignoring continuous power, cooling, facility space, and hardware maintenance overhead.",
+      "b": "Application software contractor salaries and corporate end-user office leases exist regardless of where workloads run and are not part of data center infrastructure facility TCO.",
+      "d": "Quality assurance tooling and marketing consulting retainers are business operating expenses unrelated to on-premises server infrastructure and facility TCO."
     },
     "sourceUrl": "https://docs.aws.amazon.com/migrationhub/latest/ug/migration-evaluator.html",
     "sourceNote": "Migration Hub User Guide - Migration Evaluator and TCO assessment factors",
@@ -1209,19 +1209,19 @@
     "options": [
       {
         "id": "a",
-        "text": "License Included, which bundles all third-party software licensing costs into the hourly compute charge"
+        "text": "License Included, bundling all third-party operating system and database software licenses into the hourly compute rate"
       },
       {
         "id": "b",
-        "text": "Free Tier licensing, which waives vendor license compliance for all instances deployed in non-production"
+        "text": "AWS Marketplace private offers, purchasing custom enterprise software subscriptions directly through vendor contracts"
       },
       {
         "id": "c",
-        "text": "Open-source substitution, which automatically converts proprietary database engines to PostgreSQL engines"
+        "text": "Enterprise Discount Program (EDP), converting on-premises perpetual software licenses into pooled AWS usage credits"
       },
       {
         "id": "d",
-        "text": "Bring Your Own License (BYOL), which allows customers to use existing eligible software licenses on AWS"
+        "text": "Bring Your Own License (BYOL), allowing customers to utilize existing eligible enterprise software licenses on AWS"
       }
     ],
     "correct": [
@@ -1230,8 +1230,8 @@
     "explanation": "Bring Your Own License (BYOL) is a licensing model that allows customers to migrate existing eligible enterprise software licenses (such as Microsoft Windows Server, SQL Server, or Oracle) to AWS (such as on Amazon EC2 Dedicated Hosts or supported EC2 instances), utilizing their existing software investments and avoiding recurring license fees bundled by AWS.",
     "distractorNotes": {
       "a": "License Included is the model where AWS provides the software license as part of the hourly compute rate, which would duplicate the company's existing licenses.",
-      "b": "AWS Free Tier provides introductory usage for eligible services, but does not provide free third-party enterprise database software licenses.",
-      "c": "Open-source substitution involves migrating to an open-source database (such as PostgreSQL or MySQL), which requires schema and application changes rather than reusing existing licenses."
+      "b": "AWS Marketplace private offers enable procurement of new software subscriptions and negotiated pricing from independent software vendors, rather than reusing existing perpetual licenses.",
+      "c": "The Enterprise Discount Program provides tiered discounts based on overall AWS spending commitments, but does not convert external software licenses into AWS usage credits."
     },
     "sourceUrl": "https://docs.aws.amazon.com/license-manager/latest/userguide/license-manager.html",
     "sourceNote": "AWS License Manager User Guide - Bring Your Own License (BYOL) overview",
@@ -1293,11 +1293,11 @@
     "options": [
       {
         "id": "a",
-        "text": "Guaranteed elimination of all variable operating expenses across all production environments"
+        "text": "Elimination of all technical debt by replacing custom applications with fully managed SaaS offerings"
       },
       {
         "id": "b",
-        "text": "Complete exemption from industry regulatory compliance audits when storing customer records"
+        "text": "Transfer of enterprise regulatory compliance accountability and audit liability entirely to AWS"
       },
       {
         "id": "c",
@@ -1305,11 +1305,11 @@
       },
       {
         "id": "d",
-        "text": "Immediate 100% depreciation of all cloud software expenditures within the initial fiscal year"
+        "text": "Conversion of all cloud operating expenses into capitalized assets depreciated across multiple years"
       },
       {
         "id": "e",
-        "text": "Increased operational efficiency, lowering unit costs and automating routine operations tasks"
+        "text": "Increased operational efficiency, lowering unit costs and automating routine operational tasks"
       }
     ],
     "correct": [
@@ -1318,9 +1318,9 @@
     ],
     "explanation": "The AWS Cloud Adoption Framework (AWS CAF) identifies four core business outcomes driven by cloud transformation: (1) Reduced business risk (improving security, resilience, and compliance), (2) Increased operational efficiency (lowering unit costs and improving productivity), (3) Accelerated business agility and revenue growth, and (4) Environmental, Social, and Governance (ESG) performance improvement.",
     "distractorNotes": {
-      "a": "The cloud introduces consumption-based variable operating expenses rather than eliminating them.",
-      "b": "Customers remain subject to industry regulatory compliance audits under the Shared Responsibility Model.",
-      "d": "Cloud operating expenses are ongoing operational costs rather than depreciable capital assets."
+      "a": "Migrating to the cloud or adopting SaaS does not automatically eliminate technical debt or architecture maintenance.",
+      "b": "Under the AWS Shared Responsibility Model, customers remain fully accountable and liable for their own regulatory compliance posture and audits.",
+      "d": "Cloud computing operates on a pay-as-you-go operational expenditure (OpEx) model, not capitalizing infrastructure into multi-year depreciable assets."
     },
     "sourceUrl": "https://docs.aws.amazon.com/whitepapers/latest/overview-aws-cloud-adoption-framework/cloud-acceleration-outcomes.html",
     "sourceNote": "AWS CAF - Cloud acceleration outcomes and business benefits",

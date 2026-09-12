@@ -589,3 +589,280 @@ Per-domain judgement against the manifest weights (130 questions total, ~2× the
 Every domain is filled to its weighted share (all within ±1 of target), and all
 130 questions are individually `reviewed` (100%). `npm run check` passes
 (content validation, blueprint balance, tests, ESLint, Prettier).
+
+## Difficulty calibration: 2026-09-12 (Domain: Security and Compliance)
+
+Calibrated Domain 2 (Security and Compliance) against the official exam
+sample questions following `skills/harden-domain-questions`.
+
+### Cognitive anchor
+
+The official AWS Certified Cloud Practitioner sample questions set
+(`AWS-Certified-Cloud-Practitioner_Sample-Questions.pdf`) anchors the cognitive
+level for Domain 2 with four items:
+
+- **Sample Question 5** (Domain 2): "Which of the following is an AWS responsibility under the AWS shared responsibility model? A) Configuring third-party applications, B) Maintaining physical hardware, C) Securing application access and data, D) Managing guest operating systems." Key: `B` (Maintaining physical hardware).
+- **Sample Question 7** (Domain 2): "How would a system administrator add an additional layer of login security to a user's AWS Management Console? A) Use Amazon Cloud Directory, B) Audit AWS Identity and Access Management (IAM) roles, C) Enable multi-factor authentication, D) Enable AWS CloudTrail." Key: `C` (Enable multi-factor authentication).
+- **Sample Question 8** (Domain 2): "Which service can identify the user that made the API call when an Amazon EC2 instance is terminated? A) AWS Trusted Advisor, B) AWS CloudTrail, C) AWS X-Ray, D) AWS Identity and Access Management (AWS IAM)." Key: `B` (AWS CloudTrail).
+- **Sample Question 10** (Domain 2): "Where can a user find information about prohibited actions on the AWS infrastructure? A) AWS Trusted Advisor, B) AWS Identity and Access Management (IAM), C) AWS Billing Console, D) AWS Acceptable Use Policy." Key: `D` (AWS Acceptable Use Policy).
+
+All four vendor sample items are unconstrained recall/identification items testing basic concept or service names with short phrases, eliminable on sight by any candidate with surface familiarity.
+
+### Standing versus anchor
+
+Domain 2 currently sits **substantially above** its sample anchor across all 39 questions:
+
+- **Scenario grounding**: All 39 questions (32 single-select, 7 multi-select) open on concrete operational, compliance, or architectural scenarios (e.g. S3 bucket deletion forensic audit, standalone account root user boundaries, HIPAA compliance and BAA acquisition, multi-account region restriction with SCPs, cross-account S3 bucket access, PCI DSS compliance scope boundaries, stateful security group return traffic, serverless Lambda execution roles, CloudTrail SHA-256 integrity validation).
+- **Distractor subtlety & near-misses**: Options do not rely on throwaway filler. Distractors test real AWS mechanisms applied in incorrect operational contexts or documented architectural misconceptions (e.g. stateful NACLs misconception, CloudTrail Lake vs Insights vs Digests, SMS MFA in standard IAM, IAM inline policies vs user groups, IAM roles vs users for temporary STS credentials, AWS KMS vs CloudHSM single-tenant FIPS 140-2 Level 3, AWS WAF Layer 7 vs Shield Layer 3/4).
+- **Multi-select discrimination**: 7 items (17.9%) use multi-response (select-TWO) with five options under all-or-nothing scoring, testing multi-part knowledge (shared controls, supported MFA devices, Secrets Manager capabilities, password policy enforcement rules, root user protection practices).
+- **Solvability tells**: No length bias (mean length delta is -1.02 chars bank-wide, key is longest in only 18.7% of items; domain 2 single-select positions are 9 `a`, 8 `b`, 8 `c`, 8 `d`), and no key wins by sole absence of absolute qualifiers. Distractor notes coverage is 100%. No facepalm distractors exist.
+
+### Stage 0 evaluation
+
+Per Stage 0 of `skills/harden-domain-questions`, the domain clears the gate untouched: editing it to "feel harder" would risk introducing ambiguity or pushing beyond the foundational blueprint depth.
+
+### Dispositions (39 questions)
+
+- `aws-clf-c02-security-and-compliance-001`: **calibrated — no change**. EC2 guest OS patching under shared responsibility. Scenario stem; distractors contrast hypervisor boundary, bundled pricing misconception, and in-place self-patching fallacy. Balanced lengths (73–77 chars).
+- `aws-clf-c02-security-and-compliance-002`: **calibrated — no change**. Root-only tasks in standalone account. Distractors test standard administrative IAM duties (creating roles, enabling GuardDuty, attaching customer managed policies) vs account closure.
+- `aws-clf-c02-security-and-compliance-003`: **calibrated — no change**. Root user best practices (multi-select). Options balance length (58–61 chars) and contrast valid controls (MFA, group email) with operational anti-patterns (sharing root password, creating root access keys, daily root use).
+- `aws-clf-c02-security-and-compliance-004`: **calibrated — no change**. AWS SOC and PCI compliance reports. Distractors test real governance/assessment tools (Trusted Advisor, Inspector, Config) against AWS Artifact. Balanced lengths (64–69 chars).
+- `aws-clf-c02-security-and-compliance-005`: **calibrated — no change**. Continuous threat detection across CloudTrail, VPC flow logs, and DNS logs. Distractors (WAF, Artifact, Inspector) represent valid security offerings.
+- `aws-clf-c02-security-and-compliance-006`: **calibrated — no change**. API caller attribution on unexpected S3 deletion. Distractors (CloudWatch, VPC Flow Logs, Config) test precise logging boundaries vs CloudTrail. Distinctly more rigorous than sample Q8.
+- `aws-clf-c02-security-and-compliance-007`: **calibrated — no change**. Temporary credentials for EC2 accessing S3. Distractors test real mechanisms (storing keys on disk, VPC security groups, KMS keys) against IAM roles.
+- `aws-clf-c02-security-and-compliance-008`: **calibrated — no change**. Blocking single malicious IP at subnet boundary. Distractors contrast NACL vs security group properties (allow/deny rules, statefulness, instance vs subnet level, rule evaluation order).
+- `aws-clf-c02-security-and-compliance-009`: **calibrated — no change**. Managed Amazon RDS patching responsibilities. Distractors test database user management, schema/index design, and SQL query tuning. Uniform option lengths (105–107 chars).
+- `aws-clf-c02-security-and-compliance-010`: **calibrated — no change**. Physical data center security under shared responsibility. Distractors test customer virtual controls (VPC firewalls, console MFA, payload encryption) against physical hardware/power/disk destruction.
+- `aws-clf-c02-security-and-compliance-011`: **calibrated — no change**. Shared controls under shared responsibility (multi-select). Distinguishes shared controls (Patch Management, Configuration Management) from AWS-only inherited physical/hypervisor controls.
+- `aws-clf-c02-security-and-compliance-012`: **calibrated — no change**. Serverless compute security with AWS Lambda. Distractors test serverless OS/hypervisor, host hardware capacity, and memory module replacement against application code and IAM execution roles.
+- `aws-clf-c02-security-and-compliance-013`: **calibrated — no change**. S3 bucket and object security responsibilities. Distractors test storage hardware replacement, storage cluster software, and biometric scanners against bucket policies and encryption.
+- `aws-clf-c02-security-and-compliance-014`: **calibrated — no change**. PCI DSS application compliance vs AWS infrastructure compliance. Distractors address automated compliance waiver myth, infrastructure attestation reliance, and unmanaged EC2 scope misconception.
+- `aws-clf-c02-security-and-compliance-015`: **calibrated — no change**. Centralized Region restriction in AWS Organizations. Distractors test VPC peering, local IAM permission boundaries, and Secrets Manager policies against SCPs.
+- `aws-clf-c02-security-and-compliance-016`: **calibrated — no change**. Centralized security dashboard and CIS benchmark checks. Distractors test CloudTrail, GuardDuty, and Systems Manager against Security Hub.
+- `aws-clf-c02-security-and-compliance-017`: **calibrated — no change**. AWS Artifact capabilities (multi-select). Distinguishes Artifact Agreements (BAA) and Artifact Reports (SOC/ISO) from penetration testing, VPC firewall rules, and KMS encryption keys.
+- `aws-clf-c02-security-and-compliance-018`: **calibrated — no change**. Resource configuration history and rule compliance (S3 encryption). Distractors test CloudWatch, CloudTrail, and Trusted Advisor against AWS Config.
+- `aws-clf-c02-security-and-compliance-019`: **calibrated — no change**. Secure multi-account landing zone with guardrails. Distractors test CloudFormation, Elastic Beanstalk, and CodePipeline against AWS Control Tower.
+- `aws-clf-c02-security-and-compliance-020`: **calibrated — no change**. Anomalous API call surges and AccessDenied spikes. Distractors test internal CloudTrail features (CloudTrail Lake, Event History, Digests) against CloudTrail Insights.
+- `aws-clf-c02-security-and-compliance-021`: **calibrated — no change**. Workload architectural review against pillars and remediation plan. Distractors test Budgets, Trusted Advisor, and Cost Explorer against AWS Well-Architected Tool.
+- `aws-clf-c02-security-and-compliance-022`: **calibrated — no change**. Proving CloudTrail logs in S3 are unmodified. Distractors test S3 lifecycle archive, CloudWatch alarms, and VPC endpoint policies against SHA-256 log file integrity validation.
+- `aws-clf-c02-security-and-compliance-023`: **calibrated — no change**. Minimum permissions required for duties. Distractors test defense in depth, separation of duties, and zero trust access against principle of least privilege.
+- `aws-clf-c02-security-and-compliance-024`: **calibrated — no change**. Supported AWS IAM MFA methods (multi-select). Distinguishes virtual authenticators and FIDO2 keys from unsupported SMS text messages, voice calls, and email verification links.
+- `aws-clf-c02-security-and-compliance-025`: **calibrated — no change**. Central workforce SSO across AWS accounts with Microsoft Entra ID. Distractors test Amazon Cognito, Simple AD, and Secrets Manager against AWS IAM Identity Center.
+- `aws-clf-c02-security-and-compliance-026`: **calibrated — no change**. Assigning uniform permissions to new engineers. Distractors test inline user policies, sharing root access keys, and VPC security groups against IAM user groups.
+- `aws-clf-c02-security-and-compliance-027`: **calibrated — no change**. Cross-account S3 access without creating local IAM users. Distractors test local user group identity policies, VPC network ACLs, and Organizations SCPs against resource-based bucket policies.
+- `aws-clf-c02-security-and-compliance-028`: **calibrated — no change**. Architectural characteristics of IAM roles vs users. Distractors test personal password requirements, service assumption restriction, and SCP bypass against temporary security credentials.
+- `aws-clf-c02-security-and-compliance-029`: **calibrated — no change**. IAM account password policy enforceable rules (multi-select). Distinguishes character complexity and password reuse history from biometrics, IP restrictions, and session duration limits.
+- `aws-clf-c02-security-and-compliance-030`: **calibrated — no change**. Identifying resources shared with external principals. Distractors test CloudTrail, GuardDuty, and CloudWatch against AWS IAM Access Analyzer automated reasoning.
+- `aws-clf-c02-security-and-compliance-031`: **calibrated — no change**. DynamoDB encryption at rest with centralized key management. Distractors test Secrets Manager, Certificate Manager, and CloudHSM against AWS Key Management Service (AWS KMS).
+- `aws-clf-c02-security-and-compliance-032`: **calibrated — no change**. Blocking Layer 7 XSS and SQL injection on web applications. Distractors test Shield Standard (Layer 3/4), Network ACLs (Layer 3/4), and GuardDuty (log analysis) against AWS WAF.
+- `aws-clf-c02-security-and-compliance-033`: **calibrated — no change**. 24/7 SRT access and DDoS cost spike protection. Distractors test Shield Standard, WAF Managed Rules, and Firewall Manager against AWS Shield Advanced.
+- `aws-clf-c02-security-and-compliance-034`: **calibrated — no change**. Continuous vulnerability assessment across EC2, ECR, and Lambda. Distractors test GuardDuty, Security Hub, and Systems Manager Patch Manager against Amazon Inspector.
+- `aws-clf-c02-security-and-compliance-035`: **calibrated — no change**. Machine learning discovery of sensitive PII in S3. Distractors test Rekognition (computer vision), Comprehend (NLP sentiment), and CloudTrail against Amazon Macie.
+- `aws-clf-c02-security-and-compliance-036`: **calibrated — no change**. Native AWS Secrets Manager capabilities (multi-select). Distinguishes built-in RDS rotation and Lambda rotation functions from free storage myth, physical appliances, and HTTP packet inspection.
+- `aws-clf-c02-security-and-compliance-037`: **calibrated — no change**. Provisioning and auto-renewing SSL/TLS certificates for ALB/CloudFront. Distractors test KMS, CloudHSM, and Secrets Manager against AWS Certificate Manager (ACM).
+- `aws-clf-c02-security-and-compliance-038`: **calibrated — no change**. Security group inbound allow rule not needing outbound rule for return responses. Distractors test TLS bypass misconception, packet protocol conversion, and connection origin misconception against stateful connection tracking.
+- `aws-clf-c02-security-and-compliance-039`: **calibrated — no change**. Dedicated single-tenant FIPS 140-2 Level 3 hardware security modules under exclusive customer control. Distractors test multi-tenant KMS, Secrets Manager, and Shield Advanced against AWS CloudHSM.
+
+## Difficulty calibration: 2026-09-12 (Domain: Billing, Pricing, and Support)
+
+Calibrated Domain 4 (Billing, Pricing, and Support) against the official exam
+sample questions following `skills/harden-domain-questions`.
+
+### Cognitive anchor
+
+The official AWS Certified Cloud Practitioner sample questions set
+(`AWS-Certified-Cloud-Practitioner_Sample-Questions.pdf`) anchors the cognitive
+level for Domain 4:
+- **Sample Question 3** (Domain 4): "Which AWS offering enables users to find,
+  buy, and immediately start using software solutions in their AWS environment?
+  A) AWS Config, B) AWS OpsWorks, C) AWS SDK, D) AWS Marketplace." Key: `D`
+  (AWS Marketplace).
+
+The vendor sample is an unconstrained recall item where distractors are
+transparent throwaways drawn from unrelated technical domains (compliance
+auditing, configuration management, developer libraries), eliminable on sight
+by any candidate with surface familiarity.
+
+### Standing versus anchor
+
+Domain 4 currently sits **substantially above** its sample anchor across all 16
+questions:
+
+- **Format and cognitive demand**: 3 of 16 items (`001`, `015`, `016`) are
+  multi-response (`type: "multi"`, select-2) questions with all-or-nothing
+  scoring across five options, requiring multi-attribute evaluation.
+- **Distractor quality**: Distractors throughout the domain are plausible
+  near-misses drawn from within AWS billing, cost management, and purchasing
+  options (e.g. EC2 Instance Savings Plans vs Compute Savings Plans; Cost
+  Anomaly Detection ML vs Budgets static thresholds; CUR S3 export vs Cost
+  Explorer; Dedicated Hosts BYOL sockets/cores vs Dedicated Instances). No
+  option is a facepalm or cross-domain throwaway.
+- **Stems**: All 16 items open on concrete engineering, finance, or governance
+  scenarios with explicit operational constraints, rather than definition
+  prompts.
+- **Solvability tells**: No length bias (mean length delta is -1.02 chars bank-wide,
+  median -0.83 chars; key is longest in only 2 of 13 single-select items in this
+  domain, 15.4%), single-select keys are uniformly distributed across positions
+  (3/3/3/4 across `a`-`d`), and no key wins by sole absence of absolute
+  qualifiers.
+
+Per Stage 0 of `skills/harden-domain-questions`, the domain clears the gate
+untouched: editing it to "feel harder" would risk introducing ambiguity or
+pushing beyond the foundational blueprint depth.
+
+### Dispositions (16 questions)
+
+- `aws-clf-c02-billing-pricing-and-support-001`: **calibrated — no change**. Multi-select (select-2) pairing interruptible batch workloads to Spot Instances and steady baseline spend to Savings Plans, discriminating against Dedicated Hosts, On-Demand, and Capacity Reservations. Strictly above sample anchor.
+- `aws-clf-c02-billing-pricing-and-support-002`: **calibrated — no change**. Distinguishes AWS Budgets threshold alerting from Cost Explorer (analysis/forecast), Pricing Calculator (pre-deployment estimates), and cost allocation tags (reporting metadata).
+- `aws-clf-c02-billing-pricing-and-support-003`: **calibrated — no change**. Evaluates multi-pillar best practice inspection (AWS Trusted Advisor) against historical cost visualization (Cost Explorer), API governance (CloudTrail), and server configuration (Systems Manager).
+- `aws-clf-c02-billing-pricing-and-support-004`: **calibrated — no change**. Tests Consolidated billing in AWS Organizations for tiered volume pricing discounts and single invoice aggregation across member accounts against Budgets, tagging, and Cost Anomaly Detection.
+- `aws-clf-c02-billing-pricing-and-support-005`: **calibrated — no change**. Evaluates pre-deployment architectural modeling and cost estimation (AWS Pricing Calculator) against post-deployment tools (Cost Explorer, Budgets, CUR).
+- `aws-clf-c02-billing-pricing-and-support-006`: **calibrated — no change**. Distinguishes non-expiring recurring monthly quotas (Always Free) from 12 Months Free, short-term Free Trials, and calendar-expiring promotional credits.
+- `aws-clf-c02-billing-pricing-and-support-007`: **calibrated — no change**. Tests historical consumption analysis (past 12 months) and forward forecasting (up to 12 months ahead) in AWS Cost Explorer against hypothetical modeling (Pricing Calculator) and raw export (CUR).
+- `aws-clf-c02-billing-pricing-and-support-008`: **calibrated — no change**. Tests specific data transfer pricing boundaries, identifying free inbound data transfer from the internet against billable outbound internet, inter-Region, and inter-AZ network flows. Substantially above sample anchor.
+- `aws-clf-c02-billing-pricing-and-support-009`: **calibrated — no change**. Evaluates comprehensive hourly line-item data delivery to Amazon S3 (AWS Cost and Usage Report) for SQL querying against monthly invoice summaries, Cost Explorer charts, and Trusted Advisor.
+- `aws-clf-c02-billing-pricing-and-support-010`: **calibrated — no change**. Differentiates Compute Savings Plans (automatic application across instance families, Regions, Fargate, and Lambda) from EC2 Instance Savings Plans, Standard RIs, and Spot Instances.
+- `aws-clf-c02-billing-pricing-and-support-011`: **calibrated — no change**. Tests required administrative activation of user-defined cost allocation tags in the Billing console against Systems Manager Parameter Store, CloudTrail, and SCPs.
+- `aws-clf-c02-billing-pricing-and-support-012`: **calibrated — no change**. Identifies account-specific hardware maintenance alerts and operational guidance in AWS Health Dashboard against Trusted Advisor, Support Center, and Cost Anomaly Detection.
+- `aws-clf-c02-billing-pricing-and-support-013`: **calibrated — no change**. Tests machine-learning spend anomaly detection without static thresholds (AWS Cost Anomaly Detection) against static limit alerting (AWS Budgets), Pricing Calculator, and Billing Conductor.
+- `aws-clf-c02-billing-pricing-and-support-014`: **calibrated — no change**. Identifies third-party software procurement with unified AWS invoicing (AWS Marketplace) against internal catalog and deployment tools (Service Catalog, Systems Manager, AppConfig). Direct counterpart to Sample Question 3 with considerably sharper, domain-aligned distractors.
+- `aws-clf-c02-billing-pricing-and-support-015`: **calibrated — no change**. Multi-select (select-2) evaluating physical socket/core visibility (for BYOL) and host placement affinity unique to Dedicated Hosts compared to Dedicated Instances. Substantially above sample anchor.
+- `aws-clf-c02-billing-pricing-and-support-016`: **calibrated — no change**. Multi-select (select-2) testing AWS Budgets tracking dimensions (costs, usage, RI/Savings Plans coverage and utilization) and notification triggers (SNS, email) against Pricing Calculator, Cost Anomaly Detection, and CUR.
+
+## Difficulty calibration: 2026-09-12 (Domain: Cloud Concepts)
+
+Calibrated Domain 1 (Cloud Concepts) against the official exam sample questions following `skills/harden-domain-questions`.
+
+### Cognitive anchor
+
+The official AWS Certified Cloud Practitioner sample questions set (`AWS-Certified-Cloud-Practitioner_Sample-Questions.pdf`) anchors the cognitive level for Domain 1 (Cloud Concepts):
+
+- **Sample Question 1** (Domain 1): "Why is AWS more economical than traditional data centers for applications with varying compute workloads? A) Amazon EC2 costs are billed on a monthly basis, B) Users retain full administrative access to their Amazon EC2 instances, C) Amazon EC2 instances can be launched on demand when needed, D) Users can permanently run enough instances to handle peak workloads." Key: `C` (Amazon EC2 instances can be launched on demand when needed).
+
+The vendor sample item tests foundational cloud economics and elasticity versus traditional on-premises overprovisioning. While concise, its distractors test genuine operational differences (monthly vs metered billing, administrative control, static peak provisioning) rather than throwaways or absurdities.
+
+### Standing versus anchor
+
+Following distractor hardening and calibration, Domain 1 currently sits **at or above** its sample anchor across all 31 questions:
+
+- **Scenario grounding**: All 31 questions (26 single-select, 5 multi-select) open on concrete business, governance, or cloud economics scenarios (e.g. Well-Architected Framework pillar alignment, 6 Advantages of Cloud Computing, 7 Rs migration pathways, AWS CAF perspectives, CapEx to OpEx transition, TCO baseline facilities modeling, BYOL vs License Included).
+- **Distractor hardening & elimination of facepalms**: Five items (`026`, `027`, `028`, `029`, `031`) were hardened by tightening giveaway stems and replacing weak/facepalm options with plausible technical and economic near-misses:
+  - In `026`, tightened stem to eliminate the giveaway "provides a physical appliance" prompt in favor of an operational timeframe constraint ("within a few days"), refining options and distractor notes for Storage Gateway, Direct Connect, and DataSync.
+  - In `027`, replaced giveaway facepalms (AWS providing infrastructure free of charge, flat fee unlimited usage) with legitimate cloud accounting misconceptions (leasing hardware from AWS, fixed monthly software subscriptions).
+  - In `028`, replaced cloud cost items in on-premises TCO and "Only..." absolutes with authentic facility cost components and undercounting traps.
+  - In `029`, replaced facepalm Free Tier license compliance waiver with authentic enterprise software procurement models (AWS Marketplace private offers, Enterprise Discount Program EDP).
+  - In `031`, replaced facepalm compliance audit exemption and OpEx depreciation with authentic cloud transformation misconceptions (technical debt elimination fallacy, total compliance accountability transfer to AWS).
+  The remaining 26 items already meet or exceed the sample anchor and were disposed as **calibrated — no change**.
+- **Multi-select discrimination**: 5 items (16.1%) use multi-response (select-TWO) with five options under all-or-nothing scoring.
+- **Solvability tells & bias guards**: Mean length delta is -1.02 characters bank-wide (median -0.83 chars), longest option is key in 18.7% (20/107) of single-select items bank-wide, single-select keys in this domain are uniformly distributed across positions (7 `a`, 7 `b`, 6 `c`, 6 `d`), and no key wins by sole absence of absolute qualifiers. Distractor notes coverage is 100%.
+
+### Dispositions (31 questions)
+
+- `aws-clf-c02-cloud-concepts-001`: **calibrated — no change**. Well-Architected Framework Sustainability pillar. Distractors cover Reliability, Cost Optimization, and Operational Excellence with balanced definitions.
+- `aws-clf-c02-cloud-concepts-002`: **calibrated — no change**. 7 Rs migration strategies (multi-select, select-2). Differentiates Rehost (lift and shift) and Replatform (switching to Amazon RDS for SQL Server) from Retire, Repurchase, and Refactor.
+- `aws-clf-c02-cloud-concepts-003`: **calibrated — no change**. Trading fixed upfront expense for variable consumption expense. Distractors test continued capital purchase cycles, flat annual platform fees, and compute absorption misconceptions.
+- `aws-clf-c02-cloud-concepts-004`: **calibrated — no change**. Well-Architected general design principle "Stop guessing capacity needs". All four options are authentic Well-Architected principles.
+- `aws-clf-c02-cloud-concepts-005`: **calibrated — no change**. AWS CAF People perspective (culture, team structure, cloud upskilling). Distractors cover Business, Platform, and Governance perspectives.
+- `aws-clf-c02-cloud-concepts-006`: **calibrated — no change**. Six Advantages of Cloud Computing: "Increase speed and agility" (reducing provisioning lead time from weeks to minutes). Distractors cover economies of scale, high availability, and data center maintenance.
+- `aws-clf-c02-cloud-concepts-007`: **calibrated — no change**. Elasticity vs Scalability during flash sales. Key discrimination between dynamic real-time scaling (elasticity) and long-term capacity growth (scalability).
+- `aws-clf-c02-cloud-concepts-008`: **calibrated — no change**. Six Advantages of Cloud Computing: "Going global in minutes". Distractors contrast economies of scale, eliminating data center maintenance, and trading fixed for variable expense.
+- `aws-clf-c02-cloud-concepts-009`: **calibrated — no change**. Multi-AZ high availability behind ALB. Distractors contrast elasticity, agility, and economies of scale.
+- `aws-clf-c02-cloud-concepts-010`: **calibrated — no change**. Six Advantages of Cloud Computing: "Stop spending money running and maintaining data centers" vs speed/agility, economies of scale, and trading fixed for variable expense.
+- `aws-clf-c02-cloud-concepts-011`: **calibrated — no change**. Six Advantages of Cloud Computing (multi-select, select-2). Identifies massive economies of scale and stopping guessing capacity needs against guest OS patching, zero latency guarantee, and fixed maintenance contracts.
+- `aws-clf-c02-cloud-concepts-012`: **calibrated — no change**. Well-Architected Reliability pillar. Distractors cover Operational Excellence, Performance Efficiency, and Cost Optimization.
+- `aws-clf-c02-cloud-concepts-013`: **calibrated — no change**. Well-Architected Operational Excellence pillar (operations as code, small reversible changes, learning from failures).
+- `aws-clf-c02-cloud-concepts-014`: **calibrated — no change**. Well-Architected Security pillar (least privilege, defense-in-depth, audit traceability, encryption).
+- `aws-clf-c02-cloud-concepts-015`: **calibrated — no change**. Well-Architected Performance Efficiency pillar (managed AI/ML democratization, serverless compute, regional benchmarking).
+- `aws-clf-c02-cloud-concepts-016`: **calibrated — no change**. Well-Architected Cost Optimization pillar (consumption model, measuring ROI, attributing spend).
+- `aws-clf-c02-cloud-concepts-017`: **calibrated — no change**. Well-Architected general design principles (multi-select, select-2). Tests automated experimentation and data-driven architectures against monolithic standardization and overprovisioning.
+- `aws-clf-c02-cloud-concepts-018`: **calibrated — no change**. Well-Architected general design principle "Allow for evolutionary architectures".
+- `aws-clf-c02-cloud-concepts-019`: **calibrated — no change**. Well-Architected general design principle "Test systems at production scale" vs game days, data-driven architecture, and automated experimentation.
+- `aws-clf-c02-cloud-concepts-020`: **calibrated — no change**. AWS CAF Governance perspective (program management, license and vendor portfolios, KPI tracking).
+- `aws-clf-c02-cloud-concepts-021`: **calibrated — no change**. AWS CAF Business perspective (commercial outcomes, product monetization, customer journey).
+- `aws-clf-c02-cloud-concepts-022`: **calibrated — no change**. AWS CAF Operations perspective (SLAs, observability telemetry, patch automation, incident management).
+- `aws-clf-c02-cloud-concepts-023`: **calibrated — no change**. AWS CAF Security perspective (zero-trust identity, vulnerability assessment, audit logging, threat response).
+- `aws-clf-c02-cloud-concepts-024`: **calibrated — no change**. 7 Rs migration strategy "Relocate" (hypervisor-level lift and shift of VMware VMs without format or IP changes).
+- `aws-clf-c02-cloud-concepts-025`: **calibrated — no change**. 7 Rs migration strategies "Retire" and "Retain" (multi-select, select-2).
+- `aws-clf-c02-cloud-concepts-026`: **hardened** (obvious key / tightened stem). Tightened stem to eliminate the giveaway "provides a physical appliance" prompt in favor of an operational timeframe constraint ("within a few days"). Refined options and distractor notes for Storage Gateway, Direct Connect, and DataSync to emphasize authentic hybrid networking constraints against the satellite uplink. Key `a` ("AWS Snowball Edge") unchanged.
+- `aws-clf-c02-cloud-concepts-027`: **hardened** (weak/facepalm distractors). Replaced giveaway facepalm ("infrastructure provided free of charge", flat fee unlimited usage) with legitimate cloud accounting misconceptions (leasing server hardware from AWS, fixed monthly software subscriptions). Key `b` ("CapEx to OpEx") unchanged.
+- `aws-clf-c02-cloud-concepts-028`: **hardened** (weak distractors / absolutes). Replaced AWS cloud costs in an on-premises TCO question and "Only..." absolutes with authentic facility cost components and classic undercounting traps (direct hardware/hypervisor depreciation ignoring facilities). Key `c` unchanged.
+- `aws-clf-c02-cloud-concepts-029`: **hardened** (weak/facepalm distractors). Replaced facepalm Free Tier license compliance waiver and auto-conversion with authentic enterprise software procurement models (AWS Marketplace private offers, Enterprise Discount Program EDP). Key `d` ("BYOL") unchanged.
+- `aws-clf-c02-cloud-concepts-030`: **calibrated — no change**. Rightsizing best practice before purchasing Reserved Instances or Savings Plans.
+- `aws-clf-c02-cloud-concepts-031`: **hardened** (weak/facepalm distractors). Multi-select (select-2). Replaced facepalm compliance audit exemption and OpEx depreciation with authentic cloud transformation misconceptions (technical debt elimination fallacy, total compliance accountability transfer to AWS). Keys `c`, `e` unchanged.
+
+## Difficulty calibration: 2026-09-12 (Domain: Cloud Technology and Services)
+
+Calibrated Domain 3 (Cloud Technology and Services) against the official exam
+sample questions following `skills/harden-domain-questions`.
+
+### Cognitive anchor
+
+The official AWS Certified Cloud Practitioner sample questions set
+(`AWS-Certified-Cloud-Practitioner_Sample-Questions.pdf`) anchors the cognitive
+level for Domain 3 with four items:
+
+- **Sample Question 2** (Domain 3 - Task 3.4/3.1): "Which AWS service would simplify the migration of a database to AWS? A) AWS Storage Gateway, B) AWS Database Migration Service (AWS DMS), C) Amazon EC2, D) Amazon AppStream 2.0." Key: `B` (AWS DMS).
+- **Sample Question 4** (Domain 3 - Task 3.5): "Which AWS networking service enables a company to create a virtual network within AWS? A) AWS Config, B) Amazon Route 53, C) AWS Direct Connect, D) Amazon Virtual Private Cloud (Amazon VPC)." Key: `D` (Amazon VPC).
+- **Sample Question 6** (Domain 3 - Task 3.2): "Which component of the AWS global infrastructure does Amazon CloudFront use to ensure low-latency delivery? A) AWS Regions, B) Edge locations, C) Availability Zones, D) Virtual Private Cloud (VPC)." Key: `B` (Edge locations).
+- **Sample Question 9** (Domain 3 - Task 3.8/3.7): "Which service would be used to send alerts based on Amazon CloudWatch alarms? A) Amazon Simple Notification Service (Amazon SNS), B) AWS CloudTrail, C) AWS Trusted Advisor, D) Amazon Route 53." Key: `A` (Amazon SNS).
+
+All four vendor sample items are straightforward identification questions using concise service names. Distractors in the sample set are actual AWS services, typically featuring one or two plausible alternatives alongside one or two broader category distractors.
+
+### Standing versus anchor
+
+Following distractor hardening and calibration, Domain 3 currently sits **at or above** its sample anchor across all 44 questions:
+
+- **Scenario grounding**: All 44 questions (35 single-select, 9 multi-select) open on concrete business, operational, or architectural scenarios (e.g. S3 archive tiering with SLA constraints, high-throughput gaming session state databases, hybrid multi-VPC hub routing, real-time vehicle GPS streaming, cross-platform CLI scripting, distributed state machine workflow branching, Linux shared POSIX file systems across AZs).
+- **Distractor hardening & elimination of facepalms**: Systematically identified and replaced weak and facepalm distractors in 14 questions:
+  - **Absurd distractors eliminated**: In `015` (EC2 Auto Scaling), replaced impossible distractors (converting EC2 instances into Lambda functions, SQL into NoSQL clusters, continuous EBS replication to on-prem) with genuine Auto Scaling architectural near-misses (vertical CPU/RAM scaling without reboot, direct traffic routing without ELB, automated Reserved Instance purchases). In `020` (Aurora), replaced facepalms (converting video files to SQL, replacing S3 object storage) with engine compatibility limits (Oracle/SQL Server) and manual EBS provisioning misconceptions. In `025` (Transit Gateway), replaced facepalms (translating SQL to NoSQL, hosting web files at edge) with network misconceptions (direct internet access without NAT, removing subnet route tables). In `040` (Systems Manager), replaced throwaways (DNS registration, active-active DB replication, video transcoding) with valid operations/developer near-misses (CloudFormation infrastructure templates, CloudWatch metric alarms/dashboards, CodeBuild unit tests).
+  - **Unrelated category distractors replaced with same-category near-misses**: In `001`, replaced weak single-AZ distractor with private AZ interconnect vs public internet misconception. In `006`, replaced networking/DNS distractors (Direct Connect, Route 53) with integration near-misses (Step Functions, EventBridge). In `011`, replaced OpsWorks with AWS SDK. In `024`, replaced Route 53 and CloudFront with VPC Peering and Transit Gateway. In `026`, replaced CloudTrail and ACM with Global Accelerator and CloudFront. In `030`, replaced Athena and ElastiCache with EFS and EBS. In `035`, replaced EMR with SageMaker (custom ML vs pre-trained AI). In `042`, replaced Route 53 and Direct Connect with SNS and SQS. In `043`, replaced App Runner and Auto Scaling with AppStream 2.0 and WorkSpaces Web. In `044`, replaced Systems Manager and CloudWatch with CodeBuild and CodeDeploy.
+  - **Calibrated items confirmed**: 30 questions confirmed as `calibrated — no change` (items 002, 003, 004, 005, 007, 008, 009, 010, 012, 013, 014, 016, 017, 018, 019, 021, 022, 023, 027, 028, 029, 031, 032, 033, 034, 036, 037, 038, 039, 041) — each already presents plausible near-misses firmly aligned with or above the sample anchor.
+- **Multi-select discrimination**: 9 items (20.5%) use multi-response (select-TWO) with five options under all-or-nothing scoring.
+- **Solvability tells & bias guards**: Mean length delta is -1.02 characters bank-wide (median -0.83 chars), longest option is key in 18.7% (20/107) of single-select items, position distribution is 28 `a`, 27 `b`, 26 `c`, 26 `d` (max 26.2%). No item wins by absence of absolute qualifiers. Distractor notes coverage is 100%.
+
+### Dispositions (44 questions)
+
+- `aws-clf-c02-cloud-technology-and-services-001`: **hardened** (weak distractor). Multi-select on Regions and Availability Zones. Replaced weak single-AZ distractor `d` with realistic networking misconception (AZs interconnected over public internet vs private fiber).
+- `aws-clf-c02-cloud-technology-and-services-002`: **calibrated — no change**. Medical imaging retention in S3 with retrieval up to 48 hours. Distractors test Standard, Standard-IA, and Glacier Instant Retrieval against Glacier Deep Archive.
+- `aws-clf-c02-cloud-technology-and-services-003`: **calibrated — no change**. Serverless compute for event-driven code (Lambda) and containers (Fargate) under multi-select (select-2), discriminating against EC2, Lightsail, and Auto Scaling.
+- `aws-clf-c02-cloud-technology-and-services-004`: **calibrated — no change**. Microsecond in-memory caching for relational DBs (ElastiCache). Distractors test RDS, Redshift, and DynamoDB.
+- `aws-clf-c02-cloud-technology-and-services-005`: **calibrated — no change**. Security group stateful return traffic. Distractors contrast stateless NACL rules and explicit outbound allow requirements.
+- `aws-clf-c02-cloud-technology-and-services-006`: **hardened** (weak distractors). Multi-select on message queuing (SQS) and pub/sub fanout (SNS). Replaced unrelated networking distractors (Direct Connect, Route 53) with integration near-misses: AWS Step Functions and Amazon EventBridge.
+- `aws-clf-c02-cloud-technology-and-services-007`: **calibrated — no change**. Declarative IaC templating across accounts/Regions (CloudFormation). Distractors test Elastic Beanstalk, Systems Manager, and CodeDeploy.
+- `aws-clf-c02-cloud-technology-and-services-008`: **calibrated — no change**. Ad-hoc standard SQL queries directly against S3 logs (Athena). Distractors test QuickSight, Redshift, and EMR.
+- `aws-clf-c02-cloud-technology-and-services-009`: **calibrated — no change**. Managed Kubernetes compatibility without control plane management (Amazon EKS). Distractors test ECS, Fargate, and EC2 with concise labels.
+- `aws-clf-c02-cloud-technology-and-services-010`: **calibrated — no change**. Generative AI foundation models via single unified API (Amazon Bedrock). Distractors test SageMaker, Comprehend, and Rekognition with concise labels.
+- `aws-clf-c02-cloud-technology-and-services-011`: **hardened** (weak distractor). Cross-platform command-line scripting (AWS CLI). Replaced niche distractor AWS OpsWorks with AWS SDK (language-specific APIs in application code).
+- `aws-clf-c02-cloud-technology-and-services-012`: **calibrated — no change**. PaaS web application deployment with automated provisioning and scaling (Elastic Beanstalk). Distractors test CloudFormation, CodeDeploy, and Lambda.
+- `aws-clf-c02-cloud-technology-and-services-013`: **calibrated — no change**. Content caching closer to end users (Edge Locations). Distractors test Availability Zones, Regional Caches, and Local Zones.
+- `aws-clf-c02-cloud-technology-and-services-014`: **calibrated — no change**. Native AWS infrastructure inside on-premises hospital data center (AWS Outposts). Distractors test Storage Gateway, Direct Connect, and Snowball Edge.
+- `aws-clf-c02-cloud-technology-and-services-015`: **hardened** (facepalm distractors). Multi-select on EC2 Auto Scaling benefits. Replaced absurd throwaways (converting EC2 to Lambda, SQL to NoSQL, continuous EBS replication to on-prem) with genuine architectural near-misses: dynamic vertical scaling without reboot, direct traffic routing without ELB, and automated Reserved Instance purchases.
+- `aws-clf-c02-cloud-technology-and-services-016`: **calibrated — no change**. Pre-packaged VPS bundle with SSD storage and fixed monthly price (Lightsail). Distractors test EC2, Elastic Beanstalk, and Fargate.
+- `aws-clf-c02-cloud-technology-and-services-017`: **calibrated — no change**. High-volume containerized batch processing (AWS Batch). Distractors test Step Functions, EMR, and App Runner.
+- `aws-clf-c02-cloud-technology-and-services-018`: **calibrated — no change**. Deepest discount for fault-tolerant, interruptible workloads (Spot Instances). Distractors test On-Demand, Dedicated Hosts, and Reserved Instances.
+- `aws-clf-c02-cloud-technology-and-services-019`: **calibrated — no change**. Low-latency key-value document database with automatic scaling (DynamoDB). Distractors test RDS PostgreSQL, Redshift, and Aurora.
+- `aws-clf-c02-cloud-technology-and-services-020`: **hardened** (facepalm distractors). Multi-select on Amazon Aurora capabilities. Replaced absurd throwaways (converting video files to SQL tables, replacing S3 object storage) with real architectural boundaries: Oracle/SQL Server engine compatibility and manual EBS volume provisioning.
+- `aws-clf-c02-cloud-technology-and-services-021`: **calibrated — no change**. Database migration with source remaining operational (AWS DMS). Distractors test Application Discovery Service, DataSync, and Snowcone.
+- `aws-clf-c02-cloud-technology-and-services-022`: **calibrated — no change**. Highly connected graph dataset traversal (Amazon Neptune). Distractors test DocumentDB, Timestream, and QLDB.
+- `aws-clf-c02-cloud-technology-and-services-023`: **calibrated — no change**. Outbound-only internet access for private subnet patching (NAT Gateway). Distractors test Internet Gateway, VPC Peering, and Direct Connect gateway.
+- `aws-clf-c02-cloud-technology-and-services-024`: **hardened** (weak distractors). Dedicated private physical link bypassing internet (Direct Connect). Replaced unrelated services (Route 53, CloudFront) with private networking near-misses: VPC Peering and AWS Transit Gateway.
+- `aws-clf-c02-cloud-technology-and-services-025`: **hardened** (facepalm distractors). Multi-select on AWS Transit Gateway benefits. Replaced absurd throwaways (translating SQL to NoSQL, hosting web files at edge) with network misconceptions: direct internet access without NAT, and removing subnet route tables.
+- `aws-clf-c02-cloud-technology-and-services-026`: **hardened** (weak distractors). DNS latency-based routing and health check failover (Route 53). Replaced unrelated auditing/certificate services (CloudTrail, ACM) with traffic routing near-misses: AWS Global Accelerator and Amazon CloudFront.
+- `aws-clf-c02-cloud-technology-and-services-027`: **calibrated — no change**. Anycast IP routing over AWS global network for non-HTTP gaming protocols (Global Accelerator). Distractors test CloudFront, Direct Connect, and Site-to-Site VPN.
+- `aws-clf-c02-cloud-technology-and-services-028`: **calibrated — no change**. Persistent block-level storage for EC2 database with S3 snapshot backups (Amazon EBS). Distractors test Instance Store, S3 Standard, and EFS.
+- `aws-clf-c02-cloud-technology-and-services-029`: **calibrated — no change**. Multi-AZ concurrent shared Linux file system with POSIX permissions (Amazon EFS). Distractors test EBS, S3 Glacier, and Storage Gateway.
+- `aws-clf-c02-cloud-technology-and-services-030`: **hardened** (weak distractors). Multi-select on Amazon FSx file systems. Replaced unrelated analytics/caching distractors (Athena, ElastiCache) with storage near-misses: Amazon EFS (Linux POSIX file storage) and Amazon EBS (block storage).
+- `aws-clf-c02-cloud-technology-and-services-031`: **calibrated — no change**. On-premises backup offload to S3 with local low-latency cache (AWS Storage Gateway). Distractors test Direct Connect, EBS, and Snowball.
+- `aws-clf-c02-cloud-technology-and-services-032`: **calibrated — no change**. Centralized policy-based backup automation across services (AWS Backup). Distractors test CloudWatch, CloudTrail, and Systems Manager.
+- `aws-clf-c02-cloud-technology-and-services-033`: **calibrated — no change**. Automated tiered archival lifecycle rules (S3 Lifecycle). Distractors test custom Lambda scripts, EC2 cron jobs, and S3 Versioning/Object Lock.
+- `aws-clf-c02-cloud-technology-and-services-034`: **calibrated — no change**. Comprehensive custom machine learning development platform (Amazon SageMaker). Distractors test pre-trained AI services: Comprehend, Rekognition, and Lex.
+- `aws-clf-c02-cloud-technology-and-services-035`: **hardened** (weak distractor). Multi-select on pre-trained AI services (Rekognition, Polly). Replaced analytics distractor Amazon EMR with Amazon SageMaker to test custom ML development (requiring ML expertise) vs pre-trained AI.
+- `aws-clf-c02-cloud-technology-and-services-036`: **calibrated — no change**. Conversational virtual assistant chatbot (Amazon Lex). Distractors test speech/language APIs: Transcribe, Polly, and Translate.
+- `aws-clf-c02-cloud-technology-and-services-037`: **calibrated — no change**. Serverless data integration, schema discovery, and ETL (AWS Glue). Distractors test QuickSight, Kinesis Data Streams, and OpenSearch Service.
+- `aws-clf-c02-cloud-technology-and-services-038`: **calibrated — no change**. Massive real-time streaming data ingestion (Amazon Kinesis Data Streams). Distractors test Athena, Batch, and Redshift.
+- `aws-clf-c02-cloud-technology-and-services-039`: **calibrated — no change**. Infrastructure performance metrics and alarm alerts (Amazon CloudWatch). Distractors test CloudTrail, Config, and Trusted Advisor.
+- `aws-clf-c02-cloud-technology-and-services-040`: **hardened** (facepalm distractors). Multi-select on AWS Systems Manager operational capabilities. Replaced throwaway distractors (DNS registration, active-active DB replication, video transcoding) with operations/developer near-misses: AWS CloudFormation (infrastructure templates), Amazon CloudWatch (metrics/dashboards), and AWS CodeBuild (compiling code and unit tests).
+- `aws-clf-c02-cloud-technology-and-services-041`: **calibrated — no change**. Visual workflow state machine orchestration (AWS Step Functions). Distractors test SQS, SNS, and CodePipeline.
+- `aws-clf-c02-cloud-technology-and-services-042`: **hardened** (weak distractors). Serverless event bus routing SaaS and AWS events (Amazon EventBridge). Replaced unrelated networking distractors (Route 53, Direct Connect) with messaging near-misses: Amazon SNS and Amazon SQS.
+- `aws-clf-c02-cloud-technology-and-services-043`: **hardened** (weak distractors). Persistent cloud desktop environment for remote workers (Amazon WorkSpaces). Replaced unrelated container/compute distractors (App Runner, Auto Scaling) with virtual desktop / workspace near-misses: Amazon AppStream 2.0 and Amazon WorkSpaces Web.
+- `aws-clf-c02-cloud-technology-and-services-044`: **hardened** (weak distractors). Automated CI/CD release workflow orchestration (AWS CodePipeline). Replaced unrelated management/monitoring services (Systems Manager, CloudWatch) with developer tools suite near-misses: AWS CodeBuild and AWS CodeDeploy.

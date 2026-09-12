@@ -25,7 +25,7 @@
       },
       {
         "id": "d",
-        "text": "An AWS Region is always made up of exactly one Availability Zone"
+        "text": "Availability Zones within a Region communicate over public internet links"
       },
       {
         "id": "e",
@@ -40,7 +40,7 @@
     "distractorNotes": {
       "a": "The containment runs the other way: Availability Zones sit inside a single Region, not across Regions.",
       "b": "AWS states that Regions are isolated from each other and that resources are not automatically replicated across Regions.",
-      "d": "A Region contains multiple Availability Zones, which is what makes multi-zone resilience possible."
+      "d": "Availability Zones within a single Region are interconnected through private, high-bandwidth, low-latency fiber links, never over the public internet."
     },
     "sourceUrl": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html",
     "sourceNote": "EC2 Regions and Zones - Regions contain multiple isolated AZs; multi-AZ protects against single-location failure",
@@ -241,7 +241,7 @@
       },
       {
         "id": "c",
-        "text": "AWS Direct Connect, a dedicated private link from a data center into AWS"
+        "text": "AWS Step Functions, a visual workflow orchestrator for state machine tasks"
       },
       {
         "id": "d",
@@ -249,7 +249,7 @@
       },
       {
         "id": "e",
-        "text": "Amazon Route 53, a managed DNS service that also registers domain names"
+        "text": "Amazon EventBridge, a serverless event bus that filters and routes app events"
       }
     ],
     "correct": [
@@ -259,8 +259,8 @@
     "explanation": "AWS describes Amazon SQS as a fully managed message queuing service that lets you send, store, and receive messages between software components at any volume without losing messages or requiring other services to be available, which covers the durable hand-off. AWS describes Amazon SNS as a pub/sub service whose topics let publishers fan out messages to a large number of subscriber endpoints for parallel processing, which covers the broadcast requirement.",
     "distractorNotes": {
       "b": "CloudFront is a content delivery network for caching and serving content, not an application messaging service.",
-      "c": "Direct Connect provides dedicated private network connectivity into AWS and does not carry application messages between components.",
-      "e": "Route 53 handles DNS resolution and domain registration rather than message queuing or publish and subscribe delivery."
+      "c": "AWS Step Functions coordinates multi-step distributed application workflows and state machines, rather than providing asynchronous message queuing or pub/sub fanout.",
+      "e": "Amazon EventBridge is an event bus that ingests and routes events based on rules, but does not provide durable message queuing for worker polling or direct pub/sub topics."
     },
     "sourceUrl": "https://docs.aws.amazon.com/whitepapers/latest/aws-overview/application-integration.html",
     "sourceNote": "AWS Overview application integration - SQS message queuing without losing messages; SNS topics fan out to many subscribers",
@@ -460,7 +460,7 @@
       },
       {
         "id": "d",
-        "text": "AWS OpsWorks, a configuration management service that provides managed instances of Chef and Puppet"
+        "text": "AWS SDK, which provides language-specific APIs to manage AWS services within application code"
       }
     ],
     "correct": [
@@ -470,7 +470,7 @@
     "distractorNotes": {
       "b": "The AWS Management Console is a browser-based visual GUI intended for manual interactions rather than command-line automated scripting.",
       "c": "AWS CloudShell runs in a web browser without local installation, but is intended for ad-hoc browser shell sessions rather than automated local cross-platform scripting.",
-      "d": "AWS OpsWorks is a configuration management service for Chef and Puppet automation, not a general command-line utility for running AWS commands."
+      "d": "AWS Software Development Kits (SDKs) allow developers to manage AWS resources programmatically within application code using language-specific APIs, rather than executing shell scripts from a command-line interface."
     },
     "sourceUrl": "https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-welcome.html",
     "sourceNote": "AWS CLI User Guide - Unified tool to manage AWS services from command-line shell scripts",
@@ -616,7 +616,7 @@
     "options": [
       {
         "id": "a",
-        "text": "It automatically converts unmanaged EC2 instances into serverless AWS Lambda execution functions"
+        "text": "It automatically increases the CPU and RAM capacity of running instances without rebooting them"
       },
       {
         "id": "b",
@@ -628,11 +628,11 @@
       },
       {
         "id": "d",
-        "text": "It converts relational databases on EC2 instances into multi-master NoSQL document clusters"
+        "text": "It automatically distributes incoming web traffic across instances without requiring a load balancer"
       },
       {
         "id": "e",
-        "text": "It replicates EC2 instance storage volumes to external on-premises storage arrays continuously"
+        "text": "It automatically purchases Reserved Instances whenever application traffic exceeds baseline thresholds"
       }
     ],
     "correct": [
@@ -641,9 +641,9 @@
     ],
     "explanation": "Amazon EC2 Auto Scaling helps ensure that you have the correct number of Amazon EC2 instances available to handle the load for your application. It maintains application availability by replacing unhealthy instances automatically, and optimizes costs by adding or removing EC2 instances dynamically based on demand.",
     "distractorNotes": {
-      "a": "Auto Scaling manages EC2 instance counts; it does not rewrite or transform EC2 applications into Lambda functions.",
-      "d": "Auto Scaling adjusts compute instance capacity; it does not convert or re-architect database engines.",
-      "e": "Auto Scaling does not synchronize or replicate EBS storage volumes to external on-premises storage devices."
+      "a": "Amazon EC2 Auto Scaling scales horizontally by adding or terminating instances; it does not dynamically modify the instance type or vertically expand CPU/RAM of running instances without replacement.",
+      "d": "Amazon EC2 Auto Scaling manages instance capacity, but does not route or distribute incoming network traffic directly; traffic distribution requires an Elastic Load Balancer.",
+      "e": "Amazon EC2 Auto Scaling adjusts instance counts dynamically using On-Demand and Spot purchasing, but does not purchase contractual 1- or 3-year Reserved Instances."
     },
     "sourceUrl": "https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html",
     "sourceNote": "Amazon EC2 Auto Scaling User Guide - Automatically add or remove EC2 instances and replace unhealthy instances",
@@ -835,11 +835,11 @@
       },
       {
         "id": "b",
-        "text": "It automatically converts unstructured video files into relational SQL database tables"
+        "text": "It provides native compatibility with Oracle and Microsoft SQL Server enterprise database engines"
       },
       {
         "id": "c",
-        "text": "It replaces Amazon S3 as the default object storage layer for web application assets"
+        "text": "It requires administrators to manually provision and attach Amazon EBS storage volumes in advance"
       },
       {
         "id": "d",
@@ -856,8 +856,8 @@
     ],
     "explanation": "Amazon Aurora is a MySQL and PostgreSQL-compatible relational database built for the cloud. It features a distributed, fault-tolerant, self-healing storage system that replicates six copies of data across three Availability Zones and automatically grows storage up to 128 TiB.",
     "distractorNotes": {
-      "b": "Aurora does not process or parse unstructured multimedia video files into relational tables.",
-      "c": "Aurora is a relational database service, not a general-purpose object storage layer like Amazon S3.",
+      "b": "Amazon Aurora supports MySQL and PostgreSQL compatibility only; it does not provide native Aurora compatibility for Oracle or Microsoft SQL Server engines (which are supported under standard Amazon RDS).",
+      "c": "Amazon Aurora automatically allocates storage in 10 GB increments up to 128 TiB as data grows, eliminating the need to manually provision or resize Amazon EBS volumes in advance.",
       "e": "Aurora is a relational database system, whereas ElastiCache provides Redis-compatible in-memory caching."
     },
     "sourceUrl": "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html",
@@ -1008,15 +1008,15 @@
       },
       {
         "id": "b",
-        "text": "Amazon Route 53, which provides DNS routing and domain registration across cloud resources"
+        "text": "VPC Peering, which routes private network traffic between two VPCs without connecting on-premises sites"
       },
       {
         "id": "c",
-        "text": "Amazon CloudFront, which caches and accelerates web asset delivery using global edge locations"
+        "text": "AWS Transit Gateway, which acts as a central cloud router but requires an underlying connection link"
       },
       {
         "id": "d",
-        "text": "AWS Direct Connect, which creates a dedicated private physical network link from on-premises to AWS"
+        "text": "AWS Direct Connect, which establishes a dedicated private physical network connection from on-premises to AWS"
       }
     ],
     "correct": [
@@ -1025,8 +1025,8 @@
     "explanation": "AWS Direct Connect links an internal network directly to an AWS Direct Connect location over a standard Ethernet fiber-optic cable. This dedicated private connection bypasses internet service providers, resulting in a more consistent network experience, reduced bandwidth costs, and enhanced data privacy.",
     "distractorNotes": {
       "a": "Site-to-Site VPN transmits traffic across the public internet inside an encrypted tunnel, which is subject to variable internet latency and bandwidth constraints.",
-      "b": "Route 53 is a cloud DNS service for mapping domain names to IP addresses, not a physical network connectivity link.",
-      "c": "CloudFront is a content delivery network for caching web assets, not a dedicated private enterprise circuit for corporate data center connectivity."
+      "b": "VPC Peering routes traffic strictly between AWS VPCs within or across Regions, and does not support connecting on-premises data centers to AWS.",
+      "c": "AWS Transit Gateway acts as a central regional router to simplify network topologies, but relies on underlying attachments (such as Direct Connect or VPN) rather than providing a physical dedicated circuit itself."
     },
     "sourceUrl": "https://docs.aws.amazon.com/directconnect/latest/UserGuide/Welcome.html",
     "sourceNote": "AWS Direct Connect User Guide - Dedicated private network connection from premises to AWS bypassing the public internet",
@@ -1054,11 +1054,11 @@
       },
       {
         "id": "c",
-        "text": "It automatically translates SQL database queries into NoSQL JSON document structures"
+        "text": "It provides direct outbound internet access for private subnets without requiring NAT gateways"
       },
       {
         "id": "d",
-        "text": "It hosts static website files directly at edge locations without requiring S3 buckets"
+        "text": "It removes the requirement to configure subnet route tables within individual connected VPCs"
       },
       {
         "id": "e",
@@ -1072,8 +1072,8 @@
     "explanation": "AWS Transit Gateway is a network transit hub that you can use to interconnect your virtual private clouds (VPCs) and on-premises networks. As your cloud footprint expands, Transit Gateway simplifies your network by replacing complex point-to-point peering relationships with a centralized hub-and-spoke routing architecture.",
     "distractorNotes": {
       "a": "Transit Gateway is a network routing hub; it does not replace or disable firewall rules like security groups or network ACLs.",
-      "c": "Transit Gateway routes network IP packets; it has no database query translation capabilities.",
-      "d": "Transit Gateway does not store or host web files; that is the role of Amazon S3 and Amazon CloudFront."
+      "c": "AWS Transit Gateway routes traffic between VPCs and on-premises networks; it does not replace the need for NAT gateways to provide outbound internet connectivity for private subnets.",
+      "d": "VPCs attached to a Transit Gateway still require local subnet route tables to direct intended CIDR traffic to the Transit Gateway elastic network interface."
     },
     "sourceUrl": "https://docs.aws.amazon.com/vpc/latest/tgw/what-is-transit-gateway.html",
     "sourceNote": "AWS Transit Gateway Guide - Central hub to connect VPCs and on-premises networks, simplifying network topologies",
@@ -1101,11 +1101,11 @@
       },
       {
         "id": "c",
-        "text": "AWS CloudTrail, an auditing service that tracks and logs administrative actions across all AWS services"
+        "text": "Amazon CloudFront, a global content delivery network that caches and distributes web assets from edge locations"
       },
       {
         "id": "d",
-        "text": "AWS Certificate Manager (ACM), a service that provisions and manages SSL/TLS certificates for websites"
+        "text": "AWS Global Accelerator, a networking service that provides static Anycast IPs to route TCP and UDP traffic"
       }
     ],
     "correct": [
@@ -1114,8 +1114,8 @@
     "explanation": "Amazon Route 53 is a highly available and scalable cloud Domain Name System (DNS) web service. It provides advanced traffic routing policies, including latency-based routing (directing traffic to the Region with the lowest latency) and failover routing based on automated health checks.",
     "distractorNotes": {
       "b": "Transit Gateway routes traffic between VPCs and on-premises networks at the IP layer, but does not perform public DNS resolution or DNS-based failover.",
-      "c": "CloudTrail records API calls and governance activity, but does not manage network traffic or DNS records.",
-      "d": "AWS Certificate Manager generates and renews SSL/TLS certificates, not DNS routing or endpoint health monitoring."
+      "c": "Amazon CloudFront is a global content delivery network that caches web content at edge locations, rather than an authoritative DNS web service providing DNS latency and failover routing policies.",
+      "d": "AWS Global Accelerator routes TCP and UDP traffic using static Anycast IP addresses at the network layer, rather than managing DNS name resolution and DNS routing policies."
     },
     "sourceUrl": "https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/Welcome.html",
     "sourceNote": "Amazon Route 53 Developer Guide - Scalable cloud DNS service providing latency-based routing and health-check failover",
@@ -1265,15 +1265,15 @@
       },
       {
         "id": "b",
-        "text": "Storing static website images for global public distribution via web browser HTTP GET requests"
+        "text": "Storing unstructured static media assets and images for global web distribution via public HTTP endpoints"
       },
       {
         "id": "c",
-        "text": "Querying raw CSV log files in place using serverless SQL statements without infrastructure"
+        "text": "Providing serverless elastic POSIX file storage for Linux workloads that scales automatically on demand"
       },
       {
         "id": "d",
-        "text": "Delivering microsecond in-memory key-value caching to offload relational database queries"
+        "text": "Attaching dedicated, persistent block storage volumes to single EC2 instances for transactional databases"
       },
       {
         "id": "e",
@@ -1286,9 +1286,9 @@
     ],
     "explanation": "Amazon FSx makes it easy and cost-effective to launch, run, and scale feature-rich, high-performance file systems. Amazon FSx for Windows File Server provides fully managed native Microsoft Windows file storage accessible over SMB with Active Directory support. Amazon FSx for Lustre delivers sub-millisecond latencies and high throughput for compute-intensive workloads such as high-performance computing (HPC) and machine learning.",
     "distractorNotes": {
-      "b": "Public web distribution of static image files is the primary use case for Amazon S3 and Amazon CloudFront.",
-      "c": "Running SQL queries against raw files in place without provisioning servers describes Amazon Athena, not Amazon FSx.",
-      "d": "In-memory sub-millisecond key-value caching is handled by Amazon ElastiCache or MemoryDB, not a network file system."
+      "b": "Public web distribution of static image files is the primary use case for Amazon S3 and Amazon CloudFront, not Amazon FSx.",
+      "c": "Amazon Elastic File System (EFS) provides serverless, fully elastic POSIX shared file storage for Linux instances, whereas Amazon FSx is optimized for Windows (SMB) and specialized compute workloads (Lustre).",
+      "d": "Attaching persistent block storage volumes to individual EC2 instances is the function of Amazon Elastic Block Store (EBS), not the Amazon FSx managed file system family."
     },
     "sourceUrl": "https://docs.aws.amazon.com/fsx/latest/WindowsGuide/what-is.html",
     "sourceNote": "Amazon FSx User Guide - Fully managed third-party file systems including Windows File Server and Lustre for HPC",
@@ -1476,7 +1476,7 @@
     "options": [
       {
         "id": "a",
-        "text": "Amazon EMR, which provisions distributed Hadoop clusters for big data MapReduce processing"
+        "text": "Amazon SageMaker, which provides tools to build, train, tune, and deploy custom machine learning models"
       },
       {
         "id": "b",
@@ -1501,7 +1501,7 @@
     ],
     "explanation": "Amazon Rekognition and Amazon Polly are pre-trained AWS AI services that provide advanced machine learning capabilities via simple API calls without requiring custom model training or machine learning expertise. Rekognition adds image and video analysis, while Polly provides lifelike text-to-speech voice generation.",
     "distractorNotes": {
-      "a": "Amazon EMR is an analytics big data processing framework, not a pre-trained artificial intelligence API service.",
+      "a": "Amazon SageMaker is a comprehensive platform for building, training, and deploying custom machine learning models, which requires data science and ML expertise rather than providing pre-built AI APIs.",
       "b": "AWS Glue is a serverless data integration and ETL service, not an AI service for content analysis or synthesis.",
       "d": "Amazon Athena is an interactive SQL analytics service for querying S3 files, not a pre-trained machine learning service."
     },
@@ -1691,7 +1691,7 @@
     "options": [
       {
         "id": "a",
-        "text": "Registering public domain names and routing internet DNS queries to closest edge locations"
+        "text": "Provisioning and orchestrating multi-tier cloud infrastructure from declarative YAML templates"
       },
       {
         "id": "b",
@@ -1699,7 +1699,7 @@
       },
       {
         "id": "c",
-        "text": "Creating multi-region active-active relational database replicas with synchronous writes"
+        "text": "Monitoring real-time application metrics and generating customized operational alarm dashboards"
       },
       {
         "id": "d",
@@ -1707,7 +1707,7 @@
       },
       {
         "id": "e",
-        "text": "Compressing raw multimedia video recordings into multiple mobile streaming formats"
+        "text": "Compiling application source code and executing automated unit tests inside managed containers"
       }
     ],
     "correct": [
@@ -1716,9 +1716,9 @@
     ],
     "explanation": "AWS Systems Manager is an operations hub that simplifies resource management at scale across AWS and hybrid environments. Features like Patch Manager automate the installation of security and operating system patches across fleets, while Run Command and Session Manager allow administrators to execute scripts and maintain shell access securely without opening inbound firewall ports.",
     "distractorNotes": {
-      "a": "Public domain registration and DNS routing are features of Amazon Route 53, not AWS Systems Manager.",
-      "c": "Multi-region active-active database replication is an architectural database capability (e.g. DynamoDB global tables), not an instance operations tool.",
-      "e": "Video transcoding and compression are handled by AWS Elemental MediaConvert, not an infrastructure operations service."
+      "a": "Provisioning and orchestrating AWS infrastructure resources from declarative templates is the role of AWS CloudFormation, not AWS Systems Manager.",
+      "c": "Collecting operational metrics, setting metric alarms, and building visual dashboards are capabilities of Amazon CloudWatch, not AWS Systems Manager.",
+      "e": "Compiling application source code and running automated test suites are handled by AWS CodeBuild, rather than fleet systems operations."
     },
     "sourceUrl": "https://docs.aws.amazon.com/systems-manager/latest/userguide/what-is-systems-manager.html",
     "sourceNote": "AWS Systems Manager User Guide - Operational hub to automate patching and execute commands securely across instances",
@@ -1780,19 +1780,19 @@
     "options": [
       {
         "id": "a",
-        "text": "Amazon API Gateway, a fully managed service that makes it easy for developers to create, publish, maintain, monitor, and secure REST and WebSocket APIs"
+        "text": "Amazon API Gateway, a fully managed service for creating, publishing, and securing REST and WebSocket APIs"
       },
       {
         "id": "b",
-        "text": "Amazon EventBridge, a serverless event bus that ingests and routes events from SaaS apps and AWS services"
+        "text": "Amazon EventBridge, a serverless event bus that ingests and routes events from SaaS applications and AWS services"
       },
       {
         "id": "c",
-        "text": "Amazon Route 53, a scalable cloud Domain Name System (DNS) web service for domain name routing"
+        "text": "Amazon SNS, a publish and subscribe messaging service that coordinates message delivery to endpoints"
       },
       {
         "id": "d",
-        "text": "AWS Direct Connect, a dedicated network link connecting on-premises infrastructure to AWS VPCs"
+        "text": "Amazon SQS, a fully managed message queuing service that decouples microservice application components"
       }
     ],
     "correct": [
@@ -1801,8 +1801,8 @@
     "explanation": "Amazon EventBridge is a serverless event bus that enables developers to build event-driven applications by routing data from sources such as SaaS applications, custom applications, and AWS services to targets such as AWS Lambda, Amazon SQS, and Amazon SNS.",
     "distractorNotes": {
       "a": "Amazon API Gateway exposes and manages HTTP/REST/WebSocket endpoints for external clients, not a serverless event bus that routes SaaS events.",
-      "c": "Amazon Route 53 translates human-readable domain names into IP addresses, not an event routing bus.",
-      "d": "AWS Direct Connect is a physical network circuit connecting data centers to AWS, not an application-level event routing bus."
+      "c": "Amazon SNS coordinates publish/subscribe topic fanout to subscribers, but is not a serverless event bus with native partner event bus integrations for SaaS applications.",
+      "d": "Amazon SQS provides point-to-point message queuing for consumer polling, not an event-driven router that automatically ingests and filters SaaS events."
     },
     "sourceUrl": "https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-what-is-how-it-works.html",
     "sourceNote": "Amazon EventBridge User Guide - Serverless event bus that routes events from SaaS applications and AWS services",
@@ -1822,7 +1822,7 @@
     "options": [
       {
         "id": "a",
-        "text": "AWS App Runner, a fully managed container service that makes it easy to build, deploy, and run containerized web applications and APIs quickly at scale"
+        "text": "Amazon AppStream 2.0, a fully managed service that streams non-persistent desktop applications to web browsers"
       },
       {
         "id": "b",
@@ -1834,7 +1834,7 @@
       },
       {
         "id": "d",
-        "text": "Amazon EC2 Auto Scaling, an automated capacity management service that adjusts instance fleet sizes"
+        "text": "Amazon WorkSpaces Web, a low-cost workspace designed specifically for secure access to internal enterprise websites"
       }
     ],
     "correct": [
@@ -1842,9 +1842,9 @@
     ],
     "explanation": "Amazon WorkSpaces is a fully managed, secure Desktop-as-a-Service (DaaS) solution that enables users to access virtual cloud desktops anywhere from supported devices. It provides persistent desktop storage, integrates with existing corporate directories, and keeps sensitive corporate data off personal client hardware.",
     "distractorNotes": {
-      "a": "AWS App Runner deploys containerized web applications and backend APIs, not virtual desktop sessions for office workers.",
+      "a": "Amazon AppStream 2.0 streams desktop applications to web browsers within non-persistent sessions, whereas Amazon WorkSpaces delivers full, persistent desktop operating system environments.",
       "b": "Amazon Lightsail is a simple virtual private server (VPS) for web apps and databases, not an enterprise Desktop-as-a-Service solution.",
-      "d": "EC2 Auto Scaling scales server fleets dynamically, but does not provide end-user desktop streaming with Active Directory integration."
+      "d": "Amazon WorkSpaces Web provides secure, browser-based access to internal corporate web applications, rather than a full Windows or Linux cloud desktop operating system."
     },
     "sourceUrl": "https://docs.aws.amazon.com/workspaces/latest/adminguide/amazon-workspaces.html",
     "sourceNote": "Amazon WorkSpaces Administration Guide - Fully managed Desktop-as-a-Service solution for secure persistent virtual desktops",
@@ -1864,15 +1864,15 @@
     "options": [
       {
         "id": "a",
-        "text": "AWS CloudFormation, an infrastructure-as-code service that models, provisions, and automates collections of cloud resources from declarative templates"
+        "text": "AWS CloudFormation, which provisions and manages collections of cloud infrastructure resources from templates"
       },
       {
         "id": "b",
-        "text": "AWS Systems Manager, an operations service that executes operational commands and manages server patches"
+        "text": "AWS CodeBuild, a fully managed build service that compiles source code, runs tests, and produces packages"
       },
       {
         "id": "c",
-        "text": "Amazon CloudWatch, a monitoring service that collects infrastructure metrics and triggers alarm actions"
+        "text": "AWS CodeDeploy, an automated deployment service that installs application packages onto server instances"
       },
       {
         "id": "d",
@@ -1884,9 +1884,9 @@
     ],
     "explanation": "AWS CodePipeline is a fully managed continuous delivery service that helps you automate your release pipelines for fast and reliable application and infrastructure updates. CodePipeline automates the build, test, and deploy phases of your release process every time there is a code change.",
     "distractorNotes": {
-      "a": "CloudFormation models and provisions AWS infrastructure resources declaratively, but does not manage the software release lifecycle pipeline.",
-      "b": "Systems Manager handles server configuration and operational maintenance, not continuous integration and deployment pipelines for application code.",
-      "c": "CloudWatch monitors performance metrics and application logs, but does not orchestrate software build and deployment release pipelines."
+      "a": "AWS CloudFormation models and provisions AWS infrastructure resources declaratively, but does not manage the software release lifecycle pipeline.",
+      "b": "AWS CodeBuild compiles source code, runs automated tests, and produces deployable software artifacts, but does not orchestrate multi-phase release pipelines across deployment stages.",
+      "c": "AWS CodeDeploy automates application deployments to compute services like EC2 or Lambda, but does not compile code, run tests, or coordinate end-to-end pipeline stages."
     },
     "sourceUrl": "https://docs.aws.amazon.com/codepipeline/latest/userguide/welcome.html",
     "sourceNote": "AWS CodePipeline User Guide - Automates continuous delivery pipelines for fast and reliable application and infrastructure updates",
