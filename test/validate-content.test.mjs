@@ -300,6 +300,37 @@ test("rejects an unparsable or malformed updatedAt date", async () => {
   );
 });
 
+test("rejects an updatedAt date in the future", async () => {
+  const { manifest, questions } = await validContent();
+  manifest.updatedAt = "2099-01-01";
+
+  assert.throws(
+    () => validateCertContent("ccdv-f", manifest, questions),
+    /manifest\.updatedAt: cannot be in the future/,
+  );
+});
+
+test("rejects a question sourceCheckedAt in the future", async () => {
+  const { manifest, questions } = await validContent();
+  questions[0].sourceCheckedAt = "2099-01-01";
+
+  assert.throws(
+    () => validateCertContent("ccdv-f", manifest, questions),
+    /questions\.0\.sourceCheckedAt: cannot be in the future/,
+  );
+});
+
+test("accepts dates matching the earliest active calendar day on Earth (UTC+14)", async () => {
+  const { manifest, questions } = await validContent();
+  const earthToday = new Date(Date.now() + 14 * 60 * 60 * 1000)
+    .toISOString()
+    .slice(0, 10);
+  manifest.updatedAt = earthToday;
+  questions[0].sourceCheckedAt = earthToday;
+
+  assert.doesNotThrow(() => validateCertContent("ccdv-f", manifest, questions));
+});
+
 test("rejects an unknown manifest status", async () => {
   const { manifest, questions } = await validContent();
   manifest.status = "reviewed";

@@ -5,6 +5,7 @@ import {
   SyncDatesError,
   applyManifestUpdatedAt,
   deriveCertUpdatedDate,
+  localCalendarDate,
   syncManifestDates,
 } from "../scripts/sync-manifest-dates.mjs";
 
@@ -278,4 +279,27 @@ test("SyncDatesError formats aggregate messages", () => {
   assert.equal(error.name, "SyncDatesError");
   assert.equal(error.messages.length, 2);
   assert.match(error.message, /first issue/);
+});
+
+test("localCalendarDate formats date as YYYY-MM-DD in local time", () => {
+  const testDate = new Date(2026, 8, 5); // Sept 5, 2026
+  assert.equal(localCalendarDate(testDate), "2026-09-05");
+});
+
+test("deriveCertUpdatedDate defaults today to localCalendarDate when uncommitted changes exist", (t) => {
+  t.mock.timers.enable({
+    apis: ["Date"],
+    now: new Date("2026-09-12T12:00:00.000Z"),
+  });
+  const manifest = { cert: "test-cert", updatedAt: "2026-09-01" };
+  const questions = [{ id: "q1", sourceCheckedAt: "2026-09-01" }];
+  const gitRunner = (args) => {
+    if (args.includes("status")) return " M certs/test-cert/questions/d1.json";
+    return "";
+  };
+
+  const date = deriveCertUpdatedDate("test-cert", manifest, questions, {
+    gitRunner,
+  });
+  assert.equal(date, localCalendarDate());
 });

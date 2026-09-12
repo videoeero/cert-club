@@ -82,9 +82,27 @@ const workflowNames = (await readdir(workflowsRoot, { withFileTypes: true }))
   .sort();
 
 const skills = await Promise.all(workflowNames.map(readSkill));
+const readmeText = await readFile(join(workflowsRoot, "README.md"), "utf8");
 
 test("skills/ holds at least one workflow", () => {
   assert.ok(skills.length > 0, "no workflows found under skills/");
+});
+
+test("every workflow link in skills/README.md points to an existing skill", () => {
+  const tableMatches = [
+    ...readmeText.matchAll(/\[`?([^`\]]+)`?\]\(\1\/SKILL\.md\)/g),
+  ];
+  const existingNames = new Set(skills.map((s) => s.name));
+  assert.ok(
+    tableMatches.length > 0,
+    "no workflow links found in skills/README.md",
+  );
+  for (const [, skillName] of tableMatches) {
+    assert.ok(
+      existingNames.has(skillName),
+      `skills/README.md references "${skillName}" which does not exist in skills/`,
+    );
+  }
 });
 
 for (const { name, text, cause } of skills) {
@@ -97,6 +115,13 @@ for (const { name, text, cause } of skills) {
     });
     continue;
   }
+
+  test(`${name} is listed in skills/README.md`, () => {
+    assert.ok(
+      readmeText.includes(`[\`${name}\`](${name}/SKILL.md)`),
+      `skills/README.md index table does not list workflow "${name}"`,
+    );
+  });
 
   test(`${name} states no numeric threshold`, () => {
     for (const { name: shape, pattern } of THRESHOLD_PATTERNS) {

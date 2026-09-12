@@ -106,11 +106,6 @@ export function assessStaleness(sources, { today, maxAgeDays }) {
 }
 
 /**
- * Classifies one already-settled fetch response. Redirects are reported, not
- * hidden: a citation that now 301s to a different path is drift worth seeing
- * even though the content still resolves.
- */
-/**
  * A Response's url never carries the fragment the request was made with, so a
  * plain string comparison reports every anchored citation as redirected
  * forever. Five of the shipped sourceUrls are anchored, so this is not
@@ -120,6 +115,11 @@ function sameTarget(requested, final) {
   return sourcePageUrl(requested) === sourcePageUrl(final);
 }
 
+/**
+ * Classifies one already-settled fetch response. Redirects are reported, not
+ * hidden: a citation that now 301s to a different path is drift worth seeing
+ * even though the content still resolves.
+ */
 function classifyResponse(url, response) {
   const finalUrl = response.url || url;
   const redirected = response.redirected === true || !sameTarget(url, finalUrl);
@@ -328,21 +328,6 @@ async function main() {
     } else {
       slugs.push(arg);
     }
-  }
-
-  if (
-    !Number.isInteger(options.maxAgeDays) ||
-    !Number.isInteger(options.concurrency) ||
-    !Number.isInteger(options.timeoutMs) ||
-    options.maxAgeDays < 1 ||
-    options.concurrency < 1 ||
-    options.timeoutMs < 1
-  ) {
-    console.error(
-      "--max-age-days, --concurrency and --timeout-ms must each be a positive integer",
-    );
-    process.exitCode = 1;
-    return;
   }
 
   let certFolders;

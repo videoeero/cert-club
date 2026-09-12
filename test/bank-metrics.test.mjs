@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
 
-import { buildBankMetrics } from "../scripts/bank-metrics.mjs";
+import { buildBankMetrics, parseCliArgs } from "../scripts/bank-metrics.mjs";
 import {
   LENGTH_BIAS_MAX_LONGEST_SHARE,
   LENGTH_BIAS_MIN_SAMPLE,
@@ -413,6 +413,22 @@ test("sourceCheckedAt age distribution buckets by days before a frozen today, bo
   assert.equal(metrics.sourceAge.newestDays, 0);
 });
 
+test("sourceCheckedAt age distribution clamps future dates to 0 days instead of dropping them", () => {
+  const today = new Date("2026-09-01T00:00:00.000Z");
+  const questions = [
+    question({ id: "q1", sourceCheckedAt: "2026-09-05" }), // in the future relative to frozen today
+  ];
+
+  const metrics = buildBankMetrics(singleDomainManifest, questions, { today });
+
+  const byLabel = Object.fromEntries(
+    metrics.sourceAge.buckets.map((b) => [b.label, b.count]),
+  );
+  assert.equal(byLabel["0-30d"], 1);
+  assert.equal(metrics.sourceAge.sampleSize, 1);
+  assert.equal(metrics.sourceAge.newestDays, 0);
+});
+
 test('"always pick the longest option" baseline scores the share of singles where the longest option is the key', () => {
   const questions = [
     question({
@@ -787,4 +803,31 @@ test("counts questions per skill within their own domain", () => {
       ["second", 1],
     ],
   );
+});
+
+test("parseCliArgs rejects conflicting --json and --markdown flags", () => {
+  assert.throws(
+    () => parseCliArgs(["--json", "--markdown"]),
+    /--json and --markdown cannot be used together/,
+  );
+});
+
+test("parseCliArgs rejects unknown flags", () => {
+  assert.throws(
+    () => parseCliArgs(["--unknown-flag"]),
+    /Unknown flag\(s\): --unknown-flag/,
+  );
+});
+
+test("parseCliArgs parses valid flags and slugs", () => {
+  assert.deepEqual(parseCliArgs(["--json", "cert-1", "cert-2"]), {
+    json: true,
+    markdown: false,
+    slugs: ["cert-1", "cert-2"],
+  });
+  assert.deepEqual(parseCliArgs(["--markdown"]), {
+    json: false,
+    markdown: true,
+    slugs: [],
+  });
 });

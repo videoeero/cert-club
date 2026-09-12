@@ -114,7 +114,6 @@ function buildDomainBreakdown(manifest, core) {
 // subdomain alone would silently pool their questions together and misreport
 // both. No shipped manifest collides yet, which is exactly why this is worth
 // keying correctly now rather than after a bank does.
-
 function buildSkillBreakdown(manifest, core) {
   const counts = new Map();
   for (const question of core) {
@@ -263,7 +262,7 @@ function ageInDays(checkedAt, today) {
 
 function buildSourceAgeDistribution(questions, today) {
   const ages = questions.map((question) =>
-    ageInDays(question.sourceCheckedAt, today),
+    Math.max(0, ageInDays(question.sourceCheckedAt, today)),
   );
 
   const buckets = AGE_BUCKET_EDGES.map((max, index) => {
@@ -665,21 +664,35 @@ function formatMarkdown(report) {
   return lines.join("\n");
 }
 
-async function main() {
-  const argv = process.argv.slice(2);
+export function parseCliArgs(argv) {
   const KNOWN_FLAGS = new Set(["--json", "--markdown"]);
   const unknown = argv.filter(
     (arg) => arg.startsWith("--") && !KNOWN_FLAGS.has(arg),
   );
   if (unknown.length > 0) {
-    console.error(`Unknown flag(s): ${unknown.join(", ")}`);
-    process.exitCode = 1;
-    return;
+    throw new Error(`Unknown flag(s): ${unknown.join(", ")}`);
   }
 
   const json = argv.includes("--json");
   const markdown = argv.includes("--markdown");
+  if (json && markdown) {
+    throw new Error("--json and --markdown cannot be used together");
+  }
   const slugs = argv.filter((arg) => !arg.startsWith("--"));
+
+  return { json, markdown, slugs };
+}
+
+async function main() {
+  let options;
+  try {
+    options = parseCliArgs(process.argv.slice(2));
+  } catch (error) {
+    console.error(error instanceof Error ? error.message : error);
+    process.exitCode = 1;
+    return;
+  }
+  const { json, markdown, slugs } = options;
 
   let reports;
   try {

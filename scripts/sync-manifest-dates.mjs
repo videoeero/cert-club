@@ -48,6 +48,13 @@ export function applyManifestUpdatedAt(manifest, updatedAt) {
   return updated;
 }
 
+export function localCalendarDate(date = new Date()) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 /**
  * Derives the last updated date for a certification folder:
  * 1. If any non-manifest file in certs/<slug>/ has uncommitted working-tree changes,
@@ -62,7 +69,7 @@ export function deriveCertUpdatedDate(
   questions,
   options = {},
 ) {
-  const today = options.today ?? new Date().toISOString().slice(0, 10);
+  const today = options.today ?? localCalendarDate();
   const gitRunner = options.gitRunner ?? runGit;
 
   let maxSourceDate = "";

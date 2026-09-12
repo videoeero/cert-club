@@ -29,7 +29,15 @@ const checkedDateSchema = z
     return (
       !Number.isNaN(date.valueOf()) && date.toISOString().startsWith(value)
     );
-  }, "must be a valid calendar date");
+  }, "must be a valid calendar date")
+  .refine((value) => {
+    // The calendar day must not be in the future anywhere on Earth (UTC+14
+    // in the Line Islands is the earliest active timezone).
+    const latestActiveEarthDate = new Date(Date.now() + 14 * 60 * 60 * 1000)
+      .toISOString()
+      .slice(0, 10);
+    return value <= latestActiveEarthDate;
+  }, "cannot be in the future");
 
 export const skillSchema = z
   .object({
