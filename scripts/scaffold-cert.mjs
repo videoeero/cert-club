@@ -394,17 +394,29 @@ export function renderReviewProgress(spec, template) {
   const weightList = spec.domains
     .map((domain) => `${domain.name}: ${domain.weight}%`)
     .join(", ");
-  // Rendered as one placeholder for the whole table (header included) rather
-  // than substituting into a table skeleton in the template file: prettier
-  // reflows markdown tables, and a placeholder sitting inside a table cell
-  // gets wrapped onto one line, corrupting the multi-row substitution.
-  const distributionTable = [
-    "| Domain | Weight | Questions |",
-    "| --- | ---: | ---: |",
-    ...spec.domains.map(
-      (domain) => `| ${escapeTableCell(domain.name)} | ${domain.weight}% | 0 |`,
-    ),
-  ].join("\n");
+  let distributionTable;
+  if (spec.examQuestionCount) {
+    const weights = spec.domains.map((d) => d.weight);
+    const targets1x = normalizeWeights(weights, spec.examQuestionCount);
+    const targets2x = normalizeWeights(weights, spec.examQuestionCount * 2);
+    distributionTable = [
+      `| Domain | Weight | Target (1x: ${spec.examQuestionCount}) | Target (2x: ${spec.examQuestionCount * 2}) | Questions |`,
+      "| --- | ---: | ---: | ---: | ---: |",
+      ...spec.domains.map(
+        (domain, index) =>
+          `| ${escapeTableCell(domain.name)} | ${domain.weight}% | ${targets1x[index]} | ${targets2x[index]} | 0 |`,
+      ),
+    ].join("\n");
+  } else {
+    distributionTable = [
+      "| Domain | Weight | Questions |",
+      "| --- | ---: | ---: |",
+      ...spec.domains.map(
+        (domain) =>
+          `| ${escapeTableCell(domain.name)} | ${domain.weight}% | 0 |`,
+      ),
+    ].join("\n");
+  }
 
   return renderTemplate(template, {
     name: spec.name,

@@ -99,7 +99,9 @@ independent: a bank can hold nothing but `reviewed` questions and still be a
   a notice on the setup and results screens saying a score is practice rather
   than a readiness signal.
 - **`stable`** — coverage across the blueprint is there, so a session is a
-  fair rehearsal of the exam and a score means something.
+  fair rehearsal of the exam and a score means something. A complete bank
+  targets **2× the official exam question count** (`2 * manifest.examQuestionCount`),
+  ensuring learners can complete two full non-overlapping mock exam sessions.
 
 There is no mechanical threshold for the promotion, deliberately. Question
 count alone is the wrong test: a bank could reach the live exam's question
@@ -133,6 +135,7 @@ Check the result at any time:
 
 ```sh
 npm run balance                # measure the shape of the bank as it stands
+npm run balance -- --2x        # measure against the 2x exam baseline
 npm run balance -- --target 150   # measure it against an authoring goal
 ```
 

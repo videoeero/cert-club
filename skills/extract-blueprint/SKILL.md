@@ -13,10 +13,12 @@ Phase two of `assess-new-cert`'s recon, run against the guide
 
 ## Stages
 
-1. **Weights.** If the guide publishes exact integers, check they sum to 100
-   and move on — there is nothing to normalise. Only if it publishes _ranges_
-   run `npm run scaffold -- --normalize "25-30,35-40,30-35"`, which does the
-   midpoint-and-largest-remainder arithmetic that prose does not.
+1. **Weights and sizing.** If the guide publishes exact integers, check they
+   sum to 100 and move on — there is nothing to normalise. Only if it publishes
+   _ranges_ run `npm run scaffold -- --normalize "25-30,35-40,30-35"`, which does
+   the midpoint-and-largest-remainder arithmetic that prose does not. Record the
+   official item count as `examQuestionCount`; the full bank target is 2x that
+   count, distributed via `npm run balance -- --2x` (or `--target <2*count>`).
 2. **Record the skill breakdown if the guide publishes one.** Declaring
    `skills` opts the bank into per-skill weighted sampling _and_ into the
    `--strict` balance gate. Say that out loud — it is a commitment, not a

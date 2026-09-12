@@ -52,9 +52,10 @@ Report it and let a human make that edit.
    **NO-GO** — the blueprint or the material behind it is gated; say which.
 
 6. **On GO, scaffold.** Run `npm run scaffold` with `--slug`, `--name`,
-   `--exam-url`, one `--domain "<slug>:<name>:<weight>"` per domain (plus
-   `--skill "<domain>/<skill>:<name>:<weight>"` if stage 3 declared one), and
-   `--register`. Preview with `--dry-run` first. Then fill the recon findings
+   `--exam-url`, `--exam-questions <n>`, one `--domain "<slug>:<name>:<weight>"`
+   per domain (plus `--skill "<domain>/<skill>:<name>:<weight>"` if stage 3
+   declared one), and `--register`. Preview with `--dry-run` first. The full
+   bank target is 2x the live exam question count. Then fill the recon findings
    into the seeded `review-progress.md`: source classification, sample
    inventory, calibration answer, and the constraints from the verdict.
 7. **Seed one real question per domain.** Each one:

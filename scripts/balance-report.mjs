@@ -2,14 +2,23 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 import { parsePositiveInteger } from "./lib/cli.mjs";
+import { AggregateMessageError } from "./lib/errors.mjs";
 import { skillKey } from "./lib/skills.mjs";
 import {
   listCertFolders,
   readCertQuestions,
   readJson,
 } from "./lib/read-certs.mjs";
+import { normalizeWeights } from "./scaffold-cert.mjs";
 
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+
+export class BalanceReportError extends AggregateMessageError {
+  constructor(messages = []) {
+    super("Balance check failed:", messages);
+    this.name = "BalanceReportError";
+  }
+}
 
 // A skill may sit this many questions away from its blueprint share before the
 // bank is considered distorted. Absolute rather than proportional, because the
@@ -31,7 +40,42 @@ export function isCoreQuestion(question) {
 
 export function buildBalanceReport(manifest, questions, options = {}) {
   const core = questions.filter(isCoreQuestion);
-  const target = options.target ?? core.length;
+  let target = options.target;
+  if (target === undefined) {
+    if (options.useExamMultiplier && manifest.examQuestionCount) {
+      target = manifest.examQuestionCount * 2;
+    } else {
+      target = core.length;
+    }
+  }
+
+  // Domain balance
+  const domainCounts = new Map();
+  for (const question of core) {
+    domainCounts.set(
+      question.domain,
+      (domainCounts.get(question.domain) ?? 0) + 1,
+    );
+  }
+  const domainTargets =
+    target > 0
+      ? normalizeWeights(
+          manifest.domains.map((d) => d.weight),
+          target,
+        )
+      : manifest.domains.map(() => 0);
+  const domains = manifest.domains.map((domain, index) => {
+    const domainTarget = domainTargets[index];
+    const actual = domainCounts.get(domain.slug) ?? 0;
+    return {
+      slug: domain.slug,
+      name: domain.name,
+      weight: domain.weight,
+      target: domainTarget,
+      actual,
+      delta: actual - domainTarget,
+    };
+  });
 
   // domainSchema enforces skill-slug uniqueness only within a domain, so two
   // domains may both declare e.g. "overview". Keying on the subdomain alone
@@ -71,6 +115,7 @@ export function buildBalanceReport(manifest, questions, options = {}) {
     target,
     coreCount: core.length,
     taggedCount: questions.length - core.length,
+    domains,
     skills,
     offBalance: skills.filter(
       (skill) => Math.abs(skill.delta) > BALANCE_TOLERANCE,
@@ -85,6 +130,29 @@ function formatReport(report) {
   );
 
   if (report.skills.length === 0) {
+    if (report.domains && report.domains.length > 0) {
+      lines.push("  domain balance (no skill breakdown declared in manifest):");
+      const width = Math.max(
+        ...report.domains.map((domain) => domain.slug.length),
+      );
+      for (const domain of report.domains) {
+        const delta =
+          domain.delta > 0 ? `+${domain.delta}` : String(domain.delta);
+        lines.push(
+          `  ${domain.slug.padEnd(width)}  ${String(domain.weight).padStart(5)}%  target ${String(domain.target).padStart(3)}  have ${String(domain.actual).padStart(3)}  ${delta.padStart(4)}`,
+        );
+      }
+      const needed = report.domains
+        .filter((domain) => domain.delta < 0)
+        .reduce((sum, domain) => sum + -domain.delta, 0);
+      const surplus = report.domains
+        .filter((domain) => domain.delta > 0)
+        .reduce((sum, domain) => sum + domain.delta, 0);
+      lines.push(
+        `  ${needed} question(s) short, ${surplus} surplus against target ${report.target}`,
+      );
+      return lines.join("\n");
+    }
     lines.push(
       "  no skill breakdown declared in the manifest — nothing to check",
     );
@@ -113,9 +181,20 @@ function formatReport(report) {
   return lines.join("\n");
 }
 
-export async function buildRepositoryReports(root = repositoryRoot, options) {
+export async function buildRepositoryReports(
+  root = repositoryRoot,
+  options = {},
+) {
   const certsPath = join(root, "certs");
-  const folderNames = await listCertFolders(certsPath);
+  const allFolders = await listCertFolders(certsPath);
+  const requested = options.slugs ?? [];
+  const missing = requested.filter((slug) => !allFolders.includes(slug));
+  if (missing.length > 0) {
+    throw new BalanceReportError(
+      missing.map((slug) => `"${slug}" has no matching certs/ folder`),
+    );
+  }
+  const folderNames = requested.length > 0 ? requested : allFolders;
 
   const reports = [];
   for (const folderName of folderNames) {
@@ -132,6 +211,7 @@ export async function buildRepositoryReports(root = repositoryRoot, options) {
 async function main() {
   const argv = process.argv.slice(2);
   const strict = argv.includes("--strict");
+  const useExamMultiplier = argv.includes("--2x");
   const targetIndex = argv.indexOf("--target");
   const target =
     targetIndex >= 0 ? parsePositiveInteger(argv[targetIndex + 1]) : undefined;
@@ -142,17 +222,35 @@ async function main() {
     return;
   }
 
+  const slugs = argv.filter(
+    (arg, index) =>
+      !arg.startsWith("--") && (targetIndex < 0 || index !== targetIndex + 1),
+  );
+
   let reports;
   try {
-    reports = await buildRepositoryReports(repositoryRoot, { target });
+    reports = await buildRepositoryReports(repositoryRoot, {
+      target,
+      useExamMultiplier,
+      slugs,
+    });
   } catch (error) {
     console.error(error instanceof Error ? error.message : error);
     process.exitCode = 1;
     return;
   }
   const withSkills = reports.filter((report) => report.skills.length > 0);
+  const toPrint = strict
+    ? withSkills
+    : reports.filter(
+        (report) =>
+          report.skills.length > 0 ||
+          slugs.length > 0 ||
+          useExamMultiplier ||
+          target !== undefined,
+      );
 
-  for (const report of withSkills) {
+  for (const report of toPrint) {
     console.log(formatReport(report));
   }
 

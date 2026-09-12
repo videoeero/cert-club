@@ -10,7 +10,9 @@ every declared domain is empty by construction.
 
 Promote to `stable` only when coverage is genuinely proportional across all
 domains, judged per domain against the manifest weights rather than by total
-question count, and record that reasoning here.
+question count, and record that reasoning here. The standard bank authoring target
+is 2x the official exam question count (`2 * manifest.examQuestionCount`), providing
+two full non-overlapping mock exam sessions.
 
 ## Blueprint normalization
 

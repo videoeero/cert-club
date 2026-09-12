@@ -832,3 +832,18 @@ test("parseCliArgs parses valid flags and slugs", () => {
     slugs: [],
   });
 });
+
+test("buildBankMetrics computes 2x target and domain deltas when examQuestionCount is present", () => {
+  const manifestWithExam = {
+    ...singleDomainManifest,
+    examQuestionCount: 50,
+  };
+  const metrics = buildBankMetrics(manifestWithExam, [question()], {
+    today: new Date("2026-09-09T00:00:00.000Z"),
+  });
+  assert.equal(metrics.examQuestionCount, 50);
+  assert.equal(metrics.targetQuestionCount, 100);
+  assert.equal(metrics.questionCountDelta, -99);
+  assert.equal(metrics.domains[0].target, 100);
+  assert.equal(metrics.domains[0].delta, -99);
+});

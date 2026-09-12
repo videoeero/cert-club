@@ -3,7 +3,9 @@ import test from "node:test";
 
 import {
   BALANCE_TOLERANCE,
+  BalanceReportError,
   buildBalanceReport,
+  buildRepositoryReports,
   isCoreQuestion,
 } from "../scripts/balance-report.mjs";
 
@@ -159,4 +161,101 @@ test("reports no skills for a manifest without a breakdown", () => {
 
   assert.deepEqual(report.skills, []);
   assert.deepEqual(report.offBalance, []);
+});
+
+test("useExamMultiplier sets target to twice the examQuestionCount", () => {
+  const manifestWithExam = {
+    cert: "custom-cert",
+    examQuestionCount: 50,
+    domains: [{ slug: "d", name: "D", weight: 100 }],
+  };
+  const report = buildBalanceReport(
+    manifestWithExam,
+    [{ domain: "d", scope: "core" }],
+    { useExamMultiplier: true },
+  );
+  assert.equal(report.target, 100);
+  assert.equal(report.domains[0].target, 100);
+  assert.equal(report.domains[0].delta, -99);
+});
+
+test("calculates domain balance with correct deltas", () => {
+  const report = buildBalanceReport(
+    {
+      cert: "custom-cert",
+      domains: [
+        { slug: "d1", name: "D1", weight: 40 },
+        { slug: "d2", name: "D2", weight: 60 },
+      ],
+    },
+    [
+      { domain: "d1", scope: "core" },
+      { domain: "d1", scope: "core" },
+      { domain: "d2", scope: "core" },
+    ],
+    { target: 10 },
+  );
+  assert.deepEqual(
+    report.domains.map((d) => [d.slug, d.target, d.actual, d.delta]),
+    [
+      ["d1", 4, 2, -2],
+      ["d2", 6, 1, -5],
+    ],
+  );
+});
+
+test("useExamMultiplier falls back to core.length when examQuestionCount is missing", () => {
+  const manifestWithoutExam = {
+    cert: "custom-cert",
+    domains: [{ slug: "d", name: "D", weight: 100 }],
+  };
+  const report = buildBalanceReport(
+    manifestWithoutExam,
+    [
+      { domain: "d", scope: "core" },
+      { domain: "d", scope: "core" },
+    ],
+    { useExamMultiplier: true },
+  );
+  assert.equal(report.target, 2);
+  assert.equal(report.domains[0].target, 2);
+  assert.equal(report.domains[0].delta, 0);
+});
+
+test("apportions domain targets with largest remainder so sum matches target exactly", () => {
+  const report = buildBalanceReport(
+    {
+      cert: "az-900",
+      domains: [
+        { slug: "concepts", name: "Concepts", weight: 28 },
+        { slug: "arch", name: "Architecture", weight: 39 },
+        { slug: "gov", name: "Governance", weight: 33 },
+      ],
+    },
+    [],
+    { target: 80 },
+  );
+  // Math.round gives 22 + 31 + 26 = 79. Apportionment ensures [23, 31, 26] summing to 80.
+  assert.deepEqual(
+    report.domains.map((d) => d.target),
+    [23, 31, 26],
+  );
+  assert.equal(
+    report.domains.reduce((sum, d) => sum + d.target, 0),
+    80,
+  );
+});
+
+test("buildRepositoryReports throws BalanceReportError when requested slug is missing", async () => {
+  await assert.rejects(
+    () => buildRepositoryReports(undefined, { slugs: ["non-existent-cert"] }),
+    (error) => {
+      assert.ok(error instanceof BalanceReportError);
+      assert.match(
+        error.message,
+        /"non-existent-cert" has no matching certs\/ folder/,
+      );
+      return true;
+    },
+  );
 });

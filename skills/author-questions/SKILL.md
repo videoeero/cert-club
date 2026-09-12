@@ -24,11 +24,13 @@ both; this skill is the order of operations, not a second copy.
 1. **Orient.** Read the cert's `manifest.json`, the target `questions/*.json`,
    and `review-progress.md` — the review file records earlier judgement calls
    as intent, and re-deciding them silently is the main failure mode here.
-   Then run `npm run balance -- --target <n>` and `npm run metrics -- <slug>`.
+   Then run `npm run balance -- --2x <slug>` (or `--target <n>`) and
+   `npm run metrics -- <slug>`. The target bank baseline is 2x the live exam's
+   question count.
 
    **Batch size is a balance output, not a user preference.** If the user asks
-   for ten and the target skill is four short, say so and reconcile before
-   drafting — writing ten pushes the skill out the other side.
+   for ten and the target skill or domain is four short, say so and reconcile
+   before drafting — writing ten pushes the skill out the other side.
 
 2. **Sources first, questions second.** Find the documentation that
    establishes the fact, fetch each page, and confirm two things: that it

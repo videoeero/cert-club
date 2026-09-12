@@ -25,9 +25,11 @@ them.
 
 2. **Judge per domain, never against totals.** `AGENTS.md` is explicit: never
    infer bank status from question count. A bank can reach the live exam's
-   question count with a domain barely touched. The comparison is each
-   domain's share of the bank against its weight in `manifest.json`, and the
-   same one level down for any domain declaring `skills`.
+   question count with a domain barely touched. The baseline target for a
+   complete bank is 2x the live exam question count, distributed proportionally
+   across domains against manifest weights. Compare each domain's share of the
+   bank against its weight in `manifest.json`, and the same one level down for
+   any domain declaring `skills`.
 3. **Separate the two `status` fields.** `manifest.status` is coverage of the
    blueprint; a question's own `status` is whether that item was reviewed.
    They are independent — a bank of entirely `reviewed` questions can still

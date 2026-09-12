@@ -273,6 +273,17 @@ test("renderReviewProgress fills the template with the seeded shape", () => {
   assert.match(rendered, /\| Describe Concepts \| 28% \| 0 \|/);
 });
 
+test("renderReviewProgress renders 1x and 2x target columns when examQuestionCount is specified", () => {
+  const spec = baseSpec({ examQuestionCount: 50 });
+  const rendered = renderReviewProgress(spec, TEMPLATE);
+  assert.match(
+    rendered,
+    /\| Target \(1x: 50\) \| Target \(2x: 100\) \| Questions \|/,
+  );
+  assert.match(rendered, /\| Describe Concepts \| 28% \| 14 \| 28 \| 0 \|/);
+  assert.match(rendered, /\| Describe Identity \| 72% \| 36 \| 72 \| 0 \|/);
+});
+
 test("planScaffold emits a manifest, one questions file per domain, and a review file", () => {
   const plan = planScaffold("/repo", baseSpec());
   const paths = plan.map((entry) => entry.path);

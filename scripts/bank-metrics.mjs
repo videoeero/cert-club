@@ -21,6 +21,7 @@ import {
 } from "../schemas/question-bank.mjs";
 import { sourcePageUrl } from "./lib/source-url.mjs";
 import { skillKey } from "./lib/skills.mjs";
+import { normalizeWeights } from "./scaffold-cert.mjs";
 
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -97,14 +98,28 @@ function buildDomainBreakdown(manifest, core) {
   for (const question of core) {
     counts.set(question.domain, (counts.get(question.domain) ?? 0) + 1);
   }
-  return manifest.domains.map((domain) => {
+  const examTarget = manifest.examQuestionCount
+    ? manifest.examQuestionCount * 2
+    : null;
+  const domainTargets =
+    examTarget !== null && examTarget > 0
+      ? normalizeWeights(
+          manifest.domains.map((d) => d.weight),
+          examTarget,
+        )
+      : null;
+  return manifest.domains.map((domain, index) => {
     const actual = counts.get(domain.slug) ?? 0;
+    const target = domainTargets !== null ? domainTargets[index] : null;
+    const delta = target !== null ? actual - target : null;
     return {
       slug: domain.slug,
       name: domain.name,
       weight: domain.weight,
       actual,
       actualShare: share(actual, core.length),
+      target,
+      delta,
     };
   });
 }
@@ -455,8 +470,19 @@ export function buildBankMetrics(manifest, questions, options = {}) {
     scopeCoreShare: scope.core.share,
   });
 
+  const examQuestionCount = manifest.examQuestionCount ?? null;
+  const targetQuestionCount =
+    examQuestionCount !== null ? examQuestionCount * 2 : null;
+  const questionCountDelta =
+    targetQuestionCount !== null
+      ? scope.core.count - targetQuestionCount
+      : null;
+
   return {
     cert: manifest.cert,
+    examQuestionCount,
+    targetQuestionCount,
+    questionCountDelta,
     questionCount: questions.length,
     scope,
     domains,
@@ -523,13 +549,26 @@ function fmt(value) {
 
 function formatText(report) {
   const lines = [];
+  const targetNote =
+    report.targetQuestionCount !== null &&
+    report.targetQuestionCount !== undefined
+      ? ` (target ${report.targetQuestionCount} [2x exam ${report.examQuestionCount}], ${report.questionCountDelta >= 0 ? `+${report.questionCountDelta}` : report.questionCountDelta})`
+      : "";
   lines.push(
-    `${report.cert}: ${report.questionCount} question(s) — core ${report.scope.core.count} (${pct(report.scope.core.share)}), deep ${report.scope.deep.count} (${pct(report.scope.deep.share)})`,
+    `${report.cert}: ${report.questionCount} question(s)${targetNote} — core ${report.scope.core.count} (${pct(report.scope.core.share)}), deep ${report.scope.deep.count} (${pct(report.scope.deep.share)})`,
   );
 
   for (const domain of report.domains) {
+    let targetInfo = "";
+    if (domain.target !== null && domain.target !== undefined) {
+      const deltaNote =
+        `(${domain.delta >= 0 ? `+${domain.delta}` : domain.delta})`.padStart(
+          5,
+        );
+      targetInfo = ` target ${String(domain.target).padStart(3)} ${deltaNote} `;
+    }
     lines.push(
-      `  domain ${domain.slug.padEnd(40)} core ${String(domain.actual).padStart(3)}  ${pct(domain.actualShare).padStart(6)}  weight ${domain.weight}%`,
+      `  domain ${domain.slug.padEnd(40)} core ${String(domain.actual).padStart(3)}  ${targetInfo}${pct(domain.actualShare).padStart(6)}  weight ${domain.weight}%`,
     );
   }
   for (const skill of report.skills) {
@@ -589,7 +628,20 @@ function formatMarkdown(report) {
   const lines = [];
   lines.push(`## ${report.cert}`);
   lines.push("");
-  lines.push(`${report.questionCount} questions.`);
+  if (
+    report.targetQuestionCount !== null &&
+    report.targetQuestionCount !== undefined
+  ) {
+    const deltaStr =
+      report.questionCountDelta >= 0
+        ? `+${report.questionCountDelta}`
+        : `${report.questionCountDelta}`;
+    lines.push(
+      `${report.questionCount} questions (target ${report.targetQuestionCount} [2x exam of ${report.examQuestionCount}], delta ${deltaStr}).`,
+    );
+  } else {
+    lines.push(`${report.questionCount} questions.`);
+  }
   lines.push("");
   lines.push("| Scope | Questions | Share |");
   lines.push("| ------ | --------: | ----: |");
@@ -602,12 +654,27 @@ function formatMarkdown(report) {
   lines.push("");
 
   if (report.domains.length > 0) {
-    lines.push("| Domain | Core | Share | Weight |");
-    lines.push("| --- | ---: | ---: | ---: |");
-    for (const domain of report.domains) {
-      lines.push(
-        `| ${domain.name} | ${domain.actual} | ${pct(domain.actualShare)} | ${domain.weight}% |`,
-      );
+    const hasTarget = report.domains.some(
+      (d) => d.target !== null && d.target !== undefined,
+    );
+    if (hasTarget) {
+      lines.push("| Domain | Core | Target (2x) | Delta | Share | Weight |");
+      lines.push("| --- | ---: | ---: | ---: | ---: | ---: |");
+      for (const domain of report.domains) {
+        const delta =
+          domain.delta >= 0 ? `+${domain.delta}` : `${domain.delta}`;
+        lines.push(
+          `| ${domain.name} | ${domain.actual} | ${domain.target} | ${delta} | ${pct(domain.actualShare)} | ${domain.weight}% |`,
+        );
+      }
+    } else {
+      lines.push("| Domain | Core | Share | Weight |");
+      lines.push("| --- | ---: | ---: | ---: |");
+      for (const domain of report.domains) {
+        lines.push(
+          `| ${domain.name} | ${domain.actual} | ${pct(domain.actualShare)} | ${domain.weight}% |`,
+        );
+      }
     }
     lines.push("");
   }
