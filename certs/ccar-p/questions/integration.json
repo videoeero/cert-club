@@ -6,7 +6,7 @@
     "type": "single",
     "domain": "integration",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "A software engineering team is integrating internal enterprise databases and developer documentation into Claude Desktop and Claude Code using the Model Context Protocol (MCP). The team needs to expose read-only database schemas as contextual reference data, while also exposing executable query functions that modify records. Under the MCP architectural specification, which combination of MCP primitives should the MCP server implement for these two requirements?",
     "options": [
@@ -30,14 +30,977 @@
     "correct": [
       "opt-a"
     ],
-    "explanation": "In the Model Context Protocol (MCP) architecture, Resources represent read-only, passive data or content that clients can read and attach as context (analogous to GET endpoints or files, such as database schemas). Tools represent executable functions that perform operations and can have side effects (such as modifying records or running database queries), which the LLM can decide to invoke. Prompts are reusable templates, Roots define filesystem boundaries, and Sampling allows servers to request completions from the client LLM.",
+    "explanation": "In the Model Context Protocol (MCP) architecture, Resources represent read-only, passive data or content that clients can read and attach as context (analogous to GET endpoints or files, such as database schemas). Tools represent executable functions that perform operations and can have side effects (such as modifying records or running database queries), which the LLM can decide to invoke. Prompts are reusable templates, Roots define filesystem boundaries, and Sampling allows servers to request completions from the client LLM (Roots and Sampling are both deprecated as of protocol revision 2026-07-28).",
     "distractorNotes": {
       "opt-b": "Prompts are pre-written interaction templates, and Resources are strictly read-only data, so Resources cannot perform update operations.",
       "opt-c": "Sampling is a server-to-client LLM completion mechanism, and Roots define filesystem boundary URIs, neither of which fits data or operations.",
-      "opt-d": "Transports represent communication mechanisms (stdio, SSE) rather than capability primitives, and Resources are the idiomatic fit for passive schemas."
+      "opt-d": "Transports represent communication mechanisms (stdio, Streamable HTTP) rather than capability primitives, and Resources are the idiomatic fit for passive schemas."
     },
-    "sourceUrl": "https://modelcontextprotocol.io/docs/learn/architecture",
-    "sourceNote": "Core Architecture / MCP Primitives (Resources and Tools)",
-    "sourceCheckedAt": "2026-09-12"
+    "sourceUrl": "https://modelcontextprotocol.io/docs/2026-07-28/learn/architecture",
+    "sourceNote": "Architecture overview / Primitives (Resources and Tools)",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-integration-002",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "integration",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An architect is reviewing a customer-support agent deployment. The agent is configured with tools to search knowledge base articles, draft ticket replies, issue credit card refunds, and permanently delete user accounts. A usage audit shows support specialists only use the agent to locate articles and draft replies, while billing supervisors execute refunds through a separate accounting system. Applying least-privilege architectural principles, which change best minimizes risk?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Configure pre-tool approval prompts that require the user to manually confirm any refund or deletion before execution."
+      },
+      {
+        "id": "opt-b",
+        "text": "Remove the refund and account deletion tools completely from the agent's registered tool configuration."
+      },
+      {
+        "id": "opt-c",
+        "text": "Attach detailed audit logging to the refund and delete tools so unauthorized invocations can be reviewed after execution."
+      },
+      {
+        "id": "opt-d",
+        "text": "Upgrade the underlying model to a higher-capacity reasoning tier that adheres more strictly to tool-use negative constraints."
+      }
+    ],
+    "correct": [
+      "opt-b"
+    ],
+    "explanation": "Under the principle of least privilege, capabilities that are not strictly required by an agent's role should be removed from its configuration entirely. Removing unnecessary tools permanently eliminates the attack surface, whereas confirmation prompts (opt-a) and audit logging (opt-c) are compensating or detective controls that leave vulnerable tool execution paths in place. Changing the model tier (opt-d) does not address authorization scope or capability bloat.",
+    "distractorNotes": {
+      "opt-a": "Confirmation prompts are compensating controls that reduce accidental use but leave unnecessary execution paths exposed to prompt injection.",
+      "opt-c": "Logging is a detective control useful for post-incident audits, but it fails to prevent unauthorized tool execution at runtime.",
+      "opt-d": "Model capability tier does not alter authorization boundaries; unneeded tools should be pruned regardless of model intelligence."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
+    "sourceNote": "When (and when not) to use agents / Reducing risk through least-privilege tool access",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-integration-003",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "integration",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An enterprise platform exposes 95 microservice tools to Claude in a monolithic tools array. In production, Claude exhibits high initial latency and degrading tool selection accuracy, often picking incorrect tools or confusing parameters across similar endpoints. Measurements indicate tool definitions consume over 50,000 tokens of context on every turn. Which architectural adjustment best addresses both context bloat and selection accuracy?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Concatenate all 95 tool definitions into a cached system prompt and append few-shot examples for every tool endpoint."
+      },
+      {
+        "id": "opt-b",
+        "text": "Increase the max_tokens limit and apply prompt caching across the full tools array on every multi-turn request."
+      },
+      {
+        "id": "opt-c",
+        "text": "Implement progressive tool discovery using a tool search tool that retrieves and injects only 3 to 5 relevant tools on demand."
+      },
+      {
+        "id": "opt-d",
+        "text": "Split the monolithic agent into 95 sequential single-tool prompt chains orchestrated by a master deterministic router."
+      }
+    ],
+    "correct": [
+      "opt-c"
+    ],
+    "explanation": "Anthropic documentation highlights two major problems as tool libraries grow beyond 30–50 definitions: context bloat (definitions consuming tens of thousands of tokens before user input) and degraded tool selection accuracy. Implementing progressive discovery—such as the Tool Search tool or dynamic catalog retrieval—keeps the full tool catalog indexed externally and loads only the 3–5 relevant tools needed for the specific request, reducing context overhead by over 85% and maintaining high selection accuracy.",
+    "distractorNotes": {
+      "opt-a": "Adding tool definitions and few-shot examples to the system prompt exacerbates context bloat and worsens tool selection confusion.",
+      "opt-b": "Prompt caching reduces token cost for identical prefixes, but it does not resolve degraded tool selection accuracy caused by 95 active schemas.",
+      "opt-d": "Creating 95 rigid sequential chains creates extreme latency, brittle routing, and unmaintainable workflow complexity."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool.md",
+    "sourceNote": "Tool search tool / Context bloat and tool selection accuracy scaling",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-integration-004",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "integration",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A platform team deploys a custom Model Context Protocol (MCP) server that provides access to internal financial databases over the Streamable HTTP transport. Security auditing identifies that external web applications running in user browsers could potentially forge requests or perform DNS rebinding against the local MCP endpoint. Which security controls does the MCP specification require servers to implement to prevent this attack vector?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Validate the Origin header on all incoming connections, bind only to localhost when running locally, and implement proper connection authentication."
+      },
+      {
+        "id": "opt-b",
+        "text": "Encrypt JSON-RPC payload bodies using asymmetric TLS client certificates while permitting wildcard host header bindings."
+      },
+      {
+        "id": "opt-c",
+        "text": "Bind the HTTP server to all network interfaces (0.0.0.0) with mutual TLS (mTLS) client certificates while disabling Origin validation."
+      },
+      {
+        "id": "opt-d",
+        "text": "Configure the HTTP server to permit cross-origin wildcards while relying on client-side LLM system prompts to block external callers."
+      }
+    ],
+    "correct": [
+      "opt-a"
+    ],
+    "explanation": "The MCP specification's Streamable HTTP transport states that servers MUST validate the Origin header on all incoming connections to prevent DNS rebinding attacks, responding with HTTP 403 Forbidden when a present Origin header is invalid. It further states that servers running locally SHOULD bind only to localhost (127.0.0.1) rather than all interfaces (0.0.0.0), and SHOULD implement proper authentication for all connections. Without these protections, attackers can use DNS rebinding to drive a local MCP server from a remote website.",
+    "distractorNotes": {
+      "opt-b": "Payload encryption does not prevent browser-driven DNS rebinding attacks where the browser sends legitimate HTTP requests to the rebound host.",
+      "opt-c": "Binding to 0.0.0.0 exposes the endpoint to the whole network, and mTLS does not substitute for the Origin validation the specification mandates against DNS rebinding.",
+      "opt-d": "Wildcard origins actively enable cross-origin exploitation, and LLM system prompts cannot enforce HTTP transport-layer network security."
+    },
+    "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http",
+    "sourceNote": "Streamable HTTP / Security & Endpoint (Origin validation, localhost binding, authentication)",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-integration-005",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "integration",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A backend data pipeline uses Claude to extract structured entity records from regulatory filings. The downstream ingestion service requires that Claude always invoke the record_filing_entity tool on every request without emitting conversational preambles or explanations, while guaranteeing that all extracted arguments conform to the defined JSON schema. Which API configuration meets these requirements?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Pass tool_choice: 'auto' in the request payload and include system prompt instructions forbidding assistant text."
+      },
+      {
+        "id": "opt-b",
+        "text": "Pass tool_choice: 'none' and parse the entity fields directly from Claude's free-form markdown response using regular expressions."
+      },
+      {
+        "id": "opt-c",
+        "text": "Pass tool_choice: 'any' and set disable_parallel_tool_use: false without enabling schema validation properties on the tool."
+      },
+      {
+        "id": "opt-d",
+        "text": "Pass tool_choice: {'type': 'tool', 'name': 'record_filing_entity'} and set strict: true within the tool definition."
+      }
+    ],
+    "correct": [
+      "opt-d"
+    ],
+    "explanation": "Two parameters solve two halves of the requirement. `tool_choice: {\"type\": \"tool\", \"name\": \"record_filing_entity\"}` forces that specific tool on every request, which removes conversational preambles because the model's turn is the tool call. `strict: true` on the tool definition enables grammar-constrained sampling so the inputs are guaranteed to satisfy the declared schema. Mind the model boundary the documentation records: on Claude Fable 5.1 and Claude Mythos 5.1, `tool_choice` values of `any` and `tool` return a 400 error, and the documented substitutes are `auto` with strict tool use, or structured outputs when a fixed JSON response shape is what you need.",
+    "distractorNotes": {
+      "opt-a": "tool_choice: 'auto' allows Claude to answer conversationally without calling a tool if it chooses, and prompting does not guarantee schema conformity.",
+      "opt-b": "tool_choice: 'none' forbids Claude from invoking any tools, forcing unstructured text generation that requires brittle regex extraction.",
+      "opt-c": "tool_choice: 'any' forces a tool call but does not restrict it to record_filing_entity, and omitting strict: true does not guarantee schema adherence."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools.md",
+    "sourceNote": "Define tools / Forcing tool use and Strict tool use",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-integration-006",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "integration",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An inventory management agent is provided two tools: check_warehouse_stock and reserve_stock_units. In production, Claude frequently invokes both tools in parallel within a single turn. However, the business logic requires that reserve_stock_units only be evaluated after the current warehouse stock levels are confirmed by the application. How should the architect reconfigure the request to prevent Claude from calling these tools concurrently?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Register both operations as passive MCP Resources rather than executable MCP Tools in the server manifest."
+      },
+      {
+        "id": "opt-b",
+        "text": "Set disable_parallel_tool_use: true within the tool_choice configuration parameter of the Messages API request."
+      },
+      {
+        "id": "opt-c",
+        "text": "Set stop_sequences: ['reserve_stock_units'] to truncate generation whenever the reservation tool is selected."
+      },
+      {
+        "id": "opt-d",
+        "text": "Provide a custom prompt template that instructs the model to wait for user confirmation between concurrent tool calls."
+      }
+    ],
+    "correct": [
+      "opt-b"
+    ],
+    "explanation": "By default, Claude may emit multiple tool_use blocks in a single turn (parallel tool use). When tool operations have ordering dependencies, race conditions, or state requirements, setting disable_parallel_tool_use: true in the tool_choice parameter (e.g. tool_choice: {'type': 'auto', 'disable_parallel_tool_use': true}) ensures Claude returns at most one tool call per turn, allowing the client to execute check_warehouse_stock and return its result before Claude decides to call reserve_stock_units.",
+    "distractorNotes": {
+      "opt-a": "MCP Resources are read-only data endpoints and cannot perform executable update operations like reserve_stock_units.",
+      "opt-c": "Stop sequences prematurely cut off token output, resulting in invalid JSON payloads and broken API response structures.",
+      "opt-d": "Prompt instructions cannot guarantee tool execution ordering as reliably as the API-level disable_parallel_tool_use constraint."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use.md",
+    "sourceNote": "Parallel tool use / Execution semantics and Disabling parallel tool use",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-integration-007",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "integration",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A telemetry monitoring system tracks an agentic assistant that executes SQL queries via an internal database tool. When a backend query times out or returns a database connection error, the application needs to communicate the failure to Claude so it can recover or notify the user gracefully, while recording the failure in distributed traces. According to the Messages API specification, how should the application format the response message?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Return an HTTP 500 error on the Messages API request to trigger the client SDK's exponential backoff handler."
+      },
+      {
+        "id": "opt-b",
+        "text": "Omit the tool_result block and insert an assistant message stating that the database service is currently unavailable."
+      },
+      {
+        "id": "opt-c",
+        "text": "Return a tool_result block referencing the tool_use_id with is_error: true and descriptive error text in the content field."
+      },
+      {
+        "id": "opt-d",
+        "text": "Send a new system prompt turn that removes the SQL database tool definition from the active session context."
+      }
+    ],
+    "correct": [
+      "opt-c"
+    ],
+    "explanation": "When an external tool execution fails (such as an API timeout or database error), the application must return a user message containing a tool_result content block that matches the original tool_use_id, sets is_error: true, and provides informative error details in content. This allows Claude to understand what went wrong, adapt its reasoning, retry if appropriate, or explain the error to the user without breaking the tool-use message conversation sequence.",
+    "distractorNotes": {
+      "opt-a": "Returning an HTTP 500 error halts the entire conversation stream rather than allowing Claude to handle the tool failure gracefully.",
+      "opt-b": "Omitting tool_result blocks violates API message formatting rules, which require every tool_use to be answered by a corresponding tool_result.",
+      "opt-d": "Modifying the system prompt to delete tool schemas mid-conversation does not resolve the pending tool_use block and breaks conversation flow."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls.md",
+    "sourceNote": "Handle tool calls / Handling results from client tools / is_error",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-integration-008",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "integration",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An architect is designing a RAG system over a large corpus of corporate policy manuals split into 400-token chunks. Users ask questions such as 'What is the maximum travel expense reimbursement for managers in the EMEA division?' Retrieval frequently fails because isolated chunks state 'The cap is $250 per day' without indicating whether that rule applies to EMEA, APAC, staff, or executives. How does Anthropic's Contextual Retrieval method resolve this context loss?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Prepend model-generated document-level and section context to each chunk before embedding and index creation."
+      },
+      {
+        "id": "opt-b",
+        "text": "Concatenate every chunk in the manual into a single embedding vector using a large 128,000-token embedding window."
+      },
+      {
+        "id": "opt-c",
+        "text": "Implement parent-document retrieval to index small child chunks while retrieving multi-page parent sections at query time."
+      },
+      {
+        "id": "opt-d",
+        "text": "Increase chunk sizes to 8,000 tokens each so every chunk is guaranteed to contain the entire policy chapter."
+      }
+    ],
+    "correct": [
+      "opt-a"
+    ],
+    "explanation": "Traditional RAG destroys context by splitting documents into small, isolated chunks that lose document- and section-level referents (the 'context conundrum'). Anthropic's Contextual Retrieval prepends concise, chunk-specific explanatory context (typically 50–100 tokens generated by Claude) that situates the chunk within the overall document prior to creating embeddings and BM25 indices. This ensures chunks retain vital qualifiers (such as company, division, and applicability) during retrieval without ballooning chunk size.",
+    "distractorNotes": {
+      "opt-b": "Embedding entire manuals into single monolithic vectors eliminates chunk granularity and degrades retrieval precision for specific facts.",
+      "opt-c": "Parent-document retrieval retrieves larger parent blocks at query time, but it expands prompt context without situating the chunk itself within the broader document structure as Contextual Retrieval does.",
+      "opt-d": "Enlarging chunks to 8,000 tokens dilutes semantic density, exceeds embedding model sweet spots, and introduces irrelevant filler into context."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/contextual-retrieval",
+    "sourceNote": "Introducing Contextual Retrieval / The context conundrum in traditional RAG",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-integration-009",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "integration",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A field engineering knowledge base contains both narrative troubleshooting procedures ('how to calibrate sensor drift') and exact hardware part identifiers ('Sensor Module PN-7740-X'). A standard vector search retriever performs well on narrative descriptions but frequently fails to retrieve the correct documentation when engineers search by exact part numbers. According to Anthropic's research on Contextual Retrieval, which architectural pipeline achieves the highest retrieval accuracy?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Use solely dense vector embeddings with high top-k retrieval, relying on Claude's long context window to filter out noise."
+      },
+      {
+        "id": "opt-b",
+        "text": "Use BM25 lexical search exclusively and disable vector embeddings to guarantee exact matching for all technical queries."
+      },
+      {
+        "id": "opt-c",
+        "text": "Deploy an intent classification model ahead of the retriever to route queries exclusively to either vector search or BM25."
+      },
+      {
+        "id": "opt-d",
+        "text": "Combine contextual embeddings with contextual BM25 using rank fusion, and pass the top candidate chunks through a reranker."
+      }
+    ],
+    "correct": [
+      "opt-d"
+    ],
+    "explanation": "Anthropic's Contextual Retrieval research showed that dense embeddings excel at semantic similarity but miss exact identifiers, whereas BM25 excels at lexical precision (such as part numbers, error codes, and technical names). Combining contextual embeddings and contextual BM25 reduced retrieval failure by 49%, and adding a cross-encoder reranking step to score and filter top candidates further reduced retrieval failure by 67%.",
+    "distractorNotes": {
+      "opt-a": "Dense embeddings alone fundamentally struggle with exact alphanumeric IDs like part numbers, and high top-k introduces distracting noise.",
+      "opt-b": "BM25 alone misses semantic synonyms and conceptual variations in narrative troubleshooting queries.",
+      "opt-c": "Classifier routing forces an all-or-nothing choice, whereas technical queries (e.g. troubleshooting a specific part number) benefit from both dense semantic and sparse lexical signals fused together."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/contextual-retrieval",
+    "sourceNote": "A primer on RAG / Further boosting performance with Reranking",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-integration-010",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "integration",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An architect is designing an enterprise MCP ecosystem. System A is a developer terminal tool running inside a local Docker desktop container that inspects local git repositories. System B is a central multi-tenant customer intelligence platform deployed on a Kubernetes cluster that serves dozens of concurrent internal AI assistants over the corporate network. Which transport mechanism should the architect select for each system according to the current MCP specification?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Select Streamable HTTP for System A to simplify process isolation, and select stdio for System B tunnelled over SSH port forwarding."
+      },
+      {
+        "id": "opt-b",
+        "text": "Select stdio for System A for lightweight subprocess communication, and select Streamable HTTP for System B for networked multi-client access."
+      },
+      {
+        "id": "opt-c",
+        "text": "Select the legacy HTTP with Server-Sent Events (SSE) transport for System B, because Streamable HTTP is defined only for single-client local deployments."
+      },
+      {
+        "id": "opt-d",
+        "text": "Select stdio for both systems by mounting shared network filesystem pipes across the Kubernetes cluster and local containers."
+      }
+    ],
+    "correct": [
+      "opt-b"
+    ],
+    "explanation": "The current MCP specification defines exactly two standard transports: stdio, which carries newline-delimited messages over the standard streams of a client-launched subprocess, and Streamable HTTP, in which the server exposes a single MCP endpoint accepting POST and answers each request with either a JSON object or a request-scoped SSE stream. System A is a locally launched subprocess, which is precisely the stdio case. System B is an independent server process handling many concurrent client connections over the network, which is the Streamable HTTP case. The older HTTP+SSE transport from protocol revision 2024-11-05 was replaced by Streamable HTTP in revision 2025-03-26 and is now formally deprecated.",
+    "distractorNotes": {
+      "opt-a": "This inverts the mapping: stdio requires the client to launch the server as a subprocess, which does not fit a shared multi-tenant Kubernetes service, and SSH tunnelling does not change that.",
+      "opt-c": "Streamable HTTP is the specification's transport for exactly this multi-client networked case; HTTP+SSE is the deprecated predecessor and must not be chosen for a new deployment.",
+      "opt-d": "stdio is defined over the standard streams of a client-launched subprocess, and shared network filesystem pipes are not a transport the specification defines."
+    },
+    "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28/basic/transports",
+    "sourceNote": "Transports / Overview (stdio and Streamable HTTP as the standard bindings)",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-integration-011",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "integration",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A security architect is maintaining an enterprise MCP host client application, built against protocol revision 2025-06-18, that integrates third-party community MCP servers. To safeguard corporate workstations, the host application must communicate to servers that they should confine themselves to designated project directories, and must mediate any server-initiated LLM inference requests to enforce token budgets and human approval. Which two client-side MCP primitives did that revision provide for these controls? (Select two.)",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "MCP Prompts, which allow clients to enforce structured input validation on server message templates."
+      },
+      {
+        "id": "opt-b",
+        "text": "MCP Roots, which communicate the filesystem directory boundaries and repository URIs within which servers are expected to operate."
+      },
+      {
+        "id": "opt-c",
+        "text": "MCP Transports, which encapsulate network socket encryption and manage TLS certificate rotation."
+      },
+      {
+        "id": "opt-d",
+        "text": "MCP Sampling, which enables clients to mediate server-requested completions and maintain control over model usage."
+      },
+      {
+        "id": "opt-e",
+        "text": "MCP Tools, which publish executable function definitions for client-side evaluation."
+      }
+    ],
+    "correct": [
+      "opt-b",
+      "opt-d"
+    ],
+    "explanation": "Under protocol revision 2025-06-18, Roots and Sampling are the two client-side features that carry these controls. Roots let the client declare the filesystem directory boundaries and repository URIs a server is expected to operate within; the specification says servers SHOULD respect root boundaries, so Roots are a coordination mechanism rather than an enforced security boundary, and actual isolation must come from OS file permissions or sandboxing. Sampling routes any server-requested LLM completion through the client, so the client keeps control over model access, model selection, and permissions, and can apply spend limits and human approval before the request reaches a model. Note that both features were classified as Deprecated in protocol revision 2026-07-28 (SEP-2577) and become eligible for removal in the first revision released on or after 2027-07-28: new implementations should instead pass directories via tool parameters, resource URIs, or server configuration, and integrate directly with LLM provider APIs.",
+    "distractorNotes": {
+      "opt-a": "Prompts are server-defined interaction templates offered to users, not client-enforced security or filesystem boundaries.",
+      "opt-c": "Transports define communication wire protocols (stdio, Streamable HTTP) rather than access control or inference governance boundaries.",
+      "opt-e": "Tools are executable capabilities exposed by the server to the client, not client governance primitives."
+    },
+    "sourceUrl": "https://modelcontextprotocol.io/docs/2025-06-18/learn/client-concepts.md",
+    "sourceNote": "Understanding MCP clients / Core Client Features (Roots and Sampling)",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-integration-012",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "integration",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An integration engineer is implementing a custom client loop for Claude's Messages API. During multi-tool agent sessions, requests occasionally fail with HTTP 400 validation errors when returning tool execution results. When constructing a user message containing tool results, which two formatting requirements must the client strictly follow according to Anthropic's tool-use specification? (Select two.)",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Tool result blocks must immediately follow their corresponding tool use blocks in the message history with matching tool_use_id values."
+      },
+      {
+        "id": "opt-b",
+        "text": "Each tool result must be placed in a separate sequential user message rather than combined into a single user turn."
+      },
+      {
+        "id": "opt-c",
+        "text": "In a user message containing both tool results and user text, all tool_result blocks must appear before any text content blocks."
+      },
+      {
+        "id": "opt-d",
+        "text": "The tool_result block must echo the complete input_schema definition of the tool alongside the output content string."
+      },
+      {
+        "id": "opt-e",
+        "text": "Tool result content must always be formatted as an array of base64-encoded strings to ensure cross-platform transport safety."
+      }
+    ],
+    "correct": [
+      "opt-a",
+      "opt-c"
+    ],
+    "explanation": "Anthropic's tool-use specification imposes strict ordering and placement rules for tool results: (1) Tool result blocks must immediately follow their corresponding tool use blocks in the message history, matched by tool_use_id without intervening messages; and (2) In any user message containing tool results, tool_result blocks must come first in the content array before any text blocks. Placing text before tool_result blocks or separating results into separate user messages after parallel calls causes HTTP 400 validation errors.",
+    "distractorNotes": {
+      "opt-b": "When Claude makes parallel tool calls, all tool results must be returned together in a single user message; splitting them causes 400 errors.",
+      "opt-d": "tool_result blocks require tool_use_id and content, and must not re-declare the tool's input_schema.",
+      "opt-e": "Tool result content is typically plain text or JSON string, or image blocks when applicable; base64 encoding is not required for text."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls.md",
+    "sourceNote": "Handle tool calls / Important formatting requirements",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-integration-013",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "integration",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An enterprise architect is designing an agent with access to over 60 customer service tools. The team configures progressive tool discovery using the tool search tool, marking non-essential tool definitions with defer_loading: true to prevent context bloat. The application also applies prompt caching across the system prompt and core tools. How does defer_loading interact with prompt caching when Claude discovers and calls a deferred tool during a multi-turn conversation?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "The newly discovered tool definition is dynamically inserted into the top-level tools array, invalidating the cached prefix and forcing a full cache write on the subsequent turn."
+      },
+      {
+        "id": "opt-b",
+        "text": "The newly discovered tool definition is written into the user message turn as an unstructured markdown block, bypassing the API's schema validator to maintain cache stability."
+      },
+      {
+        "id": "opt-c",
+        "text": "The newly discovered tool definition is appended inline as a tool_reference content block within the conversation history, preserving the cached system-prompt prefix intact."
+      },
+      {
+        "id": "opt-d",
+        "text": "The newly discovered tool definition triggers an asynchronous background cache re-indexing job that updates the cache key without incurring cache miss latency during inference."
+      }
+    ],
+    "correct": [
+      "opt-c"
+    ],
+    "explanation": "Anthropic's tool-use prompt caching documentation states that deferred tools (defer_loading: true) are omitted from the static system-prompt prefix. When Claude discovers a deferred tool via tool search, the API appends its definition inline as a tool_reference content block within the conversation history rather than modifying the top-level tools array. Because the initial prefix remains completely untouched, prompt caching across the system prompt and always-loaded tools is preserved without invalidation.",
+    "distractorNotes": {
+      "opt-a": "Deferred tools are not injected into the top-level tools array; injecting into the prefix would invalidate the cache and defeat the architectural purpose of defer_loading.",
+      "opt-b": "Tool definitions are structured tool_reference content blocks validated against tool schemas, not unstructured markdown in user turns.",
+      "opt-d": "Prompt caches are evaluated deterministically on exact prefix matches; there is no speculative background re-indexing job for cache keys."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-use-with-prompt-caching.md",
+    "sourceNote": "Tool use with prompt caching / defer_loading and cache preservation",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-integration-014",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "integration",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An autonomous engineering agent executes multi-turn codebase investigations that frequently perform 30 or more file-reading and grep tool calls in a single session. As the session progresses, accumulated file contents in historical tool_result blocks consume over 120,000 tokens, degrading Claude's focus and increasing per-turn latency. Which server-side API feature allows the application to automatically clear older tool results while keeping the agent's historical decision sequence intact?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Configure message turn truncation to delete the earliest 20 user and assistant turns entirely from request history whenever token thresholds are exceeded."
+      },
+      {
+        "id": "opt-b",
+        "text": "Enable server-side context editing with tool result clearing, which replaces the oldest tool_result contents with placeholder text while preserving tool_use calls."
+      },
+      {
+        "id": "opt-c",
+        "text": "Configure client SDK streaming to emit tool results with empty strings while storing the real execution payloads in an external off-context key-value database."
+      },
+      {
+        "id": "opt-d",
+        "text": "Configure custom stop_sequences on the Messages API request to terminate generation automatically whenever cumulative turn counts exceed 25 agent iterations."
+      }
+    ],
+    "correct": [
+      "opt-b"
+    ],
+    "explanation": "Anthropic's server-side context editing feature (specifically the clear_tool_uses strategy) automatically clears the oldest tool results in chronological order once conversation context exceeds a configured token threshold. The API replaces each cleared tool result with placeholder text notifying Claude that the result was purged, while keeping the tool_use blocks (the function call and arguments) in place so the model retains awareness of what tools were executed.",
+    "distractorNotes": {
+      "opt-a": "Deleting entire conversation turns destroys original user instructions and conversational context, leading to repetitive or ungrounded agent behavior.",
+      "opt-c": "Emitting empty strings in tool results hides execution outcomes from Claude during active reasoning turns, causing the agent to hallucinate or retry blindly.",
+      "opt-d": "Stop sequences halt model generation prematurely rather than curating historical token volume to enable sustained multi-turn workflows."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/context-editing.md",
+    "sourceNote": "Context editing / Server-side strategies (Tool result clearing)",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-integration-015",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "integration",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An agentic data analysis workflow requires querying a customer database, filtering 5,000 transaction records by date, computing aggregate statistical metrics, and fetching matching merchant details across three separate tools. In a standard tool-use loop, this requires 4 to 6 round trips through Claude, incurring substantial latency and flooding the context window with raw transaction JSON. According to Anthropic's integration architecture, which mechanism best optimizes this multi-tool workflow?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Inject all database records into Claude's system prompt and instruct the model to perform mental arithmetic transformations without external tool calls."
+      },
+      {
+        "id": "opt-b",
+        "text": "Deploy an HTTP reverse proxy that consolidates the three tool endpoints into a single monolithic REST endpoint requiring no intermediate client orchestration."
+      },
+      {
+        "id": "opt-c",
+        "text": "Switch from the Messages API to asynchronous Message Batches to parallelize sequential tool-dependent calls across multiple background processing jobs."
+      },
+      {
+        "id": "opt-d",
+        "text": "Implement programmatic tool calling, allowing Claude to write code that executes the tools inside a code execution container and processes intermediate data."
+      }
+    ],
+    "correct": [
+      "opt-d"
+    ],
+    "explanation": "Programmatic tool calling allows Claude to write executable code that invokes tools directly inside an isolated code execution container. Rather than performing multiple round trips where thousands of intermediate records enter Claude's context window, the generated script queries the tools, filters and aggregates the data in memory within the sandbox, and passes only the refined final output back to the model, drastically reducing both latency and token consumption.",
+    "distractorNotes": {
+      "opt-a": "Injecting thousands of records into the prompt causes severe token bloat and relies on LLM arithmetic, which is prone to calculation errors.",
+      "opt-b": "A monolithic backend endpoint removes the model's ability to conditionally inspect intermediate results, filter dynamically, or adjust subsequent query parameters.",
+      "opt-c": "Message Batches is an asynchronous non-interactive batching service for independent calls, not an interactive orchestration engine for sequential tool pipelines."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling.md",
+    "sourceNote": "Programmatic tool calling / Architecture and latency reduction",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-integration-016",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "integration",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A real-time coding assistant uses Claude to generate multi-thousand-line configuration files by invoking a file_writer tool. Users experience high latency before output appears because the Messages API buffers and validates the full tool JSON payload before emitting it. The engineering team enables fine-grained tool streaming with eager_input_streaming: true. What architectural trade-off must the client application handle when adopting this setting?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "The client receives tool input fragments immediately without server-side JSON validation, requiring client code to accumulate fragments and guard against partial JSON."
+      },
+      {
+        "id": "opt-b",
+        "text": "The client experiences permanent cache invalidation on all subsequent turns because eager streaming disables prompt caching for the duration of the active session."
+      },
+      {
+        "id": "opt-c",
+        "text": "The client executes the external tool on individual delta fragments and streams partial HTTP responses back to the model before generation completes."
+      },
+      {
+        "id": "opt-d",
+        "text": "The client must restrict all tool input schemas to flat key-value pairs of primitive strings, as eager streaming disallows nested objects and complex array types."
+      }
+    ],
+    "correct": [
+      "opt-a"
+    ],
+    "explanation": "Fine-grained tool streaming (eager_input_streaming: true) bypasses server-side buffering and validation, streaming tool input fragments to the client as Claude generates them. This delivers low time-to-first-token for large parameter values. The key architectural trade-off is that because the API does not buffer or validate the JSON before streaming, the client can receive partial or malformed JSON (especially if generation halts due to max_tokens), requiring the client to buffer fragments, guard parsing, and handle incomplete payloads.",
+    "distractorNotes": {
+      "opt-b": "Fine-grained tool streaming does not disable prompt caching; prompt caching operates on the prefix independently of streaming delivery options.",
+      "opt-c": "Tools cannot be executed against incomplete partial JSON fragments; the client must accumulate the deltas until the content block closes before execution.",
+      "opt-d": "Fine-grained streaming supports standard arbitrary JSON schemas, including nested objects and arrays, without schema shape restrictions."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/fine-grained-tool-streaming.md",
+    "sourceNote": "Fine-grained tool streaming / Trade-offs and unbuffered JSON delivery",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-integration-017",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "integration",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An enterprise architect is evaluating deployment options for three autonomous agent initiatives: (1) an internal coding assistant that runs locally on developer laptops with custom file hooks; (2) a customer-facing interactive chatbot requiring custom distributed tracing, token budgeting, and strict human-in-the-loop review for payment tools; and (3) a long-running, asynchronous document auditing agent that executes overnight across hundreds of files without self-managed infrastructure. Which integration mechanism best fits each requirement according to Anthropic's architectural guidelines?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Deploy Claude Managed Agents for all three initiatives to establish unified centralized cloud governance and eliminate client-side state management and sandbox maintenance entirely."
+      },
+      {
+        "id": "opt-b",
+        "text": "Use Agent SDK for (1) local laptop execution, Messages API with a manual loop for (2) custom tracing and approval gates, and Claude Managed Agents for (3) hosted long-running tasks."
+      },
+      {
+        "id": "opt-c",
+        "text": "Deploy the SDK automatic Tool Runner for all three initiatives because it abstracts conversation state and natively handles multi-tenant human authorization callbacks in managed infrastructure."
+      },
+      {
+        "id": "opt-d",
+        "text": "Use raw MCP stdio subprocesses for (1) and (3), and configure asynchronous Message Batches with polling for (2) to guarantee low interactive round-trip response latency across endpoints."
+      }
+    ],
+    "correct": [
+      "opt-b"
+    ],
+    "explanation": "Anthropic's architectural guidance differentiates integration harnesses by control level and hosting requirements: The Agent SDK runs the agent loop inside your own local process (Python/TypeScript) with native file hooks, fitting developer laptop tools. Direct Messages API with a manual client loop provides fine-grained control for custom distributed tracing, token budgeting, and human-in-the-loop approval gates (which the automated Tool Runner cannot provide). Claude Managed Agents provides a fully hosted, sandboxed agent harness on managed infrastructure for long-running asynchronous tasks without operating servers.",
+    "distractorNotes": {
+      "opt-a": "Claude Managed Agents cannot execute inside a developer's local laptop filesystem or support custom interactive human approval workflows.",
+      "opt-c": "The automatic Tool Runner is designed for straightforward automated execution and does not support human approval gates or hosted cloud orchestration.",
+      "opt-d": "Message Batches is an offline asynchronous batch processing API with turn turnaround times measured in minutes or hours, making it unusable for interactive customer chatbots."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/agent-sdk/overview.md",
+    "sourceNote": "Agent SDK overview / Compare the Agent SDK to other Claude tools",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-integration-018",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "integration",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An enterprise architecture team is standardizing integration patterns across internal developer platforms using the Model Context Protocol (MCP). The team needs to establish design guidelines for which capabilities should be triggered by end users, which should be incorporated by host applications, and which should be selected by the LLM. According to the MCP specification, which mapping correctly reflects the user interaction models of MCP primitives?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Prompts are model-controlled (autonomous prompt injection), Resources are user-controlled (manual file downloads), and Tools are application-driven (hardcoded backend API webhooks)."
+      },
+      {
+        "id": "opt-b",
+        "text": "Prompts are application-driven (background context heuristics), Resources are model-controlled (autonomous vector retrieval), and Tools are user-controlled (explicit manual button triggers)."
+      },
+      {
+        "id": "opt-c",
+        "text": "Prompts are user-controlled (e.g. slash commands), Resources are application-driven (e.g. host context attachment), and Tools are model-controlled (e.g. autonomous model invocation)."
+      },
+      {
+        "id": "opt-d",
+        "text": "All three MCP primitives are model-controlled because the MCP specification delegates runtime control flow and contextual boundary selection decisions exclusively to the language model."
+      }
+    ],
+    "correct": [
+      "opt-c"
+    ],
+    "explanation": "The Model Context Protocol establishes explicit user interaction models for its three primary primitives: Prompts are user-controlled (designed for explicit user discovery and execution, such as slash commands or menu options); Resources are application-driven (designed for the host application to attach or expose contextual data via UI elements, search, or heuristics); and Tools are model-controlled (designed for the language model to discover, parameterize, and invoke autonomously based on task context).",
+    "distractorNotes": {
+      "opt-a": "This reverses the primitive models: Prompts are user-facing templates, Resources are application context, and Tools are model-driven.",
+      "opt-b": "Resources are not model-controlled; host applications govern resource reading. Tools are primarily model-controlled rather than manual buttons.",
+      "opt-d": "MCP is deliberately designed with host application and user mediation rather than delegating all control flow to the model."
+    },
+    "sourceUrl": "https://modelcontextprotocol.io/docs/2026-07-28/learn/server-concepts",
+    "sourceNote": "Server concepts / Tools, Resources and Prompts user interaction models",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-integration-019",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "integration",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An architect is designing an MCP server that exposes rapidly fluctuating operational telemetry dashboards as MCP Resources to Claude Desktop. In early testing, the client repeatedly polls the server's resources/read endpoint every 5 seconds to detect dashboard changes, causing high network traffic and unnecessary CPU load. According to the MCP specification, how should the server and client manage dynamic resource updates without polling?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "The client polls the server's resources/list endpoint on a 5-second interval and inspects ETag metadata to detect updated telemetry resources without reading full content payloads."
+      },
+      {
+        "id": "opt-b",
+        "text": "The server declares the subscribe capability; the client opens a subscriptions/listen stream naming the resource URIs in resourceSubscriptions, and the server delivers notifications/resources/updated on that stream when content changes."
+      },
+      {
+        "id": "opt-c",
+        "text": "The server attaches long-polling HTTP ETag caching headers to the tools/call response and drops idle network connections whenever telemetry metrics remain within nominal baseline bands."
+      },
+      {
+        "id": "opt-d",
+        "text": "The server invokes MCP Sampling on every metric update to force the client LLM to re-evaluate the full operational dashboard context and re-render system administrative summary tables."
+      }
+    ],
+    "correct": [
+      "opt-b"
+    ],
+    "explanation": "The Model Context Protocol specification provides built-in subscription primitives for dynamic resources. A server declares subscribe: true under its resources capabilities to advertise resource-specific update notifications. The client then opens a long-lived subscriptions/listen stream, listing the resource URIs it cares about under notifications.resourceSubscriptions. The server acknowledges with notifications/subscriptions/acknowledged and thereafter delivers notifications/resources/updated on that stream whenever a watched resource changes. This event-driven pattern allows the host client to invalidate its cache and read fresh data reactively without inefficient polling loops. (Revision 2026-07-28 consolidated the earlier per-feature resources/subscribe request into the general subscriptions/listen pattern.)",
+    "distractorNotes": {
+      "opt-a": "Client-side metadata polling still incurs continuous network traffic, CPU overhead, and polling latency, whereas MCP resource subscriptions push notifications only when data changes.",
+      "opt-c": "HTTP ETag long-polling is an HTTP web pattern, not part of the MCP JSON-RPC protocol or its subscription stream mechanics.",
+      "opt-d": "MCP Sampling is for requesting LLM completions from the client, not a pub/sub notification mechanism for resource data updates."
+    },
+    "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28/server/resources",
+    "sourceNote": "Resources / Subscriptions (subscriptions/listen and notifications/resources/updated)",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-integration-020",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "integration",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An engineering team is developing an MCP server that integrates an external enterprise CRM. When a user asks Claude to retrieve a customer record by ID, the CRM API returns an HTTP 404 \"Customer Not Found\" error. How should the MCP server return this failure to the client application according to the Model Context Protocol specification?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Return a top-level JSON-RPC protocol error (code: -32603) that halts transport execution and prompts the client application to display a modal connection dialog."
+      },
+      {
+        "id": "opt-b",
+        "text": "Terminate the Streamable HTTP response stream immediately to force the host client to reconnect and trigger an automatic backoff query retry sequence."
+      },
+      {
+        "id": "opt-c",
+        "text": "Return an empty tool result payload with HTTP status 204 No Content to suppress the error message from entering Claude's conversation context window."
+      },
+      {
+        "id": "opt-d",
+        "text": "Return a tool result object containing isError: true alongside a descriptive failure message in content, allowing Claude to interpret the outcome and recover."
+      }
+    ],
+    "correct": [
+      "opt-d"
+    ],
+    "explanation": "The Model Context Protocol specification distinguishes between Protocol Errors and Tool Execution Errors. Protocol errors (top-level JSON-RPC error objects) are reserved for wire-level issues such as unparseable JSON or unknown methods. Application-level failures (such as a 404 Customer Not Found, validation error, or external API timeout) must be returned inside a successful JSON-RPC result object with isError: true and error details in content. This allows Claude to understand what failed, adjust its plan, and inform the user rather than crashing the client transport.",
+    "distractorNotes": {
+      "opt-a": "Returning a top-level JSON-RPC protocol error indicates an RPC communication failure, causing client transports to throw exceptions rather than allowing Claude to handle the error.",
+      "opt-b": "Severing the Streamable HTTP response stream treats a routine business logic error as a transport failure, disrupting user sessions and triggering unnecessary reconnect storms.",
+      "opt-c": "Suppressing the error leaves Claude blind to why no records were retrieved, causing hallucinations or repeated identical queries."
+    },
+    "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28/server/tools",
+    "sourceNote": "Tools / Error Handling (Protocol Errors vs Tool Execution Errors)",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-integration-021",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "integration",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A legal tech platform is implementing Contextual Retrieval across 10,000 contracts (averaging 40 pages and 25,000 tokens each). For each chunk, the indexing pipeline prompts Claude Haiku with the full contract text to generate a 75-token explanatory context prefix before computing embeddings. Without optimization, the indexing job requires processing 250 million input tokens. How should the pipeline architect configure the indexing requests to minimize processing cost and latency?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Cache the full contract text using prompt caching and process all chunks for that contract sequentially or concurrently within the cache lifetime to read the document at cached rates."
+      },
+      {
+        "id": "opt-b",
+        "text": "Compress the raw contract text using gzip payload encoding within the Messages API request body to reduce network byte transmission volume across enterprise HTTP transport connections."
+      },
+      {
+        "id": "opt-c",
+        "text": "Submit the chunk contextual description generation requests to the asynchronous Message Batches API to process the corpus in parallel and receive the 50% batch token discount."
+      },
+      {
+        "id": "opt-d",
+        "text": "Omit contextual description generation on contracts longer than 10 pages and fall back to uncontextualized lexical BM25 matching for all enterprise legal document search indexing."
+      }
+    ],
+    "correct": [
+      "opt-a"
+    ],
+    "explanation": "Anthropic's Contextual Retrieval research highlights that generating contextual chunk explanations is made highly cost-effective through prompt caching. By placing a cache control breakpoint at the end of the full contract document, the initial chunk generation writes the contract into the prompt cache, and all subsequent chunk requests for that contract read the 25,000 tokens at cache-read pricing (a 90% discount on input tokens) and reduced latency, making large-scale corpus indexing economically viable.",
+    "distractorNotes": {
+      "opt-b": "Gzip compression reduces network bandwidth over the wire but has no impact on token counting, model inference compute, or API token pricing.",
+      "opt-c": "While Message Batches provides a 50% discount for asynchronous workloads, it does not cache the document prefix across requests; prompt caching the contract body yields a 90% discount on cache reads, making it far more cost-effective for contextual chunk generation.",
+      "opt-d": "Omitting contextual generation on long documents removes grounding exactly where chunks suffer the greatest context loss, degrading retrieval accuracy."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/contextual-retrieval",
+    "sourceNote": "Contextual Retrieval / Cost-efficiency with Prompt Caching",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-integration-022",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "integration",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An engineering team maintains a 150,000-token operational runbook library (approximately 380 pages of incident playbooks). On-call engineers frequently submit complex queries that require synthesizing interdependent procedures across multiple sections. The team proposes building a complex chunking, vector embedding, and hybrid search RAG pipeline. How should an architect evaluate this proposal against Anthropic's architectural guidelines?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Approve the RAG pipeline because prompt caching is restricted to static system prompts under 50,000 tokens and cannot support dynamic multi-turn procedural runbook retrieval."
+      },
+      {
+        "id": "opt-b",
+        "text": "Implement a hierarchical chunking RAG pipeline with parent-document retrieval and reranking to preserve cross-section procedure steps while isolating vector search queries."
+      },
+      {
+        "id": "opt-c",
+        "text": "Load the entire 150,000-token runbook directly into the prompt using prompt caching, avoiding RAG chunking boundaries and retrieval errors while achieving high synthesis accuracy."
+      },
+      {
+        "id": "opt-d",
+        "text": "Store the runbooks in an external relational database and train Claude with custom LoRA fine-tuning weights to memorize playbook procedures without runtime context retrieval."
+      }
+    ],
+    "correct": [
+      "opt-c"
+    ],
+    "explanation": "Anthropic's architectural guidance on retrieval states that if a knowledge base fits within Claude's context window (under 200,000 tokens, or roughly 500 pages), the optimal architectural choice is to include the entire knowledge base directly in the prompt with prompt caching. In-context retrieval eliminates chunk boundary fragmentation, avoids retrieval failures on interdependent multi-section queries, eliminates vector database operational overhead, and delivers 90% cache-read cost savings on multi-turn queries.",
+    "distractorNotes": {
+      "opt-a": "Prompt caching supports prompts up to the full 200,000-token context window with rolling TTL refreshes, so 150,000 tokens fits comfortably without RAG.",
+      "opt-b": "While hierarchical chunking and reranking is a sophisticated RAG architecture, Anthropic guidance notes that for corpora under 200,000 tokens, in-context retrieval with prompt caching is superior because it avoids retrieval failures and boundary fragmentation while cutting read costs by 90%.",
+      "opt-d": "Fine-tuning weights is ineffective for memorizing exact operational runbooks, incurs high training costs, and risks outdated procedures that cannot be audited."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/contextual-retrieval",
+    "sourceNote": "When to use RAG vs In-Context Retrieval with Prompt Caching",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-integration-023",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "integration",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An enterprise architect is designing a governance framework for host client applications that integrate third-party Model Context Protocol (MCP) servers. Certain community MCP servers still request LLM sampling (sampling/createMessage) to perform nested autonomous reasoning. To prevent unauthorized model spend, data exfiltration, and prompt injection exploitation, which two security controls should the host application implement for MCP sampling according to protocol security standards? (Select two.)",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Issue scoped OAuth bearer tokens directly to the MCP server so it can authenticate sampling requests directly with Anthropic's API endpoints."
+      },
+      {
+        "id": "opt-b",
+        "text": "Enforce client-side human-in-the-loop review allowing users to inspect and approve or deny sampling prompts before execution."
+      },
+      {
+        "id": "opt-c",
+        "text": "Delegate prompt inspection and content safety filtering to the MCP server's internal sampling handler before the request reaches the host client."
+      },
+      {
+        "id": "opt-d",
+        "text": "Enforce client-side token spend limits and restrict model selection rather than granting servers unrestricted inference access."
+      },
+      {
+        "id": "opt-e",
+        "text": "Require all sampling prompt payloads to be encrypted with symmetric AES-256 keys shared exclusively between the LLM and the server."
+      }
+    ],
+    "correct": [
+      "opt-b",
+      "opt-d"
+    ],
+    "explanation": "The MCP specification's sampling security considerations place the controls on the client, not the server: clients SHOULD implement user approval controls, with UI that lets users review, edit, and deny sampling requests before they reach a model, and SHOULD implement rate limiting. Because the client owns model access and selection, it is also the layer that can cap token spend and restrict which models a server may reach. Delegating either control to the server defeats the trust boundary, since the untrusted server is the party being constrained. Note that Sampling itself was classified as Deprecated in protocol revision 2026-07-28 (SEP-2577); the deprecated features registry records it as eligible for removal no earlier than the first revision released on or after 2027-07-28, and existing integrations should migrate to calling LLM provider APIs directly.",
+    "distractorNotes": {
+      "opt-a": "In MCP architecture, the server never communicates directly with the model provider or handles API credentials; all sampling requests are routed through and mediated by the host client application.",
+      "opt-c": "Delegating safety filtering to the MCP server relies on untrusted third-party code to police itself; MCP security architecture requires the host client to enforce prompt inspection and human approval.",
+      "opt-e": "Symmetric encryption between server and LLM is not supported by MCP and does not address the risk of malicious prompts generated by untrusted servers."
+    },
+    "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28/client/sampling",
+    "sourceNote": "Sampling / User Interaction Model and Security Considerations",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-integration-024",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "integration",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A financial research agent performs iterative research through a multi-turn Messages API loop. Each request includes: (1) a 5,000-token system prompt containing regulatory policies; (2) a tools array of 12 internal search and calculation tools; and (3) an accumulating conversation history of user questions, assistant tool calls, and tool_result blocks. To maximize prompt cache efficiency across subsequent tool execution turns while staying within the 4-breakpoint limit, which two cache breakpoint placements should the architect configure? (Select two.)",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Place a cache breakpoint on the final tool definition in the tools array to cache the stable tool schema and system prompt prefix across all turns."
+      },
+      {
+        "id": "opt-b",
+        "text": "Place a cache breakpoint on every individual tool definition in the tools array so each tool schema can be updated independently across turns."
+      },
+      {
+        "id": "opt-c",
+        "text": "Place a cache breakpoint exclusively inside the assistant's thinking block so internal reasoning steps are preserved across subsequent sessions."
+      },
+      {
+        "id": "opt-d",
+        "text": "Place a dynamic cache breakpoint on the final message turn in the conversation to incrementally cache conversation history as new tool results accumulate."
+      },
+      {
+        "id": "opt-e",
+        "text": "Place a cache breakpoint on the initial user message only, leaving subsequent multi-turn tool interactions completely uncached to minimize memory overhead."
+      }
+    ],
+    "correct": [
+      "opt-a",
+      "opt-d"
+    ],
+    "explanation": "Anthropic's prompt caching architecture recommends two strategic breakpoints for multi-turn tool-using agents: (1) Marking the last tool in the tools array (or the end of the system prompt) caches the stable tool schemas and system instructions as a reusable prefix across all turns; and (2) Marking the final message turn (e.g. the latest user turn containing tool results) allows the conversation history to be cached incrementally as turns progress, ensuring subsequent turns only process new tokens while hitting the cache for all earlier history.",
+    "distractorNotes": {
+      "opt-b": "Placing breakpoints on all 12 tools exceeds the API limit of 4 cache breakpoints per request and does not improve caching over a single breakpoint on the last tool.",
+      "opt-c": "Thinking blocks cannot be cached across independent sessions, and omitting breakpoints on tools or history misses all prompt caching benefits.",
+      "opt-e": "Caching only the first user message leaves all accumulating tool calls and results uncached, causing each subsequent turn to pay full input token costs."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+    "sourceNote": "Structuring your prompt / Multi-turn conversations and Tool caching",
+    "sourceCheckedAt": "2026-09-13"
   }
 ]

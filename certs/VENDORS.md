@@ -25,7 +25,7 @@ fabrication problem in a new place.
 
 ## Anthropic
 
-_Checked 2026-09-12 · banks: `ccdv-f`, `ccar-f`, `ccar-p`_
+_Checked 2026-09-13 · banks: `ccdv-f`, `ccar-f`, `ccar-p`_
 
 - **Exam guides** are PDFs on Anthropic's Everpath CDN, all under one
   instructor path, with adjacent numeric IDs per guide:
@@ -38,13 +38,64 @@ _Checked 2026-09-12 · banks: `ccdv-f`, `ccar-f`, `ccar-p`_
   returns 200 from Anthropic's own CDN. It passes every gate and authority
   test and is the wrong document. Prefer the higher version, and prefer the
   instructor path the other guides use.
+- **The model lineup turns over faster than anything else on these hosts, and
+  retired models stay documented.** Confirmed 2026-09-13: the current lineup is
+  Claude Fable 5.1, Claude Opus 5, Claude Sonnet 5 and Claude Haiku 4.5. Pages
+  keep listing superseded models with a parenthetical
+  `([retired, except on Bedrock and Google Cloud])`, and Claude 3.5 Sonnet has
+  dropped off the pricing table entirely. A bank that names a model in a stem
+  acquires an expiry date it does not advertise — grep for model names every
+  pass and diff against `platform.claude.com/docs/en/models/overview`.
+- **API surfaces are superseded in place, with the old shape left documented.**
+  Confirmed 2026-09-13: manual extended thinking (`thinking.type: "enabled"`
+  with `budget_tokens`) is deprecated on the Claude 4.6 models and returns a
+  **400** on 4.7 and later; `tool_choice` values `any` and `tool` return a
+  **400** on Claude Fable 5.1 and Mythos 5.1; and assistant-turn prefill 400s
+  from Claude 4.6 onward. In each case the superseding feature is a different
+  page (adaptive thinking, strict tool use, structured outputs), so the old
+  page stays live, accurate for old models, and wrong for new ones. Read the
+  deprecation banner at the top of a page before trusting a question keyed on
+  its API shape.
 - **Citable documentation:**
   - `https://platform.claude.com/docs/en/*` — platform and API
   - `https://code.claude.com/docs/en/*` — Claude Code
   - `https://www.anthropic.com/engineering/*` — engineering posts
   - `https://modelcontextprotocol.io/docs/*` — MCP
 - **These docs render client-side.** Append `.md` to a page URL to read it as
-  text: `curl -sL https://code.claude.com/docs/en/mcp.md`.
+  text: `curl -sL https://code.claude.com/docs/en/mcp.md`. This works on
+  `modelcontextprotocol.io` too, including its `/specification/` paths.
+- **`anthropic.com/engineering` posts are revised in place, keeping their
+  publication date.** `building-effective-agents` still reads "Published Dec 19,
+  2024", but as of 2026-09-13 it carries an editorial note that "much of the
+  tooling landscape described in this post has changed since December 2024",
+  its framework list has been rewritten (LangGraph and Bedrock's agent
+  framework replaced by the Claude Agent SDK and AWS's Strands), and its
+  routing example's models refreshed from the 3.5 generation to Haiku 4.5 and
+  Sonnet 4.5. There is no version block, no changelog and no revision-pinned
+  URL — unlike the exam guides and `modelcontextprotocol.io`, an engineering
+  post gives you **no way to tell from the URL or the date that it moved**.
+  The only detection is re-reading the prose. Treat any post cited by many
+  questions as requiring a full claim-by-claim read every pass, not a liveness
+  check.
+- **`modelcontextprotocol.io` is revision-scoped, and old revisions never
+  die.** Live paths come in two shapes: unversioned (`/docs/learn/architecture`)
+  and pinned (`/docs/2026-07-28/learn/architecture`). The unversioned form
+  302s to the current revision, so it silently re-points as revisions land —
+  fine for a claim that is revision-independent, wrong for anything a revision
+  can change. Superseded revisions stay live and return 200 forever:
+  `/specification/2024-11-05/server/resources` still documents
+  `resources/subscribe`, a method the current revision no longer has. This is
+  the same trap as the superseded exam guides above — 200 and authentically
+  Anthropic-published is not the same as current. **Cite the pinned
+  current-revision path**, and pin a superseded revision only when the stem
+  names that revision.
+- **The deprecation registry is the cheap way to check currency:**
+  `/specification/<revision>/deprecated` tabulates every Deprecated feature
+  with its SEP, migration path, and earliest-removal revision. Read it before
+  trusting any MCP question. As of `2026-07-28`: Roots, Sampling, Logging and
+  Dynamic Client Registration are Deprecated (earliest removal is the first
+  revision released on or after 2027-07-28); HTTP+SSE has been Deprecated
+  since `2025-03-26`. Nothing has been removed yet.
 - **Do not cite:**
   - `docs.anthropic.com` — legacy. It still answers, which is the trap:
     platform pages land on restructured `platform.claude.com` paths, and

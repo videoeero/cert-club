@@ -6,7 +6,7 @@
     "type": "single",
     "domain": "solution-design-and-architecture",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "An enterprise architect is designing an automated invoice processing system. Incoming PDF invoices follow a strict schema, and the required sequence of steps (OCR extraction, field validation against ERP vendor master, and posting to accounting API) is deterministic and never varies. The engineering team proposes building an autonomous agent that dynamically decides which tools to invoke and plans its next action per invoice. Which architectural recommendation best aligns with Anthropic's guidance?",
     "options": [
@@ -38,6 +38,846 @@
     },
     "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
     "sourceNote": "When (and when not) to use agents / Workflow: Prompt chaining",
-    "sourceCheckedAt": "2026-09-12"
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-solution-design-and-architecture-002",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "solution-design-and-architecture",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An architect is designing an enterprise customer support triage solution. Inbound requests vary widely: some are routine account status inquiries, while others are complex technical troubleshooting scenarios requiring multi-step reasoning. To optimize both cost and response latency across all inquiry types, which architectural pattern should the architect select?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Direct incoming customer queries to an autonomous agent loop that dynamically selects between lightweight and frontier models during intermediate execution turns."
+      },
+      {
+        "id": "opt-b",
+        "text": "Process inbound customer inquiries through an evaluator-optimizer loop where a fast model generates an answer and a frontier model critiques and refines it iteratively."
+      },
+      {
+        "id": "opt-c",
+        "text": "Implement a routing workflow that classifies each inquiry and directs routine requests to a lightweight model and complex issues to a frontier reasoning model."
+      },
+      {
+        "id": "opt-d",
+        "text": "Deploy a parallel voting workflow that runs three diverse prompts on every inbound inquiry simultaneously and selects the response with consensus approval."
+      }
+    ],
+    "correct": [
+      "opt-c"
+    ],
+    "explanation": "Anthropic's 'Building effective agents' guide describes the routing workflow as classifying an input and directing it to a specialized followup task, prompt, or model. Routing works well for complex systems with distinct input categories, allowing architects to direct easy queries to cost-effective models like Claude Haiku 4.5 and difficult queries to frontier models like Claude Sonnet 4.5, optimizing latency and cost.",
+    "distractorNotes": {
+      "opt-a": "Autonomous agents add unnecessary latency, operational cost, and compounding failure risks for simple, routine customer inquiries.",
+      "opt-b": "Evaluator-optimizer loops add latency and multiply token consumption across all queries, which degrades throughput for straightforward requests.",
+      "opt-d": "Parallel voting multiplies request cost and latency by running multiple simultaneous calls for every query rather than separating simple from complex tasks."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
+    "sourceNote": "Workflow: Routing",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-solution-design-and-architecture-003",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "solution-design-and-architecture",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A software delivery platform requires an automated code analysis pipeline to evaluate pull requests against three orthogonal quality dimensions: security vulnerabilities, architectural style adherence, and unit test coverage. The evaluation must return actionable findings to developers within a strict 30-second CI/CD timeout. Which architectural pattern best meets these requirements?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "A parallelization workflow using sectioning to evaluate each quality dimension simultaneously via independent LLM calls before programmatically aggregating results."
+      },
+      {
+        "id": "opt-b",
+        "text": "A sequential prompt chaining workflow that pipes the codebase through three successive prompt steps, refining findings at each stage before producing the final report."
+      },
+      {
+        "id": "opt-c",
+        "text": "An orchestrator-workers workflow where an orchestrator reads the pull request diff and delegates tasks to worker models one file at a time until completion."
+      },
+      {
+        "id": "opt-d",
+        "text": "An autonomous agent that inspects the repository, plans its investigation steps dynamically, and explores the code tree using tool calls until the timeout expires."
+      }
+    ],
+    "correct": [
+      "opt-a"
+    ],
+    "explanation": "Anthropic's 'Building effective agents' guide defines parallelization via sectioning as breaking a task into independent subtasks that run simultaneously and aggregating their outputs programmatically. For orthogonal evaluation dimensions with strict latency bounds, sectioning allows focused model attention on each specific aspect while completing within the CI/CD window, whereas sequential chaining or dynamic orchestration accumulates round-trip latency.",
+    "distractorNotes": {
+      "opt-b": "Sequential prompt chaining executes calls consecutively, causing total latency to scale linearly with each added check and risking CI/CD timeouts.",
+      "opt-c": "Dynamic orchestrator-workers introduces scheduling overhead and multiple round trips per file, which is unnecessary when subtasks are predefined.",
+      "opt-d": "Autonomous agents with dynamic tool exploration have non-deterministic completion times and easily exhaust strict 30-second pipeline timeouts."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
+    "sourceNote": "Workflow: Parallelization",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-solution-design-and-architecture-004",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "solution-design-and-architecture",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An architect is designing an automated codebase migration tool that updates legacy API calls across enterprise repositories. Because repository layouts differ widely, the exact files requiring modification, their internal dependencies, and the number of subtasks cannot be predicted before analyzing the project structure. Which architectural workflow pattern should the architect implement?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "A deterministic prompt chaining workflow that applies a predetermined sequence of regex replacements and transformation prompts across all repository directories sequentially."
+      },
+      {
+        "id": "opt-b",
+        "text": "A parallel voting workflow that runs identical migration prompts across three model replicas simultaneously and selects changes with unanimous agreement before merging."
+      },
+      {
+        "id": "opt-c",
+        "text": "An augmented LLM architecture that loads every source file into a single context window to generate all file modifications in a single completion call."
+      },
+      {
+        "id": "opt-d",
+        "text": "An orchestrator-workers workflow where a central model dynamically plans the required file modifications, delegates edits to worker models, and synthesizes results."
+      }
+    ],
+    "correct": [
+      "opt-d"
+    ],
+    "explanation": "Anthropic's 'Building effective agents' guide highlights orchestrator-workers as the ideal workflow for complex tasks where subtasks cannot be predicted in advance. In multi-file coding or migration tasks where the affected files and necessary modifications depend entirely on runtime analysis of the repository, a central orchestrator dynamically decomposes the problem, delegates individual file changes to worker LLMs, and synthesizes the outputs.",
+    "distractorNotes": {
+      "opt-a": "Prompt chaining requires predefined, fixed subtasks; it cannot adapt when the set of modified files and necessary steps vary per repository.",
+      "opt-b": "Parallel voting executes the same task repeatedly for consensus; it cannot dynamically discover dependencies or coordinate multi-file refactoring.",
+      "opt-c": "Loading entire enterprise codebases into a single context window risks exceeding token limits, degrading attention quality, and escalating cost."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
+    "sourceNote": "Workflow: Orchestrator-workers",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-solution-design-and-architecture-005",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "solution-design-and-architecture",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A legal technology firm uses Claude to generate draft contract clauses from client deal summaries. While initial clause drafts are legally sound, internal testing shows they frequently violate corporate style conventions unless critiqued against explicit guidelines. The firm has documented clear, objective evaluation criteria. Which workflow pattern best automates this drafting and refinement process?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "An evaluator-optimizer workflow where a generator model drafts the clause and an evaluator model provides structured feedback in a loop until criteria are met."
+      },
+      {
+        "id": "opt-b",
+        "text": "A parallel voting workflow that generates multiple candidate clause drafts simultaneously and programmatically selects the draft that achieves highest textual consensus."
+      },
+      {
+        "id": "opt-c",
+        "text": "A static routing workflow that classifies client deal summaries by contract jurisdiction and directs them to fixed jurisdictional prompt templates without iterative revision."
+      },
+      {
+        "id": "opt-d",
+        "text": "An autonomous agent loop that executes web search tools to find external contract templates whenever an initial clause draft fails a schema check during pipeline execution."
+      }
+    ],
+    "correct": [
+      "opt-a"
+    ],
+    "explanation": "Anthropic's 'Building effective agents' guide identifies the evaluator-optimizer pattern as particularly effective when two conditions hold: clear evaluation criteria exist, and iterative refinement demonstrably improves outputs. In this workflow, one LLM call generates the initial output while another evaluates it against explicit criteria and provides feedback in a loop, analogous to an iterative drafting and editing process.",
+    "distractorNotes": {
+      "opt-b": "Parallel voting generates multiple candidates to find consensus, but voting across drafts cannot evaluate or enforce adherence to external corporate style guidelines.",
+      "opt-c": "Routing directs inputs to different prompts based on classification, but does not perform the iterative refinement needed to fix stylistic violations.",
+      "opt-d": "Searching external web templates introduces unvetted third-party language rather than aligning drafts with the firm's internal corporate standards."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
+    "sourceNote": "Workflow: Evaluator-optimizer",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-solution-design-and-architecture-006",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "solution-design-and-architecture",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An IT operations team is building an autonomous agent to remediate network alerts. The agent invokes REST API tools to restart services, modify routing rules, and clear caches. In staging tests, when a service restart API call fails with an HTTP 500 error, the agent occasionally assumes the service is healthy and proceeds to close the alert. Which architectural mechanism should the team implement to prevent this failure?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Increase the model's temperature setting to encourage creative recovery strategies when tool invocations fail during automated remediation runs on production clusters."
+      },
+      {
+        "id": "opt-b",
+        "text": "Add system prompt instructions directing the agent to assume service health and proceed only if no subsequent cloud monitoring alerts are received within a fixed wait window."
+      },
+      {
+        "id": "opt-c",
+        "text": "Feed explicit tool execution results and error status back into the agent loop as ground truth so the model evaluates actual environment state at each step."
+      },
+      {
+        "id": "opt-d",
+        "text": "Configure the agent to automatically retry the complete remediation prompt from the beginning whenever any intermediate tool returns a non-200 code during execution."
+      }
+    ],
+    "correct": [
+      "opt-c"
+    ],
+    "explanation": "Anthropic's guidance on building agents emphasizes that during execution, it is crucial for agents to gain 'ground truth' from the environment at each step (such as tool call results, status codes, or code execution output) to assess progress accurately. Providing the model with unambiguous tool response payloads allows it to detect failure states, adjust its plan, or pause for human intervention rather than hallucinating success.",
+    "distractorNotes": {
+      "opt-a": "Increasing temperature increases output randomness, which exacerbates hallucinations and makes remediation decisions less predictable.",
+      "opt-b": "Relying on delayed out-of-band alerts introduces race conditions and does not provide the immediate ground truth needed to detect synchronous API errors.",
+      "opt-d": "Restarting the entire prompt from scratch discards state history, causes redundant side effects, and risks infinite loops on persistent errors."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
+    "sourceNote": "Agents",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-solution-design-and-architecture-007",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "solution-design-and-architecture",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An architect designs an enterprise research system where a coordinator agent investigates market trends by searching internal repositories, reading multi-page filings, and querying relational databases. Accumulating all raw search outputs and document texts in the coordinator's conversational context causes severe context bloat, leading to degraded instruction adherence. Which architectural strategy best solves this problem?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Switch from standard API calls to prompt caching so the coordinator's growing context transcript can be retained without incurring repetitive processing latency overhead."
+      },
+      {
+        "id": "opt-b",
+        "text": "Spawn specialized subagents with isolated context windows to execute individual data-gathering tasks and return only synthesized summaries to the coordinator."
+      },
+      {
+        "id": "opt-c",
+        "text": "Wrap the coordinator in an evaluator-optimizer loop that repeatedly re-runs the entire investigation until the final synthesis satisfies strict token length limits."
+      },
+      {
+        "id": "opt-d",
+        "text": "Increase the coordinator's output token limit to ensure that raw document extracts and final analytical findings can be returned in a single turn."
+      }
+    ],
+    "correct": [
+      "opt-b"
+    ],
+    "explanation": "According to Anthropic's agent architecture guidance and Claude Code subagent patterns, subagents execute in isolated context windows. By delegating deep search, document reading, or data extraction to specialized subagents, raw intermediate outputs and tool transcripts remain contained within the subagent session. The subagent returns only concise, synthesized findings to the parent coordinator, preserving context hygiene and reasoning quality.",
+    "distractorNotes": {
+      "opt-a": "Prompt caching reduces latency and token cost for repeated prefixes, but does not solve context degradation or instruction distraction caused by irrelevant text.",
+      "opt-c": "Evaluator-optimizer loops iterate on output refinement, but re-running the entire investigation amplifies token consumption and exacerbates context bloat.",
+      "opt-d": "Increasing the output token ceiling does not alleviate input context bloat or prevent attention degradation over large accumulated transcripts."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
+    "sourceNote": "Subagents execute in isolated context windows to preserve coordinator context hygiene",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-solution-design-and-architecture-008",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "solution-design-and-architecture",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An insurance provider must process 100,000 claim adjudication transcripts every night. The transcripts are extracted from legacy databases at 11:00 PM, and summarized risk reports must be loaded into underwriting databases by 7:00 AM the following morning. Individual request latency is not time-sensitive, but the team must minimize token costs and avoid exhausting standard API concurrency rate limits. Which architectural pattern should the architect choose?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Submit the requests through the standard Messages API using server-sent events streaming to reduce time-to-first-token across claims during the overnight window."
+      },
+      {
+        "id": "opt-b",
+        "text": "Implement an autonomous multi-agent fleet on serverless containers that polls the standard Messages API with exponential backoff retries."
+      },
+      {
+        "id": "opt-c",
+        "text": "Deploy an orchestrator-workers workflow that dynamically parallelizes real-time Messages API requests across multiple worker threads to maximize processing throughput."
+      },
+      {
+        "id": "opt-d",
+        "text": "Submit the transcript workloads via the Message Batches API to receive a 50% cost discount and dedicated asynchronous throughput within a 24-hour SLA."
+      }
+    ],
+    "correct": [
+      "opt-d"
+    ],
+    "explanation": "The Claude Message Batches API is designed specifically for non-latency-sensitive bulk processing workloads. It offers a 50% discount on prompt and completion tokens, processes queries asynchronously within a 24-hour SLA (and typically much faster for standard overnight windows), and operates on separate batch throughput limits that prevent exhausting operational rate limits used by real-time applications.",
+    "distractorNotes": {
+      "opt-a": "Streaming improves interactive time-to-first-token for human users, but offers no cost discount or rate limit relief for non-interactive overnight batch jobs.",
+      "opt-b": "Concurrent polling of the standard Messages API runs at full retail token pricing and risks rate-limit throttling during peak submission bursts.",
+      "opt-c": "Real-time orchestrator-workers workflows incur full API costs and compete directly against production interactive concurrency quotas."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/batch-processing",
+    "sourceNote": "Message Batches API overview, pricing discount, and 24-hour turnaround",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-solution-design-and-architecture-009",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "solution-design-and-architecture",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A product team wants to build an internal knowledge base search feature that generates concise answers to employee questions about corporate HR policies. A junior engineer proposes implementing an autonomous multi-agent framework featuring a planning agent, dynamic web browsing tools, and a self-reflection evaluator loop. When evaluating this proposal against Anthropic's architectural design principles, which guidance should the principal architect provide?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Approve the multi-agent design because autonomous loops inherently provide superior predictability, lower latency, and lower token expenditure across all user queries."
+      },
+      {
+        "id": "opt-b",
+        "text": "Adopt the simplest viable design—such as an augmented LLM call with retrieval and clear prompt instructions—and add agentic complexity only when needed."
+      },
+      {
+        "id": "opt-c",
+        "text": "Implement an orchestrator-workers pattern because HR policy search requires dynamic subtask generation to handle unstructured natural language queries."
+      },
+      {
+        "id": "opt-d",
+        "text": "Mandate a parallel voting workflow that runs three diverse prompts on every HR question to guarantee absolute answer consensus before responding to the employee."
+      }
+    ],
+    "correct": [
+      "opt-b"
+    ],
+    "explanation": "Anthropic's 'Building effective agents' guide explicitly advises: 'When building applications with LLMs, we recommend finding the simplest solution possible, and only increasing complexity when needed. This might mean not building agentic systems at all.' For knowledge retrieval over fixed corporate policies, an augmented LLM call with retrieval and in-context examples is predictable, cost-effective, and low-latency, whereas autonomous agents introduce compounding error risks and unnecessary complexity.",
+    "distractorNotes": {
+      "opt-a": "Autonomous agentic systems trade away predictability, latency, and cost in exchange for flexibility; they do not provide lower token consumption or latency.",
+      "opt-c": "Standard policy search does not require dynamic task decomposition or worker delegation; a well-indexed retrieval pipeline with a single prompt suffices.",
+      "opt-d": "Parallel voting multiplies API costs and latency without addressing the core need for factual ground truth retrieval from HR policy documents."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
+    "sourceNote": "When (and when not) to use agents / Summary: Core principles",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-solution-design-and-architecture-010",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "solution-design-and-architecture",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An architect is reviewing tool definitions for an autonomous agent that manages database clusters. To optimize tool selection accuracy by Claude, reduce tool invocation syntax errors, and support effective error recovery, which TWO design practices should the architect mandate? (Select TWO.)",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Require complex multi-table SQL schema changes to be submitted as unified line-based diffs rather than structured JSON parameter payloads."
+      },
+      {
+        "id": "opt-b",
+        "text": "Provide detailed descriptions and explicit parameter constraints in the tool definition to give the model clear guidance on usage and edge cases."
+      },
+      {
+        "id": "opt-c",
+        "text": "Configure tools to return generic HTTP 200 OK strings without error details to prevent stack traces from cluttering the agent's context window."
+      },
+      {
+        "id": "opt-d",
+        "text": "Design tool execution responses to return structured, informative feedback and explicit error messages that allow the agent to diagnose failures."
+      },
+      {
+        "id": "opt-e",
+        "text": "Define all tool arguments as unstructured free-form text strings rather than typed JSON schemas to maximize the model's generation flexibility."
+      }
+    ],
+    "correct": [
+      "opt-b",
+      "opt-d"
+    ],
+    "explanation": "Anthropic's guidance in 'Prompt engineering your tools' and agent design emphasizes two essential practices: first, tool specifications require thoughtful prompt engineering, including detailed descriptions of what the tool does and clear parameter constraints; second, tools must return meaningful environmental feedback (ground truth) and informative error details so the agent can assess progress and adapt when an invocation fails. Diffs require line-counting before generation and are error-prone for LLMs compared to structured parameter formats, and unstructured string schemas remove contract enforcement.",
+    "distractorNotes": {
+      "opt-a": "Anthropic notes that formats like diffs require knowing changed line counts in advance and are much harder for LLMs to generate reliably than structured replacements.",
+      "opt-c": "Returning generic success strings without error bodies deprives the agent of ground truth, causing it to hallucinate success after failed operations.",
+      "opt-e": "Unstructured free-form text lacks schema validation and increases the likelihood of malformed parameters and unparseable tool calls."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
+    "sourceNote": "Appendix 2: Prompt engineering your tools",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-solution-design-and-architecture-011",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "solution-design-and-architecture",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An architect is deploying an autonomous operations agent that executes multi-step troubleshooting and remediation actions across production cloud infrastructure. Which TWO architectural safeguards are essential to prevent runaway operational costs and mitigate the risk of unintended system disruption? (Select TWO.)",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Enforce strict stopping conditions, including a maximum iteration limit and token budget ceiling, to terminate unbounded execution loops."
+      },
+      {
+        "id": "opt-b",
+        "text": "Rely on system prompt directives instructing the agent to self-terminate its remediation loop once it judges the incident resolved."
+      },
+      {
+        "id": "opt-c",
+        "text": "Implement human-in-the-loop checkpoints or explicit authorization approval gates before the agent executes high-impact or destructive actions."
+      },
+      {
+        "id": "opt-d",
+        "text": "Configure automated retry loops with exponentially expanding token allowances to ensure long-running remediation tasks complete."
+      },
+      {
+        "id": "opt-e",
+        "text": "Rely on an auxiliary LLM-as-a-judge call to evaluate natural language descriptions of proposed actions before tool execution."
+      }
+    ],
+    "correct": [
+      "opt-a",
+      "opt-c"
+    ],
+    "explanation": "Anthropic's 'Building effective agents' guidance emphasizes that autonomous agents require explicit stopping conditions (such as a maximum number of iterations or budget limits) to maintain control and avoid runaway loops. Furthermore, incorporating human-in-the-loop checkpoints or approval gates before executing high-impact or irreversible actions provides necessary oversight while allowing the agent to operate independently on routine tasks.",
+    "distractorNotes": {
+      "opt-b": "Prompt instructions alone cannot guarantee loop termination; autonomous agents require hard programmatic constraints such as iteration caps and spend limits.",
+      "opt-d": "Unbounded retries with expanding token ceilings remove cost controls and directly trigger runaway API expenditures during persistent system outages.",
+      "opt-e": "Secondary LLM reviewers are probabilistic and vulnerable to prompt injection or shared hallucinations; destructive actions require explicit human authorization gates."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
+    "sourceNote": "Agents / Stopping conditions and human feedback",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-solution-design-and-architecture-012",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "solution-design-and-architecture",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An enterprise intake portal processes high-volume insurance claims that contain both unstructured customer narrative text (requiring sentiment and intent classification) and structured loss tables (requiring mathematical validation and regulatory table extraction). The output must merge both analyses into a unified claim dossier. Latency must remain strictly under 5 seconds. Which composite architectural pattern best balances execution speed and analytical accuracy?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "A hybrid routing and parallel sectioning workflow where an initial model categorizes the claim sections, routes narrative and table data to specialized prompts running concurrently, and aggregates outputs programmatically."
+      },
+      {
+        "id": "opt-b",
+        "text": "An autonomous multi-agent loop where a primary claim agent inspects the file, decides dynamically which tools to invoke, and executes consecutive validation steps sequentially until all fields are reconciled."
+      },
+      {
+        "id": "opt-c",
+        "text": "A single monolithic prompt that loads the complete claim document into an unspecialized LLM context and relies on extensive few-shot examples to perform both narrative analysis and table calculations."
+      },
+      {
+        "id": "opt-d",
+        "text": "A sequential prompt chaining workflow that runs narrative sentiment analysis first, appends its intermediate reasoning to the prompt, and passes the accumulated context into table processing."
+      }
+    ],
+    "correct": [
+      "opt-a"
+    ],
+    "explanation": "Anthropic's 'Building effective agents' guide highlights combining workflows—such as routing followed by parallel sectioning—to optimize systems handling multifaceted inputs. Routing first separates distinct data types (unstructured narrative vs structured tables), and parallel sectioning executes specialized prompts concurrently to maximize analytical precision while completing well within the 5-second latency SLA.",
+    "distractorNotes": {
+      "opt-b": "Autonomous multi-agent loops introduce non-deterministic planning overhead and multiple serial round trips that easily breach strict 5-second latency SLAs on predictable documents.",
+      "opt-c": "A monolithic prompt attempting to perform disparate tasks simultaneously suffers from attention dispersion and reduced precision compared to specialized prompts.",
+      "opt-d": "Sequential chaining forces table processing to wait for narrative classification to complete, accumulating serial latency on subtasks that are orthogonal."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
+    "sourceNote": "Combining workflows: Hybrid routing and parallel sectioning",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-solution-design-and-architecture-013",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "solution-design-and-architecture",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A cybersecurity architecture team is building an automated vulnerability triage pipeline for critical software repositories. Missing a true vulnerability introduces unacceptable security risk, while high confidence and consensus are required before generating emergency blocker tickets for engineering teams. Latency is secondary to detection reliability. Which workflow pattern should the architect choose to maximize detection recall and confidence?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "A prompt chaining workflow that applies a single vulnerability scanning prompt sequentially across every individual source file in the repository tree."
+      },
+      {
+        "id": "opt-b",
+        "text": "A parallel voting workflow that runs multiple diverse vulnerability detection prompts concurrently and flags issues that achieve quorum across independent runs."
+      },
+      {
+        "id": "opt-c",
+        "text": "An orchestrator-workers workflow where an orchestrator splits the repository into arbitrary chunks and dispatches them to worker models without cross-validation."
+      },
+      {
+        "id": "opt-d",
+        "text": "An augmented LLM call with retrieval-augmented generation that searches an internal CVE vector database and returns the top similarity match directly."
+      }
+    ],
+    "correct": [
+      "opt-b"
+    ],
+    "explanation": "Anthropic's 'Building effective agents' guide defines parallel voting as running multiple diverse prompts, temperatures, or models on the same task simultaneously to achieve consensus. Voting is specifically suited for high-stakes domains where individual model variance or blind spots must be smoothed out to maximize detection recall and eliminate false positives before triggering disruptive operational actions.",
+    "distractorNotes": {
+      "opt-a": "Prompt chaining executes steps serially without redundant cross-validation, leaving the system vulnerable to single-pass model blind spots.",
+      "opt-c": "Orchestrator-workers partitions workloads for scale or dynamic subtasking, but does not provide redundant consensus verification across critical findings.",
+      "opt-d": "Standard vector retrieval identifies historical matches but does not perform the multi-perspective code reasoning or consensus required for novel vulnerabilities."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
+    "sourceNote": "Workflow: Parallelization (Voting vs Sectioning)",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-solution-design-and-architecture-014",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "solution-design-and-architecture",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An enterprise architect is reviewing two competing architecture proposals for an enterprise procurement assistant that reviews vendor contracts, checks inventory, and submits purchase orders. Proposal 1 implements a decentralized swarm where autonomous agents pass unstructured messages directly to each other peer-to-peer. Proposal 2 implements a centralized coordinator that delegates specific subtasks to specialized subagents with isolated context windows and programmatic return schemas. When evaluating these proposals against Anthropic's architectural guidance, which justification correctly favors Proposal 2?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Proposal 2 eliminates the need for tool schema definitions by allowing the centralized coordinator to infer subagent capabilities dynamically during execution."
+      },
+      {
+        "id": "opt-b",
+        "text": "Proposal 2 enables subagents to bypass organizational permission boundaries because all security checks are consolidated into a single initial user prompt."
+      },
+      {
+        "id": "opt-c",
+        "text": "Proposal 2 provides deterministic control flow, prevents runaway message cascades between agents, and enforces context hygiene by isolating intermediate tool transcripts."
+      },
+      {
+        "id": "opt-d",
+        "text": "Proposal 2 guarantees lower total token consumption than a single prompt call by automatically compressing all historical procurement transactions into cache."
+      }
+    ],
+    "correct": [
+      "opt-c"
+    ],
+    "explanation": "Anthropic's architectural guidance emphasizes that centralized coordinator-worker / subagent designs provide predictable control flow, explicit auditability, bounded iteration loops, and context hygiene. Uncontrolled peer-to-peer swarms frequently suffer from runaway message cascades, compounding hallucinations, unpredictable termination, and context bloat as intermediate conversational noise circulates among peers.",
+    "distractorNotes": {
+      "opt-a": "Subagents still require explicit, typed tool schemas and parameter validation; dynamic schema inference is non-deterministic and unsupported.",
+      "opt-b": "Subagents must strictly adhere to least-privilege security boundaries at each step rather than inheriting bypassed controls.",
+      "opt-d": "Multi-agent systems incur higher token consumption than single calls; prompt caching optimizes prefix reuse but cannot compress multi-agent overhead below a single call."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+    "sourceNote": "Sub-agent architectures: detailed search context stays isolated in sub-agents; each returns a condensed 1,000-2,000 token summary.",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-solution-design-and-architecture-015",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "solution-design-and-architecture",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An engineering team is designing an automated SQL query generation pipeline for non-technical business analysts. When Claude generates a complex analytical query, it must be validated and refined before results are presented to the user. An engineer suggests using a secondary frontier LLM call to evaluate the generated SQL syntax and check for potential errors. Which architectural recommendation best aligns with Anthropic's guidance on designing feedback loops?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Deploy an LLM-as-a-judge prompt that inspects the generated SQL text against schema documentation to identify syntax errors before presenting the query to analysts."
+      },
+      {
+        "id": "opt-b",
+        "text": "Implement a parallel voting workflow that runs three diverse generation prompts concurrently and executes the SQL only if at least two models generate matching syntax."
+      },
+      {
+        "id": "opt-c",
+        "text": "Deploy a sequential prompt chaining workflow where a secondary model refactors the query into a standardized dialect without testing execution in a sandbox environment."
+      },
+      {
+        "id": "opt-d",
+        "text": "Pair the generator LLM with a deterministic SQL parser and sandbox execution environment that returns concrete execution errors to Claude in an evaluator-optimizer loop."
+      }
+    ],
+    "correct": [
+      "opt-d"
+    ],
+    "explanation": "Anthropic emphasizes leveraging ground truth and environmental feedback whenever deterministic verification tools are available. For code and query generation, pairing Claude with a deterministic compiler, linter, or sandbox SQL parser provides unambiguous, low-latency, zero-marginal-token feedback (exact error codes, missing column names, syntax issues) that allows Claude to self-correct in an evaluator-optimizer loop far more reliably and affordably than an LLM judge.",
+    "distractorNotes": {
+      "opt-a": "LLM-as-a-judge evaluators consume extra tokens and can miss subtle SQL syntax or schema mismatches that deterministic parsers catch instantly and reliably.",
+      "opt-b": "Parallel voting fails because semantically equivalent SQL queries often differ in syntax, and voting cannot verify whether referenced database objects actually exist.",
+      "opt-c": "Chaining prompt refactoring steps stylistically adjusts SQL but lacks deterministic ground truth to detect syntax errors or runtime database exceptions."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
+    "sourceNote": "Workflow: Evaluator-optimizer with deterministic ground truth",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-solution-design-and-architecture-016",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "solution-design-and-architecture",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A software modernization project requires migrating 200 monolithic database stored procedures to microservice API endpoints. The procedures have complex interdependent dependencies, shared temporary tables, and variable business logic. The team wants to automate the migration while ensuring architectural consistency and preventing context saturation. How should the architect structure the problem decomposition using Claude?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Implement a two-phase architecture where an orchestrator first analyzes dependencies to build a global execution DAG, followed by worker agents that migrate procedures in isolated contexts."
+      },
+      {
+        "id": "opt-b",
+        "text": "Feed all 200 stored procedures into a single Claude conversation and prompt the model to generate all corresponding microservices in a single continuous completion turn."
+      },
+      {
+        "id": "opt-c",
+        "text": "Deploy an autonomous coding agent with shell tools that explores the procedure repository dynamically on the fly and refactors code within a single continuous conversational session."
+      },
+      {
+        "id": "opt-d",
+        "text": "Configure a parallel sectioning workflow that immediately generates microservice code for all procedures simultaneously before analyzing any shared database dependencies."
+      }
+    ],
+    "correct": [
+      "opt-a"
+    ],
+    "explanation": "Anthropic's guidance on orchestrator-workers and problem decomposition emphasizes separating macro-planning from micro-execution for complex interdependent systems. An orchestrator first analyzes the entire problem space to build a dependency graph (DAG) and plan the execution order; specialized worker agents then execute individual procedure migrations within isolated context windows, preventing context bloat and reasoning degradation.",
+    "distractorNotes": {
+      "opt-b": "Passing 200 complex procedures into one prompt exhausts context limits and causes severe attention degradation, hallucinations, and truncated code.",
+      "opt-c": "Relying on an unconstrained agent in a single session causes context saturation, loses global dependency visibility, and compounds errors across interdependent procedures.",
+      "opt-d": "Migrating all procedures simultaneously without prior dependency analysis ignores shared tables and ordering constraints, producing disjointed microservice endpoints."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
+    "sourceNote": "Workflow: Orchestrator-workers and problem decomposition",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-solution-design-and-architecture-017",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "solution-design-and-architecture",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An architect is designing an enterprise legal discovery agent that analyzes thousands of litigation documents over an 8-hour execution window. The host environment runs on spot cloud compute instances that may terminate with short notice. If an instance shuts down, the agent must resume execution without re-processing previously completed documents or re-incurring hundreds of dollars in API token costs. Which architectural state management pattern should the architect implement?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Retain the complete multi-turn conversation history entirely in the local container's RAM memory space and serialize it to local disk only upon process termination."
+      },
+      {
+        "id": "opt-b",
+        "text": "Persist task queues, subtask completion checkpoints, and intermediate document summaries to an external database, allowing worker agents to reconstitute state on startup."
+      },
+      {
+        "id": "opt-c",
+        "text": "Maintain cumulative document progress in a multi-turn conversation thread using prompt caching, relying on cache lifetime to preserve state across instance restarts."
+      },
+      {
+        "id": "opt-d",
+        "text": "Configure worker agents to accumulate document analyses in local scratch storage and batch-upload the completed archive to cloud storage at the end of the 8-hour window."
+      }
+    ],
+    "correct": [
+      "opt-b"
+    ],
+    "explanation": "Long-running agent architectures must decouple state persistence from the ephemeral execution runtime and conversational transcript. By maintaining task queues, dependency tracking, and intermediate outputs in an external persistent store (e.g. database or message queue), worker agents checkpoint progress transactionally. When compute instances terminate abruptly, new workers can resume from the last uncommitted task without repeating completed work or saturating model context.",
+    "distractorNotes": {
+      "opt-a": "In-memory state and termination-time disk serialization fail when spot instances receive abrupt termination notices or undergo immediate hardware preemption.",
+      "opt-c": "Prompt caching has a 5-minute rolling TTL and provides prefix acceleration, not durable external state persistence across compute instance shutdowns.",
+      "opt-d": "Deferring persistence to the end of an 8-hour window means spot preemption at hour 7 destroys all intermediate work and wastes accumulated token spend."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+    "sourceNote": "Structured note-taking: the agent persists notes outside the context window and reads them back after a context reset.",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-solution-design-and-architecture-018",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "solution-design-and-architecture",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A developer is designing the Agent-Computer Interface (ACI) for an HR assistant agent. The developer proposes creating 15 micro-tools (such as get_employee_first_name, get_employee_last_name, get_employee_department, and get_employee_salary). During evaluation, the agent frequently requires 10+ sequential round trips to answer simple employee inquiries, resulting in unacceptable latency and high token consumption. Which ACI architectural redesign should the lead architect mandate?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Retain the 15 micro-tools but configure the agent loop to execute all tool calls in parallel without validating intermediate schema parameters."
+      },
+      {
+        "id": "opt-b",
+        "text": "Replace all tools with an open-ended bash execution shell tool, allowing Claude to write and execute arbitrary Python scraping scripts on the HR database."
+      },
+      {
+        "id": "opt-c",
+        "text": "Consolidate the micro-tools into a single high-level tool that returns a structured employee profile object, minimizing round trips and context overhead."
+      },
+      {
+        "id": "opt-d",
+        "text": "Inject the organization's complete employee directory table into the system prompt context on each request to eliminate runtime tool calling."
+      }
+    ],
+    "correct": [
+      "opt-c"
+    ],
+    "explanation": "Anthropic's guidance in 'Prompt engineering your tools' and ACI design emphasizes that tool granularity is a vital architectural decision. Creating excessively fine-grained micro-tools forces the agent into numerous serial round trips, multiplies latency, clutters the tool definition space, and inflates conversational token usage. Consolidating related data lookups into coherent, well-structured tools (such as get_employee_profile) minimizes round trips and provides necessary context efficiently.",
+    "distractorNotes": {
+      "opt-a": "Parallel tool use helps when operations are independent, but 15 separate micro-tools still cause massive schema bloat and tool selection confusion.",
+      "opt-b": "Providing open-ended shell execution on HR databases introduces catastrophic security vulnerabilities, data privacy risks, and lack of guardrails.",
+      "opt-d": "Injecting entire database tables into system prompts causes severe token overhead on each request, risks context window overflow, and breaches least-privilege data access boundaries."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
+    "sourceNote": "Appendix 2: Prompt engineering your tools / Tool granularity",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-solution-design-and-architecture-019",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "solution-design-and-architecture",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An architect is optimizing a customer-facing interactive diagnostic assistant built with Claude Sonnet 5. The application has an 8,000-token system prompt containing company troubleshooting manuals, product specifications, and diagnostic schemas. Customers expect conversational responses to start rendering on-screen within 1.5 seconds. Currently, Time to First Token (TTFT) averages 4.2 seconds. Which combination of architectural optimizations will most effectively reduce TTFT to satisfy the user SLA without sacrificing reasoning quality?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Migrate the diagnostic service to Claude Haiku 4.5 and set the `max_tokens` parameter ceiling to 150 to truncate generated explanations and accelerate delivery."
+      },
+      {
+        "id": "opt-b",
+        "text": "Convert the system prompt into a series of dynamic few-shot user messages placed at the end of each incoming conversation turn before inference."
+      },
+      {
+        "id": "opt-c",
+        "text": "Route all user messages through an autonomous multi-agent planning loop that pre-computes possible customer follow-up questions in the background."
+      },
+      {
+        "id": "opt-d",
+        "text": "Implement prompt caching on the static 8,000-token system documentation prefix and stream the model's response using Server-Sent Events (SSE)."
+      }
+    ],
+    "correct": [
+      "opt-d"
+    ],
+    "explanation": "For interactive conversational systems with substantial static context (8,000 tokens), TTFT is primarily driven by prompt prefill processing and response transfer latency. By placing static manuals and schemas at the system prompt prefix and enabling prompt caching, subsequent requests read the cached prefix with up to an 80%+ reduction in TTFT and 90% cost savings. Combining caching with Server-Sent Events (SSE) streaming delivers generated tokens incrementally, satisfying the 1.5-second perceptual SLA while preserving Sonnet's analytical depth.",
+    "distractorNotes": {
+      "opt-a": "Downsampling to Haiku degrades complex diagnostic reasoning, and capping max_tokens reduces generation length without resolving the 8,000-token prefill latency driving TTFT.",
+      "opt-b": "Placing static manuals at the end of user messages breaks prefix caching and forces full 8,000-token prefill processing on every turn, exacerbating latency.",
+      "opt-c": "Multi-agent planning loops add multiple round trips and substantial latency, worsening TTFT rather than speeding it up."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+    "sourceNote": "Prompt caching and SSE streaming for interactive TTFT latency SLAs",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-solution-design-and-architecture-020",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "solution-design-and-architecture",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A multinational financial institution processes two distinct workloads: (1) real-time fraud alert verification during retail checkout requiring responses within 2 seconds, and (2) end-of-month regulatory transaction auditing involving 2,000,000 historical records with a 48-hour completion window. Which TWO architectural decisions correctly align model selection and API patterns to these workload SLAs and cost requirements? (Select TWO.)",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Submit the real-time checkout fraud verification requests through the Message Batches API to minimize per-transaction inference costs during peak shopping hours."
+      },
+      {
+        "id": "opt-b",
+        "text": "Process the real-time checkout fraud requests via standard Messages API calls using a fast, low-latency model to guarantee sub-2-second response latency."
+      },
+      {
+        "id": "opt-c",
+        "text": "Deploy an autonomous multi-agent reflection loop across the 2,000,000 historical audit records to maximize exploratory reasoning on routine transactions."
+      },
+      {
+        "id": "opt-d",
+        "text": "Submit the monthly 2,000,000 regulatory audit records via the Message Batches API to obtain a 50% token cost discount and dedicated non-interactive throughput."
+      },
+      {
+        "id": "opt-e",
+        "text": "Route both real-time checkout and monthly batch audit workloads into a single shared synchronous API queue with identical retry and concurrency configurations."
+      }
+    ],
+    "correct": [
+      "opt-b",
+      "opt-d"
+    ],
+    "explanation": "Aligning solutions to business SLAs requires separating latency-sensitive synchronous paths from cost-optimized asynchronous bulk processing. Real-time checkout verification (<2s SLA) requires direct Messages API invocations using a fast model (such as Claude Haiku 4.5). Conversely, monthly regulatory auditing with a relaxed 48-hour SLA is the canonical use case for the Message Batches API, which provides a 50% discount on all token usage and dedicated batch processing pools that avoid exhausting operational interactive quotas.",
+    "distractorNotes": {
+      "opt-a": "The Message Batches API processes queries asynchronously with a 24-hour SLA and cannot meet sub-2-second real-time transactional checkout SLAs.",
+      "opt-c": "Running multi-agent reflection loops across 2,000,000 routine audit records multiplies token consumption and cost exponentially without business justification.",
+      "opt-e": "Merging real-time and bulk batch workloads into a single synchronous queue causes head-of-line blocking, rate-limit throttling, and checkout failures."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/batch-processing",
+    "sourceNote": "Message Batches API overview, pricing discount, and SLAs",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-solution-design-and-architecture-021",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "solution-design-and-architecture",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An architect is designing a multi-agent technical support system where a primary coordinator agent diagnoses complex software bugs by delegating tasks to subagents. To maintain high reasoning quality, prevent context saturation, and ensure robust error boundaries across the system, which TWO architectural principles should the architect enforce? (Select TWO.)",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Share a single global conversational transcript across the coordinator and all subagents so every agent has immediate access to all raw diagnostic outputs."
+      },
+      {
+        "id": "opt-b",
+        "text": "Equip each subagent with an isolated context window and a focused, domain-specific toolset tailored strictly to its specialized diagnostic responsibility."
+      },
+      {
+        "id": "opt-c",
+        "text": "Allow subagents to spawn child subagents recursively without depth restrictions to enable autonomous self-organization during open-ended investigations."
+      },
+      {
+        "id": "opt-d",
+        "text": "Configure subagents to return complete, unedited tool call histories and raw log dumps back into the primary coordinator's conversational context."
+      },
+      {
+        "id": "opt-e",
+        "text": "Mandate that subagents synthesize their findings and return concise, structured summaries to the coordinator rather than raw environmental tool outputs."
+      }
+    ],
+    "correct": [
+      "opt-b",
+      "opt-e"
+    ],
+    "explanation": "Anthropic's guidance on multi-agent architectures and Claude Code subagent design establishes two fundamental context hygiene principles: (1) specialized subagents should run in isolated context windows with domain-specific toolsets, preventing irrelevant tool confusion and capability bloat; and (2) subagents must digest messy environmental data (verbose logs, stack traces, file diffs) and return only concise, structured summaries to the coordinator, preserving coordinator context hygiene and preventing attention degradation.",
+    "distractorNotes": {
+      "opt-a": "Sharing a single global transcript causes rapid context bloat, token exhaustion, and instruction distraction across all participating agents.",
+      "opt-c": "Unrestricted recursive spawning creates runaway execution trees, unbounded token expenditures, and catastrophic loss of operational control.",
+      "opt-d": "Returning complete raw tool histories and log dumps into the coordinator defeats the purpose of subagent context isolation and pollutes coordinator context hygiene."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
+    "sourceNote": "Subagents: Context isolation and specialized tool delegation",
+    "sourceCheckedAt": "2026-09-13"
   }
 ]

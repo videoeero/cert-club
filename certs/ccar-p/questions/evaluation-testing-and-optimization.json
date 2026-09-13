@@ -6,7 +6,7 @@
     "type": "single",
     "domain": "evaluation-testing-and-optimization",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "scope": "core",
     "stem": "An AI team runs daily compliance auditing over 50,000 customer service transcripts every night. The audit results must be ready by 08:00 the following morning, but individual transcripts do not require real-time processing. Currently, the team runs concurrent synchronous /v1/messages calls, frequently hitting rate limits and incurring standard token costs. Which architectural change should the architect recommend to optimize cost and throughput?",
     "options": [
@@ -20,7 +20,7 @@
       },
       {
         "id": "opt-c",
-        "text": "Send all 50,000 transcripts concatenated into a single synchronous Messages request with max output tokens set to maximum."
+        "text": "Distribute the 50,000 transcripts across a pool of background worker tasks using multiple workspace API keys and concurrency throttles."
       },
       {
         "id": "opt-d",
@@ -34,10 +34,804 @@
     "distractorNotes": {
       "opt-a": "Downgrading the model blindly risks audit accuracy and compliance quality without leveraging the 50% batch discount on the appropriate model.",
       "opt-b": "Retries handle rate limit errors but do not address cost inefficiency or the fundamental mismatch between real-time calls and batch workloads.",
-      "opt-c": "A single request exceeds context limits, lacks granular per-transcript error recovery, and risks complete failure if one transcript fails."
+      "opt-c": "Managing custom worker pools across multiple API keys adds orchestration complexity, violates workspace key governance, and still incurs 100% standard token pricing."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/batch-processing",
     "sourceNote": "Message Batches API overview and benefits",
-    "sourceCheckedAt": "2026-09-12"
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-evaluation-testing-and-optimization-002",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "evaluation-testing-and-optimization",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An architecture team is designing an automated evaluation harness for an investment research agent. The agent calls financial market APIs to retrieve company data and generates an analytical brief assessing investment risks. The team needs to evaluate both programmatic correctness (valid ticker symbols, correct API query payloads, JSON schema conformance) and qualitative synthesis (sound reasoning, balanced tone, coherent structure). Which grader architecture should the architect recommend?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Combine deterministic code-based assertions for API payload validation and schema conformance with an LLM-as-a-judge rubric for qualitative brief synthesis."
+      },
+      {
+        "id": "opt-b",
+        "text": "Use an LLM-as-a-judge prompt to grade all aspects of the agent run, including JSON schema validation, ticker syntax, and financial document synthesis."
+      },
+      {
+        "id": "opt-c",
+        "text": "Evaluate both API execution and document synthesis exclusively using traditional n-gram metrics like ROUGE-L and BLEU against pre-written reference briefs."
+      },
+      {
+        "id": "opt-d",
+        "text": "Route every evaluation run to a panel of human financial analysts for end-to-end scoring to avoid synthetic prompt biases and model variance."
+      }
+    ],
+    "correct": [
+      "opt-a"
+    ],
+    "explanation": "According to Anthropic's guidance in 'Demystifying evals for AI agents', an effective agent evaluation framework combines multiple grader types matched to the task. Code-based (deterministic) graders are fast, cheap, and strictly reproducible for verifiable properties such as API payload structures, ticker validity, and JSON schema adherence. Model-based graders (LLM-as-a-judge) evaluate nuanced, open-ended capabilities like reasoning quality, tone, and synthesis against clear rubrics.",
+    "distractorNotes": {
+      "opt-b": "Using an LLM judge for programmatic schema validation introduces unnecessary cost, latency, and non-deterministic scoring where fast code-based assertions excel.",
+      "opt-c": "N-gram overlap metrics like ROUGE and BLEU fail to evaluate factual accuracy or semantic quality in generative synthesis and cannot validate JSON schemas or API calls.",
+      "opt-d": "Human evaluation does not scale for continuous automated testing in development and CI pipelines, though human spot-checks remain valuable for calibrating automated graders."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+    "sourceNote": "Types of graders for agents: code-based, model-based, and human",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-evaluation-testing-and-optimization-003",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "evaluation-testing-and-optimization",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An enterprise architect is defining CI/CD deployment gates for an autonomous customer-support agent that executes account updates across external backend systems. Because LLM sampling and multi-turn tool trajectories introduce non-determinism, single-run tests produce noisy pass/fail signals. The business requires high operational reliability and minimal workflow failures in production. Which evaluation trial design and metric should the architect mandate before approving production releases?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Run a single trial per evaluation task with temperature set to 0.0, relying on greedy decoding to guarantee identical execution across runs."
+      },
+      {
+        "id": "opt-b",
+        "text": "Execute multiple trials per task and require a high pass^k score, ensuring the agent succeeds consistently across all k independent attempts."
+      },
+      {
+        "id": "opt-c",
+        "text": "Execute multiple trials per task and accept any task that achieves pass@k where k=5, verifying that the agent possesses the capability to solve the task."
+      },
+      {
+        "id": "opt-d",
+        "text": "Run a single trial across 10,000 synthetic queries and measure global average success, using high task volume to smooth out per-task execution variance."
+      }
+    ],
+    "correct": [
+      "opt-b"
+    ],
+    "explanation": "In 'Demystifying evals for AI agents', Anthropic distinguishes between pass@k (the probability of succeeding at least once in k trials) and pass^k (the probability of succeeding across all k trials). For mission-critical production agents with strict reliability SLAs, architects must evaluate consistency using multiple trials per task and gate on high pass^k. Pass@k is appropriate for measuring capability frontiers during exploratory development, not operational reliability.",
+    "distractorNotes": {
+      "opt-a": "Setting temperature to 0.0 reduces token-level variance but does not eliminate non-determinism in multi-step tool interactions or external system dynamics.",
+      "opt-c": "Pass@k measures whether an agent can solve a task at least once in k attempts, which reflects capability ceiling rather than the operational consistency required for production reliability.",
+      "opt-d": "Aggregating single trials across broad synthetic tasks obscures inconsistent failure rates on critical workflows and fails to assess per-task reliability."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+    "sourceNote": "How to think about non-determinism in evaluations for agents (pass@k vs pass^k)",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-evaluation-testing-and-optimization-004",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "evaluation-testing-and-optimization",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A corporate benefits assistant built with Claude and a vector database frequently provides incorrect policy terms to employees. Observability logs show that the retriever consistently surfaces the correct, authoritative benefit clauses in the top-3 context chunks, but Claude extrapolates beyond the text and invents unstated rules. Which architectural prompt modification and evaluation check should the architect implement to resolve this issue?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Instruct Claude to answer solely using facts stated in the provided context, allow explicit fallback when details are absent, and evaluate factual ground truth via citation matching."
+      },
+      {
+        "id": "opt-b",
+        "text": "Increase top-k vector retrieval from 3 to 15 chunks so Claude receives surplus background context, and evaluate retrieval precision using mean reciprocal rank."
+      },
+      {
+        "id": "opt-c",
+        "text": "Switch the underlying embedding model to a larger dimensional vector representation and implement semantic cosine similarity scoring between queries and generated answers."
+      },
+      {
+        "id": "opt-d",
+        "text": "Add negative system prompt constraints prohibiting speculation and evaluate model adherence by enforcing greedy decoding at temperature 0.0."
+      }
+    ],
+    "correct": [
+      "opt-a"
+    ],
+    "explanation": "According to Anthropic's documentation on reducing hallucinations, when retrieval is accurate but generation hallucinates, the solution is prompt grounding: instruct Claude to rely strictly on the provided context, prohibit unstated assumptions, require citations or direct quotes, and explicitly permit Claude to say it does not know if information is missing. Evaluations should verify factual alignment against the retrieved chunks.",
+    "distractorNotes": {
+      "opt-b": "Increasing top-k retrieves more chunks but dilutes context relevance and does not prevent Claude from hallucinating beyond the retrieved facts.",
+      "opt-c": "Changing the embedding model addresses retrieval indexing quality, but observability already confirmed that the retriever surfaces the correct policy clauses.",
+      "opt-d": "Negative constraints ('do not hallucinate') fail without structural grounding and fallback permissions, and temperature 0.0 does not prevent ungrounded extrapolations."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations",
+    "sourceNote": "Basic hallucination minimization strategies and external knowledge restriction",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-evaluation-testing-and-optimization-005",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "evaluation-testing-and-optimization",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An AI team implements an automated LLM-as-a-judge system using Claude to grade customer service chat responses against brand guidelines. During an audit, the team discovers that the judge model systematically awards higher scores to verbose, multi-paragraph responses over concise, direct answers, even when the concise answers are factually superior. How should the architect calibrate the LLM judge framework to eliminate this verbosity bias?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Replace the LLM-as-a-judge model with deterministic ROUGE-L n-gram overlap scoring calculated against a static database of reference agent responses."
+      },
+      {
+        "id": "opt-b",
+        "text": "Normalize the LLM judge's numerical evaluation score by dividing the score by the total token count of the candidate response before saving results."
+      },
+      {
+        "id": "opt-c",
+        "text": "Define an explicit rubric scoring factual precision and conciseness, require chain-of-thought justification before grading, and benchmark against human scores."
+      },
+      {
+        "id": "opt-d",
+        "text": "Enforce strict character and token ceilings on candidate responses during generation so that all outputs submitted to the judge have identical lengths."
+      }
+    ],
+    "correct": [
+      "opt-c"
+    ],
+    "explanation": "Anthropic's evaluation guide notes that model-based judges can suffer from biases such as favoring verbosity. To mitigate this, architects should structure clear rubrics that explicitly penalize filler and reward factual conciseness, require chain-of-thought reasoning before outputting a numerical score, and calibrate judge prompts against human expert benchmark datasets to ensure alignment.",
+    "distractorNotes": {
+      "opt-a": "ROUGE-L measures n-gram overlap and cannot evaluate semantic tone, brand voice, or conversational quality in varied customer interactions.",
+      "opt-b": "Dividing scores by token count penalizes legitimately detailed, nuanced answers for complex issues and artificially rewards terseness over quality.",
+      "opt-d": "Imposing artificial length limits on candidate generation degrades response completeness for complex inquiries rather than calibrating judge evaluation accuracy."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
+    "sourceNote": "Grade your evaluations and tips for LLM-based grading",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-evaluation-testing-and-optimization-006",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "evaluation-testing-and-optimization",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An interactive legal research assistant sends a 15,000-token prompt on every turn, consisting of fixed statutory guidelines, case law context, and the ongoing user dialogue. Attorneys report that the system feels sluggish, taking 4 to 6 seconds before any text appears on the client application screen. Which two architectural optimizations should the architect implement to reduce perceived latency and Time to First Token (TTFT)? (Select two.)",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Structure the static statutory guidelines and case law at the beginning of the prompt and enable prompt caching."
+      },
+      {
+        "id": "opt-b",
+        "text": "Increase the max_tokens parameter to 8,192 to prevent the model from throttling token output during generation."
+      },
+      {
+        "id": "opt-c",
+        "text": "Enable streaming on the Messages API request so the client receives and displays tokens via Server-Sent Events as they are generated."
+      },
+      {
+        "id": "opt-d",
+        "text": "Move the 15,000-token statutory guidelines to an external vector database and query it via dynamic tool calls on every turn."
+      },
+      {
+        "id": "opt-e",
+        "text": "Raise the judge model's temperature to 1.0 on every grading call so scoring variance averages out across repeated evaluation runs."
+      }
+    ],
+    "correct": [
+      "opt-a",
+      "opt-c"
+    ],
+    "explanation": "According to Anthropic's latency optimization documentation, Time to First Token (TTFT) is driven by prompt prefill duration, while perceived latency depends on response delivery. Prompt caching allows Claude to reuse precomputed KV states for static prefixes (up to 15,000 tokens here), cutting TTFT by up to 80%. Streaming (stream: true) streams tokens incrementally to the client using Server-Sent Events (SSE), allowing users to read the response immediately rather than waiting for completion.",
+    "distractorNotes": {
+      "opt-b": "Increasing max_tokens does not improve latency; larger generation ceilings can increase end-to-end completion time if the model produces longer responses.",
+      "opt-d": "Converting static prompt context into real-time tool calls introduces network hops, tool-use roundtrips, and additional inference cycles that increase TTFT.",
+      "opt-e": "Higher judge temperature adds noise to grading rather than removing it, and makes the suite less reproducible run over run."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-latency",
+    "sourceNote": "How to reduce latency: model selection, optimizing prompt length, and streaming",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-evaluation-testing-and-optimization-007",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "evaluation-testing-and-optimization",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A software architect is preparing to deploy a major prompt overhaul for a high-traffic production customer-support agent. Offline evaluation on historical test sets shows a 5% accuracy gain, and leadership wants confirmation that the change actually improves real user outcomes before it is declared a success. Which sequencing of evaluation methods matches Anthropic's guidance on where each method fits in the agent lifecycle?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Treat the offline benchmark gain as sufficient evidence, because automated evals are fully reproducible, run on every commit, and test scenarios at scale with no user impact."
+      },
+      {
+        "id": "opt-b",
+        "text": "Gate the change on the automated eval suite in CI, then validate it with an A/B test on live traffic once volume suffices, with production monitoring running post-launch for drift."
+      },
+      {
+        "id": "opt-c",
+        "text": "Skip the automated suite and go straight to an A/B test against live traffic, because only real users measure the outcomes that matter, such as retention and task completion."
+      },
+      {
+        "id": "opt-d",
+        "text": "Replace the automated suite with continuous manual transcript review, because reading transcripts catches the subtle quality issues that automated checks routinely miss entirely."
+      }
+    ],
+    "correct": [
+      "opt-b"
+    ],
+    "explanation": "'Demystifying evals for AI agents' maps each method to a stage: automated evals are 'especially useful pre-launch and in CI/CD, running on each agent change and model upgrade as the first line of defense'; 'A/B testing validates significant changes once you have sufficient traffic'; and 'production monitoring kicks in post-launch to detect distribution drift and unanticipated real-world failures'. The post is explicit that no single layer suffices — it invokes the Swiss Cheese Model, where failures slipping through one layer are caught by another.",
+    "distractorNotes": {
+      "opt-a": "The post names this failure directly: automated evals 'can create false confidence if it doesn't match real usage patterns'. A 5% gain on a historical set is not evidence about the live distribution.",
+      "opt-c": "A/B testing does measure real user outcomes, but the post lists its costs — slow, days or weeks to significance, and it 'only tests changes you deploy'. Dropping the CI gate removes the cheap first line of defense before a change reaches users.",
+      "opt-d": "Manual transcript review is an ongoing practice that builds intuition for failure modes, but the post records that it is time-intensive, does not scale, has inconsistent coverage, and typically yields qualitative signal rather than clear quantitative grading. It supplements automated evals rather than replacing them."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+    "sourceNote": "Stage mapping: automated evals pre-launch and in CI, A/B testing once traffic suffices, production monitoring post-launch.",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-evaluation-testing-and-optimization-008",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "evaluation-testing-and-optimization",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An organization processes 300,000 customer inquiries daily. Analysis indicates that 70% of requests are straightforward navigational questions, greetings, or basic account status lookups, while 30% require complex multi-document reasoning and policy interpretation. Routing all queries to Claude Sonnet provides high accuracy but exceeds the target operating budget by 150%. Which architectural pattern should the architect implement to meet budget constraints without degrading response accuracy on complex queries?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Migrate incoming customer inquiries to Claude Haiku with zero-shot prompts to minimize token expenditure across the fleet."
+      },
+      {
+        "id": "opt-b",
+        "text": "Submit incoming customer inquiries to the Message Batches API in micro-batches to receive a 50% discount on Claude Sonnet token pricing."
+      },
+      {
+        "id": "opt-c",
+        "text": "Implement a model routing tier that uses Claude Haiku for intent classification and simple inquiries, escalating complex inquiries to Claude Sonnet."
+      },
+      {
+        "id": "opt-d",
+        "text": "Implement a client-side semantic cache in a vector database to serve recurring queries from cache and forward misses to Claude Sonnet."
+      }
+    ],
+    "correct": [
+      "opt-c"
+    ],
+    "explanation": "Anthropic's architectural use-case guides recommend model routing (cascading) to optimize cost-performance trade-offs. By deploying Claude Haiku as a fast, low-cost classifier and front-line responder for simple inquiries (70% of traffic) and routing only complex analytical queries (30%) to Claude Sonnet, organizations dramatically lower aggregate token expenditure while maintaining superior accuracy where it matters.",
+    "distractorNotes": {
+      "opt-a": "Migrating entirely to Haiku reduces cost but compromises quality on the 30% of complex queries that require Sonnet's advanced multi-document reasoning.",
+      "opt-b": "Message Batches API is an asynchronous queue with turnaround targets of up to 24 hours; customer support inquiries require synchronous real-time responses.",
+      "opt-d": "Customer inquiries have high semantic variation, resulting in low cache hit rates that leave the 150% budget overrun unresolved on cache misses."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/about-claude/use-case-guides/ticket-routing",
+    "sourceNote": "Model routing architecture for cost and latency optimization",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-evaluation-testing-and-optimization-009",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "evaluation-testing-and-optimization",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An enterprise agent built on the Claude Agent SDK coordinates multi-turn workflows by querying external MCP tools, running vector searches, and calling Claude. Production monitoring reports that 5% of user sessions experience sudden 30-second latency spikes or abort with unhandled errors, but the API gateway only records an aggregate HTTP 504 status. The platform team needs to see, for a single failing session, which step consumed the time. Which telemetry configuration gives them that?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Capture centralized application logs recording inbound and outbound HTTP timestamps for every Claude API call and tool invocation made during the session."
+      },
+      {
+        "id": "opt-b",
+        "text": "Configure the Anthropic Admin API usage report endpoint to poll token consumption totals for the whole organization on a 15-minute scheduled cron job."
+      },
+      {
+        "id": "opt-c",
+        "text": "Track aggregate p99 latency and error rates at the external load balancer, without modifying any of the internal agent orchestration code paths."
+      },
+      {
+        "id": "opt-d",
+        "text": "Enable the OpenTelemetry traces signal so exported spans link each user prompt to the API requests and tool executions it triggered, as one trace."
+      }
+    ],
+    "correct": [
+      "opt-d"
+    ],
+    "explanation": "Claude Code and the Agent SDK export telemetry over OpenTelemetry, and the traces signal is the one that answers a per-session question: distributed tracing 'exports spans that link each user prompt to the API requests and tool executions it triggers, so you can view a full request as a single trace in your tracing backend'. Tracing is off by default and requires CLAUDE_CODE_ENABLE_TELEMETRY=1 together with CLAUDE_CODE_ENHANCED_TELEMETRY_BETA=1, plus an OTEL_TRACES_EXPORTER to say where spans are sent. Application logs (opt-a) record timestamps but do not correlate them into one causal trace; an aggregate usage report (opt-b) and load-balancer percentiles (opt-c) both measure the population rather than the failing session, which is precisely the signal the gateway already fails to provide.",
+    "distractorNotes": {
+      "opt-a": "Flat HTTP timestamp logging records boundary timestamps but lacks distributed trace correlation across asynchronous MCP subprocesses and Claude token metrics.",
+      "opt-b": "Organization usage reports provide aggregated token spend for accounting, not real-time per-request execution traces or tool latency diagnostics.",
+      "opt-c": "External load balancer metrics identify that a timeout occurred, but provide zero visibility into whether the delay originated in retrieval, Claude API prefill, or external tool execution."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/monitoring-usage",
+    "sourceNote": "Traces (beta): spans link each user prompt to the API requests and tool executions it triggers, viewable as one trace.",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-evaluation-testing-and-optimization-010",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "evaluation-testing-and-optimization",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An AI engineering team maintains an autonomous software development agent. During CI/CD runs on developer pull requests, the automated evaluation pipeline frequently fails because it evaluates both solved baseline coding tasks and ambitious, unsolved architectural refactoring tasks in a single test suite. As a result, engineers treat test failures as expected noise and merge code without verifying whether existing capabilities broke. How should the architect restructure the evaluation suite?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Split the suite into a regression eval of previously solved tasks requiring near-100% pass rates to merge PRs, and an offline capability eval tracking progress on difficult tasks."
+      },
+      {
+        "id": "opt-b",
+        "text": "Weight evaluation task scores by historical pass rates so that failures on low-pass-rate tasks incur minimal penalty on the CI merge score."
+      },
+      {
+        "id": "opt-c",
+        "text": "Gate PR merges on pass@5 across the combined suite, verifying that the agent maintains the capability to solve tasks in at least one trial."
+      },
+      {
+        "id": "opt-d",
+        "text": "Run the full combined evaluation suite only on scheduled nightly builds, using deterministic unit tests of the agent harness for PR merge gates."
+      }
+    ],
+    "correct": [
+      "opt-a"
+    ],
+    "explanation": "In 'Demystifying evals for AI agents', Anthropic recommends separating capability evaluations from regression evaluations. Capability evals target unsolved or challenging tasks with low initial pass rates to drive agent improvement ('a hill to climb'). Regression evals contain verified, previously solved tasks and run in CI on every code change with a near-100% pass requirement to guard against breaking existing behavior.",
+    "distractorNotes": {
+      "opt-b": "Heuristic weighting obscures regressions in baseline capabilities and leaves CI failure signals noisy and difficult to interpret.",
+      "opt-c": "Pass@k evaluates capability ceiling rather than consistency; gating CI on pass@5 allows regressions in solved tasks and drastically increases CI compute costs.",
+      "opt-d": "Harness unit tests verify application code but do not test prompt changes or agent behavior, allowing silent behavioral regressions to merge before nightly runs."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+    "sourceNote": "Capability vs. regression evals in agent development",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-evaluation-testing-and-optimization-011",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "evaluation-testing-and-optimization",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An enterprise document analysis platform allows users to submit multi-document dossiers alongside analytical queries to Claude. To prevent HTTP 400 invalid request errors caused by exceeding context windows and to avoid paying for expensive generation requests when payload limits are breached, the architect needs a fast, non-generative pre-flight validation mechanism that accurately counts input tokens across system prompts, documents, and tool definitions. Which approach should the architect implement?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Estimate token consumption client-side using a fixed four-characters-per-token heuristic before dispatching the payload to the Messages API."
+      },
+      {
+        "id": "opt-b",
+        "text": "Query the messages/count_tokens endpoint with the structured payload to calculate exact input tokens before calling the Messages API."
+      },
+      {
+        "id": "opt-c",
+        "text": "Submit a speculative messages.create request with max_tokens set to 1 and inspect the input_tokens usage object in the response."
+      },
+      {
+        "id": "opt-d",
+        "text": "Measure the raw UTF-8 byte length of the serialized HTTP body against a static threshold before opening a client network connection."
+      }
+    ],
+    "correct": [
+      "opt-b"
+    ],
+    "explanation": "The Anthropic messages/count_tokens endpoint calculates the exact number of input tokens in a message payload before submitting it to Claude. It accepts the same structured parameters as messages.create (system prompts, user/assistant messages, tool definitions, images, and documents) without generating completions or incurring generation charges. This provides a reliable pre-flight check to enforce context boundaries and manage token budgets.",
+    "distractorNotes": {
+      "opt-a": "Character-based heuristics fail because tokenization density varies significantly across natural languages, formatting, code syntax, and tool schema overhead.",
+      "opt-c": "Speculative generation calls incur round-trip latency, consume rate limits, and bill for minimum input processing, making them inefficient for pre-flight validation.",
+      "opt-d": "Raw byte size does not correlate linearly with BPE token counts, especially for non-ASCII text, structured JSON schemas, or encoded media."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/token-counting",
+    "sourceNote": "Token counting endpoint overview and pre-flight usage",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-evaluation-testing-and-optimization-012",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "evaluation-testing-and-optimization",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A wealth management firm is hardening an autonomous agent that reads untrusted third-party financial documents and executes rebalancing recommendations. Red-teaming shows that instructions embedded in a fetched document can redirect the agent. Which combination of controls matches Anthropic's documented defence against indirect prompt injection?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Deliver document text in tool_result blocks, declare tool content untrusted in the system prompt, screen raw tool output with a lightweight classifier, and scope permissions narrowly."
+      },
+      {
+        "id": "opt-b",
+        "text": "Place the document text in the system prompt between clearly labelled delimiters, instructing Claude that anything appearing between them is untrusted content it must never obey."
+      },
+      {
+        "id": "opt-c",
+        "text": "Filter incoming document text against a maintained denylist of known injection phrases, such as “ignore previous instructions”, before it is passed to the model at runtime."
+      },
+      {
+        "id": "opt-d",
+        "text": "Embed the agent's own operating instructions inside each tool_result block, so that they travel alongside the untrusted content and are re-asserted on every single tool call."
+      }
+    ],
+    "correct": [
+      "opt-a"
+    ],
+    "explanation": "The mitigations documented for indirect prompt injection are layered and all four appear in the key: put untrusted content only in tool results ('never in `system` prompts or plain user `text` blocks'), because Claude is trained to treat instructions inside tool results with skepticism; state in the system prompt that tool, document and search content is untrusted data that must never override the system prompt or the user's request; screen tool outputs before Claude acts on them by passing raw output to a small classifier call and returning the content only if the screen reports no injection attempt; and limit Claude's access to sensitive data and actions so a successful injection does minimal damage.",
+    "distractorNotes": {
+      "opt-b": "The page rules this out by name: deliver third-party content inside `tool_result` blocks, never in `system` prompts or plain user `text` blocks. Delimiters in the system prompt put attacker-controlled text in the most trusted position in the request.",
+      "opt-c": "A denylist catches the phrasings someone already thought of. The page's input-validation note suggests a model-based generalized screen precisely because fixed pattern matching does not generalize.",
+      "opt-d": "This is the documented anti-pattern: because Claude treats tool-result content as untrusted data, instructions placed there 'may be ignored or flagged as a potential injection'. Your instructions belong in a user turn following the tool_result block."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks",
+    "sourceNote": "Indirect prompt injection: tool_result delivery, untrusted-content system policy, screening tool output, and least privilege.",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-evaluation-testing-and-optimization-013",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "evaluation-testing-and-optimization",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A customer support RAG assistant using Claude is producing incorrect responses on 15% of user inquiries. Stakeholders report that \"the AI is hallucinating\", but engineers disagree on whether the problem stems from the retriever returning irrelevant chunks or from Claude generating statements the retrieved chunks do not support. Which TWO evaluation practices localise the failure to a single stage? (Select TWO.)",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Calculate ROUGE-L n-gram overlap between the generated response and the raw, unindexed knowledge base documentation held in the source repository."
+      },
+      {
+        "id": "opt-b",
+        "text": "Grade the outcome separately: score the final answer against a reference answer, independently of how the pipeline arrived at it."
+      },
+      {
+        "id": "opt-c",
+        "text": "Calculate semantic cosine similarity between the user query embedding and the generated response embedding for every inquiry in the sample."
+      },
+      {
+        "id": "opt-d",
+        "text": "Grade the transcript: inspect the retrieval tool calls and the chunks they returned, establishing whether the passage needed was in context."
+      },
+      {
+        "id": "opt-e",
+        "text": "Replace the failing assertions with a single end-to-end smoke test that only checks that the pipeline returns an HTTP 200 response."
+      }
+    ],
+    "correct": [
+      "opt-b",
+      "opt-d"
+    ],
+    "explanation": "'Demystifying evals for AI agents' draws the distinction this diagnosis needs: the transcript is 'the complete record of a trial, including outputs, tool calls, reasoning, intermediate results', while the outcome is 'the final state in the environment at the end of the trial'. Graded separately, the two localise the fault. If the transcript shows the answering passage was never retrieved, the retriever failed; if it shows the passage was in context and the outcome is still wrong, the generation step is unsupported by its own evidence. The post recommends exactly this pairing — once outcome-level pass/fail tests exist, 'it's often useful to also grade the transcript'.",
+    "distractorNotes": {
+      "opt-a": "ROUGE-L against the unindexed corpus measures surface n-gram overlap with material the pipeline may never have retrieved. It conflates the two stages rather than separating them, and rewards lexical echo over correctness.",
+      "opt-c": "Query-to-response embedding similarity measures only that the answer is on-topic. A fluent, on-topic, entirely wrong answer scores well, so it distinguishes neither stage.",
+      "opt-e": "An HTTP 200 smoke test asserts the pipeline is reachable. It carries no information about retrieval or generation quality, and replacing the assertions with it removes the signal being sought."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+    "sourceNote": "Transcript (tool calls, intermediate results) vs outcome (final state); grading both is recommended once outcome tests exist.",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-evaluation-testing-and-optimization-014",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "evaluation-testing-and-optimization",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An autonomous IT remediation agent is deployed to diagnose and resolve cloud infrastructure incidents across multiple tools (restarting services, updating security groups, flushing caches). In automated CI test runs, the evaluation harness grades task success by parsing the agent's final conversational message for confirmation phrases like \"Incident resolved successfully.\" In staging, several trials passed despite the underlying service remaining unhealthy. How should the architect re-engineer the evaluation harness to prevent these false-positive passes?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Implement an environment state-check grader that inspects the real infrastructure status directly after the trial completes."
+      },
+      {
+        "id": "opt-b",
+        "text": "Deploy an LLM-as-a-judge prompt to assess whether the agent's final conversational explanation sounds authoritative and technically sound."
+      },
+      {
+        "id": "opt-c",
+        "text": "Deploy an LLM-as-a-judge grader to evaluate the complete multi-turn tool execution transcript and verify the logical coherence of the steps."
+      },
+      {
+        "id": "opt-d",
+        "text": "Implement deterministic code assertions verifying that all invoked tool execution return payloads contained HTTP 200 success status codes."
+      }
+    ],
+    "correct": [
+      "opt-a"
+    ],
+    "explanation": "In 'Demystifying evals for AI agents', Anthropic distinguishes between the agent's transcript (what the agent says and does during the trial) and the outcome (the actual final state in the environment). Agents frequently hallucinate success, stating that an action completed when a tool failed silently or an environmental condition was unmet. Reliable evaluation harnesses must verify ground-truth environmental state (e.g. running health checks, checking database records, inspecting system logs) rather than grading conversational claims.",
+    "distractorNotes": {
+      "opt-b": "An LLM judge reviewing the final explanation merely validates persuasive conversational text, failing to detect when the agent hallucinates success.",
+      "opt-c": "Transcript grading evaluates the execution process rather than the outcome; an agent can execute a logical sequence of tool calls while the underlying service remains unhealthy.",
+      "opt-d": "Tool return assertions verify that API calls executed without protocol errors, but do not confirm whether the infrastructure incident was actually resolved."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+    "sourceNote": "Outcome verification vs. transcript grading in agent evaluation",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-evaluation-testing-and-optimization-015",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "evaluation-testing-and-optimization",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An AI engineering team grades a legal summarizing agent on four dimensions — factual accuracy, citation correctness, tone, and structure — using a single LLM-as-judge call that reads the output once and returns one combined quality score. Scores are noisy: an output with a citation error but polished prose often outscores a precise but plainly written one, and the team cannot tell from the score which dimension moved. How should the grading be restructured?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Raise the judge to a more capable model and keep the single combined score, so the stronger grader weighs the four dimensions more reliably in one pass."
+      },
+      {
+        "id": "opt-b",
+        "text": "Write a clear structured rubric per dimension and grade each dimension with its own isolated LLM-as-judge call rather than one judge scoring all four."
+      },
+      {
+        "id": "opt-c",
+        "text": "Average the combined score across five repeated judge calls on the same output, so per-call variance cancels out of the reported figure."
+      },
+      {
+        "id": "opt-d",
+        "text": "Replace the judge with deterministic code assertions for all four dimensions, eliminating model non-determinism from the grading path entirely."
+      }
+    ],
+    "correct": [
+      "opt-b"
+    ],
+    "explanation": "'Demystifying evals for AI agents' gives this directly: it 'can help to create clear, structured rubrics to grade each dimension of a task, and then grade each dimension with an isolated LLM-as-judge rather than using one to grade all dimensions'. Isolating the dimensions is what makes the score decomposable — the team can see which dimension moved — and stops a strong showing on tone from silently compensating for a citation error inside a single blended judgement. The post also notes that partial credit matters for multi-component tasks, which a single combined score cannot express.",
+    "distractorNotes": {
+      "opt-a": "A stronger judge still returns one number, so the score remains undecomposable and the compensation between dimensions is unchanged. The post's remedy is structural, not a matter of grader capability.",
+      "opt-c": "Averaging reduces variance around whatever the blended judgement measures; it does not separate the dimensions. The team's problem is that the score is uninterpretable, not that it is noisy.",
+      "opt-d": "Code graders are the right tool for verifiable properties such as citation format, but tone and structure are the open-ended qualities the post assigns to model-based graders. Forcing all four into assertions discards the dimensions that need judgement."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+    "sourceNote": "Grade each dimension with an isolated LLM-as-judge against a structured rubric rather than one judge scoring all dimensions.",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-evaluation-testing-and-optimization-016",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "evaluation-testing-and-optimization",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An enterprise customer support web portal integrates Claude Sonnet 5 to draft complex billing explanations. User feedback indicates that customers perceive the application as unresponsive and slow, even though overall end-to-end response generation averages 3.5 seconds. Telemetry confirms that the browser displays an empty loading spinner for over 3 seconds before rendering the entire explanation all at once. Which architectural change directly optimizes user-perceived responsiveness?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Enable Server-Sent Events streaming on the Messages API to render tokens incrementally, tracking Time to First Token."
+      },
+      {
+        "id": "opt-b",
+        "text": "Enable prompt caching on static system prompt instructions while maintaining synchronous response buffering on the client."
+      },
+      {
+        "id": "opt-c",
+        "text": "Configure the Messages API call with temperature 0.0 and greedy decoding to accelerate generative token processing speed."
+      },
+      {
+        "id": "opt-d",
+        "text": "Deploy a client-side speculative execution worker that predicts customer follow-up queries and pre-computes draft answers."
+      }
+    ],
+    "correct": [
+      "opt-a"
+    ],
+    "explanation": "Perceived latency in interactive applications is dominated by Time to First Token (TTFT) rather than total completion duration. According to Anthropic's latency optimization documentation, enabling Server-Sent Events (SSE) streaming allows the client UI to begin rendering text deltas as soon as Claude generates them (typically under 800ms), giving the user immediate visual feedback while generation continues in parallel.",
+    "distractorNotes": {
+      "opt-b": "Prompt caching reduces server prefill time, but if the client continues buffering the response synchronously, users still wait for full completion before seeing text.",
+      "opt-c": "Temperature controls sampling randomness rather than inference execution speed, and greedy decoding does not meaningfully alter perceived UI streaming latency.",
+      "opt-d": "Speculative query pre-computation fails on open-ended billing inquiries with high variance and does not address the latency of the user's current request."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-latency",
+    "sourceNote": "Streaming responses and Time to First Token (TTFT) optimization",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-evaluation-testing-and-optimization-017",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "evaluation-testing-and-optimization",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An AI engineering team maintains an automated customer service agent powered by Claude. Over six months of prompt tuning and few-shot calibration, the team achieved a 98% pass rate on their 200-task development test suite. However, upon enterprise-wide deployment, users experienced frequent misunderstandings, policy violations, and unexpected task failures. An audit reveals that developers repeatedly inspected failed test cases and added narrow prompt rules specifically tailored to those exact examples. Which TWO evaluation practices should the architect mandate to prevent eval overfitting and restore reliable measurement? (Select TWO.)",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Maintain a quarantined, held-out evaluation test set that developers cannot view or tune prompts against during active development."
+      },
+      {
+        "id": "opt-b",
+        "text": "Permanently freeze the development test set so that benchmark metrics remain strictly comparable across historical iterations."
+      },
+      {
+        "id": "opt-c",
+        "text": "Generate automated synthetic perturbations of existing test cases using Claude to expand the volume of the development test set."
+      },
+      {
+        "id": "opt-d",
+        "text": "Continuously sample and curate anonymized production failure logs to inject diverse, un-fitted scenarios into the evaluation suite."
+      },
+      {
+        "id": "opt-e",
+        "text": "Grade every case with a single LLM judge prompt that returns one overall quality score between 1 and 10."
+      }
+    ],
+    "correct": [
+      "opt-a",
+      "opt-d"
+    ],
+    "explanation": "Test set contamination and overfitting occur when developers repeatedly inspect evaluation items and introduce bespoke heuristic rules or few-shot examples targeted directly at passing those specific tests. Anthropic's eval principles require: (1) Maintaining a quarantined held-out test set: a split of evaluation data that is never inspected during prompt engineering, used solely as an unbiased validation gate before deployment. (2) Continual replenishment from production: sampling real-world failures and edge cases from production logs to ensure the evaluation suite mirrors the evolving task distribution and exposes generalization gaps.",
+    "distractorNotes": {
+      "opt-b": "Freezing a small test set permanently exacerbates overfitting, as models and prompts adapt to the static distribution while production traffic diverges.",
+      "opt-c": "Synthetically perturbing an already overfitted test set multiplies test volume without introducing authentic production distribution shifts or novel edge cases.",
+      "opt-e": "Collapsing distinct failure modes into one scalar hides which dimension regressed, which is the diagnostic the suite is meant to provide."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
+    "sourceNote": "Held-out test sets, test set contamination, and eval hygiene",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-evaluation-testing-and-optimization-018",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "evaluation-testing-and-optimization",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "A retail banking architect designs an autonomous loan servicing agent using Claude with MCP tool calling. The architect establishes an escalation mechanism where risky or ambiguous customer requests trigger human loan officer review. During pilot testing, the team observes an operational conflict: setting a sensitive escalation trigger overwhelms human officers with routine inquiries, while setting a lenient trigger allows risky actions without review. How should the architect structure the evaluation to calibrate the optimal escalation boundary?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Instruct Claude to output a self-assessed confidence score (0–100) alongside each tool call, escalating whenever confidence falls below 90."
+      },
+      {
+        "id": "opt-b",
+        "text": "Eliminate human review escalation and rely on negative system prompt constraints to prevent unauthorized loan actions."
+      },
+      {
+        "id": "opt-c",
+        "text": "Benchmark escalation decisions against a labeled expert dataset, tuning thresholds using precision-recall curves against queue capacity."
+      },
+      {
+        "id": "opt-d",
+        "text": "Deploy a secondary lightweight classifier model to evaluate the user query and escalate any transaction containing ambiguous financial terminology."
+      }
+    ],
+    "correct": [
+      "opt-c"
+    ],
+    "explanation": "Human-in-the-loop escalation is a threshold-setting problem: too sensitive and reviewers are swamped, too lenient and risky actions execute unreviewed. Anthropic's guidance in 'Demystifying evals for AI agents' is that scoring can be weighted so that combined grader scores must clear a threshold, and that graders deciding such calls must be closely calibrated against human experts, with systematic human studies reserved as the reference standard for exactly this kind of subjective judgement. Calibrating the escalation boundary therefore means benchmarking the agent's escalation decisions against an expert-labelled set and moving the threshold against measured error rates and the review queue's real capacity, not asking the model to self-report confidence (opt-a), removing the control (opt-b), or substituting an uncalibrated keyword proxy (opt-d).",
+    "distractorNotes": {
+      "opt-a": "Self-assessed LLM confidence numbers are notoriously miscalibrated, frequently expressing high confidence even when hallucinating or executing improper tool parameters.",
+      "opt-b": "Prompt instructions cannot mathematically guarantee zero violations in stochastic models executing multi-turn tool calls.",
+      "opt-d": "Keyword classifiers evaluate queries in isolation without tool parameters or context, and static classification fails to balance precision-recall against queue limits."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+    "sourceNote": "Scoring can be weighted to a threshold; LLM-as-judge graders must be closely calibrated with human experts.",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-evaluation-testing-and-optimization-019",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "evaluation-testing-and-optimization",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An enterprise architectural firm queries a 100,000-token corpus of municipal building codes across hundreds of engineering staff requests each day. The architect plans to enable Anthropic prompt caching (cache_control: {\"type\": \"ephemeral\"}) on the building code corpus. Before authorizing deployment, the architect evaluates the financial and operational mechanics of the caching feature. Which statement accurately describes the economic and performance characteristics of Claude prompt caching?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Cache writes incur no pricing premium over base tokens, and cached prefixes persist indefinitely until explicitly invalidated by the client."
+      },
+      {
+        "id": "opt-b",
+        "text": "Cache reads receive a 90% discount and cut TTFT, but initial cache writes cost 25% more and reset their 5-minute TTL on hits."
+      },
+      {
+        "id": "opt-c",
+        "text": "Prompt caching reduces token costs by 50% across recurring requests, but increases TTFT due to remote cache lookup latency overhead."
+      },
+      {
+        "id": "opt-d",
+        "text": "Cache reads discount both input tokens and generated completion tokens by 90%, provided the dynamic user message matches prior requests."
+      }
+    ],
+    "correct": [
+      "opt-b"
+    ],
+    "explanation": "Anthropic's prompt caching architecture provides substantial cost and latency benefits for shared prefixes above the minimum token threshold: (1) Cache reads (hits) receive a 90% discount compared to base input token pricing and significantly decrease Time to First Token (TTFT). (2) The initial cache write incurs a 25% pricing premium over base input tokens. (3) The default ephemeral cache has a 5-minute time-to-live (TTL), which automatically refreshes upon each cache hit, making it highly cost-effective for recurring organizational queries against stable document corpora.",
+    "distractorNotes": {
+      "opt-a": "Cache writes incur a 25% pricing premium, ephemeral caches have a 5-minute rolling TTL rather than indefinite persistence, and there is no manual invalidation API.",
+      "opt-c": "The Batch API provides a 50% discount, not prompt caching (which provides a 90% read discount), and prompt caching decreases TTFT rather than increasing it.",
+      "opt-d": "Prompt caching applies exclusively to input prompt prefix tokens, not generated completion tokens, and user queries may vary after the cached prefix."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+    "sourceNote": "Prompt caching pricing multipliers, latency benefits, and TTL refresh",
+    "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-p-evaluation-testing-and-optimization-020",
+    "cert": "ccar-p",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "evaluation-testing-and-optimization",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "scope": "core",
+    "stem": "An enterprise data analytics service executes a four-step pipeline for every customer report: (1) schema ingestion and column mapping, (2) database SQL query generation, (3) data validation against business constraints, and (4) executive brief narrative synthesis. The pipeline currently runs Claude Sonnet 4.5 across all four steps, generating excellent results but costing $0.48 per run. The architect runs comprehensive evals across Claude Haiku 4.5 and Claude Sonnet 4.5 across all steps: Haiku achieves 99% accuracy on Step 1 and Step 3, but fails 45% of tests on Step 2 (complex SQL) and Step 4 (narrative synthesis). Which architecture achieves the optimal Pareto cost-performance frontier?",
+    "options": [
+      {
+        "id": "opt-a",
+        "text": "Migrate the four pipeline steps to Claude Haiku 4.5 and introduce few-shot SQL examples to close the reasoning performance gap."
+      },
+      {
+        "id": "opt-b",
+        "text": "Deploy Claude Haiku 4.5 across all four steps within an evaluator-optimizer loop that retries failed SQL queries and briefs up to three times."
+      },
+      {
+        "id": "opt-c",
+        "text": "Execute all four steps asynchronously through the Message Batches API using Claude Sonnet 4.5 to obtain an across-the-board 50% discount."
+      },
+      {
+        "id": "opt-d",
+        "text": "Route Steps 1 and 3 to Claude Haiku 4.5 while maintaining Claude Sonnet 4.5 for Steps 2 and 4 to optimize aggregate pipeline cost."
+      }
+    ],
+    "correct": [
+      "opt-d"
+    ],
+    "explanation": "In 'Building Effective Agents', Anthropic emphasizes optimizing cost-performance trade-offs by evaluating task difficulty per pipeline stage. High-volume, structured tasks (such as schema mapping and data format validation) do not require frontier model reasoning and can be handled reliably by fast, lightweight models like Claude Haiku 4.5 at a fraction of the cost. Decomposing the pipeline into a tiered architecture—routing routine tasks to Haiku and reserving Claude Sonnet 4.5 for complex multi-table SQL generation and executive synthesis—delivers production quality while substantially reducing total token expense.",
+    "distractorNotes": {
+      "opt-a": "Complex multi-table analytical SQL and nuanced narrative synthesis require frontier reasoning capabilities that few-shot prompting on smaller models cannot reliably substitute in production.",
+      "opt-b": "Retrying smaller models on tasks exceeding their reasoning capability multiplies token expenditure and latency without overcoming fundamental reasoning errors.",
+      "opt-c": "Batching all steps on Sonnet saves 50% but introduces up to 24h asynchronous turnaround, whereas routing Steps 1 and 3 to Haiku provides real-time results and larger cost savings."
+    },
+    "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
+    "sourceNote": "Model tiering and cost-performance optimization in multi-step workflows",
+    "sourceCheckedAt": "2026-09-13"
   }
 ]

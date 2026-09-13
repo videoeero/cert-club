@@ -7,14 +7,14 @@ this file holds the reasons.
 Recon completed and scaffolded on 2026-09-12 based on the Claude Certified Architect –
 Professional Exam Guide v1.0 (Effective July 2026, Exam code: CCAR-P).
 
-## Bank status: `draft`
+## Bank status: `stable`
 
-`manifest.status` is `draft`. The bank currently contains 7 seed questions (1 per domain,
-all `status: "draft"`, `scope: "core"`), authored to verify schema validity, blueprint
-alignment, and public doc sourceability across all 7 domains.
-
-Promote to `stable` only when coverage across the blueprint is complete and proportional,
-judged per domain against manifest weights, and record that reasoning here.
+`manifest.status` is `stable`. Promoted on 2026-09-13 following coverage audit and human confirmation.
+The bank contains 126 questions (all 126 `status: "reviewed"`, 0 `status: "draft"`, all `scope: "core"`),
+achieving exactly 2× the 63-question exam baseline proportionally distributed across all 7 domains
+according to blueprint weights with zero delta. All 126 questions have undergone adversarial correctness
+evaluation (`evaluate-questions`) and difficulty calibration (`harden-domain-questions`) against official
+sample anchors. All four repository bias guards pass cleanly.
 
 ## Recon verdict: `GO-WITH-CONSTRAINTS`
 
@@ -32,16 +32,16 @@ The certification assessment approved a **GO-WITH-CONSTRAINTS** verdict:
 
 The guide publishes exact domain weights in Section 6. Exact integers sum to 100%:
 
-| Domain | Slug | Weight | Target (63) | Target (100) | Bank Seeds |
-| --- | --- | ---: | ---: | ---: | ---: |
-| Solution Design & Architecture | `solution-design-and-architecture` | 17% | 11 | 17 | 1 |
-| Claude Models, Prompting & Context Engineering | `claude-models-prompting-and-context-engineering` | 13% | 8 | 13 | 1 |
-| Integration | `integration` | 19% | 12 | 19 | 1 |
-| Evaluation, Testing & Optimization | `evaluation-testing-and-optimization` | 16% | 10 | 16 | 1 |
-| Governance, Safety & Risk Management | `governance-safety-and-risk-management` | 14% | 9 | 14 | 1 |
-| Stakeholder Communication & Lifecycle Management | `stakeholder-communication-and-lifecycle-management` | 14% | 9 | 14 | 1 |
-| Developer Productivity & Operational Enablement | `developer-productivity-and-operational-enablement` | 7% | 4 | 7 | 1 |
-| **Total** | | **100%** | **63** | **100** | **7** |
+| Domain | Slug | Weight | Target (63) | Target (100) | Target (126) | Bank Questions |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| Solution Design & Architecture | `solution-design-and-architecture` | 17% | 11 | 17 | 21 | 21 |
+| Claude Models, Prompting & Context Engineering | `claude-models-prompting-and-context-engineering` | 13% | 8 | 13 | 16 | 16 |
+| Integration | `integration` | 19% | 12 | 19 | 24 | 24 |
+| Evaluation, Testing & Optimization | `evaluation-testing-and-optimization` | 16% | 10 | 16 | 20 | 20 |
+| Governance, Safety & Risk Management | `governance-safety-and-risk-management` | 14% | 9 | 14 | 18 | 18 |
+| Stakeholder Communication & Lifecycle Management | `stakeholder-communication-and-lifecycle-management` | 14% | 9 | 14 | 18 | 18 |
+| Developer Productivity & Operational Enablement | `developer-productivity-and-operational-enablement` | 7% | 4 | 7 | 9 | 9 |
+| **Total** | | **100%** | **63** | **100** | **126** | **126** |
 
 Exam specs from blueprint:
 - Total items: 63 questions
@@ -52,6 +52,62 @@ Exam specs from blueprint:
 ### Skill breakdown
 
 Section 6 lists detailed task objectives under each domain, but does not publish percentage weights below the domain level. Consequently, manifest domain entries do not declare `skills`, matching the pattern in `ccar-f`, `az-900`, and `aws-clf-c02`.
+
+## Composition and coverage audit
+
+Audited against the 126-question bank on 2026-09-13. `npm run validate`, `npm run balance -- ccar-p`, `npm run metrics -- ccar-p --markdown`, and `npm run check` all clean.
+
+Composition is fully proportional across all seven domains at 2× the 63-question live exam target (126 questions), with zero delta across every domain:
+
+| Domain | Slug | Core | Target (2x) | Δ | Share | Weight |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| Solution Design & Architecture | `solution-design-and-architecture` | 21 | 21 | 0 | 16.7% | 17% |
+| Claude Models, Prompting & Context Engineering | `claude-models-prompting-and-context-engineering` | 16 | 16 | 0 | 12.7% | 13% |
+| Integration | `integration` | 24 | 24 | 0 | 19.0% | 19% |
+| Evaluation, Testing & Optimization | `evaluation-testing-and-optimization` | 20 | 20 | 0 | 15.9% | 16% |
+| Governance, Safety & Risk Management | `governance-safety-and-risk-management` | 18 | 18 | 0 | 14.3% | 14% |
+| Stakeholder Communication & Lifecycle Management | `stakeholder-communication-and-lifecycle-management` | 18 | 18 | 0 | 14.3% | 14% |
+| Developer Productivity & Operational Enablement | `developer-productivity-and-operational-enablement` | 9 | 9 | 0 | 7.1% | 7% |
+| **Total** | | **126** | **126** | **0** | **100%** | **100%** |
+
+### Format mix and pattern review
+
+- **Item formats**: 110 single-select, 16 multi-select (all select-2).
+- **Difficulty breakdown**: 86 medium, 40 hard, 0 easy.
+- **Sourcing**: 58 distinct authoritative documentation pages across official vendor documentation; 100% `core` scope.
+- **Single-select position distribution**: 27 A / 28 B / 28 C / 27 D across `opt-a`–`opt-d` (24.5%–25.5%, max 25.5%, well below the 50% ceiling).
+- **Option length delta**: Mean correct-option length minus distractor length is +0.67 characters (median +0.50 characters, n=126), well within the ±10.0 character ceiling.
+- **Longest option as key share**: 29 of 110 single-select items (26.4%), comfortably below the 45% ceiling and virtually at the 25% random baseline.
+- **Distractor notes coverage**: 100% of distractor options across all 126 questions carry complete explanations in `distractorNotes`.
+- **Heuristic baselines**: "Always pick the longest option" yields 27.7% expected score (n=110); "Eliminate absolute qualifiers, then guess" yields 28% expected score, uniquely identifying the key in 0 of 110 items.
+- **All four bias guards pass**: `positionBias`, `lengthBiasMeanDelta`, `longestOptionIsKey`, and `scopeCoreShare`.
+
+### Question review status
+
+- **Reviewed**: 126 of 126 questions (100%) across all 7 domains have undergone adversarial evaluation and difficulty calibration.
+- **Draft**: 0 questions remain `status: "draft"`. All 126 questions in `ccar-p` are `status: "reviewed"`.
+
+### Known coverage limits and deliberate boundaries
+
+- **Depth**: 0/126 `deep`-scope questions (100% `core`). The entire bank is provisioned to support two non-overlapping 63-question mock exams at the cognitive level of the exam guide.
+- **Deprecated MCP surface**: MCP revision `2026-07-28` (SEP-2577) classified Roots, Sampling, Logging,
+  and Dynamic Client Registration as Deprecated, and the HTTP+SSE transport has been deprecated since
+  revision `2025-03-26`. The bank tests the two current transports (stdio, Streamable HTTP) and the
+  non-deprecated primitives. Two items (`ccar-p-integration-011`, `ccar-p-integration-023`) still test
+  Roots and Sampling because both remain in the specification until at least 2027-07-28; each names the
+  deprecation in its explanation. **Re-confirmed on 2026-09-13** against
+  `/specification/2026-07-28/deprecated`: both are still Deprecated-not-removed, with earliest removal
+  the first revision released on or after 2027-07-28, and nothing has been removed under the policy yet.
+  Both items stand. Revisit again at the `audit-sources` pass following the first 2027 revision.
+- **Task-statement granularity**: Section 6 of the CCAR-P exam guide outlines task statements under each domain without sub-percentage weights; coverage is balanced and verified at the domain level.
+- **Deliberate perimeters and out-of-scope boundaries**:
+  - *Domain 1 (Solution Design & Architecture)*: Focuses on canonical Anthropic workflows (prompt chaining, routing, parallel sectioning, orchestrator-workers, evaluator-optimizer), coordinator/subagent context isolation, and ACI tool consolidation. Excludes third-party multi-agent frameworks (LangGraph, AutoGen, CrewAI, LlamaIndex), multi-modal voice/audio real-time WebRTC agents, and Desktop/OS GUI coordinate-level screen automation loops.
+  - *Domain 2 (Claude Models, Prompting & Context Engineering)*: Focuses on prompt caching prefix ordering/breakpoints, extended thinking reasoning budgets, XML framing, structured tool outputs, and long-context needle-in-haystack ordering. Excludes vision/image tile token calculation formulas, custom model distillation, and self-service fine-tuning (which is bespoke enterprise-only).
+  - *Domain 3 (Integration)*: Focuses on MCP primitives (Resources, Tools, Prompts), the stdio and Streamable HTTP transports, Messages API tool execution mechanics, Contextual Retrieval (hybrid BM25 + dense + reranking), context editing (`clear_tool_uses`), and programmatic tool calling. Excludes WebSocket MCP transports, custom streaming JSON fragment parsing algorithms, and cloud-provider-specific IAM wrapper policies (Bedrock / Vertex AI IAM).
+  - *Domain 4 (Evaluation, Testing & Optimization)*: Focuses on multi-grader suites (code assertions + LLM judges), `pass^k` consistency gates, CI regression vs capability suite separation, RAG metric decoupling (precision, recall, faithfulness), shadow deployments, prompt caching economics, and OpenTelemetry spans. Excludes formal statistical sample-size power formulas, named third-party eval frameworks (Ragas, TruLens, DeepEval), and automated prompt search algorithms (DSPy).
+  - *Domain 5 (Governance, Safety & Risk Management)*: Focuses on Zero Data Retention (ZDR), indirect prompt injection defense, Claude Enterprise Inference Hooks, Agent SDK permissions and callbacks, regional data residency (`inference_geo`), CMEK KMS key revocation, Compliance API eDiscovery scopes, GDPR Article 17 conflict resolution, and SCIM immutability. Excludes HIPAA BAA legal contract negotiation text, FedRAMP High boundary documentation packages, and SIEM-specific query language syntax (Splunk SPL).
+  - *Domain 6 (Stakeholder Communication & Lifecycle Management)*: Focuses on the simplicity principle during discovery, SLA metrics (TTFT via streaming), cost-per-task economics, HTTP 429 vs 529 root causes with jittered backoff, CLAUDE.md repository onboarding, Workspaces governance, and production feedback eval flywheels. Excludes generic enterprise corporate finance metrics (NPV, IRR, CAPEX/OPEX accounting) and formal organizational change management frameworks (ADKAR, Kotter).
+  - *Domain 7 (Developer Productivity & Operational Enablement)*: Focuses on Claude Code repository conventions (CLAUDE.md, `.claude/rules/`, `.claude/skills/`, `.claude/agents/`), PreToolUse hooks, MDM managed settings, git worktrees, `/compact` recovery, and stdio JSON-RPC framing corruption. Excludes IDE keyboard shortcuts and third-party CI/CD pipeline configuration syntax (GitHub Actions YAML) beyond CLI invocation flags.
 
 ## Source classification
 
@@ -93,13 +149,392 @@ Cognitive level and depth anchors follow Anchor 2 strictly: items discriminate c
 
 ## Review and authoring history
 
-### Seed questions (2026-09-12)
+The bank was developed, reviewed, and calibrated across four coordinated phases:
+1. **Scaffold and seed (2026-09-12)**: Bank scaffolded; 1 question seeded per domain to verify sourceability and schema conformity.
+2. **Authoring to 2× baseline (2026-09-12)**: Systematically authored across two expansion phases to reach exactly 126 questions (2× the 63-question exam baseline) proportionally distributed across all 7 domains to match blueprint weights with zero delta.
+3. **Adversarial correctness evaluations (2026-09-13)**: Every question was cold-derived independently against cited vendor sources (`platform.claude.com`, `code.claude.com`, `modelcontextprotocol.io`, and `anthropic.com/engineering`) before comparing against stored keys. 122 questions confirmed immediately; 4 required substantive technical corrections (detailed below).
+4. **Difficulty calibration and distractor hardening (2026-09-13)**: Domain-by-domain calibration against the official sample questions lifted 67 soft questions into rigorous architectural near-misses while leaving 59 calibrated items untouched. All 126 questions confirmed at `status: "reviewed"`. Bank promoted to `manifest.status: "stable"`.
 
-One `core` question seeded per domain to verify sourceability and schema validity:
-- `ccar-p-solution-design-and-architecture-001`: Selecting prompt chaining workflow over autonomous agent for deterministic invoice validation (`anthropic.com/engineering/building-effective-agents`).
-- `ccar-p-claude-models-prompting-and-context-engineering-001`: Prompt caching prefix ordering and placement of dynamic session metadata (`platform.claude.com/docs/en/build-with-claude/prompt-caching`).
-- `ccar-p-integration-001`: Model Context Protocol (MCP) primitive roles: Resources for passive schemas vs Tools for executable updates (`modelcontextprotocol.io/docs/learn/architecture`).
-- `ccar-p-evaluation-testing-and-optimization-001`: Asynchronous nightly compliance transcript evaluations using Message Batches API for 50% discount and dedicated throughput (`platform.claude.com/docs/en/build-with-claude/batch-processing`).
-- `ccar-p-governance-safety-and-risk-management-001`: Zero Data Retention (ZDR) commercial arrangement for HIPAA-compliant clinical summaries (`platform.claude.com/docs/en/manage-claude/api-and-data-retention`).
-- `ccar-p-stakeholder-communication-and-lifecycle-management-001`: Framing architectural tradeoffs of agentic autonomy vs simpler single-call workflows against SLAs (`anthropic.com/engineering/building-effective-agents`).
-- `ccar-p-developer-productivity-and-operational-enablement-001`: Claude Code team governance using CLAUDE.md guidelines, auto memory for developer preferences, and PreToolUse hooks for blocking destructive operations (`code.claude.com/docs/en/memory.md`).
+5. **Currency review (2026-09-13)**: A `code-review` pass over the promotion diff checked the bank
+   against live vendor sources. It found one key that had gone wrong against the current MCP
+   specification, one key teaching a request shape that current models reject, and an arithmetic error
+   in the hardening table. All are corrected below; the bank remains at 126 questions with all four
+   bias guards passing.
+
+### Currency corrections (2026-09-13)
+
+The promotion diff was reviewed against live sources before the `stable` flag was trusted. Six items
+and one table were corrected:
+
+- `ccar-p-integration-010`: the key selected "HTTP with SSE" as the networked transport per "the MCP
+  specification". That transport was replaced by Streamable HTTP in revision `2025-03-26` and is
+  formally deprecated, so the key was **wrong against the live specification**. Re-authored to
+  stdio + Streamable HTTP, with legacy HTTP+SSE demoted to a distractor; re-anchored to
+  `specification/2026-07-28/basic/transports`.
+- `ccar-p-integration-004`: stem premised the deprecated HTTP+SSE transport. The Origin-validation,
+  localhost-binding and DNS-rebinding controls it tests carry over verbatim into Streamable HTTP, so the
+  key stood; stem and citation restated over the current transport.
+- `ccar-p-integration-011`, `ccar-p-integration-023`: test Roots and Sampling, both Deprecated as of
+  `2026-07-28`. Both remain in the specification for at least twelve months, so the keys stand; stems now
+  scope the revision under test and both explanations name the deprecation and its migration path.
+- `ccar-p-claude-models-prompting-and-context-engineering-008`: the key and explanation taught
+  `thinking: {"type": "enabled", "budget_tokens": N}` with no model named. That shape is deprecated on the
+  4.6 models and **returns a 400 on Claude 4.7 and later**. Re-authored onto Claude Opus 5 with adaptive
+  thinking and `output_config.effort`; the tested fact (reasoning isolated into a separate thinking block)
+  is unchanged.
+- `ccar-p-claude-models-prompting-and-context-engineering-007`: tested prefill as the technique to
+  eliminate preambles, anchored at `#migrating-away-from-prefilled-responses` — a section arguing the
+  opposite. Re-framed as the migration question that section answers: prefill on the last assistant turn
+  returns a 400 from Claude 4.6 onward, and the documented replacement is Structured Outputs.
+- `ccar-p-evaluation-testing-and-optimization-015`: the stem asked which method "eliminates position
+  bias" while framing the symptom as an inflated aggregate win rate, which left 50/50 order randomisation
+  defensible against the dual-pass key. Stem now asks for per-comparison order independence.
+- **Hardening table**: the totals row read 52 hardened / 74 calibrated, contradicting its own column sums
+  (7+0+7+15+12+17+9 = 67 and 14+16+17+5+6+1+0 = 59). Every per-domain row was internally consistent, so
+  the totals were the error. Corrected to 67 / 59 here and in the phase summary.
+
+Two consistency cleanups landed in the same pass: the five pages cited in both bare and `.md` form were
+normalised to the bank's majority bare form (distinct source pages 62 → 58), and the four 4-option
+select-2 items were padded to five options so every multi-select carries the same 1-in-10 guess floor.
+
+### Substantive adversarial review adjudications
+
+Across the bank's cold-review passes, four questions required substantive technical corrections before confirmation:
+
+- `ccar-p-solution-design-and-architecture-018`: Option `opt-d` contained a facepalm distractor ("Instruct the model in the system prompt to hallucinate missing employee details..."). Replaced with a realistic architectural failure mode: "Inject the organization's complete employee directory table into the system prompt context on each request to eliminate runtime tool calling." Updated `distractorNotes` to explain token overhead, context saturation, and data privacy risks. Key `opt-c` reconfirmed.
+- `ccar-p-claude-models-prompting-and-context-engineering-007`: Tested assistant turn prefilling to eliminate conversational preambles. Because prefilled assistant responses return HTTP 400 on Claude 4.6+ and later models (per Anthropic migration guidance), the stem was updated to explicitly specify "Claude 3.5 Sonnet", the explanation was updated to clarify model compatibility boundaries, and the source anchor was updated to `#migrating-away-from-prefilled-responses`. Key `opt-b` reconfirmed.
+- `ccar-p-governance-safety-and-risk-management-015`: Question originally drafted around inspecting free-form text for safety refusals. Re-authored to accurately reflect Anthropic Messages API structured refusals, where the API sets `stop_reason: "refusal"` alongside structured `stop_details: RefusalStopDetails` (`type: "refusal"`, `category`, `explanation`), which enterprise gateways inspect directly. Promoted to `reviewed`.
+- `ccar-p-governance-safety-and-risk-management-018`: Question asked for least-privilege Compliance API auditing scopes without chat or file access. The original option relied on `read:org_audit`, but Anthropic documentation explicitly defines `read:org_audit` as granting access to all Compliance API read endpoints, which includes user chat transcripts and files. Re-authored to specify granular scopes (`read:members`, `read:compliance_activities`, `read:compliance_org_data`) that permit org and audit inspection while omitting `read:compliance_user_data`. Promoted to `reviewed`.
+
+### Difficulty calibration and distractor hardening
+
+The vendor exam guide provides only 3 illustrative sample questions, each representing foundational concept recall with transparently bad distractors (e.g. deleting tools, prefix ordering, retrieval vs generation failure). As with `ccdv-f`, the bank's headroom above this sample anchor is **deliberate intent, not a defect**: practicing above the sample bar ensures candidates are robustly prepared for live exam scenarios.
+
+A systematic pass across all 7 domains hardened soft distractors into authentic architectural near-misses representing real mechanisms, documented gotchas, or common engineering traps:
+
+| Domain | Total | Hardened | Calibrated (No Change) | Hardening Focus |
+| --- | ---: | ---: | ---: | --- |
+| Solution Design & Architecture | 21 | 7 | 14 | Replaced length tells and strawmen with parallel voting consensus, compensating prompt traps, and spot-instance checkpointing gotchas. |
+| Claude Models, Prompting & Context Engineering | 16 | 0 | 16 | Cleared Stage 0 untouched; already substantially above anchor (extended thinking token budgets, 5-minute TTL eviction, SKILL.md modularization). |
+| Integration | 24 | 7 | 17 | Replaced unindexed regex and raw TCP socket claims with mTLS DNS rebinding gotchas, in-context caching vs hierarchical RAG, and MCP sampling governance. |
+| Evaluation, Testing & Optimization | 20 | 15 | 5 | Replaced arbitrary retry loops and facepalms with `pass^k` consistency gates, OpenTelemetry distributed spans, ASR vs FRR trade-offs, and dual-pass position swapping. |
+| Governance, Safety & Risk Management | 18 | 12 | 6 | Replaced crude bash tools and consumer terms with Agent SDK permission evaluation order, CMEK KMS key revocation, CASB forward proxies, and workspace trust in CI. |
+| Stakeholder Communication & Lifecycle Management | 18 | 17 | 1 | Replaced comical consulting strawmen with simplicity principle trade-offs, sub-second TTFT streaming, Workspaces spend limits, HTTP 429 vs 529 backoff, and golden eval flywheels. |
+| Developer Productivity & Operational Enablement | 9 | 9 | 0 | Replaced claims of Claude Code file-reading inability with MDM `managed-settings.json`, `--bare` CI invocation, git worktrees, `/compact` focus, and stdio framing deadlocks. |
+| **Total** | **126** | **67** | **59** | **All 126 items meet or exceed sample cognitive depth; all bias guards pass.** |
+
+All hardening edits strictly preserved tested facts, answer keys, and cited source URLs. Distractor lengths were balanced using qualifying clauses, maintaining mean correct-option length delta at +0.67 characters and longest-option-as-key share at 26.4% (well below the 45% ceiling).
+
+## Source drift pass — 2026-09-13
+
+First `audit-sources` pass over the bank, run the day after promotion. Scope and
+findings below; what was **not** covered is stated as explicitly as what was.
+
+### Scope covered
+
+- **Mechanical triage**: repo-wide `npm run check-sources` (all five banks, one
+  shared URL set). For `ccar-p`: 58 distinct source pages, **0 stale** (oldest
+  1 day against the 180-day threshold), **0 dead**. One redirect, handled below.
+  No page was reported missing, so stage 2's false-negative discipline had
+  nothing to adjudicate — no `sourceUrl` was changed on the strength of a failed
+  fetch, because there were none.
+- **Blueprint re-read**: `manifest.examUrl` re-fetched and converted. The guide
+  is still **Version 1.0 · Effective July 2026 · Exam code: CCAR-P**, still 63
+  items / 120 minutes / 720 scaled on 100–1,000, and Section 6 still publishes
+  17/13/19/16/14/14/7 under the same seven domain names. **No blueprint drift**;
+  every balance judgement recorded above remains valid on its original
+  arithmetic.
+- **Page-level drift, scoped by host**: `modelcontextprotocol.io` (8 pages, 8
+  questions) audited in full — it was the only host carrying revision-scoped
+  URLs and the only one where the record had left standing questions. The other
+  three hosts (`platform.claude.com` 34 pages, `code.claude.com` 12,
+  `www.anthropic.com` 4) were re-confirmed live by a second method
+  (direct `curl -sL`, independent of the triage fetcher) with no redirects and
+  no truncated bodies.
+
+### Dispositions
+
+Six items, all in Domain 3. Every `sourceCheckedAt` moved below was moved
+because its page was actually re-read on this date.
+
+| Item | Disposition | Reason |
+| --- | --- | --- |
+| `ccar-p-integration-019` | **rewrite** | Cited the `2024-11-05` revision, and the key named `resources/subscribe` — a request method the current `2026-07-28` revision no longer has. Re-anchored to `/specification/2026-07-28/server/resources`; key rewritten onto the `subscriptions/listen` + `notifications.resourceSubscriptions` pattern that replaced it. The `subscribe` capability flag and the `notifications/resources/updated` notification both survive unchanged, so the tested concept (push notification, not polling) is intact — only the wire method moved. |
+| `ccar-p-integration-018` | **re-cite** | Key `opt-c` (Prompts user-controlled / Resources application-driven / Tools model-controlled) confirmed verbatim in the current spec, but it no longer lives on `learn/architecture`, which now covers only the primitive definitions. Re-cited to `/docs/2026-07-28/learn/server-concepts`, which carries all three mappings and the slash-command example. |
+| `ccar-p-integration-020` | **re-cite** | Cited the `2024-11-05` revision. The Protocol Errors vs Tool Execution Errors split and `isError: true` are unchanged in `2026-07-28`, so the key stands; re-cited to the current revision. |
+| `ccar-p-integration-001` | **re-cite** | Cited the *unversioned* `/docs/learn/architecture`, which 302s to the current revision — the bank's only floating MCP citation, against six pinned ones. Pinned to `/docs/2026-07-28/learn/architecture` to match. Resources-vs-Tools key re-confirmed on the page. |
+| `ccar-p-integration-011` | **bump** | Page re-read, key (`Roots` + `Sampling`) intact. Its `2025-06-18` citation is deliberately pinned to a superseded revision because the stem names that revision, so it is correct as cited. |
+| `ccar-p-integration-023` | **bump** | Page re-read; both controls still stated as client-side (`Clients SHOULD implement user approval controls`, `SHOULD implement rate limiting`). |
+
+No retirements, and no manifest weight or domain-name change — neither stop-and-ask
+gate was reached. The bank remains 126 questions with composition and all four
+bias guards untouched.
+
+### Correctness wrinkle fixed in passing
+
+`ccar-p-integration-011`'s stem asked which primitives "enforce" the controls,
+and option `opt-b` said Roots "define the explicit filesystem directory
+boundaries". The cited page is emphatic that they do not: *"While roots
+communicate intended boundaries, they do not enforce security restrictions"* —
+servers **SHOULD** respect them, and real isolation must come from OS
+permissions or sandboxing. The key was never in doubt (nothing else among the
+five options is close), but the stem asserted something its own source
+contradicts. Stem and `opt-b` re-worded to "communicate … are expected to
+operate within", and the explanation now states the coordination-not-enforcement
+distinction outright. Key, source, and option count unchanged.
+
+Three stale `(stdio, SSE)` parentheticals in `distractorNotes` on
+`ccar-p-integration-001`, `-011` and `-020` were corrected to Streamable HTTP,
+finishing the transport cleanup the 2026-09-13 currency pass began in the stems.
+
+### Not covered by this pass
+
+- **No cold re-answer of the 118 non-MCP items.** Their keys were cold-derived
+  against live sources one day earlier during the promotion review, and every
+  cited page re-confirmed live here; re-deriving them the next day would measure
+  nothing. The next pass should treat `platform.claude.com` and
+  `code.claude.com` as **unaudited since 2026-09-13** and start there — the
+  Claude Code surface (`sub-agents`, `skills`, `managed-settings`, `worktrees`)
+  moves fastest and carries 16 questions.
+- **`www.anthropic.com/engineering/building-effective-agents` is the bank's
+  single largest concentration of risk**: 25 questions, one page, one host. It
+  was confirmed live but its content was not re-read claim-by-claim. If that
+  post is ever revised or retired, roughly a fifth of the bank moves at once.
+  Budget a full read of it into the next pass regardless of staleness age.
+- **Other banks' findings observed but not acted on.** The repo-wide triage
+  flagged nine `docs.aws.amazon.com` / `aws.amazon.com` redirects in
+  `aws-clf-c02`, several landing on section roots rather than the cited page
+  (e.g. `lambda/latest/dg/security-shared-responsibility.html` →
+  `lambda/latest/dg/`), which is the shape that stops establishing a specific
+  claim. That is an `aws-clf-c02` pass, not this one, and nothing in that bank
+  was touched here.
+
+## Source drift pass — 2026-09-13 (second pass, non-MCP hosts)
+
+Second `audit-sources` pass of the day. The first pass swept
+`modelcontextprotocol.io` and named two things it had deliberately left
+undone: the `platform.claude.com` / `code.claude.com` surface was never
+cold-re-answered, and `building-effective-agents` had been confirmed live but
+never re-read claim-by-claim. This pass took the second of those in full and
+the Claude Code half of the first.
+
+### Scope covered
+
+- **Mechanical triage**: repo-wide `npm run check-sources`. For `ccar-p`: 58
+  distinct pages, **0 stale** (max age 1 day against the 180-day threshold),
+  **0 dead**, **0 redirects**. The two unversioned `modelcontextprotocol.io`
+  redirects the run reported belong to `ccdv-f`
+  (`questions/tools-and-mcps.json`), not to this bank; they are that bank's
+  pass to make. Nothing here rested on a failed fetch, so stage 2 again had no
+  false-negative call to adjudicate.
+- **Blueprint re-read**: guide re-fetched from `manifest.examUrl` and converted
+  with `pdftotext`. Still **Version 1.0 · Effective July 2026 · Exam code:
+  CCAR-P**, still 63 items / 120 minutes / 720 scaled on 100–1,000, and
+  Section 6 still publishes 17/13/19/16/14/14/7 under the same seven domain
+  names. Document Control still lists only the initial publication. **No
+  blueprint drift.**
+- **`www.anthropic.com` — all 4 pages, all 37 questions, read claim-by-claim.**
+  This was the concentration of risk the last pass flagged and it earned the
+  budget: see below.
+- **`code.claude.com` — all 12 pages, all 16 questions.** Every page
+  re-confirmed live by a second method (direct `curl -sL … .md`, independent of
+  the triage fetcher), no redirects, no truncated bodies. Fifteen of the
+  sixteen keys re-derived cold and matched.
+
+### The page that moved: `building-effective-agents`
+
+The post has been **revised since the bank was authored**, and now opens with a
+vendor note of its own:
+
+> *Note: Much of the tooling landscape described in this post has changed since
+> December 2024. For our current approach, see how we built Claude Managed
+> Agents and the Managed Agents documentation.*
+
+Two concrete changes followed from that. The frameworks list was rewritten —
+it now reads Claude Agent SDK / Strands Agents SDK by AWS / Rivet / Vellum,
+where it previously named LangGraph and Bedrock's agent framework. And the
+routing example's models were refreshed from the 3.5 generation to **Claude
+Haiku 4.5 and Claude Sonnet 4.5**; those are now the only model names on the
+page.
+
+What did **not** change is the part the bank actually leans on. The
+workflow-versus-agent distinction, the simplicity principle, the five workflow
+patterns, the ground-truth and stopping-condition guidance for agents, and the
+whole of Appendix 2 on agent-computer interfaces are intact, most of them
+verbatim. Seventeen of the twenty-five questions on this page re-derived cold
+against it with no change needed. **No question cites the frameworks list**,
+so that rewrite cost the bank nothing — but it is the clearest possible
+warning about the concentration, and the standing advice from the last pass
+stands: re-read this page in full every pass, regardless of staleness age.
+
+### Dispositions
+
+Nine items. Every `sourceCheckedAt` moved on this pass was moved because its
+page was actually read on this date.
+
+| Item | Disposition | Reason |
+| --- | --- | --- |
+| `ccar-p-evaluation-testing-and-optimization-009` | **rewrite** | Key taught OpenTelemetry distributed tracing, cited to `building-effective-agents`. That page contains no occurrence of `OpenTelemetry`, `tracing`, `span` or `observab` — and never did; this was a mis-citation from authoring, not drift. Re-anchored to `code.claude.com/docs/en/monitoring-usage` § Traces (beta), which states the claim exactly ("spans that link each user prompt to the API requests and tool executions it triggers"); stem re-scoped onto an Agent SDK agent so the citation genuinely establishes the key. Key `opt-d` unchanged, domain unchanged. |
+| `ccar-p-evaluation-testing-and-optimization-007` | **rewrite** | Key was "shadow deployment"; the word `shadow` appears **zero** times on the cited evals post, which is unambiguous that the layered methods are automated evals, production monitoring, A/B testing, user feedback and human review. The key was not vendor-sourced. Re-authored onto the post's explicit stage mapping — automated evals pre-launch and in CI as first line of defence, A/B testing once traffic suffices, production monitoring post-launch for drift — with the Swiss Cheese framing. New key `opt-b`. |
+| `ccar-p-evaluation-testing-and-optimization-013` | **rewrite** | Keyed on Context Recall, Context Precision and Faithfulness, cited to `contextual-retrieval`. That page uses only `recall@20` and contains no `precision` and no `faithful`; the three named metrics are Ragas vocabulary, which this bank's own Domain 4 perimeter excludes. Re-authored onto the transcript-versus-outcome distinction the evals post does define, which decouples retrieval from generation for the same diagnostic purpose. Multi-select and five options preserved, so the 1-in-10 guess floor and the format mix are unchanged. |
+| `ccar-p-evaluation-testing-and-optimization-018` | **re-cite** | Key `opt-c` (calibrate the escalation threshold against an expert-labelled set) stands, but `building-effective-agents` says nothing about thresholds, labelled data, precision or recall. Re-cited to the evals post, which does carry threshold-weighted scoring and the requirement that judge graders be closely calibrated with human experts; explanation restated over what that page actually says. |
+| `ccar-p-developer-productivity-and-operational-enablement-009` | **re-cite** | Key (arbitrary stdout corrupts JSON-RPC framing) is correct, but `code.claude.com/docs/en/mcp` contains no occurrence of `JSON-RPC` and never states the stdout-purity rule. Re-cited to the specification that does, `/specification/2026-07-28/basic/transports/stdio`: *"The server **MUST NOT** write anything to its `stdout` that is not a valid MCP message"*, with `stderr` explicitly allowed for logging. |
+| `ccar-p-solution-design-and-architecture-014` | **re-cite** | Key turns on context hygiene through isolating intermediate tool transcripts; `building-effective-agents` has no `isolat` and no discussion of sub-agent context. Re-cited to `effective-context-engineering-for-ai-agents` § Sub-agent architectures, which states it directly. |
+| `ccar-p-solution-design-and-architecture-017` | **re-cite** | Key is persisting task state outside the context window so workers can reconstitute after a restart; the cited page has no `persist` and no state-durability guidance. Re-cited to `effective-context-engineering-for-ai-agents` § Structured note-taking. |
+| `ccar-p-solution-design-and-architecture-002` | **rewrite** | Key and options intact and correct, but the explanation quoted the routing example as naming Claude 3.5 Haiku and Claude 3.5 Sonnet. The page now names Haiku 4.5 and Sonnet 4.5, so the explanation misdescribed its own source. Model names refreshed; nothing else touched. |
+| `ccar-p-evaluation-testing-and-optimization-020` | **rewrite** | Same drift, deeper: the 3.5 model names ran through the stem, every option and the explanation. Refreshed to Claude Haiku 4.5 / Claude Sonnet 4.5 throughout. The tested fact — route cheap stages to the small model, keep the frontier model for the hard ones — is unchanged. |
+
+The remaining 44 questions on these two hosts were **bumped**: page re-read,
+claim intact, `sourceCheckedAt` advanced. No retirements and no manifest weight
+or domain-name change, so neither stop-and-ask gate was reached. The bank
+remains 126 questions, 110 single / 16 select-2, zero delta on every domain,
+and all four bias guards pass (`longestOptionIsKey` 27.3%, mean length delta
++1.82 chars). Distinct source pages 58 → 59.
+
+### The pattern worth naming
+
+Five of the nine dispositions are the same defect: **a sound key hung on a page
+that does not establish it.** None of them were drift — the pages had not
+changed — and none would ever be caught by link checking, staleness ages, or
+`npm run check`, all of which were green throughout. They were only visible
+because the claim was read against the cited section. `building-effective-agents`
+attracted four of the five, which is what a page cited by a fifth of the bank
+does: it becomes the default citation for anything agent-shaped, including
+claims it never made. Future passes should treat any page carrying an outsized
+share of a bank as a mis-citation magnet and re-read its questions against it
+even when nothing about the page has moved.
+
+### Not covered by this pass
+
+- **`platform.claude.com` is untouched: 34 pages, 65 questions — over half the
+  bank.** The last pass confirmed its pages live but did not read them; this
+  pass did not either, having spent its budget on the two hosts that pass named.
+  It should be treated as **unaudited since authoring** and is the unambiguous
+  first priority for the next pass. Given that five of nine findings here were
+  mis-citations rather than drift, the expected yield on 65 unread questions is
+  not low.
+- **`modelcontextprotocol.io` was not re-read.** The earlier pass today covered
+  all 8 of its questions in full; re-deriving them hours later would measure
+  nothing. The one MCP change made here was a re-cite *into* that host from
+  `code.claude.com`, verified against the spec page directly.
+- **`ccdv-f`'s two unversioned MCP citations were observed and not acted on**
+  — see triage above. That is a `ccdv-f` pass.
+
+## Source drift pass — 2026-09-13 (third pass, `platform.claude.com`)
+
+Closes the gap both earlier passes named: `platform.claude.com` — 34 pages, 65
+questions, over half the bank — had never been read claim-by-claim since
+authoring. It is now audited. **Every host in this bank has been read at least
+once**, so the next pass starts from a complete baseline rather than a known
+hole.
+
+### Scope covered
+
+- **Liveness by a second method**: all 34 pages fetched directly with
+  `curl -sL …​.md`, independent of the triage fetcher. **34/34 returned 200 with
+  no redirect** — every page still answers at the exact URL cited. No
+  `sourceUrl` was changed on the strength of a failed fetch, because there were
+  none.
+- **Claim-by-claim read of all 65 questions**, prioritised by concentration:
+  prompt caching (6), develop tests (6), prompting best practices (5), batch
+  processing (4), reduce latency (4), mitigate jailbreaks (4), then the
+  remaining 36 across 28 pages.
+
+### What actually moved
+
+Three distinct kinds of drift, and only the first is the kind a link checker
+could ever have hinted at.
+
+**1. The model lineup turned over underneath the bank.** The prompt-caching
+pricing table now lists Claude Fable 5.1, Opus 5, Sonnet 5 and Haiku 4.5 as
+current; **Claude 3.5 Sonnet is gone from it entirely, and Claude Haiku 3.5 is
+marked retired**. Seven questions still named 3.5- and 3.7-generation models. In
+most the name was incidental colour, but in two it was load-bearing.
+
+**2. Two APIs the bank teaches have been superseded in place.** Manual extended
+thinking (`thinking.type: "enabled"` with `budget_tokens`) now carries a
+deprecation banner: deprecated on the Claude 4.6 models, and **rejected with a
+400 on Claude 4.7 and later**. And forced tool use has grown a restriction
+table — on Claude Fable 5.1 and Mythos 5.1, `tool_choice` values of `any` and
+`tool` **return a 400**, with `auto` plus strict tool use, or structured
+outputs, named as the substitutes. This is the identical trap the 2026-09-13
+currency pass caught on `…-008` (thinking) and `…-007` (prefill); two more
+instances of it were still in the bank.
+
+**3. Guidance has been rewritten, not merely extended.** The prompt-caching page
+now documents **automatic caching** and a **20-block lookback window**, and its
+recommendation for a growing conversation is the *final* block or automatic
+caching — the phrase "second-to-last" appears nowhere on it. The structured
+outputs page has moved to `output_config.format`, and `tool_choice` appears
+**zero** times on it. And `mitigate-jailbreaks` has gained a full indirect
+prompt injection section whose guidance is to put untrusted content **only** in
+`tool_result` blocks, "never in `system` prompts or plain user `text` blocks" —
+which retires the XML-tags-as-injection-defence pattern one question still
+taught, and which that same question contradicted against
+`ccar-p-governance-safety-and-risk-management-002` elsewhere in this bank.
+
+### Dispositions
+
+Fifteen items. Every `sourceCheckedAt` moved was moved because its page was
+read on this date.
+
+| Item | Disposition | Reason |
+| --- | --- | --- |
+| `ccar-p-claude-models-prompting-and-context-engineering-002` | **rewrite** | Stem named Claude 3.7 Sonnet (retired) and keyed on `budget_tokens`, which is now deprecated on 4.6 and 400s on 4.7+. Re-scoped to Claude Sonnet 4.5 — active, and manual-thinking-only, so `budget_tokens` is exactly right there — with the deprecation boundary stated in the explanation. Key unchanged. |
+| `ccar-p-claude-models-prompting-and-context-engineering-003` | **rewrite** | Every model in the key and distractors was retired (3 Opus, 3.5 Haiku, 3.5/3.7 Sonnet). Re-keyed onto the current lineup using the model page's own descriptions: Haiku 4.5 "the fastest model with near-frontier intelligence", Sonnet 5 "the best combination of speed and intelligence". |
+| `ccar-p-claude-models-prompting-and-context-engineering-004` | **rewrite** | Keyed XML tags as the mitigation for indirect prompt injection. The current guidance answers that scenario differently and explicitly — untrusted content goes in `tool_result` blocks, never in system prompts or plain user text — so the item taught a superseded defence *and* contradicted `governance-safety-and-risk-management-002`, which teaches the current one. Re-authored onto what the prompting page does establish: XML tags disambiguate a prompt that mixes instructions, context, examples and variable input. Injection stays with the jailbreaks page, where it belongs. |
+| `ccar-p-claude-models-prompting-and-context-engineering-012` | **rewrite** | Key option said "second-to-last user turn". That phrase no longer appears on the page, which now teaches placing `cache_control` on the last block whose prefix is stable, or using automatic caching. Key re-worded to the current guidance; a distractor re-pointed at the 20-block lookback limit, which is a real and newly-documented failure mode. |
+| `ccar-p-claude-models-prompting-and-context-engineering-013` | **rewrite** | Key was the tool-as-schema trick via `tool_choice`. `tool_choice` occurs **zero** times on the structured outputs page, which now documents JSON outputs through `output_config.format` (response shape) and strict tool use (tool inputs) as the two features. Re-keyed onto `output_config.format`, the documented answer for this stem. |
+| `ccar-p-evaluation-testing-and-optimization-012` | **rewrite** | Keyed on Attack Success Rate and False Refusal Rate — neither phrase occurs on the cited page, and neither is Anthropic vocabulary. Re-authored onto the four layered controls the page does document for indirect prompt injection, with the two documented anti-patterns (untrusted text in the system prompt; your own instructions inside a tool result) as distractors. |
+| `ccar-p-evaluation-testing-and-optimization-015` | **rewrite** | Position bias and pairwise comparison do not appear on the cited `develop-tests` page at all — the whole subject was unsourced, and the 2026-09-13 currency pass rewrote the stem without checking that. Re-cited to `demystifying-evals-for-ai-agents` and re-authored onto guidance it states directly: structured rubrics per dimension, each graded by an isolated LLM-as-judge rather than one judge scoring all dimensions. |
+| `ccar-p-evaluation-testing-and-optimization-016` | **rewrite** | Stale model name only; key (SSE streaming for perceived latency) confirmed. The page itself now recommends "a faster model like Claude Haiku 4.5". |
+| `ccar-p-governance-safety-and-risk-management-007` | **rewrite** | Stem demanded the ability to "instantly" revoke. The page records a **revocation delay of up to 1 hour** (the cache TTL), with in-flight requests still succeeding in that window — so the stem asked for something the control does not provide. Re-framed to ask what the runbook should record, with the 1-hour delay in the key. The permanent-inaccessibility claim is confirmed verbatim. |
+| `ccar-p-governance-safety-and-risk-management-010` | **re-cite** | Key names the `read:compliance_user_data` scope, which does not appear on the cited `compliance-api` page; that page defers scopes to `compliance-api-access`, where the scope table lives. Re-cited there. Key unchanged. |
+| `ccar-p-integration-005` | **rewrite** | Key (`tool_choice` + `strict: true`) is correct on models that support forced tool use, but the page has grown a restriction table: on Fable 5.1 and Mythos 5.1 those `tool_choice` values 400. Explanation now states the boundary and the documented substitutes. Key and options unchanged. |
+| `ccar-p-solution-design-and-architecture-019` | **rewrite** | Built on Claude 3.5 Sonnet and 3.5 Haiku across stem and options; both retired. Refreshed. Key (prompt caching on the static prefix + SSE streaming) confirmed. |
+| `ccar-p-solution-design-and-architecture-020` | **rewrite** | Stale model name in the explanation. Batch API facts re-confirmed verbatim: 50% discount on all usage, 24-hour expiration, and batch usage does not affect Messages API rate limits. |
+| `ccar-p-stakeholder-communication-and-lifecycle-management-003` | **rewrite** | Stale model names. Key confirmed verbatim against the page's own heading — "Compare models on cost per completed task, not per token". |
+| `ccar-p-stakeholder-communication-and-lifecycle-management-010` | **rewrite** | Stale model name in a distractor. Key (Batches API, 50% discount, asynchronous turnaround) confirmed. |
+
+The other 50 platform questions were **bumped**: page re-read, claim intact.
+Several re-confirmed verbatim and are worth recording as solid — CMEK's
+no-backout-path warning, the 409 "chats attached to it" project-deletion
+conflict, the `RefusalStopDetails` schema, `inference_geo` with
+`allowed_inference_geos`, the inference-hooks allow/deny verdict flow, the
+`tool_result` / `is_error` contract, tool-result-before-text ordering, and the
+long-context "longform data at the top, ground responses in quotes" pair.
+
+No retirements and no manifest weight or domain-name change, so neither
+stop-and-ask gate was reached. The bank remains 126 questions, 110 single /
+16 select-2, zero delta on every domain.
+
+### A quality regression I introduced and then fixed
+
+The first cut of these rewrites pushed the mean correct-option length delta from
++0.67 to **+3.17 characters** and the "always pick the longest" baseline to 30%,
+because a re-authored key that has to name four controls is naturally longer than
+the distractors it replaced. Four items had become solvable by length alone.
+Options were rebalanced with qualifying clauses on the distractors rather than by
+hedging the keys, returning the bank to **+0.70 mean delta, 26.4%
+longest-option-as-key, and 28.2% for the longest-option heuristic**. The
+repository's absolute-qualifier guard also caught the `evaluation-testing-and-optimization-012`
+rewrite, where the key had become the only option with no absolute qualifier;
+fixed by softening a distractor, not by weakening the key. **Lesson for the next
+pass: re-authoring during an audit is where bias creeps back in — run
+`npm run metrics` before and after, not just `npm run check`.**
+
+### Not covered by this pass
+
+- **`platform.claude.com` deep links were checked as pages, not as anchors.**
+  Several citations carry `#fragment` anchors; the pass verified the claim lives
+  on the page, not that each anchor still resolves to the section named. A page
+  can reorganise its headings without changing any prose.
+- **Model currency is now a standing liability, not a closed finding.** Seven
+  questions needed refreshing this pass because the lineup turned over. Nothing
+  in `npm run check` tests for a retired model name. A cheap guard —
+  grep the bank for model names and diff against the current models page —
+  would catch this class mechanically and is worth building before the next
+  lineup change.
+- **`ccdv-f`'s two unversioned MCP citations remain unaddressed** across all
+  three passes. That is a `ccdv-f` pass, and it is now the oldest outstanding
+  item in the repository.
