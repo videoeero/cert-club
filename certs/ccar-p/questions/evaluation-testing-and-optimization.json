@@ -783,10 +783,10 @@
     "correct": [
       "opt-b"
     ],
-    "explanation": "Anthropic's prompt caching architecture provides substantial cost and latency benefits for shared prefixes above the minimum token threshold: (1) Cache reads (hits) receive a 90% discount compared to base input token pricing and significantly decrease Time to First Token (TTFT). (2) The initial cache write incurs a 25% pricing premium over base input tokens. (3) The default ephemeral cache has a 5-minute time-to-live (TTL), which automatically refreshes upon each cache hit, making it highly cost-effective for recurring organizational queries against stable document corpora.",
+    "explanation": "Anthropic's prompt caching architecture provides substantial cost and latency benefits for shared prefixes above the minimum token threshold: (1) Cache read tokens are billed at 0.1 times the base input token price — 10% of the base input price — and significantly decrease Time to First Token (TTFT). (2) The initial cache write incurs a 25% pricing premium over base input tokens. (3) The default ephemeral cache has a 5-minute time-to-live (TTL), which automatically refreshes upon each cache hit, making it highly cost-effective for recurring organizational queries against stable document corpora.",
     "distractorNotes": {
       "opt-a": "Cache writes incur a 25% pricing premium, ephemeral caches have a 5-minute rolling TTL rather than indefinite persistence, and there is no manual invalidation API.",
-      "opt-c": "The Batch API provides a 50% discount, not prompt caching (which provides a 90% read discount), and prompt caching decreases TTFT rather than increasing it.",
+      "opt-c": "The Batch API provides a 50% discount, not prompt caching, which instead bills cache reads at 10% of the base input price; prompt caching also decreases TTFT rather than increasing it.",
       "opt-d": "Prompt caching applies exclusively to input prompt prefix tokens, not generated completion tokens, and user queries may vary after the cached prefix."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",

@@ -40,6 +40,10 @@ both; this skill is the order of operations, not a second copy.
    actually landed on, not the one you typed — a legacy URL that redirects
    today can degrade to a section root tomorrow, which no longer establishes
    the claim. `sourceCheckedAt` is the date you actually read the page.
+   Apply `CONTRIBUTING.md` § Question content requirements for prevention: do
+   not write a figure or API term into an option, explanation, or distractor
+   note that you cannot quote from the cited page, and prefer the vendor's
+   mechanism phrasing over marketing numbers.
 3. **Depth gate, per question.** Apply the three anchors in
    `ADDING-A-CERT.md` § How deep should a question go?. Anchor 2 is the one
    that gets missed, and it reduces to one testable rule:

@@ -24,8 +24,44 @@ README.
   reading the page and record where you actually landed. (This applies to new
   citations. Existing ones that have since started redirecting are a
   pin-versus-float judgement for a source audit, not a bulk rewrite.)
-- Explanations should show why the correct answer is correct and, when useful,
-  why the distractors are wrong.
+- **Explanations and free-text fields must be sourced, not just the answer
+  key.** Explanations should show why the correct answer is correct and, when
+  useful, why the distractors are wrong. Any claim in `explanation`,
+  `distractorNotes` or `sourceNote` presented as documented must be supported by
+  the cited page, and so must the text of options named in `correct` — a
+  distractor may assert a falsehood by design, a keyed option may not.
+  *Supported* includes a direct arithmetical identity of a documented mechanism
+  (`0.1x the base input price` restated as `10% of the base input price`); it
+  does not extend to inverting, rounding or re-scoping that mechanism —
+  except in option text, where *Derived figures* below permits the inversion.
+- **Text in quotation marks must be verbatim on the cited page.** Do not put
+  quotes around a paraphrase or a summary.
+- **Figures — percentages, durations, prices, limits — are the highest-risk
+  class**, because vendors delete them. The page's own mechanism wording (cache
+  reads billed at a tenth of the base input price) survives a rewrite that strips
+  the marketing number ("90% discount"); prefer it everywhere, and note that a
+  multiplier stated as an equivalent fraction of the same base quantity is the
+  same figure, while its inverse is a different one.
+  - *Derived figures:* In option text, derived arithmetic — inverting `0.1x` into
+    a "90% discount" — is permitted, because making the candidate compute the
+    consequence is the point of the item. In `explanation` and `distractorNotes`
+    it is not: ground the claim in the documented mechanism rather than asserting
+    derived shorthand as vendor fact.
+  - *Do not fuse a mechanism with a benchmark:* a fixed pricing rule and an
+    empirical range measured in a write-up are different claims. Do not combine
+    them (`0.1x` pricing plus a 79–90% measured cache share becoming "up to a 90%
+    read discount"), and do not restate an empirical ceiling ("costs by up to
+    90%") as an unconditional property of the feature.
+  - *Scenario parameters:* numbers the stem introduces to define the problem
+    instance — request volumes, traffic shares, latency SLAs — may be echoed in
+    the explanation to trace the scenario's arithmetic, and need no citation,
+    provided they are not dressed up as vendor guidance or as benchmarks.
+- **Cross-page facts belong to distractors, not to the citation.** A distractor
+  or a `distractorNotes` entry may use a genuine fact from another official
+  vendor page to explain why an alternative fails — the Batch API's 50% discount
+  and 24-hour turnaround, say, in an interactive-latency scenario. It must be
+  accurate where it is documented, and the note must not attribute it to the
+  question's own `sourceUrl`.
 
 Pull requests containing confidential exam material, paywalled or gated
 course content, missing provenance, or copied questions will be closed without

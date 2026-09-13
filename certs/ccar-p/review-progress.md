@@ -737,3 +737,107 @@ mean option-length delta +0.78, longest-option-as-key 24.5%, "always longest"
 26.4%, "eliminate absolutes" 28.9% uniquely solving 0/110, position split
 29/30/26/25. All four guards pass; composition unchanged at 126 questions,
 110 single / 16 select-2, zero delta on every domain.
+
+## Derived-figure precedent and adjudication pass — 2026-09-13
+
+Following the discovery of repeated unsourced figures across recent review passes,
+this pass establishes the written precedent for adjudicating numbers in questions,
+explanations, and distractor notes before encoding the canonical rule in
+`CONTRIBUTING.md`.
+
+The investigation evaluated six representative questions against their live vendor
+sources to settle the boundary between verbatim claims, mathematically derived
+figures, cross-page distractor facts, and scenario premises.
+
+### Summary of adjudications
+
+| Question | Claim under review | Cited page | Claim class | Verdict | Disposition |
+| --- | --- | --- | --- | --- | --- |
+| `ccar-p-evaluation-testing-and-optimization-019` | "90% discount", "25% premium", "5-minute TTL" | `prompt-caching` | Verbatim facts + derived arithmetic | **Partial defect**: 25% premium and 5-minute TTL are verbatim, and `opt-b` may carry the arithmetic inverse of the documented 0.1x multiplier because inverting it is the item's work. The `explanation` and `distractorNotes.opt-c` asserted the same "90% discount" as vendor fact, which the precedent below forbids. | **rewrite** — explanation and `distractorNotes.opt-c` restated as `0.1x` / 10% of base input price. Key, stem and options unchanged. |
+| `ccar-p-solution-design-and-architecture-019` | "cache reads billed at 10% of the base input price" | `prompt-caching` | Identity mechanism conversion | **Confirmed**: 0.1x decimal multiplier converted to 10% billing rate represents an identity conversion of the vendor mechanism. This is the gold-standard mechanism phrasing. | **bump** — no change needed. |
+| `ccar-p-stakeholder-communication-and-lifecycle-management-003` | "up to a 90% read discount on cached prefixes" | `optimizing-for-cost-and-intelligence` | Conflated numeric hybrid | **Defect**: Conflates the fixed pricing mechanism ("a tenth of the input price") with an empirical benchmark token share ("79% to 90% of input tokens"). Pricing does not scale "up to" 90%. | **rewrite** — `distractorNotes.opt-c` now states the cache-read rate as a tenth of the input price. |
+| `ccar-p-integration-021` | "a 90% discount on input tokens" | `contextual-retrieval` | Attribution misalignment | **Defect**: Page contains `90%` ("costs by up to 90%"), but refers to empirical end-to-end task savings, not a unit token pricing discount. Lexical match does not substitute for semantic attribution. | **rewrite** — explanation and `distractorNotes.opt-c` now say cache-read pricing is a tenth of the base input price. |
+| `ccar-p-integration-022` | "under 200,000 tokens", "90% cache-read cost savings" | `contextual-retrieval` | Verbatim fact + attribution misalignment | **Partial defect**: "under 200,000 tokens" is verbatim. "90% cache-read cost savings" re-labels an empirical pipeline ceiling ("costs by up to 90%") as a categorical property of cache reads. | **rewrite** — explanation and `distractorNotes.opt-b` now say the repeated prefix bills at the cache-read rate. |
+| `ccar-p-evaluation-testing-and-optimization-008` | "70% of traffic", "30%", "50% discount" | `ticket-routing` | Scenario parameters + cross-page distractor fact | **Confirmed**: 70%/30% are hypothetical premises from the stem, validly echoed in the explanation. The 50% Batch API discount is a valid cross-page vendor fact used in a distractor without false attribution. | **bump** — no change needed. |
+
+### Case-by-case analysis
+
+#### 1. `ccar-p-evaluation-testing-and-optimization-019` (`eval-019`)
+- **Cited page**: `platform.claude.com/docs/en/build-with-claude/prompt-caching`
+- **Page content**: The page states verbatim: *"When new content is written to the cache (25% more than base input tokens for 5-minute TTL)"*, *"5-minute cache write tokens are 1.25 times the base input tokens price"*, and defines the 5-minute default TTL. For reads, it states: *"Cache read tokens are 0.1 times the base input tokens price (see the table footnote for per-model exceptions)"*. The string `90%` occurs zero times on the page; `discount` occurs only in reference to the Batch API.
+- **Analysis**: The "25% premium" and "5-minute TTL" are verbatim vendor facts. The "90% discount" — at the time of this pass in `opt-b`, `opt-d`, the explanation and `distractorNotes.opt-c`; now only in the two options — is an arithmetic inverse: if reads are billed at `0.1x` (10%) of the base input price, the cost reduction is `1.0 - 0.10 = 0.90` (90%). This is mathematically true for models using the standard multiplier. However, framing this as a flat "90% discount" introduces two risks:
+  1. Vendor documentation specifies pricing as a multiplier (`0.1x`), not a discount, and models like Claude Fable 5.1 and Mythos 5.1 bill at `0.025x` (a 97.5% reduction).
+  2. Test-takers and authors easily conflate derived marketing percentages with documented technical specifications.
+- **Precedent**: In option text, arithmetic derivations (such as "90% discount") are permitted when testing candidate comprehension of cost trade-offs against incorrect percentages (e.g. 50%). In explanations and distractor notes, authors must prioritize the vendor's explicit mechanism framing (`0.1x` or `10% of base input price`).
+
+#### 2. `ccar-p-solution-design-and-architecture-019` (`sda-019`)
+- **Cited page**: `platform.claude.com/docs/en/build-with-claude/prompt-caching`
+- **Page content**: *"Cache read tokens are 0.1 times the base input tokens price"*.
+- **Analysis**: The explanation states: *"cache reads are billed at 10% of the base input price"*. Converting a decimal multiplier (`0.1`) to an equivalent percentage of the same base quantity (`10% of the base input price`) is an identity conversion. It preserves the directionality of the vendor's billing rule (the fraction charged) rather than inventing an inverted discount metric.
+- **Precedent**: Direct identity conversions of documented mechanisms (`0.1x` ↔ `10% of base price`) are fully valid and represent the preferred way to describe fractional multipliers in explanatory prose.
+
+#### 3. `ccar-p-stakeholder-communication-and-lifecycle-management-003` (`stake-003`)
+- **Cited page**: `platform.claude.com/docs/en/about-claude/models/optimizing-for-cost-and-intelligence`
+- **Page content**: The page states: *"the prefix is billed at the cache-read rate, a tenth of the input price"* and notes in benchmark measurements that *"runs read 79% to 90% of their input tokens from the cache"*.
+- **Analysis**: Distractor note `opt-c` asserts that *"Prompt caching provides up to a 90% read discount on cached prefixes"*. This combines two unrelated figures from the page into an erroneous hybrid: the pricing fraction ("a tenth", or 90% savings) and the benchmark utilization range ("79% to 90%"). Prompt caching does not provide "up to" a 90% read discount; the unit read pricing is fixed at 0.1x (or 0.025x). The benchmark workload varied in the percentage of tokens read from cache, not the read discount rate.
+- **Precedent**: Fusing a derived rate with an empirical range from an adjacent paragraph creates a spurious vendor claim. This is an authoring defect.
+
+#### 4. `ccar-p-integration-021` (`integration-021`)
+- **Cited page**: `anthropic.com/engineering/contextual-retrieval`
+- **Page content**: The post states: *"Developers can now cache frequently used prompts between API calls, reducing latency by > 2x and costs by up to 90% (you can see how it works by reading our prompt caching cookbook)."* The page contains `90%` twice, but `discount` zero times.
+- **Analysis**: The explanation describes prompt caching as providing *"cache-read pricing (a 90% discount on input tokens)"*, and `distractorNotes.opt-c` calls it *"a 90% discount on cache reads"*. The author saw `90%` on the page and attributed a specific unit pricing rule to it. But the source only reported empirical end-to-end workload savings ("reducing costs by up to 90%"), leaving unit pricing to the platform docs.
+- **Precedent**: The lexical presence of a numeral on a cited page does not justify an attribution if the semantic scope differs. A high-level empirical saving figure cannot be cited as the definition of a unit token discount schedule.
+
+#### 5. `ccar-p-integration-022` (`integration-022`)
+- **Cited page**: `anthropic.com/engineering/contextual-retrieval`
+- **Page content**: *"If your knowledge base is smaller than 200,000 tokens (about 500 pages of material), you can just include the entire knowledge base in the prompt that you give the model, with no need for RAG or similar methods."* Later: *"costs by up to 90%"*.
+- **Analysis**: The claim "under 200,000 tokens" (and "roughly 500 pages") is supported verbatim. However, the explanation asserts that in-context caching *"delivers 90% cache-read cost savings on multi-turn queries"*, and `distractorNotes.opt-b` claims it *"cuts read costs by 90%"*. As in `integration-021`, an empirical benchmark ceiling ("by up to 90%") was converted into an unconditional attribute of cache reads.
+- **Precedent**: Empirical findings with qualifications ("up to", "in our evaluations") must retain their qualifiers. Asserting an empirical maximum as an unconditional feature specification is an attribution defect.
+
+#### 6. `ccar-p-evaluation-testing-and-optimization-008` (`eval-008`)
+- **Cited page**: `platform.claude.com/docs/en/about-claude/use-case-guides/ticket-routing`
+- **Page content**: Covers ticket classification with Claude Haiku and escalation to Sonnet. It does not contain a 70%/30% split, nor does it mention the Message Batches API.
+- **Analysis**:
+  - *70%/30% traffic shares*: These numbers are introduced in the stem to establish the scenario's mathematical constraints. The explanation repeats them solely to demonstrate why routing satisfies the budget. They are not framed as vendor metrics and do not require citation.
+  - *50% Batch API discount*: Option `opt-b` introduces a realistic distractor based on the Message Batches API's 50% discount. This pricing is an official vendor fact documented in `batch-processing`. Distractor note `opt-b` explains why batching fails (24-hour turnaround SLA vs real-time customer support) without claiming `ticket-routing` documents Batch API pricing.
+- **Precedent**:
+  1. *Scenario parameters*: Figures introduced in the stem to define the engineering scenario may be echoed in the explanation without a citation, provided they are not presented as vendor-recommended figures or general benchmarks.
+  2. *Cross-page distractor facts*: Distractors and distractor notes may rely on true facts from other official vendor documentation to construct authentic engineering trade-offs and explain why they are disqualified, provided they do not attribute those external facts to the cited page.
+
+### The four numeric classes and governing rules
+
+From these adjudications, the repository establishes four distinct classes of figures:
+
+1. **Class 1 — Verbatim Vendor Facts**:
+   - Metrics, thresholds, quotas, and multipliers documented directly by the vendor (`25% write premium`, `5-minute TTL`, `200,000 tokens`).
+   - *Rule*: Must match the cited page in substance, and quoted strings must match verbatim.
+2. **Class 2 — Scenario Parameters (Stem Echoes)**:
+   - Numbers defining the problem instance (`70% routine traffic`, `300,000 daily requests`, `1.5-second SLA`).
+   - *Rule*: Permitted freely in stems, explanations, and distractor notes to trace the problem logic. Must never be framed as vendor guidance or industry benchmarks.
+3. **Class 3 — Cross-Page Distractor Facts**:
+   - Real vendor facts from other documentation pages (`Batch API 50% discount`, `24-hour expiration`) used to build realistic distractors.
+   - *Rule*: Permitted in distractors and distractor notes. Must be factually accurate in official vendor documentation, and must never be falsely attributed to the item's `sourceUrl`.
+4. **Class 4 — Derived Figures and Mechanism Conversions**:
+   - Numbers calculated from documented mechanisms (`0.1x` ↔ `10% of base price`, or `0.1x` → `90% discount`).
+   - *Rule*: Direct identity representations of stated mechanisms (`10% of base price`) are preferred over derived marketing figures (`90% discount`). In option text, derived arithmetic is permitted when testing candidate calculations. In explanations, authors must cite the primary documented mechanism (`0.1x multiplier`) rather than asserting colloquial discount figures as documented facts. Conflating derived rates with empirical benchmark ranges ("up to 90%") or converting empirical ceilings into mechanism definitions is strictly prohibited.
+
+### One further item, found while applying the rule
+
+`ccar-p-stakeholder-communication-and-lifecycle-management-011` was not in the
+six, but `opt-d` carried "reuse reasoning traces at a 90% discount" citing
+`optimizing-for-cost-and-intelligence`. It is a **distractor**, so under the rule
+it was not a defect — a distractor may assert a falsehood by design, and this one
+is wrong for a better reason anyway (generated thinking blocks are not a cacheable
+prefix). **Disposition: rewrite** regardless, to "at the cache-read rate": the
+marketing figure is drift-prone wherever it sits, and leaving it in a distractor
+teaches the number to the candidate who reads the review screen.
+
+### Scope — what this pass did not cover
+
+This pass adjudicated **6 of the 29 figure-bearing questions in `ccar-p`** (plus
+the one incidental item above). The remaining **23 `ccar-p` items are untouched**,
+as are all figure-bearing questions in the other four banks — `ccar-f` (10),
+`aws-clf-c02` (7), `ccdv-f` (4), `az-900` (0). No `sourceCheckedAt` was moved for
+a page that this pass did not itself re-read. Sweeping the remaining ~44 across all
+five banks, and recording each bank's true defect rate, is the next pass — it is
+what turns "the `ccar-p` rate" into a number that can justify or kill tooling.

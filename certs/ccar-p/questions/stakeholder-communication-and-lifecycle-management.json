@@ -115,7 +115,7 @@
     "explanation": "Anthropic's architectural guidance for optimizing cost and intelligence emphasizes: 'Compare models on cost per completed task, not per token.' While Haiku has lower per-token pricing, on complex multi-step reasoning tasks a smaller model may fail more frequently, requiring costly verifier loops, retries, or complex fallback workflows that ultimately result in a higher cost per successfully solved task and greater end-to-end latency.",
     "distractorNotes": {
       "opt-a": "Haiku has lower baseline latency than Sonnet; Sonnet's advantage is superior reasoning capability and task completion rate, not raw token throughput speed.",
-      "opt-c": "Prompt caching provides up to a 90% read discount on cached prefixes, but applies equally to Haiku; on tasks with high input variability or low cache reuse, caching alone cannot overcome the base token pricing difference unless task failure and retry rates are factored in.",
+      "opt-c": "Prompt caching bills a cached prefix at the cache-read rate, a tenth of the input price, but applies equally to Haiku; on tasks with high input variability or low cache reuse, caching alone cannot overcome the base token pricing difference unless task failure and retry rates are factored in.",
       "opt-d": "Running the weaker model on the complex generation task and the stronger model on simple logging parsing reverses sound architectural allocation."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/about-claude/models/optimizing-for-cost-and-intelligence",
@@ -434,7 +434,7 @@
       },
       {
         "id": "opt-d",
-        "text": "Enable prompt caching on the generated thinking blocks, allowing subsequent fraud evaluation requests with similar claim characteristics to reuse reasoning traces at a 90% discount."
+        "text": "Enable prompt caching on the generated thinking blocks, allowing subsequent fraud evaluation requests with similar claim characteristics to reuse reasoning traces at the cache-read rate."
       }
     ],
     "correct": [

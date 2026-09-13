@@ -45,8 +45,12 @@ field's whole value is that it means what it says.
    how load-bearing the claim is: a citation carrying the whole
    discrimination between two options matters more than one supporting a
    detail. Re-answer the key **cold** against the cited section: read the
-   section, answer the question, then compare to the recorded key. Adjudicate
-   disagreements; the key is often right and the cold reader wrong.
+   section, answer the question, then compare to the recorded key.
+   The page is already open: read the free-text surface (`explanation`,
+   `distractorNotes`, `sourceNote`, and keyed options) against it too, checking
+   for figure and API drift per `CONTRIBUTING.md` — that is where unsourced
+   drift hides. Adjudicate disagreements; the key is often right and the cold
+   reader wrong.
 5. **One explicit disposition per affected question**, and say which:
    - **bump** — page re-read, claim intact, update `sourceCheckedAt`.
    - **re-cite** — claim intact, moved to a different page or section.

@@ -12,11 +12,10 @@ The rule that matters most, before anything else:
 > `npm run check` passing means the bank is schema-valid. It says nothing
 > about whether any individual `correct` key is actually correct.
 
-No schema rule can catch a key that contradicts its own `explanation`, or an
-explanation that describes an answer no option actually states. Both are real
-defects that have shipped in a `draft` bank that was fully schema-valid the
-whole time. This skill exists because authoring optimizes for landing a batch
-green, and green is necessary but not sufficient.
+No schema rule can catch a key contradicting its own `explanation`, an answer
+no option states, or an unsourced figure. All are real defects that have
+shipped in schema-valid banks. This skill exists because authoring optimizes
+for landing green, and green is necessary but not sufficient.
 
 **Independence is the whole method.** Do not read the stored `correct` or
 `explanation` first and check whether they sound plausible together — that
@@ -43,11 +42,13 @@ source; decide the answer cold; only then compare against what is stored.
    not support its key: reconfirm by a second method — for docs that render
    client-side, `curl -sL <url>.md`. An `unsupported` disposition sourced
    from one bad fetch escalates a sound question as broken.
-3. **Cross-check the explanation against the key's own text**, not just
-   against the source. A key can cite the right page and still be wrong if
-   the `explanation` argues for a fact that no option states — that is not a
-   miskey to swap, it is an unsupported item: the right answer isn't on the
-   ballot.
+3. **Audit the free-text surface and explanation against source and key.**
+   Check `explanation`, `distractorNotes`, `sourceNote`, and keyed option text
+   against the cited page per `CONTRIBUTING.md` § Question content
+   requirements: every claim, figure, or quoted span presented as documented
+   must be supported by the page. Also check the explanation against the key's
+   own text — if it argues for a fact that no option states, the right answer
+   is not on the ballot (`unsupported`).
 4. **Judge distractor quality** against `CONTRIBUTING.md` § Writing good
    questions, which states the mix to aim for — read it there rather than
    from memory, and read it as a shape rather than a count, since items here
@@ -58,10 +59,12 @@ source; decide the answer cold; only then compare against what is stored.
    domain is _collectively_ too soft against the guide's sample questions —
    sound items that still solve by elimination — is a difficulty-calibration
    call, and belongs to `harden-domain-questions`, not here.
-5. **Record one disposition per question**: confirmed, miskeyed (name the
-   right option), unsupported (no option matches the source/explanation), or
-   weak-distractors. Every disposition needs its own line — silently fixing
-   without recording loses the evidence the next pass needs.
+5. **Record one disposition per question**: confirmed (both key and free-text
+   provenance verified against the page), miskeyed (name the right option),
+   unsupported (no option matches source/explanation), weak-distractors, or
+   unsourced-claim (figures or API vocabulary absent from the source). Every
+   disposition needs its own line — silently fixing without recording loses
+   the evidence the next pass needs.
 6. **Fix in place only what's unambiguous.** Swapping `correct` to the option
    the source actually supports, or rewriting a facepalm distractor into a
    believable one, is a same-change fix. Anything that changes which fact is
@@ -88,10 +91,9 @@ source; decide the answer cold; only then compare against what is stored.
 
 ## Stop and ask
 
-- **A miskey rate that suggests the batch's whole generation pass is
-  unreliable**, not one bad item. Surface the pattern before fixing item by
-  item — re-drafting the batch can be cheaper than repairing it one key at a
-  time, and that's a call for the user, not a default to fix quietly.
+- **A miskey rate suggesting the whole generation pass is unreliable**, not
+  one bad item. Surface the pattern before fixing item by item — re-drafting
+  can be cheaper than repairing, and that is a call for the user.
 - **An unsupported question** — no option matches the source or the
   explanation. This cannot be repaired by editing; it needs new authoring or
   retirement, both out of scope here.

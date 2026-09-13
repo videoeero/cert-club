@@ -860,10 +860,10 @@
     "correct": [
       "opt-a"
     ],
-    "explanation": "Anthropic's Contextual Retrieval research highlights that generating contextual chunk explanations is made highly cost-effective through prompt caching. By placing a cache control breakpoint at the end of the full contract document, the initial chunk generation writes the contract into the prompt cache, and all subsequent chunk requests for that contract read the 25,000 tokens at cache-read pricing (a 90% discount on input tokens) and reduced latency, making large-scale corpus indexing economically viable.",
+    "explanation": "Anthropic's Contextual Retrieval research highlights that generating contextual chunk explanations is made highly cost-effective through prompt caching. By placing a cache control breakpoint at the end of the full contract document, the initial chunk generation writes the contract into the prompt cache, and all subsequent chunk requests for that contract read the 25,000 tokens at cache-read pricing (a tenth of the base input price) and reduced latency, making large-scale corpus indexing economically viable.",
     "distractorNotes": {
       "opt-b": "Gzip compression reduces network bandwidth over the wire but has no impact on token counting, model inference compute, or API token pricing.",
-      "opt-c": "While Message Batches provides a 50% discount for asynchronous workloads, it does not cache the document prefix across requests; prompt caching the contract body yields a 90% discount on cache reads, making it far more cost-effective for contextual chunk generation.",
+      "opt-c": "While Message Batches provides a 50% discount for asynchronous workloads, it does not cache the document prefix across requests; prompt caching the contract body bills those reads at a tenth of the base input price, making it far more cost-effective for contextual chunk generation.",
       "opt-d": "Omitting contextual generation on long documents removes grounding exactly where chunks suffer the greatest context loss, degrading retrieval accuracy."
     },
     "sourceUrl": "https://www.anthropic.com/engineering/contextual-retrieval",
@@ -901,10 +901,10 @@
     "correct": [
       "opt-c"
     ],
-    "explanation": "Anthropic's architectural guidance on retrieval states that if a knowledge base fits within Claude's context window (under 200,000 tokens, or roughly 500 pages), the optimal architectural choice is to include the entire knowledge base directly in the prompt with prompt caching. In-context retrieval eliminates chunk boundary fragmentation, avoids retrieval failures on interdependent multi-section queries, eliminates vector database operational overhead, and delivers 90% cache-read cost savings on multi-turn queries.",
+    "explanation": "Anthropic's architectural guidance on retrieval states that if a knowledge base fits within Claude's context window (under 200,000 tokens, or roughly 500 pages), the optimal architectural choice is to include the entire knowledge base directly in the prompt with prompt caching. In-context retrieval eliminates chunk boundary fragmentation, avoids retrieval failures on interdependent multi-section queries, eliminates vector database operational overhead, and bills the repeated prefix at the cache-read rate on multi-turn queries.",
     "distractorNotes": {
       "opt-a": "Prompt caching supports prompts up to the full 200,000-token context window with rolling TTL refreshes, so 150,000 tokens fits comfortably without RAG.",
-      "opt-b": "While hierarchical chunking and reranking is a sophisticated RAG architecture, Anthropic guidance notes that for corpora under 200,000 tokens, in-context retrieval with prompt caching is superior because it avoids retrieval failures and boundary fragmentation while cutting read costs by 90%.",
+      "opt-b": "While hierarchical chunking and reranking is a sophisticated RAG architecture, Anthropic guidance notes that for corpora under 200,000 tokens, in-context retrieval with prompt caching is superior because it avoids retrieval failures and boundary fragmentation while billing the repeated prefix at the cache-read rate.",
       "opt-d": "Fine-tuning weights is ineffective for memorizing exact operational runbooks, incurs high training costs, and risks outdated procedures that cannot be audited."
     },
     "sourceUrl": "https://www.anthropic.com/engineering/contextual-retrieval",
