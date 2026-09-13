@@ -914,8 +914,12 @@ The corpus-wide figure of **6 / 50 = 12.0%** recorded across these five banks do
 hold, for three independent reasons:
 
 - **The denominator is wrong.** The population was hand-selected with no recorded detection
-  rule. A mechanical sweep finds roughly 58 figure-bearing items, not 50 — including 3 here,
-  4 in `aws-clf-c02`, and 1 in `ccdv-f`.
+  rule. A mechanical sweep under a pinned detection rule finds **62** figure-bearing items,
+  not 50: `ccar-p` 34, `aws-clf-c02` 11, `ccar-f` 9, `ccdv-f` 8, `az-900` 0. An earlier
+  estimate of "roughly 58" here was itself made with an unpinned regex that missed
+  hyphenated units (`24-hour`, `5-minute`) and mis-anchored the percent branch; the rule is
+  now fixed in the plan's Stage A specification so that the population is reproducible
+  rather than re-derived per pass.
 - **One "confirmed" was false.** `aws-clf-c02-billing-pricing-and-support-006` was recorded
   as confirmed against `aws.amazon.com/free`, a page that no longer supports the claim. See
   that bank's record.
@@ -929,7 +933,8 @@ counted. That is the number any decision about tooling should rest on.
 
 **The load-bearing finding is not the rate.** A deliberate pass, run one workstream after the
 provenance rule was written to prevent exactly this class, still mis-enumerated its own
-population by roughly eight items and emitted one false confirmation. The weak link is
+population by 12 items — roughly a quarter of it — and emitted one false confirmation. The
+weak link is
 enumeration, not adjudication — which is what a mechanical sweep does reliably and a reviewer
 does not.
 
