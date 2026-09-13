@@ -118,7 +118,7 @@
       "opt-b": "Prompt caching reduces token cost for identical prefixes, but it does not resolve degraded tool selection accuracy caused by 95 active schemas.",
       "opt-d": "Creating 95 rigid sequential chains creates extreme latency, brittle routing, and unmaintainable workflow complexity."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool.md",
+    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool",
     "sourceNote": "Tool search tool / Context bloat and tool selection accuracy scaling",
     "sourceCheckedAt": "2026-09-13"
   },
@@ -172,7 +172,7 @@
     "difficulty": "medium",
     "status": "reviewed",
     "scope": "core",
-    "stem": "A backend data pipeline uses Claude to extract structured entity records from regulatory filings. The downstream ingestion service requires that Claude always invoke the record_filing_entity tool on every request without emitting conversational preambles or explanations, while guaranteeing that all extracted arguments conform to the defined JSON schema. Which API configuration meets these requirements?",
+    "stem": "A backend data pipeline uses Claude Sonnet 5, a model that supports forced tool use, to extract structured entity records from regulatory filings. The downstream ingestion service requires that Claude always invoke the record_filing_entity tool on every request without emitting conversational preambles or explanations, while guaranteeing that all extracted arguments conform to the defined JSON schema. Which API configuration meets these requirements?",
     "options": [
       {
         "id": "opt-a",
@@ -194,13 +194,13 @@
     "correct": [
       "opt-d"
     ],
-    "explanation": "Two parameters solve two halves of the requirement. `tool_choice: {\"type\": \"tool\", \"name\": \"record_filing_entity\"}` forces that specific tool on every request, which removes conversational preambles because the model's turn is the tool call. `strict: true` on the tool definition enables grammar-constrained sampling so the inputs are guaranteed to satisfy the declared schema. Mind the model boundary the documentation records: on Claude Fable 5.1 and Claude Mythos 5.1, `tool_choice` values of `any` and `tool` return a 400 error, and the documented substitutes are `auto` with strict tool use, or structured outputs when a fixed JSON response shape is what you need.",
+    "explanation": "Two parameters solve two halves of the requirement. `tool_choice: {\"type\": \"tool\", \"name\": \"record_filing_entity\"}` forces that specific tool on every request, which removes conversational preambles because the model's turn is the tool call. `strict: true` on the tool definition enables grammar-constrained sampling so the inputs are guaranteed to satisfy the declared schema. Mind the boundaries the documentation records, which is why the stem names its model: `tool_choice` values of `any` and `tool` return a 400 error on Claude Fable 5.1 and Claude Mythos 5.1, and are likewise unsupported alongside manual extended thinking. Where they are unavailable the documented substitutes are `auto` with strict tool use, or structured outputs when a fixed JSON response shape is what you need.",
     "distractorNotes": {
       "opt-a": "tool_choice: 'auto' allows Claude to answer conversationally without calling a tool if it chooses, and prompting does not guarantee schema conformity.",
       "opt-b": "tool_choice: 'none' forbids Claude from invoking any tools, forcing unstructured text generation that requires brittle regex extraction.",
       "opt-c": "tool_choice: 'any' forces a tool call but does not restrict it to record_filing_entity, and omitting strict: true does not guarantee schema adherence."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools.md",
+    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools",
     "sourceNote": "Define tools / Forcing tool use and Strict tool use",
     "sourceCheckedAt": "2026-09-13"
   },
@@ -241,7 +241,7 @@
       "opt-c": "Stop sequences prematurely cut off token output, resulting in invalid JSON payloads and broken API response structures.",
       "opt-d": "Prompt instructions cannot guarantee tool execution ordering as reliably as the API-level disable_parallel_tool_use constraint."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use.md",
+    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use",
     "sourceNote": "Parallel tool use / Execution semantics and Disabling parallel tool use",
     "sourceCheckedAt": "2026-09-13"
   },
@@ -282,7 +282,7 @@
       "opt-b": "Omitting tool_result blocks violates API message formatting rules, which require every tool_use to be answered by a corresponding tool_result.",
       "opt-d": "Modifying the system prompt to delete tool schemas mid-conversation does not resolve the pending tool_use block and breaks conversation flow."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls.md",
+    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls",
     "sourceNote": "Handle tool calls / Handling results from client tools / is_error",
     "sourceCheckedAt": "2026-09-13"
   },
@@ -418,7 +418,7 @@
     "difficulty": "hard",
     "status": "reviewed",
     "scope": "core",
-    "stem": "A security architect is maintaining an enterprise MCP host client application, built against protocol revision 2025-06-18, that integrates third-party community MCP servers. To safeguard corporate workstations, the host application must communicate to servers that they should confine themselves to designated project directories, and must mediate any server-initiated LLM inference requests to enforce token budgets and human approval. Which two client-side MCP primitives did that revision provide for these controls? (Select two.)",
+    "stem": "A security architect is maintaining an enterprise MCP host client application, built against protocol revision 2025-06-18, that integrates third-party community MCP servers. To safeguard corporate workstations, the host application must communicate to servers that they should confine themselves to designated project directories, and must mediate any server-initiated LLM inference requests to enforce token budgets and human approval. Which two client-side MCP primitives did that revision provide for these controls? (Select TWO.)",
     "options": [
       {
         "id": "opt-a",
@@ -451,7 +451,7 @@
       "opt-c": "Transports define communication wire protocols (stdio, Streamable HTTP) rather than access control or inference governance boundaries.",
       "opt-e": "Tools are executable capabilities exposed by the server to the client, not client governance primitives."
     },
-    "sourceUrl": "https://modelcontextprotocol.io/docs/2025-06-18/learn/client-concepts.md",
+    "sourceUrl": "https://modelcontextprotocol.io/docs/2025-06-18/learn/client-concepts",
     "sourceNote": "Understanding MCP clients / Core Client Features (Roots and Sampling)",
     "sourceCheckedAt": "2026-09-13"
   },
@@ -464,7 +464,7 @@
     "difficulty": "hard",
     "status": "reviewed",
     "scope": "core",
-    "stem": "An integration engineer is implementing a custom client loop for Claude's Messages API. During multi-tool agent sessions, requests occasionally fail with HTTP 400 validation errors when returning tool execution results. When constructing a user message containing tool results, which two formatting requirements must the client strictly follow according to Anthropic's tool-use specification? (Select two.)",
+    "stem": "An integration engineer is implementing a custom client loop for Claude's Messages API. During multi-tool agent sessions, requests occasionally fail with HTTP 400 validation errors when returning tool execution results. When constructing a user message containing tool results, which two formatting requirements must the client strictly follow according to Anthropic's tool-use specification? (Select TWO.)",
     "options": [
       {
         "id": "opt-a",
@@ -497,7 +497,7 @@
       "opt-d": "tool_result blocks require tool_use_id and content, and must not re-declare the tool's input_schema.",
       "opt-e": "Tool result content is typically plain text or JSON string, or image blocks when applicable; base64 encoding is not required for text."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls.md",
+    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls",
     "sourceNote": "Handle tool calls / Important formatting requirements",
     "sourceCheckedAt": "2026-09-13"
   },
@@ -538,7 +538,7 @@
       "opt-b": "Tool definitions are structured tool_reference content blocks validated against tool schemas, not unstructured markdown in user turns.",
       "opt-d": "Prompt caches are evaluated deterministically on exact prefix matches; there is no speculative background re-indexing job for cache keys."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-use-with-prompt-caching.md",
+    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-use-with-prompt-caching",
     "sourceNote": "Tool use with prompt caching / defer_loading and cache preservation",
     "sourceCheckedAt": "2026-09-13"
   },
@@ -579,7 +579,7 @@
       "opt-c": "Emitting empty strings in tool results hides execution outcomes from Claude during active reasoning turns, causing the agent to hallucinate or retry blindly.",
       "opt-d": "Stop sequences halt model generation prematurely rather than curating historical token volume to enable sustained multi-turn workflows."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/context-editing.md",
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/context-editing",
     "sourceNote": "Context editing / Server-side strategies (Tool result clearing)",
     "sourceCheckedAt": "2026-09-13"
   },
@@ -620,7 +620,7 @@
       "opt-b": "A monolithic backend endpoint removes the model's ability to conditionally inspect intermediate results, filter dynamically, or adjust subsequent query parameters.",
       "opt-c": "Message Batches is an asynchronous non-interactive batching service for independent calls, not an interactive orchestration engine for sequential tool pipelines."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling.md",
+    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling",
     "sourceNote": "Programmatic tool calling / Architecture and latency reduction",
     "sourceCheckedAt": "2026-09-13"
   },
@@ -661,7 +661,7 @@
       "opt-c": "Tools cannot be executed against incomplete partial JSON fragments; the client must accumulate the deltas until the content block closes before execution.",
       "opt-d": "Fine-grained streaming supports standard arbitrary JSON schemas, including nested objects and arrays, without schema shape restrictions."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/fine-grained-tool-streaming.md",
+    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/fine-grained-tool-streaming",
     "sourceNote": "Fine-grained tool streaming / Trade-offs and unbuffered JSON delivery",
     "sourceCheckedAt": "2026-09-13"
   },
@@ -702,7 +702,7 @@
       "opt-c": "The automatic Tool Runner is designed for straightforward automated execution and does not support human approval gates or hosted cloud orchestration.",
       "opt-d": "Message Batches is an offline asynchronous batch processing API with turn turnaround times measured in minutes or hours, making it unusable for interactive customer chatbots."
     },
-    "sourceUrl": "https://code.claude.com/docs/en/agent-sdk/overview.md",
+    "sourceUrl": "https://code.claude.com/docs/en/agent-sdk/overview",
     "sourceNote": "Agent SDK overview / Compare the Agent SDK to other Claude tools",
     "sourceCheckedAt": "2026-09-13"
   },
@@ -920,7 +920,7 @@
     "difficulty": "hard",
     "status": "reviewed",
     "scope": "core",
-    "stem": "An enterprise architect is designing a governance framework for host client applications that integrate third-party Model Context Protocol (MCP) servers. Certain community MCP servers still request LLM sampling (sampling/createMessage) to perform nested autonomous reasoning. To prevent unauthorized model spend, data exfiltration, and prompt injection exploitation, which two security controls should the host application implement for MCP sampling according to protocol security standards? (Select two.)",
+    "stem": "An enterprise architect is designing a governance framework for host client applications that integrate third-party Model Context Protocol (MCP) servers. Certain community MCP servers still request LLM sampling (sampling/createMessage) to perform nested autonomous reasoning. To prevent unauthorized model spend, data exfiltration, and prompt injection exploitation, which two security controls should the host application implement for MCP sampling according to protocol security standards? (Select TWO.)",
     "options": [
       {
         "id": "opt-a",
@@ -966,7 +966,7 @@
     "difficulty": "hard",
     "status": "reviewed",
     "scope": "core",
-    "stem": "A financial research agent performs iterative research through a multi-turn Messages API loop. Each request includes: (1) a 5,000-token system prompt containing regulatory policies; (2) a tools array of 12 internal search and calculation tools; and (3) an accumulating conversation history of user questions, assistant tool calls, and tool_result blocks. To maximize prompt cache efficiency across subsequent tool execution turns while staying within the 4-breakpoint limit, which two cache breakpoint placements should the architect configure? (Select two.)",
+    "stem": "A financial research agent performs iterative research through a multi-turn Messages API loop. Each request includes: (1) a 5,000-token system prompt containing regulatory policies; (2) a tools array of 12 internal search and calculation tools; and (3) an accumulating conversation history of user questions, assistant tool calls, and tool_result blocks. To maximize prompt cache efficiency across subsequent tool execution turns while staying within the 4-breakpoint limit, which two cache breakpoint placements should the architect configure? (Select TWO.)",
     "options": [
       {
         "id": "opt-a",

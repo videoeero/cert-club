@@ -282,7 +282,7 @@
       "opt-c": "Evaluator-optimizer loops iterate on output refinement, but re-running the entire investigation amplifies token consumption and exacerbates context bloat.",
       "opt-d": "Increasing the output token ceiling does not alleviate input context bloat or prevent attention degradation over large accumulated transcripts."
     },
-    "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
+    "sourceUrl": "https://code.claude.com/docs/en/sub-agents",
     "sourceNote": "Subagents execute in isolated context windows to preserve coordinator context hygiene",
     "sourceCheckedAt": "2026-09-13"
   },
@@ -573,7 +573,7 @@
     "correct": [
       "opt-c"
     ],
-    "explanation": "Anthropic's architectural guidance emphasizes that centralized coordinator-worker / subagent designs provide predictable control flow, explicit auditability, bounded iteration loops, and context hygiene. Uncontrolled peer-to-peer swarms frequently suffer from runaway message cascades, compounding hallucinations, unpredictable termination, and context bloat as intermediate conversational noise circulates among peers.",
+    "explanation": "'Effective context engineering for AI agents' states the context-hygiene half directly: specialized sub-agents 'handle focused tasks with clean context windows', and each 'returns only a condensed, distilled summary of its work (often 1,000-2,000 tokens)', so that 'the detailed search context remains isolated within sub-agents, while the lead agent focuses on synthesizing and analyzing the results'. Proposal 2's programmatic return schemas are what make that isolation enforceable rather than merely intended. The control-flow half follows from the same structure rather than from that page: a coordinator that delegates and collects has one place where iteration terminates, whereas peer-to-peer message passing has no bounded termination and lets intermediate conversational noise circulate and compound.",
     "distractorNotes": {
       "opt-a": "Subagents still require explicit, typed tool schemas and parameter validation; dynamic schema inference is non-deterministic and unsupported.",
       "opt-b": "Subagents must strictly adhere to least-privilege security boundaries at each step rather than inheriting bypassed controls.",
@@ -674,15 +674,15 @@
     "difficulty": "hard",
     "status": "reviewed",
     "scope": "core",
-    "stem": "An architect is designing an enterprise legal discovery agent that analyzes thousands of litigation documents over an 8-hour execution window. The host environment runs on spot cloud compute instances that may terminate with short notice. If an instance shuts down, the agent must resume execution without re-processing previously completed documents or re-incurring hundreds of dollars in API token costs. Which architectural state management pattern should the architect implement?",
+    "stem": "An architect is designing an enterprise legal discovery agent on the Claude Agent SDK that analyzes thousands of litigation documents over an 8-hour execution window. The agent runs on spot cloud compute instances that may terminate with short notice, and a replacement worker starts in a fresh container. If an instance shuts down, the agent must resume without re-processing previously completed documents or re-incurring hundreds of dollars in API token costs. Which state management pattern should the architect implement?",
     "options": [
       {
         "id": "opt-a",
-        "text": "Retain the complete multi-turn conversation history entirely in the local container's RAM memory space and serialize it to local disk only upon process termination."
+        "text": "Rely on the SDK's default session files written to local disk, having the replacement worker pick up the most recent session with the continue option."
       },
       {
         "id": "opt-b",
-        "text": "Persist task queues, subtask completion checkpoints, and intermediate document summaries to an external database, allowing worker agents to reconstitute state on startup."
+        "text": "Mirror session transcripts to a shared backend through a session-store adapter, and checkpoint per-document completion outside the instance for the replacement host."
       },
       {
         "id": "opt-c",
@@ -690,20 +690,20 @@
       },
       {
         "id": "opt-d",
-        "text": "Configure worker agents to accumulate document analyses in local scratch storage and batch-upload the completed archive to cloud storage at the end of the 8-hour window."
+        "text": "Accumulate document analyses in the container's local scratch storage and batch-upload the completed archive to durable cloud storage at the end of the 8-hour window."
       }
     ],
     "correct": [
       "opt-b"
     ],
-    "explanation": "Long-running agent architectures must decouple state persistence from the ephemeral execution runtime and conversational transcript. By maintaining task queues, dependency tracking, and intermediate outputs in an external persistent store (e.g. database or message queue), worker agents checkpoint progress transactionally. When compute instances terminate abruptly, new workers can resume from the last uncommitted task without repeating completed work or saturating model context.",
+    "explanation": "The Agent SDK documentation is explicit that the default is not portable: 'Session files are local to the machine that created them.' To resume 'on a different host (CI workers, ephemeral containers, serverless)' it directs you to attach a session-store adapter 'so the SDK mirrors transcripts to your own backend and another host can resume them', or else to move the session file onto the new host yourself. Spot preemption is exactly that case: the replacement worker is a different host, so conversation state has to live somewhere both hosts can reach. Per-document completion checkpoints belong in the same external store, so the replacement resumes rather than restarts.",
     "distractorNotes": {
-      "opt-a": "In-memory state and termination-time disk serialization fail when spot instances receive abrupt termination notices or undergo immediate hardware preemption.",
-      "opt-c": "Prompt caching has a 5-minute rolling TTL and provides prefix acceleration, not durable external state persistence across compute instance shutdowns.",
-      "opt-d": "Deferring persistence to the end of an 8-hour window means spot preemption at hour 7 destroys all intermediate work and wastes accumulated token spend."
+      "opt-a": "Session files are local to the machine that created them, so continue on a fresh container finds no session to resume. The documentation routes cross-host resume to a session store or to relocating the session file.",
+      "opt-c": "Prompt caching accelerates a repeated prefix and its entries expire on a 5-minute default TTL (1 hour at most). It is a cost and latency optimization, not a durable record of which documents are done.",
+      "opt-d": "Deferring persistence to the end of an 8-hour window means preemption at hour 7 destroys every intermediate result and wastes the accumulated token spend."
     },
-    "sourceUrl": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
-    "sourceNote": "Structured note-taking: the agent persists notes outside the context window and reads them back after a context reset.",
+    "sourceUrl": "https://code.claude.com/docs/en/agent-sdk/sessions",
+    "sourceNote": "Resume across hosts: session files are local to their machine; a session-store adapter mirrors transcripts so another host can resume.",
     "sourceCheckedAt": "2026-09-13"
   },
   {
@@ -778,7 +778,7 @@
     "correct": [
       "opt-d"
     ],
-    "explanation": "For interactive conversational systems with substantial static context (8,000 tokens), TTFT is primarily driven by prompt prefill processing and response transfer latency. By placing static manuals and schemas at the system prompt prefix and enabling prompt caching, subsequent requests read the cached prefix with up to an 80%+ reduction in TTFT and 90% cost savings. Combining caching with Server-Sent Events (SSE) streaming delivers generated tokens incrementally, satisfying the 1.5-second perceptual SLA while preserving Sonnet's analytical depth.",
+    "explanation": "For interactive conversational systems with substantial static context (8,000 tokens), TTFT is primarily driven by prompt prefill processing and response transfer latency. By placing static manuals and schemas at the system prompt prefix and enabling prompt caching, subsequent requests resume from that cached prefix instead of re-processing it, which the documentation describes as significantly reducing processing time and cost; cache reads are billed at 10% of the base input price. Combining caching with Server-Sent Events (SSE) streaming delivers generated tokens incrementally, satisfying the 1.5-second perceptual SLA while preserving Sonnet's analytical depth.",
     "distractorNotes": {
       "opt-a": "Downsampling to Haiku degrades complex diagnostic reasoning, and capping max_tokens reduces generation length without resolving the 8,000-token prefill latency driving TTFT.",
       "opt-b": "Placing static manuals at the end of user messages breaks prefix caching and forces full 8,000-token prefill processing on every turn, exacerbating latency.",
@@ -876,7 +876,7 @@
       "opt-c": "Unrestricted recursive spawning creates runaway execution trees, unbounded token expenditures, and catastrophic loss of operational control.",
       "opt-d": "Returning complete raw tool histories and log dumps into the coordinator defeats the purpose of subagent context isolation and pollutes coordinator context hygiene."
     },
-    "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
+    "sourceUrl": "https://code.claude.com/docs/en/sub-agents",
     "sourceNote": "Subagents: Context isolation and specialized tool delegation",
     "sourceCheckedAt": "2026-09-13"
   }

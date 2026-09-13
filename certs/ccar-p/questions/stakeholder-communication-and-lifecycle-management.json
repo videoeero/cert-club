@@ -118,7 +118,7 @@
       "opt-c": "Prompt caching provides up to a 90% read discount on cached prefixes, but applies equally to Haiku; on tasks with high input variability or low cache reuse, caching alone cannot overcome the base token pricing difference unless task failure and retry rates are factored in.",
       "opt-d": "Running the weaker model on the complex generation task and the stronger model on simple logging parsing reverses sound architectural allocation."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/about-claude/models/optimizing-for-cost-and-intelligence.md",
+    "sourceUrl": "https://platform.claude.com/docs/en/about-claude/models/optimizing-for-cost-and-intelligence",
     "sourceNote": "Optimizing for cost and intelligence / Compare models on cost per task",
     "sourceCheckedAt": "2026-09-13"
   },
@@ -323,7 +323,7 @@
       "opt-c": "MCP servers expose external tools and resources; configuring an MCP server purely to deliver static repository guidelines is unnecessary over `CLAUDE.md`.",
       "opt-d": "Auto memory records observations and personal workflow habits learned during sessions, but cannot substitute for explicit, version-controlled project rules in `CLAUDE.md`."
     },
-    "sourceUrl": "https://code.claude.com/docs/en/memory.md",
+    "sourceUrl": "https://code.claude.com/docs/en/memory",
     "sourceNote": "Claude Code Memory / CLAUDE.md guidelines",
     "sourceCheckedAt": "2026-09-13"
   },
@@ -364,7 +364,7 @@
       "opt-b": "The Default Workspace cannot enforce separate spend caps or isolate keys between development and production environments.",
       "opt-c": "Anthropic's Messages API does not support arbitrary billing tags in request headers for cost-allocation filtering in billing dashboards; workspaces are the native mechanism."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/manage-claude/workspaces.md",
+    "sourceUrl": "https://platform.claude.com/docs/en/manage-claude/workspaces",
     "sourceNote": "Workspaces / How workspaces work and roles",
     "sourceCheckedAt": "2026-09-13"
   },
@@ -377,36 +377,36 @@
     "difficulty": "medium",
     "status": "reviewed",
     "scope": "core",
-    "stem": "A company plans to analyze 500,000 archived customer service transcripts every weekend to identify emerging product issues. Operations stakeholders expect the job to run through the standard synchronous Messages API on Saturday mornings, but express concern about exceeding organization rate limits and budget caps. What architectural solution should the architect propose?",
+    "stem": "An architect has moved a weekend analysis of 500,000 archived support transcripts onto the Message Batches API, chunked across several batches to stay inside the per-batch request limit. Operations leadership now wants a turnaround commitment it can publish to the business, and has drafted an internal SLA promising results within one hour of submission. How should the architect respond?",
     "options": [
       {
         "id": "opt-a",
-        "text": "Build a distributed client-side queuing pipeline with rate-limiting token buckets and prompt caching, streaming synchronous Messages API calls throttled just below TPM limits."
+        "text": "Accept the one-hour commitment, since the documentation records that most batches complete within an hour and stragglers can be resubmitted inside the same window."
       },
       {
         "id": "opt-b",
-        "text": "Deploy Claude Haiku 4.5 on the synchronous Messages API with multi-threaded workers, relying on Haiku's lower baseline token price to process the backlog within operating windows."
+        "text": "Publish no turnaround figure at all, because asynchronous processing time varies with current demand and request volume and so cannot be bounded in advance."
       },
       {
         "id": "opt-c",
-        "text": "Submit the workload to the Message Batches API, securing a 50% pricing discount and dedicated throughput under an asynchronous 24-hour turnaround SLA."
+        "text": "Commit to the documented 24-hour window instead: most batches do finish sooner, but a batch can still reach its 24-hour expiration with requests unprocessed."
       },
       {
         "id": "opt-d",
-        "text": "Partition transcripts across regional compute clusters calling the Messages API concurrently, using exponential backoff and randomized jitter to absorb 429 rate limit spikes."
+        "text": "Commit to one hour and keep a synchronous Messages API fallback that re-runs any batch still in progress once the sixty-minute mark has passed."
       }
     ],
     "correct": [
       "opt-c"
     ],
-    "explanation": "Anthropic's Message Batches API is purpose-built for non-real-time bulk workloads. It processes requests asynchronously with a 24-hour turnaround target, provides a 50% cost discount on input and output tokens compared to standard API calls, and utilizes dedicated batch throughput that does not consume standard organization rate limits.",
+    "explanation": "The documentation gives a typical case and a bound, and only the bound is safe to publish. Most batches complete 'in less than 1 hour', but 'Batches may take up to 24 hours for processing... Actual processing time depends on the size of the batch, current demand, and your request volume', and 'It is possible for a batch to expire and not complete within 24 hours'. Committing the business to the typical case turns a normal slow weekend into a breached SLA. The 24-hour figure is the documented expiration boundary, so it is the number the architect can stand behind, with the sub-hour typical case reported as an expectation rather than a promise.",
     "distractorNotes": {
-      "opt-a": "Building custom client-side rate limiters still consumes standard organization rate limits and misses out on the 50% cost discount and dedicated throughput pool provided natively by the Message Batches API.",
-      "opt-b": "Synchronous processing at this volume risks throttling, requires custom retry plumbing, and costs twice as much as using Haiku through the Message Batches API.",
-      "opt-d": "Regional concurrency and backoff mitigate throttling errors but do not provide dedicated batch capacity or the 50% cost savings of the Message Batches API."
+      "opt-a": "'Most batches' is a typical case, not a guarantee, and resubmitting a straggler restarts its processing rather than finishing it inside the original hour.",
+      "opt-b": "Processing time does vary, but it is bounded: a batch expires at 24 hours, and unprocessed requests are returned as expired and not billed. Declining to publish any figure discards a commitment the platform actually supports.",
+      "opt-d": "The fallback pays full synchronous price for work already bought at the 50% batch discount, and it consumes Messages API rate limits that the batch deliberately kept clear."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/batch-processing",
-    "sourceNote": "Message Batches API / Benefits and turnaround SLA",
+    "sourceNote": "Most batches finish in under 1 hour but may take up to 24 hours; a batch expires if it does not complete inside that window.",
     "sourceCheckedAt": "2026-09-13"
   },
   {
@@ -446,7 +446,7 @@
       "opt-c": "Few-shot prompting increases prompt input tokens on every turn and cannot substitute for dynamic multi-step extended reasoning on complex fraud patterns.",
       "opt-d": "Prompt caching applies strictly to input prompt prefixes (system prompts, tools, message history), not assistant output thinking blocks across independent user requests."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/about-claude/models/optimizing-for-cost-and-intelligence.md",
+    "sourceUrl": "https://platform.claude.com/docs/en/about-claude/models/optimizing-for-cost-and-intelligence",
     "sourceNote": "Optimizing for cost and intelligence / Tune effort and advisor strategy",
     "sourceCheckedAt": "2026-09-13"
   },
@@ -487,7 +487,7 @@
       "opt-c": "Exceeding the context window limit returns an HTTP 400 `invalid_request_error`, not an HTTP 429 `rate_limit_error`.",
       "opt-d": "Rate limits and token bucket allowances apply at the organization or workspace level, not per individual API key; rotating keys does not reset rate limits."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/api/errors.md",
+    "sourceUrl": "https://platform.claude.com/docs/en/api/errors",
     "sourceNote": "Claude API errors / HTTP errors 429 and 529",
     "sourceCheckedAt": "2026-09-13"
   },
@@ -697,7 +697,7 @@
       "opt-c": "Rate limits and token bucket allowances are enforced at the Anthropic organization and workspace level, not per key; rotating keys does not reset rate limits.",
       "opt-e": "Publishing an SLA number ahead of measurement converts an unknown into a contractual obligation the team has no evidence it can meet."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/manage-claude/workspaces.md",
+    "sourceUrl": "https://platform.claude.com/docs/en/manage-claude/workspaces",
     "sourceNote": "Workspaces / API key scoping and spend limits",
     "sourceCheckedAt": "2026-09-13"
   },

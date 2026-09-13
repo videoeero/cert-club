@@ -8,36 +8,36 @@
     "difficulty": "medium",
     "status": "reviewed",
     "scope": "core",
-    "stem": "An AI team runs daily compliance auditing over 50,000 customer service transcripts every night. The audit results must be ready by 08:00 the following morning, but individual transcripts do not require real-time processing. Currently, the team runs concurrent synchronous /v1/messages calls, frequently hitting rate limits and incurring standard token costs. Which architectural change should the architect recommend to optimize cost and throughput?",
+    "stem": "An AI team runs a 50,000-case regression eval suite through the Message Batches API before every prompt release. On the latest run the batch reaches processing_status 'ended', but the per-request results are a mix of outcomes and the harness reports a markedly lower pass rate than the previous release. Before the team treats this as a quality regression, how should the harness handle the per-request result types?",
     "options": [
       {
         "id": "opt-a",
-        "text": "Downgrade all transcripts to Claude Haiku without evaluation to lower the token pricing tier under synchronous endpoints."
+        "text": "Treat every request that did not return succeeded as a failed eval case, since a request that produced no message is a case the system did not pass."
       },
       {
         "id": "opt-b",
-        "text": "Implement exponential backoff retries on the synchronous /v1/messages endpoint while keeping the immediate processing model."
+        "text": "Exclude the errored, canceled and expired requests from the pass-rate denominator, because none of them created a message result and none of them are billed."
       },
       {
         "id": "opt-c",
-        "text": "Distribute the 50,000 transcripts across a pool of background worker tasks using multiple workspace API keys and concurrency throttles."
+        "text": "Re-run the whole batch from the start whenever the results contain unsuccessful requests, on the basis that per-request failures show the batch processed under degraded conditions."
       },
       {
         "id": "opt-d",
-        "text": "Migrate the nightly evaluation pipeline to the Message Batches API to receive a 50% token cost discount and separate throughput pools."
+        "text": "Keep polling processing_status past ended, because a batch goes on retrying its unsuccessful requests until every one of them resolves to succeeded."
       }
     ],
     "correct": [
-      "opt-d"
+      "opt-b"
     ],
-    "explanation": "The Anthropic Message Batches API is designed specifically for high-volume, non-real-time asynchronous workloads (such as evals, nightly audits, and batch analysis). Requests submitted via Message Batches receive a 50% discount on input and output token pricing, process within a target turnaround time of 24 hours (most finishing in under 1 hour), and operate with separate batch throughput allocations that prevent hitting standard API rate limits.",
+    "explanation": "The Batches API reports an outcome per request, and three of the four are infrastructure outcomes rather than model results: 'errored' covers invalid requests and internal server errors, 'canceled' means the user cancelled before the request was sent to the model, and 'expired' means the batch 'reached its 24-hour expiration before this request could be sent to the model'. The documentation records that you are not billed for any of them, precisely because no message was created. Counting them as eval failures mixes delivery problems into a quality metric and manufactures a regression that the model never caused.",
     "distractorNotes": {
-      "opt-a": "Downgrading the model blindly risks audit accuracy and compliance quality without leveraging the 50% batch discount on the appropriate model.",
-      "opt-b": "Retries handle rate limit errors but do not address cost inefficiency or the fundamental mismatch between real-time calls and batch workloads.",
-      "opt-c": "Managing custom worker pools across multiple API keys adds orchestration complexity, violates workspace key governance, and still incurs 100% standard token pricing."
+      "opt-a": "This is the conflation the question turns on. A request that produced no message result is not evidence about the model's quality, and the documentation marks all three non-success outcomes as unbilled for exactly that reason.",
+      "opt-c": "The documentation is explicit that 'the failure of one request in a batch does not affect the processing of other requests', so the succeeded results stand on their own. Re-running discards valid results and pays for them a second time.",
+      "opt-d": "'ended' is terminal: it is reached 'once all the requests in the batch have finished processing, and results are ready'. There is no further retry stage to wait through."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/batch-processing",
-    "sourceNote": "Message Batches API overview and benefits",
+    "sourceNote": "Per-request result types succeeded / errored / canceled / expired; one request's failure does not affect the others.",
     "sourceCheckedAt": "2026-09-13"
   },
   {
@@ -194,14 +194,14 @@
     "correct": [
       "opt-c"
     ],
-    "explanation": "Anthropic's evaluation guide notes that model-based judges can suffer from biases such as favoring verbosity. To mitigate this, architects should structure clear rubrics that explicitly penalize filler and reward factual conciseness, require chain-of-thought reasoning before outputting a numerical score, and calibrate judge prompts against human expert benchmark datasets to ensure alignment.",
+    "explanation": "The page's 'Tips for LLM-based grading' gives two of the three directly: 'Have detailed, clear rubrics', and 'Encourage reasoning: Ask the LLM to reason first before producing an evaluation score, and then discard the reasoning. This increases evaluation performance, particularly for tasks requiring complex judgment.' A rubric that scores factual precision and conciseness as named dimensions stops a judge from rewarding filler, and forcing reasoning before the score makes the grade inspectable rather than a bare number. The page also sets the reliability bar: LLM-based grading is to be tested 'to ensure reliability first then scale', against a human-labelled set of the kind its example evals use. Note that the verbosity preference described here is the team's own audit finding, not a documented model behaviour.",
     "distractorNotes": {
       "opt-a": "ROUGE-L measures n-gram overlap and cannot evaluate semantic tone, brand voice, or conversational quality in varied customer interactions.",
       "opt-b": "Dividing scores by token count penalizes legitimately detailed, nuanced answers for complex issues and artificially rewards terseness over quality.",
       "opt-d": "Imposing artificial length limits on candidate generation degrades response completeness for complex inquiries rather than calibrating judge evaluation accuracy."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
-    "sourceNote": "Grade your evaluations and tips for LLM-based grading",
+    "sourceNote": "Tips for LLM-based grading: detailed clear rubrics, reason before scoring, and test grader reliability before scaling.",
     "sourceCheckedAt": "2026-09-13"
   },
   {
@@ -213,41 +213,41 @@
     "difficulty": "medium",
     "status": "reviewed",
     "scope": "core",
-    "stem": "An interactive legal research assistant sends a 15,000-token prompt on every turn, consisting of fixed statutory guidelines, case law context, and the ongoing user dialogue. Attorneys report that the system feels sluggish, taking 4 to 6 seconds before any text appears on the client application screen. Which two architectural optimizations should the architect implement to reduce perceived latency and Time to First Token (TTFT)? (Select two.)",
+    "stem": "An interactive legal research assistant handles high-volume citation lookup and case summarisation, and already streams its responses over Server-Sent Events. Attorneys still report sluggishness: the first token takes 4 to 6 seconds and complete answers run long. The prompt has already been engineered for answer quality. Which TWO further changes does Anthropic's latency guidance recommend? (Select TWO.)",
     "options": [
       {
         "id": "opt-a",
-        "text": "Structure the static statutory guidelines and case law at the beginning of the prompt and enable prompt caching."
+        "text": "Move the assistant onto Claude Haiku 4.5, which the guidance names as offering the fastest response times for speed-critical applications."
       },
       {
         "id": "opt-b",
-        "text": "Increase the max_tokens parameter to 8,192 to prevent the model from throttling token output during generation."
+        "text": "Increase the max_tokens parameter to 8,192 so the model is not throttled partway through generating a long, multi-citation research answer."
       },
       {
         "id": "opt-c",
-        "text": "Enable streaming on the Messages API request so the client receives and displays tokens via Server-Sent Events as they are generated."
+        "text": "Trim redundant detail from the prompt and ask Claude for shorter answers, since fewer input and output tokens mean a faster response."
       },
       {
         "id": "opt-d",
-        "text": "Move the 15,000-token statutory guidelines to an external vector database and query it via dynamic tool calls on every turn."
+        "text": "Raise the sampling temperature to 0.8 so the model commits to an answer sooner and spends fewer tokens hedging its stated conclusions."
       },
       {
         "id": "opt-e",
-        "text": "Raise the judge model's temperature to 1.0 on every grading call so scoring variance averages out across repeated evaluation runs."
+        "text": "Route each turn through the Message Batches API so requests run in a dedicated throughput pool instead of competing with interactive traffic."
       }
     ],
     "correct": [
       "opt-a",
       "opt-c"
     ],
-    "explanation": "According to Anthropic's latency optimization documentation, Time to First Token (TTFT) is driven by prompt prefill duration, while perceived latency depends on response delivery. Prompt caching allows Claude to reuse precomputed KV states for static prefixes (up to 15,000 tokens here), cutting TTFT by up to 80%. Streaming (stream: true) streams tokens incrementally to the client using Server-Sent Events (SSE), allowing users to read the response immediately rather than waiting for completion.",
+    "explanation": "The latency page documents three levers, and streaming is already in place, so the remaining two are the answer. On model choice it is explicit: 'For speed-critical applications, Claude Haiku 4.5 offers the fastest response times while maintaining high intelligence.' On length it is equally direct: 'Minimize the number of tokens in both your input prompt and the expected output... The fewer tokens the model has to process and generate, the faster the response will be', with 'be clear but concise' and 'ask for shorter responses' as the named tactics. Note the page's own sequencing caution: engineer the prompt for quality first and reduce latency afterwards, which this team has already done.",
     "distractorNotes": {
-      "opt-b": "Increasing max_tokens does not improve latency; larger generation ceilings can increase end-to-end completion time if the model produces longer responses.",
-      "opt-d": "Converting static prompt context into real-time tool calls introduces network hops, tool-use roundtrips, and additional inference cycles that increase TTFT.",
-      "opt-e": "Higher judge temperature adds noise to grading rather than removing it, and makes the suite less reproducible run over run."
+      "opt-b": "max_tokens is a ceiling, not a throttle. The guidance uses it in the opposite direction — 'Set appropriate output limits... This prevents Claude from generating overly long outputs' — so raising it permits longer, slower answers.",
+      "opt-d": "The page records the opposite tendency: lower temperature values 'can sometimes lead to more focused and shorter responses, while higher values... might result in more diverse but potentially longer outputs'.",
+      "opt-e": "The Batches API is asynchronous: most batches finish within an hour and a batch may take up to 24 hours. Moving an interactive turn onto it trades a 4-second wait for a far longer one."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-latency",
-    "sourceNote": "How to reduce latency: model selection, optimizing prompt length, and streaming",
+    "sourceNote": "Reduce latency: choose a faster model such as Claude Haiku 4.5, and minimise input and output tokens; streaming is the third lever.",
     "sourceCheckedAt": "2026-09-13"
   },
   {
@@ -464,36 +464,36 @@
     "difficulty": "hard",
     "status": "reviewed",
     "scope": "core",
-    "stem": "A wealth management firm is hardening an autonomous agent that reads untrusted third-party financial documents and executes rebalancing recommendations. Red-teaming shows that instructions embedded in a fetched document can redirect the agent. Which combination of controls matches Anthropic's documented defence against indirect prompt injection?",
+    "stem": "A wealth management firm is preparing to deploy an autonomous agent that reads untrusted third-party financial documents and executes rebalancing recommendations. The team has already layered its defences: untrusted text arrives in tool_result blocks, a lightweight classifier screens tool output, and the agent's permissions are scoped narrowly. Before launch, the risk committee asks how the team will establish that those defences actually hold. Which evaluation practice matches Anthropic's documented guidance?",
     "options": [
       {
         "id": "opt-a",
-        "text": "Deliver document text in tool_result blocks, declare tool content untrusted in the system prompt, screen raw tool output with a lightweight classifier, and scope permissions narrowly."
+        "text": "Red-team the workflow before deploying with documents and tool outputs that deliberately carry injection attempts, then monitor production outputs for signs of successful injection."
       },
       {
         "id": "opt-b",
-        "text": "Place the document text in the system prompt between clearly labelled delimiters, instructing Claude that anything appearing between them is untrusted content it must never obey."
+        "text": "Validate the screening classifier against the corpus of injection phrasings it was built from, treating a high score there as evidence that the screen generalises to unseen attacks."
       },
       {
         "id": "opt-c",
-        "text": "Filter incoming document text against a maintained denylist of known injection phrases, such as “ignore previous instructions”, before it is passed to the model at runtime."
+        "text": "Record the clean red-team run performed at launch as a standing assurance, because the layered controls are structural and so cannot regress as prompts, tools and models change."
       },
       {
         "id": "opt-d",
-        "text": "Embed the agent's own operating instructions inside each tool_result block, so that they travel alongside the untrusted content and are re-asserted on every single tool call."
+        "text": "Exercise only the user-facing input screen during testing, since the tool_result pathway is already covered by the model's trained skepticism toward instructions inside tool results."
       }
     ],
     "correct": [
       "opt-a"
     ],
-    "explanation": "The mitigations documented for indirect prompt injection are layered and all four appear in the key: put untrusted content only in tool results ('never in `system` prompts or plain user `text` blocks'), because Claude is trained to treat instructions inside tool results with skepticism; state in the system prompt that tool, document and search content is untrusted data that must never override the system prompt or the user's request; screen tool outputs before Claude acts on them by passing raw output to a small classifier call and returning the content only if the screen reports no injection attempt; and limit Claude's access to sensitive data and actions so a successful injection does minimal damage.",
+    "explanation": "The page closes its indirect-injection guidance with the validation step: 'Red-team your own agent. Before deploying, test your workflow with documents, emails, and tool outputs that deliberately contain injection attempts, and confirm that Claude ignores them and that your screening and confirmation steps catch the rest.' It pairs that with continuous monitoring: 'Regularly analyze outputs for signs of successful injection. Use this monitoring to iteratively refine your prompts, validation, and filtering strategies.' Controls that were never exercised against a real attempt are an assumption; red-teaming before launch and monitoring after it are what turn them into evidence.",
     "distractorNotes": {
-      "opt-b": "The page rules this out by name: deliver third-party content inside `tool_result` blocks, never in `system` prompts or plain user `text` blocks. Delimiters in the system prompt put attacker-controlled text in the most trusted position in the request.",
-      "opt-c": "A denylist catches the phrasings someone already thought of. The page's input-validation note suggests a model-based generalized screen precisely because fixed pattern matching does not generalize.",
-      "opt-d": "This is the documented anti-pattern: because Claude treats tool-result content as untrusted data, instructions placed there 'may be ignored or flagged as a potential injection'. Your instructions belong in a user turn following the tool_result block."
+      "opt-b": "Scoring well on the phrasings the screen was built from measures memorisation, not generalisation. The page suggests using an LLM to build a generalized validation screen precisely because fixed pattern sets do not cover phrasings nobody thought of.",
+      "opt-c": "Red-teaming is scoped to the workflow as it stands, and the page treats monitoring as an ongoing practice that keeps refining the screens. A launch-day result says nothing about a prompt, tool or model that changed afterwards.",
+      "opt-d": "Trained skepticism toward tool-result content is one layer, not the whole defence, which is why the page also tells you to screen tool outputs and to red-team with poisoned tool outputs specifically."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks",
-    "sourceNote": "Indirect prompt injection: tool_result delivery, untrusted-content system policy, screening tool output, and least privilege.",
+    "sourceNote": "Red-team the workflow before deploying with deliberately poisoned tool outputs; monitor outputs for successful injection and refine screens.",
     "sourceCheckedAt": "2026-09-13"
   },
   {
@@ -655,7 +655,7 @@
     "correct": [
       "opt-a"
     ],
-    "explanation": "Perceived latency in interactive applications is dominated by Time to First Token (TTFT) rather than total completion duration. According to Anthropic's latency optimization documentation, enabling Server-Sent Events (SSE) streaming allows the client UI to begin rendering text deltas as soon as Claude generates them (typically under 800ms), giving the user immediate visual feedback while generation continues in parallel.",
+    "explanation": "Perceived latency in interactive applications is dominated by Time to First Token (TTFT) rather than total completion duration. Anthropic's latency guidance records that streaming lets the model start sending back its response before the full output is complete, which 'can significantly improve the perceived responsiveness of your application, as users can see the model's output in real time'. Enabling Server-Sent Events (SSE) streaming therefore lets the client UI render text deltas as they arrive, giving the user immediate visual feedback while generation continues in parallel.",
     "distractorNotes": {
       "opt-b": "Prompt caching reduces server prefill time, but if the client continues buffering the response synchronously, users still wait for full completion before seeing text.",
       "opt-c": "Temperature controls sampling randomness rather than inference execution speed, and greedy decoding does not meaningfully alter perceived UI streaming latency.",

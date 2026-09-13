@@ -74,7 +74,7 @@
     "explanation": "On models that support manual extended thinking, `thinking: {\"type\": \"enabled\", \"budget_tokens\": N}` sets a per-request target for internal reasoning, so reasoning depth can be tuned per call: omit thinking for balance inquiries to preserve sub-second turnaround, and provision a budget for stress tests. Note the boundary the documentation draws — manual extended thinking is deprecated on the Claude 4.6 models and is rejected with a 400 error on Claude 4.7 and later, where adaptive thinking and `output_config.effort` replace it. Claude Sonnet 4.5 supports only the manual mode, so `budget_tokens` is the correct control there.",
     "distractorNotes": {
       "opt-b": "Reducing max_tokens does not truncate thinking cleanly; max_tokens must exceed budget_tokens, otherwise the request fails validation with an API 400 error.",
-      "opt-c": "Temperature controls sampling randomness rather than extended thinking activation, and temperature must remain 1.0 when extended thinking is enabled.",
+      "opt-c": "Temperature controls sampling randomness, not whether extended thinking runs. Manual thinking is turned on only by the `thinking` object, and reasoning depth is set by its `budget_tokens` value.",
       "opt-d": "Speculative decoding sidecars cannot intercept internal reasoning tokens to bypass latency; reasoning depth is configured directly via API parameters."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/extended-thinking",
@@ -254,7 +254,7 @@
     "difficulty": "hard",
     "status": "reviewed",
     "scope": "core",
-    "stem": "A backend service transforms unstructured diagnostic logs into a specific XML schema. It has always eliminated Claude's conversational preambles by prefilling the assistant turn with the opening XML tag. After the team repoints the service at a Claude 4.6 model, every request fails with an HTTP 400 error. Which migration best restores deterministic preamble-free output on the newer model?",
+    "stem": "A backend service transforms unstructured diagnostic logs into a specific JSON schema. It has always eliminated Claude's conversational preambles by prefilling the assistant turn with the opening brace. After the team repoints the service at a Claude 4.6 model, every request fails with an HTTP 400 error. Which migration best restores deterministic preamble-free output on the newer model?",
     "options": [
       {
         "id": "opt-a",
@@ -279,7 +279,7 @@
     "explanation": "Starting with Claude 4.6 models, a prefilled response on the last assistant turn is no longer supported and the request returns a 400 error. Anthropic's documented migration for the output-formatting use of prefill is the Structured Outputs feature, which is designed specifically to constrain Claude's response to a given schema; newer models also match complex schemas reliably when simply told to. For the narrower preamble case the documentation additionally suggests direct system-prompt instructions, XML-tagged output, or tool calling, with post-processing for the occasional preamble that slips through.",
     "distractorNotes": {
       "opt-a": "This is the instruction-only approach the service already tried, and it does nothing about the 400 error the removed prefill now causes.",
-      "opt-c": "Stop sequences abort generation when a greeting occurs rather than producing the required XML, so a preamble becomes a truncated response instead of a clean one.",
+      "opt-c": "Stop sequences abort generation when a greeting occurs rather than producing the required JSON, so a preamble becomes a truncated response instead of a clean one.",
       "opt-d": "Only a prefill on the last assistant turn is rejected; moving it earlier makes it an ordinary conversation turn that no longer constrains the model's next output at all."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices#migrating-away-from-prefilled-responses",
@@ -459,7 +459,7 @@
     "difficulty": "hard",
     "status": "reviewed",
     "scope": "core",
-    "stem": "An architect is designing a multi-turn software development agent using the Anthropic Messages API. Each interaction includes a static 8,000-token repository architecture guide, 12 tool definitions, and an incrementally growing conversation history of user messages and tool responses. The architect wants to maximize prompt cache hits across successive conversation turns while adhering to API caching constraints. Which two strategies should the architect implement? (Select two.)",
+    "stem": "An architect is designing a multi-turn software development agent using the Anthropic Messages API. Each interaction includes a static 8,000-token repository architecture guide, 12 tool definitions, and an incrementally growing conversation history of user messages and tool responses. The architect wants to maximize prompt cache hits across successive conversation turns while adhering to API caching constraints. Which two strategies should the architect implement? (Select TWO.)",
     "options": [
       {
         "id": "opt-a",
@@ -628,7 +628,7 @@
     "difficulty": "hard",
     "status": "reviewed",
     "scope": "core",
-    "stem": "An enterprise development organization maintains a shared Claude Code and Agent SDK environment across 40 software engineering teams. Over time, the global workspace configuration and system prompt have grown to over 35,000 tokens, incorporating detailed operational runbooks, database migration procedures, cloud infrastructure checklists, and security review guidelines. As a result, routine coding tasks experience significant baseline token overhead, higher time-to-first-token latency, and occasional attention dilution. The lead architect must restructure the prompt architecture to optimize context efficiency while preserving access to all specialized procedures. Which two strategies should the architect implement? (Select two.)",
+    "stem": "An enterprise development organization maintains a shared Claude Code and Agent SDK environment across 40 software engineering teams. Over time, the global workspace configuration and system prompt have grown to over 35,000 tokens, incorporating detailed operational runbooks, database migration procedures, cloud infrastructure checklists, and security review guidelines. As a result, routine coding tasks experience significant baseline token overhead, higher time-to-first-token latency, and occasional attention dilution. The lead architect must restructure the prompt architecture to optimize context efficiency while preserving access to all specialized procedures. Which two strategies should the architect implement? (Select TWO.)",
     "options": [
       {
         "id": "opt-a",
@@ -655,13 +655,13 @@
       "opt-b",
       "opt-d"
     ],
-    "explanation": "Anthropic's architectural guidance for modular prompt design and context efficiency emphasizes two core practices: (1) modularizing procedures into Skills (SKILL.md files), where skill descriptions are registered as metadata while the heavy procedural instruction bodies load on demand only when invoked or relevant to the user request, keeping baseline context lean; and (2) keeping core, invariant project rules in base instructions (such as CLAUDE.md or system prompts) and applying prompt caching breakpoints so that this static prefix is written once and served at a 90% discount with minimal latency across subsequent requests.",
+    "explanation": "Anthropic's architectural guidance for modular prompt design and context efficiency emphasizes two core practices: (1) modularizing procedures into Skills (SKILL.md files), where skill descriptions are registered as metadata while the heavy procedural instruction bodies load on demand only when invoked or relevant to the user request, keeping baseline context lean; and (2) keeping core, invariant project rules in base instructions (such as CLAUDE.md or system prompts) and keeping those rules stable across requests so the shared prefix can be cached at the API level and read back at cached read rates on subsequent turns.",
     "distractorNotes": {
       "opt-a": "Base64 encoding increases token volume by roughly 33%, obscures semantic meaning from the tokenizer, and increases rather than decreases token overhead.",
       "opt-c": "Temperature controls sampling randomness, not instruction filtering; increasing temperature induces hallucinations and does not reduce token consumption.",
       "opt-e": "Messages sent during the handshake turn still occupy the active context window, incurring full token billing and degrading attention without solving prompt bloat."
     },
-    "sourceUrl": "https://code.claude.com/docs/en/skills.md",
+    "sourceUrl": "https://code.claude.com/docs/en/skills",
     "sourceNote": "Skills / Extending Claude with modular skills and on-demand context loading",
     "sourceCheckedAt": "2026-09-13"
   }

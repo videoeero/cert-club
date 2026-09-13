@@ -104,7 +104,7 @@ Composition is fully proportional across all seven domains at 2× the 63-questio
   - *Domain 1 (Solution Design & Architecture)*: Focuses on canonical Anthropic workflows (prompt chaining, routing, parallel sectioning, orchestrator-workers, evaluator-optimizer), coordinator/subagent context isolation, and ACI tool consolidation. Excludes third-party multi-agent frameworks (LangGraph, AutoGen, CrewAI, LlamaIndex), multi-modal voice/audio real-time WebRTC agents, and Desktop/OS GUI coordinate-level screen automation loops.
   - *Domain 2 (Claude Models, Prompting & Context Engineering)*: Focuses on prompt caching prefix ordering/breakpoints, extended thinking reasoning budgets, XML framing, structured tool outputs, and long-context needle-in-haystack ordering. Excludes vision/image tile token calculation formulas, custom model distillation, and self-service fine-tuning (which is bespoke enterprise-only).
   - *Domain 3 (Integration)*: Focuses on MCP primitives (Resources, Tools, Prompts), the stdio and Streamable HTTP transports, Messages API tool execution mechanics, Contextual Retrieval (hybrid BM25 + dense + reranking), context editing (`clear_tool_uses`), and programmatic tool calling. Excludes WebSocket MCP transports, custom streaming JSON fragment parsing algorithms, and cloud-provider-specific IAM wrapper policies (Bedrock / Vertex AI IAM).
-  - *Domain 4 (Evaluation, Testing & Optimization)*: Focuses on multi-grader suites (code assertions + LLM judges), `pass^k` consistency gates, CI regression vs capability suite separation, RAG metric decoupling (precision, recall, faithfulness), shadow deployments, prompt caching economics, and OpenTelemetry spans. Excludes formal statistical sample-size power formulas, named third-party eval frameworks (Ragas, TruLens, DeepEval), and automated prompt search algorithms (DSPy).
+  - *Domain 4 (Evaluation, Testing & Optimization)*: Focuses on multi-grader suites (code assertions + LLM judges), `pass^k` consistency gates, CI regression vs capability suite separation, transcript-versus-outcome grading, staged evaluation (automated evals in CI, A/B testing, production monitoring), per-dimension rubrics graded by isolated LLM judges, prompt caching economics, and OpenTelemetry spans. Excludes formal statistical sample-size power formulas, named third-party eval frameworks (Ragas, TruLens, DeepEval), and automated prompt search algorithms (DSPy).
   - *Domain 5 (Governance, Safety & Risk Management)*: Focuses on Zero Data Retention (ZDR), indirect prompt injection defense, Claude Enterprise Inference Hooks, Agent SDK permissions and callbacks, regional data residency (`inference_geo`), CMEK KMS key revocation, Compliance API eDiscovery scopes, GDPR Article 17 conflict resolution, and SCIM immutability. Excludes HIPAA BAA legal contract negotiation text, FedRAMP High boundary documentation packages, and SIEM-specific query language syntax (Splunk SPL).
   - *Domain 6 (Stakeholder Communication & Lifecycle Management)*: Focuses on the simplicity principle during discovery, SLA metrics (TTFT via streaming), cost-per-task economics, HTTP 429 vs 529 root causes with jittered backoff, CLAUDE.md repository onboarding, Workspaces governance, and production feedback eval flywheels. Excludes generic enterprise corporate finance metrics (NPV, IRR, CAPEX/OPEX accounting) and formal organizational change management frameworks (ADKAR, Kotter).
   - *Domain 7 (Developer Productivity & Operational Enablement)*: Focuses on Claude Code repository conventions (CLAUDE.md, `.claude/rules/`, `.claude/skills/`, `.claude/agents/`), PreToolUse hooks, MDM managed settings, git worktrees, `/compact` recovery, and stdio JSON-RPC framing corruption. Excludes IDE keyboard shortcuts and third-party CI/CD pipeline configuration syntax (GitHub Actions YAML) beyond CLI invocation flags.
@@ -202,7 +202,7 @@ select-2 items were padded to five options so every multi-select carries the sam
 Across the bank's cold-review passes, four questions required substantive technical corrections before confirmation:
 
 - `ccar-p-solution-design-and-architecture-018`: Option `opt-d` contained a facepalm distractor ("Instruct the model in the system prompt to hallucinate missing employee details..."). Replaced with a realistic architectural failure mode: "Inject the organization's complete employee directory table into the system prompt context on each request to eliminate runtime tool calling." Updated `distractorNotes` to explain token overhead, context saturation, and data privacy risks. Key `opt-c` reconfirmed.
-- `ccar-p-claude-models-prompting-and-context-engineering-007`: Tested assistant turn prefilling to eliminate conversational preambles. Because prefilled assistant responses return HTTP 400 on Claude 4.6+ and later models (per Anthropic migration guidance), the stem was updated to explicitly specify "Claude 3.5 Sonnet", the explanation was updated to clarify model compatibility boundaries, and the source anchor was updated to `#migrating-away-from-prefilled-responses`. Key `opt-b` reconfirmed.
+- `ccar-p-claude-models-prompting-and-context-engineering-007`: Tested assistant turn prefilling to eliminate conversational preambles. Because prefilled assistant responses return HTTP 400 on Claude 4.6+ and later models (per Anthropic migration guidance), the stem was updated to explicitly specify "Claude 3.5 Sonnet", the explanation was updated to clarify model compatibility boundaries, and the source anchor was updated to `#migrating-away-from-prefilled-responses`. Key `opt-b` reconfirmed. **Superseded:** the currency pass recorded above re-framed this item away from Claude 3.5 Sonnet entirely, onto the Claude 4.6 migration that the cited section actually answers. The stem no longer names a 3.5-generation model.
 - `ccar-p-governance-safety-and-risk-management-015`: Question originally drafted around inspecting free-form text for safety refusals. Re-authored to accurately reflect Anthropic Messages API structured refusals, where the API sets `stop_reason: "refusal"` alongside structured `stop_details: RefusalStopDetails` (`type: "refusal"`, `category`, `explanation`), which enterprise gateways inspect directly. Promoted to `reviewed`.
 - `ccar-p-governance-safety-and-risk-management-018`: Question asked for least-privilege Compliance API auditing scopes without chat or file access. The original option relied on `read:org_audit`, but Anthropic documentation explicitly defines `read:org_audit` as granting access to all Compliance API read endpoints, which includes user chat transcripts and files. Re-authored to specify granular scopes (`read:members`, `read:compliance_activities`, `read:compliance_org_data`) that permit org and audit inspection while omitting `read:compliance_user_data`. Promoted to `reviewed`.
 
@@ -217,7 +217,7 @@ A systematic pass across all 7 domains hardened soft distractors into authentic 
 | Solution Design & Architecture | 21 | 7 | 14 | Replaced length tells and strawmen with parallel voting consensus, compensating prompt traps, and spot-instance checkpointing gotchas. |
 | Claude Models, Prompting & Context Engineering | 16 | 0 | 16 | Cleared Stage 0 untouched; already substantially above anchor (extended thinking token budgets, 5-minute TTL eviction, SKILL.md modularization). |
 | Integration | 24 | 7 | 17 | Replaced unindexed regex and raw TCP socket claims with mTLS DNS rebinding gotchas, in-context caching vs hierarchical RAG, and MCP sampling governance. |
-| Evaluation, Testing & Optimization | 20 | 15 | 5 | Replaced arbitrary retry loops and facepalms with `pass^k` consistency gates, OpenTelemetry distributed spans, ASR vs FRR trade-offs, and dual-pass position swapping. |
+| Evaluation, Testing & Optimization | 20 | 15 | 5 | Replaced arbitrary retry loops and facepalms with `pass^k` consistency gates and OpenTelemetry distributed spans. (Two topics landed here — ASR vs FRR trade-offs and dual-pass position swapping — were later found to be non-vendor vocabulary absent from their cited pages, and were re-authored out in the third source-drift pass.) |
 | Governance, Safety & Risk Management | 18 | 12 | 6 | Replaced crude bash tools and consumer terms with Agent SDK permission evaluation order, CMEK KMS key revocation, CASB forward proxies, and workspace trust in CI. |
 | Stakeholder Communication & Lifecycle Management | 18 | 17 | 1 | Replaced comical consulting strawmen with simplicity principle trade-offs, sub-second TTFT streaming, Workspaces spend limits, HTTP 429 vs 529 backoff, and golden eval flywheels. |
 | Developer Productivity & Operational Enablement | 9 | 9 | 0 | Replaced claims of Claude Code file-reading inability with MDM `managed-settings.json`, `--bare` CI invocation, git worktrees, `/compact` focus, and stdio framing deadlocks. |
@@ -538,3 +538,202 @@ pass: re-authoring during an audit is where bias creeps back in — run
 - **`ccdv-f`'s two unversioned MCP citations remain unaddressed** across all
   three passes. That is a `ccdv-f` pass, and it is now the oldest outstanding
   item in the repository.
+
+## Independent review of the source-drift dispositions — 2026-09-13
+
+The three passes above were all made by one agent. This pass re-reviews the 24
+questions that took a disposition in commit `26cc4d8`, by a reviewer who did not
+make them, treating that agent's reasoning as unverified. Every key was
+re-answered **cold** from its cited source before the stored key was consulted.
+
+Verdicts: **17 confirmed, 6 needing fixes, 1 rejected rewrite.** Eight questions
+changed. One further defect was found outside the reviewed 24 and fixed.
+
+### What the earlier passes got right
+
+Most of it. The re-cites in particular hold up under a cold read, and three are
+better than their write-ups claimed:
+
+- `evaluation-testing-and-optimization-009` → `monitoring-usage` § Traces
+  (beta). The quoted span sentence is verbatim, and the page carries three
+  separate Agent SDK paragraphs, so the stem's Agent SDK scoping genuinely
+  makes a Claude Code citation valid. The span-hierarchy section answers the
+  stem's "which step consumed the time" directly.
+- `governance-safety-and-risk-management-010` → `compliance-api-access`. The
+  scope table states the key verbatim, and the key-type table explicitly names
+  "sessions (in apps such as Cowork and Claude Code)", which is the half of the
+  stem the old citation could not reach at all.
+- `governance-safety-and-risk-management-007`. The stem fix was necessary and
+  the rewrite is exact: "permanently inaccessible, with no backout path" and
+  "Key revocation can take up to 1 hour (the cache TTL)" are both verbatim.
+
+`claude-models-prompting-and-context-engineering-012` (prompt caching) is the
+best-sourced item in the set — the key takeaway, the 4-breakpoint cap, the
+"breakpoints don't add any cost" rule and the 20-block lookback are each
+confirmed on the page.
+
+### The defect class the passes did not catch
+
+**They verified keys, not explanation numerics.** Three of the six fixes are
+figures asserted as vendor-documented that appear nowhere on the cited page:
+
+| Item | The claim | Occurrences on the cited page |
+| --- | --- | --- |
+| `solution-design-and-architecture-019` | "up to an 80%+ reduction in TTFT and 90% cost savings" | `80%` 0, `90%` 0, `85` 0, `cost savings` 0 |
+| `evaluation-testing-and-optimization-016` | "(typically under 800ms)" | `800` 0 |
+| `claude-models-prompting-and-context-engineering-002` | "temperature must remain 1.0 when extended thinking is enabled" | `temperature` 0 |
+
+The first is real drift, not authoring sloppiness: the prompt-caching page used
+to carry those percentages and has replaced them with the concrete pricing
+multiplier (cache reads at 10% of base input, 2.5% on Fable 5.1 and Mythos 5.1).
+The third pass read that page claim-by-claim, re-confirmed the key, and walked
+past the number in the explanation. **A key-only cold read is not enough: read
+the explanation and the distractorNotes against the page too, because that is
+where unsourced numbers hide.**
+
+### Dispositions
+
+| Item | Disposition | Reason |
+| --- | --- | --- |
+| `ccar-p-evaluation-testing-and-optimization-012` | **reject and re-author** | The rewrite's sourcing was impeccable — all four controls verbatim — but it landed on the same section of the same page as `governance-safety-and-risk-management-002`, which already keys on tool_result delivery plus a system-prompt untrusted policy. Even the distractors rhymed: gov-002's delimiters-in-system-prompt ≈ this item's `opt-b`, gov-002's regex filter ≈ this item's `opt-c`. Domain fit regressed too: an item in Domain 4 came to test Domain 5 architectural controls, where the retired version at least tested evaluation metrics. And the key was the only option that was a *combination* when the stem asked for one — a format tell no length metric can see. Re-authored onto the same page's validation guidance ("Red-team your own agent… test your workflow with documents, emails, and tool outputs that deliberately contain injection attempts") plus § Continuous monitoring. That is genuinely Domain 4 and does not overlap gov-002. |
+| `ccar-p-solution-design-and-architecture-017` | **re-cite and rescope** | The worst instance of the very defect the audit was chartered to find. Re-cited to `effective-context-engineering` § Structured note-taking, a technique for surviving a **context reset** — but the question is about surviving **machine preemption**. On that page: `checkpoint` 0, `resume` 0, `restart` 0, `durab` 0, `crash` 0, `queue` 0. Re-cited to `code.claude.com/docs/en/agent-sdk/sessions` § Resume across hosts, which states it: "Session files are local to the machine that created them", and for "a different host (CI workers, ephemeral containers, serverless)" attach a session-store adapter "so the SDK mirrors transcripts to your own backend and another host can resume them". Stem rescoped onto an Agent SDK agent. `opt-a` improved from a generic RAM-and-disk distractor into the trap the page actually warns about: relying on the default local session files and `continue`. A stale "5-minute rolling TTL" in `opt-c`'s note corrected to the 5-minute default with a 1-hour maximum. |
+| `ccar-p-solution-design-and-architecture-014` | **explanation** | Only one of the key's three clauses is on the cited page. "the detailed search context remains isolated within sub-agents" is there; `swarm`, `control flow` and `cascade` are each 0. The explanation attributed "predictable control flow, explicit auditability, bounded iteration loops" to guidance that page never gives — those live on `building-effective-agents` ("workflows offer predictability and consistency", "the potential for compounding errors", "stopping conditions… to maintain control"). The schema allows one `sourceUrl`, so the citation stays and the explanation now quotes what that page says and marks the rest as structural corollary. The item's discriminating power never rested on those clauses: all three distractors are false statements, so the key wins on being the only true option. |
+| `ccar-p-integration-005` | **stem** | The explanation stated the Fable 5.1 / Mythos 5.1 400 boundary correctly, but the stem named no model — so the key was a configuration the docs say returns a 400 on the flagship models, and the explanation had to apologise for it. Stem now names Claude Sonnet 5 as "a model that supports forced tool use". The explanation also now records the second documented exclusion it had omitted: `any` and `tool` are unsupported alongside manual extended thinking. |
+| `ccar-p-solution-design-and-architecture-019` | **explanation** | Unsourced percentages, above. Replaced with the page's own qualitative claim and the 10%-of-base-input cache-read price. |
+| `ccar-p-evaluation-testing-and-optimization-016` | **explanation** | Unsourced "(typically under 800ms)", above. Now quotes the page verbatim on streaming and perceived responsiveness. |
+| `ccar-p-claude-models-prompting-and-context-engineering-002` | **distractorNote** | Unsourced temperature claim, above. True of the API, not established by the cited page; removed. The note's first clause already disqualifies the option. |
+| `ccar-p-evaluation-testing-and-optimization-005` | **explanation** | Found outside the reviewed 24 and fixed. The explanation opened "Anthropic's evaluation guide notes that model-based judges can suffer from biases such as favoring verbosity" — `verbos` and `bias` are 0 on the cited page *and* 0 on `demystifying-evals`. No page in this bank's citation set documents LLM-judge verbosity bias. Explanation now grounds the rubric and reasoning clauses in § Tips for LLM-based grading and returns the verbosity finding to the stem's fact pattern, where it belongs. `sourceNote` sharpened from "Grade your evaluations and tips for LLM-based grading" to name the three tips the key leans on. |
+
+### A correction to this pass's own first read
+
+The first cut of this review reported `evaluation-testing-and-optimization-005`
+as another "sound key, wrong page", on the strength of `chain-of-thought`
+returning 0 on `develop-tests`. That was wrong: the page states the practice in
+different words — "Encourage reasoning: Ask the LLM to reason first before
+producing an evaluation score, and then discard the reasoning" — and also
+carries "Have detailed, clear rubrics". Two of the key's three clauses are on
+the cited page; only the verbosity-bias premise is unsourced, which is a much
+smaller defect. **Grep for the concept, not the vocabulary.** A zero count for a
+term of art is evidence the phrase is absent, not that the claim is.
+
+### Gaps the third pass named, now closed
+
+- **Anchors are verified.** The bank carries only 5 `#fragment` citations, all
+  on `claude-prompting-best-practices`. All five resolve to live `###` headings
+  (`structure-prompts-with-xml-tags`, `be-clear-and-direct`,
+  `use-examples-effectively`, `migrating-away-from-prefilled-responses`,
+  `long-context-prompting`). No fix needed; this is not a standing liability.
+- **No retired model names remain.** Full inventory of the bank: Haiku 4.5 (13),
+  Sonnet 4.5 (8), Sonnet 5 (6), Opus 5 (3), Mythos 5.1, Fable 5.1, plus 4.6/4.7
+  generation references. All current or legacy-but-available. The model-name
+  grep the third pass proposed as a mechanical guard is cheap and works; it is
+  still worth building.
+
+### Metrics
+
+Re-authoring did not reintroduce length bias this time, because the distractors
+were written to length rather than trimmed afterwards. All four guards pass
+throughout.
+
+| | Before | After |
+| --- | --- | --- |
+| mean option-length delta | +0.70 | **+0.64** |
+| longest-option-as-key | 26.4% | **24.5%** |
+| "always longest" baseline | 28.2% | **26.4%** |
+| "eliminate absolutes", uniquely solving | 28.6%, 0/110 | **28.6%, 0/110** |
+| distinct source pages | 59 | **60** |
+
+Composition untouched: 126 questions, 110 single / 16 select-2, zero delta on
+every domain, position split 29/29/26/26.
+
+### Not covered by this pass
+
+- **Only the 24 disposed questions were re-answered.** The other 102 were not
+  re-read. Given that this pass found three unsourced figures inside questions
+  the third pass had just read, the explanation-and-distractorNote sweep
+  described above should be run across the whole bank, not only over items that
+  take a disposition. That is the single highest-yield thing the next pass can do.
+- **`solution-design-and-architecture-014` still has the key as its longest
+  option** (+13 chars, `[LONGEST=KEY]`). Pre-existing, and the repository guard
+  passes it; its distractors are false statements rather than padded ones, so
+  the length is not exploitable. Left alone deliberately rather than overlooked.
+- **The absolute-qualifier guard's word list is narrower than the heuristic it
+  models.** `ABSOLUTE_QUALIFIER_WORDS` covers always/never/only/must/every/
+  cannot/all/any/no. On `evaluation-testing-and-optimization-007` a distractor is
+  disqualified by "routinely miss entirely", which a real test-taker reads as
+  absolute and the guard does not. The 0-of-110 figure is therefore slightly
+  optimistic. Widening the list would move every bank's recorded baseline, so it
+  is a repository decision, not a `ccar-p` one.
+- **`ccdv-f`'s two unversioned MCP citations remain unaddressed** across all four
+  passes, and are still the oldest outstanding item in the repository.
+
+### External code review of the same staged changes — 2026-09-13
+
+A separate reviewer ran a code review over the staged `ccar-p` changes and
+raised nine findings. They were checked one by one against the tree rather than
+taken on trust. One had already been fixed by the independent review above
+(`evaluation-testing-and-optimization-012`, reached independently and with the
+same remedy, which is corroboration rather than coincidence). The other eight
+were valid and are now fixed. Three were understated by the reviewer and one
+correction lands on this record's own earlier claim.
+
+| Finding | Disposition | Reason |
+| --- | --- | --- |
+| Structured Outputs cannot emit XML (`claude-models-prompting-and-context-engineering-007`) | **stem fix** | Confirmed: `structured-outputs` has 7 occurrences of `xml` and **all 7 are `com.fasterxml.jackson` package imports** in Java samples. The feature is `type: "json_schema"` only, so a stem targeting "a specific XML schema" made its own key impossible. Retargeted to a JSON schema with a prefilled opening brace; `opt-c`'s note follows. The key was always the best of four, so scoring was never wrong — the bank was teaching a capability that does not exist, which is the worse failure for a cert. |
+| Off-topic distractor in `evaluation-testing-and-optimization-006` | **option fix** | Worse than reported. `opt-e` raised "the judge model's temperature" in an interactive-latency scenario with no judge and no eval harness, **and its `distractorNote` answered as though the scenario were an eval question** — the signature of an option pasted in from another item. It collapsed a select-2-of-5 (10 combinations) to an effective 2-of-4 (6), lifting the guess floor from 10% to 16.7%. Replaced with a real latency anti-pattern: routing interactive turns through the Batches API. |
+| Domain 4 perimeter and hardening table list retired topics | **record fix** | Understated. Line 107 listed "RAG metric decoupling (precision, recall, faithfulness)" as a Domain 4 focus **while the same line excluded "named third-party eval frameworks (Ragas, TruLens, DeepEval)"** — and those three metrics are Ragas vocabulary, which is the exact contradiction the second pass invoked when it rewrote `-013`. Both that line and the hardening table's "ASR vs FRR trade-offs, and dual-pass position swapping" now reflect the post-audit topics. |
+| Contradictory history for `…-007` | **record fix** | Valid, and the file's ordering makes it worse: the currency section (from line 164) sits **above** the adjudications section (from line 200), so a reader meets the correct Claude 4.6 reframing first and a contradicting "Claude 3.5 Sonnet" note afterwards, unmarked. Annotated as superseded. |
+| Three near-identical Batches API items | **re-author** | Undercounted: **four** questions cite `batch-processing`, not three. `solution-design-and-architecture-020` earns its place (select-2, paired with the fast-model half), but `evaluation-testing-and-optimization-001`, `solution-design-and-architecture-008` and `stakeholder-communication-and-lifecycle-management-010` were the same question — N overnight transcripts to the Batches API for the 50% discount — differing only in industry and volume. Nothing in `npm run check` or the balance report can see this; all three counted as distinct coverage in three different domains. `-008` kept as the canonical architecture choice. `-001` re-authored onto per-request result semantics (`succeeded` / `errored` / `canceled` / `expired`, none of the last three billed, one request's failure not affecting others), which is genuinely Domain 4. `-010` re-authored onto publishing a turnaround commitment — the documented 24-hour expiration bound against the sub-hour typical case — which is genuinely Domain 6, and its stem now chunks 500,000 requests across batches rather than implying one batch above the 100,000 limit. |
+| Three variants of the multi-select suffix | **normalised** | Real inside this bank: 7 `(Select TWO.)`, 7 `(Select two.)`, 2 bare `Select TWO.` across 16 items. All 16 now read `(Select TWO.)`. Note the reviewer's "repository standard" framing is overstated — `az-900` uses the bare form and `ccdv-f` mixes all of them — but `(Select TWO.)` matches `ccar-f`, the same cert family. |
+| 29 `sourceUrl`s retaining `.md` | **normalised** | **Valid, and it corrects a claim made earlier in this session.** The independent review above initially dismissed the `.md` suffix as bank convention. It is not: the record at lines 196–198 states the bank normalised "to the bank's majority bare form". That earlier normalisation only touched pages cited in *both* forms, leaving pages cited solely as `.md` untouched. The staged diff shows **29** `.md` citations stripped. A thirtieth was touched only in passing: the `…-017` re-cite earlier in this session was first written with a `.md` suffix, following the wrongly-inferred convention, and was normalised before anything was staged — so it appears in the diff as a direct move to the bare `agent-sdk/sessions` URL rather than as a `.md` removal. Impact was cosmetic: no page was cited in both forms, so nothing was double-counted. |
+
+### The guard earned its keep again
+
+The first cut of the two Batches re-authorings **failed `npm run validate`** on the
+absolute-qualifier rule: in both items the key had become the only option with
+no absolute. This is the same regression the third pass recorded, arriving the
+same way — re-authoring during an audit. Fixed the way that pass prescribes, by
+softening a distractor (`any request` → `the results contain unsuccessful
+requests`; `any stragglers` → `stragglers`) rather than hedging either key.
+Worth restating: **`npm run check` catches this, but only after the fact. Run it
+on every re-author, not once at the end of the batch.**
+
+Metrics after all fixes: mean option-length delta +0.70, longest-option-as-key
+24.5%, "always longest" 26.4%, "eliminate absolutes" 28.9% uniquely solving
+0/110, position split 29/30/26/25. All four guards pass. Composition unchanged
+at 126 questions, 110 single / 16 select-2, zero delta on every domain, 60
+distinct source pages.
+
+### Second external code review — 2026-09-13
+
+A further review of the same staged changes raised four findings. All four are
+valid; none was a false positive. Two land on work done earlier in this session,
+which is the point of running another pass over it.
+
+| Finding | Disposition | Reason |
+| --- | --- | --- |
+| Unsourced "80%" and "KV states" in `evaluation-testing-and-optimization-006` | **re-author** | Valid, and under-diagnosed. The cited `reduce-latency` page has zero occurrences of `80%`, `KV`, `prefill` **and `cach`** — it does not discuss prompt caching at all. So the defect was not a stray numeral in the explanation: half the key (`enable prompt caching`) was unsourced on its own page. The page documents exactly three levers — choose a faster model, minimise input and output tokens, stream responses. Re-authored onto the two the item can actually test: the stem now states that streaming is already in place (which also stops it duplicating `…-016`, whose key *is* streaming on the same page), and the keys are Claude Haiku 4.5 for a speed-critical path and trimming prompt and output length. The `max_tokens` and temperature distractors are now wrong in the direction the page names, rather than merely implausible. |
+| "none of them ever reached the model" over-claims for `errored` | **option fix** | Valid, and it is this session's own wording. The documentation attaches "before this request could be sent to the model" to `canceled` and `expired` only; `errored` is "Request encountered an error and a message was not created", which can include internal server errors after dispatch. `opt-b` and the `opt-a` note now say "created no message result", which is the criterion the documentation actually applies to all three. The explanation already used the correct formulation, so only the option and note moved. |
+| The `.md` entry claims 30 strippings; the diff shows 29 | **record fix** | Valid. The staged diff strips 29 `.md` citations. The thirtieth existed only transiently inside this session: `…-017` was re-cited with a `.md` suffix under the wrongly-inferred convention and normalised before anything was staged, so it appears in the diff as a direct move to the bare `agent-sdk/sessions` URL. The entry now says so. The "30" came from an in-session script counting its own intermediate state — a reminder that **counts belong in the record only once they are counted against the diff, not against the working step that produced them.** |
+| 90% cache discount attributed to the Skills page in `…-016` | **explanation fix** | Valid, same class as the first finding. `code.claude.com/docs/en/skills` has zero occurrences of `90%`, `discount` and `breakpoint`; its only two `cach` hits are `__pycache__` and a plugin data directory. Cache pricing lives on the prompt-caching page (10% of base input, 2.5% on Fable 5.1 and Mythos 5.1), so the "90%" was also about to go stale. The key option already said "cached read rates" and was fine; the explanation now matches it. |
+
+### What two consecutive external reviews say about the unsourced-numeric class
+
+The independent review found three instances, fixed them, and wrote up the
+lesson. This review then found **two more in the same bank**, one of them inside
+a question the previous pass had just re-authored. That is not a failure of any
+single pass; it is evidence the defect is dense enough that targeted reads keep
+missing instances. The standing recommendation is now firmer: **sweep every
+explanation and distractorNote in the bank for figures and internal
+implementation vocabulary, and check each against its cited page.** Candidates
+are cheap to find mechanically — percentages, millisecond figures, and terms
+like `KV`, `prefill`, `token bucket` that read as documentation but usually are
+not.
+
+Rebalancing note: the `…-006` re-author initially made a key the longest option
+(delta +10 on a guard threshold of 10). Distractor lengths were adjusted to
+bring the item to -3 with a distractor longest. Bank metrics after all fixes:
+mean option-length delta +0.78, longest-option-as-key 24.5%, "always longest"
+26.4%, "eliminate absolutes" 28.9% uniquely solving 0/110, position split
+29/30/26/25. All four guards pass; composition unchanged at 126 questions,
+110 single / 16 select-2, zero delta on every domain.

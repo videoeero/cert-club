@@ -36,7 +36,7 @@
       "opt-b": "Literal permissions.deny rules in settings.json match exact command string prefixes and do not catch flags before arguments, subshells, or command aliases; deterministic prevention requires PreToolUse hook inspection.",
       "opt-c": "Rules files in .claude/rules/*.md are loaded into context as guidance for Claude; they do not provide deterministic programmatic execution barriers before tool execution."
     },
-    "sourceUrl": "https://code.claude.com/docs/en/memory.md",
+    "sourceUrl": "https://code.claude.com/docs/en/memory",
     "sourceNote": "CLAUDE.md vs auto memory / PreToolUse hooks for blocking",
     "sourceCheckedAt": "2026-09-13"
   },
@@ -77,7 +77,7 @@
       "opt-c": "Settings committed in an untrusted cloned repository cannot approve its own MCP servers or hooks; Claude Code ignores enableAllProjectMcpServers in untrusted folders.",
       "opt-d": "--safe-mode is intended for interactive troubleshooting; --bare is the dedicated non-interactive flag that skips auto-discovery of hooks, skills, MCP servers, plugins, and auto memory."
     },
-    "sourceUrl": "https://code.claude.com/docs/en/headless.md",
+    "sourceUrl": "https://code.claude.com/docs/en/headless",
     "sourceNote": "headless execution with --bare mode and explicit tool permissions",
     "sourceCheckedAt": "2026-09-13"
   },
@@ -118,7 +118,7 @@
       "opt-c": "Repository-level rules files are advisory context loaded into the model and can be overridden or modified by developers; they do not enforce system-wide administrative control.",
       "opt-d": "Developer ~/.claude/settings.json resides in user space, so developers have write access and can modify rules or override restrictions using command-line flags such as --permission-mode."
     },
-    "sourceUrl": "https://code.claude.com/docs/en/managed-settings.md",
+    "sourceUrl": "https://code.claude.com/docs/en/managed-settings",
     "sourceNote": "managed-settings.json and allowManagedPermissionRulesOnly",
     "sourceCheckedAt": "2026-09-13"
   },
@@ -159,7 +159,7 @@
       "opt-b": "The /clear command empties conversation history, but CLAUDE.md is loaded into context automatically at the start of every session and on every turn.",
       "opt-d": "Rules files in .claude/rules/*.md without path frontmatter are loaded unconditionally into context at session start, reproducing the same token bloat."
     },
-    "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
+    "sourceUrl": "https://code.claude.com/docs/en/sub-agents",
     "sourceNote": "custom subagent context isolation and scoped tool permissions",
     "sourceCheckedAt": "2026-09-13"
   },
@@ -200,7 +200,7 @@
       "opt-c": "Resuming with claude --resume restores the full transcript from disk, including the oversized tool results that caused the thrashing error in the first place.",
       "opt-d": "/doctor diagnoses installation health, settings syntax, and unused extensions; it cannot prune conversation history or alter model compaction thresholds."
     },
-    "sourceUrl": "https://code.claude.com/docs/en/troubleshooting.md",
+    "sourceUrl": "https://code.claude.com/docs/en/troubleshooting",
     "sourceNote": "auto-compaction thrashing and context recovery",
     "sourceCheckedAt": "2026-09-13"
   },
@@ -241,7 +241,7 @@
       "opt-b": "Running two Claude Code sessions in the same working directory causes concurrent edits and git operations on the same files, leading to collisions.",
       "opt-c": "Stashing local work blocks the engineer's active workflow and risks severe merge conflicts when popping stashed changes over Claude's file edits."
     },
-    "sourceUrl": "https://code.claude.com/docs/en/worktrees.md",
+    "sourceUrl": "https://code.claude.com/docs/en/worktrees",
     "sourceNote": "running parallel sessions with git worktrees",
     "sourceCheckedAt": "2026-09-13"
   },
@@ -282,7 +282,7 @@
       "opt-c": "--bare is designed for headless scripting without loading customizations; it does not repair configurations, unregister MCP servers, or run interactive doctor fixes.",
       "opt-d": "~/.claude.json contains user state and local MCP server configs, not project hooks; deleting it destroys settings without isolating the specific cause of the hang."
     },
-    "sourceUrl": "https://code.claude.com/docs/en/debug-your-config.md",
+    "sourceUrl": "https://code.claude.com/docs/en/debug-your-config",
     "sourceNote": "diagnosing configuration loading issues with safe mode and doctor",
     "sourceCheckedAt": "2026-09-13"
   },
@@ -323,7 +323,7 @@
       "opt-b": "Rules files in .claude/rules/ apply instructions automatically based on file paths during file editing, but do not provide user-invocable slash commands.",
       "opt-d": "PreToolUse hooks intercept tool execution for deterministic policy enforcement; they are not designed to structure multi-step interactive workflows or slash commands."
     },
-    "sourceUrl": "https://code.claude.com/docs/en/skills.md",
+    "sourceUrl": "https://code.claude.com/docs/en/skills",
     "sourceNote": "custom skills for reusable team workflows and token conservation",
     "sourceCheckedAt": "2026-09-13"
   },
