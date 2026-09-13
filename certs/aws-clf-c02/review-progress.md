@@ -866,3 +866,56 @@ Following distractor hardening and calibration, Domain 3 currently sits **at or 
 - `aws-clf-c02-cloud-technology-and-services-042`: **hardened** (weak distractors). Serverless event bus routing SaaS and AWS events (Amazon EventBridge). Replaced unrelated networking distractors (Route 53, Direct Connect) with messaging near-misses: Amazon SNS and Amazon SQS.
 - `aws-clf-c02-cloud-technology-and-services-043`: **hardened** (weak distractors). Persistent cloud desktop environment for remote workers (Amazon WorkSpaces). Replaced unrelated container/compute distractors (App Runner, Auto Scaling) with virtual desktop / workspace near-misses: Amazon AppStream 2.0 and Amazon WorkSpaces Web.
 - `aws-clf-c02-cloud-technology-and-services-044`: **hardened** (weak distractors). Automated CI/CD release workflow orchestration (AWS CodePipeline). Replaced unrelated management/monitoring services (Systems Manager, CloudWatch) with developer tools suite near-misses: AWS CodeBuild and AWS CodeDeploy.
+
+## Figure-bearing claims audit and baseline — 2026-09-13
+
+Following the provenance rules codified in `CONTRIBUTING.md`, this pass evaluated the
+figure-bearing questions in `aws-clf-c02` against official AWS documentation.
+
+> **Correction (same day).** An initial version of this section recorded all 7 items as
+> **Confirmed** with a **bump** disposition. That was wrong on three counts and has been
+> replaced by the table below: no `sourceCheckedAt` was actually moved, `aws.amazon.com`
+> renders its content client-side so most of these citations cannot be read the way an
+> Anthropic `.md` page can, and one item was confirmed against a page that no longer
+> supports it. The bank's rate is **not** 0.0%.
+
+### Summary of adjudications (7 items)
+
+| Question | Claim under review | Cited page | Verdict | Disposition |
+| --- | --- | --- | --- | --- |
+| `billing-...-006` | "750 hours", "60 days", "12 Months Free" | `aws.amazon.com/free` | **Defect**: the cited page no longer carries a "12 Months Free" offer type (zero occurrences), no 750 EC2 hours (the only `750` match is a JS asset hash), and no 30/60-day trial durations. The page now describes a Free plan / Paid plan split with up to $200 in credits over 6 months, alongside Always Free and Short-term trial offer types. | **rewrite** — explanation and `distractorNotes.a`/`.b` regrounded on what the page states; `sourceCheckedAt` bumped. |
+| `billing-...-008` | "$0.00 per GB" | `aws.amazon.com/ec2/pricing/on-demand` | **Inconclusive**: client-rendered page, not read in this pass. | **none** |
+| `billing-...-010` | "up to 72%" | `savingsplans/.../what-is-savings-plans` | **Inconclusive**: not read in this pass. | **none** |
+| `billing-...-013` | "$500/month", "80% threshold" | `cost-management/.../manage-ad` | **Inconclusive**: not read in this pass. | **none** |
+| `cloud-...-002` | "48 hours" | `AmazonS3/.../glacier-storage-classes` | **Inconclusive**: not read in this pass. | **none** |
+| `cloud-...-018` | "up to 90%" | `AWSEC2/.../using-spot-instances` | **Inconclusive**: not read in this pass. | **none** |
+| `security-...-020` | "90 days" | `awscloudtrail/.../logging-insights-events-with-cloudtrail` | **Inconclusive**: not read in this pass. | **none** |
+
+### Population gap
+
+The 7 items above were selected by hand. A mechanical sweep of the free-text surface
+(`explanation`, `sourceNote`, `distractorNotes`, keyed option text) finds **4 further
+figure-bearing items that this pass never considered**, each carrying a
+vendor-attributed figure:
+
+| Question | Claim |
+| --- | --- |
+| `billing-...-001` | one-year / three-year Savings Plans commitment terms |
+| `billing-...-007` | "up to the past 12 months", "up to 12 months ahead" |
+| `cloud-concepts-026` | "up to 80 TB or 210 TB usable storage" |
+| `cloud-...-020` | "six copies… three Availability Zones", "128 TiB", "10 GB increments" |
+
+### Bank metrics
+
+- **Total questions in bank**: 130
+- **Figure-bearing items (hand-selected)**: 7; **mechanically detected**: 11
+- **Adjudicated to a verdict**: 1 (`billing-pricing-and-support-006`)
+- **Defects found**: 1 of 1 adjudicated
+- **Inconclusive**: 6 (client-rendered AWS hosts)
+- **Not yet adjudicated**: 4
+
+**No defect rate is recorded for this bank.** One of one adjudicated item was a defect;
+the remaining 10 are unmeasured. Reporting 0.0% here would have been an artefact of
+counting unread pages as clean. Per the plan's own scoping, `docs.aws.amazon.com` and
+`aws.amazon.com` are out of scope for text verification and must report **inconclusive,
+never a finding and never a confirmation**.

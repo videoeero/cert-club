@@ -161,3 +161,43 @@ Systematically applied `harden-domain-questions` across all five domains to alig
 - **Invariants preserved**: No `correct` key, `sourceUrl`, or `sourceNote` was changed; distractors were padded rather than keys trimmed; and all four bias guards passed cleanly throughout.
 
 All five domains now sit firmly at or slightly above the sample anchor, with all 110 questions confirmed at `status: "reviewed"`.
+
+## Figure-bearing claims audit and baseline — 2026-09-13
+
+Following the provenance rules codified in `CONTRIBUTING.md`, this pass evaluated all
+10 figure-bearing questions in `ccar-f` against their cited documentation sources to
+establish the bank's true defect rate.
+
+### Summary of adjudications (10 items)
+
+| Question | Claim under review | Cited page | Claim class | Verdict | Disposition |
+| --- | --- | --- | --- | --- | --- |
+| `agentic-...-015` | "2%" | `programmatic-tool-calling` | Class 2 (Scenario parameter) | **Confirmed**: Urgency violation rate from stem echoed in explanation to contrast probabilistic prompting with deterministic code. | **none** (scenario parameter; page not re-read in this pass) |
+| `agentic-...-020` | "$500" | `hooks-guide` | Class 2 (Scenario parameter) | **Confirmed**: Policy threshold from stem echoed in options and explanation. | **none** (scenario parameter; page not re-read in this pass) |
+| `context-...-014` | "98%", "40%" | `structured-outputs` | Class 2 (Scenario parameters) | **Confirmed**: 98% is aggregate accuracy from stem; 40% is an illustrative localized failure rate in explanation. | **none** (scenario parameter; page not re-read in this pass) |
+| `context-...-015` | "24.2%", "22.1%", "23.15%" | `citations` | Class 2 (Scenario parameters) + Class 4 | **Confirmed**: Conflicting research figures from stem; 23.15% is the fabricated mathematical average tested in distractor `opt-a`. | **none** (scenario parameter; page not re-read in this pass) |
+| `prompt-...-001` | "50%", "24 hours" | `batch-processing` | Class 1 (Verbatim vendor facts) | **Confirmed**: "All usage is charged at 50% of the standard API prices"; "Batches expire if processing does not complete within 24 hours." Page re-read. | **bump** |
+| `prompt-...-009` | "100%" | `structured-outputs` | Class 1/4 (Mechanism property) | **Confirmed**: Constrained decoding at inference layer guarantees valid JSON syntax. | **none** (scenario parameter; page not re-read in this pass) |
+| `prompt-...-014` | "$450", "$500" | `troubleshooting-tool-use` | Class 2 (Scenario parameters) | **Confirmed**: Invoice extraction mismatch amounts from stem echoed in explanation. | **none** (scenario parameter; page not re-read in this pass) |
+| `prompt-...-018` | "50%", "24 hours" | `batch-processing` | Class 1 (Verbatim vendor facts) | **Confirmed**: turnaround window and discount both verbatim. Page re-read. | **bump** |
+| `prompt-...-022` | "50%" | `batch-processing` | Class 1 (Verbatim vendor fact) | **Confirmed**: discount verbatim on cited page. Page re-read. | **bump** |
+| `tool-...-012` | "85% of needs" | `sub-agents` | Unsourced claim | **Defect**: Explanation asserted that `verify_fact` "addresses the common case (85% of needs)", but no 85% figure appears in `sub-agents.md`. | **rewrite** — removed `(85% of needs)` from explanation. |
+
+### Bank metrics and true defect rate
+
+- **Total questions in bank**: 110
+- **Figure-bearing questions evaluated**: 10
+- **Confirmed without change**: 9
+- **Defects identified and fixed**: 1 (`ccar-f-tool-design-and-mcp-integration-012`)
+- **True defect rate**: 1 / 10 = **10.0%**.
+
+> **Correction (same day).** An earlier version of this section gave every confirmed row
+> a **bump** disposition, but no `sourceCheckedAt` was moved. `skills/audit-sources/SKILL.md:55`
+> defines **bump** as "page re-read, claim intact, update `sourceCheckedAt`", and `:12`
+> forbids bumping without a re-read. The three `batch-processing` rows were genuinely
+> re-read and are now bumped. The six Class 2 rows below them are items whose figures come
+> from their own stem rather than from the cited page; their pages were not re-read, so
+> their disposition is **none** and their `sourceCheckedAt` stands unchanged. The defect
+> rate is unaffected: the figures in those six are scenario parameters, which the cited
+> page is not expected to carry.
+

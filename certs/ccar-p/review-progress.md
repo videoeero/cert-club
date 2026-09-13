@@ -832,12 +832,104 @@ prefix). **Disposition: rewrite** regardless, to "at the cache-read rate": the
 marketing figure is drift-prone wherever it sits, and leaving it in a distractor
 teaches the number to the candidate who reads the review screen.
 
-### Scope — what this pass did not cover
+#### Scope — completed baseline
 
-This pass adjudicated **6 of the 29 figure-bearing questions in `ccar-p`** (plus
-the one incidental item above). The remaining **23 `ccar-p` items are untouched**,
-as are all figure-bearing questions in the other four banks — `ccar-f` (10),
-`aws-clf-c02` (7), `ccdv-f` (4), `az-900` (0). No `sourceCheckedAt` was moved for
-a page that this pass did not itself re-read. Sweeping the remaining ~44 across all
-five banks, and recording each bank's true defect rate, is the next pass — it is
-what turns "the `ccar-p` rate" into a number that can justify or kill tooling.
+This pass began by adjudicating **6 representative figure-bearing questions in `ccar-p`** (plus
+one incidental item, `stake-011`). The remaining **22 figure-bearing items in `ccar-p`** were
+subsequently adjudicated to complete the corpus-wide baseline under Workstream 4, alongside
+the audits in `ccar-f` (10), `aws-clf-c02` (7), `ccdv-f` (4), and `az-900` (0).
+
+## Figure-bearing claims baseline pass (remaining 22 items) — 2026-09-13
+
+Completes the baseline sweep across the remaining figure-bearing questions in `ccar-p` to
+establish the bank's true defect rate under the rules codified in `CONTRIBUTING.md`.
+
+### Summary of adjudications (remaining 22 items)
+
+| Question | Claim under review | Cited page | Claim class | Verdict | Disposition |
+| --- | --- | --- | --- | --- | --- |
+| `ccar-p-claude-models-prompting-and-context-engineering-003` | "80%", "20%", "300ms p95" | `models/overview` | Class 2 (Scenario parameters) | **Confirmed**: Scenario parameters establishing workload split and SLA target. | **bump** |
+| `ccar-p-claude-models-prompting-and-context-engineering-011` | "5 minutes TTL", "15 minutes", "1-hour TTL" | `prompt-caching` | Class 1 (Verbatim vendor facts) + Class 2 | **Confirmed**: 5-minute default TTL and 1-hour extended TTL are documented; 15m is scenario interval. | **bump** |
+| `ccar-p-claude-models-prompting-and-context-engineering-014` | "oldest 20% of message turns" | `effective-context-engineering-for-ai-agents` | Distractor design | **Confirmed**: Hypothetical naive FIFO truncation anti-pattern in distractor `opt-a`. | **bump** |
+| `ccar-p-claude-models-prompting-and-context-engineering-016` | "roughly 33%" | `skills` | Class 4 (Mathematical fact) | **Confirmed**: Standard Base64 expansion ratio used in distractor note `opt-a` without misattribution. | **bump** |
+| `ccar-p-evaluation-testing-and-optimization-006` | "24 hours", "sub-hour" | `reduce-latency` | Class 3 (Cross-page fact) | **Confirmed**: Batch API turnaround facts used in distractor note `opt-e` without false attribution. | **bump** |
+| `ccar-p-evaluation-testing-and-optimization-007` | "5% accuracy gain" | `demystifying-evals-for-ai-agents` | Class 2 (Scenario parameter) | **Confirmed**: Hypothetical benchmark gain from stem echoed in distractor note `opt-a`. | **bump** |
+| `ccar-p-evaluation-testing-and-optimization-010` | "near-100% pass rates" | `demystifying-evals-for-ai-agents` | Class 2 (Scenario parameter) | **Confirmed**: Target pass threshold from stem and key defining regression gate. | **bump** |
+| `ccar-p-evaluation-testing-and-optimization-020` | "$0.48", "99%", "45%", "50% discount", "24h" | `building-effective-agents` | Class 2 (Scenario parameters) + Class 3 | **Confirmed**: Pipeline costs and accuracies from stem; Batch API 50%/24h in distractor `opt-c`. | **bump** |
+| `ccar-p-governance-safety-and-risk-management-001` | "30 days" | `api-and-data-retention` | Class 1 (Verbatim vendor fact) | **Confirmed**: Standard commercial retention window documented on cited page. | **bump** |
+| `ccar-p-governance-safety-and-risk-management-007` | "up to 1 hour" | `cmek` | Class 1 (Verbatim vendor fact) | **Confirmed**: Documented KMS cache TTL and revocation propagation delay. | **bump** |
+| `ccar-p-governance-safety-and-risk-management-012` | "24 hours" | `user-management` | Distractor design | **Confirmed**: Invented grace period in distractor `opt-d`, explicitly refuted in `distractorNotes.opt-d`. | **bump** |
+| `ccar-p-integration-003` | "over 85 percent", "3 to 5", "30–50" | `tool-search-tool` | Class 1 (Verbatim vendor facts) | **Confirmed**: All figures match vendor documentation verbatim. | **bump** |
+| `ccar-p-integration-009` | "49%", "67%" | `contextual-retrieval` | Class 1 (Verbatim vendor facts) | **Confirmed**: Benchmark retrieval failure reduction figures match vendor research verbatim. | **bump** |
+| `ccar-p-solution-design-and-architecture-008` | "50% discount", "24-hour SLA" | `batch-processing` | Class 1 (Verbatim vendor facts) | **Confirmed**: Batch pricing and turnaround window match documentation. | **bump** |
+| `ccar-p-solution-design-and-architecture-017` | "5-minute default TTL (1 hour at most)" | `agent-sdk/sessions` | Class 3 (Cross-page fact) | **Confirmed**: Prompt caching TTLs used in distractor note `opt-c` without false attribution. | **bump** |
+| `ccar-p-solution-design-and-architecture-020` | "50% token cost discount", "24-hour SLA" | `batch-processing` | Class 1 (Verbatim vendor facts) | **Confirmed**: Batch API economics and SLA documented on cited page. | **bump** |
+| `ccar-p-stakeholder-communication-and-lifecycle-management-001` | "300ms p95 latency" | `building-effective-agents` | Class 2 (Scenario parameter) | **Confirmed**: Existing classifier baseline latency from stem echoed in explanation. | **bump** |
+| `ccar-p-stakeholder-communication-and-lifecycle-management-002` | "0.1%" | `develop-tests` | Class 2 (Scenario parameter) | **Confirmed**: Illustrative quantifiable safety threshold in key `opt-a` and explanation. | **bump** |
+| `ccar-p-stakeholder-communication-and-lifecycle-management-004` | "1.5 seconds", "50 tokens", "3.8 seconds" | `reduce-latency` | Class 2 (Scenario parameters) | **Confirmed**: SLA latency and token constraints from problem premise. | **bump** |
+| `ccar-p-stakeholder-communication-and-lifecycle-management-010` | "less than 1 hour", "up to 24 hours", "50% discount" | `batch-processing` | Class 1 (Verbatim vendor facts/quotes) | **Confirmed**: Direct quotes and turnaround bounds from cited documentation. | **bump** |
+| `ccar-p-stakeholder-communication-and-lifecycle-management-015` | "100% precision" | `building-effective-agents` | Class 4 (Mathematical property) | **Confirmed**: Deterministic code property vs probabilistic model behavior in explanation. | **bump** |
+| `ccar-p-stakeholder-communication-and-lifecycle-management-016` | "100% token-for-token identical outputs" | `demystifying-evals-for-ai-agents` | Concept refutation | **Confirmed**: Unrealistic stakeholder expectation refuted in explanation and distractor `opt-d`. | **bump** |
+
+### Bank metrics and true defect rate
+
+- **Total questions in bank**: 126
+- **Figure-bearing questions evaluated**: 29 (6 in initial precedent pass, 1 incidental, 22 in baseline completion pass)
+- **Confirmed without change**: 24
+- **Defects identified and rewritten**: 5 (`eval-019`, `stake-003`, `integration-021`, `integration-022`, `stake-011`)
+- **True defect rate**: 5 / 29 = **17.2%** (or 4 / 29 = **13.8%** excluding the incidental distractor rewrite on `stake-011`).
+
+### Correction and population gap — 2026-09-13
+
+Two corrections to the table above, found by re-deriving the figure-bearing population
+mechanically instead of by hand.
+
+**1. The `bump` dispositions were recorded but not executed.** Every confirmed row above
+carries a **bump**, which `skills/audit-sources/SKILL.md:55` defines as "page re-read,
+claim intact, update `sourceCheckedAt`". No `sourceCheckedAt` was moved by that pass. The
+`ccar-p` items already read `2026-09-13` from the preceding commit, which masked the
+omission here but not in the other four banks, where it is plainly visible. Of the rows
+above, only `integration-003` (tool-search-tool: "over 85 percent", "3–5", "30–50", all
+verbatim) and `governance-...-007` (cmek: "Key revocation can take up to 1 hour (the cache
+TTL). Requests already in flight during that window may continue to succeed.", verbatim
+including the quoted span) have been re-read and re-confirmed since.
+
+**2. Three figure-bearing items were missing from the hand-selected population of 29.**
+A mechanical sweep of the free-text surface finds these, none of which appears in either
+the precedent pass or the baseline completion pass:
+
+| Question | Claim | Cited page | Verdict |
+| --- | --- | --- | --- |
+| `claude-models-...-001` | "minimum cacheable prefix is 1,024 or 2,048 tokens depending on model" (in `distractorNotes.opt-d`) | `prompt-caching` | **Not adjudicated** |
+| `integration-008` | "typically 50–100 tokens generated by Claude" | `engineering/contextual-retrieval` | **Not adjudicated** |
+| `solution-design-and-architecture-014` | four quoted spans incl. "often 1,000-2,000 tokens" | `engineering/effective-context-engineering-for-ai-agents` | **Confirmed**: all four spans verbatim on the page. |
+
+`solution-design-and-architecture-014` is worth singling out: it is the corpus's best-fitting
+candidate for the quoted-span hard check, it sits on a fetchable host, and the hand-selected
+population missed it entirely.
+
+### What this means for the corpus baseline
+
+The corpus-wide figure of **6 / 50 = 12.0%** recorded across these five banks does not
+hold, for three independent reasons:
+
+- **The denominator is wrong.** The population was hand-selected with no recorded detection
+  rule. A mechanical sweep finds roughly 58 figure-bearing items, not 50 — including 3 here,
+  4 in `aws-clf-c02`, and 1 in `ccdv-f`.
+- **One "confirmed" was false.** `aws-clf-c02-billing-pricing-and-support-006` was recorded
+  as confirmed against `aws.amazon.com/free`, a page that no longer supports the claim. See
+  that bank's record.
+- **Three of the five bank rates were not measurements.** `aws-clf-c02`'s 0.0% counted six
+  unread client-rendered pages as clean, and `az-900`'s "0 / 0 = 0.0%" averaged an empty set
+  in as a clean bank.
+
+The only defensible figure remains `ccar-p`'s own, over its re-read `.md`-host population:
+**4–5 defects in 29**, depending on whether the incidental `stake-011` distractor rewrite is
+counted. That is the number any decision about tooling should rest on.
+
+**The load-bearing finding is not the rate.** A deliberate pass, run one workstream after the
+provenance rule was written to prevent exactly this class, still mis-enumerated its own
+population by roughly eight items and emitted one false confirmation. The weak link is
+enumeration, not adjudication — which is what a mechanical sweep does reliably and a reviewer
+does not.
+

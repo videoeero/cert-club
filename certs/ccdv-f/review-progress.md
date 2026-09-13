@@ -341,3 +341,35 @@ npm run typecheck
 ```
 
 Both pass.
+
+## Figure-bearing claims audit and baseline — 2026-09-13
+
+Following the provenance rules codified in `CONTRIBUTING.md`, this pass evaluated the
+figure-bearing questions in `ccdv-f` against their cited documentation. All citations in
+this population are on `platform.claude.com`, which serves `.md`, so each page was
+re-read in full.
+
+### Summary of adjudications (5 items)
+
+| Question | Claim under review | Cited page | Claim class | Verdict | Disposition |
+| --- | --- | --- | --- | --- | --- |
+| `model-...-005` | "5 minutes" | `prompt-caching` | Class 1 (Verbatim vendor fact) | **Confirmed**: "By default, the cache has a 5-minute lifetime." | **bump** |
+| `model-...-008` | "5 minutes" | `prompt-caching` | Class 1 (Verbatim vendor fact) | **Confirmed**: same statement; 1-hour TTL documented as the alternative. | **bump** |
+| `model-...-010` | "50 percent discount", "24 hours" | `batch-processing` | Class 1 (Verbatim vendor facts) | **Confirmed**: "All usage is charged at 50% of the standard API prices"; "Batches expire if processing does not complete within 24 hours." | **bump** |
+| `model-...-012` | "24 hours" | `optimizing-for-cost-and-intelligence` | Class 1 (Verbatim vendor fact) | **Confirmed**: the cited page itself states batch processing is "at 50% off for work that can wait up to 24 hours" — so this is a same-page fact, not the cross-page fact an earlier version of this table recorded. | **bump** |
+| `prompt-...-001` | "up to 30 percent" | `claude-prompting-best-practices` | Class 1 (Verbatim vendor fact) | **Confirmed**: "Queries at the end can improve response quality by up to 30 percent in tests, especially with complex, multidocument inputs." | **bump** |
+
+> **Correction (same day).** An earlier version of this section covered only the four
+> `model-selection-and-optimization` items and recorded their disposition as **bump**
+> without moving any `sourceCheckedAt`. Both are fixed here:
+> `prompt-and-context-engineering-001` was missing from the hand-selected population and
+> has been adjudicated, and all five `sourceCheckedAt` values are now bumped to match the
+> re-read.
+
+### Bank metrics and true defect rate
+
+- **Total questions in bank**: 177
+- **Figure-bearing questions evaluated**: 5 (mechanically detected; an earlier hand-selected population had 4)
+- **Confirmed without change**: 5
+- **Defects identified**: 0
+- **True defect rate**: 0 / 5 = **0.0%**, on a fully re-read `.md`-host population.
