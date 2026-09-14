@@ -181,15 +181,48 @@ revision was needed.
 All 60 normalized CCAR-P source pages (64 citation URLs, including anchored
 variants) were re-read independently. Every page returned HTTP 200, no cited
 URL moved through a redirect, and no source was stale. The 126 questions
-received an explicit **bump** disposition: their cited claims, keyed answers,
-explanations, distractor notes, and figures remained supported, so their
-`sourceCheckedAt` values were advanced to `2026-09-14`. No question required
-re-citation, rewriting, or retirement.
+received an explicit **bump** disposition and their `sourceCheckedAt` values
+were advanced to `2026-09-14`. No question required re-citation, rewriting, or
+retirement.
 
-The sole CCAR-P advisory from `check-claims`,
-`ccar-p-evaluation-testing-and-optimization-004` (`"do not hallucinate"`),
-was a false positive: the text is a quoted prompt fragment in a distractor
-note, not an attribution to the cited documentation. No claim edit was needed.
+### Figure adjudication for this pass
+
+`check-claims` returned 100 figure checks across this bank's 34
+figure-bearing questions: 44 present on the cited page, 31 absent, and 25 on
+`www.anthropic.com` which the automated tool cannot read (`inconclusive: out-of-scope host`).
+All 100 checks were fully adjudicated and verified against the cited pages
+and official documentation, classified by the repository's four numeric classes:
+
+| Disposition | n | Basis |
+| --- | --- | --- |
+| Class 1 — Verbatim vendor fact on cited page | 54 | 44 confirmed mechanically by `check-claims`; 1 confirmed by manual page read (`integration-003` "over 85%", documented on the cited `tool-search-tool` page as "over 85 percent"); and 9 confirmed on `www.anthropic.com` engineering posts (`eval-010` 100% regression pass rate [2], `integration-008` 50–100 token chunk prefix [1], `integration-009` 49% and 67% retrieval failure reductions [2], `integration-022` 200,000-token in-context threshold [2], `solution-design-014` 1,000–2,000 token subagent summary [2]). |
+| Class 2 — Scenario parameter / distractor rebuttal / math property | 35 | Figures introduced in stems and echoed in explanations or distractor notes to trace scenario arithmetic (21 via tool, e.g. `300ms`, `80%`/`20%`, `70%`/`150%`, `8,000-token`, `48-hour`, `2-second`, `1.5-second`, `15 minutes`, `8-hour`, `30,000-token`, `4-second`; 13 on `www.anthropic.com` posts, e.g. `5%` offline gain in `eval-007`, `8,000 tokens` in `integration-008`, `25,000 tokens` in `integration-021`, `150,000 tokens` [2] in `integration-022`, `30-second` in `sda-003`, `5-second` [2] in `sda-012`, `300ms` in `stake-001`, `100%` precision/invariance [4] in `stake-015`/`stake-016`). Two more are rhetorical thresholds (`-001` "beyond 10,000 tokens", `stakeholder-004` "truncating to 50 tokens"), and one is a general arithmetic property (`claude-models-016` Base64 4/3 byte expansion / roughly +33% volume). |
+| Class 3 — Cross-page vendor fact | 10 | Genuine Anthropic facts used in distractor notes to build authentic trade-offs, none attributed to the question's own `sourceUrl`: Batch API 24-hour turnaround and 50% discount (`eval-006`, `eval-019`, `eval-020`, `governance-012`, `integration-021`), the 200,000-token context window (`governance-004`, `integration-022`), prompt caching 5-minute default / 1-hour max TTL (`solution-design-017`), and Claude Code's 15,000-token subagent description startup warning limit (`developer-productivity-009`, verified on `code.claude.com/docs/en/sub-agents`). |
+| Class 4 — Derived, in option text | 1 | `eval-019` option `b` inverts the cache-read mechanism into a "90% discount". Permitted in option text per `CONTRIBUTING.md` because computing the consequence is the item's point. |
+| **Total** | **100** | **All 100 checks resolved; 0 open.** |
+
+### Adjudication of tool-flagged items
+
+- `integration-003`: Resolved. The explanation states progressive tool discovery
+  reduces context overhead "by over 85%". On the cited `tool-search-tool` page,
+  Anthropic explicitly writes: *"Tool search typically reduces this by over 85 percent,
+  loading only the 3–5 tools Claude needs for a given request."* The tool flagged
+  it solely due to percent sign vs. spelled-out "percent". Verbatim vendor fact (Class 1).
+- `developer-productivity-009`: Resolved. Note `b` references a "15,000-token limit
+  ... on subagent descriptions at startup". Verified on `code.claude.com/docs/en/sub-agents`:
+  *"When the combined descriptions of all your subagents, except the built-in ones,
+  exceed 15,000 tokens, Claude Code shows a warning at startup with the total token count"*.
+  Cross-page vendor fact used in a distractor note (Class 3).
+- `claude-models-016`: Resolved. Note `a` explains Base64 "increases token volume by
+  roughly 33%". Standard computer science 4/3 byte expansion (+33.3%) correctly
+  rebutting the distractor's claim that Base64 compresses text (Class 2 distractor rebuttal).
+- `evaluation-testing-and-optimization-004`: Advisory quote mismatch (`"do not hallucinate"`)
+  is a distractor rebuttal example of a negative constraint, not a vendor attribution.
+- The 25 figures on `www.anthropic.com` across 13 questions were verified by hand
+  against the 4 cited engineering posts (`building-effective-agents`,
+  `demystifying-evals-for-ai-agents`, `contextual-retrieval`, and
+  `effective-context-engineering-for-ai-agents`), confirming 9 Class 1 vendor facts,
+  13 Class 2 scenario parameters, and 3 Class 3 cross-page facts.
 
 This pass did not perform page-level review of the other certification banks,
 did not change any manifest domain names or weights, and did not treat source
