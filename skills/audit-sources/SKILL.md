@@ -62,8 +62,11 @@ field's whole value is that it means what it says.
 5. **One explicit disposition per affected question**, and say which:
    - **bump** — page re-read, claim intact, update `sourceCheckedAt`.
    - **re-cite** — claim intact, moved to a different page or section.
-   - **rewrite** — the doc changed under the question; fix the item.
-   - **retag `deep`** — still sound and sourced, no longer exam-aligned.
+   - **rewrite** — the doc changed under the question, or the item has drifted
+     above the blueprint's cognitive level; fix it. There is no tag for
+     "sound and sourced but no longer exam-aligned": `CONTRIBUTING.md`
+     requires depth beyond the blueprint's level to be avoided, not recorded,
+     so such an item is rewritten down to the level or retired.
    - **retire** — the claim no longer holds and cannot be rescued.
 6. **Record the pass in `review-progress.md`**: the date, and the scope
    covered. State what was **not** covered just as explicitly, so the next
