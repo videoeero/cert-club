@@ -8,8 +8,11 @@ material is already public.
 
 > **Live at [videoeero.github.io/cert-club](https://videoeero.github.io/cert-club/).**
 > No sign-up, nothing to install. Still early — the quiz flow is complete, but
-> bank coverage varies by certification. [`PLAN.md`](./PLAN.md) has the v1
-> scope, question schema, and phase-by-phase build order.
+> bank coverage varies by certification.
+> [`AGENTS.md`](./AGENTS.md) covers the architecture and the source boundary,
+> [`CONTRIBUTING.md`](./CONTRIBUTING.md) the question rules, and
+> [`certs/ADDING-A-CERT.md`](./certs/ADDING-A-CERT.md) the step-by-step for a
+> new bank.
 
 Each cert's `manifest.json` declares a bank `status`: `stable` means the bank
 covers its blueprint proportionally, `draft` means coverage is still partial —

@@ -8,10 +8,11 @@ one covers adding a new *shape* of question that every bank can then use.
 
 ## Read this first: you probably don't need a new type
 
-`PLAN.md` § "Explicitly out of scope for v1" is direct about this:
+[`CONTRIBUTING.md`](../CONTRIBUTING.md) § "Answer shapes" is direct about
+this:
 
-> Non-MCQ question types (labs, drag-and-drop, free text). Note that
-> single-select **and multiple-response** MCQ are both *in* scope.
+> Non-MCQ question types — labs, drag-and-drop, free text — are out of scope.
+> Single-select **and multiple-response** MCQ are both in scope.
 
 A new `type` touches ten files (below), a client-side storage migration, and
 every place that scores, renders, and reports an answer. That is a large
@@ -215,9 +216,10 @@ implementation of each file.
 - `AGENTS.md` doesn't currently name the type enum directly, but its
   "Schema is the source of truth" section is the right place to point at
   this document once a type beyond `single` and `multi` exists.
-- `PLAN.md` § "Explicitly out of scope for v1" explicitly excludes non-MCQ
-  types; record the decision to add one as an amendment there rather than
-  silently contradicting it.
+- `CONTRIBUTING.md` § "Answer shapes" excludes non-MCQ types and is the
+  authority for that exclusion. Amend it as part of the change rather than
+  silently contradicting it — and bump `schemaVersion`, since a bank written
+  against the old enum is no longer describable by the new one.
 
 ## The hazard no file list surfaces: the bank-level guards
 

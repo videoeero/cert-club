@@ -106,7 +106,41 @@ _Checked 2026-09-13 · banks: `ccdv-f`, `ccar-f`, `ccar-p`_
     as coverage evidence only.
   - Third-party repositories that re-host the guide PDFs. Open to read, so
     they pass the gate; not published by Anthropic, so they fail authority.
-    See the firewall in `PLAN.md` § Prior art.
+    The one you will find is recorded below.
+
+### Prior art: `Amey-Thakur/CLAUDE-CERTIFICATIONS`
+
+> **Calibration only — never a `sourceUrl` or `examUrl`.** It is open to read,
+> so it passes the gate test, and it fails the authority test in `AGENTS.md`:
+> the exam-guide PDFs it hosts are copies, and a copy can be stale, partial or
+> edited with nothing here to reveal it. Cite Anthropic's own copy — the
+> Partner Academy certification page links the guide on the Everpath CDN
+> above. An agent has already been led from this record to the wrong
+> `examUrl`, which is why the rule sits next to the record rather than only in
+> a review file.
+
+Recorded because it is the first thing a search for these exams turns up, and
+because rediscovering it costs a day. It is real, MIT licensed, actively
+maintained, and holds several hundred questions across the four Claude certs
+plus flashcards, cheat sheets and the guide PDFs. What inspecting it
+established:
+
+- **It independently confirms the blueprint.** Identical domains and weights
+  for `ccdv-f`, and the same exam facts. Two unrelated readings agree, which
+  is worth more than either alone.
+- **It arrived at keyed-object options independently** rather than positional
+  indices — the same conclusion `schemas/question-bank.mjs` reaches.
+- **All of its questions are single-answer.** Its schema structurally cannot
+  express multiple-response, though the real exams include "Select TWO/THREE"
+  items. Useful as a warning, not a model.
+- **It carries no per-question citation of any kind.** No `sourceUrl`, no doc
+  reference, no provenance. That gap maps exactly onto this repository's
+  non-negotiable citation requirement — **provenance is the differentiator
+  here, not question volume.**
+
+**Usage rule:** cross-check and calibration only. Do not copy questions or
+rationales, MIT licence notwithstanding. Importing someone else's uncited bank
+would destroy the one property that makes this project worth building.
 
 ## Microsoft
 

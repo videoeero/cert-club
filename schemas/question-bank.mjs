@@ -153,6 +153,13 @@ export const manifestSchema = z
     }
   });
 
+/**
+ * Options carry a stable `id`, and `correct` references those ids rather than
+ * an index into this array. The app shuffles option order, and any hand-edit
+ * that reorders options would silently invert the answer key under positional
+ * indexing — a defect no validator could see, because both the old and the new
+ * index are in range. Ids make reordering and diffing safe.
+ */
 export const optionSchema = z
   .object({
     id: slugSchema,

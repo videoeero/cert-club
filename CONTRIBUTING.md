@@ -150,6 +150,25 @@ three independent facts is strictly more demanding than picking one, so it
 trains the material rather than the format. Record the divergence in the
 cert's review file so a future author reads it as intent, not as a defect.
 
+### Answer shapes
+
+That licence covers the two answer shapes the schema supports, and only those:
+
+> Non-MCQ question types — labs, drag-and-drop, free text — are out of scope.
+> Single-select **and multiple-response** MCQ are both in scope.
+
+Multiple-response was in scope from the first version of the schema, which is
+why `correct` is an array and `type` is a discriminator rather than a
+`correctIndex`: a single-select-only schema needs a content migration the
+moment the first realistic "Select TWO" question is written.
+
+An answer shape beyond those two is a schema, app and storage change rather
+than an authoring decision, and it is almost always avoidable — all-or-nothing
+multi-select over several independent facts usually expresses the same thing.
+Read [`certs/ADDING-A-QUESTION-TYPE.md`](certs/ADDING-A-QUESTION-TYPE.md)
+before starting, and treat overriding the exclusion above as a
+`schemaVersion` conversation.
+
 Reviewing your own answer key against its cited source is not sufficient to
 catch these — a key can be perfectly faithful to the doc and still be
 guessable. See `certs/ccdv-f/review-progress.md` for a worked example of a

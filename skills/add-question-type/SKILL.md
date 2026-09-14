@@ -22,8 +22,9 @@ multi-select", and reaching for the touchpoint list first means implementing
 a schema change to solve an authoring problem.
 
 Make the argument out loud, with the specific objective in hand, and get an
-explicit answer before touching any file. `PLAN.md` still lists non-MCQ types
-as out of scope for v1; overriding that is a `schemaVersion` conversation.
+explicit answer before touching any file. `CONTRIBUTING.md` § "Answer shapes"
+lists non-MCQ types as out of scope; overriding it is a `schemaVersion`
+conversation.
 
 ## The hazards no file list surfaces
 
