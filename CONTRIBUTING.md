@@ -208,7 +208,15 @@ a quoted prompt fragment, config value or invented scenario name, and no regex
 can. Read every finding against the page before acting on one; never treat a
 clean run as evidence that a claim is sourced. It earns its place anyway: it
 found four genuine drift defects that four passes of directed human review had
-walked past. See `certs/ccar-p/review-progress.md` § Workstream 5 Stage B for
+walked past.
+
+It also only reads hosts that serve a `.md` variant of each page, which today
+means Anthropic's platform and Claude Code docs and the MCP specification.
+Citations anywhere else — AWS, Microsoft Learn, `www.anthropic.com` — come
+back as `inconclusive: out-of-scope host`, which is **not** a clean result:
+roughly two in five of the corpus's citations cannot be checked by this tool
+at all. A bank whose sources sit mostly off those hosts gets no signal from it,
+so never read a quiet run there as evidence that its claims are sourced. See `certs/ccar-p/review-progress.md` § Workstream 5 Stage B for
 the measurement. Run them while you
 work; run `npm run check` before you commit. See
 [`certs/ADDING-A-CERT.md`](certs/ADDING-A-CERT.md) § Supporting npm tasks for

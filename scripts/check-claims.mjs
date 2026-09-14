@@ -601,6 +601,10 @@ export function buildClaimsReport(manifest, questions, options = {}) {
       if (questionCheck.figures.length > 0) {
         figureBearingQuestions.push({
           id: q.id,
+          // Why the page could not settle these figures, when it could not.
+          // Carried per question so the report can distinguish an unreadable
+          // host from a page that was read and stayed silent.
+          reason: questionCheck.reason,
           figures: questionCheck.figures,
         });
       }
@@ -685,7 +689,17 @@ export function formatClaimsReport(report) {
   for (const item of report.figureBearingQuestions) {
     lines.push(`  ${item.id}`);
     for (const fig of item.figures) {
-      const presenceStr = fig.presence ? ` (${fig.presence})` : "";
+      // "inconclusive" covers two outcomes a reader must not confuse: the page
+      // was read and did not settle the figure, or the page was never readable
+      // at all. Only the first is a lead. The most common second case is a
+      // citation on a host that does not serve .md, which yields a whole bank
+      // of findings that look actionable and are structurally uncheckable —
+      // so name the reason the fetch already recorded.
+      const detail =
+        fig.presence === "inconclusive" && item.reason
+          ? `${fig.presence}: ${item.reason}`
+          : fig.presence;
+      const presenceStr = detail ? ` (${detail})` : "";
       lines.push(`    ${fig.field}: ${fig.figure}${presenceStr}`);
     }
   }

@@ -71,6 +71,12 @@ field's whole value is that it means what it says.
 6. **Record the pass in `review-progress.md`**: the date, and the scope
    covered. State what was **not** covered just as explicitly, so the next
    pass knows where it is starting rather than assuming the bank was swept.
+   Record how stage 1's findings were adjudicated, by the numeric class each
+   fell into — a figure absent from the cited page is the expected result for
+   a scenario parameter or a cross-page distractor fact, and a defect for a
+   verbatim vendor fact, so the count alone says nothing. "Figures remained
+   supported" is unfalsifiable and indistinguishable from not having looked;
+   the next pass has to be able to tell which findings were reasoned through.
 7. **Update `certs/VENDORS.md`.** This workflow owns that file, because
    fetching every cited host on a schedule is the only thing positioned to
    notice a vendor moved. Correct any host that has changed, add a newly

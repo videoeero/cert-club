@@ -706,3 +706,53 @@ test("Stage B: buildClaimsReport and formatClaimsReport format advisory findings
   assert.match(formatted, /missing identifier `unsupported_param`/);
   assert.match(formatted, /explanation: 5 minutes \(found\)/);
 });
+
+/**
+ * "inconclusive" is returned both for a page that was read without settling a
+ * figure and for a page that could never be read — most often a citation on a
+ * host outside `MD_HOSTS`, which does not serve `.md`. Roughly two in five of
+ * the corpus's citations sit on such a host, so collapsing the two outcomes
+ * into one word presents a whole bank of structurally uncheckable figures as
+ * though they were leads. The reason is already recorded by the fetcher; this
+ * asserts the report actually prints it.
+ */
+test("formatClaimsReport distinguishes an unreadable host from an unsettled figure", () => {
+  const manifest = { cert: "test-cert" };
+  const questions = [
+    mockQuestion({
+      id: "test-001",
+      explanation: "Retains data for 30 days.",
+      sourceUrl: "https://docs.aws.amazon.com/service/latest/guide.html",
+    }),
+    mockQuestion({
+      id: "test-002",
+      explanation: "Retains data for 90 days.",
+      sourceUrl: "https://platform.claude.com/docs/en/service",
+    }),
+  ];
+
+  const pageResults = new Map([
+    [
+      "https://docs.aws.amazon.com/service/latest/guide.html",
+      { status: "inconclusive", reason: "out-of-scope host", text: null },
+    ],
+    [
+      "https://platform.claude.com/docs/en/service",
+      { status: "ok", text: "Service retains data for 30 days." },
+    ],
+  ]);
+
+  const formatted = formatClaimsReport(
+    buildClaimsReport(manifest, questions, { pageResults }),
+  );
+
+  assert.match(
+    formatted,
+    /explanation: 30 days \(inconclusive: out-of-scope host\)/,
+    "an unreadable host must name why it could not be checked",
+  );
+  // The readable page stays a plain verdict: naming a reason there would imply
+  // the fetch failed when it simply disagreed.
+  assert.match(formatted, /explanation: 90 days \(not-found\)/);
+  assert.doesNotMatch(formatted, /not-found: /);
+});
