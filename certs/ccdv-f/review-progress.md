@@ -308,7 +308,7 @@ re-read in full.
 
 ### Bank metrics and true defect rate
 
-- **Total questions in bank**: 177
+- **Total questions in bank**: 106 (audit conducted on the 177-question pre-pruning population)
 - **Figure-bearing questions evaluated**: 5 (mechanically detected; an earlier hand-selected population had 4)
 - **Confirmed without change**: 5
 - **Defects identified**: 0

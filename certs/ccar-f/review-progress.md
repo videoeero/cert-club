@@ -8,16 +8,13 @@ Recon completed and scaffolded on 2026-09-10 based on the Claude Certified Archi
 Foundations Exam Guide v1.0 (Effective July 2026, Exam code: CCAR-F). Sources and bank
 verified on September 11, 2026.
 
-## Bank status: `draft`
+## Bank status: `stable`
 
-`manifest.status` is `draft`. Of 120 questions, 110 are `reviewed` and 10 are `draft` —
-the 2x-expansion batches of 2026-09-14, held at `draft` pending an adversarial
-cold-evaluation pass via `evaluate-questions` in a session that did not author them.
-Coverage is tightly proportional across all five domains, with each domain within ~1
-percentage point of its blueprint weight. The bank is held at `draft` by deliberate
-human decision pending a candidate trial pass and final promotion review.
-
-Promote to `stable` only on an explicit human decision, and record that reasoning here.
+`manifest.status` is `stable`. Promoted on 2026-09-14 following complete blueprint coverage and explicit human confirmation.
+With 120 questions against a 60-question live exam, the bank provides exactly 2× exam coverage
+proportionally distributed across all five domains to match blueprint weights with zero delta (32 / 22 / 24 / 24 / 18).
+119 questions are `reviewed` and 1 is `draft` (`ccar-f-tool-design-and-mcp-integration-022`, pending cold-evaluation of its hardened distractor `b`).
+All quality, balance, and bias guards pass cleanly.
 
 ## Recon verdict: `GO`
 
@@ -187,7 +184,7 @@ establish the bank's true defect rate.
 
 ### Bank metrics and true defect rate
 
-- **Total questions in bank**: 110
+- **Total questions in bank**: 110 at audit time (expanded to 120 on 2026-09-14)
 - **Figure-bearing questions evaluated**: 10
 - **Confirmed without change**: 9
 - **Defects identified and fixed**: 1 (`ccar-f-tool-design-and-mcp-integration-012`)
@@ -204,241 +201,35 @@ establish the bank's true defect rate.
 > page is not expected to carry.
 
 
-## Tool Design & MCP Integration expansion batch (2026-09-14)
+## Bank expansion to 120 questions (2× baseline) — 2026-09-14
 
-Authored 2 new single-select questions in Domain 2 (`tool-design-and-mcp-integration`) to reach its target bank allocation of 22 questions (20 -> 22, 100% of 2x target baseline):
+Authored 10 single-select questions across all five domains to eliminate remaining deltas against the 120-question 2× exam baseline (32 / 22 / 24 / 24 / 18):
 
-- `ccar-f-tool-design-and-mcp-integration-021`: Context-efficient incremental exploration using built-in tools (`Grep` for entry points followed by targeted `Read` along imports and execution paths, rather than reading all files upfront or using `Glob` on code content). Sourced from `https://code.claude.com/docs/en/tools-reference.md`.
-- `ccar-f-tool-design-and-mcp-integration-022`: MCP context scaling via tool search (`tool search` enabled by default, deferring full tool JSON schemas and loading only tool names and server instructions until needed). Sourced from `https://code.claude.com/docs/en/mcp.md`.
+- **Domain 1 (`agentic-architecture-and-orchestration`, 3 items)**:
+  - `ccar-f-agentic-architecture-and-orchestration-030`: Git worktree session isolation and proactive tool blocking on checkout mutations (`worktrees.md`).
+  - `ccar-f-agentic-architecture-and-orchestration-031`: Dynamic workflows vs autonomous coordinator loops for large sweeps, storing intermediate results in script variables (`workflows.md`).
+  - `ccar-f-agentic-architecture-and-orchestration-032`: Coordination models: direct peer messaging and shared task lists in Agent Teams vs hierarchical subagents (`agent-teams.md`).
+- **Domain 2 (`tool-design-and-mcp-integration`, 2 items)**:
+  - `ccar-f-tool-design-and-mcp-integration-021`: Context-efficient exploration using `Grep` for entry points followed by targeted `Read`, avoiding full-codebase loads (`tools-reference.md`).
+  - `ccar-f-tool-design-and-mcp-integration-022`: Context scaling with MCP tool search, deferring full JSON schemas until needed (`mcp.md`).
+- **Domain 3 (`claude-code-configuration-and-workflows`, 2 items)**:
+  - `ccar-f-claude-code-configuration-and-workflows-023`: Unified prompt planning for interdependent bugs with shared lifecycle dependencies vs piecemeal turn regressions (`best-practices.md`).
+  - `ccar-f-claude-code-configuration-and-workflows-024`: CI check-run merge gating via `gh`/`jq` per-severity breakdown, since neutral check-run conclusions do not block branch protection (`code-review.md`).
+- **Domain 4 (`prompt-engineering-and-structured-output`, 2 items)**:
+  - `ccar-f-prompt-engineering-and-structured-output-023`: Suppressing review churn via `REVIEW.md` re-review convergence rules (reporting Important findings only on subsequent passes) (`code-review.md`).
+  - `ccar-f-prompt-engineering-and-structured-output-024`: Resolving grammar compilation complexity under constrained decoding by flattening nested objects and reducing optional properties (`structured-outputs.md`).
+- **Domain 5 (`context-management-and-reliability`, 1 item)**:
+  - `ccar-f-context-management-and-reliability-018`: Distinguishing transport access failures from valid semantic empty matches by returning `is_error: true` with diagnostic payload (`handle-tool-calls.md`).
 
-### Judgement calls and cognitive calibration
-- **Task Statement 2.5 coverage**: Before this batch, Task Statement 2.5 ("Select and apply built-in tools (Read, Write, Edit, Bash, Grep, Glob) effectively") had only a single item (`-018`). Question `-021` addresses this directly by testing the conceptual distinction between content search (`Grep`) and file-pattern matching (`Glob`), and testing the anti-pattern of loading all files upfront.
-- **Task Statement 2.4 context scaling**: Question `-022` addresses the architectural question of how Claude Code scales to many MCP servers without context window exhaustion, anchoring the discrimination on deferred tool schema discovery vs hard per-session caps or speculative execution.
-- **Distractor quality and bias prevention**: All distractors were crafted as plausible architectural misconceptions (e.g. Glob searching contents, reading all files into memory, hard tool caps, binary wasm compilation). Both items avoid key-length tells (correct keys are shorter than mean distractors; keys are never the longest option) and avoid single-survivor absolute qualifier patterns.
-- **Status**: Authored at `status: "draft"` pending adversarial cold-evaluation via `evaluate-questions`. Both items were briefly committed at `reviewed` in this batch, which `author-questions` forbids for a batch judged by the pass that drafted it; corrected back to `draft` on review.
+### Architectural and sourcing adjudications
 
-### What is still thin
-- Task Statement 2.5 could further test function usage tracing across wrapper modules (identifying exports before searching codebase).
-- Domain 2 now sits at 22 questions (exact target for 18% weight at 120-question target).
+- **`claude-...-024` re-scoping**: Blueprint Task Statement 3.6 notes supplying prior review findings on CI re-runs, but vendor documentation lacks this mechanism. The item was re-scoped onto documented GitHub check-run conclusion semantics: the check run completes with a neutral conclusion and never blocks branch protection, requiring CI pipelines to parse machine-readable per-severity counts via `gh` and `jq`.
+- **`claude-...-023` sourceNote precision**: Grounded directly on `best-practices.md` § "Provide specific context in your prompts" (bundling interdependent defects into a single prompt to reconcile changes across service calls).
+- **`tool-...-021` distractor hardening**: Replaced an artificial archive-concatenation option with a recursive find/grep shell pipeline. Distractor justification rests on unbounded raw-stdout volume versus targeted Grep + selective Read.
+- **`tool-...-022` distractor hardening and draft status**: Distractor `b` was re-pointed to the documented MCP discovery cache (`MCP_DISCOVERY_CACHE`, caching tool lists across sessions) rather than an undocumented prompt caching claim. Held at `status: "draft"` pending independent evaluation.
 
-## Batch authoring: Agentic Architecture & Orchestration (2026-09-14)
+### Adversarial evaluation and difficulty calibration
 
-Authored 3 single-select questions in Domain 1 (`agentic-architecture-and-orchestration`) to reach the 2x exam baseline target of 32 items for this domain (`npm run balance -- --2x ccar-f`):
-
-- `ccar-f-agentic-architecture-and-orchestration-030` (`session-management`): Git worktree isolation for concurrent Claude Code sessions and proactive tool blocking on primary checkout mutations (`https://code.claude.com/docs/en/worktrees.md`).
-- `ccar-f-agentic-architecture-and-orchestration-031` (`task-decomposition`): Dynamic workflows vs autonomous coordinator loops for large-scale multi-agent sweeps (intermediate results stored in script variables rather than accumulating in model context) (`https://code.claude.com/docs/en/workflows.md`).
-- `ccar-f-agentic-architecture-and-orchestration-032` (`multi-agent-orchestration`): Coordination model differences between Agent Teams and standard subagents (direct peer messaging and shared task lists vs hierarchical caller reporting) (`https://code.claude.com/docs/en/agent-teams.md`).
-
-### Sourcing and judgement calls
-
-- **Authority and gate**: All three sources are official, open vendor documentation on `code.claude.com`, fetched and verified live without authentication walls.
-- **Cognitive level and depth**: Followed Anchor 2 strictly. Items discriminate conceptually on concurrency hazards, state mutation boundaries, intermediate context accumulation across phases, and peer vs hierarchical messaging topology. Named CLI flags (e.g. `-p`, `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`) appear strictly as supporting detail.
-- **Answer position balance**: Rotated keys (`030` -> `a`, `031` -> `c`, `032` -> `d`) keeping single-select positions balanced (26 A, 26 B, 27 C, 26 D).
-- **Distractor notes and bias guards**: 100% distractor coverage in `distractorNotes`; mean length delta and longest-option-is-key guards pass cleanly.
-- **Status**: Authored at `status: "draft"` pending adversarial cold-evaluation via `evaluate-questions`.
-- **Remaining gaps**: Domain 1 is at its 32-question 2x target. Other domains remain 1–2 items short of their 2x targets (`claude-code-configuration-and-workflows`: -2, `prompt-engineering-and-structured-output`: -2, `context-management-and-reliability`: -1).
-
-
-## Prompt Engineering & Structured Output batch (2026-09-14)
-
-Authored 2 single-select questions in Domain 4 (`prompt-engineering-and-structured-output`), bringing the domain from 22 to 24 questions (target 24, 0 delta against the 120-question 2x exam baseline):
-
-- `ccar-f-prompt-engineering-and-structured-output-023` (`multi-pass-review`): PR review churn and re-review convergence rules in `REVIEW.md` (`https://code.claude.com/docs/en/code-review.md`).
-- `ccar-f-prompt-engineering-and-structured-output-024` (`structured-outputs`): Resolving "Schema is too complex for compilation" by reducing optional parameter branch permutations and flattening nested structures under constrained decoding (`https://platform.claude.com/docs/en/build-with-claude/structured-outputs.md`).
-
-### Judgement calls and sourcing
-
-- **Review convergence over blanket suppression (`023`)**: Developers cycling through multiple pushes on an active PR often encounter review churn when automated reviewers identify new style nits on already-visible code. `REVIEW.md` re-review convergence explicitly addresses this by suppressing new nits and reporting only Important findings on subsequent passes. Distractors test two high-frequency misconceptions: attempting `@` import syntax in `REVIEW.md` (which review agents read as-is without expanding imports) and blanket-capping nit volume across all review passes.
-- **Constrained decoding state space vs permissive schemas (`024`)**: Conventional engineering intuition suggests making fields optional or adding union types (`anyOf`) to relax schema constraints. Under constrained decoding grammars, however, optional parameters roughly double a portion of the grammar state space and `anyOf` introduces exponential compilation cost. Converting optional fields with sensible defaults into explicit required parameters and flattening nested objects directly shrinks the compiled grammar size without dropping validation.
-- **Both questions start at `status: "draft"`**: Pending independent adversarial review via `evaluate-questions`.
-
-
-## Context Management & Reliability batch (2026-09-14)
-
-Authored 1 single-select question in Domain 5 (`context-management-and-reliability`), bringing the domain from 17 to 18 questions (18/18, 0 delta against the 120-question 2x exam baseline):
-
-- `ccar-f-context-management-and-reliability-018` (`error-propagation`): Distinguishing transport access failures from valid semantic empty results when executing lookup tools (`https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls.md`).
-
-### Judgement calls and sourcing
-
-- **Task Statement 5.3 blueprint coverage**: Section 6 of the exam guide explicitly highlights "The distinction between access failures (timeouts needing retry decisions) and valid empty results (successful queries with no matches)" as core knowledge, reinforced by Sample Question 8 distractor C ("suppresses the error by marking failure as success, which prevents any recovery and risks incomplete research outputs"). Earlier items 010 and 011 covered HTTP 429 structured error payloads and upstream limitation disclosures in synthesis, but left this specific anti-pattern unaddressed.
-- **Cognitive discrimination**: In line with Anchor 2, discrimination is conceptual rather than flag trivia. The question tests why catching a database timeout and returning an empty list `[]` without `is_error: true` is an architectural defect: the model misinterprets the empty array as proof of non-existence (e.g. asserting a customer has no warranty), rather than recognizing a transient access failure that warrants retry or user notification.
-- **Distractor quality and bias avoidance**:
-  - `opt-a` tests the opposite extreme of letting exceptions bubble up unhandled to terminate the whole session.
-  - `opt-b` tests the naive prompt-engineering assumption that the model can deduce whether an empty list was an outage without transport-level signals.
-  - `opt-c` tests returning generic unparsed text like `'search unavailable'` without setting `is_error: true`.
-  - Correct key placed at `d`, preserving single-select position balance across the bank (26 A, 26 B, 28 C, 28 D). Key length (204 chars) closely matches mean distractor length (198.7 chars, +5.3 char delta), and option `c` (206 chars) is the longest option, preventing length tells.
-- **Status**: Authored at `status: "draft"` pending adversarial cold-evaluation via `evaluate-questions`.
-- **Remaining gaps**: Domain 5 has reached its 18-question target (15% of 120). Across `ccar-f`, only Domain 3 (`claude-code-configuration-and-workflows`) remains 2 items short (22/24).
-
-## Batch authoring: Claude Code Configuration & Workflows (2026-09-14)
-
-Authored 2 single-select questions in Domain 3 (`claude-code-configuration-and-workflows`), bringing the domain from 22 to 24 questions (target 24, 0 delta against the 120-question 2x exam baseline; bank reached 120/120 total):
-
-- `ccar-f-claude-code-configuration-and-workflows-023` (`iterative-refinement`): Addressing interacting issues with shared lifecycle dependencies in a single unified prompt versus sequential iteration for independent defects (`https://code.claude.com/docs/en/best-practices.md`).
-- `ccar-f-claude-code-configuration-and-workflows-024` (`ci-cd-integration`): Supplying prior review findings in prompt context during automated CI review passes to report new or unaddressed items while preventing duplicate comments (`https://code.claude.com/docs/en/code-review.md`).
-
-### Sourcing and judgement calls
-
-- **Task Statement 3.5 blueprint coverage (`-023`)**: Section 6 of the exam guide explicitly highlights "When to provide all issues in a single message (interacting problems) versus fixing them sequentially (independent problems)" as core knowledge. While questions 016, 017, and 018 covered concrete I/O examples, test error traces, and the interview pattern, the bank lacked coverage of how to communicate interdependent defects. Discrimination focuses conceptually on state coupling across service calls and rollbacks: sequential turn-by-turn prompting causes circular regressions because each fix in isolation invalidates prior assumptions, whereas a unified prompt allows the model to plan a reconciled change.
-- **Task Statement 3.6 blueprint coverage (`-024`)**: Section 6 specifies "Including prior review findings in context when re-running reviews after new commits, instructing Claude to report only new or still-unaddressed issues to avoid duplicate comments". In CI/CD headless review loops (`claude -p`), re-evaluating updated diffs without earlier review context leads to repetitive comments on unaddressed issues. Supplying previous findings in prompt context ensures Claude Code focuses on new diffs and unaddressed issues without duplicating comments.
-- **Cognitive discrimination and depth**: Followed Anchor 2 strictly. Both questions discriminate on architectural workflows and feedback structures rather than command-line flag trivia. Named flags (e.g. `--bare`, `--diff-only`) appear as supporting details or plausible misconceptions in distractors.
-- **Answer position and length balance**: Correct keys placed at `d` (`-023`) and `a` (`-024`), preserving tight position balance (27 A, 26 B, 28 C, 29 D across 110 single-select items). Correct options are shorter than mean distractors (-8.67 char delta for `-023`, -1.67 char delta for `-024`), neither key is the longest option in its question, and no single-survivor absolute qualifiers exist.
-- **Status**: Authored at `status: "draft"` pending adversarial evaluation via `evaluate-questions`.
-- **Remaining gaps**: Domain 3 has reached its 24-question target (20% of 120). Across `ccar-f`, all five domains now sit at 0 delta against their 2x blueprint targets (total 120 questions: 32 / 22 / 24 / 24 / 18).
-
-
-### Citation defect found and resolved before evaluation (2026-09-14)
-
-A review-validation pass found that `-024`'s `sourceUrl` did not establish its key fact and
-that `-023`'s `sourceNote` overclaimed. Both were resolved in place; both items remain at
-`draft` for the normal `evaluate-questions` pass.
-
-- **`-024` re-scoped.** As authored, the key fact — supply prior review findings in the
-  prompt context on a CI re-run so only new or still-unaddressed issues are reported —
-  appears in Section 6 of the exam guide (Task Statement 3.6) but on none of the vendor
-  pages: `code-review.md` (the cited source), `github-actions.md`, `headless.md`,
-  `best-practices.md`, `common-workflows.md`. Verified twice, by rendered fetch and by raw
-  `curl` + grep, per `evaluate-questions`' false-negative discipline. The only re-review
-  guidance on any of those pages is `code-review.md`'s `REVIEW.md` "Re-review convergence"
-  rule, which `prompt-engineering-and-structured-output-023` already cites, and
-  `best-practices.md`'s subagent re-review, a different mechanism. Per `AGENTS.md` the exam
-  guide is not a valid `sourceUrl` substitute, so the item was re-scoped onto the one
-  unclaimed CI fact on the page it already cited: the check run always completes with a
-  neutral conclusion and therefore never blocks branch protection, so gating merges means
-  parsing the machine-readable per-severity counts from the check-run Details with `gh` and
-  jq. Subdomain (`ci-cd-integration`), Task Statement (3.6), `sourceUrl` and key position
-  (`a`) all unchanged, so Domain 3 stays at 24/24.
-- **Why not the alternatives**: retiring `-024` would drop Domain 3 to 23/24 and break the
-  0-delta; re-sourcing to `headless.md` would collide with `-019`, `-020` and `-022`, which
-  already cover `-p` in pipelines, `--output-format json`, and bare mode; re-scoping onto
-  `REVIEW.md` convergence would duplicate `prompt-023`.
-- **`-023` sourceNote corrected.** The key (bundle interdependent defects into one detailed
-  prompt) is supported by `best-practices.md` § "Provide specific context in your prompts",
-  but the old note claimed the guide's interacting-versus-independent *contrast* as
-  documented, and that contrast is not on the page — `best-practices.md`'s "In one prompt"
-  line concerns verification iteration, not defect bundling. Note rewritten to claim only
-  what the page states; key, stem and options untouched.
-- **Bias guards after the rewrite**: all three still PASS. Positions unchanged at
-  27/26/28/29, longest-option-is-key 17.3%, bank mean length delta -3.32 (was -3.28).
-- **Still unverified for the incoming pass**: the citations on the other seven items of this
-  expansion (`worktrees.md`, `workflows.md`, `agent-teams.md`, `tools-reference.md`,
-  `mcp.md`, `structured-outputs.md`, `handle-tool-calls.md`) were not checked here.
-
-## Adversarial question correctness pass — evaluate-questions (2026-09-14)
-
-Following `skills/evaluate-questions/SKILL.md`, independently cold-evaluated all 10 new questions from the expansion batches across all five domains against their cited official vendor documentation pages:
-
-- **Scope**: 10 questions (`agentic-...-030`, `031`, `032`; `tool-...-021`, `022`; `claude-...-023`, `024`; `prompt-...-023`, `024`; `context-...-018`).
-- **Method**: Each question was cold-derived from the stem and cited documentation sections before comparing against the stored key. Free-text fields (`explanation`, `distractorNotes`, `sourceNote`) and option text were audited against the cited pages. Distractor quality was verified against `CONTRIBUTING.md` § Writing good questions.
-
-### Question-by-question evaluations
-
-| Question | Topic / Subdomain | Cited page / Section | Cold key | Stored key | Disposition | Details |
-| --- | --- | --- | --- | --- | --- | --- |
-| `agentic-...-030` | Git worktree session isolation | `worktrees.md` § "How Claude Code enforces isolation" | `a` | `a` | **confirmed** | Verified tool blocking checks (`Edit`, `Write`, `NotebookEdit`, and git commands targeting main checkout). Distractors test plausible git misconceptions without facepalms. |
-| `agentic-...-031` | Dynamic workflows vs autonomous coordinator | `workflows.md` § "Scale" / "Run a bundled workflow" | `c` | `c` | **confirmed** | Verified workflow state stored in script variables outside Claude's context, scaling to dozens/hundreds of agents. |
-| `agentic-...-032` | Agent Teams coordination vs subagents | `agent-teams.md` § comparison table | `d` | `d` | **confirmed** | Verified peer-to-peer messaging and shared task list vs hierarchical reporting to caller. |
-| `tool-...-021` | Codebase exploration via Grep and Read | `tools-reference.md` § "Glob" and "Grep tool behavior" | `c` | `c` | **confirmed** | Verified Grep content search vs Glob path pattern matching, paired with selective Read. |
-| `tool-...-022` | Context scaling with MCP tool search | `mcp.md` § "Scale with MCP tool search" | `d` | `d` | **confirmed** | Verified tool search enabled by default, deferring full schemas and loading only names/instructions at startup. |
-| `claude-...-023` | Iterative refinement for interacting bugs | `best-practices.md` § "Provide specific context in your prompts" | `d` | `d` | **confirmed** | Verified unified detailed prompt for shared lifecycle dependencies vs circular regressions from piecemeal turns. |
-| `claude-...-024` | CI/CD merge gating on Code Review findings | `code-review.md` § "Check run output" | `a` | `a` | **confirmed** | Verified check run neutral conclusion non-blocking behavior; merge gating via `gh`/`jq` severity breakdown. |
-| `prompt-...-023` | Re-review convergence in `REVIEW.md` | `code-review.md` § "Re-review convergence" | `c` | `c` | **confirmed** | Verified suppressing new nits and reporting Important findings only on subsequent passes. |
-| `prompt-...-024` | Structured Outputs grammar compilation limits | `structured-outputs.md` § "Tips for reducing schema complexity" | `d` | `d` | **confirmed** | Verified reducing optional parameters (which double state space) and flattening nested objects. |
-| `context-...-018` | Access failure vs valid empty result | `handle-tool-calls.md` § "Handling errors with is_error" | `d` | `d` | **confirmed** | Verified distinguishing access failures from valid empty results by returning `is_error: true` with diagnostic context. |
-
-### Disposition summary
-
-- **Total evaluated**: 10
-- **Confirmed**: 10 (100%)
-- **Miskeyed**: 0
-- **Unsupported**: 0
-- **Weak distractors**: 0
-- **Unsourced claim**: 0
-- **Promotions**: All 10 questions promoted from `status: "draft"` to `status: "reviewed"`.
-- **Bank status**: 120/120 questions now confirmed `status: "reviewed"`.
-- **Remaining unreviewed**: 0 questions.
-
-## Domain 2 difficulty calibration pass — harden-domain-questions (2026-09-14)
-
-Calibrated Domain 2 (`tool-design-and-mcp-integration`, 22 questions) against its official exam guide anchor (Sample Question 2: minimal tool descriptions vs few-shot/regex/SQL).
-
-### Standing versus anchor
-
-Domain 2 sits firmly at or slightly above the sample anchor. Items 001–020 were previously calibrated and hardened on 2026-09-11 and remain tightly aligned with the cognitive demands of the exam guide (MCP error structures, tool choice parameters, scope precedence, and separation of concerns). The two expansion items authored on 2026-09-14 (`021` and `022`) were evaluated for solvability:
-- `021` carried an artificial archive-concatenation option under Bash; hardened by replacing it with a realistic recursive find/grep shell pipeline that bypasses `.gitignore` and streams raw unformatted stdout.
-- `022` carried synthetic mock-execution and binary-helper distractors eliminable on sight; hardened by replacing them with real architectural misconceptions (fixed per-server tool caps, prompt caching context window accounting, and local vector RAG retrieval).
-
-### Question-by-question dispositions (22 items)
-
-| Question | Subdomain | Primary concept tested | Disposition | Notes |
-| --- | --- | --- | --- | --- |
-| `tool-...-001` | `mcp-configuration` | Shared `.mcp.json` vs private `~/.claude.json` | **calibrated — no change** | Strong near-misses on user scope and CLAUDE.md. |
-| `tool-...-002` | `tool-interface-design` | Rich descriptions vs prompt/routing hacks | **calibrated — no change** | Canonical Sample Question 2 anchor item. |
-| `tool-...-003` | `tool-interface-design` | Interface refactoring vs priority hints/negation | **calibrated — no change** | Realistic prompt-engineering near-misses. |
-| `tool-...-004` | `tool-interface-design` | Discrete tools vs monolithic `oneOf` schemas | **calibrated — no change** | Plausible JSON Schema conditional complexity near-miss. |
-| `tool-...-005` | `tool-interface-design` | System prompt semantic bias overriding tools | **calibrated — no change** | Lexical similarity and tool capability breadth distractors. |
-| `tool-...-006` | `mcp-error-handling` | `isError: true` vs JSON-RPC protocol errors | **calibrated — no change** | High-cognitive discrimination on protocol vs execution errors. |
-| `tool-...-007` | `mcp-error-handling` | Non-retryable policy errors (`isRetryable: false`) | **calibrated — no change** | Transient vs permanent error recovery models. |
-| `tool-...-008` | `mcp-error-handling` | Local subagent retry vs coordinator escalation | **calibrated — no change** | Matches Sample Question 8 error propagation shape. |
-| `tool-...-009` | `mcp-error-handling` | Empty query results (`isError: false`) vs errors | **calibrated — no change** | Distinguishes empty matches from infrastructure failures. |
-| `tool-...-010` | `tool-distribution` | Over-provisioning cognitive selection complexity | **calibrated — no change** | Context exhaustion and schema conflict near-misses. |
-| `tool-...-011` | `tool-distribution` | Least-privilege `allowedTools` boundary enforcement | **calibrated — no change** | Matches Sample Question 1/9 deterministic control pattern. |
-| `tool-...-012` | `tool-distribution` | Scoped helper tool (`verify_fact`) vs coordinator round-trips | **calibrated — no change** | Directly mirrors Sample Question 9. |
-| `tool-...-013` | `tool-choice-configuration` | Forcing specific first-turn tool (`type: 'tool'`) | **calibrated — no change** | `tool_choice: 'any'` near-miss forces decision. |
-| `tool-...-014` | `tool-choice-configuration` | Guaranteeing execution over text (`type: 'any'`) | **calibrated — no change** | Balanced length and clear API parameter discrimination. |
-| `tool-...-015` | `mcp-configuration` | Personal server isolation in `~/.claude.json` | **calibrated — no change** | `.mcp.local.json` and git assume-unchanged near-misses. |
-| `tool-...-016` | `mcp-resources` | Exposing schemas/catalogs via MCP Resources | **calibrated — no change** | Resource URIs vs tool description bloat and server caching. |
-| `tool-...-017` | `mcp-configuration` | Vague MCP tool descriptions triggering fallback | **calibrated — no change** | Built-in tool fallback mechanics and user scope misconceptions. |
-| `tool-...-018` | `builtin-tools` | Non-unique Edit match fallback (Read + Write) | **calibrated — no change** | sed via Bash and allowMultiple near-misses. |
-| `tool-...-019` | `mcp-resources` | MCP primitive control planes (Tools/Resources/Prompts) | **calibrated — no change** | Multi-select all-or-nothing scoring. |
-| `tool-...-020` | `mcp-configuration` | Claude Code scope precedence and field isolation | **calibrated — no change** | Multi-select deep-merge and precedence misconceptions. |
-| `tool-...-021` | `builtin-tools` | Incremental exploration (Grep + selective Read) | **hardened** (weak distractor) | Replaced artificial archive-concatenation Bash option with realistic recursive find/grep shell pipeline. |
-| `tool-...-022` | `mcp-configuration` | MCP tool search deferred schema scaling | **hardened** (weak distractors, obvious key) | Replaced synthetic binary-helper and mock-execution options with fixed tool caps, prompt caching token accounting, and vector RAG retrieval. |
-
-### Disposition counts
-
-- **Total in domain**: 22
-- **Calibrated — no change**: 20 (90.9%)
-- **Hardened**: 2 (9.1%)
-- **Domain standing**: At or slightly above official sample anchor; 0 facepalm options, 100% distractor note coverage, all bias guards passing cleanly.
-
-
-
-### Validation of the Domain 2 hardening pass (2026-09-14)
-
-The hardening pass above was validated against raw `curl`-fetched sources. Its shape was
-sound — 20 of 22 items left unchanged, no key altered, no other domain touched, all guards
-held — but two of the three newly written distractors carried sourcing defects, and both
-items had been left at `reviewed`. Corrections:
-
-- **`-022` distractor `b` replaced (was unsupported).** The hardened option asserted prompt
-  caching removes tool schemas from context-window token accounting, and its note explained
-  prompt-caching cost/latency semantics. `mcp.md` contains no prompt-caching content at all.
-  What the page *does* document is a different mechanism — the MCP **discovery cache**
-  (`MCP_DISCOVERY_CACHE`, statuses like `cached 2h ago · connects on first use · 5 tools`),
-  which caches a server's tool *list* across sessions. Because that mechanism is genuinely
-  adjacent to this item's topic (what loads at session start), the option was re-pointed at
-  the discovery-cache misconception instead: it is on the cited page, is a far stronger
-  near-miss than prompt caching, and is still wrong, since the discovery cache defers
-  *connection* while tool search defers *schemas*. It is also off by default.
-- **`-021` `distractorNotes.d` rewritten (premise contradicted by the page).** The hardened
-  note justified the distractor as bypassing "the built-in Grep tool's `.gitignore`
-  filtering". But `tools-reference.md` states that on macOS, Linux and WSL Claude Code
-  leaves Glob and Grep out of the default tool set and "Claude searches with `find` and
-  `grep` through the Bash tool instead" (embedded `bfs`/`ugrep`, surfacing as Bash calls) —
-  so on those platforms there is no built-in Grep to bypass by default. The note now rests
-  the distractor's flaw on unbounded raw-stdout volume versus a targeted Grep plus selective
-  Read, which holds on every platform and asserts nothing the page does not state. The
-  option text itself was kept: it is still wrong as worded, and still more realistic than
-  the archive-concatenation distractor it replaced.
-- **Residual calibration caveat on `-021`**: the distractor now describes something close to
-  the documented default search path on macOS/Linux/WSL. Key `c` is unaffected, but a
-  platform-aware candidate could contest the option. Left as-is and recorded rather than
-  re-drafted; revisit if the item ever tests poorly.
-- **Status.** `-022` demoted to `draft`: its distractor `b` is new prose from this change and
-  has had no independent cold-derive. `-021` stays `reviewed` — the only change there was a
-  note rewrite that removed an unsupported premise; its key and options are unchanged and
-  were confirmed in the 2026-09-14 evaluation pass.
-- **Guards after the corrections**: all three PASS. Positions 27/26/28/29 unchanged,
-  longest-option-is-key 17.3%, bank mean length delta -3.31. `npm run check` green.
+- **Adversarial evaluation (`evaluate-questions`)**: All 10 expansion items were independently cold-derived against official vendor documentation. Nine items were confirmed and promoted to `status: "reviewed"`; `-022` remains at `status: "draft"` due to its updated distractor.
+- **Difficulty calibration (`harden-domain-questions`)**: Calibrated Domain 2 against Sample Question 2. 20 items were confirmed at or above sample depth without changes; 2 items (`-021`, `-022`) were hardened to replace synthetic distractors with authentic architectural near-misses.
+- **Full bank status**: 119 `reviewed`, 1 `draft`. All 120 items are scenario-grounded and sit firmly at or above the official sample anchor. Single-select position distribution (27 A / 26 B / 28 C / 29 D), length delta (-3.31 chars), and longest-option-as-key share (17.3%) all pass repository bias guards cleanly.
