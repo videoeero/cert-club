@@ -64,6 +64,14 @@ _Checked 2026-09-14 · banks: `ccdv-f`, `ccar-f`, `ccar-p`_
 - **These docs render client-side.** Append `.md` to a page URL to read it as
   text: `curl -sL https://code.claude.com/docs/en/mcp.md`. This works on
   `modelcontextprotocol.io` too, including its `/specification/` paths.
+- **The `.md` trick does *not* work on `www.anthropic.com`** — the engineering
+  posts return `404` for a `.md` suffix (re-confirmed 2026-09-14). That host is
+  citable, so this is not a sourcing restriction; it is a verification one.
+  `npm run check-claims` reads only hosts that serve `.md`, so every citation
+  here comes back `inconclusive: out-of-scope host` and **a quiet run proves
+  nothing about it**. These citations can only be confirmed by reading the page
+  by hand, and there are enough of them to plan for: they are the single
+  largest manual cost in a source audit of the Anthropic banks.
 - **`anthropic.com/engineering` posts are revised in place, keeping their
   publication date.** `building-effective-agents` still reads "Published Dec 19,
   2024", but as of 2026-09-13 it carries an editorial note that "much of the

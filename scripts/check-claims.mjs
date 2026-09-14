@@ -130,6 +130,38 @@ export function normalizeText(text) {
  * Non-keyed option text is deliberately excluded because a distractor may assert
  * a falsehood by design.
  */
+/**
+ * Figure matching is deliberately looser than quote matching. A page writing
+ * "over 85 percent" states exactly the figure a question writes as "over 85%",
+ * and calling that absent sends a reviewer to re-read a page that does support
+ * the claim — a false negative in the matcher, which costs more than a false
+ * finding because it makes a sourced claim look unsourced.
+ *
+ * Quotes do NOT get this. `CONTRIBUTING.md` requires text in quotation marks to
+ * be verbatim on the cited page, so a quoted "85%" must appear that way and a
+ * spelled-out page is a genuine mismatch. Hence a figure-only helper rather
+ * than widening `isTextOnPage` for every caller.
+ *
+ * Measured before adding: of the corpus's not-found figures carrying a percent
+ * sign, this recovers the one real case and changes no other verdict.
+ */
+export function figureVariants(figure) {
+  const variants = [figure];
+  const match = figure.match(/^(.*?)(\d[\d,.]*)\s*%(.*)$/);
+  if (match) {
+    const [, before, number, after] = match;
+    variants.push(`${before}${number} percent${after}`);
+    variants.push(`${before}${number} per cent${after}`);
+  }
+  return variants;
+}
+
+export function isFigureOnPage(pageText, figure) {
+  return figureVariants(figure).some((variant) =>
+    isTextOnPage(pageText, variant),
+  );
+}
+
 export function provenanceSurface(q) {
   const keyed = new Set(q.correct || []);
   return [
@@ -558,7 +590,7 @@ export function checkQuestionClaims(q, pageResult) {
     if (!pageOk) {
       return { field, figure, presence: "inconclusive" };
     }
-    const found = isTextOnPage(pageResult.text, figure);
+    const found = isFigureOnPage(pageResult.text, figure);
     return { field, figure, presence: found ? "found" : "not-found" };
   });
 

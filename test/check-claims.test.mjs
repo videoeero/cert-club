@@ -11,7 +11,9 @@ import {
   extractFigures,
   extractQuotedSpans,
   fetchPageText,
+  figureVariants,
   formatClaimsReport,
+  isFigureOnPage,
   isMdHost,
   isTextOnPage,
   normalizeText,
@@ -755,4 +757,62 @@ test("formatClaimsReport distinguishes an unreadable host from an unsettled figu
   // the fetch failed when it simply disagreed.
   assert.match(formatted, /explanation: 90 days \(not-found\)/);
   assert.doesNotMatch(formatted, /not-found: /);
+});
+
+test("figureVariants expands a percent sign to its spelled-out forms only", () => {
+  assert.deepEqual(figureVariants("85%"), ["85%", "85 percent", "85 per cent"]);
+  assert.deepEqual(figureVariants("over 85%"), [
+    "over 85%",
+    "over 85 percent",
+    "over 85 per cent",
+  ]);
+  // Nothing to expand: a figure with no percent sign is passed through as-is,
+  // so the looser matching cannot leak into token counts or durations.
+  assert.deepEqual(figureVariants("8,000 tokens"), ["8,000 tokens"]);
+  assert.deepEqual(figureVariants("5-minute"), ["5-minute"]);
+});
+
+test("isFigureOnPage matches a figure the page spells out", () => {
+  const page = "Tool search typically reduces this by over 85 percent.";
+  assert.equal(isFigureOnPage(page, "85%"), true);
+  // Still a real absence: the number itself has to be there.
+  assert.equal(isFigureOnPage(page, "90%"), false);
+  assert.equal(isFigureOnPage("Traffic is 20% routine.", "85%"), false);
+});
+
+/**
+ * The loosened matching is figure-only on purpose. `CONTRIBUTING.md` requires
+ * text in quotation marks to be verbatim on the cited page, so a quoted "85%"
+ * against a page that writes "85 percent" is a genuine mismatch and must stay
+ * a finding. This guards the boundary: the same page and the same number,
+ * reported differently depending on whether it was quoted or merely stated.
+ */
+test("percent leniency does not reach quoted text", () => {
+  const manifest = { cert: "test-cert" };
+  const questions = [
+    mockQuestion({
+      id: "test-001",
+      explanation: 'Reduces overhead by over 85% per "over 85%" on the page.',
+      sourceUrl: "https://platform.claude.com/docs/en/service",
+    }),
+  ];
+  const pageResults = new Map([
+    [
+      "https://platform.claude.com/docs/en/service",
+      {
+        status: "ok",
+        text: "Tool search typically reduces this by over 85 percent.",
+      },
+    ],
+  ]);
+
+  const report = buildClaimsReport(manifest, questions, { pageResults });
+  const formatted = formatClaimsReport(report);
+
+  // The bare figure is accepted...
+  assert.match(formatted, /explanation: 85% \(found\)/);
+  // ...while the quotation of it is still reported as not verbatim.
+  assert.equal(report.findings.length, 1);
+  assert.equal(report.findings[0].type, "quote-mismatch");
+  assert.equal(report.findings[0].item, "over 85%");
 });

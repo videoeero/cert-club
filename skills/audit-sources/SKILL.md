@@ -26,6 +26,12 @@ field's whole value is that it means what it says.
    `.md`-serving hosts, flags the ones absent from the cited page. Roughly one
    finding in ten is real, so it is a worklist for stage 4, never a verdict —
    but it reads every citation, which no reviewer reliably does.
+
+   An existing record — even dated today, even covering every question — says
+   what an earlier pass covered, not that these stages ran, and is never
+   grounds for stopping here. A record predating a stage cannot satisfy it,
+   and fresh `sourceCheckedAt` dates only attest that someone read the pages.
+
 2. **False-negative discipline, before any edit.** A single failed fetch is
    **never** grounds for changing a `sourceUrl`. Reconfirm by a second method
    before believing a page is gone. `certs/ccdv-f/review-progress.md` records
@@ -71,12 +77,14 @@ field's whole value is that it means what it says.
 6. **Record the pass in `review-progress.md`**: the date, and the scope
    covered. State what was **not** covered just as explicitly, so the next
    pass knows where it is starting rather than assuming the bank was swept.
-   Record how stage 1's findings were adjudicated, by the numeric class each
-   fell into — a figure absent from the cited page is the expected result for
-   a scenario parameter or a cross-page distractor fact, and a defect for a
-   verbatim vendor fact, so the count alone says nothing. "Figures remained
-   supported" is unfalsifiable and indistinguishable from not having looked;
-   the next pass has to be able to tell which findings were reasoned through.
+   Adjudicate stage 1's findings **in this pass's dated section, by numeric
+   class**, counting separately those the tooling could not read at all. A
+   figure missing from the cited page is expected for a scenario parameter or
+   a cross-page distractor fact and a defect for a verbatim vendor fact, so a
+   bare count says nothing; "figures remained supported" is unfalsifiable and
+   indistinguishable from not having looked; and citing an earlier pass's
+   framework or adjudication claims coverage this pass did not do.
+
 7. **Update `certs/VENDORS.md`.** This workflow owns that file, because
    fetching every cited host on a schedule is the only thing positioned to
    notice a vendor moved. Correct any host that has changed, add a newly
