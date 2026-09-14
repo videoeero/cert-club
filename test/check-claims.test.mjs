@@ -6,9 +6,17 @@ import { fileURLToPath } from "node:url";
 import {
   FIGURE,
   buildClaimsReport,
+  checkQuestionClaims,
+  extractBackticks,
   extractFigures,
+  extractQuotedSpans,
+  fetchPageText,
   formatClaimsReport,
+  isMdHost,
+  normalizeText,
   provenanceSurface,
+  stripMarkdown,
+  toMdUrl,
 } from "../scripts/check-claims.mjs";
 import { readCertQuestions } from "../scripts/lib/read-certs.mjs";
 
@@ -32,6 +40,39 @@ function mockQuestion(overrides = {}) {
     sourceNote: "Documentation page",
     sourceCheckedAt: "2026-01-01",
     ...overrides,
+  };
+}
+
+function createMockFetcher(handlers = {}) {
+  return async (url, init = {}) => {
+    const handler = handlers[url] || handlers["*"];
+    if (!handler) {
+      return {
+        ok: false,
+        status: 404,
+        headers: new Headers(),
+        text: async () => "Not Found",
+        body: { cancel: async () => {} },
+      };
+    }
+    if (handler instanceof Error) {
+      throw handler;
+    }
+    if (typeof handler === "function") {
+      return handler(url, init);
+    }
+    const {
+      status = 200,
+      text = "",
+      headers = { "content-type": "text/markdown" },
+    } = handler;
+    return {
+      ok: status >= 200 && status < 300,
+      status,
+      headers: new Headers(headers),
+      text: async () => text,
+      body: { cancel: async () => {} },
+    };
   };
 }
 
@@ -88,9 +129,6 @@ test("FIGURE regex matches currency amounts", () => {
 });
 
 test("FIGURE regex reports currency amounts whole, not just the first digit", () => {
-  // `\$\s?\d` alone captured one digit, so every currency figure in the corpus
-  // was reported truncated: $500 as $5, $450 as $4, $0.00 as $0. The listing is
-  // what a reviewer carries to the cited page, so the extent has to be right.
   const g = () => new RegExp(FIGURE.source, "gi");
   assert.deepEqual("Costs $500 per month".match(g()), ["$500"]);
   assert.deepEqual("$450 and $0.00 inbound".match(g()), ["$450", "$0.00"]);
@@ -99,8 +137,6 @@ test("FIGURE regex reports currency amounts whole, not just the first digit", ()
 });
 
 test("FIGURE regex keeps the lower bound of a range", () => {
-  // "often 1,000-2,000 tokens" reported as "2,000 tokens" dropped half the claim.
-  // This is the surface of ccar-p-solution-design-and-architecture-014.
   const g = () => new RegExp(FIGURE.source, "gi");
   assert.deepEqual("often 1,000-2,000 tokens".match(g()), [
     "1,000-2,000 tokens",
@@ -110,8 +146,6 @@ test("FIGURE regex keeps the lower bound of a range", () => {
 });
 
 test("FIGURE regex handles boundary trap 1: % without trailing word boundary", () => {
-  // A non-word character followed by \b asserts a word character follows,
-  // which silently fails on "85%," and "85% of". The rule must match both.
   assert.match("85%,", FIGURE);
   assert.match("85% of", FIGURE);
   assert.match("improved by 10%", FIGURE);
@@ -120,7 +154,6 @@ test("FIGURE regex handles boundary trap 1: % without trailing word boundary", (
 });
 
 test("FIGURE regex handles boundary trap 2: hyphenated duration and unit compounds", () => {
-  // Units attach with hyphens as often as spaces in documentation.
   assert.match("24-hour", FIGURE);
   assert.match("5-minute", FIGURE);
   assert.match("30-day", FIGURE);
@@ -154,8 +187,6 @@ test("FIGURE regex matches duration, memory, token, and request units", () => {
 });
 
 test("FIGURE regex does NOT match mechanism phrasing without numerals or plain numbers", () => {
-  // b74a91a rewrote "90% read discount" to "a tenth of the input price".
-  // With no numeral, it must not flag.
   assert.doesNotMatch("a tenth of the input price", FIGURE);
   assert.doesNotMatch("reduced by half", FIGURE);
   assert.doesNotMatch("Proposal 2", FIGURE);
@@ -283,7 +314,6 @@ test("corpus regression: does NOT detect items with figures solely in distractor
   );
   const byId = new Map(ccarPQuestions.map((q) => [q.id, q]));
 
-  // ccar-p-...-014 has "20%" only in non-keyed option text (opt-a); key is opt-c.
   const q014 = byId.get(
     "ccar-p-claude-models-prompting-and-context-engineering-014",
   );
@@ -295,7 +325,6 @@ test("corpus regression: does NOT detect items with figures solely in distractor
   );
   assert.equal(extractFigures(q014).length, 0);
 
-  // ccar-p-...-003 was rewritten to "a tenth of the input price" with no numeral.
   const q003 = byId.get(
     "ccar-p-stakeholder-communication-and-lifecycle-management-003",
   );
@@ -306,4 +335,356 @@ test("corpus regression: does NOT detect items with figures solely in distractor
     "ccar-p-...-003 uses mechanism wording without numerals and must NOT be detected",
   );
   assert.equal(extractFigures(q003).length, 0);
+});
+
+// ============================================================================
+// Stage B Tests: Host routing, Normalisation, Page Fetching, Hard & Advisory Checks
+// ============================================================================
+
+test("Stage B: isMdHost and toMdUrl recognize in-scope .md-serving hosts and strip fragments", () => {
+  assert.equal(
+    isMdHost(
+      "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+    ),
+    true,
+  );
+  assert.equal(isMdHost("https://code.claude.com/docs/en/sub-agents.md"), true);
+  assert.equal(
+    isMdHost(
+      "https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/stdio",
+    ),
+    true,
+  );
+
+  // Out of scope hosts
+  assert.equal(
+    isMdHost("https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/"),
+    false,
+  );
+  assert.equal(isMdHost("https://aws.amazon.com/free/"), false);
+  assert.equal(
+    isMdHost(
+      "https://learn.microsoft.com/en-us/azure/reliability/regions-paired",
+    ),
+    false,
+  );
+  assert.equal(
+    isMdHost(
+      "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+    ),
+    false,
+  );
+
+  // toMdUrl conversion
+  assert.equal(
+    toMdUrl(
+      "https://platform.claude.com/docs/en/build-with-claude/prompt-caching#structure-prompts",
+    ),
+    "https://platform.claude.com/docs/en/build-with-claude/prompt-caching.md",
+  );
+  assert.equal(
+    toMdUrl("https://code.claude.com/docs/en/sub-agents.md"),
+    "https://code.claude.com/docs/en/sub-agents.md",
+  );
+  assert.equal(
+    toMdUrl(
+      "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-purchasing-options.html",
+    ),
+    null,
+  );
+});
+
+test("Stage B: normalizeText casefolds, collapses whitespace, and straightens curly quotes", () => {
+  const input = "  “Curly Double” and \t \n ‘Curly Single’  with  UPPERCASE  ";
+  assert.equal(
+    normalizeText(input),
+    "\"curly double\" and 'curly single' with uppercase",
+  );
+});
+
+test("Stage B: stripMarkdown removes inline formatting markers while keeping text", () => {
+  const input =
+    "# Header\n* **Bold text** and _italic_ with [a link](https://example.com) and `code`";
+  const stripped = stripMarkdown(input);
+  assert.match(stripped, /Bold text/);
+  assert.match(stripped, /italic/);
+  assert.match(stripped, /a link/);
+  assert.match(stripped, /code/);
+  assert.doesNotMatch(stripped, /\*\*/);
+  assert.doesNotMatch(stripped, /https:\/\/example\.com/);
+});
+
+test("Stage B: extractQuotedSpans extracts double and single quoted spans without apostrophe collisions", () => {
+  const text = `The doc says "exact match required" and notes 'single quoted term'. But don't break on model's internal contractions.`;
+  const spans = extractQuotedSpans(text);
+  assert.deepEqual(spans, ["exact match required", "single quoted term"]);
+});
+
+test("Stage B: extractBackticks extracts identifiers without whitespace", () => {
+  const text =
+    "Use `budget_tokens` and `output_config.effort`, but skip `multi word expressions` here.";
+  const identifiers = extractBackticks(text);
+  assert.deepEqual(identifiers, ["budget_tokens", "output_config.effort"]);
+});
+
+test("Stage B: fetchPageText handles .md available, out-of-scope, http errors, thin, and network failures", async () => {
+  const fetcher = createMockFetcher({
+    "https://platform.claude.com/docs/en/good.md": {
+      status: 200,
+      text: "# Good Documentation Page\nThis is valid markdown documentation with more than fifty characters to pass the thin check.",
+    },
+    "https://platform.claude.com/docs/en/thin.md": {
+      status: 200,
+      text: "short text",
+    },
+    "https://platform.claude.com/docs/en/html-page.md": {
+      status: 200,
+      headers: { "content-type": "text/html; charset=utf-8" },
+      text: "<html><body>Not markdown</body></html> with sufficient length to test content type.",
+    },
+    "https://platform.claude.com/docs/en/not-found.md": {
+      status: 404,
+      text: "Page Not Found",
+    },
+    "https://platform.claude.com/docs/en/network-err.md": new Error(
+      "Connection refused",
+    ),
+  });
+
+  // .md available
+  const good = await fetchPageText("https://platform.claude.com/docs/en/good", {
+    fetcher,
+  });
+  assert.equal(good.status, "ok");
+  assert.ok(good.text.length > 50);
+
+  // Out of scope host
+  const outOfScope = await fetchPageText(
+    "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/index.html",
+    { fetcher },
+  );
+  assert.equal(outOfScope.status, "inconclusive");
+  assert.equal(outOfScope.reason, "out-of-scope host");
+
+  // HTTP error
+  const notFound = await fetchPageText(
+    "https://platform.claude.com/docs/en/not-found",
+    { fetcher },
+  );
+  assert.equal(notFound.status, "inconclusive");
+  assert.equal(notFound.reason, "http-error");
+
+  // Non-.md HTML response
+  const htmlResp = await fetchPageText(
+    "https://platform.claude.com/docs/en/html-page",
+    { fetcher },
+  );
+  assert.equal(htmlResp.status, "inconclusive");
+  assert.equal(htmlResp.reason, "non-md response");
+
+  // Thin page (< 50 chars)
+  const thin = await fetchPageText("https://platform.claude.com/docs/en/thin", {
+    fetcher,
+  });
+  assert.equal(thin.status, "inconclusive");
+  assert.equal(thin.reason, "thin page");
+
+  // Network failure
+  const netErr = await fetchPageText(
+    "https://platform.claude.com/docs/en/network-err",
+    { fetcher },
+  );
+  assert.equal(netErr.status, "inconclusive");
+  assert.equal(netErr.reason, "network-error");
+});
+
+test("Stage B: Check 1 and Check 2 detect matches and mismatches when .md is available", () => {
+  const pageResult = {
+    status: "ok",
+    text: "Claude provides `budget_tokens` and `cache_control` to control costs. The documentation specifies 'exact prefix matching' for caching.",
+  };
+
+  // Both match
+  const qClean = mockQuestion({
+    explanation:
+      "Configure `budget_tokens` carefully. Remember that 'exact prefix matching' is enforced.",
+    sourceUrl: "https://platform.claude.com/docs/en/caching",
+  });
+  const checkClean = checkQuestionClaims(qClean, pageResult);
+  assert.equal(checkClean.findings.length, 0);
+  assert.equal(checkClean.quotes[0].status, "matched");
+  assert.equal(checkClean.backticks[0].status, "matched");
+
+  // Quote mismatch
+  const qQuoteMismatch = mockQuestion({
+    explanation:
+      "Documentation claims 'approximate semantic matching' applies.",
+    sourceUrl: "https://platform.claude.com/docs/en/caching",
+  });
+  const checkQuoteMismatch = checkQuestionClaims(qQuoteMismatch, pageResult);
+  assert.equal(checkQuoteMismatch.findings.length, 1);
+  assert.equal(checkQuoteMismatch.findings[0].type, "quote-mismatch");
+  assert.equal(
+    checkQuoteMismatch.findings[0].item,
+    "approximate semantic matching",
+  );
+
+  // Backticked identifier absent
+  const qIdentifierMissing = mockQuestion({
+    explanation: "Set `output_config.effort` parameter.",
+    sourceUrl: "https://platform.claude.com/docs/en/caching",
+  });
+  const checkIdentifierMissing = checkQuestionClaims(
+    qIdentifierMissing,
+    pageResult,
+  );
+  assert.equal(checkIdentifierMissing.findings.length, 1);
+  assert.equal(checkIdentifierMissing.findings[0].type, "identifier-missing");
+  assert.equal(checkIdentifierMissing.findings[0].item, "output_config.effort");
+});
+
+test("Stage B: out-of-scope hosts and failed fetches report INCONCLUSIVE and NEVER produce a finding", () => {
+  const qOutOfScope = mockQuestion({
+    explanation: "Uses AWS feature 'Dedicated Hosts' with parameter `tenancy`.",
+    sourceUrl:
+      "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/dedicated-hosts.html",
+  });
+
+  // Out of scope page result
+  const outOfScopeResult = {
+    status: "inconclusive",
+    reason: "out-of-scope host",
+  };
+  const checkOutOfScope = checkQuestionClaims(qOutOfScope, outOfScopeResult);
+  assert.equal(
+    checkOutOfScope.findings.length,
+    0,
+    "Out-of-scope host must never produce a finding",
+  );
+  assert.equal(checkOutOfScope.quotes[0].status, "inconclusive");
+  assert.equal(checkOutOfScope.backticks[0].status, "inconclusive");
+
+  // Network error page result
+  const netErrResult = {
+    status: "inconclusive",
+    reason: "network-error",
+  };
+  const checkNetErr = checkQuestionClaims(qOutOfScope, netErrResult);
+  assert.equal(
+    checkNetErr.findings.length,
+    0,
+    "Network error must never produce a finding",
+  );
+  assert.equal(checkNetErr.quotes[0].status, "inconclusive");
+  assert.equal(checkNetErr.backticks[0].status, "inconclusive");
+});
+
+test("Stage B: Check 3 annotates Stage A's figures with page presence without gating", () => {
+  const pageResult = {
+    status: "ok",
+    text: "The operation takes 5 minutes and consumes 20,000 tokens.",
+  };
+  const q = mockQuestion({
+    explanation:
+      "Takes 5 minutes, costs $500, and uses 20,000 tokens with 90% discount.",
+    options: [{ id: "opt-a", text: "Option A" }],
+    correct: ["opt-a"],
+    sourceUrl: "https://platform.claude.com/docs/en/usage",
+  });
+
+  const check = checkQuestionClaims(q, pageResult);
+  assert.equal(
+    check.findings.length,
+    0,
+    "Figure check is advisory and never produces hard findings",
+  );
+  assert.equal(check.figures.length, 4);
+
+  const presenceByFigure = Object.fromEntries(
+    check.figures.map((f) => [f.figure, f.presence]),
+  );
+  assert.equal(presenceByFigure["5 minutes"], "found");
+  assert.equal(presenceByFigure["20,000 tokens"], "found");
+  assert.equal(presenceByFigure["$500"], "not-found");
+  assert.equal(presenceByFigure["90%"], "not-found");
+});
+
+test("Stage B: known live test case sda-014 extracts 4 quoted spans and verifies verbatim against page text", async () => {
+  const ccarPQuestions = await readCertQuestions(
+    join(repositoryRoot, "certs", "ccar-p"),
+  );
+  const sda014 = ccarPQuestions.find(
+    (q) => q.id === "ccar-p-solution-design-and-architecture-014",
+  );
+  assert.ok(sda014, "ccar-p-solution-design-and-architecture-014 must exist");
+
+  const surface = provenanceSurface(sda014);
+  const quotes = extractQuotedSpans(surface);
+  assert.equal(
+    quotes.length,
+    4,
+    "sda-014 must have exactly 4 quoted spans in provenance surface",
+  );
+
+  // Mock fetcher providing the verbatim document text
+  const mockDocText = `
+# Effective context engineering for AI agents
+Specialized sub-agents handle focused tasks with clean context windows, and each
+returns only a condensed, distilled summary of its work (often 1,000-2,000 tokens),
+so that the detailed search context remains isolated within sub-agents, while the lead agent
+focuses on synthesizing and analyzing the results.
+`;
+
+  const pageResult = {
+    status: "ok",
+    text: mockDocText,
+  };
+
+  const check = checkQuestionClaims(sda014, pageResult);
+  assert.equal(
+    check.findings.length,
+    0,
+    "All 4 quoted spans in sda-014 must match verbatim",
+  );
+  assert.ok(check.quotes.every((q) => q.status === "matched"));
+});
+
+test("Stage B: buildClaimsReport and formatClaimsReport format hard check findings and page presence", () => {
+  const manifest = { cert: "test-cert" };
+  const questions = [
+    mockQuestion({
+      id: "test-001",
+      explanation: "Offers 5 minutes turnaround with `param_a`.",
+      sourceUrl: "https://platform.claude.com/docs/en/service",
+    }),
+    mockQuestion({
+      id: "test-002",
+      explanation:
+        "Requires 'strict compliance' and parameter `unsupported_param`.",
+      sourceUrl: "https://platform.claude.com/docs/en/service",
+    }),
+  ];
+
+  const pageResults = new Map([
+    [
+      "https://platform.claude.com/docs/en/service",
+      {
+        status: "ok",
+        text: "Service provides `param_a` and 5 minutes SLA.",
+      },
+    ],
+  ]);
+
+  const report = buildClaimsReport(manifest, questions, { pageResults });
+  assert.equal(report.findings.length, 2);
+  assert.equal(report.findings[0].type, "quote-mismatch");
+  assert.equal(report.findings[0].item, "strict compliance");
+  assert.equal(report.findings[1].type, "identifier-missing");
+  assert.equal(report.findings[1].item, "unsupported_param");
+
+  const formatted = formatClaimsReport(report);
+  assert.match(formatted, /Hard check findings \(2\):/);
+  assert.match(formatted, /quote mismatch "strict compliance"/);
+  assert.match(formatted, /missing identifier `unsupported_param`/);
+  assert.match(formatted, /explanation: 5 minutes \(found\)/);
 });

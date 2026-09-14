@@ -327,11 +327,16 @@ supported route through the work rather than hand-rolling it.
   run with `--offline`, liveness (fetches every cited URL; tune with
   `--concurrency` and `--timeout-ms`); `--strict` / `--strict-network` turn
   its findings into a non-zero exit.
+- `npm run check-claims` — checks quotes, backticked identifiers, and figures
+  in the provenance surface against cited documentation pages (.md-serving
+  hosts; tune with `--concurrency` and `--timeout-ms`); `--strict` turns
+  hard-check findings into a non-zero exit.
 
-None of the three is part of `npm run check`: `check-sources` hits the network
-by default, and the gate must stay runnable offline and deterministic in CI.
-`scaffold` and `metrics` are excluded alongside it for the same reason they
-aren't validators — they generate and report, they don't gate.
+None of the four is part of `npm run check`: `check-sources` and `check-claims`
+hit the network by default, and the gate must stay runnable offline and
+deterministic in CI. `scaffold` and `metrics` are excluded alongside them for
+the same reason they aren't validators — they generate and report, they don't
+gate.
 
 ## Content license
 

@@ -938,3 +938,42 @@ weak link is
 enumeration, not adjudication — which is what a mechanical sweep does reliably and a reviewer
 does not.
 
+### Workstream 5 Stage B — check-claims verification and hit rates (2026-09-13)
+
+Stage B adds page text fetching for `.md`-serving hosts (`platform.claude.com`,
+`code.claude.com`, `modelcontextprotocol.io` — 360 of 561 repo citations, 64%)
+and evaluates the two hard checks plus advisory figure annotation. The remaining 201
+citations (AWS, Microsoft Learn, and `anthropic.com/engineering` which 404s on `.md`)
+are out of scope and report inconclusive.
+
+#### Measurement across `ccar-p` (126 questions, 90 in-scope on `.md` hosts, 36 out of scope on `www.anthropic.com`)
+
+- **Check 1 (Quotes — hard)**: 74 quoted spans checked across in-scope items.
+  - **64 matched verbatim** (86.5%)
+  - **10 mismatched** (13.5%)
+  - True findings identified:
+    - `stakeholder-...-003`: quoted `'Compare models on cost per completed task, not per token.'` — vendor page states `"Compare on cost per solved task, not per token"`.
+    - `stakeholder-...-010`: quotation contains ellipsis `...` inserted where vendor text had `, but many finish sooner. `, and quotes `'in less than 1 hour'` where page states `"within 1 hour"`.
+    - `stakeholder-...-018`: quotes `'Develop tests and evaluations'` — the page title is `"Define success criteria and build evaluations"` and the quoted phrase appears nowhere on the cited page.
+- **Check 2 (Backticked identifiers — hard)**: 33 identifiers checked across in-scope items.
+  - **32 matched** (97.0%)
+  - **1 missing** (3.0%): `claude-models-...-002` references `output_config.effort`, which does not appear on its cited `extended-thinking` page (the page uses `output_config: {effort: ...}` and links to `effort.md`).
+- **Check 3 (Figures — advisory)**: 100 figures listed across 34 figure-bearing items.
+  - **44 found on cited page** (44.0%)
+  - **31 absent from cited page** (31.0% — illustrative hypotheticals, stem echoes, and unstated derived calculations)
+  - **25 inconclusive** (25.0% — citations on `www.anthropic.com/engineering/...` which 404s on `.md`)
+
+#### Disagreement report: `sda-014` host status
+
+The predecessor notes characterized `sda-014` as sitting "on a fetchable host".
+In the repository, `sda-014` cites `https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents`.
+Because all 53 `www.anthropic.com/engineering` citations return 404 when `.md` is appended,
+it falls within the 201 out-of-scope citations and reports inconclusive in live sweeps.
+Its four quoted spans are verified verbatim in unit test fixtures using injected mock page text.
+
+#### Verdict on Stage B
+
+Stage B's hard checks produce true findings on non-verbatim quotes and unstated identifiers
+across the `.md`-host citations (also catching `@import` on `ccar-f-...-003`). Stage B earns
+its keep and is preserved outside `npm run check`, gated behind `--strict`.
+
