@@ -283,7 +283,7 @@ test("corpus regression: detects the eight figure-bearing items missed by the ha
       bank: "aws-clf-c02",
       id: "aws-clf-c02-cloud-technology-and-services-020",
     },
-    { bank: "ccdv-f", id: "ccdv-f-prompt-and-context-engineering-001" },
+    { bank: "ccdv-f", id: "ccdv-f-applications-and-integration-017" },
   ];
 
   const questionsByBank = new Map();

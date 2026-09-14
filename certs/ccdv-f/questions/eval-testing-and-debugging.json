@@ -1,46 +1,5 @@
 [
   {
-    "id": "ccdv-f-eval-testing-and-debugging-002",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "single",
-    "domain": "eval-testing-and-debugging",
-    "subdomain": "debugging-and-error-handling",
-    "difficulty": "medium",
-    "status": "reviewed",
-    "stem": "While developing an application using the Anthropic API, a developer repeatedly encounters an HTTP 529 error during periods of high traffic. What does this specific error indicate, and how should the application respond?",
-    "options": [
-      {
-        "id": "a",
-        "text": "It indicates an overloaded_error meaning Anthropic's API is temporarily overloaded; the application should retry the request with exponential backoff."
-      },
-      {
-        "id": "b",
-        "text": "It indicates a rate_limit_error meaning the application has exceeded its allowed requests per minute; the application should prompt the user to upgrade their API tier."
-      },
-      {
-        "id": "c",
-        "text": "It indicates an authentication_error meaning the API key is invalid or expired; the application must prompt the administrator to rotate the keys."
-      },
-      {
-        "id": "d",
-        "text": "It indicates a request_too_large error meaning the prompt exceeded the context window; the application should automatically truncate the input text before retrying."
-      }
-    ],
-    "correct": [
-      "a"
-    ],
-    "explanation": "An HTTP 529 status code indicates an `overloaded_error`, which means Anthropic's API is temporarily experiencing high load. The recommended recovery strategy for this error type is to automatically retry the request using exponential backoff. This differs from a 429 `rate_limit_error`, which happens when the client exceeds their specific allotted rate limits.",
-    "distractorNotes": {
-      "b": "A rate limit error uses HTTP 429, not 529. While both might involve traffic limits, 529 is a server-side overload, whereas 429 is a client-side limit.",
-      "c": "An authentication error returns an HTTP 401. It is not related to high traffic or 529 errors.",
-      "d": "A request too large error returns an HTTP 413. It is caused by exceeding the token limit, not by periods of server-side high traffic."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/api/errors",
-    "sourceNote": "Errors — HTTP 529 overloaded_error and retry strategies",
-    "sourceCheckedAt": "2026-09-03"
-  },
-  {
     "id": "ccdv-f-eval-testing-and-debugging-003",
     "cert": "ccdv-f",
     "schemaVersion": 1,
@@ -87,47 +46,6 @@
     "sourceCheckedAt": "2026-09-03"
   },
   {
-    "id": "ccdv-f-eval-testing-and-debugging-004",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "single",
-    "domain": "eval-testing-and-debugging",
-    "subdomain": "debugging-and-error-handling",
-    "difficulty": "easy",
-    "status": "reviewed",
-    "stem": "A developer runs an exact-match evaluation to check if Claude correctly assigns one of four fixed labels to an input. The test continuously fails, despite manual spot-checks showing the model is generating the right words. What is the most appropriate first step to diagnose and resolve this test failure?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Inspect the raw outputs and update the evaluation script to normalize whitespace and casing before performing the exact match."
-      },
-      {
-        "id": "b",
-        "text": "Replace the exact-match script with an LLM-as-a-judge prompt to flexibly evaluate the model's intended label."
-      },
-      {
-        "id": "c",
-        "text": "Switch to manual human grading for all test cases, as automated string matching is too unreliable for categorical tasks."
-      },
-      {
-        "id": "d",
-        "text": "Loosen the assertion to a substring match, so a label surrounded by extra words still counts as correct."
-      }
-    ],
-    "correct": [
-      "a"
-    ],
-    "explanation": "When an exact-match evaluation for categorical answers produces false negatives, a foundational debugging step is to inspect the raw output for trivial discrepancies. Anthropic's guidance highlights that code-based grading is the fastest and most reliable method for clear-cut answers, but it typically requires comparing the output \"after normalizing whitespace and case.\" Replacing the check with an LLM judge or human grading fails to address the root cause and introduces unnecessary cost and latency for a deterministic task.",
-    "distractorNotes": {
-      "b": "An LLM judge adds cost, latency, and variance. It is suitable for complex or subjective judgments, not for evaluating fixed, categorical labels.",
-      "c": "Human grading is the slowest and most expensive evaluation method. The guidance explicitly advises avoiding it when a simple, automated string match is possible.",
-      "d": "A substring match would make the test pass, but it also accepts outputs it should reject: a reply that mentions one label while selecting another still matches. Normalising and keeping the exact match preserves the check's precision."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
-    "sourceNote": "Develop tests — 'Grade your evaluations' (grading methods hierarchy)",
-    "sourceCheckedAt": "2026-09-03"
-  },
-  {
     "id": "ccdv-f-eval-testing-and-debugging-006",
     "cert": "ccdv-f",
     "schemaVersion": 1,
@@ -166,47 +84,6 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/monitoring-usage",
     "sourceNote": "Monitoring usage — OpenTelemetry exporter setup and verification",
-    "sourceCheckedAt": "2026-09-03"
-  },
-  {
-    "id": "ccdv-f-eval-testing-and-debugging-008",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "single",
-    "domain": "eval-testing-and-debugging",
-    "subdomain": "debugging-and-error-handling",
-    "difficulty": "medium",
-    "status": "reviewed",
-    "stem": "A developer is troubleshooting an FAQ assistant that gives significantly different answers when a user asks the exact same question in slightly different words. To systematically debug and measure this issue, which foundational evaluation criterion should the developer focus on?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Task fidelity, which evaluates whether the bot can identify a predefined correct answer."
-      },
-      {
-        "id": "b",
-        "text": "Consistency, which evaluates how semantically similar the bot's responses are for similar types of input."
-      },
-      {
-        "id": "c",
-        "text": "Relevance and coherence, which evaluates the logical flow and subsequence matching of the bot's summaries."
-      },
-      {
-        "id": "d",
-        "text": "Tone and style, which evaluates subjective aspects like the bot's empathy and professionalism."
-      }
-    ],
-    "correct": [
-      "b"
-    ],
-    "explanation": "When a model provides different answers to paraphrased questions, it is failing the criterion of consistency. The documentation defines consistency as evaluating 'how similar do the model's responses need to be for similar types of input' and notes that 'similar questions should yield semantically similar answers, even if the wording varies.' Identifying the correct criterion is the foundational first step in debugging inconsistent model outputs. Task fidelity is used for clear-cut categorical tasks, relevance and coherence for summarization, and tone and style for subjective attributes.",
-    "distractorNotes": {
-      "a": "Task fidelity evaluates if the model produces a specific, clear-cut categorical answer, typically using exact match. It does not measure semantic similarity across paraphrased questions.",
-      "c": "Relevance and coherence is typically used for tasks like summarization to measure how well the output captures the core message of a reference text, not how well the model agrees with its own answers across different prompts.",
-      "d": "Tone and style evaluates nuanced, subjective aspects such as empathy, professionalism, or patience, which does not address the semantic agreement of the answers themselves."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
-    "sourceNote": "Develop tests — 'Common success criteria' and 'Example evals' (Consistency)",
     "sourceCheckedAt": "2026-09-03"
   },
   {

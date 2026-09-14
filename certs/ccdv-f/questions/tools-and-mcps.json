@@ -1,46 +1,5 @@
 [
   {
-    "id": "ccdv-f-tools-and-mcps-001",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "single",
-    "domain": "tools-and-mcps",
-    "subdomain": "tool-implementation",
-    "difficulty": "easy",
-    "status": "reviewed",
-    "stem": "A developer is deciding how much execution plumbing their service needs to build. Which statement correctly describes the division of responsibility between client tools and server tools in the Claude API?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Both kinds run on Anthropic's infrastructure, and the label records only whether the developer or Anthropic authored the tool's schema rather than where the code behind it actually executes when Claude calls it in a request."
-      },
-      {
-        "id": "b",
-        "text": "Client tools are restricted to the schemas Anthropic publishes, such as bash and the text editor; any tool the developer defines is by definition a server tool that Anthropic executes on request."
-      },
-      {
-        "id": "c",
-        "text": "Server tools behave exactly like client tools in the message loop: the application receives each call and must return a matching tool_result block before the conversation can continue to the next turn."
-      },
-      {
-        "id": "d",
-        "text": "Client tools run inside the developer's application, which returns the outcome in a tool_result block to continue the exchange; server tools run on Anthropic's infrastructure and the application never executes them."
-      }
-    ],
-    "correct": [
-      "d"
-    ],
-    "explanation": "The client and server split is about where the code runs. For a client tool, Claude emits a tool_use block, the application performs the work, and the outcome travels back in a tool_result block. For a server tool, Anthropic runs the operation and the results appear in the response without the application executing anything or returning a result block. Both kinds are declared in the same tools array of the request, so the execution boundary, rather than where the tool is declared, is the thing to reason about when planning what to build.",
-    "distractorNotes": {
-      "a": "Authorship of the schema is not the dividing line. Anthropic publishes schemas for several client tools, and those still execute in the developer's environment, so schema origin and execution location vary independently.",
-      "b": "This inverts the categories. User-defined tools are client tools, and Anthropic-schema tools such as the bash and text editor tools are also client tools, because the developer's application performs the work in both cases.",
-      "c": "Server tool calls are resolved by Anthropic within the request. Returning tool_result blocks for them is not part of the flow, and treating them like client tools leads developers to build handling that will never be invoked."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview",
-    "sourceNote": "Tool use with Claude — 'How tool use works'",
-    "sourceCheckedAt": "2026-09-03"
-  },
-  {
     "id": "ccdv-f-tools-and-mcps-002",
     "cert": "ccdv-f",
     "schemaVersion": 1,
@@ -120,57 +79,6 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls",
     "sourceNote": "Handle tool calls — 'Handling errors with is_error', 'Tool execution error'",
-    "sourceCheckedAt": "2026-09-03"
-  },
-  {
-    "id": "ccdv-f-tools-and-mcps-005",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "multi",
-    "domain": "tools-and-mcps",
-    "subdomain": "tool-implementation",
-    "difficulty": "medium",
-    "status": "reviewed",
-    "stem": "An agent turn returns three tool_use blocks at once: two read-only lookups and one write that must not run if a lookup fails. Select THREE statements that correctly describe how parallel tool calls work and where the developer's responsibility lies.",
-    "options": [
-      {
-        "id": "a",
-        "text": "The API runs the calls concurrently on the application's behalf and delivers a single merged result for the turn."
-      },
-      {
-        "id": "b",
-        "text": "A single assistant turn can contain several tool_use blocks, and the application decides whether to run them concurrently, in sequence, or in some combination."
-      },
-      {
-        "id": "c",
-        "text": "Every call from that turn is answered with its own tool_result block, and all of those blocks are returned together in the next single user message."
-      },
-      {
-        "id": "d",
-        "text": "If the application chooses not to run one of the calls, it still returns a tool_result for it, marked as an error and explaining why it was skipped."
-      },
-      {
-        "id": "e",
-        "text": "Results must be returned in separate user messages, one per call, ordered to match the order in which the calls appeared."
-      },
-      {
-        "id": "f",
-        "text": "Emitting more than one tool_use block in a single turn is opt-in and must be switched on with a request parameter before Claude will produce parallel calls in a response at all."
-      }
-    ],
-    "correct": [
-      "b",
-      "c",
-      "d"
-    ],
-    "explanation": "Parallel tool use is on by default, and the API deliberately does not prescribe an execution order, leaving the strategy to the application. Independent read-only work is usually safe to run concurrently for lower latency, while calls with side effects, shared state, or ordering requirements are often better run in sequence. Whatever strategy is chosen, the message contract is unchanged: one result per call, all in the next user message, each matched by tool_use_id and placed ahead of any text. A call that is deliberately skipped still needs a result block flagged as an error so that no call is left unanswered.",
-    "distractorNotes": {
-      "a": "Execution of client tools never happens inside the API. The response describes what Claude wants to call; scheduling, concurrency, and error handling are entirely the application's to implement.",
-      "e": "One message per result breaks the requirement that results immediately follow their calls, and it is precisely the pattern that stops parallel behaviour from working correctly on later turns.",
-      "f": "Multiple calls per turn are the default behaviour. The available parameter works in the opposite direction, constraining Claude to fewer calls rather than enabling more."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use",
-    "sourceNote": "Parallel tool use — 'Execution semantics'",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -514,47 +422,6 @@
     },
     "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
     "sourceNote": "When (and when not) to use agents — find the simplest solution and add complexity only when needed",
-    "sourceCheckedAt": "2026-09-07"
-  },
-  {
-    "id": "ccdv-f-tools-and-mcps-016",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "single",
-    "domain": "tools-and-mcps",
-    "subdomain": "agentic-customization",
-    "difficulty": "medium",
-    "status": "reviewed",
-    "stem": "An assistant must answer using current information from the public web. The team is about to build a custom tool that wraps a third-party search API and runs inside their own service. What should they weigh before doing that?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Whether a built-in server-side tool already covers this, since those run on Anthropic's infrastructure with no handler code in their service."
-      },
-      {
-        "id": "b",
-        "text": "Whether their search provider can be reached over stdio, since that is the transport that locally executed tools are expected to use."
-      },
-      {
-        "id": "c",
-        "text": "Whether to package the search procedure as a Skill instead, so that the instructions travel with the repository and remain under code review."
-      },
-      {
-        "id": "d",
-        "text": "Whether the model can already browse the web from its training data, which would remove the need for any tool or external call at all."
-      }
-    ],
-    "correct": [
-      "a"
-    ],
-    "explanation": "Tools divide by where they execute. A client tool runs in your application, so you own the handler, the credentials, the error handling and the operational burden. A server tool runs on Anthropic's infrastructure and you receive the result without implementing execution at all. Web search is a capability already offered as a server tool, so building a custom wrapper means taking on work that is otherwise free. The general principle is to check what the platform already provides before extending it, and to reserve custom tools for capabilities specific to your own systems.",
-    "distractorNotes": {
-      "b": "Confuses this with Model Context Protocol transports. Transport choice concerns how a separate MCP server is reached, and does not arise when deciding between a built-in and a custom tool.",
-      "c": "A Skill packages instructions and reference material for a repeated procedure. It does not provide live authenticated access to an external data source, which is what fetching current web results requires.",
-      "d": "Training data is fixed at training time, which is the reason the requirement exists. No amount of prompting turns a static corpus into current information."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview",
-    "sourceNote": "Tool use overview — server tools versus client tools",
     "sourceCheckedAt": "2026-09-07"
   },
   {

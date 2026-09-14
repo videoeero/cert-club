@@ -634,23 +634,26 @@ test("reproduces ccdv-f's hand-computed adversarial baselines", async () => {
   const metrics = buildBankMetrics(manifestData, questions);
 
   // review-progress.md § "Other pattern tells": the absolutes strategy "scores
-  // an expected 26% against a 25% baseline, and uniquely identifies the key in
-  // 0 of 97 single-select items".
+  // an expected 25% against a 25% baseline, and uniquely identifies the key in
+  // 0 of 67 single-select items".
   //
-  // Both numbers moved when the seven decisive items were rewritten (30% and
-  // 7 before). They are pinned here so the pair cannot drift apart silently:
-  // the review file is a hand-written record, and a figure nothing re-derives
-  // is a figure that quietly stops being true. Editing one without the other
-  // is what this assertion exists to catch — so if it fails, check which of
-  // the two is actually wrong before touching either.
+  // The numbers moved when the seven decisive items were rewritten (30% and
+  // 7 before), and again when the 149→106 pruning pass shrank the single-select
+  // pool from 97 to 67 (shifting absolutes from 26% to ~25% and the longest-option
+  // tell from 19% to ~22%). They are pinned here so the pair cannot drift apart
+  // silently: the review file is a hand-written record, and a figure nothing
+  // re-derives is a figure that quietly stops being true. Editing one without
+  // the other is what this assertion exists to catch — so if it fails, check
+  // which of the two is actually wrong before touching either.
   const absolutes = metrics.baselines.eliminateAbsoluteQualifiers;
-  assert.equal(absolutes.sampleSize, 97);
-  assert.ok(Math.abs(absolutes.expectedScore - 0.26) < 0.005);
+  assert.equal(absolutes.sampleSize, 67);
+  assert.ok(Math.abs(absolutes.expectedScore - 0.25) < 0.005);
   assert.equal(absolutes.uniqueIdentifyCount, 0);
 
-  // Same file records the longest-option tell at 19% after the rewrite pass.
-  assert.equal(metrics.longestOptionIsKey.sampleSize, 97);
-  assert.ok(Math.abs(metrics.longestOptionIsKey.share - 0.19) < 0.005);
+  // Same file records the longest-option tell at 22% post-pruning (19% after
+  // the rewrite pass).
+  assert.equal(metrics.longestOptionIsKey.sampleSize, 67);
+  assert.ok(Math.abs(metrics.longestOptionIsKey.share - 0.22) < 0.005);
 });
 
 test("buildRepositoryMetrics reports every bank when no slug is given", async () => {

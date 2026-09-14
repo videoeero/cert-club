@@ -225,47 +225,6 @@
     "sourceCheckedAt": "2026-09-03"
   },
   {
-    "id": "ccdv-f-applications-and-integration-007",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "single",
-    "domain": "applications-and-integration",
-    "subdomain": "claude-application-design",
-    "difficulty": "easy",
-    "status": "reviewed",
-    "stem": "A team is estimating whether a planned request will fit inside a model's context window. Which components have to be counted?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Only the user and assistant message text, since system prompts and tool definitions are billed but sit outside the window itself."
-      },
-      {
-        "id": "b",
-        "text": "Only the input side, since generated output is bounded separately by max_tokens and does not occupy space in the window."
-      },
-      {
-        "id": "c",
-        "text": "Only the most recent turn, since earlier turns are summarized and compacted automatically before the request is processed."
-      },
-      {
-        "id": "d",
-        "text": "The system prompt, every message including tool results and documents, the tool definitions, and the tokens generated in reply."
-      }
-    ],
-    "correct": [
-      "d"
-    ],
-    "explanation": "The context window is the model's entire working memory for a request, and everything sent counts toward it: the system prompt, every entry in the messages array including tool results, images, and documents, and the tool definitions themselves. Critically, the output side counts too, because the window has to hold the response being generated alongside everything that prompted it. Tool definitions are the component teams most often forget, since they are configuration rather than conversation and can grow substantial once a toolset expands. The token counting endpoint exists to estimate a request before it is sent, and each response reports actual consumption in its usage field, which is the more reliable signal for capacity planning.",
-    "distractorNotes": {
-      "a": "System prompts and tool definitions are part of the request the model reads, so they occupy the window like any other input. Tool definitions in particular can dominate the budget in a tool-heavy agent.",
-      "b": "The window holds the response as well as the prompt. max_tokens caps how much may be generated, but that generated output still has to fit inside the same window.",
-      "c": "Server-side compaction is an explicitly enabled feature rather than default behavior. On an ordinary request, prior turns are present because the client resent them and they consume window space in full."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/context-windows",
-    "sourceNote": "Context windows — 'How the context window works'",
-    "sourceCheckedAt": "2026-09-03"
-  },
-  {
     "id": "ccdv-f-applications-and-integration-008",
     "cert": "ccdv-f",
     "schemaVersion": 1,
@@ -397,47 +356,6 @@
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/context-windows",
     "sourceNote": "Context windows — context rot and curation",
     "sourceCheckedAt": "2026-09-03"
-  },
-  {
-    "id": "ccdv-f-applications-and-integration-012",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "single",
-    "domain": "applications-and-integration",
-    "subdomain": "configuration-management",
-    "difficulty": "medium",
-    "status": "reviewed",
-    "stem": "A development team wants Claude to automatically pick up their project's conventions and coding standards every session, without anyone re-typing instructions into chat or the API request. Which configuration approach achieves that?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Providing the standards in a system prompt for every individual API call."
-      },
-      {
-        "id": "b",
-        "text": "Placing a CLAUDE.md file containing the conventions at the root of the project repository."
-      },
-      {
-        "id": "c",
-        "text": "Writing the conventions into a PreToolUse hook, since hooks are the mechanism the documentation names for enforcing behavior regardless of what Claude decides."
-      },
-      {
-        "id": "d",
-        "text": "Setting environment variables on developer machines with the required conventions."
-      }
-    ],
-    "correct": [
-      "b"
-    ],
-    "explanation": "A project CLAUDE.md at the repository root is read at the start of every session and carries team-shared instructions such as coding standards and architectural conventions, without anyone re-supplying them per call. Hooks solve a related but distinct problem: because CLAUDE.md is delivered as context rather than enforced configuration, a hook is the documented way to guarantee an action is blocked or forced regardless of what Claude decides, at the cost of only covering the specific event the hook is wired to rather than general guidance.",
-    "distractorNotes": {
-      "a": "A system prompt repeated on every call can convey the same conventions, but it must be assembled and sent by the caller each time rather than being read automatically from the repository.",
-      "c": "Hooks execute as shell commands at fixed lifecycle events and are the right tool for deterministic enforcement, but they are not where narrative coding-standards guidance lives; a hook cannot substitute for CLAUDE.md's role as general instructions Claude reads and reasons over.",
-      "d": "Environment variables are typically used for secrets like API keys or basic application settings, not for conveying detailed narrative instructions, coding standards, or project context to Claude."
-    },
-    "sourceUrl": "https://code.claude.com/docs/en/memory",
-    "sourceNote": "Memory — 'CLAUDE.md files' and 'CLAUDE.md vs auto memory'",
-    "sourceCheckedAt": "2026-09-07"
   },
   {
     "id": "ccdv-f-applications-and-integration-014",
@@ -665,47 +583,6 @@
     "sourceCheckedAt": "2026-09-03"
   },
   {
-    "id": "ccdv-f-applications-and-integration-019",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "single",
-    "domain": "applications-and-integration",
-    "subdomain": "software-engineering-foundations",
-    "difficulty": "medium",
-    "status": "reviewed",
-    "stem": "A report generation job issues non-streaming Messages requests with a very large max_tokens value. Most calls succeed, but some fail after several minutes with no response body at all, and failures cluster on particular network paths. Which change matches the documented guidance?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Switch long generations to the streaming Messages API or the Message Batches API, since idle connections can be dropped."
-      },
-      {
-        "id": "b",
-        "text": "Keep the non-streaming call and raise the client timeout, since the response is held server side until the client reconnects."
-      },
-      {
-        "id": "c",
-        "text": "Treat the failures as a throughput limit and retry the identical non-streaming request with exponential backoff."
-      },
-      {
-        "id": "d",
-        "text": "Lower max_tokens until responses return, since the failures show the requested ceiling exceeded the context window."
-      }
-    ],
-    "correct": [
-      "a"
-    ],
-    "explanation": "A non-streaming request holds one connection open for the entire generation, so a large max_tokens turns an ordinary call into a long-lived connection. Networks differ in reliability and some drop idle connections after a variable period, which is why the request can fail or time out without any response arriving. The documented remedies are to stream, so that data flows continuously and the client can process events as they arrive, or to use the Message Batches API, which lets the client poll for results instead of depending on an uninterrupted connection. Two supporting details are worth knowing: the official SDKs validate that a non-streaming request is not expected to exceed the service timeout, and they set a TCP keep-alive socket option, which a hand-rolled direct integration must arrange for itself. A request that does time out server side surfaces as a timeout error whose documented advice is likewise to move to streaming.",
-    "distractorNotes": {
-      "b": "There is no reconnect-and-collect mechanism for a dropped non-streaming call, so the partially generated response is simply lost. Extending the timeout does not help when an intermediary severs an idle connection.",
-      "c": "Throughput rejections arrive quickly with an explicit error, not as a silent multi-minute stall. Replaying the same non-streaming shape reproduces exactly the condition that failed.",
-      "d": "A max_tokens value larger than the model allows is rejected during validation, immediately and with an error. Failures that appear only after minutes of waiting point at connection duration instead."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/api/errors",
-    "sourceNote": "Claude API errors — long requests and idle connections",
-    "sourceCheckedAt": "2026-09-03"
-  },
-  {
     "id": "ccdv-f-applications-and-integration-022",
     "cert": "ccdv-f",
     "schemaVersion": 1,
@@ -744,52 +621,6 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/manage-claude/workspaces",
     "sourceNote": "Workspaces — project isolation, key scoping, and archiving",
-    "sourceCheckedAt": "2026-09-03"
-  },
-  {
-    "id": "ccdv-f-applications-and-integration-024",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "multi",
-    "domain": "applications-and-integration",
-    "subdomain": "understanding-requirements",
-    "difficulty": "medium",
-    "status": "reviewed",
-    "stem": "A product owner writes that a new assistant simply has to feel fast. Before the team can build against that, the requirement must be restated in terms it can measure. Which statements reflect the documented guidance on latency? Select TWO.",
-    "options": [
-      {
-        "id": "a",
-        "text": "Latency targets should be fixed before prompt quality is explored, since no quality work can start until they are met."
-      },
-      {
-        "id": "b",
-        "text": "Time to first token and time to a complete response are separate measures, and the requirement must say which it binds."
-      },
-      {
-        "id": "c",
-        "text": "Capping the output ceiling is a precise way to hit a latency target, because generation is trimmed at a clean boundary."
-      },
-      {
-        "id": "d",
-        "text": "Streaming returns output before generation finishes, improving perceived responsiveness rather than total generation time."
-      },
-      {
-        "id": "e",
-        "text": "Once streaming is enabled the two latency measures converge, so only a single number needs to be tracked afterwards."
-      }
-    ],
-    "correct": [
-      "b",
-      "d"
-    ],
-    "explanation": "Feeling fast is not one quantity. Baseline latency covers processing the prompt and producing the response, while time to first token measures only how long the user waits before anything appears, and the two move independently. A requirement that does not say which one it constrains cannot be verified, and it also cannot be designed against, because the levers differ: trimming input and output length and choosing a faster model move total time, whereas streaming mainly moves the perceived figure by letting output appear while generation continues. Naming the measure is therefore the first step in turning the request into something testable. The guidance also warns against sequencing this work wrongly: engineer a prompt that performs well first, then apply latency reduction, because optimizing for speed too early can hide what good performance would have looked like.",
-    "distractorNotes": {
-      "a": "This inverts the recommended order. Establishing quality first and reducing latency afterwards is advised, since premature constraints can prevent the team from discovering top performance.",
-      "c": "An output ceiling is described as a blunt instrument. It cuts generation wherever it lands, possibly mid-sentence, so it usually requires post-processing rather than delivering a clean result.",
-      "e": "The two stay distinct under streaming, which is exactly when the distinction matters most: first output can appear quickly while the complete response still takes just as long to finish."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-latency",
-    "sourceNote": "Reducing latency — latency measurement and streaming responses",
     "sourceCheckedAt": "2026-09-03"
   },
   {
@@ -913,47 +744,6 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/about-claude/models/optimizing-for-cost-and-intelligence",
     "sourceNote": "Tradeoffs: model choice and multi-model architectures",
-    "sourceCheckedAt": "2026-09-07"
-  },
-  {
-    "id": "ccdv-f-applications-and-integration-028",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "multi",
-    "domain": "applications-and-integration",
-    "subdomain": "claude-application-design",
-    "difficulty": "hard",
-    "status": "reviewed",
-    "stem": "A team is scoping a new feature and defaults to a fully autonomous agent that plans and directs its own tool use. A reviewer pushes back and asks them to justify the complexity. Which considerations correctly inform whether an autonomous agent is the right choice here? Select TWO.",
-    "options": [
-      {
-        "id": "a",
-        "text": "Autonomy is the recommended baseline for any Claude feature, and simpler compositions are legacy patterns to avoid."
-      },
-      {
-        "id": "b",
-        "text": "The simplest thing that works is preferred, with complexity added only when a requirement clearly demands it."
-      },
-      {
-        "id": "c",
-        "text": "A framework must be adopted first, because agentic behaviour cannot be built by calling the API directly."
-      },
-      {
-        "id": "d",
-        "text": "Agents trade latency and cost for flexibility, so a predefined workflow is better when the steps are well understood."
-      }
-    ],
-    "correct": [
-      "b",
-      "d"
-    ],
-    "explanation": "opt-b and opt-d are correct: the guidance is to find the simplest solution and add complexity only when needed, and to reserve autonomous agents for tasks needing model-driven flexibility because agents trade latency and cost for that flexibility, whereas well-defined tasks are better served by predictable workflows. opt-a inverts the guidance, which does not treat autonomy as the default; opt-c is false because many patterns are a few lines against the API directly and a framework is optional.",
-    "distractorNotes": {
-      "a": "Plausible given the hype around agents, but the documented stance is to start simple, not to default to autonomy.",
-      "c": "Plausible because frameworks exist, but they are optional conveniences, not a prerequisite for agentic behaviour."
-    },
-    "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
-    "sourceNote": "When (and when not) to use agents",
     "sourceCheckedAt": "2026-09-07"
   },
   {
@@ -1162,47 +952,6 @@
     "sourceCheckedAt": "2026-09-07"
   },
   {
-    "id": "ccdv-f-applications-and-integration-034",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "multi",
-    "domain": "applications-and-integration",
-    "subdomain": "claude-application-design",
-    "difficulty": "medium",
-    "status": "reviewed",
-    "stem": "A translation feature produces serviceable but flat output, and the team notices that when a human reviewer writes specific critiques, a second pass reliably improves the result against clear criteria. They want to bake this into the application. Which pattern and which precondition make it a good fit? Select TWO.",
-    "options": [
-      {
-        "id": "a",
-        "text": "A parallel voting scheme that runs many identical translations at once and returns whichever variant appears most often."
-      },
-      {
-        "id": "b",
-        "text": "A loop in which one call produces a draft and another evaluates it and returns feedback for the next revision."
-      },
-      {
-        "id": "c",
-        "text": "The fit depends on having evaluation criteria clear enough that articulated feedback measurably improves the output."
-      },
-      {
-        "id": "d",
-        "text": "A single high-effort call, because iterative critique cannot improve a translation beyond the first attempt anyway."
-      }
-    ],
-    "correct": [
-      "b",
-      "c"
-    ],
-    "explanation": "opt-b and opt-c are correct: the evaluator-optimizer pattern pairs a generator call with an evaluator call that gives feedback in a loop, and it fits precisely when evaluation criteria are clear and articulated feedback demonstrably improves the result, which the scenario reports. opt-a describes voting, which aggregates independent attempts rather than iteratively refining one; opt-d denies the observed improvement from feedback, contradicting the premise.",
-    "distractorNotes": {
-      "a": "Plausible because it also uses multiple calls, but voting picks among parallel attempts instead of refining a draft against critique.",
-      "d": "Plausible as a simplicity argument, but it contradicts the observed fact that reviewer feedback already improves the second pass."
-    },
-    "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
-    "sourceNote": "Workflow: Evaluator-optimizer",
-    "sourceCheckedAt": "2026-09-07"
-  },
-  {
     "id": "ccdv-f-applications-and-integration-035",
     "cert": "ccdv-f",
     "schemaVersion": 1,
@@ -1241,47 +990,6 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/vision",
     "sourceNote": "Send images to Claude",
-    "sourceCheckedAt": "2026-09-07"
-  },
-  {
-    "id": "ccdv-f-applications-and-integration-036",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "single",
-    "domain": "applications-and-integration",
-    "subdomain": "claude-api-mechanics",
-    "difficulty": "medium",
-    "status": "reviewed",
-    "stem": "For compliance reasons, a company must invoke Claude through its existing Google Cloud vendor account rather than calling Anthropic's API directly. An engineer worries the whole integration must be rebuilt. What is the most accurate characterisation of the change?",
-    "options": [
-      {
-        "id": "a",
-        "text": "The request format is entirely different, so the messages-based structure of the integration has to be rewritten from scratch."
-      },
-      {
-        "id": "b",
-        "text": "Going through a cloud vendor is unsupported for production, so requests must still terminate at Anthropic's own endpoint."
-      },
-      {
-        "id": "c",
-        "text": "Model choice disappears at the vendor, because the platform selects a model automatically for every incoming request."
-      },
-      {
-        "id": "d",
-        "text": "The interface stays close to the Messages API, with mainly authentication and a few request-format details differing."
-      }
-    ],
-    "correct": [
-      "d"
-    ],
-    "explanation": "opt-d is correct because accessing Claude through Google Cloud uses an API nearly identical to the Messages API, differing chiefly in how the model is specified, where the version value is passed, and vendor authentication via the official SDK, so the core messages structure carries over. opt-a overstates the change; opt-b is false because vendor access is a supported path; opt-c is wrong because the caller still selects the model, just specified through the endpoint rather than the body.",
-    "distractorNotes": {
-      "a": "Plausible if you assume each vendor is bespoke, but the request shape is nearly identical to the Messages API.",
-      "b": "Plausible to someone unaware of vendor deployments, but invoking Claude through cloud vendors is fully supported.",
-      "c": "Plausible because endpoints encode the model, but the developer still chooses which model to call."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/claude-on-vertex-ai",
-    "sourceNote": "Differences from the Messages API",
     "sourceCheckedAt": "2026-09-07"
   },
   {
@@ -1326,47 +1034,6 @@
     "sourceCheckedAt": "2026-09-07"
   },
   {
-    "id": "ccdv-f-applications-and-integration-038",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "single",
-    "domain": "applications-and-integration",
-    "subdomain": "claude-api-mechanics",
-    "difficulty": "easy",
-    "status": "reviewed",
-    "stem": "A product manager proposes routing an interactive chat feature's live requests through the Message Batches API to cut cost, since batching is cheaper per token. Users expect a reply within a second or two. Why is this the wrong tool for the workload?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Batch processing is asynchronous and latency-tolerant, so it does not fit a request that needs an immediate reply."
-      },
-      {
-        "id": "b",
-        "text": "Batch processing costs more per token than synchronous calls, so it never helps once user wait time is considered."
-      },
-      {
-        "id": "c",
-        "text": "Batch processing rejects any conversational messages, so a chat turn cannot be expressed as a batched request at all."
-      },
-      {
-        "id": "d",
-        "text": "Batch processing guarantees sub-second responses but caps throughput too low to serve a busy chat feature's traffic."
-      }
-    ],
-    "correct": [
-      "a"
-    ],
-    "explanation": "opt-a is correct because the Batches API is an asynchronous, latency-tolerant path suited to work that can wait, which is the opposite of an interactive request needing an immediate response; the realtime-versus-batch tradeoff turns on whether latency matters, not just on price. opt-b misstates pricing, since batching is cheaper per token; opt-c is false because conversational messages can be batched; opt-d inverts the latency profile of batching entirely.",
-    "distractorNotes": {
-      "b": "Plausible if you conflate cost with latency, but batching is cheaper per token; the real issue is response time.",
-      "c": "Plausible as a guessed limitation, but multi-turn conversational requests can be included in a batch.",
-      "d": "Plausible-sounding but backwards: batching is latency-tolerant and asynchronous, not a sub-second path."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/batch-processing",
-    "sourceNote": "When batch processing is useful",
-    "sourceCheckedAt": "2026-09-07"
-  },
-  {
     "id": "ccdv-f-applications-and-integration-039",
     "cert": "ccdv-f",
     "schemaVersion": 1,
@@ -1405,47 +1072,6 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/common-workflows",
     "sourceNote": "Common workflows — refactoring code in small testable increments",
-    "sourceCheckedAt": "2026-09-07"
-  },
-  {
-    "id": "ccdv-f-applications-and-integration-040",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "multi",
-    "domain": "applications-and-integration",
-    "subdomain": "software-engineering-foundations",
-    "difficulty": "medium",
-    "status": "reviewed",
-    "stem": "A reviewer is assigned a pull request whose changes were produced with Claude. Which review practices fit the documented guidance for AI-assisted changes? Select TWO.",
-    "options": [
-      {
-        "id": "a",
-        "text": "Merge without a close read, since a generated diff has already cleared the model's own internal checks."
-      },
-      {
-        "id": "b",
-        "text": "Read the diff with the same scrutiny applied to any human change before it is allowed to be submitted."
-      },
-      {
-        "id": "c",
-        "text": "Skip local verification on the basis that the assistant reran the suite while it was producing the change."
-      },
-      {
-        "id": "d",
-        "text": "Ask Claude to surface the risks and edge cases in its own change so a human can check each of them."
-      }
-    ],
-    "correct": [
-      "b",
-      "d"
-    ],
-    "explanation": "opt-b and opt-d are correct because AI-generated changes warrant the same review discipline as human ones: read the diff before it is submitted, and use Claude to highlight the risks in its own work so those points get verified rather than trusted. The distractors fail because merging on trust (a) and skipping verification (c) both treat generation as a substitute for review, which the guidance explicitly warns against.",
-    "distractorNotes": {
-      "a": "Generated code can still be wrong; treating an internal pass as sufficient skips the human review the guidance calls for before submitting.",
-      "c": "Whether the model ran tests while drafting is not a substitute for the reviewer verifying the change in their own environment."
-    },
-    "sourceUrl": "https://code.claude.com/docs/en/common-workflows",
-    "sourceNote": "Common workflows — reviewing generated pull requests",
     "sourceCheckedAt": "2026-09-07"
   },
   {
@@ -1572,47 +1198,6 @@
     "sourceCheckedAt": "2026-09-07"
   },
   {
-    "id": "ccdv-f-applications-and-integration-044",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "single",
-    "domain": "applications-and-integration",
-    "subdomain": "software-engineering-foundations",
-    "difficulty": "medium",
-    "status": "reviewed",
-    "stem": "A team wants to run Claude as a non-interactive step inside their continuous-integration pipeline to process changes in batch. Which characterisation of this use is accurate?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Claude can be piped into scripts so it runs headless, which suits CI and batch processing."
-      },
-      {
-        "id": "b",
-        "text": "Claude only works inside an interactive terminal and cannot be scripted into a pipeline at all."
-      },
-      {
-        "id": "c",
-        "text": "Running Claude under CI first requires switching off every one of its file-editing abilities."
-      },
-      {
-        "id": "d",
-        "text": "Batch use forces each individual request through a separate manual approval before it can run."
-      }
-    ],
-    "correct": [
-      "a"
-    ],
-    "explanation": "opt-a is correct because Claude can be piped into scripts to run headless, which is exactly the pattern documented for CI and batch processing. The others fail because it is not confined to an interactive terminal (b), CI use does not require disabling editing (c), and headless batch runs are not gated on per-request manual approval (d).",
-    "distractorNotes": {
-      "b": "This contradicts the documented headless mode, where Claude is piped into scripts precisely so it runs without a terminal.",
-      "c": "Nothing about CI requires stripping editing abilities; headless mode is about scripting, not disabling tools.",
-      "d": "Manual per-request approval would defeat batch use; the documented pattern is unattended scripted execution."
-    },
-    "sourceUrl": "https://code.claude.com/docs/en/common-workflows",
-    "sourceNote": "Pipe Claude into scripts for CI and batch processing",
-    "sourceCheckedAt": "2026-09-07"
-  },
-  {
     "id": "ccdv-f-applications-and-integration-045",
     "cert": "ccdv-f",
     "schemaVersion": 1,
@@ -1651,47 +1236,6 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/common-workflows",
     "sourceNote": "Run parallel sessions with worktrees so concurrent edits don't collide",
-    "sourceCheckedAt": "2026-09-07"
-  },
-  {
-    "id": "ccdv-f-applications-and-integration-046",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "single",
-    "domain": "applications-and-integration",
-    "subdomain": "configuration-management",
-    "difficulty": "medium",
-    "status": "reviewed",
-    "stem": "A team commits shared settings in the project settings file, but one developer needs a different model for that project only, without changing it for teammates. Which statement about how the configuration layers resolve is correct?",
-    "options": [
-      {
-        "id": "a",
-        "text": "User settings in the home directory outrank the shared project file, so the home value wins here."
-      },
-      {
-        "id": "b",
-        "text": "The shared project file always wins, so a per-developer override for a single project is impossible."
-      },
-      {
-        "id": "c",
-        "text": "Only an organisation-managed file is able to change a value that the shared project file has set."
-      },
-      {
-        "id": "d",
-        "text": "A project-local file overrides the shared file, so that developer sets the value there for their own sessions."
-      }
-    ],
-    "correct": [
-      "d"
-    ],
-    "explanation": "opt-d is correct because project-local settings sit above the shared project file in precedence, so a personal per-project override lives there and affects only that developer. The others fail because user settings rank below the shared project file (a), per-developer overrides are supported rather than impossible (b), and it takes a local file, not only a managed one, to override the shared value (c).",
-    "distractorNotes": {
-      "a": "Precedence runs the other way for these two: the shared project file outranks user settings, so a home-directory value does not win.",
-      "b": "A local override for one project is exactly the supported mechanism, so the shared file does not always win.",
-      "c": "Managed settings are not the only higher layer; a developer's own project-local file already overrides the shared value."
-    },
-    "sourceUrl": "https://code.claude.com/docs/en/settings",
-    "sourceNote": "Settings — precedence and local configuration overrides",
     "sourceCheckedAt": "2026-09-07"
   },
   {

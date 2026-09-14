@@ -1,46 +1,5 @@
 [
   {
-    "id": "ccdv-f-prompt-and-context-engineering-001",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "single",
-    "domain": "prompt-and-context-engineering",
-    "subdomain": "prompt-engineering",
-    "difficulty": "easy",
-    "status": "reviewed",
-    "stem": "A team builds a document analysis endpoint. Each request bundles roughly 40,000 tokens of reference material together with the analyst's question, a short instruction block, and two worked examples, all in a single user message. Quality on multi-document requests is inconsistent. Following Anthropic's long context prompting guidance, how should that message be ordered?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Place the question first so the model knows what to look for before it reads any reference material."
-      },
-      {
-        "id": "b",
-        "text": "Repeat the question immediately after each individual document so every document is paired with the ask."
-      },
-      {
-        "id": "c",
-        "text": "Place the reference material first, near the top, and put the question, instructions, and examples after it."
-      },
-      {
-        "id": "d",
-        "text": "Place the reference material last, directly before the response, so the source material is the most recently read content."
-      }
-    ],
-    "correct": [
-      "c"
-    ],
-    "explanation": "Anthropic's long context guidance applies to data-rich inputs of roughly 20,000 tokens or more and is explicit about ordering: put longform data near the top of the prompt, above the query, instructions, and examples. The documentation reports that placing queries at the end improved response quality by up to 30 percent in testing, with the largest gains on complex, multi-document inputs. The effect is about where the query sits relative to the bulk of the material, so the fix here is structural rather than a matter of rewriting the instruction text. The same section adds two complementary techniques for this shape of prompt: tag each document with its source metadata, and ask for relevant quotes to be pulled out before the analysis begins.",
-    "distractorNotes": {
-      "a": "This inverts the documented recommendation. Leading with the question and trailing the documents is the arrangement the guidance advises against for large inputs.",
-      "b": "Repeating the query between documents inflates the prompt without addressing placement, and the documented benefit comes specifically from a query positioned after the full body of longform data.",
-      "d": "This is the opposite of the published advice. Longform data belongs at the top of the prompt, with the query at the end."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices#long-context-prompting",
-    "sourceNote": "Prompting best practices — 'Long context prompting'",
-    "sourceCheckedAt": "2026-09-13"
-  },
-  {
     "id": "ccdv-f-prompt-and-context-engineering-002",
     "cert": "ccdv-f",
     "schemaVersion": 1,
@@ -133,47 +92,6 @@
     "sourceCheckedAt": "2026-09-03"
   },
   {
-    "id": "ccdv-f-prompt-and-context-engineering-004",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "single",
-    "domain": "prompt-and-context-engineering",
-    "subdomain": "prompt-engineering",
-    "difficulty": "easy",
-    "status": "reviewed",
-    "stem": "A developer wants every response from an internal assistant to be framed as coming from a specialist in a narrow technical area, so that tone and focus stay consistent across a multi-turn conversation. What is the documented way to establish this role in a Messages API request?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Set the request's top-level system field to a short description of the role."
-      },
-      {
-        "id": "b",
-        "text": "Insert an entry with a system role as the first item in the messages array."
-      },
-      {
-        "id": "c",
-        "text": "Begin the reply on the developer's behalf by supplying a partial assistant turn that states the persona."
-      },
-      {
-        "id": "d",
-        "text": "Restate the role at the start of every user message, because role framing does not carry across turns."
-      }
-    ],
-    "correct": [
-      "a"
-    ],
-    "explanation": "The role is set through the request's dedicated top-level system field, which sits alongside model, max_tokens, and messages rather than inside the messages list. The documentation notes that even a single sentence of role framing focuses behaviour and tone for a use case, and its examples across every SDK pass the role string to that field. Because system content is sent with each request, the framing already applies to every turn without being repeated in user messages.",
-    "distractorNotes": {
-      "b": "The Messages API carries system content in its own top-level field; entries in the messages array use the user and assistant roles.",
-      "c": "Supplying a partial assistant turn to steer the reply is a legacy technique that current guidance directs developers away from, and it was never the documented mechanism for setting a role.",
-      "d": "System content is sent with every request, so the framing already applies to each turn. Repeating it in user messages adds tokens without adding effect."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices#give-claude-a-role",
-    "sourceNote": "Prompting best practices — 'Give Claude a role'",
-    "sourceCheckedAt": "2026-09-03"
-  },
-  {
     "id": "ccdv-f-prompt-and-context-engineering-005",
     "cert": "ccdv-f",
     "schemaVersion": 1,
@@ -225,57 +143,6 @@
     "sourceCheckedAt": "2026-09-03"
   },
   {
-    "id": "ccdv-f-prompt-and-context-engineering-009",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "multi",
-    "domain": "prompt-and-context-engineering",
-    "subdomain": "output-handling",
-    "difficulty": "medium",
-    "status": "reviewed",
-    "stem": "A development team is building a knowledge base assistant and is considering using the Claude API's built-in Citations feature instead of simply prompting the model to 'quote its sources'. Which TWO statements describe high-level benefits or capabilities of this feature? (Select TWO.)",
-    "options": [
-      {
-        "id": "a",
-        "text": "It returns structured citation objects that map specific parts of Claude's response to exact locations in the source documents."
-      },
-      {
-        "id": "b",
-        "text": "It automatically cross-references the provided documents against the internet to ensure factual accuracy."
-      },
-      {
-        "id": "c",
-        "text": "It helps reduce hallucinations and increases trust by grounding the model's claims directly in the provided text."
-      },
-      {
-        "id": "d",
-        "text": "It supports citing specific timestamp ranges within attached audio and video files."
-      },
-      {
-        "id": "e",
-        "text": "It allows developers to enable citations for a specific subset of authoritative documents while leaving others in the request uncited."
-      },
-      {
-        "id": "f",
-        "text": "It automatically generates a bibliography page at the end of the response formatted in standard academic styles like APA or MLA."
-      }
-    ],
-    "correct": [
-      "a",
-      "c"
-    ],
-    "explanation": "The built-in Citations feature is designed to increase trustworthiness and reduce hallucinations by grounding Claude's responses in the provided documents. Unlike standard prompting, the API returns structured citation blocks that pinpoint exactly where in the source text the information originated (such as character offsets for plain text or page numbers for PDFs). It does not automatically format academic bibliographies, support audio/video citations, verify facts against the internet, or allow mixing cited and uncited documents in a single request.",
-    "distractorNotes": {
-      "b": "Citations only ground the response in the provided documents; they do not perform external web searches or fact-checking.",
-      "d": "Currently, only text citations from supported document types are supported. Audio and video citations are not part of the feature.",
-      "e": "Citations are an all-or-nothing feature for a given request. You cannot mix cited and uncited documents in the same request.",
-      "f": "The API returns structured citation objects, not pre-formatted academic bibliographies."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/citations",
-    "sourceNote": "Citations — 'How citations work' and document requirements",
-    "sourceCheckedAt": "2026-09-03"
-  },
-  {
     "id": "ccdv-f-prompt-and-context-engineering-010",
     "cert": "ccdv-f",
     "schemaVersion": 1,
@@ -315,47 +182,6 @@
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices#chain-complex-prompts",
     "sourceNote": "Prompting best practices — 'Chain complex prompts'",
     "sourceCheckedAt": "2026-09-03"
-  },
-  {
-    "id": "ccdv-f-prompt-and-context-engineering-012",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "single",
-    "domain": "prompt-and-context-engineering",
-    "subdomain": "context-engineering",
-    "difficulty": "medium",
-    "status": "reviewed",
-    "stem": "A team maintaining a long-running agent keeps loading more reference material into its context window \"just in case\" it turns out to be relevant, and answer quality is slowly getting worse. Which principle should guide what actually belongs in context?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Aim for the smallest set of high-signal tokens that supports the task, because context is a finite resource and irrelevant content degrades the model's focus."
-      },
-      {
-        "id": "b",
-        "text": "Load as much plausibly relevant material as will fit inside the window, because a fuller context reliably improves the model's overall accuracy and its recall."
-      },
-      {
-        "id": "c",
-        "text": "Retain everything the agent has already seen so that it never has to re-derive an earlier conclusion during a later turn."
-      },
-      {
-        "id": "d",
-        "text": "Fill the system prompt with every edge case up front, since exhaustive rules are always more dependable than concise guidance."
-      }
-    ],
-    "correct": [
-      "a"
-    ],
-    "explanation": "Anthropic's context-engineering guidance treats context as a finite resource with diminishing returns: as tokens accumulate, recall and focus degrade (context rot), so the goal is the smallest high-signal set that still fully specifies the task. Option a states exactly that. The other options assume more context is monotonically better, which is the misconception the guidance warns against; padding the window, hoarding history, or stuffing exhaustive rules all dilute the attention budget and make relevant tokens harder to use.",
-    "distractorNotes": {
-      "b": "This is the intuition the guidance explicitly rejects. More tokens do not reliably improve recall; beyond a point they cause context rot and reduce the model's ability to find what matters.",
-      "c": "Retaining all prior content indefinitely is what compaction and context editing exist to counter. Stale tool outputs and resolved turns are prime candidates for removal, not permanent retention.",
-      "d": "Minimal does not mean short, but exhaustively enumerating edge cases in the system prompt bloats it and buries the load-bearing instructions; curated, canonical guidance performs better."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/context-windows",
-    "sourceNote": "Context windows — 'How the context window works' (context rot; curating what's in context)",
-    "sourceCheckedAt": "2026-09-07"
   },
   {
     "id": "ccdv-f-prompt-and-context-engineering-013",

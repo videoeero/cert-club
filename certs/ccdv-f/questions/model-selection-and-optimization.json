@@ -82,47 +82,6 @@
     "sourceCheckedAt": "2026-09-03"
   },
   {
-    "id": "ccdv-f-model-selection-and-optimization-005",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "single",
-    "domain": "model-selection-and-optimization",
-    "subdomain": "cost-and-token-management",
-    "difficulty": "medium",
-    "status": "reviewed",
-    "stem": "A team is optimizing their Claude API costs for an application that processes long documents. They include a large, 20,000-token static instruction manual in every API request and have set a cache breakpoint. However, they observe no cache read hits, and their API costs have actually increased. Which of the following design flaws is the most likely cause?",
-    "options": [
-      {
-        "id": "a",
-        "text": "The dynamically changing user query is placed at the beginning of the prompt, before the static instruction manual."
-      },
-      {
-        "id": "b",
-        "text": "The 20,000-token manual falls below the minimum token threshold required to trigger a cache write."
-      },
-      {
-        "id": "c",
-        "text": "The application fails to issue a manual cache-clear command between requests, preventing new reads."
-      },
-      {
-        "id": "d",
-        "text": "The API requests are being sent concurrently, which prevents the cache from being read by multiple requests at once."
-      }
-    ],
-    "correct": [
-      "a"
-    ],
-    "explanation": "Prompt Caching relies on exact prefix matching. The cached content must be at the very beginning of the prompt and remain entirely unchanged across requests. If dynamic content (such as a unique user query) is placed before the static content, the prefix changes with every request, causing cache misses. Furthermore, writing to the cache costs slightly more than standard input tokens, which explains the increased costs when writes occur without subsequent reads. To utilize caching effectively, static content must always be placed before dynamic content.",
-    "distractorNotes": {
-      "b": "The minimum token threshold for prompt caching is typically 1,024 or 2,048 tokens depending on the specific Claude model. A 20,000-token block is well above this requirement.",
-      "c": "Cache entries have a time-to-live (TTL), typically 5 minutes, and are automatically managed by the system. There is no manual 'cache-clear' command required or available.",
-      "d": "Prompt Caching is designed to support concurrent reads, meaning parallel requests can successfully read from an established cache simultaneously."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
-    "sourceNote": "Prompt caching — prefix matching and static content placement",
-    "sourceCheckedAt": "2026-09-13"
-  },
-  {
     "id": "ccdv-f-model-selection-and-optimization-006",
     "cert": "ccdv-f",
     "schemaVersion": 1,
@@ -558,47 +517,6 @@
     "sourceCheckedAt": "2026-09-07"
   },
   {
-    "id": "ccdv-f-model-selection-and-optimization-019",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "single",
-    "domain": "model-selection-and-optimization",
-    "subdomain": "llm-fundamentals",
-    "difficulty": "medium",
-    "status": "reviewed",
-    "stem": "An extraction feature returns correct facts but in inconsistent formats, and a downstream parser keeps choking on the variation. The prompt already describes the desired schema in prose. A developer proposes adding a few worked input/output examples. What does multi-shot prompting primarily buy in this situation?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Concrete examples steer the output's format and structure toward a consistent shape, matching the inconsistency the parser hits."
-      },
-      {
-        "id": "b",
-        "text": "Examples expand the model's underlying factual knowledge, so the extracted facts themselves come back more accurate than before."
-      },
-      {
-        "id": "c",
-        "text": "Examples cut token usage, because once shown a pattern the model can skip reading the prose instructions on later calls."
-      },
-      {
-        "id": "d",
-        "text": "Examples make the model deterministic, guaranteeing byte-identical output for every single input that happens to share the same shape."
-      }
-    ],
-    "correct": [
-      "a"
-    ],
-    "explanation": "opt-a is correct: worked examples (few-shot or multi-shot prompting) are one of the most reliable ways to steer output format, tone, and structure, directly addressing inconsistent shape. opt-b overstates examples as knowledge injection rather than format steering. opt-c invents a token saving; the instructions are still sent each call. opt-d wrongly promises determinism, which examples do not provide.",
-    "distractorNotes": {
-      "b": "Examples shape output form and style; they do not add new factual knowledge to the model.",
-      "c": "Each request is independent, so the prose still costs tokens; examples add input rather than removing it.",
-      "d": "Examples improve consistency but do not make generation deterministic across calls."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices",
-    "sourceNote": "Use examples effectively (few-shot/multishot steers format, tone, structure)",
-    "sourceCheckedAt": "2026-09-07"
-  },
-  {
     "id": "ccdv-f-model-selection-and-optimization-020",
     "cert": "ccdv-f",
     "schemaVersion": 1,
@@ -678,88 +596,6 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/about-claude/glossary",
     "sourceNote": "Tokens (smallest units: words, subwords, characters, or bytes)",
-    "sourceCheckedAt": "2026-09-07"
-  },
-  {
-    "id": "ccdv-f-model-selection-and-optimization-022",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "single",
-    "domain": "model-selection-and-optimization",
-    "subdomain": "technical-fundamentals",
-    "difficulty": "easy",
-    "status": "reviewed",
-    "stem": "A team is starting a Python integration and debates whether to hand-roll HTTP calls to the Messages endpoint or adopt Anthropic's official client SDK. What is the most accurate framing of what the official client SDK provides?",
-    "options": [
-      {
-        "id": "a",
-        "text": "The SDK runs the full agent loop and executes tools for you, so individual requests and their responses are handled internally."
-      },
-      {
-        "id": "b",
-        "text": "The SDK swaps the REST API for a different wire protocol, so requests no longer correspond to the documented HTTP endpoints and shapes."
-      },
-      {
-        "id": "c",
-        "text": "The SDK is an idiomatic client over the same REST API, adding type safety plus built-in streaming, retries, and error handling."
-      },
-      {
-        "id": "d",
-        "text": "The SDK is only a thin set of type stubs, so features like streaming and retries must still be implemented by hand on top of it."
-      }
-    ],
-    "correct": [
-      "c"
-    ],
-    "explanation": "opt-c is correct: the client SDKs are general-purpose Messages API clients that wrap the same REST API with idiomatic interfaces, type safety, and built-in streaming, retries, and error handling, while you still send each request. opt-a describes the higher-level Agent SDK, not the client SDK. opt-b is wrong because the SDK still targets the documented REST endpoints. opt-d understates the SDK, which provides those features rather than leaving them to you.",
-    "distractorNotes": {
-      "a": "Running the agent loop and executing tools describes the Claude Agent SDK, not the request/response client SDK.",
-      "b": "The SDK is a client over the existing REST API; it does not replace the HTTP protocol.",
-      "d": "Streaming, retries, and error handling are built in, so they are not left for the team to implement."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/cli-sdks-libraries/overview",
-    "sourceNote": "Client SDKs (idiomatic interfaces, type safety, built-in streaming, retries, error handling)",
-    "sourceCheckedAt": "2026-09-07"
-  },
-  {
-    "id": "ccdv-f-model-selection-and-optimization-023",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "single",
-    "domain": "model-selection-and-optimization",
-    "subdomain": "technical-fundamentals",
-    "difficulty": "medium",
-    "status": "reviewed",
-    "stem": "An interactive chat app enables streaming, and someone predicts it will lower the monthly bill by reducing how many tokens each response consumes. Is that the right expectation about what streaming does?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Yes; streaming sends tokens incrementally, and those partial tokens are billed at a lower per-token rate than one batched response."
-      },
-      {
-        "id": "b",
-        "text": "No; streaming delivers the same response incrementally over server-sent events, improving perceived responsiveness but not token cost."
-      },
-      {
-        "id": "c",
-        "text": "Yes; streaming lets the client stop early on most requests, so the average response ends up billed for far fewer output tokens overall."
-      },
-      {
-        "id": "d",
-        "text": "No; streaming actually costs more, because each server-sent event in the stream is billed as though it were a wholly separate request."
-      }
-    ],
-    "correct": [
-      "b"
-    ],
-    "explanation": "opt-b is correct: streaming uses server-sent events to deliver the same response incrementally, which improves perceived latency and time-to-first-token but does not change how many tokens are generated or what they cost. opt-a and opt-c invent billing discounts from streaming or early stopping. opt-d invents a per-event surcharge. Streaming is a delivery mechanism, not a pricing lever.",
-    "distractorNotes": {
-      "a": "There is no lower per-token rate for streamed tokens; delivery method does not change token pricing.",
-      "c": "Early client-side stopping is not the point of streaming, and it is not how streaming reduces the bill.",
-      "d": "Server-sent events are parts of one response, not separate billable requests."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/streaming",
-    "sourceNote": "Streaming messages (incremental delivery via server-sent events)",
     "sourceCheckedAt": "2026-09-07"
   },
   {
@@ -883,88 +719,6 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/api/rate-limits",
     "sourceNote": "429 handling (retry-after header; SDKs' automatic retries)",
-    "sourceCheckedAt": "2026-09-07"
-  },
-  {
-    "id": "ccdv-f-model-selection-and-optimization-027",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "single",
-    "domain": "model-selection-and-optimization",
-    "subdomain": "technical-fundamentals",
-    "difficulty": "hard",
-    "status": "reviewed",
-    "stem": "A retrieval pipeline batches a variable number of source documents into each prompt, and occasionally a batch is large enough to be rejected. The team would rather catch an oversize batch while assembling it than learn about it from a failed call. Which approach fits?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Estimate the request's token size with the token counting API before sending, and trim or split when the estimate nears the window."
-      },
-      {
-        "id": "b",
-        "text": "Send the request as-is and rely on the model to silently truncate the oldest content so that the call always fits within the window."
-      },
-      {
-        "id": "c",
-        "text": "Assume a fixed characters-per-token ratio is exact and hard-code a character cap, since token counts track character length closely enough."
-      },
-      {
-        "id": "d",
-        "text": "Set max_tokens as high as possible, which reserves extra window space and thereby prevents any oversize input from failing."
-      }
-    ],
-    "correct": [
-      "a"
-    ],
-    "explanation": "opt-a is correct: the token counting API lets you estimate a request before sending it, so the service can measure assembled prompts and trim or split when they approach the window. opt-b is wrong because the API does not silently truncate to fit. opt-c is wrong because token counts vary by content, so a hard-coded character cap is unreliable. opt-d misreads max_tokens, which reserves output room and does not shield an oversize input.",
-    "distractorNotes": {
-      "b": "The request is not silently truncated to fit; an oversize request is an error to prevent, not a quiet trim.",
-      "c": "Characters-per-token is only approximate and shifts with content and language, so a fixed cap misjudges size.",
-      "d": "max_tokens governs output length and consumes window space; raising it does not accommodate a larger input."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/context-windows",
-    "sourceNote": "How the context window works (estimate a request before sending with the token counting API)",
-    "sourceCheckedAt": "2026-09-07"
-  },
-  {
-    "id": "ccdv-f-model-selection-and-optimization-028",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "multi",
-    "domain": "model-selection-and-optimization",
-    "subdomain": "technical-fundamentals",
-    "difficulty": "hard",
-    "status": "reviewed",
-    "stem": "A team is choosing between Anthropic's client SDKs and the Claude Agent SDK for a new build. Which TWO statements correctly distinguish the two levels of tooling? Select TWO.",
-    "options": [
-      {
-        "id": "a",
-        "text": "The client SDKs are Messages API clients where you send each request and handle each response yourself."
-      },
-      {
-        "id": "b",
-        "text": "The client SDKs and the Agent SDK are the same tool under two names, so the choice between them is purely cosmetic."
-      },
-      {
-        "id": "c",
-        "text": "The Agent SDK is only a set of type definitions layered on the client SDK, so it adds no runtime behavior of its own."
-      },
-      {
-        "id": "d",
-        "text": "The Agent SDK operates at a higher level, providing the agent loop, tool execution, and runtime rather than raw request/response."
-      }
-    ],
-    "correct": [
-      "a",
-      "d"
-    ],
-    "explanation": "opt-a and opt-d are correct: the client SDKs are for calling the API yourself, issuing each request and handling each response, whereas the Agent SDK works at a higher level and provides the agent loop, tool execution, and runtime. opt-b is wrong because they are distinct tools at different levels. opt-c is wrong because the Agent SDK supplies real runtime behavior, not just types.",
-    "distractorNotes": {
-      "b": "They are different tools at different levels of abstraction, so the choice is substantive, not cosmetic.",
-      "c": "The Agent SDK provides the agent loop and runtime, which is behavior, not merely type definitions."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/cli-sdks-libraries/overview",
-    "sourceNote": "Building agents or using Claude Code? (client SDK vs Agent SDK levels)",
     "sourceCheckedAt": "2026-09-07"
   },
   {

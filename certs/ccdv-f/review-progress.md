@@ -9,34 +9,38 @@ The bank follows the Claude Certified Developer – Foundations Exam Guide v1.0
 
 ## Bank status: `stable`
 
-`manifest.status` is `stable`. All 149 questions are `reviewed` (0 draft). Coverage
+`manifest.status` is `stable`. All 106 questions are `reviewed` (0 draft). Coverage
 is fully proportional across all eight domains and 25 declared skills.
 All quality, balance, and bias guards pass cleanly.
 
 ## Composition
 
-149 questions, all at `status: reviewed`.
+106 questions, all at `status: reviewed`.
 
 The questions track the published domain weights:
 
 | Domain                           | Questions | Share | Weight |
 | -------------------------------- | --------: | ----: | -----: |
-| applications-and-integration     |        46 | 30.9% |  33.1% |
-| model-selection-and-optimization |        24 | 16.1% |  16.8% |
-| agents-and-workflows             |        23 | 15.4% |  14.7% |
-| prompt-and-context-engineering   |        16 | 10.7% |  11.0% |
-| tools-and-mcps                   |        14 |  9.4% |  10.6% |
-| security-and-safety              |        13 |  8.7% |   8.1% |
-| claude-code                      |         7 |  4.7% |   3.1% |
-| eval-testing-and-debugging       |         6 |  4.0% |   2.6% |
+| applications-and-integration     |        35 | 33.0% |  33.1% |
+| model-selection-and-optimization |        18 | 17.0% |  16.8% |
+| agents-and-workflows             |        15 | 14.2% |  14.7% |
+| prompt-and-context-engineering   |        12 | 11.3% |  11.0% |
+| tools-and-mcps                   |        11 | 10.4% |  10.6% |
+| security-and-safety              |         9 |  8.5% |   8.1% |
+| claude-code                      |         3 |  2.8% |   3.1% |
+| eval-testing-and-debugging       |         3 |  2.8% |   2.6% |
 
-`claude-code` and `eval-testing-and-debugging` sit above their weights because
-`MINIMUM_SKILL_TARGET` floors every skill at 2 questions, which over-provisions
-the smallest domains. That is deliberate: a domain with one question tests
-nothing reliably.
+All domains match their targets exactly under the 2× exam baseline (106 questions, 2× the 53-question live form), with zero surplus and every declared skill floor at ≥ 2.
 
-Formats: 97 single-select, 52 multi-select (36 select-TWO, 16 select-THREE).
-65 distinct source pages across the whole bank.
+Formats: 67 single-select, 39 multi-select (24 select-TWO, 15 select-THREE).
+44 distinct source pages across the whole bank.
+
+## Pruning to 106 questions (2× baseline)
+
+In September 2026, following the removal of the 28 `deep` items, the bank was pruned from 149
+to 106 questions (exactly 2× the 53-question live exam). The pruning removed 43 questions across
+all eight domains to eliminate concept overlaps, retire low-value trivia, and align domain
+sizes with blueprint weights while ensuring every declared skill floor remains at ≥ 2 questions.
 
 ## Removal of the legacy "deep" question category
 
@@ -69,12 +73,12 @@ logic into each system prompt. A competent practitioner eliminates three
 options without recalling any documentation detail. None of the three tests a
 parameter name, a status code, a precedence rule, or token accounting.
 
-Structurally the bank matches closely: median stem **38 words**, **133 of 149**
+Structurally the bank matches closely: median stem **38 words**, **99 of 106**
 open on a concrete scenario, four options the norm. The bank also contains
-direct analogues of all three samples — `applications-and-integration-008`
-and `-038`, `security-and-safety-003` and `-004`, `tools-and-mcps-012` — and
+direct analogues of all three samples — `applications-and-integration-008`,
+`security-and-safety-003` and `-004`, `tools-and-mcps-012` — and
 the "which documented pattern fits" family (`agents-and-workflows-005`,
-`-011`, `-024`, `-025`) is sample-3 shape almost exactly.
+`-024`, `-025`) is sample-3 shape almost exactly.
 
 Cognitively, about a quarter of the bank sits **above** the samples, along four
 identifiable axes:
@@ -90,19 +94,19 @@ identifiable axes:
    - `agents-and-workflows-001`: hinges on there being no default turn ceiling.
    - `tools-and-mcps-008`: one client per server connection, plus transport mapping.
    - `eval-testing-and-debugging-006`: telemetry is opt-in and requires your own collector.
-2. **Multi-select share.** 52 of 149 (35%), of which 16 are select-THREE and 5
+2. **Multi-select share.** 39 of 106 (36.8%), of which 15 are select-THREE and 5
    of those are also `hard`. All three samples are single-select; the guide
-   confirms the exam mixes both formats but publishes no ratio, so 35% is an
+   confirms the exam mixes both formats but publishes no ratio, so ~37% is an
    unanchored choice. Under all-or-nothing scoring a select-THREE needs three
    independent facts to land.
-3. **Compound stems.** Nine questions ask two things simultaneously (e.g.
+3. **Compound stems.** Questions asking two things simultaneously (e.g.
    `applications-and-integration-001`, `-003`, `-047`, `security-and-safety-005`,
-   `-015`, `agents-and-workflows-003`), driving mean option length to 20.3 words
+   `agents-and-workflows-003`), driving mean option length to 20.3 words
    against the samples' ~15.
-4. **Self-reported difficulty.** The bank is 24 easy/single, 56 medium/single,
-   33 medium/multi, 17 hard/single, 19 hard/multi. The samples are
-   easy-to-medium single on this bank's own scale, so the 36 `hard` items
-   (24%) are the overshoot by the bank's own labelling.
+4. **Self-reported difficulty.** The bank is 17 easy/single, 37 medium/single,
+   23 medium/multi, 13 hard/single, 16 hard/multi. The samples are
+   easy-to-medium single on this bank's own scale, so the 29 `hard` items
+   (27.4%) are the headroom by the bank's own labelling.
 
 ### This headroom is deliberate — do not "fix" it
 
@@ -145,12 +149,12 @@ typography alone.
 
 | Metric                                     | Before | Now  |
 | ------------------------------------------ | -----: | ---: |
-| mean(correct) − mean(distractor)           |  +24.4 | +2.6 |
-| — median                                   |  +11.2 | +2.0 |
-| key is the single longest option (singles) |    61% |  19% |
+| mean(correct) − mean(distractor)           |  +24.4 | +3.2 |
+| — median                                   |  +11.2 | +3.0 |
+| key is the single longest option (singles) |    61% |  22% |
 
 "Before" was measured on the 100-question bank the audit ran against; "Now" is
-the current 177. The populations differ, so read the columns as bank states
+the current 106 post-pruning. The populations differ, so read the columns as bank states
 rather than as a controlled before/after.
 
 The fix was applied to distractors first: each was padded with equivalent
@@ -183,9 +187,9 @@ misconceptions rather than filler. Two illustrate the intended standard:
 - `agents-and-workflows-017` now offers a **deny rule**, which really does
   block the write. The stem also requires every attempt to be recorded, which
   a deny rule does not do and a hook does.
-- `security-and-safety-013` now offers **classifier screening**, which is
-  recommended guidance — but the stem is explicitly about an instruction that
-  slipped past screening.
+- `security-and-safety-013` (subsequently retired in the 106-question pruning pass)
+  offered **classifier screening**, which is recommended guidance — but the stem was
+  explicitly about an instruction that slipped past screening.
 
 `eval-testing-and-debugging-007` was fixed for the opposite reason: its two
 surviving options both said "spend limit reached" and differed only on which
@@ -203,8 +207,9 @@ doing; not urgent.
 **Absolute qualifiers** (`always`, `never`, `only`, `must`, `every`, `cannot`,
 `all`, `any`, `no`) appear in **48% of distractors against 29% of keys**. The
 corresponding strategy — eliminate every option containing an absolute, then
-guess among what is left — scores an expected **26% against a 25% baseline**,
-and uniquely identifies the key in **0 of 97** single-select items.
+guess among what is left — scores an expected **25% against a 25% baseline**,
+and uniquely identifies the key in **0 of 67** single-select items (previously
+26% across 97 items before the 106-question pruning).
 
 **The distribution is deliberately left alone**, and that has not changed. The
 residual edge is an order of magnitude weaker than the length bias was
@@ -238,8 +243,8 @@ it.
 
 | Pair | Source | Resolution |
 | --- | --- | --- |
-| `applications-and-integration-017` / `eval-testing-and-debugging-001` | develop-tests | **Both kept.** Different domains, different layers: the first asks for the abstract SMART properties, the second for a concrete worked metric. |
-| `applications-and-integration-007` / `prompt-and-context-engineering-005` | context-windows | **Both kept.** The first is an easy single-select overview; the second a medium multi-select drilling into specifics. |
+| `applications-and-integration-017` / `eval-testing-and-debugging-001` | develop-tests | **Resolved.** `eval-testing-and-debugging-001` was retired with the legacy deep items, leaving `-017` as the SMART properties question. |
+| `applications-and-integration-007` / `prompt-and-context-engineering-005` | context-windows | **Resolved in 106 pruning.** `applications-and-integration-007` was cut (subsumed by `prompt-and-context-engineering-005` which provides the richer context accounting coverage). |
 | `security-and-safety-005` / `claude-code-003` | permissions / permission-modes | **Both kept.** Different source pages. The first tests deny-first evaluation order, the second the `bypassPermissions` carve-out. Complementary, not redundant. |
 
 ## Source review
@@ -265,13 +270,13 @@ genuinely gone before editing a `sourceUrl`.
 
 ## Verified clean
 
-- Answer position across single-select: 26 / 29 / 22 / 20 (no position holds
-  more than the 50% ceiling).
+- Answer position across single-select: 11 / 24 / 18 / 14 (n=67, max is 35.8%,
+  well within the 50% ceiling).
 - No multi-select key is a leading run of options.
-- `subdomain` and `distractorNotes` present on all 149.
+- `subdomain` and `distractorNotes` present on all 106.
 
 ```
-npm run check   # validate + balance --strict + 69 tests + lint + format
+npm run check   # validate + balance --strict + 340 tests + lint + format
 npm run typecheck
 ```
 
