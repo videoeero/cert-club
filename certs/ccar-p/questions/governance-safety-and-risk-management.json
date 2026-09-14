@@ -10,30 +10,30 @@
     "stem": "A healthcare technology provider is deploying a Claude-powered clinical summary assistant via api.anthropic.com. Due to stringent regulatory requirements and HIPAA compliance obligations, the customer requires that patient data contained in API prompts and completions must not be retained at rest after the API response is returned. Which architectural data handling arrangement must the architect verify with Anthropic?",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "Execute a standard Business Associate Agreement (BAA) under Commercial Terms, assuming default 30-day operational retention complies with zero-retention mandates."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "Enable a Zero Data Retention (ZDR) agreement for the commercial organization, ensuring prompts and completions are not retained at rest."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "Deploy a client-side de-identification proxy that masks 18 HIPAA Safe Harbor identifiers with synthetic tokens, submitting requests under standard Commercial Terms."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "Pass the cache-control: no-store HTTP request header on Messages API calls, instructing Anthropic's gateway to discard prompt and completion payloads immediately."
       }
     ],
     "correct": [
-      "opt-b"
+      "b"
     ],
     "explanation": "Under Anthropic's Zero Data Retention (ZDR) arrangement for commercial organizations, Anthropic does not store customer prompts or responses at rest after the API response is returned. ZDR covers eligible features on the Messages and Token Counting APIs for Commercial API keys and enterprise accounts. In contrast, standard commercial terms (even with a HIPAA BAA) retain data for up to 30 days, HTTP cache-control headers do not alter server retention, and client-side masking does not satisfy mandates requiring complete prompt non-retention at rest.",
     "distractorNotes": {
-      "opt-a": "A standard BAA under Commercial Terms legally covers HIPAA compliance, but prompts and completions are retained for 30 days unless a Zero Data Retention (ZDR) agreement is specifically enabled.",
-      "opt-c": "While de-identification mitigates HIPAA privacy risks, customer-mandated zero data retention requires that all prompt and completion data be purged at rest, which standard commercial retention does not guarantee.",
-      "opt-d": "HTTP cache-control headers do not alter Anthropic's server-side retention policies; ZDR requires an organizational commercial agreement."
+      "a": "A standard BAA under Commercial Terms legally covers HIPAA compliance, but prompts and completions are retained for 30 days unless a Zero Data Retention (ZDR) agreement is specifically enabled.",
+      "c": "While de-identification mitigates HIPAA privacy risks, customer-mandated zero data retention requires that all prompt and completion data be purged at rest, which standard commercial retention does not guarantee.",
+      "d": "HTTP cache-control headers do not alter Anthropic's server-side retention policies; ZDR requires an organizational commercial agreement."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/manage-claude/api-and-data-retention",
     "sourceNote": "Zero data retention (ZDR) scope and commitments",
@@ -50,30 +50,30 @@
     "stem": "An enterprise customer-support automation workflow uses Claude to triage incoming customer support emails and summarize customer attachments. Security red-teaming reveals that an attacker can send an email containing adversarial text instructing the model to disregard previous instructions and call an administrative account-deletion tool. Which architectural mitigation most effectively isolates untrusted third-party content according to Anthropic's guidance?",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "Place the incoming email text directly into the system prompt surrounded by triple backticks, explicitly instructing Claude that text within backticks is untrusted."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "Append the email text directly to the user turn and set the model temperature to zero, relying on deterministic sampling to suppress external instruction-following directives."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "Deliver the third-party email body inside a tool_result content block as a JSON-encoded payload, accompanied by a system prompt policy defining tool outputs as untrusted data."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "Deploy a client-side regular expression filter that inspects incoming email text for known injection patterns, stripping suspicious phrases before submitting the prompt."
       }
     ],
     "correct": [
-      "opt-c"
+      "c"
     ],
     "explanation": "Anthropic's security guidance for indirect prompt injection recommends delivering third-party content (such as email bodies, web pages, or tool results) inside tool_result blocks rather than in system prompts or user turns, because Claude is specifically trained to treat tool results with skepticism. JSON-encoding the payload prevents attackers from breaking out of string delimiters into an instruction context, and an explicit untrusted_content_policy in the system prompt reinforces that tool data must be reported rather than executed.",
     "distractorNotes": {
-      "opt-a": "Placing untrusted text in the system prompt grants the external payload access to the highest-privilege instruction context, increasing vulnerability to jailbreaking.",
-      "opt-b": "Content placed in user turns is interpreted as user intent, and setting temperature to zero only controls sampling randomness without stopping deterministic prompt injections.",
-      "opt-d": "Heuristic regular expression filtering is brittle and easily circumvented using paraphrasing, character encoding, base64 payloads, or foreign languages."
+      "a": "Placing untrusted text in the system prompt grants the external payload access to the highest-privilege instruction context, increasing vulnerability to jailbreaking.",
+      "b": "Content placed in user turns is interpreted as user intent, and setting temperature to zero only controls sampling randomness without stopping deterministic prompt injections.",
+      "d": "Heuristic regular expression filtering is brittle and easily circumvented using paraphrasing, character encoding, base64 payloads, or foreign languages."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks",
     "sourceNote": "Indirect prompt injection — tool_result encapsulation and JSON encoding",
@@ -90,30 +90,30 @@
     "stem": "A financial enterprise deploying Claude across its organization must enforce real-time Data Loss Prevention (DLP). Corporate policy requires that any prompt containing customer bank account numbers or sensitive financial records must be evaluated and blocked before the request can ever reach the Claude model, with centralized audit logging and without relying on endpoint agents on employee laptops. Which architecture fulfills these requirements?",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "Configure Claude Enterprise Inference hooks to route each prompt transcript to an organization-operated HTTPS AI security server for an allow or deny verdict before inference runs."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "Deploy an enterprise Cloud Access Security Broker (CASB) forward proxy to perform TLS termination and terminate outbound HTTPS requests containing financial patterns."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "Implement an asynchronous background service that polls the Compliance API Activity Feed every five minutes to identify and retroactively delete non-compliant employee chat sessions."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "Embed regex pattern-matching instructions within the shared workspace system prompt directing Claude to return an apology message instead of answering if account numbers appear."
       }
     ],
     "correct": [
-      "opt-a"
+      "a"
     ],
     "explanation": "Claude Enterprise Inference hooks route every governed prompt through an organization-operated HTTPS AI security server before inference begins. If the security server returns a deny verdict, Anthropic blocks the request before it reaches the model, returns a customized policy message to the user, and logs the denial in the Activity Feed. This provides server-side, pre-inference DLP enforcement across web, desktop, and CLI sessions without requiring endpoint agents or breaking TLS with forward proxies.",
     "distractorNotes": {
-      "opt-b": "A network CASB forward proxy cannot govern certificate-pinned mobile/desktop apps or Cowork/CLI sessions, lacks native Activity Feed integration, and cannot supply structured blocked-by-policy reasons.",
-      "opt-c": "The Compliance API Activity Feed is an asynchronous audit trail; polling it detects violations after the model has already ingested and processed the sensitive data.",
-      "opt-d": "System prompt instructions cannot prevent sensitive data from reaching the model, because the model must process the prompt text before executing prompt directives."
+      "b": "A network CASB forward proxy cannot govern certificate-pinned mobile/desktop apps or Cowork/CLI sessions, lacks native Activity Feed integration, and cannot supply structured blocked-by-policy reasons.",
+      "c": "The Compliance API Activity Feed is an asynchronous audit trail; polling it detects violations after the model has already ingested and processed the sensitive data.",
+      "d": "System prompt instructions cannot prevent sensitive data from reaching the model, because the model must process the prompt text before executing prompt directives."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/manage-claude/inference-hooks",
     "sourceNote": "Inference hooks — inline policy enforcement and AI security server architecture",
@@ -130,30 +130,30 @@
     "stem": "An architect is designing a regulatory compliance verification assistant that reviews complex pharmaceutical research documents (exceeding 30,000 tokens) to verify whether clinical trial protocols adhere to FDA guidelines. To minimize hallucinations and ensure auditability for regulatory inspectors, which prompt engineering and grounding strategy should the architect incorporate?",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "Execute Best-of-N verification sampling across multiple inference passes, using majority voting across output verdicts without requiring intermediate source citations."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "Segment the 30,000-token protocol into 500-token chunks, index them in a dense vector store, and retrieve top-3 chunks to reduce the context window evaluated per rule."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "Instruct Claude to generate compliance determinations directly and append a self-reported confidence score from 1 to 10 for each conclusion without quote extraction."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "Instruct Claude to extract verbatim quotes from the document before analyzing compliance, and explicitly permit it to state when information is insufficient."
       }
     ],
     "correct": [
-      "opt-d"
+      "d"
     ],
     "explanation": "Anthropic's documentation on reducing hallucinations recommends two primary techniques for long documents: (1) having Claude extract word-for-word quotes from the source document before generating its analysis, which firmly grounds its claims in the text; and (2) explicitly allowing Claude to admit uncertainty or state that it lacks enough information when context is missing, which drastically reduces confabulated determinations.",
     "distractorNotes": {
-      "opt-a": "Best-of-N voting without textual grounding can simply reach consensus on plausible hallucinations, and does not provide auditable quote trails for inspectors.",
-      "opt-b": "Vector chunking a 30,000-token document fragments cross-section dependencies and risks omitting critical protocol caveats that fit easily within Claude's 200,000-token context window.",
-      "opt-c": "Self-reported confidence scores are poorly calibrated and do not prevent hallucinations; requiring verbatim quotes and permitting uncertainty grounds claims directly in the text."
+      "a": "Best-of-N voting without textual grounding can simply reach consensus on plausible hallucinations, and does not provide auditable quote trails for inspectors.",
+      "b": "Vector chunking a 30,000-token document fragments cross-section dependencies and risks omitting critical protocol caveats that fit easily within Claude's 200,000-token context window.",
+      "c": "Self-reported confidence scores are poorly calibrated and do not prevent hallucinations; requiring verbatim quotes and permitting uncertainty grounds claims directly in the text."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations",
     "sourceNote": "Basic hallucination minimization strategies — direct quotes and permitting uncertainty",
@@ -170,30 +170,30 @@
     "stem": "An organization builds an autonomous incident-remediation agent using the Claude Agent SDK. The agent is equipped with read-only monitoring tools (`MetricsCheck`, `LogViewer`) and mutating operational tools (`ServiceRestart`, `DatabaseDropTable`). The architect must ensure that read-only diagnostics execute without operator friction, but destructive operations like dropping database tables can never execute without explicit interactive operator approval, regardless of ambient permissive flags. How should this permission model be structured?",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "Configure permissive allow rules for the tool suite and rely on system prompt directives instructing Claude to pause and ask the operator before calling DatabaseDropTable."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "Place monitoring tools in allow rules, designate DatabaseDropTable under ask rules to trigger the canUseTool callback, and use PreToolUse hooks for policy enforcement."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "List monitoring tools in allowed_tools and set permission_mode: 'bypassPermissions', expecting unlisted tools like DatabaseDropTable to trigger interactive prompts."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "Configure permission_mode: 'dontAsk' with DatabaseDropTable listed in allowed_tools, expecting dontAsk mode to prompt the operator only when destructive tools execute."
       }
     ],
     "correct": [
-      "opt-b"
+      "b"
     ],
     "explanation": "In the Claude Agent SDK, permissions evaluate in a strict order: PreToolUse hooks run first and can issue unconditional denials. Ask rules evaluate next: tools configured under ask rules fall through to the interactive canUseTool callback for explicit operator confirmation, even in bypassPermissions mode. In contrast, read-only diagnostic tools can be permitted automatically via allow rules.",
     "distractorNotes": {
-      "opt-a": "System prompt instructions are advisory and do not provide deterministic, unbypassable security boundaries against model error or prompt injection.",
-      "opt-c": "In the Agent SDK, allowed_tools does not constrain bypassPermissions: unlisted tools fall through to permission mode, where bypassPermissions auto-approves them without calling canUseTool.",
-      "opt-d": "In dontAsk mode, tools that require confirmation are denied outright rather than prompting the operator, and tools in allowed_tools are auto-approved without prompting."
+      "a": "System prompt instructions are advisory and do not provide deterministic, unbypassable security boundaries against model error or prompt injection.",
+      "c": "In the Agent SDK, allowed_tools does not constrain bypassPermissions: unlisted tools fall through to permission mode, where bypassPermissions auto-approves them without calling canUseTool.",
+      "d": "In dontAsk mode, tools that require confirmation are denied outright rather than prompting the operator, and tools in allowed_tools are auto-approved without prompting."
     },
     "sourceUrl": "https://code.claude.com/docs/en/agent-sdk/permissions",
     "sourceNote": "Configure permissions — permission evaluation order, ask rules, and canUseTool callback",
@@ -210,30 +210,30 @@
     "stem": "An enterprise operating under strict US data residency regulations is configuring its integration with the Claude API. The compliance team mandates that model inference must execute strictly on US-based infrastructure, and that developers must be prevented from routing requests to international data centers. Which combination of configuration controls should the architect implement?",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "Pass inference_geo: 'us' on client Messages API calls, relying exclusively on client-side parameters without defining workspace-level inference restrictions."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "Deploy client workloads in a US cloud region, relying on caller origin IP geolocation to automatically pin Claude API model inference to domestic compute nodes."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "Configure Workspace geo to 'us' in Claude Console settings, expecting workspace data storage location to automatically restrict runtime model inference to the US."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "Configure the workspace default_inference_geo to us with allowed_inference_geos set to [us], and include the inference_geo parameter on Messages API calls."
       }
     ],
     "correct": [
-      "opt-d"
+      "d"
     ],
     "explanation": "Anthropic provides data residency controls at both request and workspace levels. Setting allowed_inference_geos to ['us'] and default_inference_geo to 'us' at the workspace level ensures that all requests from that workspace are restricted to US infrastructure and blocks requests attempting to use other geos. In addition, passing inference_geo: 'us' on Messages API requests (available on Claude 4.6+) pins inference to domestic compute.",
     "distractorNotes": {
-      "opt-a": "Relying solely on client parameters allows developers or scripts to omit inference_geo or specify 'global'; workspace-level restrictions are required to prevent international routing.",
-      "opt-b": "The Claude API does not determine inference location from the client's origin IP address; default routing is global unless pinned by configuration.",
-      "opt-c": "Workspace geo and inference geo are independent controls: Workspace geo governs data storage at rest and endpoint processing, but does not restrict model inference compute."
+      "a": "Relying solely on client parameters allows developers or scripts to omit inference_geo or specify 'global'; workspace-level restrictions are required to prevent international routing.",
+      "b": "The Claude API does not determine inference location from the client's origin IP address; default routing is global unless pinned by configuration.",
+      "c": "Workspace geo and inference geo are independent controls: Workspace geo governs data storage at rest and endpoint processing, but does not restrict model inference compute."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/manage-claude/data-residency",
     "sourceNote": "Data residency — inference geo parameter and workspace-level restrictions",
@@ -250,30 +250,30 @@
     "stem": "A defense contracting enterprise requires complete cryptographic control over data stored at rest within its Claude workspaces. For data spill remediation, the security officer must be able to irreversibly revoke access to all workspace data at rest, and the runbook must state honestly how quickly revocation takes effect. Which design approach satisfies this requirement, and what timing should the runbook record?",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "Configure Customer-Managed Encryption Keys via cloud KMS; revoking the key makes CMEK-protected data permanently inaccessible, and the runbook should record revocation taking up to 1 hour."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "Configure Anthropic Workspaces with standard platform encryption and use the Admin API to delete the affected workspace, relying on soft-deletion to purge the underlying storage immediately."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "Enable Zero Data Retention and configure client-side token masking, which re-encrypts historical workspace chats under an ephemeral per-session hash within minutes of a declared spill."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "Deploy an automated incident script calling Compliance API DELETE endpoints for each affected chat resource, on the assumption that API deletion amounts to cryptographic erasure of data."
       }
     ],
     "correct": [
-      "opt-a"
+      "a"
     ],
     "explanation": "CMEK puts the key in the customer's KMS and Anthropic keeps no copy, so 'revoking or disabling the key makes all CMEK-protected data in that workspace permanently inaccessible, with no backout path'. The timing qualifier matters for an incident runbook and is documented alongside it: key revocation can take up to 1 hour, the cache TTL, and requests already in flight during that window may continue to succeed. A runbook promising instant cut-off would misstate the control. Note also that CMEK does not cover everything at rest — the Activity Feed, audit logs and telemetry are deliberately excluded so compliance survives a revoked key.",
     "distractorNotes": {
-      "opt-b": "Standard encryption uses Anthropic-managed keys; deleting a workspace through the Admin API initiates software deletion workflows rather than verifiable, unilateral cryptographic revocation.",
-      "opt-c": "Zero Data Retention (ZDR) prevents prompt/completion retention going forward for eligible calls, but does not retroactively re-encrypt or cryptographically erase stored workspace data at rest.",
-      "opt-d": "Calling Compliance API DELETE endpoints removes records through API data lifecycle flows, but does not provide immediate, unilateral cryptographic revocation across snapshots and backups like KMS key revocation does."
+      "b": "Standard encryption uses Anthropic-managed keys; deleting a workspace through the Admin API initiates software deletion workflows rather than verifiable, unilateral cryptographic revocation.",
+      "c": "Zero Data Retention (ZDR) prevents prompt/completion retention going forward for eligible calls, but does not retroactively re-encrypt or cryptographically erase stored workspace data at rest.",
+      "d": "Calling Compliance API DELETE endpoints removes records through API data lifecycle flows, but does not provide immediate, unilateral cryptographic revocation across snapshots and backups like KMS key revocation does."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/manage-claude/cmek",
     "sourceNote": "Customer-managed encryption keys — key control and permanent data loss warning",
@@ -290,35 +290,35 @@
     "stem": "An engineering team is designing a multi-step autonomous agent to perform codebase refactoring across large enterprise repositories. During initial testing, the agent occasionally enters infinite self-correction loops when encountering failing unit tests, consuming excessive tokens and accumulating erroneous edits. Which TWO architectural safeguards should the architect implement to control agent execution risks? (Select TWO.)",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "Establish explicit stopping conditions, including a strict maximum iteration count and token budget threshold to terminate runaway loops."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "Add prompt directives instructing Claude to self-reflect on its progress and autonomously decide when to break out of unproductive debugging loops."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "Incorporate ground truth validation checkpoints after tool execution steps, pausing for human review when error thresholds or ambiguity are detected."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "Purge conversation history and reinitialize the agent context after each failed unit test to prevent historical error messages from biasing syntax repair."
       },
       {
-        "id": "opt-e",
+        "id": "e",
         "text": "Increase max_tokens and allocate an unconstrained extended thinking budget on each turn, allowing the model unlimited reasoning depth to resolve syntax errors."
       }
     ],
     "correct": [
-      "opt-a",
-      "opt-c"
+      "a",
+      "c"
     ],
     "explanation": "In 'Building Effective Agents', Anthropic emphasizes that autonomous agents require strict control boundaries: (1) explicit stopping conditions (such as maximum iteration limits and token spend budgets) to guarantee termination and prevent infinite loops; and (2) gathering ground truth from the environment at each step (via tool outputs or test results) while pausing for human feedback at checkpoints or when encountering blockers.",
     "distractorNotes": {
-      "opt-b": "Prompt instructions alone cannot reliably prevent runaway loops; autonomous agents require hard programmatic stopping conditions such as iteration and token caps.",
-      "opt-d": "Purging context after each failed step causes the agent to lose awareness of prior attempts and environmental state, causing it to repeat the same erroneous edits in an infinite loop.",
-      "opt-e": "Unconstrained thinking budgets and high output limits exacerbate runaway spend and loop duration rather than establishing architectural termination boundaries."
+      "b": "Prompt instructions alone cannot reliably prevent runaway loops; autonomous agents require hard programmatic stopping conditions such as iteration and token caps.",
+      "d": "Purging context after each failed step causes the agent to lose awareness of prior attempts and environmental state, causing it to repeat the same erroneous edits in an infinite loop.",
+      "e": "Unconstrained thinking budgets and high output limits exacerbate runaway spend and loop duration rather than establishing architectural termination boundaries."
     },
     "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
     "sourceNote": "Agents — ground truth checkpoints, human-in-the-loop pauses, and iteration stopping conditions",
@@ -335,30 +335,30 @@
     "stem": "An organization is building a high-volume public customer inquiry assistant powered by Claude Sonnet. To maintain strict safety guardrails and optimize operational costs, the security architecture requires pre-screening incoming user prompts for malicious intent and toxic content before they reach the primary model. Which architectural pattern best aligns with Anthropic's recommended guardrail practices?",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "Prompt Claude Sonnet to perform internal self-critique and chain-of-thought safety evaluation within the primary request before generating responses."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "Deploy a regex pattern-matching filter at the API gateway to search incoming prompts for known toxic keywords and common jailbreak phrases."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "Deploy a lightweight model such as Claude Haiku with structured JSON outputs as a dedicated harmlessness screen prior to calling the primary model."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "Permit all incoming prompts to reach Claude Sonnet unconditionally, relying exclusively on post-generation output toxicity filters to catch violations."
       }
     ],
     "correct": [
-      "opt-c"
+      "c"
     ],
     "explanation": "Anthropic's guardrail guidance recommends using a lightweight model like Claude Haiku as a dedicated harmlessness screen before reaching the main conversation. Constraining the classifier with structured outputs (JSON schema) ensures a reliable boolean classification (such as is_harmful: boolean), providing fast, low-cost pre-screening that protects downstream models.",
     "distractorNotes": {
-      "opt-a": "Internal self-critique inside the primary Sonnet call incurs higher token generation costs, increases response latency, and leaves the model context vulnerable to direct prompt injection.",
-      "opt-b": "Regex and keyword blocklists are brittle, easily bypassed through paraphrasing, obfuscation, or foreign languages, and fail to capture semantic adversarial intent.",
-      "opt-d": "Post-generation filtering wastes full Sonnet inference costs on malicious requests that could have been blocked upstream, and fails the requirement to pre-screen input prompts."
+      "a": "Internal self-critique inside the primary Sonnet call incurs higher token generation costs, increases response latency, and leaves the model context vulnerable to direct prompt injection.",
+      "b": "Regex and keyword blocklists are brittle, easily bypassed through paraphrasing, obfuscation, or foreign languages, and fail to capture semantic adversarial intent.",
+      "d": "Post-generation filtering wastes full Sonnet inference costs on malicious requests that could have been blocked upstream, and fails the requirement to pre-screen input prompts."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks",
     "sourceNote": "Jailbreaks and direct prompt injection — harmlessness screens with lightweight models",
@@ -375,30 +375,30 @@
     "stem": "An enterprise financial institution subject to SEC regulatory oversight needs to automate its compliance auditing and eDiscovery pipeline across its Claude Enterprise deployment. The compliance team requires an automated mechanism to programmatically extract full employee chat histories, uploaded attachments, and Claude Code developer session transcripts for legal hold. Which architectural approach fulfills these requirements according to Anthropic's guidance?",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "Set up a daily scheduled script that scrapes the Organization Settings web UI in claude.ai to download the standard audit log CSV export containing message payloads."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "Provision a Compliance Access Key with the read:compliance_user_data scope and integrate with the Compliance API endpoints for chats, files, and sessions."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "Configure an OpenTelemetry collector to stream client-side telemetry events, relying on OpenTelemetry trace spans to reconstruct historical chat transcripts."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "Deploy an internal proxy that intercepts employee HTTPS traffic and mirrors API request payloads directly into an on-premises relational database."
       }
     ],
     "correct": [
-      "opt-b"
+      "b"
     ],
     "explanation": "Anthropic's Compliance API provides programmatic endpoints to retrieve full user data across Claude Enterprise, including claude.ai chats, uploaded files, and developer session transcripts (for Cowork and Claude Code). Accessing these content endpoints requires a Compliance Access Key carrying the read:compliance_user_data scope. In contrast, the web UI audit log export only provides high-level CSV event metadata with no chat or file content, OpenTelemetry streams operational metrics rather than retained session transcripts, and intercepting HTTPS traffic violates TLS security boundaries.",
     "distractorNotes": {
-      "opt-a": "The web UI audit log export downloads only a CSV with high-level event metadata and has a capped lookback window; it does not contain chat, file, or project content.",
-      "opt-c": "While OpenTelemetry captures runtime metrics, token counts, and host metadata, Anthropic specifically recommends the Compliance API for retrieving durable session transcripts.",
-      "opt-d": "Intercepting client HTTPS traffic breaks end-to-end TLS security, does not capture cloud-hosted Cowork sessions, and bypasses Anthropic's structured compliance controls."
+      "a": "The web UI audit log export downloads only a CSV with high-level event metadata and has a capped lookback window; it does not contain chat, file, or project content.",
+      "c": "While OpenTelemetry captures runtime metrics, token counts, and host metadata, Anthropic specifically recommends the Compliance API for retrieving durable session transcripts.",
+      "d": "Intercepting client HTTPS traffic breaks end-to-end TLS security, does not capture cloud-hosted Cowork sessions, and bypasses Anthropic's structured compliance controls."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/manage-claude/compliance-api-access",
     "sourceNote": "Compliance Access Key scopes: read:compliance_user_data reads chats, files, projects, session metadata and transcripts.",
@@ -415,30 +415,30 @@
     "stem": "Under GDPR Article 17 (\"Right to Erasure\"), an enterprise compliance officer receives a data subject deletion request for an employee who contributed to shared team projects in Claude Enterprise. When an automated compliance script calls the Compliance API endpoint to delete an affected project (DELETE /v1/compliance/apps/projects/{project_id}), the API returns an HTTP 409 Conflict error. What is the root cause of this failure, and how must the deletion pipeline resolve it?",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "The Compliance Access Key lacks the delete:compliance_org_data scope, requiring an administrator to re-issue the key with elevated directory privileges."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "Project deletion requires a 30-day statutory cooling-off window, requiring the script to submit an asynchronous deletion schedule request to the Admin API."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "The project contains Customer-Managed Encryption Keys (CMEK) that must be cryptographically revoked in cloud KMS before metadata deletion can proceed."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "The project still has active chats attached to it, requiring the script to list and delete all attached chats before retrying the project deletion request."
       }
     ],
     "correct": [
-      "opt-d"
+      "d"
     ],
     "explanation": "In Anthropic's Compliance API, a project cannot be deleted while any chats remain attached to it; attempting to delete it returns HTTP 409 Conflict. The automated deletion script must first enumerate the project's attached chats (via GET /v1/compliance/apps/chats?user_ids[]={user_id}&project_ids[]={project_id}), delete each chat individually using DELETE /v1/compliance/apps/chats/{claude_chat_id}, and only then retry the project deletion.",
     "distractorNotes": {
-      "opt-a": "Deleting user data requires the delete:compliance_user_data scope, not delete:compliance_org_data, and missing scopes return 403 Forbidden rather than 409 Conflict.",
-      "opt-b": "Compliance API hard deletes are immediate and permanent without any cooling-off window or asynchronous queuing delay.",
-      "opt-c": "CMEK governs data encryption at rest across the workspace; it does not block individual entity API deletion operations with 409 Conflict."
+      "a": "Deleting user data requires the delete:compliance_user_data scope, not delete:compliance_org_data, and missing scopes return 403 Forbidden rather than 409 Conflict.",
+      "b": "Compliance API hard deletes are immediate and permanent without any cooling-off window or asynchronous queuing delay.",
+      "c": "CMEK governs data encryption at rest across the workspace; it does not block individual entity API deletion operations with 409 Conflict."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/manage-claude/compliance-content-data",
     "sourceNote": "Detach chats before deleting a project and delete content endpoints",
@@ -455,30 +455,30 @@
     "stem": "A platform administrator who originally created multiple Admin API keys for automated user provisioning and spend management departs an enterprise. The enterprise identity provider deprovisions the administrator's account and revokes their single sign-on access. What is the status of the Admin API keys created by this administrator, and what governance action should be taken?",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "The keys remain active because Admin API keys are scoped to the organization; security administrators must explicitly delete them and generate replacements."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "The keys are automatically revoked immediately upon identity provider deprovisioning because keys inherit the creator's identity lifecycle."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "The keys transition to a read-only suspended state until a surviving primary owner reclaims ownership in the Claude Console organization settings."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "The keys continue functioning for 24 hours under a graceful termination token before permanently expiring at the end of the current billing cycle."
       }
     ],
     "correct": [
-      "opt-a"
+      "a"
     ],
     "explanation": "Admin API keys in Claude Enterprise are scoped to the organization, not to individual users, and keys created in claude.ai do not expire. Removing the creator from the organization or deprovisioning them through an external identity provider terminates their personal access, but does not invalidate or alter the keys they created. To maintain security hygiene, administrators must manually delete the departing user's Admin API keys and create replacements.",
     "distractorNotes": {
-      "opt-b": "Admin API keys are scoped to the organization rather than individual users; deprovisioning the user who created them does not deactivate the keys.",
-      "opt-c": "Keys do not suspend or change scopes automatically when the creator leaves; they remain fully active with their provisioned permissions.",
-      "opt-d": "There is no 24-hour grace period or billing-cycle expiration; keys created in claude.ai do not expire unless deleted."
+      "b": "Admin API keys are scoped to the organization rather than individual users; deprovisioning the user who created them does not deactivate the keys.",
+      "c": "Keys do not suspend or change scopes automatically when the creator leaves; they remain fully active with their provisioned permissions.",
+      "d": "There is no 24-hour grace period or billing-cycle expiration; keys created in claude.ai do not expire unless deleted."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/manage-claude/user-management",
     "sourceNote": "Admin API keys lifecycle — offboarding key creators and organizational scope",
@@ -495,30 +495,30 @@
     "stem": "An enterprise enforces strict monthly spend limits across engineering accounts to prevent unexpected cost overruns. During an active P1 production incident, an on-call site reliability engineer running automated debugging tools reaches their monthly spend cap and is blocked from making further Claude API requests. Which operational workflow aligns with Anthropic's recommended financial governance controls?",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "Provision a secondary Claude Enterprise user account for the on-call engineer in the identity provider to grant a duplicate seat-tier spend allocation."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "Disable organizational spend limits globally in Organization Settings, re-enabling them after the engineering organization completes incident post-mortems."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "Use the Spend Limits API to apply a temporary per-user limit override for the engineer, deleting the override to restore inherited defaults once resolved."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "Update the engineer's RBAC directory group in the identity provider to trigger SCIM re-synchronization of organizational spend tiers during the incident."
       }
     ],
     "correct": [
-      "opt-c"
+      "c"
     ],
     "explanation": "Anthropic's Spend Limits API supports setting per-user spend overrides (via POST /v1/organizations/spend_limits). During an incident, an automated integration gated on an incident management ticket can record the member's existing cap, apply an elevated monthly spend limit, and then remove the override (via DELETE /v1/organizations/spend_limits/{id}) once the incident closes, safely restoring the user to their inherited group or organization default.",
     "distractorNotes": {
-      "opt-a": "Provisioning shadow or duplicate accounts violates enterprise identity governance, audit traceability, and seat licensing agreements.",
-      "opt-b": "Disabling spend limits globally removes financial guardrails for the entire company and exposes the organization to massive unbounded cost overruns.",
-      "opt-d": "SCIM group synchronization is asynchronous, alters spend limits for all members in the group rather than the individual engineer, and cannot be cleanly reverted via automated incident playbooks."
+      "a": "Provisioning shadow or duplicate accounts violates enterprise identity governance, audit traceability, and seat licensing agreements.",
+      "b": "Disabling spend limits globally removes financial guardrails for the entire company and exposes the organization to massive unbounded cost overruns.",
+      "d": "SCIM group synchronization is asynchronous, alters spend limits for all members in the group rather than the individual engineer, and cannot be cleanly reverted via automated incident playbooks."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/manage-claude/spend-limits-api",
     "sourceNote": "Spend Limits API — temporarily raise a member's spend limit during an incident",
@@ -535,35 +535,35 @@
     "stem": "A platform security architect is establishing governance policies for developer workstations and CI/CD runners using Claude Code. Security assessments show that cloning and executing tasks on untrusted third-party repositories could expose environments to malicious .claude/settings.json hook configurations. Which TWO architectural controls mitigate these execution risks? (Select TWO.)",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "Configure disableAllHooks: true in user-level ~/.claude/settings.json, relying on user settings to override repository .claude/settings.json hook definitions."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "Pass the --bare flag or configure disableAllHooks when invoking headless claude -p sessions over untrusted repositories to prevent hook execution."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "Rely on headless claude -p execution in CI/CD pipelines, because non-interactive CLI sessions automatically prompt developers for workspace trust."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "Require interactive developers to inspect repository settings and confirm the workspace trust prompt before allowing repository hooks to execute."
       },
       {
-        "id": "opt-e",
+        "id": "e",
         "text": "Rely on standard operating system file permissions to protect sensitive files, assuming command hooks execute in an isolated sandbox process."
       }
     ],
     "correct": [
-      "opt-b",
-      "opt-d"
+      "b",
+      "d"
     ],
     "explanation": "Anthropic's security model for Claude Code hooks addresses repository risks through two key mechanisms: (1) in interactive sessions, Claude Code checks workspace trust and suppresses all hooks from settings files until the developer explicitly confirms the trust prompt; and (2) in headless (-p) or SDK sessions where folders are trusted automatically, administrators must start with --bare or supply --settings '{\"disableAllHooks\": true}' to disable untrusted repository hooks.",
     "distractorNotes": {
-      "opt-a": "Under Claude Code settings precedence, project settings (.claude/settings.json) override user settings (~/.claude/settings.json), so a repository can override disableAllHooks: true unless passed on the CLI or enforced via managed policy settings.",
-      "opt-c": "In headless (-p) and SDK sessions, Claude Code treats the directory as automatically trusted and executes committed repository hooks without displaying the workspace trust prompt.",
-      "opt-e": "Command hooks execute shell commands with the user's full permissions in the host environment without automatic sandboxing, and can access any file or network resource the user can reach."
+      "a": "Under Claude Code settings precedence, project settings (.claude/settings.json) override user settings (~/.claude/settings.json), so a repository can override disableAllHooks: true unless passed on the CLI or enforced via managed policy settings.",
+      "c": "In headless (-p) and SDK sessions, Claude Code treats the directory as automatically trusted and executes committed repository hooks without displaying the workspace trust prompt.",
+      "e": "Command hooks execute shell commands with the user's full permissions in the host environment without automatic sandboxing, and can access any file or network resource the user can reach."
     },
     "sourceUrl": "https://code.claude.com/docs/en/hooks",
     "sourceNote": "Security considerations — workspace trust, headless runs, and disabling hooks",
@@ -580,30 +580,30 @@
     "stem": "An architect is implementing an automated compliance monitoring layer for an enterprise API gateway integrating with the Claude Messages API. The compliance team mandates programmatic logging and auditing whenever Claude refuses to process a request due to safety policy interventions. When safety classifiers intervene to issue a policy refusal in an API response, how does the Messages API represent this event, and how should the gateway detect it?",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "The API sets stop_reason to refusal and populates the stop_details object with a structured RefusalStopDetails payload containing the policy category and explanation."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "The API terminates the HTTP connection with a 400 Bad Request error carrying an error type of policy_violation in the top-level JSON response envelope."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "The API sets stop_reason to end_turn and outputs an explanatory refusal message in a text content block, requiring the gateway to parse unstructured response text."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "The API returns an empty content block array while emitting a custom Anthropic-Refusal-Code status header within the HTTP response headers for gateway routing."
       }
     ],
     "correct": [
-      "opt-a"
+      "a"
     ],
     "explanation": "In Anthropic's Messages API, when streaming safety classifiers intervene to handle potential policy violations, the API sets the response stop_reason to 'refusal' and populates the stop_details field with a structured RefusalStopDetails object (carrying type: 'refusal', category, and explanation). Gateways can inspect these structured fields directly for compliance logging rather than attempting to parse unstructured text or relying on HTTP transport errors.",
     "distractorNotes": {
-      "opt-b": "HTTP 400 errors occur for invalid request syntax or malformed parameters, not for model safety classifier refusals during valid inference requests.",
-      "opt-c": "While model conversational refusals can end with stop_reason set to end_turn, automated classifier interventions specifically emit stop_reason: 'refusal' with structured stop_details metadata.",
-      "opt-d": "Anthropic communicates policy interventions within the standard JSON message response body and does not emit custom refusal HTTP response headers or empty content blocks."
+      "b": "HTTP 400 errors occur for invalid request syntax or malformed parameters, not for model safety classifier refusals during valid inference requests.",
+      "c": "While model conversational refusals can end with stop_reason set to end_turn, automated classifier interventions specifically emit stop_reason: 'refusal' with structured stop_details metadata.",
+      "d": "Anthropic communicates policy interventions within the standard JSON message response body and does not emit custom refusal HTTP response headers or empty content blocks."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/api/messages",
     "sourceNote": "Messages API response fields — stop_reason refusal and RefusalStopDetails schema",
@@ -620,30 +620,30 @@
     "stem": "An autonomous research agent queries external websites and database records to answer user research prompts. During security testing, red-teamers demonstrate that a fetched webpage contains hidden prompt injection instructions attempting to redirect the agent to exfiltrate session data. Beyond delivering web content inside tool_result blocks, what architectural safeguard should be implemented before passing tool output back to the primary model?",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "Sanitize retrieved HTML by stripping all <script>, <iframe>, and styling tags, relying on standard web DOM sanitizers to eliminate injection attacks."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "Enforce a client-side keyword blacklist that drops the entire tool result if words such as system, ignore, or instruction appear in the document."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "Screen raw tool output through a lightweight model using structured JSON output to flag suspected injections before creating the tool_result block."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "Append an instructional disclaimer to the end of the webpage text instructing Claude to disregard any directives contained in the preceding paragraphs."
       }
     ],
     "correct": [
-      "opt-c"
+      "c"
     ],
     "explanation": "Anthropic's security guidance for indirect prompt injection recommends screening tool outputs before Claude acts on them. Passing raw tool output to a lightweight classifier model (such as Claude Haiku) constrained with structured JSON outputs (e.g. injection_suspected: boolean) allows the application to detect injection attempts and return an error or sanitized summary in the tool_result block instead of raw untrusted directives.",
     "distractorNotes": {
-      "opt-a": "Standard HTML DOM sanitization strips executable web scripts, but indirect prompt injection uses natural language text which passes through HTML sanitizers untouched.",
-      "opt-b": "Keyword blacklists are brittle, prone to high false-positive rates on technical documentation, and easily bypassed through synonyms, paraphrasing, or token splitting.",
-      "opt-d": "Ad-hoc suffix disclaimers (prompt wrestling) can be overridden or contradicted by sophisticated adversarial instructions embedded in the third-party payload."
+      "a": "Standard HTML DOM sanitization strips executable web scripts, but indirect prompt injection uses natural language text which passes through HTML sanitizers untouched.",
+      "b": "Keyword blacklists are brittle, prone to high false-positive rates on technical documentation, and easily bypassed through synonyms, paraphrasing, or token splitting.",
+      "d": "Ad-hoc suffix disclaimers (prompt wrestling) can be overridden or contradicted by sophisticated adversarial instructions embedded in the third-party payload."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks",
     "sourceNote": "Indirect prompt injection — screening tool outputs with lightweight classifiers",
@@ -660,30 +660,30 @@
     "stem": "An enterprise identity architect is integrating Claude Enterprise with an external identity provider (IdP) using SCIM for automated user and group provisioning. The security team creates SCIM groups mapped to corporate departments. An administrator attempts to use the Admin API (POST /v1/organizations/rbac_groups/{group_id}/members) to add an emergency contractor to a SCIM-managed group, but the call fails. What is the cause of this restriction, and how must membership be managed?",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "The Admin API key lacks the write:members scope; re-generating the key with write:members enables direct modification of SCIM group memberships."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "SCIM groups have their membership owned exclusively by the identity provider; modifications must be made in the IdP rather than through the Admin API."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "The Claude Enterprise SCIM bridge requires an active TLS mutual authentication certificate to validate API-driven group membership changes."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "SCIM-provisioned groups can only be modified during scheduled synchronization maintenance windows defined in Claude Console settings."
       }
     ],
     "correct": [
-      "opt-b"
+      "b"
     ],
     "explanation": "In Claude Enterprise, groups provisioned via SCIM (source_type: 'scim') have their name and membership owned exclusively by the external identity provider. The Admin API cannot modify SCIM group memberships and returns HTTP 400 if an administrator attempts to add or remove members through the API. All group membership changes must originate within the enterprise IdP and sync to Claude Enterprise via SCIM.",
     "distractorNotes": {
-      "opt-a": "Group membership modifications use write:rbac_groups, but for SCIM-sourced groups, the API rejects membership mutations regardless of key scopes.",
-      "opt-c": "SCIM uses standard bearer token authorization; TLS mutual authentication is not the mechanism governing SCIM group authority.",
-      "opt-d": "There are no scheduled maintenance windows for SCIM; the restriction is an architectural boundary where the IdP is the authoritative source of truth."
+      "a": "Group membership modifications use write:rbac_groups, but for SCIM-sourced groups, the API rejects membership mutations regardless of key scopes.",
+      "c": "SCIM uses standard bearer token authorization; TLS mutual authentication is not the mechanism governing SCIM group authority.",
+      "d": "There are no scheduled maintenance windows for SCIM; the restriction is an architectural boundary where the IdP is the authoritative source of truth."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/manage-claude/user-management",
     "sourceNote": "User management — SCIM groups authority and Admin API immutability",
@@ -700,30 +700,30 @@
     "stem": "A security operations team is configuring an automated integration with a third-party Cloud Security Posture Management (CSPM) solution to audit Claude Enterprise configurations. Applying the principle of least privilege, the architect must ensure the CSPM can inspect organization metadata, directory members, custom roles, and activity events, while strictly preventing it from accessing employee chat transcripts, uploaded files, or project documents. Which API key scope configuration should the architect select?",
     "options": [
       {
-        "id": "opt-a",
+        "id": "a",
         "text": "Provision an Admin API key with write:members and configure client-side IP allowlists on the integration host to block invocations of content endpoints."
       },
       {
-        "id": "opt-b",
+        "id": "b",
         "text": "Issue a Compliance Access Key with read:compliance_org_data alone, relying on organization metadata scopes to inherit directory member and role access."
       },
       {
-        "id": "opt-c",
+        "id": "c",
         "text": "Provision an Admin API key carrying the read:org_audit scope, assuming consolidated security-audit read scopes exclude access to employee chat transcripts."
       },
       {
-        "id": "opt-d",
+        "id": "d",
         "text": "Provision an Admin API key with granular scopes read:members, read:compliance_org_data, and read:compliance_activities, omitting read:compliance_user_data."
       }
     ],
     "correct": [
-      "opt-d"
+      "d"
     ],
     "explanation": "To enforce least privilege and strictly prevent access to chat transcripts, files, and project documents, the architect must select granular scopes: read:members (covering directory members, invites, and custom roles), read:compliance_org_data (covering organization metadata and effective settings), and read:compliance_activities (covering the organization-wide Activity Feed). Crucially, the broad read:org_audit scope grants access to every Compliance API read endpoint—which explicitly includes chat transcripts, files, projects, and developer session transcripts via read:compliance_user_data—and would therefore violate the constraint against exposing employee chat content.",
     "distractorNotes": {
-      "opt-a": "Network-level IP allowlists control host routing but cannot restrict API token scopes, and write:members grants unnecessary administrative mutation capabilities.",
-      "opt-b": "The read:compliance_org_data scope covers organization metadata and settings, but does not grant access to member directory listings or custom roles, which require read:members.",
-      "opt-c": "Anthropic defines read:org_audit as granting access to 'every Compliance API read endpoint', which includes user chats, uploaded files, and session transcripts (the endpoints governed by read:compliance_user_data)."
+      "a": "Network-level IP allowlists control host routing but cannot restrict API token scopes, and write:members grants unnecessary administrative mutation capabilities.",
+      "b": "The read:compliance_org_data scope covers organization metadata and settings, but does not grant access to member directory listings or custom roles, which require read:members.",
+      "c": "Anthropic defines read:org_audit as granting access to 'every Compliance API read endpoint', which includes user chats, uploaded files, and session transcripts (the endpoints governed by read:compliance_user_data)."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/manage-claude/admin-api-keys",
     "sourceNote": "Choose scopes for a Claude Enterprise key — read:org_audit reach versus granular scopes",

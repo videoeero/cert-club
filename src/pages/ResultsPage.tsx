@@ -7,6 +7,7 @@ import { useAsyncResource } from "../hooks/use-async-resource";
 import { loadCertContent } from "../lib/content";
 import {
   answerCountLabel,
+  formatOptionLabel,
   getUnusedQuizQuestions,
   scoreAnswer,
 } from "../lib/quiz";
@@ -63,7 +64,7 @@ function QuestionReview({
               key={option.id}
             >
               <span className={styles.optionId} aria-hidden="true">
-                {option.id.toUpperCase()}
+                {formatOptionLabel(option.id)}
               </span>
               <span>{option.text}</span>
             </li>
@@ -75,12 +76,14 @@ function QuestionReview({
         {selectedOptionIds.length === 0
           ? " — no answer selected."
           : ` — you selected ${selectedOptionIds
-              .map((optionId) => optionId.toUpperCase())
+              .map((optionId) => formatOptionLabel(optionId))
               .join(", ")}.`}
       </p>
       <p>
         <strong>Correct answer:</strong>{" "}
-        {question.correct.map((optionId) => optionId.toUpperCase()).join(", ")}
+        {question.correct
+          .map((optionId) => formatOptionLabel(optionId))
+          .join(", ")}
       </p>
       <p>{question.explanation}</p>
       <p className={styles.sourceNote}>

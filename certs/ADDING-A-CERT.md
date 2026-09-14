@@ -157,15 +157,15 @@ A minimal single-select example:
     "status": "draft",
     "stem": "A team observes X and wants Y. What explains it?",
     "options": [
-      { "id": "opt-a", "text": "First option" },
-      { "id": "opt-b", "text": "Second option" },
-      { "id": "opt-c", "text": "Third option" },
-      { "id": "opt-d", "text": "Fourth option" }
+      { "id": "a", "text": "First option" },
+      { "id": "b", "text": "Second option" },
+      { "id": "c", "text": "Third option" },
+      { "id": "d", "text": "Fourth option" }
     ],
-    "correct": ["opt-c"],
-    "explanation": "opt-c is correct because … opt-a is wrong because …",
+    "correct": ["c"],
+    "explanation": "Option c is correct because … option a is wrong because …",
     "distractorNotes": {
-      "opt-a": "Plausible because …, but wrong because …"
+      "a": "Plausible because …, but wrong because …"
     },
     "sourceUrl": "https://docs.example.com/relevant-page",
     "sourceNote": "Section heading or topic that supports the answer",
@@ -200,7 +200,7 @@ A minimal single-select example:
   item has two correct answers.
 - `correct` entries must reference IDs that exist in `options`.
 - For `multi` questions: the correct set must not be exactly the leading
-  run of options in listed order (e.g. `["opt-a", "opt-b"]` when options
+  run of options in listed order (e.g. `["a", "b"]` when options
   are listed a/b/c/d) — this is guessable from position alone.
 - `distractorNotes` keys must reference distractor IDs, not correct ones.
 

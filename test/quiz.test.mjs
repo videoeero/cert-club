@@ -5,6 +5,7 @@ import {
   answerCountLabel,
   calculateQuizResults,
   filterReviewQuestions,
+  formatOptionLabel,
   getUnusedQuizQuestions,
   prepareRetakeSession,
   QuizSelectionError,
@@ -278,6 +279,13 @@ test("formats answer counts as words with a numeric fallback", () => {
   assert.equal(answerCountLabel(1), "ONE");
   assert.equal(answerCountLabel(5), "FIVE");
   assert.equal(answerCountLabel(6), "6");
+});
+
+test("formatOptionLabel strips opt- prefix and uppercases", () => {
+  assert.equal(formatOptionLabel("a"), "A");
+  assert.equal(formatOptionLabel("b"), "B");
+  assert.equal(formatOptionLabel("opt-a"), "A");
+  assert.equal(formatOptionLabel("opt-d"), "D");
 });
 
 test("rejects invalid question selection configurations", () => {

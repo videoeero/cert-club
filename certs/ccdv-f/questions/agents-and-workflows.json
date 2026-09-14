@@ -317,7 +317,7 @@
     "correct": [
       "b"
     ],
-    "explanation": "opt-b is correct: restricting the subagent to read and search tools removes any write capability, so modification is impossible by construction rather than by request. Prompt instructions are guidance a model can be steered around, model capability doesn't remove the write tool, and reverting afterwards is detective rather than preventive.",
+    "explanation": "Option B is correct: restricting the subagent to read and search tools removes any write capability, so modification is impossible by construction rather than by request. Prompt instructions are guidance a model can be steered around, model capability doesn't remove the write tool, and reverting afterwards is detective rather than preventive.",
     "distractorNotes": {
       "a": "Plausible because a clear instruction usually works, but a system prompt is not an enforceable boundary; the tool stays available if the model chooses it.",
       "c": "A more capable model can still call a write tool; capability does not remove the ability to edit.",
@@ -363,7 +363,7 @@
       "b",
       "d"
     ],
-    "explanation": "opt-b and opt-d are correct: least privilege limits the actions available to the agent, so even content that tries to redirect it can only reach the small set of tools it was granted, which caps the blast radius. The distractors misstate the benefit: trimming tools is not primarily about speed, it does not replace isolating untrusted input, and it reduces but does not eliminate the need for approval on sensitive actions.",
+    "explanation": "Options B and D are correct: least privilege limits the actions available to the agent, so even content that tries to redirect it can only reach the small set of tools it was granted, which caps the blast radius. The distractors misstate the benefit: trimming tools is not primarily about speed, it does not replace isolating untrusted input, and it reduces but does not eliminate the need for approval on sensitive actions.",
     "distractorNotes": {
       "a": "Plausible because fewer options can feel faster, but speed is not the security benefit; least privilege is about limiting what actions exist.",
       "c": "Least privilege is one layer; you still separate untrusted input from trusted instructions — the two are defense in depth, not substitutes.",
@@ -404,7 +404,7 @@
     "correct": [
       "c"
     ],
-    "explanation": "opt-c is correct: a hook runs deterministic code before a tool call and can deny it outright, so the policy is enforced in the harness rather than left to the model's discretion, and the same hook can log every attempt. Prompt wording and model choice only bias behavior, and temperature affects sampling, none of which guarantee a forbidden action is blocked.",
+    "explanation": "Option C is correct: a hook runs deterministic code before a tool call and can deny it outright, so the policy is enforced in the harness rather than left to the model's discretion, and the same hook can log every attempt. Prompt wording and model choice only bias behavior, and temperature affects sampling, none of which guarantee a forbidden action is blocked.",
     "distractorNotes": {
       "a": "Plausible because instructions usually work, but prompt and memory bias the model without guaranteeing it; an injected or determined instruction can still elicit the write.",
       "b": "A deny rule does block the write, and for a block alone it would serve. But the policy also requires every attempt to be recorded, and a deny rule leaves no audit record; a pre-tool-use hook both denies the call and logs it.",
@@ -445,7 +445,7 @@
     "correct": [
       "b"
     ],
-    "explanation": "opt-b is correct: the guidance recommends finding the simplest solution and increasing complexity only when it demonstrably helps, so a single call that already works should not be replaced by an agent. Agents trade latency and cost for performance and are not always warranted, a workflow is still added complexity, and dormant complexity carries cost without benefit.",
+    "explanation": "Option B is correct: the guidance recommends finding the simplest solution and increasing complexity only when it demonstrably helps, so a single call that already works should not be replaced by an agent. Agents trade latency and cost for performance and are not always warranted, a workflow is still added complexity, and dormant complexity carries cost without benefit.",
     "distractorNotes": {
       "a": "The guidance explicitly warns that agents trade latency and cost for performance and are not always the right choice.",
       "c": "A workflow is still added complexity; the point is to avoid an agentic system entirely when a single call suffices.",
@@ -491,7 +491,7 @@
       "b",
       "c"
     ],
-    "explanation": "opt-b and opt-c are correct: workflows give predictability for well-defined tasks with known steps, while agents fit open-ended problems where the number of steps can't be predicted and no fixed path can be hardcoded. Fixed, known steps favor a workflow not an agent, workflows are not defined by cost, and the guidance stresses you must have some trust in an agent's decision-making.",
+    "explanation": "Options B and C are correct: workflows give predictability for well-defined tasks with known steps, while agents fit open-ended problems where the number of steps can't be predicted and no fixed path can be hardcoded. Fixed, known steps favor a workflow not an agent, workflows are not defined by cost, and the guidance stresses you must have some trust in an agent's decision-making.",
     "distractorNotes": {
       "a": "Fixed, known steps favor a workflow's predefined code paths, not an agent's dynamic, model-driven control.",
       "d": "Workflows are not chosen on cost; it is agent autonomy that typically raises cost, not workflows.",
@@ -537,7 +537,7 @@
       "b",
       "c"
     ],
-    "explanation": "opt-b and opt-c are correct: a subagent's isolated context keeps its exploratory reads out of the parent's conversation, and running independent subtasks in parallel finishes them in the time of the slowest rather than their sum. A non-fork subagent does not inherit the parent's conversation, subagents complement rather than replace the parent's tools, and only the final message returns, not intermediate results.",
+    "explanation": "Options B and C are correct: a subagent's isolated context keeps its exploratory reads out of the parent's conversation, and running independent subtasks in parallel finishes them in the time of the slowest rather than their sum. A non-fork subagent does not inherit the parent's conversation, subagents complement rather than replace the parent's tools, and only the final message returns, not intermediate results.",
     "distractorNotes": {
       "a": "A non-fork subagent starts fresh and does not inherit the parent's conversation; context is deliberately isolated.",
       "d": "Subagents complement the parent's tools rather than removing the parent's need for tools of its own.",
@@ -578,7 +578,7 @@
     "correct": [
       "c"
     ],
-    "explanation": "opt-c is correct: a generate-then-critique loop where one call drafts and another evaluates and feeds back until the criteria are met is the evaluator-optimizer pattern, a fit here because there are clear evaluation criteria and iterative refinement adds value. Routing branches by category, voting aggregates parallel attempts, and prompt chaining is a fixed forward sequence, none of which describe the feedback loop.",
+    "explanation": "Option C is correct: a generate-then-critique loop where one call drafts and another evaluates and feeds back until the criteria are met is the evaluator-optimizer pattern, a fit here because there are clear evaluation criteria and iterative refinement adds value. Routing branches by category, voting aggregates parallel attempts, and prompt chaining is a fixed forward sequence, none of which describe the feedback loop.",
     "distractorNotes": {
       "a": "Routing classifies an input and dispatches it to a specialized branch; there is no iterative critique loop.",
       "b": "Voting runs the same task in parallel and aggregates outputs; it does not refine a single draft with feedback.",
@@ -619,7 +619,7 @@
     "correct": [
       "d"
     ],
-    "explanation": "opt-d is correct: decomposing a task into a fixed sequence where each call processes the previous one's output, with an optional programmatic gate between steps, is prompt chaining. The subtasks here are fixed and known, there is no classification into categories, and the check is a one-time gate rather than an iterative critic refining a draft.",
+    "explanation": "Option D is correct: decomposing a task into a fixed sequence where each call processes the previous one's output, with an optional programmatic gate between steps, is prompt chaining. The subtasks here are fixed and known, there is no classification into categories, and the check is a one-time gate rather than an iterative critic refining a draft.",
     "distractorNotes": {
       "a": "The subtasks here are fixed and known in advance, not decomposed dynamically by a manager at runtime.",
       "b": "There is no classification into categories; it is one linear pipeline applied to every input.",

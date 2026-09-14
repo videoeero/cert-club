@@ -28,6 +28,10 @@ export function answerCountLabel(count: number): string {
   return labels[count] ?? String(count);
 }
 
+export function formatOptionLabel(optionId: string): string {
+  return optionId.replace(/^opt-/, "").toUpperCase();
+}
+
 function randomValue(random: RandomSource): number {
   const value = random();
   if (!Number.isFinite(value)) {

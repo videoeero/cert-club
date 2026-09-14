@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 
 import styles from "./QuizQuestion.module.css";
-import { answerCountLabel, scoreAnswer } from "../lib/quiz";
+import { answerCountLabel, formatOptionLabel, scoreAnswer } from "../lib/quiz";
 import type { Question, RevealMode } from "../types";
 
 export interface QuizQuestionProps {
@@ -149,7 +149,7 @@ function AnswerOptionList({
                 onChange={() => onOptionChange(option.id)}
               />
               <span className={styles.optionId} aria-hidden="true">
-                {option.id.toUpperCase()}
+                {formatOptionLabel(option.id)}
               </span>
               {isStruck ? (
                 <s className={styles.strikethroughText}>{option.text}</s>
@@ -167,8 +167,8 @@ function AnswerOptionList({
                 .join(" ")}
               aria-label={
                 isStruck
-                  ? `Remove strike through from option ${option.id.toUpperCase()}`
-                  : `Strike through option ${option.id.toUpperCase()}`
+                  ? `Remove strike through from option ${formatOptionLabel(option.id)}`
+                  : `Strike through option ${formatOptionLabel(option.id)}`
               }
               aria-pressed={isStruck}
               title={
@@ -224,7 +224,9 @@ function AnswerFeedback({ question, isCorrect }: AnswerFeedbackProps) {
       <strong>{isCorrect ? "Correct." : "Not quite."}</strong>
       <p>
         <strong>Correct answer:</strong>{" "}
-        {question.correct.map((optionId) => optionId.toUpperCase()).join(", ")}
+        {question.correct
+          .map((optionId) => formatOptionLabel(optionId))
+          .join(", ")}
       </p>
       <p>{question.explanation}</p>
       <p className={styles.sourceNote}>

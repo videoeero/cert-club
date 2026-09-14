@@ -654,7 +654,7 @@
     "correct": [
       "b"
     ],
-    "explanation": "opt-b is correct because decomposing a task into a chain of smaller calls, where each call handles one easier subtask and its output feeds the next, trades a little latency for higher accuracy and lets you insert programmatic checks (gates) between steps for debugging. opt-a treats a structural problem as a sampling problem; opt-c makes the single overloaded call harder, not easier; opt-d misuses tools, which supply capabilities rather than replacing the model's step-by-step reasoning.",
+    "explanation": "Option B is correct because decomposing a task into a chain of smaller calls, where each call handles one easier subtask and its output feeds the next, trades a little latency for higher accuracy and lets you insert programmatic checks (gates) between steps for debugging. Option A treats a structural problem as a sampling problem; option C makes the single overloaded call harder, not easier; option D misuses tools, which supply capabilities rather than replacing the model's step-by-step reasoning.",
     "distractorNotes": {
       "a": "Labelled sections do make the output easier to read, but every step is still produced in a single pass, so a mis-categorisation flows straight into the reply and the translation with no gate between them.",
       "c": "Plausible because more explicit instructions sometimes help, but concatenating everything keeps the hard, hard-to-inspect single call intact.",
@@ -696,7 +696,7 @@
       "b",
       "d"
     ],
-    "explanation": "opt-b and opt-d are correct: structured outputs constrain the response to a declared schema so calling code gets valid, typed, parseable results and can drop bespoke retry-on-bad-JSON handling, and they are meant for cases where downstream software consumes the output directly. opt-a describes the brittle status quo the feature exists to replace; opt-c is wrong because schema constraints materially change what the model can emit rather than being cosmetic.",
+    "explanation": "Options B and D are correct: structured outputs constrain the response to a declared schema so calling code gets valid, typed, parseable results and can drop bespoke retry-on-bad-JSON handling, and they are meant for cases where downstream software consumes the output directly. Option A describes the brittle status quo the feature exists to replace; option C is wrong because schema constraints materially change what the model can emit rather than being cosmetic.",
     "distractorNotes": {
       "a": "Plausible because defensive parsing is common, but the design point is to constrain generation upstream instead of endlessly patching the parser.",
       "c": "Plausible-sounding caution, but incorrect: constrained decoding actually restricts the output shape, so treating it as arbitrary text misses the guarantee."
@@ -736,7 +736,7 @@
     "correct": [
       "c"
     ],
-    "explanation": "opt-c is correct because a routing step that classifies input and directs each class to the appropriately sized model captures most of the cost savings while preserving quality where it matters, a documented multi-model strategy for the cost-to-intelligence tradeoff. opt-a underserves the hard minority; opt-b overpays on the easy majority; opt-d ignores the actual difficulty of each request, so it randomly misroutes hard work to the cheap model.",
+    "explanation": "Option C is correct because a routing step that classifies input and directs each class to the appropriately sized model captures most of the cost savings while preserving quality where it matters, a documented multi-model strategy for the cost-to-intelligence tradeoff. Option A underserves the hard minority; option B overpays on the easy majority; option D ignores the actual difficulty of each request, so it randomly misroutes hard work to the cheap model.",
     "distractorNotes": {
       "a": "Plausible as a cost play, but it sacrifices exactly the complex cases the team cares about.",
       "b": "Plausible as a quality play, but it spends top-tier cost on the easy majority the requirement wants to economise.",
@@ -777,7 +777,7 @@
     "correct": [
       "d"
     ],
-    "explanation": "opt-d is correct because the orchestrator-workers pattern is designed for tasks where subtasks cannot be predicted in advance: a central call decomposes the work dynamically, delegates to workers, and merges the outputs. opt-a and opt-c both hard-code a fixed set of steps, which the scenario rules out because the number and nature of edits vary per task; opt-b collapses the work into one overloaded call, losing the focused, per-file handling the task needs.",
+    "explanation": "Option D is correct because the orchestrator-workers pattern is designed for tasks where subtasks cannot be predicted in advance: a central call decomposes the work dynamically, delegates to workers, and merges the outputs. Options A and C both hard-code a fixed set of steps, which the scenario rules out because the number and nature of edits vary per task; option B collapses the work into one overloaded call, losing the focused, per-file handling the task needs.",
     "distractorNotes": {
       "a": "Plausible because chaining is a real pattern, but a fixed chain cannot express a per-request-variable number of subtasks.",
       "b": "Plausible as a shortcut, but one big call forgoes the decomposition that keeps each file's change tractable.",
@@ -818,7 +818,7 @@
     "correct": [
       "a"
     ],
-    "explanation": "opt-a is correct because defining specific, measurable success criteria and building evaluations to measure against them is the starting point of the develop-and-refine cycle; without a fixed target, prompt and model changes cannot be judged objectively. opt-b optimises before knowing what 'better' means; opt-c ships without a yardstick and risks user harm while still lacking criteria; opt-d confuses a verbose prompt with an actual measurement method.",
+    "explanation": "Option A is correct because defining specific, measurable success criteria and building evaluations to measure against them is the starting point of the develop-and-refine cycle; without a fixed target, prompt and model changes cannot be judged objectively. Option B optimises before knowing what 'better' means; option C ships without a yardstick and risks user harm while still lacking criteria; option D confuses a verbose prompt with an actual measurement method.",
     "distractorNotes": {
       "b": "Plausible because bigger models can help, but choosing one before defining the target is optimising blind.",
       "c": "Plausible because real feedback is valuable, but it is not a substitute for measurable criteria and can expose users to a poor feature.",
@@ -860,7 +860,7 @@
       "a",
       "c"
     ],
-    "explanation": "opt-a and opt-c are correct: persistent instruction files carry project context into every session so it need not be re-explained, but the model treats loaded instructions as context rather than enforced configuration, so a rule that must always hold should be enforced with a deterministic hook. opt-b ignores the persistence mechanism that exists precisely to avoid re-pasting; opt-d is wrong because stronger wording does not make context binding, which is exactly why a hook is needed.",
+    "explanation": "Options A and C are correct: persistent instruction files carry project context into every session so it need not be re-explained, but the model treats loaded instructions as context rather than enforced configuration, so a rule that must always hold should be enforced with a deterministic hook. Option B ignores the persistence mechanism that exists precisely to avoid re-pasting; option D is wrong because stronger wording does not make context binding, which is exactly why a hook is needed.",
     "distractorNotes": {
       "b": "Plausible as a brute-force habit, but it defeats the purpose of a persistent file and still does not make any rule binding.",
       "d": "Plausible because firm wording feels authoritative, but instructions are guidance, not enforcement, so a hard guarantee needs a hook."
@@ -900,7 +900,7 @@
     "correct": [
       "c"
     ],
-    "explanation": "opt-c is correct because using structured tags to separate the trusted instructions from the untrusted content makes each part's role explicit and helps the model avoid conflating data with directives. opt-a weakens the very instructions that should govern behaviour; opt-b adds redundancy without drawing a boundary between roles; opt-d changes sampling determinism, which does nothing to clarify which text is an instruction versus data.",
+    "explanation": "Option C is correct because using structured tags to separate the trusted instructions from the untrusted content makes each part's role explicit and helps the model avoid conflating data with directives. Option A weakens the very instructions that should govern behaviour; option B adds redundancy without drawing a boundary between roles; option D changes sampling determinism, which does nothing to clarify which text is an instruction versus data.",
     "distractorNotes": {
       "a": "Plausible because concise prompts help generally, but cutting the instructions makes them easier, not harder, to override.",
       "b": "Plausible because emphasis can help, but repetition without a structural boundary still mixes instructions and data.",
@@ -943,7 +943,7 @@
       "b",
       "d"
     ],
-    "explanation": "opt-a, opt-b, and opt-d are correct: detailed descriptions are the single biggest factor in tool performance, consolidating related actions into fewer capable tools reduces selection ambiguity, and namespaced names keep selection clear as the surface grows. opt-c is the opposite of the guidance; skimping on descriptions to save tokens removes the very context the model needs to choose and invoke tools correctly.",
+    "explanation": "Options A, B, and D are correct: detailed descriptions are the single biggest factor in tool performance, consolidating related actions into fewer capable tools reduces selection ambiguity, and namespaced names keep selection clear as the surface grows. Option C is the opposite of the guidance; skimping on descriptions to save tokens removes the very context the model needs to choose and invoke tools correctly.",
     "distractorNotes": {
       "c": "Plausible because token thrift is a real concern, but starving tools of descriptions directly causes the wrong-tool selection the scenario describes."
     },
@@ -982,7 +982,7 @@
     "correct": [
       "b"
     ],
-    "explanation": "opt-b is correct because vision requests supply images as image content blocks (via base64, a URL, or a Files API file_id), and the guidance is that Claude works best when the image comes before the text. opt-a is false since the request carries the image directly; opt-c invents a single-image, image-last rule that does not exist; opt-d is wrong because base64 and file_id sources are supported alongside URLs.",
+    "explanation": "Option B is correct because vision requests supply images as image content blocks (via base64, a URL, or a Files API file_id), and the guidance is that Claude works best when the image comes before the text. Option A is false since the request carries the image directly; option C invents a single-image, image-last rule that does not exist; option D is wrong because base64 and file_id sources are supported alongside URLs.",
     "distractorNotes": {
       "a": "Plausible to someone thinking of fine-tuning, but vision is a request-time capability and the body carries the image.",
       "c": "Plausible as a guessed constraint, but multiple images are allowed and image-before-text is preferred, not the reverse.",
@@ -1024,7 +1024,7 @@
       "a",
       "c"
     ],
-    "explanation": "opt-a and opt-c are correct: each batched request is handled independently, allowing a mix of request types in one batch, and the workflow is asynchronous, so callers submit, poll for status, and retrieve results after processing ends. opt-b is false because streaming is not supported inside a batch; results come back as a file rather than a live token stream. opt-d contradicts the asynchronous, non-blocking design of batching.",
+    "explanation": "Options A and C are correct: each batched request is handled independently, allowing a mix of request types in one batch, and the workflow is asynchronous, so callers submit, poll for status, and retrieve results after processing ends. Option B is false because streaming is not supported inside a batch; results come back as a file rather than a live token stream. Option D contradicts the asynchronous, non-blocking design of batching.",
     "distractorNotes": {
       "b": "Plausible by analogy to synchronous calls, but stream is unsupported in batch requests and results are returned as a file.",
       "d": "Plausible if you picture a long request, but batching is asynchronous and does not block the caller on an open connection."
@@ -1064,7 +1064,7 @@
     "correct": [
       "c"
     ],
-    "explanation": "opt-c is correct because a safe large refactor proceeds in small, testable increments that each preserve behaviour, with the suite run between steps so a regression is caught while the change that caused it is still small. The others fail because a single big rewrite (a) makes any failure hard to localise, deferring tests (b) lets defects pile up undetected, and freezing tests (d) removes the very signal that keeps the migration honest.",
+    "explanation": "Option C is correct because a safe large refactor proceeds in small, testable increments that each preserve behaviour, with the suite run between steps so a regression is caught while the change that caused it is still small. The others fail because a single big rewrite (a) makes any failure hard to localise, deferring tests (b) lets defects pile up undetected, and freezing tests (d) removes the very signal that keeps the migration honest.",
     "distractorNotes": {
       "a": "Plausible because one pass feels efficient, but a whole-module rewrite verified only at the end gives no way to tell which change broke what.",
       "b": "Changing everything before testing sounds orderly, yet it maximises the blast radius and hides regressions until they are expensive to trace.",
@@ -1105,7 +1105,7 @@
     "correct": [
       "b"
     ],
-    "explanation": "opt-b is correct because reviewing the plan and diff before changes are written keeps the developer in control and lets edits land in small, reviewable steps. The others fail because applying first and undoing later (a) risks broken intermediate states, accepting everything blindly (c) abandons control for false tidiness, and turning off tracking (d) removes the history that makes incremental review possible.",
+    "explanation": "Option B is correct because reviewing the plan and diff before changes are written keeps the developer in control and lets edits land in small, reviewable steps. The others fail because applying first and undoing later (a) risks broken intermediate states, accepting everything blindly (c) abandons control for false tidiness, and turning off tracking (d) removes the history that makes incremental review possible.",
     "distractorNotes": {
       "a": "Undoing after the fact is error-prone and can leave the tree in a broken state; reviewing before edits land avoids that entirely.",
       "c": "Avoiding a half-changed tree is not worth surrendering review; small reviewed increments are precisely the recommended pattern.",
@@ -1146,7 +1146,7 @@
     "correct": [
       "d"
     ],
-    "explanation": "opt-d is correct because a concrete reproduction command plus the stack trace gives Claude the specific signal it needs to trace a failure to its source. The others fail because vague framing (a and c) and pure guessing (b) withhold the reproduction detail the documented bug-fixing recipe relies on.",
+    "explanation": "Option D is correct because a concrete reproduction command plus the stack trace gives Claude the specific signal it needs to trace a failure to its source. The others fail because vague framing (a and c) and pure guessing (b) withhold the reproduction detail the documented bug-fixing recipe relies on.",
     "distractorNotes": {
       "a": "An open-ended search with no reproduction wastes effort; the guidance is to hand over the command and stack trace.",
       "b": "Guessing without reproducing skips the evidence that lets the cause be pinpointed rather than speculated about.",
@@ -1188,7 +1188,7 @@
       "a",
       "c"
     ],
-    "explanation": "opt-a and opt-c are correct because Claude examines existing test files to match their conventions and, when prompted, can suggest edge cases and error conditions a person might miss. The distractors fail because it works within your existing framework rather than replacing it (b), and generated tests still have to be run to be trusted (d).",
+    "explanation": "Options A and C are correct because Claude examines existing test files to match their conventions and, when prompted, can suggest edge cases and error conditions a person might miss. The distractors fail because it works within your existing framework rather than replacing it (b), and generated tests still have to be run to be trusted (d).",
     "distractorNotes": {
       "b": "The guidance is to match existing frameworks and patterns, not to replace a team's chosen test framework on its own initiative.",
       "d": "No coverage guarantee is implied, and the recipe explicitly ends by running the new tests and fixing failures."
@@ -1228,7 +1228,7 @@
     "correct": [
       "c"
     ],
-    "explanation": "opt-c is correct because git worktrees give each session an isolated checkout, letting parallel work proceed without colliding edits. The others fail because sharing one working copy (a) invites collisions, serialising to one session (b) needlessly forgoes parallelism, and muting one session's writes (d) defeats the goal of two developers working at once.",
+    "explanation": "Option C is correct because git worktrees give each session an isolated checkout, letting parallel work proceed without colliding edits. The others fail because sharing one working copy (a) invites collisions, serialising to one session (b) needlessly forgoes parallelism, and muting one session's writes (d) defeats the goal of two developers working at once.",
     "distractorNotes": {
       "a": "A single shared checkout is exactly what causes the collisions; taking turns just serialises the work by hand.",
       "b": "Concurrent sessions do not inevitably corrupt a repo; worktrees are the documented way to run them safely in parallel.",
@@ -1269,7 +1269,7 @@
     "correct": [
       "b"
     ],
-    "explanation": "opt-b is correct because a convention the whole team must follow belongs in the project memory file, which is shared through source control so everyone gets it. The others fail because the user file is personal and per-developer (a and d) and a git-ignored local file is not shared at all, forcing brittle manual syncing (c).",
+    "explanation": "Option B is correct because a convention the whole team must follow belongs in the project memory file, which is shared through source control so everyone gets it. The others fail because the user file is personal and per-developer (a and d) and a git-ignored local file is not shared at all, forcing brittle manual syncing (c).",
     "distractorNotes": {
       "a": "Load reliability does not depend on the home directory; the deciding factor is scope, and a team standard is project-scoped.",
       "c": "A local, ignored file is explicitly personal; using it for a team standard means it never reaches teammates automatically.",
@@ -1310,7 +1310,7 @@
     "correct": [
       "a"
     ],
-    "explanation": "opt-a is correct because pinning an explicit model version keeps behaviour stable across runs, so results are reproducible until the team chooses to migrate. The others fail because the output ceiling does not govern which model answers (b), always taking the newest model guarantees drift rather than stability (c), and deferring to per-environment defaults makes results depend on where the job runs (d).",
+    "explanation": "Option A is correct because pinning an explicit model version keeps behaviour stable across runs, so results are reproducible until the team chooses to migrate. The others fail because the output ceiling does not govern which model answers (b), always taking the newest model guarantees drift rather than stability (c), and deferring to per-environment defaults makes results depend on where the job runs (d).",
     "distractorNotes": {
       "b": "The output ceiling changes how much text can return, not which model runs, so it does not stop version-driven drift.",
       "c": "Chasing the newest model on every run is the opposite of reproducibility; it introduces exactly the variation being seen.",
@@ -1352,7 +1352,7 @@
       "b",
       "c"
     ],
-    "explanation": "opt-b and opt-c are correct because memory files are treated as context that guides Claude rather than enforced configuration, and blocking an action regardless of the model's choice is a job for a hook. The distractors fail because deviation is not a parsing bug but a consequence of context not being a hard constraint (a), and load order runs broadest-first with no guarantee that a narrower entry strictly overrides a broader one (d).",
+    "explanation": "Options B and C are correct because memory files are treated as context that guides Claude rather than enforced configuration, and blocking an action regardless of the model's choice is a job for a hook. The distractors fail because deviation is not a parsing bug but a consequence of context not being a hard constraint (a), and load order runs broadest-first with no guarantee that a narrower entry strictly overrides a broader one (d).",
     "distractorNotes": {
       "a": "Because entries are guidance rather than enforced rules, occasional deviation is expected behaviour, not evidence of a parse error.",
       "d": "Files load from broadest to most specific, and since they are context rather than strict precedence, a narrow rule is not guaranteed to override a broad one."
@@ -1392,7 +1392,7 @@
     "correct": [
       "c"
     ],
-    "explanation": "opt-c is correct because accuracy describes what the system must do (functional), while responsiveness under load is an operational quality of how it performs (non-functional). The others fail because they collapse the two categories together (a and b) or deny that an as-yet-unquantified goal is a requirement at all (d), when the task is precisely to classify then make it measurable.",
+    "explanation": "Option C is correct because accuracy describes what the system must do (functional), while responsiveness under load is an operational quality of how it performs (non-functional). The others fail because they collapse the two categories together (a and b) or deny that an as-yet-unquantified goal is a requirement at all (d), when the task is precisely to classify then make it measurable.",
     "distractorNotes": {
       "a": "Observability does not make both functional; responsiveness under load is an operational quality attribute, which is non-functional.",
       "b": "Answer accuracy is a core functional requirement describing what the assistant must do, so treating both as non-functional is wrong.",
@@ -1434,7 +1434,7 @@
       "a",
       "c"
     ],
-    "explanation": "opt-a and opt-c are correct because the documented starting criteria for choosing a model are the capabilities the task demands and the cost budget for development and production; both turn a vague aim into decidable requirements. The distractors fail because memorising every historical price (b) is trivia rather than a criterion, and personal UI preferences (d) are irrelevant to model selection.",
+    "explanation": "Options A and C are correct because the documented starting criteria for choosing a model are the capabilities the task demands and the cost budget for development and production; both turn a vague aim into decidable requirements. The distractors fail because memorising every historical price (b) is trivia rather than a criterion, and personal UI preferences (d) are irrelevant to model selection.",
     "distractorNotes": {
       "b": "A precise recall of all historical prices is not a decision criterion; the relevant factor is a cost budget the model must fit.",
       "d": "Theme and editor preferences have nothing to do with matching a model to business needs; they are unrelated to the requirement."
@@ -1474,7 +1474,7 @@
     "correct": [
       "b"
     ],
-    "explanation": "opt-b is correct because the documented maintenance practice is to test a recommended replacement ahead of the retirement date and migrate before requests to the retired model start failing. The others fail because waiting for failures invites an avoidable outage (a), treating deprecation as cosmetic ignores the scheduled retirement (c), and there is no way to pin past a retirement date, since retired-model requests simply fail (d).",
+    "explanation": "Option B is correct because the documented maintenance practice is to test a recommended replacement ahead of the retirement date and migrate before requests to the retired model start failing. The others fail because waiting for failures invites an avoidable outage (a), treating deprecation as cosmetic ignores the scheduled retirement (c), and there is no way to pin past a retirement date, since retired-model requests simply fail (d).",
     "distractorNotes": {
       "a": "Reacting only after failures means an outage that the notice period and pre-retirement testing were meant to prevent.",
       "c": "Deprecation is not cosmetic; a retirement date is set, after which requests to the model fail, so inaction is unsafe.",
