@@ -1095,3 +1095,45 @@ Stage B fails the precision bar for a gating check. In accordance with the kill 
 4. The documentation wiring in `CONTRIBUTING.md` and `certs/ADDING-A-CERT.md` is **reverted**,
    restoring the count words ("Three further tasks", "None of the three").
 
+### Workstream 5 follow-through — tool wired, four defects fixed (2026-09-14)
+
+**The kill criterion's revert went one step too far.** Demoting checks 1 and 2 to advisory
+correctly removed the `--strict` gate, but it also stripped `check-claims` from
+`package.json`, `CONTRIBUTING.md` and `certs/ADDING-A-CERT.md`, leaving a working script
+that nothing referenced and no workflow invoked. The repo's own precedent settles it:
+`scaffold` and `metrics` are non-gating, report-only, and still wired and documented under
+"deliberately *not* part of the gate". Advisory is not the same as unwired, and an unwired
+script is what `AGENTS.md` calls dead code.
+
+Restored accordingly, described as what it is — advisory, roughly one real finding in ten,
+never proof that a claim is sourced. `skills/audit-sources` now runs it in stage 1 as
+triage input and clears its findings per host in stage 4, which is the only recurring
+workflow positioned to act on the output. Without that trigger the tool had no occasion to
+run at all.
+
+#### The four true findings, fixed
+
+| Question | Defect | Fix |
+| --- | --- | --- |
+| `ccar-f-claude-code-configuration-and-workflows-003` | Taught an invented `@import` directive. `memory.md` documents `@path/to/import` — a bare `@` followed by a path, no keyword. The invention ran through the keyed option, explanation, sourceNote and three distractor notes. | Re-grounded on the page's own syntax throughout; added the documented four-hop recursion limit and the code-span parsing exclusion. |
+| `ccar-p-stakeholder-...-018` | Quoted `'Develop tests and evaluations'` as the page's title. The page is titled "Define success criteria and build evaluations"; the phrase occurs zero times. The `sourceNote` also named two sections that no longer exist. | Quote and `sourceNote` re-grounded on the live headings. |
+| `ccar-p-stakeholder-...-003` | Quoted `'Compare models on cost per completed task, not per token.'`. The page's table says "Compare on cost per completed task, not per token"; the word "models" was inserted into a quotation. | Quoted the table verbatim. |
+| `ccar-p-claude-models-...-002` | Backticked `output_config.effort`; the page writes `output_config: {effort: ...}`. | Matched the page's notation. |
+
+Three of the four are the drift class this whole plan was written for: a vendor page changed
+its title or its syntax, and the question kept quoting the old one. The fourth is an
+invention that four passes of directed review had read past.
+
+#### A note on what the fix traded
+
+Fixing `ccar-f-...-003` removed a true finding and created a false one: the corrected option
+cites `@./packages/billing/CLAUDE.md` as an example path, backticked because it is code, and
+the tool now flags it as an identifier absent from the vendor page. It is absent — it is a
+scenario path, not an API name.
+
+**This was left in deliberately.** Removing the backticks would quiet the tool without
+improving the content, and editing questions to silence an advisory is the precise pathology
+this plan exists to prevent: a clean run standing in for a sourced claim. A 9%-precision
+advisory is supposed to emit findings like this one, and the reviewer is supposed to dismiss
+them. `ccar-p` now stands at one finding, the known `'do not hallucinate'` prompt fragment.
+

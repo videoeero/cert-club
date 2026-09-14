@@ -21,7 +21,11 @@ field's whole value is that it means what it says.
    whole repository costs less than the banks run separately — and only a
    repo-wide pass shows that a _host_ moved rather than a page. `--json` to
    feed a plan, `--offline` when only staleness matters. Triage input, not a
-   verdict.
+   verdict. Then run `npm run check-claims` for the same reason: it lists the
+   quotes, identifiers and figures in each bank's free-text surface and, on
+   `.md`-serving hosts, flags the ones absent from the cited page. Roughly one
+   finding in ten is real, so it is a worklist for stage 4, never a verdict —
+   but it reads every citation, which no reviewer reliably does.
 2. **False-negative discipline, before any edit.** A single failed fetch is
    **never** grounds for changing a `sourceUrl`. Reconfirm by a second method
    before believing a page is gone. `certs/ccdv-f/review-progress.md` records
@@ -49,7 +53,11 @@ field's whole value is that it means what it says.
    The page is already open: read the free-text surface (`explanation`,
    `distractorNotes`, `sourceNote`, and keyed options) against it too, checking
    for figure and API drift per `CONTRIBUTING.md` — that is where unsourced
-   drift hides. Adjudicate disagreements; the key is often right and the cold
+   drift hides. Clear stage 1's `check-claims` findings for this host here,
+   each against the page: most are quoted prompt fragments, config values or
+   scenario names, which are not claims about the page at all. The residue is
+   what the tool is for — retitled pages still quoted by their old name, and
+   syntax a question teaches that the vendor never documented. Adjudicate disagreements; the key is often right and the cold
    reader wrong.
 5. **One explicit disposition per affected question**, and say which:
    - **bump** — page re-read, claim intact, update `sourceCheckedAt`.

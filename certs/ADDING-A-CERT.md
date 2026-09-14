@@ -327,11 +327,19 @@ supported route through the work rather than hand-rolling it.
   run with `--offline`, liveness (fetches every cited URL; tune with
   `--concurrency` and `--timeout-ms`); `--strict` / `--strict-network` turn
   its findings into a non-zero exit.
+- `npm run check-claims` — **advisory only.** Lists every figure in the
+  free-text provenance surface per bank (offline), and where the citation is on
+  a `.md`-serving host, compares quoted spans and backticked identifiers against
+  the fetched page (tune with `--concurrency` and `--timeout-ms`; `--json` for
+  machine-readable output). It never gates and always exits 0. Expect roughly
+  nine noise findings for every real one — adjudicate each against the page
+  yourself, and never read a clean run as proof a claim is sourced.
 
-None of the three is part of `npm run check`: `check-sources` hits the network
-by default, and the gate must stay runnable offline and deterministic in CI.
-`scaffold` and `metrics` are excluded alongside it for the same reason they
-aren't validators — they generate and report, they don't gate.
+None of the four is part of `npm run check`: `check-sources` and `check-claims`
+hit the network by default, and the gate must stay runnable offline and
+deterministic in CI. `scaffold` and `metrics` are excluded alongside them for
+the same reason they aren't validators — they generate and report, they don't
+gate.
 
 ## Content license
 

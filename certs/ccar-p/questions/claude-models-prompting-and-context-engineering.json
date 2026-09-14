@@ -71,7 +71,7 @@
     "correct": [
       "opt-a"
     ],
-    "explanation": "On models that support manual extended thinking, `thinking: {\"type\": \"enabled\", \"budget_tokens\": N}` sets a per-request target for internal reasoning, so reasoning depth can be tuned per call: omit thinking for balance inquiries to preserve sub-second turnaround, and provision a budget for stress tests. Note the boundary the documentation draws — manual extended thinking is deprecated on the Claude 4.6 models and is rejected with a 400 error on Claude 4.7 and later, where adaptive thinking and `output_config.effort` replace it. Claude Sonnet 4.5 supports only the manual mode, so `budget_tokens` is the correct control there.",
+    "explanation": "On models that support manual extended thinking, `thinking: {\"type\": \"enabled\", \"budget_tokens\": N}` sets a per-request target for internal reasoning, so reasoning depth can be tuned per call: omit thinking for balance inquiries to preserve sub-second turnaround, and provision a budget for stress tests. Note the boundary the documentation draws — manual extended thinking is deprecated on the Claude 4.6 models and is rejected with a 400 error on Claude 4.7 and later, where adaptive thinking and `output_config: {effort: ...}` replace it. Claude Sonnet 4.5 supports only the manual mode, so `budget_tokens` is the correct control there.",
     "distractorNotes": {
       "opt-b": "Reducing max_tokens does not truncate thinking cleanly; max_tokens must exceed budget_tokens, otherwise the request fails validation with an API 400 error.",
       "opt-c": "Temperature controls sampling randomness, not whether extended thinking runs. Manual thinking is turned on only by the `thinking` object, and reasoning depth is set by its `budget_tokens` value.",
@@ -79,7 +79,7 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/extended-thinking",
     "sourceNote": "Extended thinking / Controlling thinking budget and latency trade-offs",
-    "sourceCheckedAt": "2026-09-13"
+    "sourceCheckedAt": "2026-09-14"
   },
   {
     "id": "ccar-p-claude-models-prompting-and-context-engineering-003",

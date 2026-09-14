@@ -112,7 +112,7 @@
     "correct": [
       "opt-b"
     ],
-    "explanation": "Anthropic's architectural guidance for optimizing cost and intelligence emphasizes: 'Compare models on cost per completed task, not per token.' While Haiku has lower per-token pricing, on complex multi-step reasoning tasks a smaller model may fail more frequently, requiring costly verifier loops, retries, or complex fallback workflows that ultimately result in a higher cost per successfully solved task and greater end-to-end latency.",
+    "explanation": "Anthropic's architectural guidance for optimizing cost and intelligence emphasizes: 'Compare on cost per completed task, not per token' While Haiku has lower per-token pricing, on complex multi-step reasoning tasks a smaller model may fail more frequently, requiring costly verifier loops, retries, or complex fallback workflows that ultimately result in a higher cost per successfully solved task and greater end-to-end latency.",
     "distractorNotes": {
       "opt-a": "Haiku has lower baseline latency than Sonnet; Sonnet's advantage is superior reasoning capability and task completion rate, not raw token throughput speed.",
       "opt-c": "Prompt caching bills a cached prefix at the cache-read rate, a tenth of the input price, but applies equally to Haiku; on tasks with high input variability or low cache reuse, caching alone cannot overcome the base token pricing difference unless task failure and retry rates are factored in.",
@@ -120,7 +120,7 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/about-claude/models/optimizing-for-cost-and-intelligence",
     "sourceNote": "Optimizing for cost and intelligence / Compare models on cost per task",
-    "sourceCheckedAt": "2026-09-13"
+    "sourceCheckedAt": "2026-09-14"
   },
   {
     "id": "ccar-p-stakeholder-communication-and-lifecycle-management-004",
@@ -732,14 +732,14 @@
     "correct": [
       "opt-d"
     ],
-    "explanation": "Anthropic's guidance on evaluation and test-driven development ('Develop tests and evaluations') establishes the feedback loop flywheel for production lifecycle management: when users flag poor responses, teams should harvest those failure cases, have domain experts curate expected golden answers and grading rubrics, and incorporate them into the automated evaluation suite. Before deploying prompt or retrieval updates, candidate changes must be evaluated against both the new test cases and the existing regression test suite to ensure fixes do not degrade performance on previously working queries. Editing prompts directly in production without regression benchmarking inevitably causes regressions.",
+    "explanation": "Anthropic's guidance on evaluation and test-driven development ('Define success criteria and build evaluations') establishes the feedback loop flywheel for production lifecycle management: when users flag poor responses, teams should harvest those failure cases, have domain experts curate expected golden answers and grading rubrics, and incorporate them into the automated evaluation suite. Before deploying prompt or retrieval updates, candidate changes must be evaluated against both the new test cases and the existing regression test suite to ensure fixes do not degrade performance on previously working queries. Editing prompts directly in production without regression benchmarking inevitably causes regressions.",
     "distractorNotes": {
       "opt-a": "Ad-hoc patching of production prompts without updating golden datasets and running comprehensive regression tests frequently introduces regressions on other queries.",
       "opt-b": "Fine-tuning base models is costly, slow, and risks catastrophic forgetting; adapting to changing knowledge base policies is best handled via in-context prompt and RAG updates.",
       "opt-c": "Thumbs-down ratings are typically submitted after the response has already been displayed to the user; triggering a conversational retry adds latency, token spend, and user friction without fixing root prompt defects."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
-    "sourceNote": "Develop tests and evaluations / Build and expand test cases / Iterative refinement",
-    "sourceCheckedAt": "2026-09-13"
+    "sourceNote": "Define success criteria and build evaluations / Build evaluations / Eval design principles",
+    "sourceCheckedAt": "2026-09-14"
   }
 ]

@@ -97,7 +97,7 @@
     "options": [
       {
         "id": "a",
-        "text": "Use the @import syntax (e.g. @import ./packages/billing/CLAUDE.md) inside the project markdown configuration."
+        "text": "Use the `@path/to/import` syntax (for example `@./packages/billing/CLAUDE.md`) inside the project markdown configuration."
       },
       {
         "id": "b",
@@ -115,15 +115,15 @@
     "correct": [
       "a"
     ],
-    "explanation": "Claude Code supports modular memory through the `@import` syntax in CLAUDE.md files. This enables referencing external markdown files across packages or documentation trees, keeping the root memory clean and maintainable while pulling in domain-specific standards.",
+    "explanation": "Claude Code supports modular memory through the `@path/to/import` syntax in CLAUDE.md files: a line beginning with `@` followed by a path inlines that file. This enables referencing external markdown files across packages or documentation trees, keeping the root memory clean and maintainable while pulling in domain-specific standards. Imports resolve recursively to a maximum depth of four hops, and import parsing skips Markdown code spans and fenced code blocks.",
     "distractorNotes": {
-      "b": "Standard Markdown links [label](path) are rendered as regular link text and do not inline file contents into the context window; @import is required.",
-      "c": "package.json is not part of Claude Code's memory resolution; specialized files are pulled in with the @import directive inside the markdown, not a package.json array.",
-      "d": ".claude/settings.json configures permissions and environment settings, not markdown memory concatenation; importing modular memory files is performed using @import inside CLAUDE.md."
+      "b": "Standard Markdown links [label](path) are rendered as regular link text and do not inline file contents into the context window; an `@path` import line is required.",
+      "c": "package.json is not part of Claude Code memory resolution; specialized files are pulled in with an `@path` import line inside the markdown, not a package.json array.",
+      "d": ".claude/settings.json configures permissions and environment settings, not markdown memory concatenation; importing modular memory files is performed performed with `@path` import lines inside the markdown itself."
     },
     "sourceUrl": "https://code.claude.com/docs/en/memory.md",
-    "sourceNote": "Using @import syntax to create modular, maintainable CLAUDE.md configurations",
-    "sourceCheckedAt": "2026-09-10"
+    "sourceNote": "Import additional files — `@path/to/import` syntax for modular, maintainable CLAUDE.md configurations",
+    "sourceCheckedAt": "2026-09-14"
   },
   {
     "id": "ccar-f-claude-code-configuration-and-workflows-004",

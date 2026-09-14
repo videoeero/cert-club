@@ -162,19 +162,29 @@ npm run check
 The check validates every cert manifest and question bank, then runs the schema
 tests, including the deliberately invalid fixture that must be rejected.
 
-Three further tasks help with content work but are deliberately *not* part of
+Four further tasks help with content work but are deliberately *not* part of
 the gate:
 
 ```sh
 npm run scaffold        # generate a new bank's file set, and the weight arithmetic
 npm run metrics         # composition and bias figures for one or more banks
 npm run check-sources   # citation staleness, and liveness of every cited URL
+npm run check-claims    # advisory: quotes, identifiers and figures vs the cited page
 ```
 
-`check-sources` fetches every source page, and `npm run check` has to stay
-offline and deterministic so it runs the same on a plane as it does in CI.
-`scaffold` and `metrics` sit outside it for the same reason they aren't
-validators: they generate and report, they don't gate. Run them while you
+`check-sources` and `check-claims` fetch source pages, and `npm run check` has
+to stay offline and deterministic so it runs the same on a plane as it does in
+CI. `scaffold` and `metrics` sit outside it for the same reason they aren't
+validators: they generate and report, they don't gate.
+
+**`check-claims` is advisory, and its output is mostly noise by design — about
+one finding in ten is real.** It cannot tell a quotation of the cited page from
+a quoted prompt fragment, config value or invented scenario name, and no regex
+can. Read every finding against the page before acting on one; never treat a
+clean run as evidence that a claim is sourced. It earns its place anyway: it
+found four genuine drift defects that four passes of directed human review had
+walked past. See `certs/ccar-p/review-progress.md` § Workstream 5 Stage B for
+the measurement. Run them while you
 work; run `npm run check` before you commit. See
 [`certs/ADDING-A-CERT.md`](certs/ADDING-A-CERT.md) § Supporting npm tasks for
 the flags.
