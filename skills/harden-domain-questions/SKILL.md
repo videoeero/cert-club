@@ -71,9 +71,8 @@ that touches nothing and says why is a successful pass.
    than a second defensible answer: two options both defensible against that
    source is _ambiguous_, not hard — back it out; a discrimination now turning
    on a rule past the blueprint's level is _deeper_ — back that out too.
-   Retagging the item `scope: "deep"` is not this pass's edit: it needs a
-   `scopeNote` and moves the bank's core share, so route it to
-   `author-questions`.
+   Do not introduce out-of-scope mechanics or excessive depth; route questions
+   that need fundamental rework to `author-questions`.
 6. **Respect the bias guards.** Padding moves the length and position figures;
    never trim a key to compensate — fidelity to the cited doc outranks cosmetic
    balance. If padding cannot close a gap, escalate rather than trimming a key.
@@ -94,8 +93,8 @@ that touches nothing and says why is a successful pass.
   weak, needs authoring — route it to `author-questions` with its own sourcing
   rather than inventing a claim in a hardening edit.
 - **A question liftable only by going deeper than the blueprint.** Depth is not
-  difficulty: leave it, or route the `scope: "deep"` retag and its `scopeNote`
-  to `author-questions` per `certs/ADDING-A-CERT.md`.
+  difficulty: leave it, or route the question for rework or replacement to
+  `author-questions`.
 - **Anything touching `manifest.json`** — weights, domains, `status` — belongs
   to `audit-coverage`, never here.
 

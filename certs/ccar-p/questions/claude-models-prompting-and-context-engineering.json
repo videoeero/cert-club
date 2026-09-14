@@ -7,7 +7,6 @@
     "domain": "claude-models-prompting-and-context-engineering",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A legal tech solution uses Claude to analyze contracts against a static 15,000-token corporate policy document. The system prompt contains the policy document, but each request currently prefixes the prompt with a dynamic timestamp and user session ID before the policy text. Latency and token costs are unacceptable. How should the architect reorganize the prompt structure to enable effective prompt caching?",
     "options": [
       {
@@ -48,7 +47,6 @@
     "domain": "claude-models-prompting-and-context-engineering",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An enterprise architect is designing an automated financial analysis service on Claude Sonnet 4.5, a model that supports manual extended thinking only. The workload receives two distinct types of requests: high-volume simple balance inquiries requiring sub-second response times, and low-volume portfolio stress tests requiring deep multi-step mathematical verification. What is the most architecturally sound approach to satisfy both SLA profiles within a single model deployment?",
     "options": [
       {
@@ -89,7 +87,6 @@
     "domain": "claude-models-prompting-and-context-engineering",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A customer service platform processes 100,000 inbound interactions daily. Approximately 80% are straightforward intent classification and routing requests with strict 300ms p95 latency targets, while 20% involve resolving multi-policy billing disputes that require synthesizing ambiguous contractual terms. Which model selection strategy best balances cost, latency, and reasoning capability?",
     "options": [
       {
@@ -130,7 +127,6 @@
     "domain": "claude-models-prompting-and-context-engineering",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An enterprise insurance claim processing system builds a single prompt that mixes standing adjuster instructions, the claimant's policy record, several worked examples, and the free-text body of a user-uploaded repair estimate. Claude intermittently treats the worked examples as live claims to process and quotes policy-record fields as if they were estimate line items. Which prompt engineering technique most directly addresses this?",
     "options": [
       {
@@ -171,7 +167,6 @@
     "domain": "claude-models-prompting-and-context-engineering",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An architect reviews an enterprise knowledge assistant for medical researchers. The assistant frequently issues false-positive refusals on benign pharmaceutical queries because its system prompt contains broad negative guardrails such as 'Do not discuss toxic chemicals, dangerous compounds, or biological hazards.' How should the system prompt be redesigned to prevent these refusal spirals while maintaining safety?",
     "options": [
       {
@@ -212,7 +207,6 @@
     "domain": "claude-models-prompting-and-context-engineering",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A support triage classifier tags incoming customer inquiries into priority tiers. Zero-shot prompting achieves 74% accuracy, struggling primarily with subtle edge cases where customers report minor product defects that imply severe safety liabilities. How should the architect structure few-shot examples to achieve the highest classification fidelity on these boundary cases?",
     "options": [
       {
@@ -253,7 +247,6 @@
     "domain": "claude-models-prompting-and-context-engineering",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A backend service transforms unstructured diagnostic logs into a specific JSON schema. It has always eliminated Claude's conversational preambles by prefilling the assistant turn with the opening brace. After the team repoints the service at a Claude 4.6 model, every request fails with an HTTP 400 error. Which migration best restores deterministic preamble-free output on the newer model?",
     "options": [
       {
@@ -294,7 +287,6 @@
     "domain": "claude-models-prompting-and-context-engineering",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An architect is designing an automated regulatory compliance checker on Claude Opus 5. The model must analyze complex mortgage applications against statutory lending rules and return a strict machine-readable JSON object containing audit findings. When using standard zero-shot prompting, Claude makes logical deduction errors, but when prompted to think step-by-step in a scratchpad, the thinking text contaminates the JSON payload. How should the architect resolve this issue?",
     "options": [
       {
@@ -335,7 +327,6 @@
     "domain": "claude-models-prompting-and-context-engineering",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An enterprise contract review tool loads 150,000 tokens of cross-referenced vendor agreements into Claude's context window. Users report that when queries ask about specific indemnity liability caps buried deep within the middle schedules of the documents, Claude often returns generic answers or overlooks relevant clauses. Which context engineering adjustment best improves retrieval accuracy across these long contexts?",
     "options": [
       {
@@ -376,7 +367,6 @@
     "domain": "claude-models-prompting-and-context-engineering",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An AI orchestrator manages dynamic conversation sessions where users upload arbitrary documentation alongside chat messages. The orchestrator must enforce strict per-request token budgets and decide whether to summarize history before issuing a call. The team currently estimates token counts using character-length heuristics (4 characters per token), which frequently causes unexpected 400 context limit errors on source code and non-English inputs. How should the architect remediate this?",
     "options": [
       {
@@ -417,7 +407,6 @@
     "domain": "claude-models-prompting-and-context-engineering",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An enterprise customer support bot caches its 12,000-token system prompt and product catalog using prompt caching. During peak business hours with continuous traffic, cache read rates exceed 95%, providing significant cost savings. However, during sporadic off-peak hours when user inquiries arrive 15 minutes apart, every inquiry incurs full cache creation write costs. What architectural mechanism explains this behavior?",
     "options": [
       {
@@ -458,7 +447,6 @@
     "domain": "claude-models-prompting-and-context-engineering",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An architect is designing a multi-turn software development agent using the Anthropic Messages API. Each interaction includes a static 8,000-token repository architecture guide, 12 tool definitions, and an incrementally growing conversation history of user messages and tool responses. The architect wants to maximize prompt cache hits across successive conversation turns while adhering to API caching constraints. Which two strategies should the architect implement? (Select TWO.)",
     "options": [
       {
@@ -504,7 +492,6 @@
     "domain": "claude-models-prompting-and-context-engineering",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An architect is building a data ingestion pipeline that extracts customer entity records from unstructured emails and commits them directly into an enterprise relational database. When prompting Claude with natural language instructions specifying a JSON schema, downstream database inserts occasionally fail because Claude wraps JSON in markdown fences, omits required attributes, or adds explanatory closing notes. Which architectural approach provides deterministic schema compliance?",
     "options": [
       {
@@ -545,7 +532,6 @@
     "domain": "claude-models-prompting-and-context-engineering",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An architect is designing an autonomous cloud infrastructure remediation agent that diagnoses and resolves complex, distributed system outages over sessions lasting several hours. As the agent executes diagnostic shell commands, queries observability logs, and inspects container clusters, conversational history approaches the context window boundary. The operations team observes that as token usage nears the limit, the agent exhibits context rot—it forgets early diagnostic constraints, repeats already failed remediation steps, and risks abrupt context overflow errors. Which context engineering strategy best ensures reliable long-horizon execution while preserving critical state?",
     "options": [
       {
@@ -586,7 +572,6 @@
     "domain": "claude-models-prompting-and-context-engineering",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An enterprise legal research assistant processes multi-hundred-page commercial loan agreements and statutory regulatory disclosures. To satisfy compliance audit requirements, every legal finding and contractual interpretation emitted by the assistant must provide verifiable, tamper-evident citations back to the source text. When developers relied on natural language system prompting (instructing Claude to 'cite page numbers and verbatim quotes in square brackets'), Claude occasionally hallucinated page numbers or paraphrased non-existent contractual clauses. Which architectural approach provides deterministic, auditable source attribution?",
     "options": [
       {
@@ -627,7 +612,6 @@
     "domain": "claude-models-prompting-and-context-engineering",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An enterprise development organization maintains a shared Claude Code and Agent SDK environment across 40 software engineering teams. Over time, the global workspace configuration and system prompt have grown to over 35,000 tokens, incorporating detailed operational runbooks, database migration procedures, cloud infrastructure checklists, and security review guidelines. As a result, routine coding tasks experience significant baseline token overhead, higher time-to-first-token latency, and occasional attention dilution. The lead architect must restructure the prompt architecture to optimize context efficiency while preserving access to all specialized procedures. Which two strategies should the architect implement? (Select TWO.)",
     "options": [
       {

@@ -237,9 +237,6 @@ split," each gated behind its own minimum sample size:
   written), and once for how often the key is the single longest option
   (`scoredSingles`, additionally filtered to `type === "single"`, so a new
   type is excluded from this half regardless).
-- `SCOPE_MIN_SAMPLE = 20` — the core/deep share floor, which counts every
-  question regardless of `type`, so a new type always participates in this
-  one.
 
 A new type has exactly two honest outcomes against each guard, and the
 dangerous failure is picking neither on purpose:

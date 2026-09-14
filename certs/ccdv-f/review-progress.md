@@ -9,107 +9,44 @@ The bank follows the Claude Certified Developer – Foundations Exam Guide v1.0
 
 ## Bank status: `stable`
 
-`manifest.status` is `stable`. All 177 questions are `reviewed` (0 draft). Coverage
-is fully proportional across all eight domains and 25 declared skills, with 149
-`core` questions providing complete blueprint alignment and a 28-question `deep`
-practice pool. All quality, balance, and bias guards pass cleanly.
+`manifest.status` is `stable`. All 149 questions are `reviewed` (0 draft). Coverage
+is fully proportional across all eight domains and 25 declared skills.
+All quality, balance, and bias guards pass cleanly.
 
 ## Composition
 
-177 questions, all at `status: reviewed`.
+149 questions, all at `status: reviewed`.
 
-| Scope  | Questions | Share |
-| ------ | --------: | ----: |
-| `core` |       149 | 84.2% |
-| `deep` |        28 | 15.8% |
+The questions track the published domain weights:
 
-`core` questions are traceable to a blueprint objective and pitched at the
-exam's cognitive level. `deep` questions are sound and sourced but sit above
-that level; they are served only when the learner opts into "Include deeper
-practice", and are excluded from the blueprint balance arithmetic entirely.
-
-The `core` slice tracks the published domain weights:
-
-| Domain                           | Core | Share | Weight |
-| -------------------------------- | ---: | ----: | -----: |
-| applications-and-integration     |   46 | 30.9% |  33.1% |
-| model-selection-and-optimization |   24 | 16.1% |  16.8% |
-| agents-and-workflows             |   23 | 15.4% |  14.7% |
-| prompt-and-context-engineering   |   16 | 10.7% |  11.0% |
-| tools-and-mcps                   |   14 |  9.4% |  10.6% |
-| security-and-safety              |   13 |  8.7% |   8.1% |
-| claude-code                      |    7 |  4.7% |   3.1% |
-| eval-testing-and-debugging       |    6 |  4.0% |   2.6% |
+| Domain                           | Questions | Share | Weight |
+| -------------------------------- | --------: | ----: | -----: |
+| applications-and-integration     |        46 | 30.9% |  33.1% |
+| model-selection-and-optimization |        24 | 16.1% |  16.8% |
+| agents-and-workflows             |        23 | 15.4% |  14.7% |
+| prompt-and-context-engineering   |        16 | 10.7% |  11.0% |
+| tools-and-mcps                   |        14 |  9.4% |  10.6% |
+| security-and-safety              |        13 |  8.7% |   8.1% |
+| claude-code                      |         7 |  4.7% |   3.1% |
+| eval-testing-and-debugging       |         6 |  4.0% |   2.6% |
 
 `claude-code` and `eval-testing-and-debugging` sit above their weights because
 `MINIMUM_SKILL_TARGET` floors every skill at 2 questions, which over-provisions
 the smallest domains. That is deliberate: a domain with one question tests
 nothing reliably.
 
-Core formats: 97 single-select, 52 multi-select (36 select-TWO, 16
-select-THREE). 65 distinct source pages across the whole bank.
+Formats: 97 single-select, 52 multi-select (36 select-TWO, 16 select-THREE).
+65 distinct source pages across the whole bank.
 
-## Why the scope split exists
+## Removal of the legacy "deep" question category
 
-The bank's question shape and depth were calibrated against a full-length
-CCDV-F practice set by Matthew Purcell
-([linkedin.com/in/purcellmatthew](https://linkedin.com/in/purcellmatthew)),
-written from Exam Guide v1.0 (July 2026) and published independently. It gave
-this bank a concrete target to aim at when no official practice material
-existed: uniformly scenario-driven — situation, then recognise the governing
-principle — and almost never asking for a parameter name, a status code, or a
-field-level contract.
+The bank originally held 177 questions, with 28 questions tagged with a `"deep"` scope
+to separate items that exceeded the blueprint's cognitive level or turned on narrow documentation
+mechanics from the 149 core questions.
 
-**Calibration only.** No question, option, or rationale here derives from that
-set, or from any other third-party bank. It informed how deep and how
-scenario-shaped a question should be, never what a question says. The same
-rule covers the prior-art bank recorded in `PLAN.md`.
-
-Measured against it, most of this bank matches. A tail did not: questions that
-turn on narrow documentation mechanics with no analogue anywhere in the
-reference set. Those 28 are now tagged `deep` rather than deleted, because each
-is accurate, sourced, and genuinely instructive — just not a rehearsal of the
-exam.
-
-Each `deep` question carries a `scopeNote` justifying the classification
-against the blueprint; the schema requires one and forbids it on `core`.
-
-Tagged `deep` (28):
-
-| Domain                           | Questions                                     |
-| -------------------------------- | --------------------------------------------- |
-| applications-and-integration     | 006, 011, 013, 020, 021, 023, 048, 050        |
-| model-selection-and-optimization | 003, 004, 009, 010, 011                       |
-| prompt-and-context-engineering   | 006, 007, 008, 011, 021                       |
-| eval-testing-and-debugging       | 001, 005, 007                                 |
-| tools-and-mcps                   | 003, 009, 010                                 |
-| agents-and-workflows             | 002, 010                                      |
-| security-and-safety              | 010, 012                                      |
-
-Two of these (`eval-testing-and-debugging-001` and `-005`) illustrate the
-off-objective case: they test success-criteria and A/B methodology where the
-Domain 4 objective covers error identification, recovery, and trace analysis.
-Under the two-value taxonomy (`core` and `deep`), off-objective questions sit in
-`deep` with their distinction recorded in `scopeNote` — a separate
-`out-of-scope` value was dropped because the UI and sampler arithmetic treat
-them identically to `deep`, while a mandatory two-value enum forces an explicit
-scoping decision on every question.
-
-### The 80% floor
-
-`SCOPE_MIN_CORE_SHARE = 0.8`, checked above `SCOPE_MIN_SAMPLE = 20` questions.
-
-The default filter is `core-only`, so the exam-aligned slice is what a learner
-practising cold actually sits. If tagging drifts upward, that default pool
-shrinks below a useful size and the bank stops rehearsing the real thing. The
-floor is a ceiling on tagging, not a target to fill: tag a question `deep`
-because it overshoots the exam, never to reach a quota.
-
-Two second-order effects are worth knowing before tagging anything else.
-Tagging shrinks the `core` pool, which shrinks every per-skill balance target,
-which can push a skill you did not touch outside `BALANCE_TOLERANCE`. And
-because the guard engages only above 20 questions, it will not fire on a small
-new cert bank.
+In September 2026, the question scope feature and the 28 `deep` questions were removed
+from the repository. Questions in the bank now focus directly on the exam blueprint at
+the appropriate cognitive level, eliminating the maintenance debt of a two-tier question hierarchy.
 
 ## Calibration against the guide's own sample questions
 
@@ -132,14 +69,14 @@ logic into each system prompt. A competent practitioner eliminates three
 options without recalling any documentation detail. None of the three tests a
 parameter name, a status code, a precedence rule, or token accounting.
 
-Structurally `core` matches closely: median stem **38 words**, **133 of 149**
+Structurally the bank matches closely: median stem **38 words**, **133 of 149**
 open on a concrete scenario, four options the norm. The bank also contains
 direct analogues of all three samples — `applications-and-integration-008`
 and `-038`, `security-and-safety-003` and `-004`, `tools-and-mcps-012` — and
 the "which documented pattern fits" family (`agents-and-workflows-005`,
 `-011`, `-024`, `-025`) is sample-3 shape almost exactly.
 
-Cognitively, about a quarter of `core` sits **above** the samples, along four
+Cognitively, about a quarter of the bank sits **above** the samples, along four
 identifiable axes:
 
 1. **Distractor subtlety.** Where the samples allow elimination by high-level
@@ -162,7 +99,7 @@ identifiable axes:
    `applications-and-integration-001`, `-003`, `-047`, `security-and-safety-005`,
    `-015`, `agents-and-workflows-003`), driving mean option length to 20.3 words
    against the samples' ~15.
-4. **Self-reported difficulty.** `core` is 24 easy/single, 56 medium/single,
+4. **Self-reported difficulty.** The bank is 24 easy/single, 56 medium/single,
    33 medium/multi, 17 hard/single, 19 hard/multi. The samples are
    easy-to-medium single on this bank's own scale, so the 36 `hard` items
    (24%) are the overshoot by the bank's own labelling.
@@ -180,13 +117,12 @@ Two boundaries on that licence:
 - **"Above the samples" is not "above the exam."** The anchor is three items
   the guide itself calls illustrative, and vendors tend to publish easy
   samples; a real 53-item form almost certainly contains harder items than its
-  own showcase. The 24% figure is *how many `core` items exceed the sample
+  own showcase. The 24% figure is *how many items exceed the sample
   set*, not a claim that every question is a quarter harder. It is not
   evidence that further escalation is safe.
-- **`deep` still catches genuine overshoot.** Headroom inside `core` is not a
-  reason to stop tagging. The test is unchanged: a question belongs in `deep`
-  when it turns on narrow documentation mechanics with no analogue in the
-  reference material, not merely when it is demanding.
+- **Overshoot must be avoided.** Questions that turn on narrow documentation
+  mechanics with no analogue in the exam reference material should be removed
+  or rewritten rather than retained in the bank.
 
 The scoring facts make the headroom cheap. Section 9 of the guide confirms the
 result is a single scaled score (720 on 100–1,000) against a fixed standard,
@@ -267,8 +203,8 @@ doing; not urgent.
 **Absolute qualifiers** (`always`, `never`, `only`, `must`, `every`, `cannot`,
 `all`, `any`, `no`) appear in **48% of distractors against 29% of keys**. The
 corresponding strategy — eliminate every option containing an absolute, then
-guess among what is left — scores an expected **27% against a 25% baseline**,
-and uniquely identifies the key in **0 of 109** single-select items.
+guess among what is left — scores an expected **26% against a 25% baseline**,
+and uniquely identifies the key in **0 of 97** single-select items.
 
 **The distribution is deliberately left alone**, and that has not changed. The
 residual edge is an order of magnitude weaker than the length bias was
@@ -329,11 +265,10 @@ genuinely gone before editing a `sourceUrl`.
 
 ## Verified clean
 
-- Answer position across single-select: 30 / 30 / 27 / 22 (no position holds
+- Answer position across single-select: 26 / 29 / 22 / 20 (no position holds
   more than the 50% ceiling).
 - No multi-select key is a leading run of options.
-- `subdomain` and `distractorNotes` present on all 177.
-- `scope` present on all 177; every non-`core` question carries a `scopeNote`.
+- `subdomain` and `distractorNotes` present on all 149.
 
 ```
 npm run check   # validate + balance --strict + 69 tests + lint + format

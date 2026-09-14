@@ -7,7 +7,6 @@
     "domain": "governance-safety-and-risk-management",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A healthcare technology provider is deploying a Claude-powered clinical summary assistant via api.anthropic.com. Due to stringent regulatory requirements and HIPAA compliance obligations, the customer requires that patient data contained in API prompts and completions must not be retained at rest after the API response is returned. Which architectural data handling arrangement must the architect verify with Anthropic?",
     "options": [
       {
@@ -48,7 +47,6 @@
     "domain": "governance-safety-and-risk-management",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An enterprise customer-support automation workflow uses Claude to triage incoming customer support emails and summarize customer attachments. Security red-teaming reveals that an attacker can send an email containing adversarial text instructing the model to disregard previous instructions and call an administrative account-deletion tool. Which architectural mitigation most effectively isolates untrusted third-party content according to Anthropic's guidance?",
     "options": [
       {
@@ -89,7 +87,6 @@
     "domain": "governance-safety-and-risk-management",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A financial enterprise deploying Claude across its organization must enforce real-time Data Loss Prevention (DLP). Corporate policy requires that any prompt containing customer bank account numbers or sensitive financial records must be evaluated and blocked before the request can ever reach the Claude model, with centralized audit logging and without relying on endpoint agents on employee laptops. Which architecture fulfills these requirements?",
     "options": [
       {
@@ -130,7 +127,6 @@
     "domain": "governance-safety-and-risk-management",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An architect is designing a regulatory compliance verification assistant that reviews complex pharmaceutical research documents (exceeding 30,000 tokens) to verify whether clinical trial protocols adhere to FDA guidelines. To minimize hallucinations and ensure auditability for regulatory inspectors, which prompt engineering and grounding strategy should the architect incorporate?",
     "options": [
       {
@@ -171,7 +167,6 @@
     "domain": "governance-safety-and-risk-management",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An organization builds an autonomous incident-remediation agent using the Claude Agent SDK. The agent is equipped with read-only monitoring tools (`MetricsCheck`, `LogViewer`) and mutating operational tools (`ServiceRestart`, `DatabaseDropTable`). The architect must ensure that read-only diagnostics execute without operator friction, but destructive operations like dropping database tables can never execute without explicit interactive operator approval, regardless of ambient permissive flags. How should this permission model be structured?",
     "options": [
       {
@@ -212,7 +207,6 @@
     "domain": "governance-safety-and-risk-management",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An enterprise operating under strict US data residency regulations is configuring its integration with the Claude API. The compliance team mandates that model inference must execute strictly on US-based infrastructure, and that developers must be prevented from routing requests to international data centers. Which combination of configuration controls should the architect implement?",
     "options": [
       {
@@ -253,7 +247,6 @@
     "domain": "governance-safety-and-risk-management",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A defense contracting enterprise requires complete cryptographic control over data stored at rest within its Claude workspaces. For data spill remediation, the security officer must be able to irreversibly revoke access to all workspace data at rest, and the runbook must state honestly how quickly revocation takes effect. Which design approach satisfies this requirement, and what timing should the runbook record?",
     "options": [
       {
@@ -294,7 +287,6 @@
     "domain": "governance-safety-and-risk-management",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An engineering team is designing a multi-step autonomous agent to perform codebase refactoring across large enterprise repositories. During initial testing, the agent occasionally enters infinite self-correction loops when encountering failing unit tests, consuming excessive tokens and accumulating erroneous edits. Which TWO architectural safeguards should the architect implement to control agent execution risks? (Select TWO.)",
     "options": [
       {
@@ -340,7 +332,6 @@
     "domain": "governance-safety-and-risk-management",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An organization is building a high-volume public customer inquiry assistant powered by Claude Sonnet. To maintain strict safety guardrails and optimize operational costs, the security architecture requires pre-screening incoming user prompts for malicious intent and toxic content before they reach the primary model. Which architectural pattern best aligns with Anthropic's recommended guardrail practices?",
     "options": [
       {
@@ -381,7 +372,6 @@
     "domain": "governance-safety-and-risk-management",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An enterprise financial institution subject to SEC regulatory oversight needs to automate its compliance auditing and eDiscovery pipeline across its Claude Enterprise deployment. The compliance team requires an automated mechanism to programmatically extract full employee chat histories, uploaded attachments, and Claude Code developer session transcripts for legal hold. Which architectural approach fulfills these requirements according to Anthropic's guidance?",
     "options": [
       {
@@ -422,7 +412,6 @@
     "domain": "governance-safety-and-risk-management",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "Under GDPR Article 17 (\"Right to Erasure\"), an enterprise compliance officer receives a data subject deletion request for an employee who contributed to shared team projects in Claude Enterprise. When an automated compliance script calls the Compliance API endpoint to delete an affected project (DELETE /v1/compliance/apps/projects/{project_id}), the API returns an HTTP 409 Conflict error. What is the root cause of this failure, and how must the deletion pipeline resolve it?",
     "options": [
       {
@@ -463,7 +452,6 @@
     "domain": "governance-safety-and-risk-management",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A platform administrator who originally created multiple Admin API keys for automated user provisioning and spend management departs an enterprise. The enterprise identity provider deprovisions the administrator's account and revokes their single sign-on access. What is the status of the Admin API keys created by this administrator, and what governance action should be taken?",
     "options": [
       {
@@ -504,7 +492,6 @@
     "domain": "governance-safety-and-risk-management",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An enterprise enforces strict monthly spend limits across engineering accounts to prevent unexpected cost overruns. During an active P1 production incident, an on-call site reliability engineer running automated debugging tools reaches their monthly spend cap and is blocked from making further Claude API requests. Which operational workflow aligns with Anthropic's recommended financial governance controls?",
     "options": [
       {
@@ -545,7 +532,6 @@
     "domain": "governance-safety-and-risk-management",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A platform security architect is establishing governance policies for developer workstations and CI/CD runners using Claude Code. Security assessments show that cloning and executing tasks on untrusted third-party repositories could expose environments to malicious .claude/settings.json hook configurations. Which TWO architectural controls mitigate these execution risks? (Select TWO.)",
     "options": [
       {
@@ -591,7 +577,6 @@
     "domain": "governance-safety-and-risk-management",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An architect is implementing an automated compliance monitoring layer for an enterprise API gateway integrating with the Claude Messages API. The compliance team mandates programmatic logging and auditing whenever Claude refuses to process a request due to safety policy interventions. When safety classifiers intervene to issue a policy refusal in an API response, how does the Messages API represent this event, and how should the gateway detect it?",
     "options": [
       {
@@ -632,7 +617,6 @@
     "domain": "governance-safety-and-risk-management",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An autonomous research agent queries external websites and database records to answer user research prompts. During security testing, red-teamers demonstrate that a fetched webpage contains hidden prompt injection instructions attempting to redirect the agent to exfiltrate session data. Beyond delivering web content inside tool_result blocks, what architectural safeguard should be implemented before passing tool output back to the primary model?",
     "options": [
       {
@@ -673,7 +657,6 @@
     "domain": "governance-safety-and-risk-management",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An enterprise identity architect is integrating Claude Enterprise with an external identity provider (IdP) using SCIM for automated user and group provisioning. The security team creates SCIM groups mapped to corporate departments. An administrator attempts to use the Admin API (POST /v1/organizations/rbac_groups/{group_id}/members) to add an emergency contractor to a SCIM-managed group, but the call fails. What is the cause of this restriction, and how must membership be managed?",
     "options": [
       {
@@ -714,7 +697,6 @@
     "domain": "governance-safety-and-risk-management",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A security operations team is configuring an automated integration with a third-party Cloud Security Posture Management (CSPM) solution to audit Claude Enterprise configurations. Applying the principle of least privilege, the architect must ensure the CSPM can inspect organization metadata, directory members, custom roles, and activity events, while strictly preventing it from accessing employee chat transcripts, uploaded files, or project documents. Which API key scope configuration should the architect select?",
     "options": [
       {

@@ -62,8 +62,8 @@ The review found four non-blocking wording and metadata advisories, all fixed:
 - Every wrong option has a `distractorNotes` entry (100% coverage).
 
 With 84 questions (69 single-select, 15 multi-response), the bank meets the
-validator's 20-question threshold for bank-level position, length, and core-scope
-guards, all of which pass.
+validator's 20-question threshold for bank-level position and length guards,
+all of which pass.
 
 ## Known coverage limits
 

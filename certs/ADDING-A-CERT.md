@@ -155,7 +155,6 @@ A minimal single-select example:
     "domain": "domain-one",
     "difficulty": "medium",
     "status": "draft",
-    "scope": "core",
     "stem": "A team observes X and wants Y. What explains it?",
     "options": [
       { "id": "opt-a", "text": "First option" },
@@ -187,7 +186,6 @@ A minimal single-select example:
 | `subdomain` | Optional, but required if the domain declares `skills` — must match one |
 | `difficulty` | `"easy"`, `"medium"`, or `"hard"` |
 | `status` | `"draft"` or `"reviewed"` |
-| `scope` | Required. `"core"` or `"deep"` — see [How deep should a question go?](#how-deep-should-a-question-go) below |
 | `correct` | Exactly one entry for `single`; two or more for `multi` |
 | `sourceUrl` | Public HTTP/HTTPS URL, no paywalled or gated links |
 | `sourceNote` | Section heading or topic that supports the answer; single line, max 140 characters |
@@ -253,45 +251,14 @@ A conceptual version of the same objective would ask what property a CI
 invocation needs — non-interactive, machine-parseable, reproducible — and let
 the flag names ride along inside the correct option.
 
-### When the bank is already too deep
+### Depth problems are allocation problems
 
 Depth problems are usually **allocation** problems. If a skill worth 3% of the
 exam holds 7% of the bank, its author ran out of blueprint-level facts and
 started mining detail to fill the quota. Fix the allocation and the depth
-problem largely dissolves. `npm run balance` is how you see it.
-
-### Tagging instead of deleting
-
-Questions that overshoot need not be lost. `scope` is a **required** field on
-every question — there is no default, so a new question cannot enter the bank
-without a decision — plus one optional field that goes with it:
-
-| Field | Purpose |
-| --- | --- |
-| `scope` | Required. `"core"` or `"deep"` |
-| `scopeNote` | Required when `scope` is `"deep"`; forbidden (the schema rejects it) when `scope` is `"core"`. Justifies the call against the blueprint |
-
-- **`core`** — traceable to a blueprint objective and pitched at the exam's
-  cognitive level.
-- **`deep`** — anything sound and sourced but not exam-aligned. Usually the
-  topic is a real blueprint objective whose discrimination sits above the
-  sample questions' level: still worth studying for mastery, and a candidate
-  for rewriting down to conceptual discrimination later. Since the taxonomy
-  collapsed to two values, `deep` also carries the off-objective case — a
-  question testing something no objective covers. `scopeNote` is where you say
-  which of the two you mean; `certs/ccdv-f/review-progress.md` has worked
-  examples of both.
-
-An earlier third value, `"out-of-scope"`, was dropped: it and `deep` were
-treated identically everywhere that read the field, so the third bucket bought
-nothing while letting a question sit unclassified by default. See
-`certs/ccdv-f/review-progress.md` for the full reasoning. An off-objective
-question therefore goes in as `deep` with the reason in its `scopeNote` — or
-does not go in at all, which is usually the better answer.
-
-Learners choose their appetite in the quiz setup form; the default excludes
-`deep`. Every question — old or new — must set `scope` explicitly; there is no
-untagged state.
+problem largely dissolves. `npm run balance` is how you see it. Questions that
+overshoot the exam's cognitive level or objectives should be rewritten to focus
+on conceptual discrimination or removed from the bank entirely.
 
 ## Step 4 — Validate
 
@@ -319,7 +286,7 @@ supported route through the work rather than hand-rolling it.
   remainder weight arithmetic described in Step 2 for you — pass `--target`
   to allocate a question count across weights instead of allocating to 100.
 - `npm run metrics` — reports the composition and bias figures
-  (`review-progress.md`'s Composition table, the position/length/scope bias
+  (`review-progress.md`'s Composition table, the position/length bias
   guards, source-age buckets) for one or more cert slugs, as text, `--json`,
   or `--markdown`.
 - `npm run check-sources` — reports citation staleness

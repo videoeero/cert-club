@@ -29,7 +29,6 @@ function mockQuestion(overrides = {}) {
     domain: "test-domain",
     difficulty: "medium",
     status: "draft",
-    scope: "core",
     stem: "What is the recommended approach?",
     options: [
       { id: "opt-a", text: "Option A" },

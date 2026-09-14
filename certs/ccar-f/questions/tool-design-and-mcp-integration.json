@@ -8,7 +8,6 @@
     "subdomain": "mcp-configuration",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A software team wants to configure a shared Model Context Protocol (MCP) server across their repository so all teammates can access it, while ensuring API secrets are not committed to version control. Where should this configuration be placed?",
     "options": [
       {
@@ -50,7 +49,6 @@
     "subdomain": "tool-interface-design",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An agent has access to two tools: get_customer ('Retrieves customer information') and lookup_order ('Retrieves order details'). Production logs show that when users ask 'Check status of order #98721', the agent frequently invokes get_customer instead of lookup_order. What is the most effective first step to resolve this issue?",
     "options": [
       {
@@ -92,7 +90,6 @@
     "subdomain": "tool-interface-design",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An agent has two tools with high functional overlap: analyze_content and analyze_document. Claude frequently chooses the wrong tool or calls both redundantly. How should the architect refactor the tool definitions?",
     "options": [
       {
@@ -134,7 +131,6 @@
     "subdomain": "tool-interface-design",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An engineering team exposes a single monolithic manage_data tool that accepts an 'action' parameter covering twelve CRUD operations and thirty optional fields. In production, Claude frequently confuses parameter combinations, passing update arguments during read operations and hallucinating missing fields. How should the architect refactor this interface?",
     "options": [
       {
@@ -176,7 +172,6 @@
     "subdomain": "tool-interface-design",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An agent has well-designed tools for customer queries, but the system prompt contains the sentence: 'Always use search to find user details.' As a result, Claude calls the general web search tool instead of the specialized lookup_customer tool. What explains this failure?",
     "options": [
       {
@@ -218,7 +213,6 @@
     "subdomain": "mcp-error-handling",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An MCP server tool encounters a backend database connection timeout. How should the tool return this error to the agent according to Model Context Protocol standards?",
     "options": [
       {
@@ -260,7 +254,6 @@
     "subdomain": "mcp-error-handling",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An agent calls process_refund, but the customer's purchase exceeds the 30-day return policy window. How should the tool response be structured to prevent the agent from repeatedly retrying the failed call?",
     "options": [
       {
@@ -302,7 +295,6 @@
     "subdomain": "mcp-error-handling",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "In a multi-agent system, a web search subagent experiences a transient network timeout on an external provider. How should error recovery be partitioned between the subagent and coordinator?",
     "options": [
       {
@@ -344,7 +336,6 @@
     "subdomain": "mcp-error-handling",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An agent queries a customer directory tool using search_users(email='unknown@example.com'). The underlying database query executes successfully but matches zero rows. According to tool design best practices, how should the tool response be structured?",
     "options": [
       {
@@ -386,7 +377,6 @@
     "subdomain": "tool-distribution",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An engineering team binds twenty-five distinct enterprise tools to a single general-purpose agent. During evaluation, tool selection accuracy drops from 94% to 68%. What architectural factor explains this degradation?",
     "options": [
       {
@@ -428,7 +418,6 @@
     "subdomain": "tool-distribution",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "In a research system, the report synthesis subagent frequently attempts to run broad web searches when it encounters missing context, exceeding its latency budget and duplicating the search agent's work. What configuration enforces proper boundaries?",
     "options": [
       {
@@ -470,7 +459,6 @@
     "subdomain": "tool-distribution",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "During report drafting, a synthesis agent needs to perform quick verification of isolated facts (e.g. verifying a founding date). Routing every verification back through the coordinator to the search agent adds 2-3 round trips and 40% latency. What is the optimal architecture?",
     "options": [
       {
@@ -512,7 +500,6 @@
     "subdomain": "tool-choice-configuration",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An extraction workflow requires that the agent must invoke the extract_metadata tool on the first turn before any enrichment tools can be considered. How should the API request be configured?",
     "options": [
       {
@@ -554,7 +541,6 @@
     "subdomain": "tool-choice-configuration",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A system provides three specialized extraction tools (extract_invoice, extract_receipt, extract_contract). The input document type is unknown in advance, but the application requires that Claude MUST execute one of the tools rather than returning conversational text. Which setting guarantees this?",
     "options": [
       {
@@ -596,7 +582,6 @@
     "subdomain": "mcp-configuration",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A developer wants to experiment with a personal SQLite MCP server without sharing it with team members in git, while keeping existing project-level MCP tools active. How should this be configured?",
     "options": [
       {
@@ -638,7 +623,6 @@
     "subdomain": "mcp-resources",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An MCP server provides access to an issue tracker. To understand existing components, the agent currently executes 4-6 exploratory search tool calls per session. How can the MCP server reduce this latency and token overhead?",
     "options": [
       {
@@ -680,7 +664,6 @@
     "subdomain": "mcp-configuration",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A team adds an MCP server providing a Jira integration tool, but Claude Code consistently uses Grep and Bash to find issue details in local git logs instead of calling the Jira tool. What is the most likely cause?",
     "options": [
       {
@@ -722,7 +705,6 @@
     "subdomain": "builtin-tools",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "While modifying a configuration file, Claude Code's Edit tool repeatedly fails with an error stating that the target text chunk is not unique. What is the standard tool-based fallback mechanism?",
     "options": [
       {
@@ -764,7 +746,6 @@
     "subdomain": "mcp-resources",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An enterprise architecture team evaluates the Model Context Protocol (MCP) specification to integrate internal repositories and services into Claude. During review, the team contrasts how different MCP primitives operate and who controls their execution. Which TWO statements accurately describe the operational models and control planes of MCP primitives? (Select TWO.)",
     "options": [
       {
@@ -811,7 +792,6 @@
     "subdomain": "mcp-configuration",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A platform team standardizes Model Context Protocol (MCP) configuration across engineering projects using Claude Code. Developers configure servers across local scopes (~/.claude.json), project scopes (.mcp.json), and user scopes (~/.claude.json). Which TWO statements accurately describe Claude Code's scope precedence and configuration isolation rules? (Select TWO.)",
     "options": [
       {

@@ -8,7 +8,6 @@
     "subdomain": "batch-processing",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An engineering team wants to reduce API expenses across their automated systems. They operate two workloads: a blocking pull request check that developers wait on before merging, and an overnight technical debt analysis report. How should the team evaluate using the Message Batches API?",
     "options": [
       {
@@ -50,7 +49,6 @@
     "subdomain": "review-criteria-design",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An automated PR review bot has a 45% false positive rate on comment accuracy checks, causing developers to ignore all comments. Prompts currently say: 'Check that comments are accurate and report any issues with high confidence.' How should the prompt be improved to reduce false positives?",
     "options": [
       {
@@ -92,7 +90,6 @@
     "subdomain": "review-criteria-design",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A newly deployed code review system produces high-value security bug reports, but also floods developers with noisy, low-value style nitpicks, causing developers to distrust and dismiss the entire tool. What is the best immediate operational strategy?",
     "options": [
       {
@@ -134,7 +131,6 @@
     "subdomain": "review-criteria-design",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An engineering team wants Claude to classify code findings into severity levels ('critical', 'major', 'minor'). Currently, similar issues receive inconsistent severity ratings across different files. How can the prompt achieve consistent severity classification?",
     "options": [
       {
@@ -176,7 +172,6 @@
     "subdomain": "few-shot-prompting",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A prompt instructs Claude to produce structured bug reports with location, issue description, severity, and remediation. Despite extensive instructions, the formatting fluctuates between bullet points, JSON, and prose across runs. What is the most effective prompt modification?",
     "options": [
       {
@@ -218,7 +213,6 @@
     "subdomain": "few-shot-prompting",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An agent must choose between two tools: `search_customers` and `search_orders`. In borderline cases (e.g. 'Track order for customer Jane Doe'), model tool selection fluctuates unpredictably. How should few-shot examples be designed to fix this?",
     "options": [
       {
@@ -260,7 +254,6 @@
     "subdomain": "few-shot-prompting",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An extraction system processes scientific research papers where citation formats vary widely: some use inline brackets [1], some use parenthetical author-year (Smith, 2024), and some use footnotes. How can the prompt ensure consistent extraction across all layouts?",
     "options": [
       {
@@ -302,7 +295,6 @@
     "subdomain": "few-shot-prompting",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "When extracting contractual start dates from vendor agreements, Claude frequently returns null when dates are stated indirectly (e.g. 'Effective upon mutual signature of Exhibit A, dated May 4, 2026'). What prompt technique resolves this?",
     "options": [
       {
@@ -344,7 +336,6 @@
     "subdomain": "structured-outputs",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An application requires extracted data to strictly adhere to a JSON schema. When asking Claude for JSON via standard text prompts, occasional syntax errors (missing commas, unescaped quotes) crash downstream parsers. What feature guarantees schema-compliant JSON?",
     "options": [
       {
@@ -386,7 +377,6 @@
     "subdomain": "structured-outputs",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A financial extraction pipeline uses strict JSON schemas via tool use. An invoice is processed where the extracted line items sum to $850, but the extracted total_amount field is $1,200. Why did strict JSON schema enforcement fail to prevent this discrepancy?",
     "options": [
       {
@@ -428,7 +418,6 @@
     "subdomain": "structured-outputs",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An extraction system processes medical clinic receipts to extract 'tax_id'. Many receipts do not contain a tax ID. When 'tax_id' is defined as a required string in the JSON schema, Claude occasionally hallucinates fake IDs like 'TAX-123456'. How should the schema be designed?",
     "options": [
       {
@@ -470,7 +459,6 @@
     "subdomain": "structured-outputs",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An architect designs an extraction schema for categorizing legal contract dispute clauses. The schema defines an enum with standard categories ('arbitration', 'litigation', 'mediation'). What pattern accommodates unexpected dispute mechanisms without causing schema validation errors?",
     "options": [
       {
@@ -512,7 +500,6 @@
     "subdomain": "structured-outputs",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An application provides five distinct structured extraction tools corresponding to different invoice layouts. The incoming document format is unknown, but the application requires that Claude must output structured data via one of the five tools rather than returning conversational text. Which parameter should be set?",
     "options": [
       {
@@ -554,7 +541,6 @@
     "subdomain": "validation-and-feedback",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An extraction tool call produces a semantic validation error: the extracted line items sum to $450, but the invoice header total is $500. How should the application implement an automated retry loop?",
     "options": [
       {
@@ -596,7 +582,6 @@
     "subdomain": "validation-and-feedback",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An automated document extraction pipeline validates structured tool outputs against backend business rules and triggers an automated correction turn when validation fails. For which scenario is returning validation feedback in a retry turn fundamentally incapable of resolving the error?",
     "options": [
       {
@@ -638,7 +623,6 @@
     "subdomain": "validation-and-feedback",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An automated code review bot tags each reported finding with a structured `detected_pattern` identifier (e.g. `comment-contradiction`, `sql-string-interpolation`). Why is this structured metadata valuable for long-term pipeline optimization?",
     "options": [
       {
@@ -680,7 +664,6 @@
     "subdomain": "batch-processing",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A batch job processing 10,000 PDF invoices with the Message Batches API completes with 9,920 successes and 80 errors due to context length exceedance on oversized files. How should the application handle this partial failure?",
     "options": [
       {
@@ -722,7 +705,6 @@
     "subdomain": "batch-processing",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An architect evaluates migrating an interactive customer support agent to the Message Batches API to take advantage of the 50% discount. Why is the Message Batches API architecturally unsuitable for this use case?",
     "options": [
       {
@@ -764,7 +746,6 @@
     "subdomain": "multi-pass-review",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A software team generates code using Claude Code and attempts to review it in the same session by prompting: 'Now critique your previous implementation for security vulnerabilities.' The review rarely catches subtle flaws. What explains this failure?",
     "options": [
       {
@@ -806,7 +787,6 @@
     "subdomain": "multi-pass-review",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An automated PR review pipeline evaluates large pull requests. What multi-pass architecture achieves high review quality without attention dilution?",
     "options": [
       {
@@ -848,7 +828,6 @@
     "subdomain": "structured-outputs",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An architect designs an extraction service using Claude's Structured Outputs feature (output_config.format and strict: true tool definitions). The team must handle edge cases in downstream pipelines, including safety refusals, property ordering expectations, and schema compilation limits. According to Anthropic documentation, which TWO statements accurately describe the behavioral guarantees and constraints of Claude's Structured Outputs engine? (Select TWO.)",
     "options": [
       {
@@ -895,7 +874,6 @@
     "subdomain": "batch-processing",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An architect designs an asynchronous pipeline using the Message Batches API to process tens of thousands of extraction requests overnight. The engineering team establishes operational policies for handling batch cancellations, request-level failures, and cost tracking. According to vendor documentation, which TWO statements accurately describe the execution lifecycle, billing rules, and failure isolation of the Message Batches API? (Select TWO.)",
     "options": [
       {

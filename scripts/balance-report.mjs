@@ -29,29 +29,19 @@ export const BALANCE_TOLERANCE = 2;
 // that reaches it asks the same one.
 export const MINIMUM_SKILL_TARGET = 2;
 
-/**
- * Core questions are the ones a blueprint-aligned session draws from. Questions
- * tagged "deep" are opt-in extras and are excluded from the balance arithmetic
- * entirely.
- */
-export function isCoreQuestion(question) {
-  return question.scope === "core";
-}
-
 export function buildBalanceReport(manifest, questions, options = {}) {
-  const core = questions.filter(isCoreQuestion);
   let target = options.target;
   if (target === undefined) {
     if (options.useExamMultiplier && manifest.examQuestionCount) {
       target = manifest.examQuestionCount * 2;
     } else {
-      target = core.length;
+      target = questions.length;
     }
   }
 
   // Domain balance
   const domainCounts = new Map();
-  for (const question of core) {
+  for (const question of questions) {
     domainCounts.set(
       question.domain,
       (domainCounts.get(question.domain) ?? 0) + 1,
@@ -82,7 +72,7 @@ export function buildBalanceReport(manifest, questions, options = {}) {
   // pooled their questions together and misreported both targets. No shipped
   // manifest collides yet, so this changes no current output.
   const counts = new Map();
-  for (const question of core) {
+  for (const question of questions) {
     if (question.subdomain === undefined) {
       continue;
     }
@@ -113,8 +103,7 @@ export function buildBalanceReport(manifest, questions, options = {}) {
   return {
     cert: manifest.cert,
     target,
-    coreCount: core.length,
-    taggedCount: questions.length - core.length,
+    questionCount: questions.length,
     domains,
     skills,
     offBalance: skills.filter(
@@ -126,7 +115,7 @@ export function buildBalanceReport(manifest, questions, options = {}) {
 function formatReport(report) {
   const lines = [];
   lines.push(
-    `${report.cert}: ${report.coreCount} core question(s), ${report.taggedCount} tagged out, target ${report.target}`,
+    `${report.cert}: ${report.questionCount} question(s), target ${report.target}`,
   );
 
   if (report.skills.length === 0) {

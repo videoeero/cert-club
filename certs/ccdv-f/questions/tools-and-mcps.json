@@ -8,7 +8,6 @@
     "subdomain": "tool-implementation",
     "difficulty": "easy",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A developer is deciding how much execution plumbing their service needs to build. Which statement correctly describes the division of responsibility between client tools and server tools in the Claude API?",
     "options": [
       {
@@ -50,7 +49,6 @@
     "subdomain": "tool-implementation",
     "difficulty": "easy",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An internal assistant exposes a tool named lookup_account whose entire description reads \"Gets account data.\" In testing, Claude often calls a neighbouring reporting tool instead, or calls lookup_account with parameters that make no sense for the request. According to Anthropic's tool design guidance, which change has the largest effect on tool selection performance?",
     "options": [
       {
@@ -84,59 +82,6 @@
     "sourceCheckedAt": "2026-09-03"
   },
   {
-    "id": "ccdv-f-tools-and-mcps-003",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "multi",
-    "domain": "tools-and-mcps",
-    "subdomain": "tool-implementation",
-    "difficulty": "medium",
-    "status": "reviewed",
-    "scope": "deep",
-    "scopeNote": "Tests tool_result message construction: placement in the immediately following user message, result blocks ahead of any text block, and tool_use_id binding each result to its call. On-blueprint under tool implementation, but block-ordering rules are wire-format detail rather than the tool-error and tool-design reasoning the exam samples.",
-    "stem": "A team keeps receiving errors reporting that tool_use identifiers were found without tool_result blocks immediately after them. Select THREE statements that describe the required construction of a message carrying tool results.",
-    "options": [
-      {
-        "id": "a",
-        "text": "The results belong in the user message that comes immediately after the assistant turn containing the tool_use blocks, with no other message placed in between."
-      },
-      {
-        "id": "b",
-        "text": "Tool results are supplied under a dedicated tool role rather than the user role, so that they remain clearly separate from ordinary conversation turns in the stored transcript."
-      },
-      {
-        "id": "c",
-        "text": "Each tool_result block must be delivered in its own separate user message so results can be attributed unambiguously."
-      },
-      {
-        "id": "d",
-        "text": "Within that message's content array, every tool_result block must appear before any text block."
-      },
-      {
-        "id": "e",
-        "text": "The content field is mandatory on every tool_result block, so a tool that produces no output must be given a placeholder value."
-      },
-      {
-        "id": "f",
-        "text": "Each result is bound to the call it answers by the tool_use_id field, which repeats the identifier from the corresponding tool_use block."
-      }
-    ],
-    "correct": [
-      "a",
-      "d",
-      "f"
-    ],
-    "explanation": "The Claude API folds tool interaction into the ordinary user and assistant message structure rather than introducing a special role. Results must follow their calls immediately in the history, must lead the content array ahead of any text, and are matched to their calls through tool_use_id. Placing text ahead of the results is a documented cause of a 400 response, and the immediacy requirement is what the error about missing result blocks is reporting.",
-    "distractorNotes": {
-      "b": "There is no tool role in this API. Tool results are carried in user messages and tool calls in assistant messages, which is a noted difference from APIs that introduce a separate role for function output.",
-      "c": "Splitting results across messages breaks the immediacy requirement for every call after the first. All results answering a single assistant turn belong together in one user message.",
-      "e": "The content field is optional. A tool_result block carrying only a tool_use_id is valid, so inventing placeholder content is unnecessary and can mislead the model about what the tool returned."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls",
-    "sourceNote": "Handle tool calls — 'Handling results from client tools', including the 'Important formatting requirements' note",
-    "sourceCheckedAt": "2026-09-03"
-  },
-  {
     "id": "ccdv-f-tools-and-mcps-004",
     "cert": "ccdv-f",
     "schemaVersion": 1,
@@ -145,7 +90,6 @@
     "subdomain": "tool-implementation",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A client tool that queries an internal pricing service times out after Claude calls it. The developer wants the assistant to recover gracefully and, where possible, adapt rather than stall. What is the documented way to continue the conversation?",
     "options": [
       {
@@ -187,7 +131,6 @@
     "subdomain": "tool-implementation",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An agent turn returns three tool_use blocks at once: two read-only lookups and one write that must not run if a lookup fails. Select THREE statements that correctly describe how parallel tool calls work and where the developer's responsibility lies.",
     "options": [
       {
@@ -239,7 +182,6 @@
     "subdomain": "tool-implementation",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A regulated enterprise workflow requires Claude to step through exactly one audited action at a time. The system must guarantee that each model turn produces exactly one tool call—never two in parallel, and never a plain text response without a tool call. Conceptually, which combination of controls must the developer apply to achieve this strict behavior?",
     "options": [
       {
@@ -281,7 +223,6 @@
     "subdomain": "tool-implementation",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A booking agent keeps receiving a passenger count as a string rather than an integer, and occasionally a required field is missing entirely. A colleague suggests enabling strict tool use. Select TWO statements that are accurate about strict tool use.",
     "options": [
       {
@@ -328,7 +269,6 @@
     "subdomain": "mcp-server-development",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A team packages an internal catalogue service as a Model Context Protocol server. Engineers run one copy as a process on their own machines alongside the AI application, and the platform team runs a hosted copy that many users reach over the network. Which statement matches the protocol's architecture?",
     "options": [
       {
@@ -362,112 +302,6 @@
     "sourceCheckedAt": "2026-09-03"
   },
   {
-    "id": "ccdv-f-tools-and-mcps-009",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "multi",
-    "domain": "tools-and-mcps",
-    "subdomain": "mcp-server-development",
-    "difficulty": "hard",
-    "status": "reviewed",
-    "scope": "deep",
-    "scopeNote": "Tests MCP-connector constraints: public HTTPS reachability, tool calls only with resources and prompts out of scope, and caller-managed access tokens. On-blueprint under MCP server development, but per-field connector responsibilities are integration detail rather than the architectural understanding the objective asks for.",
-    "stem": "An architect plans to attach a partner's Model Context Protocol server to a service through the Messages API connector, without building a protocol client. Select THREE statements that correctly describe the constraints and responsibilities of that approach.",
-    "options": [
-      {
-        "id": "a",
-        "text": "The server has to be reachable at a publicly exposed HTTPS URL; a server that speaks only over standard input and output on a developer's machine cannot be attached directly."
-      },
-      {
-        "id": "b",
-        "text": "Only tool calls are available through the connector, so other capabilities a server might expose, such as resources and prompt templates, are out of scope."
-      },
-      {
-        "id": "c",
-        "text": "A single server definition may be referenced by several toolset entries, which is the supported way to expose different subsets of that server's tools within a single request to the Messages API."
-      },
-      {
-        "id": "d",
-        "text": "Naming a tool in the per-tool configuration that the server does not actually expose causes the request to fail validation."
-      },
-      {
-        "id": "e",
-        "text": "The calling application obtains the access token for an authenticated server and refreshes it as needed, passing it in the server definition."
-      },
-      {
-        "id": "f",
-        "text": "Enabling strict schema validation on the toolset entry applies that guarantee to every tool the server exposes."
-      }
-    ],
-    "correct": [
-      "a",
-      "b",
-      "e"
-    ],
-    "explanation": "The connector removes the need to implement a protocol client, but it narrows what is available in exchange. Servers are declared by URL and must be publicly reachable over HTTPS, which rules out attaching a purely local process directly; only the tool-calling portion of the protocol is surfaced; and the authorisation flow stays with the caller, which obtains and refreshes the token itself. Teams that need local servers or the capabilities the connector omits are pointed instead toward managing their own protocol client connection, for which the SDKs provide client-side helper functions.",
-    "distractorNotes": {
-      "c": "Each server must be referenced by exactly one toolset entry, and each toolset entry maps to one server. Differentiating which tools are exposed is done inside that single entry through its default and per-tool configuration.",
-      "d": "An unrecognised tool name in the per-tool configuration is tolerated: a warning is recorded and the request proceeds, deliberately, because a server's set of tools can change over time.",
-      "f": "Strict schema validation is not among the properties accepted on a Model Context Protocol toolset entry. Control over that server's tools is exercised by enabling or disabling them and by deferring their loading."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/mcp-connector",
-    "sourceNote": "MCP connector — 'Limitations', 'Validation rules', and 'Authentication'",
-    "sourceCheckedAt": "2026-09-03"
-  },
-  {
-    "id": "ccdv-f-tools-and-mcps-010",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "multi",
-    "domain": "tools-and-mcps",
-    "subdomain": "agentic-customization",
-    "difficulty": "hard",
-    "status": "reviewed",
-    "scope": "deep",
-    "scopeNote": "Tests tool-search-tool internals: deferred definitions still travel in the request's tools array, at least one tool must stay non-deferred, and a match expands into full definitions. On-blueprint under agentic customization, but the mechanics of a narrow recent feature sit past the level at which the exam treats tool-set design.",
-    "stem": "A platform team's agent has grown to several hundred tools spanning many integrations. Definitions now consume a large share of the context window before any work begins, and the agent increasingly picks the wrong tool. The team adds the tool search tool and marks most definitions for deferred loading. Select THREE statements that correctly describe how this arrangement works.",
-    "options": [
-      {
-        "id": "a",
-        "text": "Every tool definition still travels in the request's tools array; deferred loading marks which of them stay out of the initial context rather than removing them from the request."
-      },
-      {
-        "id": "b",
-        "text": "Deferred tools are retrieved from an external tool registry at call time, so their schemas no longer need to be supplied with the request and the tools array shrinks to the non-deferred set."
-      },
-      {
-        "id": "c",
-        "text": "At least one tool must remain non-deferred, normally the tool search tool itself, because something has to be present initially in order to surface the deferred definitions."
-      },
-      {
-        "id": "d",
-        "text": "Deferring a tool changes where it executes, routing its calls to Anthropic's infrastructure instead of the application that defined it, which no longer runs it."
-      },
-      {
-        "id": "e",
-        "text": "When a search matches, the API returns references to the matching tools and expands them into full definitions, after which Claude calls the discovered tool in the ordinary way."
-      },
-      {
-        "id": "f",
-        "text": "The gain is limited to latency, since the definitions still occupy the same amount of context once the request has been assembled, regardless of which tools are used."
-      }
-    ],
-    "correct": [
-      "a",
-      "c",
-      "e"
-    ],
-    "explanation": "Tool search addresses two problems that arrive together as a tool library grows: definitions crowd the context window, and selection accuracy falls away once several dozen tools are simultaneously available. The mechanism is discovery, not relocation. The application continues to declare every tool it owns, deferred loading keeps the marked ones out of the initial system prompt, and at least one non-deferred tool has to remain so that a search can happen at all. A matching search returns references that the API expands into full definitions on the spot, so only the handful of tools relevant to the current request ever reach the model's context.",
-    "distractorNotes": {
-      "b": "There is no external registry in this design. Schemas are still supplied in full with the request, which is what allows the API to expand a match into a complete definition without another round trip.",
-      "d": "Deferred loading affects only when a definition enters the model's context. It leaves the execution boundary untouched, so a client tool that is deferred still executes in the application when it is eventually called.",
-      "f": "Reducing the context consumed by definitions is the primary purpose. Loading only the few tools a request actually needs cuts the definition footprint substantially and is what keeps selection accuracy from degrading across a large library."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool",
-    "sourceNote": "Tool search tool — context bloat and selection accuracy",
-    "sourceCheckedAt": "2026-09-03"
-  },
-  {
     "id": "ccdv-f-tools-and-mcps-011",
     "cert": "ccdv-f",
     "schemaVersion": 1,
@@ -476,7 +310,6 @@
     "subdomain": "mcp-server-development",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A team is designing a Model Context Protocol server for an internal knowledge platform. They need three things: read-only document sources that the host application selects and supplies as context, a small set of actions the model may invoke on its own initiative, and named starting templates that a person chooses from a menu. Which mapping onto the server's building blocks is correct?",
     "options": [
       {
@@ -518,7 +351,6 @@
     "subdomain": "agentic-customization",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "Three separate Claude applications each need to read and update records in the same internal ticketing system, and the integration should be owned and versioned by one platform team rather than copied into each app. Which approach fits best?",
     "options": [
       {
@@ -560,7 +392,6 @@
     "subdomain": "agentic-customization",
     "difficulty": "easy",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A developer keeps pasting the same multi-step release checklist into Claude Code at the start of every deployment session. They want the procedure available on demand without carrying it in every conversation. What should they create?",
     "options": [
       {
@@ -602,7 +433,6 @@
     "subdomain": "agentic-customization",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A team is matching several capabilities to the right customization approach among built-in tools, custom tools, Skills, and MCP servers. Select THREE statements that correctly pair a use case with an approach.",
     "options": [
       {
@@ -654,7 +484,6 @@
     "subdomain": "agentic-customization",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A single application needs Claude to run one specific transformation on values the app already holds, with no external system involved and no reuse expected anywhere else. Considering built-in tools, custom tools, Skills, and MCP servers, which approach is most appropriate?",
     "options": [
       {
@@ -696,7 +525,6 @@
     "subdomain": "agentic-customization",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An assistant must answer using current information from the public web. The team is about to build a custom tool that wraps a third-party search API and runs inside their own service. What should they weigh before doing that?",
     "options": [
       {
@@ -738,7 +566,6 @@
     "subdomain": "tool-implementation",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A team is designing the tool set for an agent that spans several internal services and keeps mis-selecting tools and passing over-large results back into context. Select THREE tool-set construction practices Anthropic recommends.",
     "options": [
       {

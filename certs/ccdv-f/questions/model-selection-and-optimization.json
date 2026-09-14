@@ -8,7 +8,6 @@
     "subdomain": "model-selection-and-tradeoffs",
     "difficulty": "easy",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A team is prototyping a high-volume, latency-sensitive classification feature and has not yet established a quality bar for it. They want to follow the path that Anthropic's model-selection guidance labels as starting efficiency-first. Which sequence matches that path?",
     "options": [
       {
@@ -50,7 +49,6 @@
     "subdomain": "model-selection-and-tradeoffs",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An existing integration comfortably meets its latency budget but is failing quality checks on inputs that need multi-step reasoning. The team's first instinct is to jump to a more capable model tier. What does Anthropic's model-selection guidance advise instead?",
     "options": [
       {
@@ -84,102 +82,6 @@
     "sourceCheckedAt": "2026-09-03"
   },
   {
-    "id": "ccdv-f-model-selection-and-optimization-003",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "multi",
-    "domain": "model-selection-and-optimization",
-    "subdomain": "model-selection-and-tradeoffs",
-    "difficulty": "medium",
-    "status": "reviewed",
-    "scope": "deep",
-    "scopeNote": "Tests effort-parameter semantics, including that it applies to tool-call tokens and that setting the model's default level explicitly behaves identically to omitting the parameter. On-blueprint under model selection and tradeoffs, but parameter-level equivalences are finer-grained than the exam's treatment of the reasoning-depth/cost tradeoff.",
-    "stem": "A developer is adopting the effort parameter to trade response thoroughness against token efficiency within a single model. Which THREE statements about how the effort parameter behaves are accurate? Select THREE.",
-    "options": [
-      {
-        "id": "a",
-        "text": "It acts as a hard cap on output tokens, and generation is truncated as soon as the allowance attached to the selected level has been spent."
-      },
-      {
-        "id": "b",
-        "text": "It applies to all output tokens, including tool calls and their arguments, rather than only to thinking content."
-      },
-      {
-        "id": "c",
-        "text": "Passing the value that names the adaptive thinking mode is how you let the model choose its own effort level."
-      },
-      {
-        "id": "d",
-        "text": "It has no effect on a request at all unless thinking has been explicitly enabled for that request."
-      },
-      {
-        "id": "e",
-        "text": "Setting it explicitly to the model's default level behaves identically to omitting the parameter from the request."
-      },
-      {
-        "id": "f",
-        "text": "It is a behavioral signal rather than a strict budget: at lower levels the model still reasons on hard problems, just less."
-      }
-    ],
-    "correct": [
-      "b",
-      "e",
-      "f"
-    ],
-    "explanation": "Effort controls how many tokens the model spends on a response, and it affects every output token: text and explanations, tool calls and their arguments, and thinking when it is active. That is why lower levels combine operations into fewer and terser tool calls and skip preamble. Explicitly setting the level that is already the default is documented as producing exactly the same behavior as omitting the parameter. And effort is described as a behavioral signal rather than a strict token budget, so at lower levels the model still thinks on sufficiently difficult problems, merely less than it would at a higher level for the same problem.",
-    "distractorNotes": {
-      "a": "The hard limit on total output, spanning thinking plus response text together, is max_tokens. Effort steers how much the model elects to spend and does not terminate generation once some allowance is reached.",
-      "c": "The adaptive value names a thinking mode, not an effort level, and the documentation explicitly warns against passing it as an effort value. Thinking mode and effort are separate controls that interact rather than substitute for one another.",
-      "d": "Because effort applies to every output token, it works whether or not thinking is enabled. Even with thinking inactive, a lower level still shortens explanations and reduces the number of tool calls made."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/effort",
-    "sourceNote": "Effort — 'How effort works' and 'Effort levels'",
-    "sourceCheckedAt": "2026-09-03"
-  },
-  {
-    "id": "ccdv-f-model-selection-and-optimization-004",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "single",
-    "domain": "model-selection-and-optimization",
-    "subdomain": "cost-and-token-management",
-    "difficulty": "hard",
-    "status": "reviewed",
-    "scope": "deep",
-    "scopeNote": "Tests cache-breakpoint placement diagnosed from non-zero cache-creation and zero cache-read counters, against the rule that writes happen only at the breakpoint. On-blueprint under cost and token management, but it turns on where the prefix hash is computed rather than the prefix-stability principle the exam tests.",
-    "stem": "A service puts a large, unchanging instruction set in its leading content blocks, then appends one final block holding the current timestamp plus the incoming user message, and marks that final block with cache_control. Every response reports a non-zero cache creation count and a cache read count of zero. What explains this, and what is the fix?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Writes happen only at the breakpoint and the marked block differs each request, so the prefix hash never matches; move the breakpoint to the last unchanging block."
-      },
-      {
-        "id": "b",
-        "text": "The backward lookback should find the stable prefix sitting behind the breakpoint, so entries must be expiring before reuse; switching to the longer cache duration will fix it."
-      },
-      {
-        "id": "c",
-        "text": "The request exceeded the maximum number of cache breakpoints, so the surplus writes were silently discarded and only the earliest one was retained."
-      },
-      {
-        "id": "d",
-        "text": "Read counts begin to populate only after a second successful write at the same position, so the cache is healthy and reads will appear on later turns."
-      }
-    ],
-    "correct": [
-      "a"
-    ],
-    "explanation": "Marking a block with cache_control writes exactly one entry: a hash of the entire prefix up to and including that block. Because the hash is cumulative, changing any block at or before the breakpoint produces a different hash on the next request. A timestamp and the incoming message change every time, so each request pays for a fresh write and never earns a read, which is worse than not caching at all. The documented remedy is to place cache_control on the last block whose prefix is identical across the requests meant to share a cache, here the end of the static instruction set, and keep the varying text after it. This prompt shape is also the case where automatic caching falls into the same trap, since it targets the last cacheable block.",
-    "distractorNotes": {
-      "b": "The lookback searches for entries earlier requests actually wrote, not for stable content sitting behind the breakpoint. Since no write ever occurred at those earlier positions, no duration setting helps; a longer lifetime only extends entries that already exist.",
-      "c": "Only one breakpoint is in play here, well under the limit of four, and breakpoints add no cost of their own. Supplying too many breakpoints surfaces as an error rather than as writes being quietly dropped.",
-      "d": "A matching prefix is reported as a read on the very next request that reuses it. A read count that stays at zero across many requests is the documented signal that no matching entry exists, not evidence of a warm-up period."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
-    "sourceNote": "Prompt caching — 'Structuring your prompt' and prefix checking",
-    "sourceCheckedAt": "2026-09-03"
-  },
-  {
     "id": "ccdv-f-model-selection-and-optimization-005",
     "cert": "ccdv-f",
     "schemaVersion": 1,
@@ -188,7 +90,6 @@
     "subdomain": "cost-and-token-management",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A team is optimizing their Claude API costs for an application that processes long documents. They include a large, 20,000-token static instruction manual in every API request and have set a cache breakpoint. However, they observe no cache read hits, and their API costs have actually increased. Which of the following design flaws is the most likely cause?",
     "options": [
       {
@@ -230,7 +131,6 @@
     "subdomain": "technical-fundamentals",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A team enables prompt caching for a large reference document that now hits cache on almost every request. Which statement about what changes for a cache hit is accurate?",
     "options": [
       {
@@ -272,7 +172,6 @@
     "subdomain": "cost-and-token-management",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A development team is optimizing a Claude-powered customer support assistant that includes a large, static set of company policies in every request. They are implementing prompt caching to manage costs and token usage. Which TWO statements represent foundational principles for this optimization? Select TWO.",
     "options": [
       {
@@ -319,7 +218,6 @@
     "subdomain": "cost-and-token-management",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "Prompt caching allows developers to reuse large amounts of context across API calls to reduce costs and latency. Which THREE of the following are foundational best practices or principles for effectively using prompt caching with Claude? Select THREE.",
     "options": [
       {
@@ -363,145 +261,6 @@
     "sourceCheckedAt": "2026-09-13"
   },
   {
-    "id": "ccdv-f-model-selection-and-optimization-009",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "single",
-    "domain": "model-selection-and-optimization",
-    "subdomain": "cost-and-token-management",
-    "difficulty": "medium",
-    "status": "reviewed",
-    "scope": "deep",
-    "scopeNote": "Tests that the minimum cacheable length varies by model and that caching below it is skipped silently rather than rejected. On-blueprint under cost and token management, but per-model thresholds are lookup values rather than a design principle.",
-    "stem": "A developer marks a fairly short system prompt with cache_control. The requests succeed and no error is returned, but both the cache creation and cache read token counts are zero on every call. What is the most likely explanation, and what should the developer do about it?",
-    "options": [
-      {
-        "id": "a",
-        "text": "cache_control is honored on a system block only when tool definitions are also present, so a tool definition has to be added to activate it."
-      },
-      {
-        "id": "b",
-        "text": "The minimum cacheable length is identical on every model, so length cannot be the issue and the prompt must instead be failing exact matching."
-      },
-      {
-        "id": "c",
-        "text": "Caching below the minimum is rejected with a validation error, so the zeroes point to a client bug that is dropping the cache_control field."
-      },
-      {
-        "id": "d",
-        "text": "The content sits below the model's minimum cacheable length, which varies by model; caching is skipped silently, so check that model's threshold."
-      }
-    ],
-    "correct": [
-      "d"
-    ],
-    "explanation": "Prompts shorter than the minimum cacheable length for the model in use cannot be cached even when marked with cache_control. Crucially, such requests are processed without caching and no error is returned, which makes this a silent failure. The documented way to detect it is precisely the symptom described: both the cache creation and cache read token counts sitting at zero. Because the threshold differs by model, it must be looked up for the model actually being called. When a prompt falls just short, expanding the cached content to reach the threshold is often worthwhile, since reads cost significantly less than uncached input for frequently reused prompts.",
-    "distractorNotes": {
-      "a": "System content blocks are cacheable on their own. The tools array is simply an earlier position in the prefix hierarchy, not a precondition for caching anything that appears later in the prompt.",
-      "b": "The minimum differs by model, and partner-operated cloud platforms document their own per-model minimums, failure behavior, and usage field names. Assuming one universal threshold is a common source of exactly this bug.",
-      "c": "Caching below the minimum fails silently rather than raising an error. That is exactly why the response usage fields are documented as the way to confirm whether a prompt was actually cached at all."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
-    "sourceNote": "Prompt caching — minimum cacheable prompt lengths",
-    "sourceCheckedAt": "2026-09-03"
-  },
-  {
-    "id": "ccdv-f-model-selection-and-optimization-010",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "multi",
-    "domain": "model-selection-and-optimization",
-    "subdomain": "cost-and-token-management",
-    "difficulty": "hard",
-    "status": "reviewed",
-    "scope": "deep",
-    "scopeNote": "Tests batch mechanics: the discount stacking with prompt-caching multipliers, the 24-hour expiry, and results returning unordered so each must be reconciled by its supplied identifier. On-blueprint under cost and token management, but the exam samples when to choose batch, not its billing and reconciliation rules.",
-    "stem": "A team is moving a nightly evaluation workload onto the Message Batches API. Which THREE statements about batch processing are accurate? Select THREE.",
-    "options": [
-      {
-        "id": "a",
-        "text": "Setting the streaming flag on a batched request delivers that request's output incrementally as the model produces it."
-      },
-      {
-        "id": "b",
-        "text": "Prompt caching is disabled within a batch, so cache_control markers are ignored on every request submitted inside one."
-      },
-      {
-        "id": "c",
-        "text": "Batch usage is charged at half the standard input and output rates, and that discount stacks with the prompt caching multipliers."
-      },
-      {
-        "id": "d",
-        "text": "Each request's parameters are validated synchronously at submission, so a malformed request is rejected before the batch is created."
-      },
-      {
-        "id": "e",
-        "text": "A batch expires if processing has not finished within 24 hours, and expired, canceled, and errored requests are not billed."
-      },
-      {
-        "id": "f",
-        "text": "Results can be returned in any order, so each one must be reconciled using the unique identifier supplied with its request."
-      }
-    ],
-    "correct": [
-      "c",
-      "e",
-      "f"
-    ],
-    "explanation": "Batching trades latency for a 50 percent discount charged on both input and output tokens, and prompt caching multipliers stack with that discount rather than being excluded by it. The asynchronous contract carries two consequences worth internalizing: a batch expires if processing has not completed within 24 hours, and requests ending as expired, canceled, or errored are not billed, so failures carry no cost risk. Results also come with no ordering guarantee, which is why every request must carry a unique custom identifier and results must be reconciled by that identifier rather than by position in the submitted list.",
-    "distractorNotes": {
-      "a": "Streaming is one of the parameters explicitly unsupported inside a batch and returns a validation error, because batch results come back as a single results file rather than as a stream of per-request events.",
-      "b": "Caching works inside batches. The documented recommendation is in fact to consider the extended cache duration for batches that share context, precisely because a batch can take longer to process than the default cache lifetime.",
-      "d": "Validation of the parameters object for each request is performed asynchronously, and validation errors are returned only once processing of the entire batch has ended. This is why request shape should be verified against the synchronous Messages API first."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/batch-processing",
-    "sourceNote": "Batch processing — batch limitations, unsupported parameters, and pricing",
-    "sourceCheckedAt": "2026-09-13"
-  },
-  {
-    "id": "ccdv-f-model-selection-and-optimization-011",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "single",
-    "domain": "model-selection-and-optimization",
-    "subdomain": "llm-fundamentals",
-    "difficulty": "hard",
-    "status": "reviewed",
-    "scope": "deep",
-    "scopeNote": "Tests that token counts are not portable across model generations because a newer tokenizer yields different counts for the same text. On-blueprint under LLM fundamentals, but this is a migration footnote rather than the token and context-window understanding the objective describes.",
-    "stem": "A team sized its prompts using figures from the token counting endpoint captured some time ago against an older model generation, then reused those stored figures when moving the workload to a newer generation. Requests now consume more input than budgeted. Which statement best explains the situation?",
-    "options": [
-      {
-        "id": "a",
-        "text": "The endpoint rejects tool definitions, images, and PDFs, so any prompt containing them was undercounted by design from the outset."
-      },
-      {
-        "id": "b",
-        "text": "The endpoint returns an exact, billable count that is identical on every model, so the overage must originate entirely from output tokens."
-      },
-      {
-        "id": "c",
-        "text": "Counts are not portable across model generations, since a newer tokenizer yields more tokens for the same text; recount against the target model."
-      },
-      {
-        "id": "d",
-        "text": "Counts include tokens that the platform adds for its own system optimizations, and those added tokens are billed to the caller, which is what explains the overage."
-      }
-    ],
-    "correct": [
-      "c"
-    ],
-    "explanation": "Two properties of token counting explain this. First, tokenization is a property of the model generation: a newer tokenizer produces more tokens for the same input text, with the exact increase depending on the content and workload shape, and the documentation therefore instructs recounting prompts against the model you plan to use rather than reusing counts measured against earlier models. Second, the returned figure is explicitly an estimate, and the actual number of input tokens used when creating a message may differ by a small amount. Together these make stale cross-generation counts an unreliable basis for budgeting, rate limit planning, or routing decisions.",
-    "distractorNotes": {
-      "a": "The endpoint accepts the same structured inputs used to create a message, including system prompts, tool definitions, images, and PDFs. One narrower nuance does apply: server tool token counts reflect only the first sampling call.",
-      "b": "The count is documented as an estimate rather than an exact billed figure, and a tokenizer change between generations shifts the count for identical text. Neither the model-independence nor the exactness claimed here holds.",
-      "d": "Counts may include tokens added automatically for system optimizations, but the documentation states you are not billed for system-added tokens and that billing reflects only your content, so they cannot explain a genuine cost overage."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/token-counting",
-    "sourceNote": "Token counting — message token counting and supported models",
-    "sourceCheckedAt": "2026-09-03"
-  },
-  {
     "id": "ccdv-f-model-selection-and-optimization-012",
     "cert": "ccdv-f",
     "schemaVersion": 1,
@@ -510,7 +269,6 @@
     "subdomain": "cost-and-token-management",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "Spend on a user-facing production agent loop is climbing as sessions run longer, while output quality remains acceptable. Anthropic's cost guidance separates levers that cut spend without touching quality from levers that trade quality for cost. Which action should the team take first, and why?",
     "options": [
       {
@@ -552,7 +310,6 @@
     "subdomain": "technical-fundamentals",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A service assembles prompts dynamically from retrieved documents, so request size varies and sometimes approaches the model's context window. The team wants to handle overflow correctly rather than discovering it in production. How does the API behave when a request exceeds the context window?",
     "options": [
       {
@@ -594,7 +351,6 @@
     "subdomain": "llm-fundamentals",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An interactive assistant feels sluggish to its users, and the team is applying Anthropic's guidance on reducing latency. Which THREE statements reflect that guidance? Select THREE.",
     "options": [
       {
@@ -646,7 +402,6 @@
     "subdomain": "technical-fundamentals",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A team is sizing max_tokens and forecasting spend for a workload that runs with thinking enabled, and wants the token accounting right before it ships. How are thinking tokens accounted for?",
     "options": [
       {
@@ -688,7 +443,6 @@
     "subdomain": "llm-fundamentals",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A team caches Claude's answers keyed on the exact prompt string and sets temperature to 0, expecting identical inputs to always return byte-identical outputs so the cache can never serve a mismatched result. In testing they occasionally see two different completions for the same input. What best explains this?",
     "options": [
       {
@@ -730,7 +484,6 @@
     "subdomain": "llm-fundamentals",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A service sends very long documents to Claude and also sets a high max_tokens because it wants a long answer. On the longest inputs the model runs out of room to finish its response. A developer argues that input and output draw from separate budgets, so the input size should not matter. How does the context window actually work?",
     "options": [
       {
@@ -772,7 +525,6 @@
     "subdomain": "llm-fundamentals",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A team is deciding which features should run with thinking enabled. They want to spend the extra thinking tokens only where they actually change the outcome. Which TWO statements reflect sound use of thinking? Select TWO.",
     "options": [
       {
@@ -814,7 +566,6 @@
     "subdomain": "llm-fundamentals",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An extraction feature returns correct facts but in inconsistent formats, and a downstream parser keeps choking on the variation. The prompt already describes the desired schema in prose. A developer proposes adding a few worked input/output examples. What does multi-shot prompting primarily buy in this situation?",
     "options": [
       {
@@ -856,7 +607,6 @@
     "subdomain": "llm-fundamentals",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A team debates whether every prompt should carry examples. They want a principled rule for when examples earn their place versus a plain zero-shot prompt. Which TWO statements are sound? Select TWO.",
     "options": [
       {
@@ -898,7 +648,6 @@
     "subdomain": "llm-fundamentals",
     "difficulty": "easy",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A developer new to Claude assumes one token equals one character and sizes their limits by counting characters, then is surprised the numbers do not line up with reported usage. Which understanding of tokens is correct?",
     "options": [
       {
@@ -940,7 +689,6 @@
     "subdomain": "technical-fundamentals",
     "difficulty": "easy",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A team is starting a Python integration and debates whether to hand-roll HTTP calls to the Messages endpoint or adopt Anthropic's official client SDK. What is the most accurate framing of what the official client SDK provides?",
     "options": [
       {
@@ -982,7 +730,6 @@
     "subdomain": "technical-fundamentals",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An interactive chat app enables streaming, and someone predicts it will lower the monthly bill by reducing how many tokens each response consumes. Is that the right expectation about what streaming does?",
     "options": [
       {
@@ -1024,7 +771,6 @@
     "subdomain": "technical-fundamentals",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A team adds streaming so the UI can show Claude's answer as it is produced. Which TWO statements about how streaming works with the SDKs are accurate? Select TWO.",
     "options": [
       {
@@ -1066,7 +812,6 @@
     "subdomain": "technical-fundamentals",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A developer builds multi-turn chat and assumes that after the first request the service remembers the conversation, so later requests can send only the newest user message. Earlier context then starts disappearing from responses. What is the correct model of how the Messages API handles conversation state?",
     "options": [
       {
@@ -1108,7 +853,6 @@
     "subdomain": "technical-fundamentals",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A team hand-rolled HTTP calls and now sees intermittent rate-limit and server errors under load, which they handle by immediately retrying in a tight loop. They are considering the official SDK. Which TWO points correctly describe robust request handling and what the SDK offers? Select TWO.",
     "options": [
       {
@@ -1150,7 +894,6 @@
     "subdomain": "technical-fundamentals",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A retrieval pipeline batches a variable number of source documents into each prompt, and occasionally a batch is large enough to be rejected. The team would rather catch an oversize batch while assembling it than learn about it from a failed call. Which approach fits?",
     "options": [
       {
@@ -1192,7 +935,6 @@
     "subdomain": "technical-fundamentals",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A team is choosing between Anthropic's client SDKs and the Claude Agent SDK for a new build. Which TWO statements correctly distinguish the two levels of tooling? Select TWO.",
     "options": [
       {
@@ -1234,7 +976,6 @@
     "subdomain": "model-selection-and-tradeoffs",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A team upgrades to a newer Claude model expecting a drop-in improvement and reuses prompts tuned for the previous generation. Some outputs regress in format and length. What does Anthropic's guidance advise about selecting or moving between models?",
     "options": [
       {

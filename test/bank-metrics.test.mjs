@@ -31,7 +31,6 @@ function question(overrides = {}) {
     domain: "domain-one",
     difficulty: "medium",
     status: "reviewed",
-    scope: "core",
     stem: "Which option is correct?",
     options: [
       { id: "a", text: "Correct option" },
@@ -64,10 +63,6 @@ test("buildBankMetrics handles an empty bank without dividing by zero", () => {
   });
 
   assert.equal(metrics.questionCount, 0);
-  assert.deepEqual(metrics.scope, {
-    core: { count: 0, share: 0 },
-    deep: { count: 0, share: 0 },
-  });
   assert.equal(metrics.domains[0].actual, 0);
   assert.equal(metrics.domains[0].actualShare, 0);
   assert.equal(metrics.formatMix.single.count, 0);
@@ -96,8 +91,6 @@ test("buildBankMetrics handles a single-question bank", () => {
   });
 
   assert.equal(metrics.questionCount, 1);
-  assert.equal(metrics.scope.core.count, 1);
-  assert.equal(metrics.scope.core.share, 1);
   assert.equal(metrics.domains[0].actual, 1);
   assert.equal(metrics.domains[0].actualShare, 1);
   assert.equal(metrics.positionDistribution.total, 1);
@@ -105,26 +98,7 @@ test("buildBankMetrics handles a single-question bank", () => {
   assert.equal(metrics.longestOptionIsKey.sampleSize, 1);
 });
 
-test("scope split counts core and deep and computes their shares", () => {
-  const questions = [
-    question({ id: "q1", scope: "core" }),
-    question({ id: "q2", scope: "core" }),
-    question({
-      id: "q3",
-      scope: "deep",
-      scopeNote: "Above the blueprint's cognitive level.",
-    }),
-  ];
-
-  const metrics = buildBankMetrics(singleDomainManifest, questions);
-
-  assert.deepEqual(metrics.scope, {
-    core: { count: 2, share: 2 / 3 },
-    deep: { count: 1, share: 1 / 3 },
-  });
-});
-
-test("domain and skill breakdown report actual share against blueprint weight, core-only", () => {
+test("domain and skill breakdown report actual share against blueprint weight", () => {
   const withSkills = manifest([
     {
       slug: "domain-one",
@@ -141,14 +115,6 @@ test("domain and skill breakdown report actual share against blueprint weight, c
     question({ id: "q1", subdomain: "skill-a" }),
     question({ id: "q2", subdomain: "skill-a" }),
     question({ id: "q3", subdomain: "skill-b" }),
-    // Tagged deep, so it must not count toward either the domain or skill
-    // actuals — the balance arithmetic is core-only.
-    question({
-      id: "q4",
-      subdomain: "skill-b",
-      scope: "deep",
-      scopeNote: "Past the blueprint's scope.",
-    }),
   ];
 
   const metrics = buildBankMetrics(withSkills, questions);
@@ -544,21 +510,6 @@ test("length-bias-mean-delta guard fails above the sample minimum when keys run 
   assert.equal(metrics.guards.lengthBiasMeanDelta.status, "FAIL");
 });
 
-test("scope-core-share guard fails above the sample minimum when too much of the bank is tagged deep", () => {
-  const questions = bankOfSize(24, (index) =>
-    question({
-      id: `test-cert-domain-one-${String(index).padStart(3, "0")}`,
-      scope: index < 10 ? "deep" : "core",
-      scopeNote: index < 10 ? "Past the blueprint's scope." : undefined,
-    }),
-  );
-
-  const metrics = buildBankMetrics(singleDomainManifest, questions);
-
-  // 14 of 24 core = 58.3%, below the 80% floor.
-  assert.equal(metrics.guards.scopeCoreShare.status, "FAIL");
-});
-
 test("guards report PASS above the sample minimum when the bank is clean", () => {
   const questions = bankOfSize(24, (index) => {
     const positions = ["a", "b", "c", "d"];
@@ -583,7 +534,6 @@ test("guards report PASS above the sample minimum when the bank is clean", () =>
   assert.equal(metrics.guards.positionBias.status, "PASS");
   assert.equal(metrics.guards.lengthBiasMeanDelta.status, "PASS");
   assert.equal(metrics.guards.longestOptionIsKey.status, "PASS");
-  assert.equal(metrics.guards.scopeCoreShare.status, "PASS");
 });
 
 test("reproduces az-900's hand-computed review numbers against the real bank", async () => {
@@ -646,7 +596,6 @@ test("scores eliminate-absolutes at nothing when nothing can be eliminated", () 
       domain: "d",
       difficulty: "medium",
       status: "draft",
-      scope: "core",
       stem: "S",
       options: [
         { id: "a", text: "This always holds" },
@@ -685,8 +634,8 @@ test("reproduces ccdv-f's hand-computed adversarial baselines", async () => {
   const metrics = buildBankMetrics(manifestData, questions);
 
   // review-progress.md § "Other pattern tells": the absolutes strategy "scores
-  // an expected 27% against a 25% baseline, and uniquely identifies the key in
-  // 0 of 109 single-select items".
+  // an expected 26% against a 25% baseline, and uniquely identifies the key in
+  // 0 of 97 single-select items".
   //
   // Both numbers moved when the seven decisive items were rewritten (30% and
   // 7 before). They are pinned here so the pair cannot drift apart silently:
@@ -695,12 +644,12 @@ test("reproduces ccdv-f's hand-computed adversarial baselines", async () => {
   // is what this assertion exists to catch — so if it fails, check which of
   // the two is actually wrong before touching either.
   const absolutes = metrics.baselines.eliminateAbsoluteQualifiers;
-  assert.equal(absolutes.sampleSize, 109);
-  assert.ok(Math.abs(absolutes.expectedScore - 0.27) < 0.005);
+  assert.equal(absolutes.sampleSize, 97);
+  assert.ok(Math.abs(absolutes.expectedScore - 0.26) < 0.005);
   assert.equal(absolutes.uniqueIdentifyCount, 0);
 
   // Same file records the longest-option tell at 19% after the rewrite pass.
-  assert.equal(metrics.longestOptionIsKey.sampleSize, 109);
+  assert.equal(metrics.longestOptionIsKey.sampleSize, 97);
   assert.ok(Math.abs(metrics.longestOptionIsKey.share - 0.19) < 0.005);
 });
 
@@ -777,7 +726,6 @@ test("counts questions per skill within their own domain", () => {
     type: "single",
     difficulty: "medium",
     status: "draft",
-    scope: "core",
     stem: "S",
     options: [
       { id: "a", text: "Option A" },

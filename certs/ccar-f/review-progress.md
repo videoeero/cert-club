@@ -13,10 +13,9 @@ verified on September 11, 2026.
 `manifest.status` is `draft`. All 110 questions are `reviewed` (0 draft). Coverage is
 tightly proportional across all five domains, with each domain within ~1 percentage
 point of its blueprint weight. The bank is held at `draft` by deliberate human decision
-pending evaluation of `deep`-scope coverage (currently 100% `core`, 0 `deep`).
+pending a candidate trial pass and final promotion review.
 
-Promote to `stable` only on an explicit human decision weighing that standing depth
-limitation, and record that reasoning here.
+Promote to `stable` only on an explicit human decision, and record that reasoning here.
 
 ## Recon verdict: `GO`
 
@@ -69,16 +68,15 @@ Composition is tightly proportional across all five domains, with no domain acti
 
 - **Item formats**: 100 single-select, 10 multi-select (all select-2; 2 per domain).
 - **Difficulty breakdown**: 71 medium (64 single, 7 multi), 39 hard (36 single, 3 multi).
-- **Sourcing**: 23 distinct authoritative documentation pages; 100% `core` scope.
+- **Sourcing**: 23 distinct authoritative documentation pages.
 - **Single-select position distribution**: 25 A / 26 B / 25 C / 24 D across `a`-`d` (max 26%, ceiling 50%).
 - **Option length delta**: Mean correct-option length minus distractor length is -3.58 characters (median -1.00 chars), well within the ±10 character ceiling.
 - **Longest option as key share**: 19 of 100 single-select items (19%), comfortably below the 45% ceiling and outperforming the 25% random baseline.
 - **Distractor notes coverage**: 100% of distractor options across all 110 questions carry complete explanations in `distractorNotes`.
-- **All four bias guards pass**: `positionBias`, `lengthBiasMeanDelta`, `longestOptionIsKey`, and `scopeCoreShare`.
+- **All three bias guards pass**: `positionBias`, `lengthBiasMeanDelta`, and `longestOptionIsKey`.
 
 ### Known coverage limits
 
-- **Depth**: 0/110 `deep`-scope questions, vs. ccdv-f's 28/177. Deferred by explicit user decision (2026-09-10, "no need to add deep questions") — not a current gap, listed for completeness.
 - **Task-statement granularity**: The guide's 30 task statements carry no published percentage weights, so coverage is verified at domain level only, not below it.
 
 ## Source classification

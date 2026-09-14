@@ -59,7 +59,6 @@ Report it and let a human make that edit.
    into the seeded `review-progress.md`: source classification, sample
    inventory, calibration answer, and the constraints from the verdict.
 7. **Seed one real question per domain.** Each one:
-   - `scope: "core"`
    - `status: "draft"` — you wrote it, so nobody has reviewed it
    - `sourceUrl` a page labeled citable in stage 2, and `sourceCheckedAt` the
      date you fetched it

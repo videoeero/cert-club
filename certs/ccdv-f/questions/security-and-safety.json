@@ -8,7 +8,6 @@
     "subdomain": "identity-secrets-and-key-management",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An organization is replacing a personal API key that several engineers currently share to run a production service. Which approaches align with the documented guidance? Select TWO.",
     "options": [
       {
@@ -55,7 +54,6 @@
     "subdomain": "claude-hooks",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An organization is deploying a Claude-based agent using the Agent SDK and needs to enforce a mandatory compliance check on every tool call. The security team requires that this check cannot be bypassed by any permissive configuration elsewhere in the application. Which TWO statements describe how hooks and permissions address this requirement at a foundational level?",
     "options": [
       {
@@ -107,7 +105,6 @@
     "subdomain": "ai-application-security",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A support application asks Claude to summarize inbound emails from unknown senders. The team wants Claude to treat every email body as data rather than as instructions it might follow. Following Anthropic's guidance on indirect prompt injection, where should the retrieved email body be placed in the request?",
     "options": [
       {
@@ -149,7 +146,6 @@
     "subdomain": "ai-application-security",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An agent retrieves web pages and documents on a trusted user's behalf, so the adversary controls the retrieved content rather than the user's prompt. Which THREE practices does Anthropic's guidance recommend for limiting the damage an embedded instruction can do? Select THREE.",
     "options": [
       {
@@ -201,7 +197,6 @@
     "subdomain": "guardrails-and-safe-deployment",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A repository's Claude Code settings contain both a deny rule for Bash(aws *) and an allow rule for Bash(aws s3 ls). During a session Claude proposes running aws s3 ls. What happens, and why?",
     "options": [
       {
@@ -243,7 +238,6 @@
     "subdomain": "claude-hooks",
     "difficulty": "easy",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A team writes in its CLAUDE.md that Claude must never run the project's deployment script. A reviewer asks whether that instruction on its own prevents the tool call from executing. Which assessment is correct?",
     "options": [
       {
@@ -285,7 +279,6 @@
     "subdomain": "guardrails-and-safe-deployment",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A team enables the built-in sandboxed Bash tool and asks its security reviewer what that sandbox does not protect against. Which TWO statements are accurate? Select TWO.",
     "options": [
       {
@@ -332,7 +325,6 @@
     "subdomain": "guardrails-and-safe-deployment",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A streaming integration receives a response whose stop_reason is refusal. The application appends the partial assistant text to its history and immediately re-sends the same conversation, which is refused again on every retry. What should the application do instead?",
     "options": [
       {
@@ -374,7 +366,6 @@
     "subdomain": "identity-secrets-and-key-management",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A multi-tenant service runs an agent over customer repositories it does not control, and the agent must call a paid third-party API. Which TWO measures follow Anthropic's guidance on securely deploying agents? Select TWO.",
     "options": [
       {
@@ -413,49 +404,6 @@
     "sourceCheckedAt": "2026-09-03"
   },
   {
-    "id": "ccdv-f-security-and-safety-010",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "single",
-    "domain": "security-and-safety",
-    "subdomain": "ai-application-security",
-    "difficulty": "hard",
-    "status": "reviewed",
-    "scope": "deep",
-    "scopeNote": "Tests which workloads a zero-data-retention arrangement covers, feature by feature. On-blueprint under AI application security, but per-feature ZDR eligibility is a compliance lookup rather than a security design decision the developer makes.",
-    "stem": "An organization has a zero data retention arrangement enabled for its Claude API organization. Which workload does that arrangement cover?",
-    "options": [
-      {
-        "id": "a",
-        "text": "A Messages API request whose features are all listed as ZDR-eligible"
-      },
-      {
-        "id": "b",
-        "text": "Prompts an engineer runs in the Console playground while iterating on wording"
-      },
-      {
-        "id": "c",
-        "text": "A Messages API request that includes the code execution tool"
-      },
-      {
-        "id": "d",
-        "text": "Requests issued straight from a browser front end using cross-origin requests"
-      }
-    ],
-    "correct": [
-      "a"
-    ],
-    "explanation": "Under a zero data retention arrangement Anthropic does not store customer prompts or responses at rest once the API response is returned, and it applies to the Messages and Token Counting endpoints for the features marked eligible in the feature eligibility table. Eligibility is per feature rather than per endpoint, so a capability that rides on the same endpoint but requires storage to function falls outside the arrangement. The arrangement is also enabled per organization and does not automatically extend to other organizations under the same account, which makes checking both the feature table and the enabled scope part of any design review.",
-    "distractorNotes": {
-      "b": "Any usage in the Claude Console, including the playground, is explicitly outside the coverage even when the organization has the arrangement enabled.",
-      "c": "Code execution is named as a feature that rides on the messages endpoint but is not eligible, precisely because it requires storage to function.",
-      "d": "Cross-origin requests are not supported for organizations with this arrangement; browser-based applications have to route calls through a backend proxy server instead."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/manage-claude/api-and-data-retention",
-    "sourceNote": "Data retention — 'Zero data retention (ZDR)' coverage and limitations",
-    "sourceCheckedAt": "2026-09-03"
-  },
-  {
     "id": "ccdv-f-security-and-safety-011",
     "cert": "ccdv-f",
     "schemaVersion": 1,
@@ -464,7 +412,6 @@
     "subdomain": "claude-hooks",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An organization is deploying an autonomous agent using the Agent SDK and wants to ensure that the agent operates safely and transparently. They plan to use hooks to enforce security policies. Which TWO of the following statements accurately reflect the high-level purpose and capabilities of hooks in this ecosystem?",
     "options": [
       {
@@ -508,49 +455,6 @@
     "sourceCheckedAt": "2026-09-03"
   },
   {
-    "id": "ccdv-f-security-and-safety-012",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "single",
-    "domain": "security-and-safety",
-    "subdomain": "identity-secrets-and-key-management",
-    "difficulty": "medium",
-    "status": "reviewed",
-    "scope": "deep",
-    "scopeNote": "Tests that a request carries either an API key or a federated bearer token, and that a federated token selects its workspace at token exchange rather than through a workspace header. On-blueprint under identity, secrets and key management, but the exam tests where credentials should live, not how workspace scoping is carried on the wire.",
-    "stem": "A backend service is being provisioned to call the Claude API, and the team is deciding how it should authenticate. Which statement about authenticating a request is accurate?",
-    "options": [
-      {
-        "id": "a",
-        "text": "A request carries either x-api-key or an Authorization header holding a short-lived federated access token, which selects its workspace at token exchange rather than through a workspace header"
-      },
-      {
-        "id": "b",
-        "text": "A request must carry both x-api-key and Authorization together, because the key authenticates the caller while the federated token resolves the particular workspace that the request runs in"
-      },
-      {
-        "id": "c",
-        "text": "An API key is permanent once issued, so rotating a credential means deleting the workspace the key belongs to and recreating both the workspace and the key from scratch"
-      },
-      {
-        "id": "d",
-        "text": "The official client SDKs leave the authentication, version, and content-type headers to the caller, which must set all three by hand on every request it sends to the API"
-      }
-    ],
-    "correct": [
-      "a"
-    ],
-    "explanation": "Authentication takes one of two forms: an API key sent in x-api-key, or a short-lived access token sent in Authorization that the caller obtains through Workload Identity Federation. The two are alternatives, and only one of them is required on a request. The workspace a request runs in is normally selected with a workspace header when a multi-workspace key needs it, but a federated token already carries that choice from the token exchange, so the header is not used with it. Preferring short-lived federated tokens, and otherwise giving each key an expiration and separating environments into their own workspaces, keeps the exposure of any single leaked credential bounded.",
-    "distractorNotes": {
-      "b": "The two headers are alternatives, not a pair. An API key is sufficient on its own, and a federated token already identifies both the caller and the workspace the request runs in.",
-      "c": "Key type and expiration are both chosen when the key is created, so rotation is a normal key lifecycle operation. Workspaces exist to separate environments and control spend, not as a rotation mechanism.",
-      "d": "The SDKs manage those headers automatically, along with retries, streaming, and timeouts. The one header an application may still need to pass itself is the workspace header, and only when its key requires it."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/api/overview",
-    "sourceNote": "API overview — authentication headers and workspace tokens",
-    "sourceCheckedAt": "2026-09-03"
-  },
-  {
     "id": "ccdv-f-security-and-safety-013",
     "cert": "ccdv-f",
     "schemaVersion": 1,
@@ -559,7 +463,6 @@
     "subdomain": "ai-application-security",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An agent that reads untrusted third-party content can also call tools that move money and delete records. The team wants to bound the damage if an injected instruction ever slips past their screening. Which design principle matters most?",
     "options": [
       {
@@ -601,7 +504,6 @@
     "subdomain": "ai-application-security",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A public-facing assistant is the target of users who deliberately craft inputs to bypass its guardrails. Select THREE mitigations Anthropic recommends against these direct jailbreak attempts.",
     "options": [
       {
@@ -653,7 +555,6 @@
     "subdomain": "claude-hooks",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A platform team must guarantee that Claude Code never runs a command that deletes a production database, whatever the session or the prompt. They plan to enforce this with a hook. Where in the lifecycle must the check run, and why?",
     "options": [
       {

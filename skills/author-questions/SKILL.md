@@ -73,10 +73,10 @@ both; this skill is the order of operations, not a second copy.
   `CONTRIBUTING.md` says fidelity to the cited doc outranks cosmetic balance.
   Pad distractors with equivalent qualifying clauses; if that will not close
   the gap, escalate rather than trimming a key into inaccuracy.
-- **Heavy `scope: "deep"` tagging in one batch.** Depth problems are usually
-  allocation problems, and tagging has a second-order cost: it shrinks the
-  `core` pool, which shrinks every per-skill target, which can push a skill
-  you never touched out of tolerance. Fix the allocation first.
+- **Questions that overshoot the blueprint cognitive level.** Depth problems
+  are usually allocation problems — if a skill is over-provisioned, authoring
+  runs out of blueprint-level facts and starts mining detail. Rewrite to
+  conceptual discrimination or drop the question rather than accumulating trivia.
 
 ## Done when
 

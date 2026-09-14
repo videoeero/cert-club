@@ -25,18 +25,11 @@ import {
   getAttempt,
   getBookmarkedQuestionIds,
   getMissedQuestionIds,
-  getPreferences,
   recordMissedQuestionIds,
   saveAttempt,
   setBookmarkedQuestionIds as persistBookmarkedQuestionIds,
-  setPreferences as persistPreferences,
 } from "../lib/storage";
-import type {
-  Question,
-  QuizConfig,
-  RetakeNavigationState,
-  ScopeFilter,
-} from "../types";
+import type { Question, QuizConfig, RetakeNavigationState } from "../types";
 
 interface ActiveSession {
   questions: Question[];
@@ -73,7 +66,6 @@ export function QuizSessionPage() {
     new Set<string>(),
   );
   const [missedQuestionIds, setMissedQuestionIds] = useState(new Set<string>());
-  const [scopeFilter, setScopeFilter] = useState<ScopeFilter>("core-only");
   const [storageError, setStorageError] = useState<string | null>(null);
   const [retakeError, setRetakeError] = useState<string | null>(null);
   const [finishError, setFinishError] = useState<string | null>(null);
@@ -103,7 +95,6 @@ export function QuizSessionPage() {
     try {
       setBookmarkedQuestionIds(new Set(getBookmarkedQuestionIds(certSlug)));
       setMissedQuestionIds(new Set(getMissedQuestionIds(certSlug)));
-      setScopeFilter(getPreferences().scopeFilter);
     } catch (error) {
       setStorageError(errorMessage(error));
     }
@@ -278,15 +269,6 @@ export function QuizSessionPage() {
           certSlug={certSlug ?? ""}
           bookmarkedQuestionIds={bookmarkedQuestionIds}
           missedQuestionIds={missedQuestionIds}
-          scopeFilter={scopeFilter}
-          onScopeFilterChange={(next) => {
-            setScopeFilter(next);
-            try {
-              persistPreferences({ scopeFilter: next });
-            } catch (error) {
-              setStorageError(errorMessage(error));
-            }
-          }}
           storageError={storageError}
           onStartSession={(qs, config) => {
             setActiveSession({

@@ -103,7 +103,6 @@ function validQuestion() {
     domain: "alpha",
     difficulty: "medium",
     status: "reviewed",
-    scope: "core",
     stem: "Which option is correct?",
     options: [
       { id: "a", text: "The distractor" },
@@ -163,13 +162,11 @@ test("the required-field set is actually derived from the schema", () => {
     assert.ok(fields.includes(field), `expected "${field}" to be required`);
   }
   assert.ok(
-    fields.length >= 12,
+    fields.length >= 11,
     `derived only ${fields.length} required field(s) — reflection is probably broken`,
   );
   assert.ok(
-    !fields.includes("subdomain") &&
-      !fields.includes("scopeNote") &&
-      !fields.includes("distractorNotes"),
+    !fields.includes("subdomain") && !fields.includes("distractorNotes"),
     "optional fields must not be treated as required",
   );
 });
@@ -192,13 +189,9 @@ for (const field of requiredQuestionFields()) {
 }
 
 test("loadCertContent accepts a question carrying every optional field", async () => {
-  // scopeNote is only legal when scope is "deep", so this question exercises
-  // that pairing as well as the optional fields themselves.
   const question = {
     ...validQuestion(),
     subdomain: "alpha-skill",
-    scope: "deep",
-    scopeNote: "Above the sample questions' level, kept for mastery practice.",
     distractorNotes: { a: "Plausible because X, but wrong because Y." },
   };
   assert.equal(questionSchema.safeParse(question).success, true);
@@ -210,10 +203,6 @@ test("loadCertContent accepts a question carrying every optional field", async (
 
   assert.equal(content.questions.length, 1);
   assert.equal(content.questions[0].subdomain, "alpha-skill");
-  assert.equal(
-    content.questions[0].scopeNote,
-    "Above the sample questions' level, kept for mastery practice.",
-  );
   assert.deepEqual(content.questions[0].distractorNotes, {
     a: "Plausible because X, but wrong because Y.",
   });

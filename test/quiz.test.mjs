@@ -4,7 +4,6 @@ import test from "node:test";
 import {
   answerCountLabel,
   calculateQuizResults,
-  filterQuestionsByScope,
   filterReviewQuestions,
   getUnusedQuizQuestions,
   prepareRetakeSession,
@@ -27,7 +26,6 @@ function question(id, domain, type = "single", correct = ["a"]) {
     domain,
     difficulty: "medium",
     status: "reviewed",
-    scope: "core",
     stem: `Question ${id}`,
     options: [
       { id: "a", text: "Option A" },
@@ -426,81 +424,13 @@ test("simulateQuizAnswers: degenerate question with no distractors", () => {
   assert.equal(scoreAnswer(degenerateQ, answers[degenerateQ.id]), false);
 });
 
-function scopedQuestion(id, domain, scope = "core", subdomain) {
+function questionWithSkill(id, domain, subdomain) {
   const built = question(id, domain);
-  built.scope = scope;
-  if (scope !== "core") {
-    built.scopeNote = "Tagged for test purposes.";
-  }
   if (subdomain !== undefined) {
     built.subdomain = subdomain;
   }
   return built;
 }
-
-const scopedBank = [
-  scopedQuestion("core-1", "alpha"),
-  scopedQuestion("core-2", "alpha", "core"),
-  scopedQuestion("deep-1", "alpha", "deep"),
-  scopedQuestion("deep-2", "beta", "deep"),
-];
-
-test("defaults to the exam-aligned slice of the bank", () => {
-  assert.deepEqual(
-    filterQuestionsByScope(scopedBank).map((q) => q.id),
-    ["core-1", "core-2"],
-  );
-});
-
-test("widens the pool when the scope filter opens up", () => {
-  assert.deepEqual(
-    filterQuestionsByScope(scopedBank, "core-only").map((q) => q.id),
-    ["core-1", "core-2"],
-  );
-  assert.deepEqual(
-    filterQuestionsByScope(scopedBank, "with-deep").map((q) => q.id),
-    ["core-1", "core-2", "deep-1", "deep-2"],
-  );
-});
-
-test("applies the scope filter to every selection mode", () => {
-  for (const mode of ["all", "random", "weighted"]) {
-    const selected = selectQuestions(scopedBank, domains, {
-      mode,
-      ...(mode === "all" ? {} : { count: 4 }),
-    });
-    assert.deepEqual(
-      selected.map((q) => q.id).sort(),
-      ["core-1", "core-2"],
-      `mode ${mode} leaked a tagged question`,
-    );
-  }
-
-  // beta holds only a deep question, so the default filter empties it.
-  assert.throws(
-    () =>
-      selectQuestions(scopedBank, domains, {
-        mode: "domain",
-        domain: "beta",
-      }),
-    /No questions are available for the selected domain "beta"/,
-  );
-});
-
-test("defaults the scope filter to core-only when unset", () => {
-  const selected = selectQuestions(scopedBank, domains, { mode: "all" });
-  assert.equal(selected.length, 2);
-});
-
-test("reports when the scope filter empties the pool", () => {
-  assert.throws(
-    () =>
-      selectQuestions([scopedQuestion("deep-only", "alpha", "deep")], domains, {
-        mode: "all",
-      }),
-    /No questions match the selected question scope/,
-  );
-});
 
 test("weights by skill when a domain publishes a skill breakdown", () => {
   const skillDomains = [
@@ -515,10 +445,10 @@ test("weights by skill when a domain publishes a skill breakdown", () => {
     },
   ];
   const bank = [
-    scopedQuestion("big-1", "alpha", undefined, "big"),
-    scopedQuestion("big-2", "alpha", undefined, "big"),
-    scopedQuestion("small-1", "alpha", undefined, "small"),
-    scopedQuestion("small-2", "alpha", undefined, "small"),
+    questionWithSkill("big-1", "alpha", "big"),
+    questionWithSkill("big-2", "alpha", "big"),
+    questionWithSkill("small-1", "alpha", "small"),
+    questionWithSkill("small-2", "alpha", "small"),
   ];
 
   // Domain-level weighting cannot distinguish these four; skill-level weighting
@@ -548,10 +478,7 @@ test("weights by skill when a domain publishes a skill breakdown", () => {
 });
 
 test("falls back to domain weighting when no skills are declared", () => {
-  const bank = [
-    scopedQuestion("alpha-1", "alpha"),
-    scopedQuestion("beta-1", "beta"),
-  ];
+  const bank = [question("alpha-1", "alpha"), question("beta-1", "beta")];
 
   const selected = selectQuestions(bank, domains, {
     mode: "weighted",
@@ -568,8 +495,8 @@ test("redistributes a domain's shortfall to other domains when its pool runs dry
   // "small" is weighted at 90% but only has one question available; "big"
   // must absorb the rest of the quota without exceeding its own pool either.
   const bank = [
-    scopedQuestion("small-1", "small"),
-    ...Array.from({ length: 9 }, (_, i) => scopedQuestion(`big-${i}`, "big")),
+    question("small-1", "small"),
+    ...Array.from({ length: 9 }, (_, i) => question(`big-${i}`, "big")),
   ];
 
   for (let seed = 0; seed < 50; seed += 1) {
@@ -613,9 +540,9 @@ test("only reaches a question with an undeclared subdomain once every declared s
   // "unknown" names no declared skill — content validation rejects this in
   // the real bank, so this exercises the defensive fallback bucket only.
   const bank = [
-    scopedQuestion("a-1", "alpha", "core", "known-a"),
-    scopedQuestion("b-1", "alpha", "core", "known-b"),
-    scopedQuestion("orphan-1", "alpha", "core", "unknown"),
+    questionWithSkill("a-1", "alpha", "known-a"),
+    questionWithSkill("b-1", "alpha", "known-b"),
+    questionWithSkill("orphan-1", "alpha", "unknown"),
   ];
 
   for (let seed = 0; seed < 50; seed += 1) {
@@ -651,46 +578,29 @@ test("only reaches a question with an undeclared subdomain once every declared s
   }
 });
 
-test("getUnusedQuizQuestions excludes used questions and respects scope/domain", () => {
+test("getUnusedQuizQuestions excludes used questions and respects domain", () => {
   const bank = [
     question("q1", "alpha"),
     question("q2", "alpha"),
     question("q3", "beta"),
-    { ...question("q4", "beta"), scope: "deep", scopeNote: "Advanced topic" },
   ];
 
   // Exclude seen questions
-  const unused1 = getUnusedQuizQuestions(bank, ["q1"], "core-only");
+  const unused1 = getUnusedQuizQuestions(bank, ["q1"]);
   assert.deepEqual(
     unused1.map((q) => q.id),
     ["q2", "q3"],
   );
 
-  // Deep questions included when scope is with-deep
-  const unused2 = getUnusedQuizQuestions(bank, ["q1"], "with-deep");
-  assert.deepEqual(
-    unused2.map((q) => q.id),
-    ["q2", "q3", "q4"],
-  );
-
   // Domain filter applied
-  const unusedDomain = getUnusedQuizQuestions(
-    bank,
-    ["q1"],
-    "core-only",
-    "alpha",
-  );
+  const unusedDomain = getUnusedQuizQuestions(bank, ["q1"], "alpha");
   assert.deepEqual(
     unusedDomain.map((q) => q.id),
     ["q2"],
   );
 
   // All questions used
-  const unusedAll = getUnusedQuizQuestions(
-    bank,
-    ["q1", "q2", "q3"],
-    "core-only",
-  );
+  const unusedAll = getUnusedQuizQuestions(bank, ["q1", "q2", "q3"]);
   assert.deepEqual(unusedAll, []);
 });
 
@@ -705,7 +615,6 @@ test("prepareRetakeSession: exact retake reproduces questions in order", () => {
       mode: "random",
       count: 2,
       revealMode: "immediate",
-      scopeFilter: "core-only",
     },
     questionIds: ["q3", "q1"],
   };
@@ -760,7 +669,6 @@ test("prepareRetakeSession: random retake re-runs selection with attempt config"
       mode: "random",
       count: 2,
       revealMode: "end",
-      scopeFilter: "core-only",
     },
     questionIds: ["q1", "q2"],
   };
@@ -773,7 +681,7 @@ test("prepareRetakeSession: random retake re-runs selection with attempt config"
 
   // Mode "all" is randomized with count set
   const allAttempt = {
-    config: { mode: "all", revealMode: "immediate", scopeFilter: "core-only" },
+    config: { mode: "all", revealMode: "immediate" },
     questionIds: ["q1", "q2", "q3"],
   };
   const allRetake = prepareRetakeSession(bank, domains, allAttempt, "random");
@@ -797,7 +705,6 @@ test("prepareRetakeSession: other retake selects from unseen questions", () => {
       mode: "random",
       count: 2,
       revealMode: "immediate",
-      scopeFilter: "core-only",
     },
     questionIds: ["q1", "q2"],
   };
@@ -812,7 +719,6 @@ test("prepareRetakeSession: other retake selects from unseen questions", () => {
       mode: "random",
       count: 4,
       revealMode: "immediate",
-      scopeFilter: "core-only",
     },
     questionIds: ["q1", "q2", "q3", "q4"],
   };
@@ -828,7 +734,6 @@ test("prepareRetakeSession: other retake selects from unseen questions", () => {
       domain: "alpha",
       count: 1,
       revealMode: "end",
-      scopeFilter: "core-only",
     },
     questionIds: ["q1"],
   };
@@ -850,7 +755,6 @@ test("prepareRetakeSession: other retake selects from unseen questions", () => {
       mode: "random",
       count: 5,
       revealMode: "immediate",
-      scopeFilter: "core-only",
     },
     questionIds: ["q1", "q2", "q3", "q4", "q5"],
   };
@@ -867,7 +771,6 @@ test("prepareRetakeSession: throws on unsupported mode", () => {
       mode: "random",
       count: 1,
       revealMode: "immediate",
-      scopeFilter: "core-only",
     },
     questionIds: ["q1"],
   };
@@ -898,7 +801,6 @@ test("prepareRetakeSession: review mode retake respects reviewScope and domain i
       reviewScope: "missed",
       count: 2,
       revealMode: "immediate",
-      scopeFilter: "core-only",
     },
     questionIds: ["m1", "m2"],
   };
@@ -925,7 +827,6 @@ test("prepareRetakeSession: review mode retake respects reviewScope and domain i
       domain: "alpha",
       count: 2,
       revealMode: "immediate",
-      scopeFilter: "core-only",
     },
     questionIds: ["m1", "m2"],
   };
@@ -970,7 +871,6 @@ test("prepareRetakeSession: review mode retake respects reviewScope and domain i
             domain: "alpha",
             count: 2,
             revealMode: "immediate",
-            scopeFilter: "core-only",
           },
           questionIds: ["m1", "m2"],
         },

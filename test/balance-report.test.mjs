@@ -6,7 +6,6 @@ import {
   BalanceReportError,
   buildBalanceReport,
   buildRepositoryReports,
-  isCoreQuestion,
 } from "../scripts/balance-report.mjs";
 
 const manifest = {
@@ -32,17 +31,11 @@ function questions(counts, extra = []) {
   const built = [];
   for (const [subdomain, count] of Object.entries(counts)) {
     for (let index = 0; index < count; index += 1) {
-      built.push({ domain: "tools-and-mcps", subdomain, scope: "core" });
+      built.push({ domain: "tools-and-mcps", subdomain });
     }
   }
   return [...built, ...extra];
 }
-
-test("counts only questions explicitly scoped core", () => {
-  assert.equal(isCoreQuestion({ scope: "core" }), true);
-  assert.equal(isCoreQuestion({ scope: "deep" }), false);
-  assert.equal(isCoreQuestion({}), false);
-});
 
 test("reports an evenly split bank as balanced", () => {
   const report = buildBalanceReport(
@@ -50,7 +43,7 @@ test("reports an evenly split bank as balanced", () => {
     questions({ "tool-implementation": 10, "mcp-server-development": 10 }),
   );
 
-  assert.equal(report.coreCount, 20);
+  assert.equal(report.questionCount, 20);
   assert.equal(report.target, 20);
   assert.deepEqual(report.offBalance, []);
   assert.deepEqual(
@@ -86,30 +79,6 @@ test("stays silent inside the tolerance", () => {
     }),
   );
 
-  assert.deepEqual(report.offBalance, []);
-});
-
-test("excludes tagged questions from the core count and the targets", () => {
-  const report = buildBalanceReport(
-    manifest,
-    questions({ "tool-implementation": 10, "mcp-server-development": 10 }, [
-      {
-        domain: "tools-and-mcps",
-        subdomain: "tool-implementation",
-        scope: "deep",
-        scopeNote: "Above the sample questions' cognitive level.",
-      },
-      {
-        domain: "tools-and-mcps",
-        subdomain: "mcp-server-development",
-        scope: "deep",
-        scopeNote: "Not traceable to a blueprint objective.",
-      },
-    ]),
-  );
-
-  assert.equal(report.coreCount, 20);
-  assert.equal(report.taggedCount, 2);
   assert.deepEqual(report.offBalance, []);
 });
 
@@ -169,11 +138,9 @@ test("useExamMultiplier sets target to twice the examQuestionCount", () => {
     examQuestionCount: 50,
     domains: [{ slug: "d", name: "D", weight: 100 }],
   };
-  const report = buildBalanceReport(
-    manifestWithExam,
-    [{ domain: "d", scope: "core" }],
-    { useExamMultiplier: true },
-  );
+  const report = buildBalanceReport(manifestWithExam, [{ domain: "d" }], {
+    useExamMultiplier: true,
+  });
   assert.equal(report.target, 100);
   assert.equal(report.domains[0].target, 100);
   assert.equal(report.domains[0].delta, -99);
@@ -188,11 +155,7 @@ test("calculates domain balance with correct deltas", () => {
         { slug: "d2", name: "D2", weight: 60 },
       ],
     },
-    [
-      { domain: "d1", scope: "core" },
-      { domain: "d1", scope: "core" },
-      { domain: "d2", scope: "core" },
-    ],
+    [{ domain: "d1" }, { domain: "d1" }, { domain: "d2" }],
     { target: 10 },
   );
   assert.deepEqual(
@@ -204,17 +167,14 @@ test("calculates domain balance with correct deltas", () => {
   );
 });
 
-test("useExamMultiplier falls back to core.length when examQuestionCount is missing", () => {
+test("useExamMultiplier falls back to questions.length when examQuestionCount is missing", () => {
   const manifestWithoutExam = {
     cert: "custom-cert",
     domains: [{ slug: "d", name: "D", weight: 100 }],
   };
   const report = buildBalanceReport(
     manifestWithoutExam,
-    [
-      { domain: "d", scope: "core" },
-      { domain: "d", scope: "core" },
-    ],
+    [{ domain: "d" }, { domain: "d" }],
     { useExamMultiplier: true },
   );
   assert.equal(report.target, 2);

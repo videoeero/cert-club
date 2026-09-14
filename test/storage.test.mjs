@@ -3,17 +3,14 @@ import test from "node:test";
 
 import {
   clearMissedQuestionIds,
-  DEFAULT_PREFERENCES,
   getAttempt,
   getAttempts,
   getBookmarkedQuestionIds,
   getMissedQuestionIds,
-  getPreferences,
   MAX_ATTEMPT_HISTORY,
   recordMissedQuestionIds,
   saveAttempt,
   setBookmarkedQuestionIds,
-  setPreferences,
   STORAGE_KEYS,
   StorageError,
 } from "../src/lib/storage.ts";
@@ -141,43 +138,7 @@ test("rejects saving an attempt that does not match the expected shape", () => {
   assert.deepEqual(getAttempts("test-cert", storage), []);
 });
 
-test("defaults preferences to exam-aligned questions only", () => {
-  const storage = new MemoryStorage();
-
-  assert.deepEqual(getPreferences(storage), DEFAULT_PREFERENCES);
-  assert.equal(getPreferences(storage).scopeFilter, "core-only");
-});
-
-test("round-trips the scope filter preference", () => {
-  const storage = new MemoryStorage();
-
-  setPreferences({ scopeFilter: "with-deep" }, storage);
-  assert.equal(getPreferences(storage).scopeFilter, "with-deep");
-
-  setPreferences({ scopeFilter: "core-only" }, storage);
-  assert.equal(getPreferences(storage).scopeFilter, "core-only");
-});
-
-test("falls back to the default when stored preferences are unusable", () => {
-  const storage = new MemoryStorage();
-
-  storage.setItem(STORAGE_KEYS.preferences, "not json at all");
-  assert.deepEqual(getPreferences(storage), DEFAULT_PREFERENCES);
-
-  storage.setItem(
-    STORAGE_KEYS.preferences,
-    JSON.stringify({ version: 1, data: { scopeFilter: "core-and-deep" } }),
-  );
-  assert.deepEqual(getPreferences(storage), DEFAULT_PREFERENCES);
-
-  storage.setItem(
-    STORAGE_KEYS.preferences,
-    JSON.stringify({ version: 99, data: { scopeFilter: "with-deep" } }),
-  );
-  assert.deepEqual(getPreferences(storage), DEFAULT_PREFERENCES);
-});
-
-test("keeps a scope filter recorded on a stored attempt", () => {
+test("preserves legacy scope filter recorded on a stored attempt", () => {
   const storage = new MemoryStorage();
   const record = attempt("scoped");
   record.config.scopeFilter = "with-deep";
@@ -189,10 +150,10 @@ test("keeps a scope filter recorded on a stored attempt", () => {
   );
 });
 
-test("rejects an attempt carrying an unknown scope filter", () => {
+test("rejects an attempt carrying an invalid config", () => {
   const storage = new MemoryStorage();
-  const record = attempt("bad-scope");
-  record.config.scopeFilter = "core-and-deep";
+  const record = attempt("bad-config");
+  record.config.mode = "invalid-mode";
 
   assert.throws(
     () => saveAttempt(record, storage),

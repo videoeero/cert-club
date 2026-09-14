@@ -37,13 +37,6 @@ export interface QuestionOption {
   text: string;
 }
 
-/**
- * "core" is traceable to a blueprint objective and pitched at the exam's
- * cognitive level; "deep" is sound and sourced but sits above it. Every
- * question declares one, so nothing enters the bank unclassified.
- */
-export type QuestionScope = "core" | "deep";
-
 export interface Question {
   id: string;
   cert: string;
@@ -53,8 +46,6 @@ export interface Question {
   subdomain?: string;
   difficulty: "easy" | "medium" | "hard";
   status: "draft" | "reviewed";
-  scope: QuestionScope;
-  scopeNote?: string;
   stem: string;
   options: QuestionOption[];
   correct: string[];
@@ -75,17 +66,6 @@ export type QuestionSelectionMode =
 
 export type ReviewScope = "missed" | "bookmarked" | "missed-or-bookmarked";
 
-/**
- * Which slice of the bank a session may draw from. "core-only" keeps sessions
- * aligned to the published blueprint; "with-deep" opts into questions that sit
- * above the exam's cognitive level.
- */
-export type ScopeFilter = "core-only" | "with-deep";
-
-export interface Preferences {
-  scopeFilter: ScopeFilter;
-}
-
 export type RevealMode = "immediate" | "end";
 
 export type SimulationPreset =
@@ -96,7 +76,6 @@ export interface QuizSelectionConfig {
   count?: number;
   domain?: string;
   reviewScope?: ReviewScope;
-  scopeFilter?: ScopeFilter;
 }
 
 export interface QuizConfig extends QuizSelectionConfig {

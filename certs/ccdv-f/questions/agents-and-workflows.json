@@ -8,7 +8,6 @@
     "subdomain": "agent-architecture",
     "difficulty": "easy",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A developer runs a task with the Claude Agent SDK and sets no turn limit and no budget limit. Assuming the task completes normally, what causes the agent loop to stop so the SDK can emit its final result message?",
     "options": [
       {
@@ -42,54 +41,6 @@
     "sourceCheckedAt": "2026-09-03"
   },
   {
-    "id": "ccdv-f-agents-and-workflows-002",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "multi",
-    "domain": "agents-and-workflows",
-    "subdomain": "agent-architecture",
-    "difficulty": "medium",
-    "status": "reviewed",
-    "scope": "deep",
-    "scopeNote": "Tests turn-cap counting (a turn requesting three tools at once consumes one turn) and that subagent spend counts against the parent run's budget cap. On-blueprint under agent architecture, but the exam tests that bounds exist and that a run can detect hitting one, not the accounting rules behind the counters.",
-    "stem": "A team is moving an agentic application into production and needs to establish predictable boundaries on open-ended runs. A single turn can involve Claude requesting several tool calls at once, and a run can spawn subagents that make their own requests. Which TWO statements accurately describe how the turn and budget caps behave in that situation?",
-    "options": [
-      {
-        "id": "a",
-        "text": "The turn cap counts tool-use turns, so a single turn in which Claude requests three tool calls at once still consumes only one turn of the allowance."
-      },
-      {
-        "id": "b",
-        "text": "The turn cap counts every individual tool call, so a turn requesting three tools at once consumes three turns of the allowance."
-      },
-      {
-        "id": "c",
-        "text": "The budget cap is compared against the run's total cost, which includes spend by any subagents the run spawns, not just the parent agent's own requests."
-      },
-      {
-        "id": "d",
-        "text": "Subagent spend is metered separately from the parent run and never counts against the run's budget cap."
-      },
-      {
-        "id": "e",
-        "text": "Agent loops are guaranteed to terminate automatically once a task is complete, making explicit turn and budget limits unnecessary."
-      }
-    ],
-    "correct": [
-      "a",
-      "c"
-    ],
-    "explanation": "A turn is one round trip through the loop: Claude produces output (which may include several tool calls at once), the SDK executes them, and the results feed back automatically. The turn cap counts these round trips, not the individual tool calls inside them, so a turn that fans out to three tools still consumes only one turn. The budget cap is compared against the run's total cost, and that total explicitly includes subagent spend, so a run that fans out into many subagents can still be bounded by one ceiling. Both caps end the loop with a dedicated error subtype rather than a normal success result, and neither error subtype carries the final result text.",
-    "distractorNotes": {
-      "b": "The unit the cap counts is the turn, not the tool call. The SDK executes every tool call from a single turn and feeds all the results back as one round trip, which is why parallel tool use does not multiply against the turn allowance.",
-      "d": "Subagent requests are not walled off from the parent's accounting. Their spend counts toward the same total the budget cap is compared against, which is precisely why the cap is useful for bounding a run that fans out into subagents.",
-      "e": "Capable models usually stop on their own, but tool errors, ambiguous instructions, and edge cases can still keep a loop going. Explicit limits are the documented safeguard for production, not an optional extra."
-    },
-    "sourceUrl": "https://code.claude.com/docs/en/agent-sdk/agent-loop",
-    "sourceNote": "Sections 'Control how the loop runs' subsection 'Turns and budget', and 'Handle the result'",
-    "sourceCheckedAt": "2026-09-03"
-  },
-  {
     "id": "ccdv-f-agents-and-workflows-003",
     "cert": "ccdv-f",
     "schemaVersion": 1,
@@ -98,7 +49,6 @@
     "subdomain": "agent-architecture",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An Agent SDK agent is given a formatting rule in its opening prompt. It follows the rule early on, but many turns into the same long session it quietly stops applying it, even though no options or prompts were changed. What explains this, and what is the documented way to make the rule stick?",
     "options": [
       {
@@ -140,7 +90,6 @@
     "subdomain": "agent-patterns-and-frameworks",
     "difficulty": "easy",
     "status": "reviewed",
-    "scope": "core",
     "stem": "Anthropic's published guidance on building effective agents treats both workflows and agents as agentic systems, but draws an architectural distinction between them. What is that distinction?",
     "options": [
       {
@@ -182,7 +131,6 @@
     "subdomain": "agent-patterns-and-frameworks",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A code-modification feature must change a set of files that differs with every request, and neither the number of files nor the nature of each change can be known before the request arrives. The design has one central model call break the request into subtasks at runtime, hand each subtask to a worker model call, and combine the workers' output into a single answer. Which documented agentic pattern does this describe?",
     "options": [
       {
@@ -224,7 +172,6 @@
     "subdomain": "agent-patterns-and-frameworks",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A team is deciding between having Claude delegate to subagents turn by turn and running the same job as a dynamic workflow. Which statement correctly captures the documented difference between the two approaches?",
     "options": [
       {
@@ -266,7 +213,6 @@
     "subdomain": "agent-construction-with-claude",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A developer defines a research subagent programmatically and notices it keeps asking about a configuration file the main agent had already read and discussed earlier in the run. For a subagent that is not a fork of the parent conversation, what does the subagent actually receive from the parent?",
     "options": [
       {
@@ -308,7 +254,6 @@
     "subdomain": "agent-construction-with-claude",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A development team is designing a workflow where a primary Claude agent orchestrates several specialized subagents. What are TWO foundational characteristics of using subagents in this architecture?",
     "options": [
       {
@@ -360,7 +305,6 @@
     "subdomain": "agent-construction-with-claude",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "When designing an agentic workflow where a primary Claude agent can autonomously spawn subagents, the SDK provides mechanisms to cap subagent depth, concurrency, and total spend. Conceptually, why are these specific guardrails critical in an autonomous multi-agent architecture?",
     "options": [
       {
@@ -394,59 +338,6 @@
     "sourceCheckedAt": "2026-09-03"
   },
   {
-    "id": "ccdv-f-agents-and-workflows-010",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "multi",
-    "domain": "agents-and-workflows",
-    "subdomain": "agent-construction-with-claude",
-    "difficulty": "medium",
-    "status": "reviewed",
-    "scope": "deep",
-    "scopeNote": "Tests session-fork semantics: the fork gets its own session ID, the original stays resumable, and file changes inside the fork are real rather than snapshotted. On-blueprint under agent construction, but forking is a narrow SDK affordance the exam's treatment of agent construction does not reach.",
-    "stem": "After an agent has analysed a module across several turns, an engineer wants to explore a different design direction from that point without losing the original line of work, so they fork the session. Select TWO statements that accurately describe what forking does.",
-    "options": [
-      {
-        "id": "a",
-        "text": "Forking also snapshots the working tree, so any file changes made inside the fork are reverted as soon as the original session is resumed from the point where it left off."
-      },
-      {
-        "id": "b",
-        "text": "The fork begins from a copy of the original session's history and receives its own session ID, while the original session's ID and history are left unchanged."
-      },
-      {
-        "id": "c",
-        "text": "Forking branches the conversation only, so any file changes the forked agent makes are real and visible to anything else working in that directory."
-      },
-      {
-        "id": "d",
-        "text": "A branch is created by continuing the most recent session rather than by resuming a specific one, so the fork option applies only to the newest session."
-      },
-      {
-        "id": "e",
-        "text": "The fork supersedes the original session, which can no longer be resumed once the branch exists and must be recreated from scratch if it is needed again."
-      },
-      {
-        "id": "f",
-        "text": "A fork can only be created by the same process that originally created the session, since the branch point is held in memory rather than written to disk."
-      }
-    ],
-    "correct": [
-      "b",
-      "c"
-    ],
-    "explanation": "Forking is requested by resuming a session with the fork option set. It produces a second, independent session seeded with a copy of the original's history, and both can be resumed separately afterwards. The scope of the branch is the conversation transcript and nothing else. Because sessions persist the conversation rather than the filesystem, an agent running in the fork writes to the same working directory as any other session there, and those writes are ordinary file changes. Branching and reverting file state is a separate concern handled by file checkpointing, which is why the two features are documented as complements rather than alternatives.",
-    "distractorNotes": {
-      "a": "Sessions persist the conversation, not the filesystem, and forking inherits that scope. Snapshotting and restoring file state is what file checkpointing is for.",
-      "d": "Continuing picks up the most recent session in the directory and adds to it, which extends a single thread rather than creating a second one. A branch requires resuming a session with the fork option set.",
-      "e": "The original is untouched by the fork. Resuming it afterwards continues its own history, which is the entire reason to fork instead of simply continuing.",
-      "f": "Sessions are written to disk so they can be returned to later, including after a process restart, provided the session is reachable from the host doing the resuming."
-    },
-    "sourceUrl": "https://code.claude.com/docs/en/agent-sdk/sessions",
-    "sourceNote": "Sections 'Continue, resume, and fork' and 'Fork to explore alternatives'",
-    "sourceCheckedAt": "2026-09-03"
-  },
-  {
     "id": "ccdv-f-agents-and-workflows-011",
     "cert": "ccdv-f",
     "schemaVersion": 1,
@@ -455,7 +346,6 @@
     "subdomain": "agent-patterns-and-frameworks",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An internal service desk receives requests that fall into a few clearly distinct categories, such as password resets, hardware faults, and software licence approvals. Each category is handled best by its own prompt, tools, and downstream process, and the category can be identified reliably from the request itself. Which documented agentic pattern fits this design?",
     "options": [
       {
@@ -497,7 +387,6 @@
     "subdomain": "agent-patterns-and-frameworks",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A backend service is written in a language other than Python or TypeScript. The team wants the same agent loop the Claude Agent SDK provides, does not want to implement tool execution and the result feedback cycle themselves, and requires the loop to run on infrastructure they operate. What does the documentation direct them to do?",
     "options": [
       {
@@ -539,7 +428,6 @@
     "subdomain": "agent-construction-with-claude",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "During a large refactoring task, the main agent has to survey dozens of files before making any change, and its context fills with file contents long before the edits begin. The team wants the survey done without crowding out the working conversation. What is the best way to structure this?",
     "options": [
       {
@@ -581,7 +469,6 @@
     "subdomain": "agent-construction-with-claude",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A team adds a subagent that audits code for problems and reports them. Reviewers worry it might accidentally change the files it inspects. What is the most reliable way to guarantee it cannot?",
     "options": [
       {
@@ -623,7 +510,6 @@
     "subdomain": "agent-construction-with-claude",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A team is deciding how tightly to scope the tool set they grant an autonomous agent that will process untrusted content. Select TWO statements that correctly describe what restricting the agent to a minimal tool set achieves.",
     "options": [
       {
@@ -670,7 +556,6 @@
     "subdomain": "agent-construction-with-claude",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An internal tool exposes a 'clean up this repository' button that issues one open-ended prompt to an agent. In testing, runs vary wildly in length and cost, and one looped for a long time before stopping. How should the team make runs terminate predictably?",
     "options": [
       {
@@ -712,7 +597,6 @@
     "subdomain": "agent-construction-with-claude",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "Company policy is absolute: the agent must never write to files under a secrets directory, and every attempt must be recorded. The team needs this enforced regardless of what the model decides in any given run. Where should this rule live?",
     "options": [
       {
@@ -754,7 +638,6 @@
     "subdomain": "agent-construction-with-claude",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A team wants to run long-running, asynchronous agents in production but does not want to operate the sandboxes or session infrastructure those agents need. Which approach fits this constraint?",
     "options": [
       {
@@ -796,7 +679,6 @@
     "subdomain": "agent-architecture",
     "difficulty": "easy",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A product team is tempted to build a multi-step agent for a task that a single well-prompted model call with retrieval already handles accurately. According to Anthropic's guidance on building effective agents, what should guide the decision?",
     "options": [
       {
@@ -838,7 +720,6 @@
     "subdomain": "agent-architecture",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A team is choosing between a fixed workflow and an autonomous agent for a new feature. Select TWO statements that correctly capture the documented decision criteria.",
     "options": [
       {
@@ -885,7 +766,6 @@
     "subdomain": "agent-architecture",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A design uses one central 'manager' model call that breaks an incoming task into subtasks at runtime, hands each to a worker call, and combines the results. Select TWO statements that accurately describe this manager/supervisor structure.",
     "options": [
       {
@@ -932,7 +812,6 @@
     "subdomain": "agent-architecture",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An engineering lead asks why routing parts of a large task to subagents can improve execution quality, not just throughput. Select TWO benefits that the documentation attributes to subagents.",
     "options": [
       {
@@ -979,7 +858,6 @@
     "subdomain": "agent-architecture",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "Before shipping an autonomous agent, a team reviews the tradeoffs of agent autonomy against a scripted workflow. Select TWO statements that reflect the documented guidance.",
     "options": [
       {
@@ -1026,7 +904,6 @@
     "subdomain": "agent-patterns-and-frameworks",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A localization feature drafts a translation, then has a second model call critique it against style and nuance guidelines and feed the critique back so the draft is revised, looping until the critique is satisfied. Which documented pattern is this?",
     "options": [
       {
@@ -1068,7 +945,6 @@
     "subdomain": "agent-patterns-and-frameworks",
     "difficulty": "easy",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A content pipeline writes an outline, runs a programmatic check that the outline meets set criteria, and only then writes the full document from the approved outline. Each step consumes the previous step's output in a fixed order. Which documented pattern fits?",
     "options": [
       {

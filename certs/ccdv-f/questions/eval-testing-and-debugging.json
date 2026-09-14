@@ -1,48 +1,5 @@
 [
   {
-    "id": "ccdv-f-eval-testing-and-debugging-001",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "single",
-    "domain": "eval-testing-and-debugging",
-    "subdomain": "debugging-and-error-handling",
-    "difficulty": "medium",
-    "status": "reviewed",
-    "scope": "deep",
-    "scopeNote": "Tests writing SMART success criteria to drive prompt iteration. The Domain 4 objective covers error type identification, recovery strategy selection, trace analysis, and isolating the integration layer from model output; defining success criteria is not among them. Siblings ccdv-f-eval-testing-and-debugging-003, -004 and -008 were rewritten into genuine error-diagnosis scenarios and kept core; this one and ccdv-f-eval-testing-and-debugging-005 test success-criteria and comparison methodology instead.",
-    "stem": "A team is about to begin prompt iteration on a support-ticket classifier. Which statement of success criteria is best suited to drive that work?",
-    "options": [
-      {
-        "id": "a",
-        "text": "The classifier should handle the great majority of incoming tickets well and rarely frustrate customers, and is ready once the team agrees its output reads sensibly across a range of examples."
-      },
-      {
-        "id": "b",
-        "text": "The classifier should lead every public text-classification benchmark by the end of the sprint, since an external leaderboard is objective, published, and directly comparable across competing approaches."
-      },
-      {
-        "id": "c",
-        "text": "The classifier should reach an F1 score of at least 0.85 on a held-out set of 10,000 labelled tickets drawn from production traffic, a 5 percent improvement over the current baseline."
-      },
-      {
-        "id": "d",
-        "text": "The classifier should reach an accuracy of at least 0.85 on the twenty examples the team used while drafting the prompt, re-measured after every prompt revision so that progress stays visible."
-      }
-    ],
-    "correct": [
-      "c"
-    ],
-    "explanation": "Useful success criteria are specific, measurable, achievable, and relevant. This option names the metric and its threshold, states the dataset and its size, keeps that dataset held out and representative of the real distribution, and anchors the target to an improvement over the existing baseline so the goal is realistic. Criteria written this way can be tested empirically, which the prompt engineering guidance treats as a prerequisite before any prompt iteration begins.",
-    "distractorNotes": {
-      "a": "Neither specific nor measurable. Vague quality language gives nothing to grade against and no threshold separating a pass from a fail.",
-      "b": "Fails the achievable test. Targets should be grounded in industry benchmarks, prior experiments, research, or expert knowledge rather than set beyond current frontier capability, and public benchmarks may not be relevant to this application's own distribution.",
-      "d": "The examples used to author the prompt are not a held-out test set, so a high score shows fit to the drafting examples rather than generalization."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
-    "sourceNote": "Develop tests — 'Define your success criteria' (SMART criteria)",
-    "sourceCheckedAt": "2026-09-03"
-  },
-  {
     "id": "ccdv-f-eval-testing-and-debugging-002",
     "cert": "ccdv-f",
     "schemaVersion": 1,
@@ -51,7 +8,6 @@
     "subdomain": "debugging-and-error-handling",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "While developing an application using the Anthropic API, a developer repeatedly encounters an HTTP 529 error during periods of high traffic. What does this specific error indicate, and how should the application respond?",
     "options": [
       {
@@ -93,7 +49,6 @@
     "subdomain": "debugging-and-error-handling",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A developer is building a classification application with Claude. During initial testing, they notice the model occasionally outputs invalid categories. Which TWO foundational debugging steps should they take to diagnose and resolve this issue? (Select TWO.)",
     "options": [
       {
@@ -140,7 +95,6 @@
     "subdomain": "debugging-and-error-handling",
     "difficulty": "easy",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A developer runs an exact-match evaluation to check if Claude correctly assigns one of four fixed labels to an input. The test continuously fails, despite manual spot-checks showing the model is generating the right words. What is the most appropriate first step to diagnose and resolve this test failure?",
     "options": [
       {
@@ -174,54 +128,6 @@
     "sourceCheckedAt": "2026-09-03"
   },
   {
-    "id": "ccdv-f-eval-testing-and-debugging-005",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "multi",
-    "domain": "eval-testing-and-debugging",
-    "subdomain": "debugging-and-error-handling",
-    "difficulty": "medium",
-    "status": "reviewed",
-    "scope": "deep",
-    "scopeNote": "Tests A/B comparison methodology (held-out set, fixed grader, multidimensional criteria) between two prompt versions. The Domain 4 objective covers error type identification, recovery strategy selection, trace analysis, and isolating the integration layer from model output; comparing prompt versions is not among them, the same reasoning applied to ccdv-f-eval-testing-and-debugging-001.",
-    "stem": "A candidate prompt, version two, is proposed to replace the prompt currently in production. Which TWO practices produce a trustworthy comparison between the two versions? (Select TWO.)",
-    "options": [
-      {
-        "id": "a",
-        "text": "Change the model at the same time as the prompt, so that the strongest overall combination is found in a single evaluation pass."
-      },
-      {
-        "id": "b",
-        "text": "Run both versions against the same held-out test set with the same grader and rubric, changing only the prompt between the runs."
-      },
-      {
-        "id": "c",
-        "text": "Judge the outcome against the full set of success criteria, including operational measures such as latency and cost, rather than one headline metric."
-      },
-      {
-        "id": "d",
-        "text": "Score version two on the examples that were used to write version two, since those examples express the intended behaviour more precisely than sampled production traffic does."
-      },
-      {
-        "id": "e",
-        "text": "Adopt version two if a reviewer skims a handful of sampled outputs from each version and prefers what the new version produced."
-      }
-    ],
-    "correct": [
-      "b",
-      "c"
-    ],
-    "explanation": "Comparing versions is A/B testing against a baseline, which here is the earlier prompt. The difference is attributable to the prompt only if the dataset, the grader, and the rubric are held constant and the test set is held out from the work that produced the new version. The verdict should then be read against the multidimensional criteria the application actually needs, because most use cases require evaluation along several criteria at once, such as accuracy together with response time. A version that improves a headline score while regressing latency or cost is not necessarily an improvement, and where latency or cost is the failing criterion the better fix may be model selection rather than further prompt iteration.",
-    "distractorNotes": {
-      "a": "Changing two variables at once makes the result unattributable: any difference could come from the prompt, the model, or their interaction.",
-      "d": "Those examples are not held out. Scoring on the data used to author a prompt measures fit to that data rather than performance on the real distribution.",
-      "e": "An impression from a few samples is neither a defined metric nor a repeatable measurement, so it cannot establish whether the change is an improvement."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
-    "sourceNote": "Develop tests — 'Define your success criteria' (A/B comparisons)",
-    "sourceCheckedAt": "2026-09-03"
-  },
-  {
     "id": "ccdv-f-eval-testing-and-debugging-006",
     "cert": "ccdv-f",
     "schemaVersion": 1,
@@ -230,7 +136,6 @@
     "subdomain": "debugging-and-error-handling",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An engineering manager wants to monitor Claude Code usage across their team and verify that the telemetry pipeline is functioning correctly. Which statement accurately describes the fundamental approach to configuring and verifying Claude Code telemetry?",
     "options": [
       {
@@ -264,49 +169,6 @@
     "sourceCheckedAt": "2026-09-03"
   },
   {
-    "id": "ccdv-f-eval-testing-and-debugging-007",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "single",
-    "domain": "eval-testing-and-debugging",
-    "subdomain": "debugging-and-error-handling",
-    "difficulty": "hard",
-    "status": "reviewed",
-    "scope": "deep",
-    "scopeNote": "Tests that a usage tier's monthly spend cap returns a 429 with no retry-after header while a self-configured spend limit returns a 400. On-blueprint under debugging and error handling, but the two remaining options differ only on which flavour of spend limit carries which status code, so the item discriminates on error-body trivia rather than on diagnostic reasoning.",
-    "stem": "A production service starts receiving 429 responses. The failures persist for hours, the SDK's automatic retries never recover, and the responses carry no retry-after header. What is the most likely cause?",
-    "options": [
-      {
-        "id": "a",
-        "text": "The pinned version header has lapsed, so calls fail until the request is updated to a currently supported version value."
-      },
-      {
-        "id": "b",
-        "text": "A transient acceleration condition applies, so retrying at a fixed interval until capacity returns is the correct response."
-      },
-      {
-        "id": "c",
-        "text": "The organization reached its tier's monthly spend cap; the error details carry a spend limit code and access resumes later."
-      },
-      {
-        "id": "d",
-        "text": "The workspace's custom rate limit is set below the organization's, so this workspace throttles while org-level headroom remains unused."
-      }
-    ],
-    "correct": [
-      "c"
-    ],
-    "explanation": "Reaching a usage tier's monthly spend cap pauses API usage and returns the same 429 status and rate limit error type as an ordinary throughput rejection, which is why it is so often misdiagnosed. Two signals separate them. The spend cap response carries no retry-after header, so backoff has nothing to honor and both hand-written retries and the SDK's automatic ones keep failing. The error details also carry a specific spend limit error code that a client can branch on to raise an alert instead of retrying. Recovery comes from moving to a higher tier or from the start of the next month, not from waiting a few seconds. A limit the organization sets for itself behaves differently and is returned as a 400 invalid request error, which is another reason to inspect the error body rather than the status code alone.",
-    "distractorNotes": {
-      "a": "A version problem is reported as a request validation failure, not as a 429. Pinned versions do not silently lapse and start returning throughput errors.",
-      "b": "Acceleration conditions do arise from sharp usage increases, but they are transient and are addressed by ramping traffic gradually. They do not produce hours of failures immune to backoff.",
-      "d": "Workspace limits do throttle independently of the organization's remaining headroom, but that is an ordinary throughput rejection: it carries retry-after guidance and clears in seconds, so the SDK's backoff would recover instead of failing for hours."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/api/rate-limits",
-    "sourceNote": "Rate limits — 'Reaching your spend cap' (429 rate_limit_error)",
-    "sourceCheckedAt": "2026-09-03"
-  },
-  {
     "id": "ccdv-f-eval-testing-and-debugging-008",
     "cert": "ccdv-f",
     "schemaVersion": 1,
@@ -315,7 +177,6 @@
     "subdomain": "debugging-and-error-handling",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A developer is troubleshooting an FAQ assistant that gives significantly different answers when a user asks the exact same question in slightly different words. To systematically debug and measure this issue, which foundational evaluation criterion should the developer focus on?",
     "options": [
       {
@@ -357,7 +218,6 @@
     "subdomain": "debugging-and-error-handling",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A nightly job that extracts fields from documents has started failing. On some runs the API returns a client error before the model is invoked; on others the call succeeds but the extracted values are wrong. An engineer wants to isolate where the fault lies before changing anything. What best separates the two cases?",
     "options": [
       {

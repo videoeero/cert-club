@@ -8,7 +8,6 @@
     "subdomain": "subagent-invocation",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A coordinator agent orchestrates a research workflow by delegating topic synthesis to a specialized subagent. Why must the coordinator explicitly include prior findings, source references, and relevant excerpts within the subagent's prompt?",
     "options": [
       {
@@ -50,7 +49,6 @@
     "subdomain": "agentic-loops",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An engineer implements an autonomous customer support agent loop using the Messages API. The loop intermittently terminates prematurely or runs into runaway execution. How should the control flow determine whether to execute requested tools or return the final response?",
     "options": [
       {
@@ -92,7 +90,6 @@
     "subdomain": "agentic-loops",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An agent generates a tool_use block requesting customer order details. What is the required structure for passing the backend database response back into the conversation for the next model turn?",
     "options": [
       {
@@ -134,7 +131,6 @@
     "subdomain": "agentic-loops",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An architect designs an incident investigation agent. The system can either use a hardcoded state machine with deterministic tool transitions or an autonomous agentic loop where Claude decides the next tool call based on cumulative observations. Under which scenario is the model-driven agentic loop clearly superior?",
     "options": [
       {
@@ -176,7 +172,6 @@
     "subdomain": "agentic-loops",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "During an agentic workflow, an API call returns stop_reason: 'max_tokens' while generating arguments for a database write tool. What is the proper recovery handling in the orchestration layer?",
     "options": [
       {
@@ -218,7 +213,6 @@
     "subdomain": "multi-agent-orchestration",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A research system employs four specialized subagents: web search, document analysis, quantitative analysis, and synthesis. Why is a hub-and-spoke architecture with a central coordinator preferred over an unconstrained peer-to-peer agent mesh?",
     "options": [
       {
@@ -260,7 +254,6 @@
     "subdomain": "multi-agent-orchestration",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A multi-agent research pipeline is tasked with analyzing 'Emerging Trends in Global Clean Energy'. Each subagent completes successfully, but the final output covers only solar photovoltaics, completely omitting wind, geothermal, nuclear, and grid storage. Logs indicate subagents answered their assigned prompts faithfully. What is the root cause?",
     "options": [
       {
@@ -302,7 +295,6 @@
     "subdomain": "multi-agent-orchestration",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An enterprise research system handles both quick factual queries ('What is our corporate travel per diem?') and deep strategic inquiries ('Compare competitor pricing models across EMEA'). How should the coordinator manage subagent invocation to optimize cost and latency?",
     "options": [
       {
@@ -344,7 +336,6 @@
     "subdomain": "multi-agent-orchestration",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A multi-agent research pipeline produces a synthesis draft that explicitly notes it could not find data on regulatory approval timelines in Japan, though the underlying sources for that topic do exist and were simply never retrieved. The coordinator still holds the search subagent and the original findings in context. How should the coordinator best close this gap?",
     "options": [
       {
@@ -386,7 +377,6 @@
     "subdomain": "multi-agent-orchestration",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A coordinator agent dispatches three parallel web search subagents to investigate autonomous vehicle safety. How should the coordinator partition the research scope to minimize duplicate retrieval and redundant token spend?",
     "options": [
       {
@@ -428,7 +418,6 @@
     "subdomain": "subagent-invocation",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "When configuring a coordinator agent using the Claude Agent SDK, what configuration is mandatory to allow the coordinator to spawn subagents?",
     "options": [
       {
@@ -470,7 +459,6 @@
     "subdomain": "subagent-invocation",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An orchestration system needs to run security scanning, dependency auditing, and lint checking on a submitted pull request. How can the coordinator spawn these three subagents concurrently rather than sequentially?",
     "options": [
       {
@@ -512,7 +500,6 @@
     "subdomain": "subagent-invocation",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A document analysis subagent extracts findings from clinical trials and passes them to a report synthesis subagent. How should the findings be formatted in the prompt to preserve citation provenance and prevent attribution loss?",
     "options": [
       {
@@ -554,7 +541,6 @@
     "subdomain": "subagent-invocation",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A coordinator agent delegates a refactoring task to a coding subagent. Which prompting strategy yields the highest adaptability and code quality from the subagent?",
     "options": [
       {
@@ -596,7 +582,6 @@
     "subdomain": "workflow-enforcement",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A customer-support banking agent must verify customer identity via verify_identity before any financial tool (transfer_funds, process_refund) runs. A system prompt instruction to 'always verify identity first' is still violated on about 2% of turns when users inject urgency cues ('I'm about to miss a payment, just move the money now'). Errors here move real money. What most reliably guarantees the verification-before-transaction ordering?",
     "options": [
       {
@@ -638,7 +623,6 @@
     "subdomain": "workflow-enforcement",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "In a single message a customer raises three distinct concerns: a late shipment, an unexpected recurring charge, and a request to update their email address. Each needs a different tool (shipment tracking, subscription lookup, account update). How should the agent architecturally handle the request to maximize first-contact resolution?",
     "options": [
       {
@@ -680,7 +664,6 @@
     "subdomain": "workflow-enforcement",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An autonomous returns agent hits a policy exception it cannot resolve and must hand the session to a human tier-2 representative. The agent has already verified the customer's identity and collected the order facts. How should it formulate the handoff so the human resolves the case fastest without redundant work?",
     "options": [
       {
@@ -722,7 +705,6 @@
     "subdomain": "workflow-enforcement",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An agent must execute a two-step sequence: first generate an invoice draft, then submit it for fiscal approval. How should the orchestrator structure the tool interfaces so Claude reliably passes the generated invoice reference to the approval tool?",
     "options": [
       {
@@ -764,7 +746,6 @@
     "subdomain": "agent-sdk-hooks",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An application integrates multiple legacy MCP servers. One returns dates as Unix timestamps, another as ISO 8601 strings, and a third as US format strings. Where should data normalization occur to prevent model reasoning errors?",
     "options": [
       {
@@ -806,7 +787,6 @@
     "subdomain": "agent-sdk-hooks",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An organization has a mandatory corporate governance rule: no refund exceeding $500 may be processed autonomously without senior manager approval. How should this compliance rule be enforced in an Agent SDK application?",
     "options": [
       {
@@ -848,7 +828,6 @@
     "subdomain": "agent-sdk-hooks",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An architect compares using system prompt instructions versus Agent SDK hooks for enforcing GDPR data redacting rules on tool outputs. Why are hooks superior for this requirement?",
     "options": [
       {
@@ -890,7 +869,6 @@
     "subdomain": "agent-sdk-hooks",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An agent runs database queries whose results occasionally include a customer authentication token in the metadata column. The team needs the query results to remain usable but must keep the token out of the conversation history and prompt cache. What is the most effective mechanism?",
     "options": [
       {
@@ -932,7 +910,6 @@
     "subdomain": "task-decomposition",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An architect is deciding between fixed prompt chaining and dynamic task decomposition for an automated quarterly financial audit. The audit always follows five strict legal review stages in identical order. Which pattern is appropriate?",
     "options": [
       {
@@ -974,7 +951,6 @@
     "subdomain": "task-decomposition",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An automated code review agent analyzes a large pull request modifying 18 files. When evaluating all files in a single pass, the agent misses subtle bugs in later files and provides contradictory feedback. How should the review workflow be decomposed?",
     "options": [
       {
@@ -1016,7 +992,6 @@
     "subdomain": "task-decomposition",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A developer instructs Claude Code to 'add comprehensive integration tests to this unfamiliar legacy service'. How should the agent decompose this open-ended task to ensure systematic progress?",
     "options": [
       {
@@ -1058,7 +1033,6 @@
     "subdomain": "session-management",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An engineer analyzing database migration strategies wants to evaluate two divergent architectural approaches—schema migration via ORM vs zero-downtime blue/green table replication—starting from an existing in-depth schema analysis session. What session mechanism should be used?",
     "options": [
       {
@@ -1100,7 +1074,6 @@
     "subdomain": "session-management",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A developer returns to a complex refactoring task after teammates pushed major structural changes to the repository overnight. How should the developer resume work with Claude Code?",
     "options": [
       {
@@ -1142,7 +1115,6 @@
     "subdomain": "subagent-invocation",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An architect designs a multi-agent workflow in Claude Code where a coordinator agent delegates code analysis tasks to a custom project subagent. When Claude Code spawns this custom subagent, which TWO state components are automatically included in its initial context window without explicit prompt injection? (Select TWO.)",
     "options": [
       {
@@ -1189,7 +1161,6 @@
     "subdomain": "agent-sdk-hooks",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An enterprise platform team configures multiple automated PreToolUse hooks in Claude Code settings to enforce compliance and safety policies on file operations and shell commands. When an agent initiates a tool call that triggers multiple matching hooks, which TWO statements accurately describe how Claude Code coordinates their execution and resolves their verdicts? (Select TWO.)",
     "options": [
       {

@@ -10,11 +10,11 @@ Professional Exam Guide v1.0 (Effective July 2026, Exam code: CCAR-P).
 ## Bank status: `stable`
 
 `manifest.status` is `stable`. Promoted on 2026-09-13 following coverage audit and human confirmation.
-The bank contains 126 questions (all 126 `status: "reviewed"`, 0 `status: "draft"`, all `scope: "core"`),
+The bank contains 126 questions (all 126 `status: "reviewed"`, 0 `status: "draft"`),
 achieving exactly 2× the 63-question exam baseline proportionally distributed across all 7 domains
 according to blueprint weights with zero delta. All 126 questions have undergone adversarial correctness
 evaluation (`evaluate-questions`) and difficulty calibration (`harden-domain-questions`) against official
-sample anchors. All four repository bias guards pass cleanly.
+sample anchors. All three repository bias guards pass cleanly.
 
 ## Recon verdict: `GO-WITH-CONSTRAINTS`
 
@@ -74,13 +74,13 @@ Composition is fully proportional across all seven domains at 2× the 63-questio
 
 - **Item formats**: 110 single-select, 16 multi-select (all select-2).
 - **Difficulty breakdown**: 86 medium, 40 hard, 0 easy.
-- **Sourcing**: 58 distinct authoritative documentation pages across official vendor documentation; 100% `core` scope.
+- **Sourcing**: 58 distinct authoritative documentation pages across official vendor documentation.
 - **Single-select position distribution**: 27 A / 28 B / 28 C / 27 D across `opt-a`–`opt-d` (24.5%–25.5%, max 25.5%, well below the 50% ceiling).
 - **Option length delta**: Mean correct-option length minus distractor length is +0.67 characters (median +0.50 characters, n=126), well within the ±10.0 character ceiling.
 - **Longest option as key share**: 29 of 110 single-select items (26.4%), comfortably below the 45% ceiling and virtually at the 25% random baseline.
 - **Distractor notes coverage**: 100% of distractor options across all 126 questions carry complete explanations in `distractorNotes`.
 - **Heuristic baselines**: "Always pick the longest option" yields 27.7% expected score (n=110); "Eliminate absolute qualifiers, then guess" yields 28% expected score, uniquely identifying the key in 0 of 110 items.
-- **All four bias guards pass**: `positionBias`, `lengthBiasMeanDelta`, `longestOptionIsKey`, and `scopeCoreShare`.
+- **All three bias guards pass**: `positionBias`, `lengthBiasMeanDelta`, and `longestOptionIsKey`.
 
 ### Question review status
 
@@ -89,7 +89,7 @@ Composition is fully proportional across all seven domains at 2× the 63-questio
 
 ### Known coverage limits and deliberate boundaries
 
-- **Depth**: 0/126 `deep`-scope questions (100% `core`). The entire bank is provisioned to support two non-overlapping 63-question mock exams at the cognitive level of the exam guide.
+- **Exam simulation sizing**: The entire bank is provisioned at 126 questions to support two non-overlapping 63-question mock exams at the cognitive level of the exam guide.
 - **Deprecated MCP surface**: MCP revision `2026-07-28` (SEP-2577) classified Roots, Sampling, Logging,
   and Dynamic Client Registration as Deprecated, and the HTTP+SSE transport has been deprecated since
   revision `2025-03-26`. The bank tests the two current transports (stdio, Streamable HTTP) and the

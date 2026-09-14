@@ -7,7 +7,6 @@
     "domain": "integration",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A software engineering team is integrating internal enterprise databases and developer documentation into Claude Desktop and Claude Code using the Model Context Protocol (MCP). The team needs to expose read-only database schemas as contextual reference data, while also exposing executable query functions that modify records. Under the MCP architectural specification, which combination of MCP primitives should the MCP server implement for these two requirements?",
     "options": [
       {
@@ -48,7 +47,6 @@
     "domain": "integration",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An architect is reviewing a customer-support agent deployment. The agent is configured with tools to search knowledge base articles, draft ticket replies, issue credit card refunds, and permanently delete user accounts. A usage audit shows support specialists only use the agent to locate articles and draft replies, while billing supervisors execute refunds through a separate accounting system. Applying least-privilege architectural principles, which change best minimizes risk?",
     "options": [
       {
@@ -89,7 +87,6 @@
     "domain": "integration",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An enterprise platform exposes 95 microservice tools to Claude in a monolithic tools array. In production, Claude exhibits high initial latency and degrading tool selection accuracy, often picking incorrect tools or confusing parameters across similar endpoints. Measurements indicate tool definitions consume over 50,000 tokens of context on every turn. Which architectural adjustment best addresses both context bloat and selection accuracy?",
     "options": [
       {
@@ -130,7 +127,6 @@
     "domain": "integration",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A platform team deploys a custom Model Context Protocol (MCP) server that provides access to internal financial databases over the Streamable HTTP transport. Security auditing identifies that external web applications running in user browsers could potentially forge requests or perform DNS rebinding against the local MCP endpoint. Which security controls does the MCP specification require servers to implement to prevent this attack vector?",
     "options": [
       {
@@ -171,7 +167,6 @@
     "domain": "integration",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A backend data pipeline uses Claude Sonnet 5, a model that supports forced tool use, to extract structured entity records from regulatory filings. The downstream ingestion service requires that Claude always invoke the record_filing_entity tool on every request without emitting conversational preambles or explanations, while guaranteeing that all extracted arguments conform to the defined JSON schema. Which API configuration meets these requirements?",
     "options": [
       {
@@ -212,7 +207,6 @@
     "domain": "integration",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An inventory management agent is provided two tools: check_warehouse_stock and reserve_stock_units. In production, Claude frequently invokes both tools in parallel within a single turn. However, the business logic requires that reserve_stock_units only be evaluated after the current warehouse stock levels are confirmed by the application. How should the architect reconfigure the request to prevent Claude from calling these tools concurrently?",
     "options": [
       {
@@ -253,7 +247,6 @@
     "domain": "integration",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A telemetry monitoring system tracks an agentic assistant that executes SQL queries via an internal database tool. When a backend query times out or returns a database connection error, the application needs to communicate the failure to Claude so it can recover or notify the user gracefully, while recording the failure in distributed traces. According to the Messages API specification, how should the application format the response message?",
     "options": [
       {
@@ -294,7 +287,6 @@
     "domain": "integration",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An architect is designing a RAG system over a large corpus of corporate policy manuals split into 400-token chunks. Users ask questions such as 'What is the maximum travel expense reimbursement for managers in the EMEA division?' Retrieval frequently fails because isolated chunks state 'The cap is $250 per day' without indicating whether that rule applies to EMEA, APAC, staff, or executives. How does Anthropic's Contextual Retrieval method resolve this context loss?",
     "options": [
       {
@@ -335,7 +327,6 @@
     "domain": "integration",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A field engineering knowledge base contains both narrative troubleshooting procedures ('how to calibrate sensor drift') and exact hardware part identifiers ('Sensor Module PN-7740-X'). A standard vector search retriever performs well on narrative descriptions but frequently fails to retrieve the correct documentation when engineers search by exact part numbers. According to Anthropic's research on Contextual Retrieval, which architectural pipeline achieves the highest retrieval accuracy?",
     "options": [
       {
@@ -376,7 +367,6 @@
     "domain": "integration",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An architect is designing an enterprise MCP ecosystem. System A is a developer terminal tool running inside a local Docker desktop container that inspects local git repositories. System B is a central multi-tenant customer intelligence platform deployed on a Kubernetes cluster that serves dozens of concurrent internal AI assistants over the corporate network. Which transport mechanism should the architect select for each system according to the current MCP specification?",
     "options": [
       {
@@ -417,7 +407,6 @@
     "domain": "integration",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A security architect is maintaining an enterprise MCP host client application, built against protocol revision 2025-06-18, that integrates third-party community MCP servers. To safeguard corporate workstations, the host application must communicate to servers that they should confine themselves to designated project directories, and must mediate any server-initiated LLM inference requests to enforce token budgets and human approval. Which two client-side MCP primitives did that revision provide for these controls? (Select TWO.)",
     "options": [
       {
@@ -463,7 +452,6 @@
     "domain": "integration",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An integration engineer is implementing a custom client loop for Claude's Messages API. During multi-tool agent sessions, requests occasionally fail with HTTP 400 validation errors when returning tool execution results. When constructing a user message containing tool results, which two formatting requirements must the client strictly follow according to Anthropic's tool-use specification? (Select TWO.)",
     "options": [
       {
@@ -509,7 +497,6 @@
     "domain": "integration",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An enterprise architect is designing an agent with access to over 60 customer service tools. The team configures progressive tool discovery using the tool search tool, marking non-essential tool definitions with defer_loading: true to prevent context bloat. The application also applies prompt caching across the system prompt and core tools. How does defer_loading interact with prompt caching when Claude discovers and calls a deferred tool during a multi-turn conversation?",
     "options": [
       {
@@ -550,7 +537,6 @@
     "domain": "integration",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An autonomous engineering agent executes multi-turn codebase investigations that frequently perform 30 or more file-reading and grep tool calls in a single session. As the session progresses, accumulated file contents in historical tool_result blocks consume over 120,000 tokens, degrading Claude's focus and increasing per-turn latency. Which server-side API feature allows the application to automatically clear older tool results while keeping the agent's historical decision sequence intact?",
     "options": [
       {
@@ -591,7 +577,6 @@
     "domain": "integration",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An agentic data analysis workflow requires querying a customer database, filtering 5,000 transaction records by date, computing aggregate statistical metrics, and fetching matching merchant details across three separate tools. In a standard tool-use loop, this requires 4 to 6 round trips through Claude, incurring substantial latency and flooding the context window with raw transaction JSON. According to Anthropic's integration architecture, which mechanism best optimizes this multi-tool workflow?",
     "options": [
       {
@@ -632,7 +617,6 @@
     "domain": "integration",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A real-time coding assistant uses Claude to generate multi-thousand-line configuration files by invoking a file_writer tool. Users experience high latency before output appears because the Messages API buffers and validates the full tool JSON payload before emitting it. The engineering team enables fine-grained tool streaming with eager_input_streaming: true. What architectural trade-off must the client application handle when adopting this setting?",
     "options": [
       {
@@ -673,7 +657,6 @@
     "domain": "integration",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An enterprise architect is evaluating deployment options for three autonomous agent initiatives: (1) an internal coding assistant that runs locally on developer laptops with custom file hooks; (2) a customer-facing interactive chatbot requiring custom distributed tracing, token budgeting, and strict human-in-the-loop review for payment tools; and (3) a long-running, asynchronous document auditing agent that executes overnight across hundreds of files without self-managed infrastructure. Which integration mechanism best fits each requirement according to Anthropic's architectural guidelines?",
     "options": [
       {
@@ -714,7 +697,6 @@
     "domain": "integration",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An enterprise architecture team is standardizing integration patterns across internal developer platforms using the Model Context Protocol (MCP). The team needs to establish design guidelines for which capabilities should be triggered by end users, which should be incorporated by host applications, and which should be selected by the LLM. According to the MCP specification, which mapping correctly reflects the user interaction models of MCP primitives?",
     "options": [
       {
@@ -755,7 +737,6 @@
     "domain": "integration",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An architect is designing an MCP server that exposes rapidly fluctuating operational telemetry dashboards as MCP Resources to Claude Desktop. In early testing, the client repeatedly polls the server's resources/read endpoint every 5 seconds to detect dashboard changes, causing high network traffic and unnecessary CPU load. According to the MCP specification, how should the server and client manage dynamic resource updates without polling?",
     "options": [
       {
@@ -796,7 +777,6 @@
     "domain": "integration",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An engineering team is developing an MCP server that integrates an external enterprise CRM. When a user asks Claude to retrieve a customer record by ID, the CRM API returns an HTTP 404 \"Customer Not Found\" error. How should the MCP server return this failure to the client application according to the Model Context Protocol specification?",
     "options": [
       {
@@ -837,7 +817,6 @@
     "domain": "integration",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A legal tech platform is implementing Contextual Retrieval across 10,000 contracts (averaging 40 pages and 25,000 tokens each). For each chunk, the indexing pipeline prompts Claude Haiku with the full contract text to generate a 75-token explanatory context prefix before computing embeddings. Without optimization, the indexing job requires processing 250 million input tokens. How should the pipeline architect configure the indexing requests to minimize processing cost and latency?",
     "options": [
       {
@@ -878,7 +857,6 @@
     "domain": "integration",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An engineering team maintains a 150,000-token operational runbook library (approximately 380 pages of incident playbooks). On-call engineers frequently submit complex queries that require synthesizing interdependent procedures across multiple sections. The team proposes building a complex chunking, vector embedding, and hybrid search RAG pipeline. How should an architect evaluate this proposal against Anthropic's architectural guidelines?",
     "options": [
       {
@@ -919,7 +897,6 @@
     "domain": "integration",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An enterprise architect is designing a governance framework for host client applications that integrate third-party Model Context Protocol (MCP) servers. Certain community MCP servers still request LLM sampling (sampling/createMessage) to perform nested autonomous reasoning. To prevent unauthorized model spend, data exfiltration, and prompt injection exploitation, which two security controls should the host application implement for MCP sampling according to protocol security standards? (Select TWO.)",
     "options": [
       {
@@ -965,7 +942,6 @@
     "domain": "integration",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A financial research agent performs iterative research through a multi-turn Messages API loop. Each request includes: (1) a 5,000-token system prompt containing regulatory policies; (2) a tools array of 12 internal search and calculation tools; and (3) an accumulating conversation history of user questions, assistant tool calls, and tool_result blocks. To maximize prompt cache efficiency across subsequent tool execution turns while staying within the 4-breakpoint limit, which two cache breakpoint placements should the architect configure? (Select TWO.)",
     "options": [
       {

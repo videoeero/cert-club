@@ -134,7 +134,7 @@ Two limits on that licence:
 - Harder must not mean *ambiguous*. If two options are both defensible against
   the cited doc, the item is broken, not hard.
 - Harder must not mean *deeper*. Depth beyond the blueprint's cognitive level
-  belongs in `scope: "deep"` — see the depth anchors in
+  must be avoided — see the depth anchors in
   [`certs/ADDING-A-CERT.md`](certs/ADDING-A-CERT.md).
 
 **Formats the live exam does not use are still allowed if they are harder.**

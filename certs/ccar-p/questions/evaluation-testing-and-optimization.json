@@ -7,7 +7,6 @@
     "domain": "evaluation-testing-and-optimization",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An AI team runs a 50,000-case regression eval suite through the Message Batches API before every prompt release. On the latest run the batch reaches processing_status 'ended', but the per-request results are a mix of outcomes and the harness reports a markedly lower pass rate than the previous release. Before the team treats this as a quality regression, how should the harness handle the per-request result types?",
     "options": [
       {
@@ -48,7 +47,6 @@
     "domain": "evaluation-testing-and-optimization",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An architecture team is designing an automated evaluation harness for an investment research agent. The agent calls financial market APIs to retrieve company data and generates an analytical brief assessing investment risks. The team needs to evaluate both programmatic correctness (valid ticker symbols, correct API query payloads, JSON schema conformance) and qualitative synthesis (sound reasoning, balanced tone, coherent structure). Which grader architecture should the architect recommend?",
     "options": [
       {
@@ -89,7 +87,6 @@
     "domain": "evaluation-testing-and-optimization",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An enterprise architect is defining CI/CD deployment gates for an autonomous customer-support agent that executes account updates across external backend systems. Because LLM sampling and multi-turn tool trajectories introduce non-determinism, single-run tests produce noisy pass/fail signals. The business requires high operational reliability and minimal workflow failures in production. Which evaluation trial design and metric should the architect mandate before approving production releases?",
     "options": [
       {
@@ -130,7 +127,6 @@
     "domain": "evaluation-testing-and-optimization",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A corporate benefits assistant built with Claude and a vector database frequently provides incorrect policy terms to employees. Observability logs show that the retriever consistently surfaces the correct, authoritative benefit clauses in the top-3 context chunks, but Claude extrapolates beyond the text and invents unstated rules. Which architectural prompt modification and evaluation check should the architect implement to resolve this issue?",
     "options": [
       {
@@ -171,7 +167,6 @@
     "domain": "evaluation-testing-and-optimization",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An AI team implements an automated LLM-as-a-judge system using Claude to grade customer service chat responses against brand guidelines. During an audit, the team discovers that the judge model systematically awards higher scores to verbose, multi-paragraph responses over concise, direct answers, even when the concise answers are factually superior. How should the architect calibrate the LLM judge framework to eliminate this verbosity bias?",
     "options": [
       {
@@ -212,7 +207,6 @@
     "domain": "evaluation-testing-and-optimization",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An interactive legal research assistant handles high-volume citation lookup and case summarisation, and already streams its responses over Server-Sent Events. Attorneys still report sluggishness: the first token takes 4 to 6 seconds and complete answers run long. The prompt has already been engineered for answer quality. Which TWO further changes does Anthropic's latency guidance recommend? (Select TWO.)",
     "options": [
       {
@@ -258,7 +252,6 @@
     "domain": "evaluation-testing-and-optimization",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A software architect is preparing to deploy a major prompt overhaul for a high-traffic production customer-support agent. Offline evaluation on historical test sets shows a 5% accuracy gain, and leadership wants confirmation that the change actually improves real user outcomes before it is declared a success. Which sequencing of evaluation methods matches Anthropic's guidance on where each method fits in the agent lifecycle?",
     "options": [
       {
@@ -299,7 +292,6 @@
     "domain": "evaluation-testing-and-optimization",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An organization processes 300,000 customer inquiries daily. Analysis indicates that 70% of requests are straightforward navigational questions, greetings, or basic account status lookups, while 30% require complex multi-document reasoning and policy interpretation. Routing all queries to Claude Sonnet provides high accuracy but exceeds the target operating budget by 150%. Which architectural pattern should the architect implement to meet budget constraints without degrading response accuracy on complex queries?",
     "options": [
       {
@@ -340,7 +332,6 @@
     "domain": "evaluation-testing-and-optimization",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An enterprise agent built on the Claude Agent SDK coordinates multi-turn workflows by querying external MCP tools, running vector searches, and calling Claude. Production monitoring reports that 5% of user sessions experience sudden 30-second latency spikes or abort with unhandled errors, but the API gateway only records an aggregate HTTP 504 status. The platform team needs to see, for a single failing session, which step consumed the time. Which telemetry configuration gives them that?",
     "options": [
       {
@@ -381,7 +372,6 @@
     "domain": "evaluation-testing-and-optimization",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An AI engineering team maintains an autonomous software development agent. During CI/CD runs on developer pull requests, the automated evaluation pipeline frequently fails because it evaluates both solved baseline coding tasks and ambitious, unsolved architectural refactoring tasks in a single test suite. As a result, engineers treat test failures as expected noise and merge code without verifying whether existing capabilities broke. How should the architect restructure the evaluation suite?",
     "options": [
       {
@@ -422,7 +412,6 @@
     "domain": "evaluation-testing-and-optimization",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An enterprise document analysis platform allows users to submit multi-document dossiers alongside analytical queries to Claude. To prevent HTTP 400 invalid request errors caused by exceeding context windows and to avoid paying for expensive generation requests when payload limits are breached, the architect needs a fast, non-generative pre-flight validation mechanism that accurately counts input tokens across system prompts, documents, and tool definitions. Which approach should the architect implement?",
     "options": [
       {
@@ -463,7 +452,6 @@
     "domain": "evaluation-testing-and-optimization",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A wealth management firm is preparing to deploy an autonomous agent that reads untrusted third-party financial documents and executes rebalancing recommendations. The team has already layered its defences: untrusted text arrives in tool_result blocks, a lightweight classifier screens tool output, and the agent's permissions are scoped narrowly. Before launch, the risk committee asks how the team will establish that those defences actually hold. Which evaluation practice matches Anthropic's documented guidance?",
     "options": [
       {
@@ -504,7 +492,6 @@
     "domain": "evaluation-testing-and-optimization",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A customer support RAG assistant using Claude is producing incorrect responses on 15% of user inquiries. Stakeholders report that \"the AI is hallucinating\", but engineers disagree on whether the problem stems from the retriever returning irrelevant chunks or from Claude generating statements the retrieved chunks do not support. Which TWO evaluation practices localise the failure to a single stage? (Select TWO.)",
     "options": [
       {
@@ -550,7 +537,6 @@
     "domain": "evaluation-testing-and-optimization",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An autonomous IT remediation agent is deployed to diagnose and resolve cloud infrastructure incidents across multiple tools (restarting services, updating security groups, flushing caches). In automated CI test runs, the evaluation harness grades task success by parsing the agent's final conversational message for confirmation phrases like \"Incident resolved successfully.\" In staging, several trials passed despite the underlying service remaining unhealthy. How should the architect re-engineer the evaluation harness to prevent these false-positive passes?",
     "options": [
       {
@@ -591,7 +577,6 @@
     "domain": "evaluation-testing-and-optimization",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An AI engineering team grades a legal summarizing agent on four dimensions — factual accuracy, citation correctness, tone, and structure — using a single LLM-as-judge call that reads the output once and returns one combined quality score. Scores are noisy: an output with a citation error but polished prose often outscores a precise but plainly written one, and the team cannot tell from the score which dimension moved. How should the grading be restructured?",
     "options": [
       {
@@ -632,7 +617,6 @@
     "domain": "evaluation-testing-and-optimization",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An enterprise customer support web portal integrates Claude Sonnet 5 to draft complex billing explanations. User feedback indicates that customers perceive the application as unresponsive and slow, even though overall end-to-end response generation averages 3.5 seconds. Telemetry confirms that the browser displays an empty loading spinner for over 3 seconds before rendering the entire explanation all at once. Which architectural change directly optimizes user-perceived responsiveness?",
     "options": [
       {
@@ -673,7 +657,6 @@
     "domain": "evaluation-testing-and-optimization",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An AI engineering team maintains an automated customer service agent powered by Claude. Over six months of prompt tuning and few-shot calibration, the team achieved a 98% pass rate on their 200-task development test suite. However, upon enterprise-wide deployment, users experienced frequent misunderstandings, policy violations, and unexpected task failures. An audit reveals that developers repeatedly inspected failed test cases and added narrow prompt rules specifically tailored to those exact examples. Which TWO evaluation practices should the architect mandate to prevent eval overfitting and restore reliable measurement? (Select TWO.)",
     "options": [
       {
@@ -719,7 +702,6 @@
     "domain": "evaluation-testing-and-optimization",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A retail banking architect designs an autonomous loan servicing agent using Claude with MCP tool calling. The architect establishes an escalation mechanism where risky or ambiguous customer requests trigger human loan officer review. During pilot testing, the team observes an operational conflict: setting a sensitive escalation trigger overwhelms human officers with routine inquiries, while setting a lenient trigger allows risky actions without review. How should the architect structure the evaluation to calibrate the optimal escalation boundary?",
     "options": [
       {
@@ -760,7 +742,6 @@
     "domain": "evaluation-testing-and-optimization",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An enterprise architectural firm queries a 100,000-token corpus of municipal building codes across hundreds of engineering staff requests each day. The architect plans to enable Anthropic prompt caching (cache_control: {\"type\": \"ephemeral\"}) on the building code corpus. Before authorizing deployment, the architect evaluates the financial and operational mechanics of the caching feature. Which statement accurately describes the economic and performance characteristics of Claude prompt caching?",
     "options": [
       {
@@ -801,7 +782,6 @@
     "domain": "evaluation-testing-and-optimization",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An enterprise data analytics service executes a four-step pipeline for every customer report: (1) schema ingestion and column mapping, (2) database SQL query generation, (3) data validation against business constraints, and (4) executive brief narrative synthesis. The pipeline currently runs Claude Sonnet 4.5 across all four steps, generating excellent results but costing $0.48 per run. The architect runs comprehensive evals across Claude Haiku 4.5 and Claude Sonnet 4.5 across all steps: Haiku achieves 99% accuracy on Step 1 and Step 3, but fails 45% of tests on Step 2 (complex SQL) and Step 4 (narrative synthesis). Which architecture achieves the optimal Pareto cost-performance frontier?",
     "options": [
       {
