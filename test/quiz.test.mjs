@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 import test from "node:test";
 
+import { readCertQuestions, readJson } from "../scripts/lib/read-certs.mjs";
 import {
   answerCountLabel,
   calculateQuizResults,
@@ -272,6 +275,120 @@ test("keeps every domain's count within one of its exact blueprint share, on eve
   // Both integers adjacent to the exact target must actually occur — a
   // deterministic rounding rule would always pick the same one.
   assert.deepEqual([...seenAlphaCounts].sort(), [3, 4]);
+});
+
+/**
+ * The test above proves the mechanism on a two-domain fixture. This one runs
+ * it against the shipped `ccdv-f` bank at its real exam count, because the
+ * allocation is two-level — the domain quota is drawn first, then split across
+ * that domain's published skills — and a fixture with no skill breakdown never
+ * exercises the interaction between the layers. Each skill's target depends on
+ * the domain quota *that run* drew, so the second level is allocating against
+ * a moving total, which is the part a synthetic case cannot reproduce.
+ *
+ * This is the verification that justified replacing the original
+ * `weightedSample`: it drew buckets one at a time rather than allocating a
+ * quota, which left per-domain counts swinging several questions either side
+ * of their blueprint target on any single run, and the two smallest domains
+ * drawing nothing at all on a noticeable fraction of runs. The mean across
+ * many runs was unbiased, but no one sits an average of exams, and the
+ * per-domain breakdown this app shows is read off one run.
+ *
+ * Targets are derived from the manifest rather than hardcoded, so authoring
+ * changes do not touch this test. A failure here is a real signal and not a
+ * stale expectation: either the sampler regressed, or a domain's pool has
+ * grown too thin to fill its share of a blueprint-weighted exam.
+ */
+test("allocates the real ccdv-f blueprint exactly, at both levels, on every run", async () => {
+  const certPath = join(
+    fileURLToPath(new URL("../certs/ccdv-f", import.meta.url)),
+  );
+  const manifest = await readJson(join(certPath, "manifest.json"));
+  const bank = await readCertQuestions(certPath);
+  const count = manifest.examQuestionCount;
+
+  const domainWeight = manifest.domains.reduce(
+    (total, domain) => total + domain.weight,
+    0,
+  );
+  const domainTarget = new Map(
+    manifest.domains.map((domain) => [
+      domain.slug,
+      (count * domain.weight) / domainWeight,
+    ]),
+  );
+  const seenDomainCounts = new Map(
+    manifest.domains.map((domain) => [domain.slug, new Set()]),
+  );
+
+  for (let seed = 0; seed < 200; seed += 1) {
+    let state = seed + 1;
+    const random = () => {
+      state = (state * 1103515245 + 12345) % 2147483648;
+      return state / 2147483648;
+    };
+
+    const selected = selectQuestions(
+      bank,
+      manifest.domains,
+      { mode: "weighted", count },
+      random,
+    );
+
+    assert.equal(selected.length, count);
+    assert.equal(new Set(selected.map((q) => q.id)).size, count);
+
+    for (const domain of manifest.domains) {
+      const drawn = selected.filter((q) => q.domain === domain.slug);
+      const target = domainTarget.get(domain.slug);
+
+      assert.ok(
+        drawn.length >= Math.floor(target) && drawn.length <= Math.ceil(target),
+        `seed ${seed}: ${domain.slug} drew ${drawn.length}, outside the ` +
+          `integers adjacent to its exact target ${target.toFixed(2)}`,
+      );
+      // The smallest domains are the ones the old sampler starved, so a zero
+      // draw is called out separately from the bound that already implies it.
+      assert.notEqual(
+        drawn.length,
+        0,
+        `seed ${seed}: ${domain.slug} drew no questions`,
+      );
+      seenDomainCounts.get(domain.slug).add(drawn.length);
+
+      const skillWeight = domain.skills.reduce(
+        (total, skill) => total + skill.weight,
+        0,
+      );
+      for (const skill of domain.skills) {
+        const skillDrawn = drawn.filter((q) => q.subdomain === skill.slug);
+        // Against this run's domain quota, not the exam count: the domain
+        // level has already rounded by the time the skills are split.
+        const skillTarget = (drawn.length * skill.weight) / skillWeight;
+        assert.ok(
+          skillDrawn.length >= Math.floor(skillTarget) &&
+            skillDrawn.length <= Math.ceil(skillTarget),
+          `seed ${seed}: ${domain.slug}/${skill.slug} drew ` +
+            `${skillDrawn.length} against a target of ` +
+            `${skillTarget.toFixed(2)} from a domain quota of ${drawn.length}`,
+        );
+      }
+    }
+  }
+
+  // Every domain must land on both integers adjacent to its target across the
+  // runs. Largest-remainder rounding passes every assertion above and fails
+  // this one: it resolves each fractional remainder the same way every time,
+  // which is a fixed bias rather than the variance it replaces.
+  for (const domain of manifest.domains) {
+    const target = domainTarget.get(domain.slug);
+    assert.deepEqual(
+      [...seenDomainCounts.get(domain.slug)].sort((a, b) => a - b),
+      [Math.floor(target), Math.ceil(target)],
+      `${domain.slug} never varied across both integers adjacent to ` +
+        `${target.toFixed(2)} — the remainder is being resolved deterministically`,
+    );
+  }
 });
 
 test("formats answer counts as words with a numeric fallback", () => {
