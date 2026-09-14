@@ -170,3 +170,29 @@ Evaluation of automated quote and identifier checking across the corpus:
   - `ccar-p-stakeholder-...-018`: Quoted outdated page title `'Develop tests and evaluations'`; re-grounded on "Define success criteria and build evaluations".
   - `ccar-p-stakeholder-...-003`: Quoted `'Compare models on cost per completed task, not per token.'`; re-grounded on verbatim table text without inserted word "models".
   - `ccar-p-claude-models-...-002`: Backticked `output_config.effort`; matched page's object notation `output_config: {effort: ...}`.
+
+## Source audit — 2026-09-14
+
+Scope was limited to the CCAR-P bank. The official Version 1.0 exam guide
+(Effective July 2026) was re-read first; its version, date, domains, weights,
+item count, duration, and format still match `manifest.json`, so no blueprint
+revision was needed.
+
+All 60 normalized CCAR-P source pages (64 citation URLs, including anchored
+variants) were re-read independently. Every page returned HTTP 200, no cited
+URL moved through a redirect, and no source was stale. The 126 questions
+received an explicit **bump** disposition: their cited claims, keyed answers,
+explanations, distractor notes, and figures remained supported, so their
+`sourceCheckedAt` values were advanced to `2026-09-14`. No question required
+re-citation, rewriting, or retirement.
+
+The sole CCAR-P advisory from `check-claims`,
+`ccar-p-evaluation-testing-and-optimization-004` (`"do not hallucinate"`),
+was a false positive: the text is a quoted prompt fragment in a distractor
+note, not an attribution to the cited documentation. No claim edit was needed.
+
+This pass did not perform page-level review of the other certification banks,
+did not change any manifest domain names or weights, and did not treat source
+liveness alone as evidence of claim correctness. The Anthropic vendor profile
+was re-confirmed for the cited model, platform, Claude Code, engineering, and
+MCP hosts and re-dated accordingly.
