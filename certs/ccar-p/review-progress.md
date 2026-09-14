@@ -938,30 +938,129 @@ weak link is
 enumeration, not adjudication — which is what a mechanical sweep does reliably and a reviewer
 does not.
 
-### Workstream 5 Stage B — check-claims verification and hit rates (2026-09-13)
+### Workstream 5 Stage B — check-claims measurement and kill criterion verdict (2026-09-14)
+
+*Corrected from the 2026-09-13 note. That earlier write-up did not survive review:
+it reported only 4 findings on `ccar-p` while omitting `ccar-f` (35 findings) and
+`ccdv-f` (5 findings); asserted that `batch-processing.md` lacks 'in less than 1 hour'
+(the tool never emitted that finding, and the page carries the phrase verbatim);
+misdiagnosed `stake-003` as the vendor page stating "solved task" (the page has both
+phrases; the finding was an inserted word "models"); omitted `eval-004` (quoting
+'do not hallucinate', an illustrative prompt fragment emitted on `ccar-p`); and
+asserted that Stage B justified `--strict` gating before measuring corpus-wide precision.
+This section replaces that note with the adjudicated measurement across all five banks.*
 
 Stage B adds page text fetching for `.md`-serving hosts (`platform.claude.com`,
-`code.claude.com`, `modelcontextprotocol.io` — 360 of 561 repo citations, 64%)
-and evaluates the two hard checks plus advisory figure annotation. The remaining 201
-citations (AWS, Microsoft Learn, and `anthropic.com/engineering` which 404s on `.md`)
-are out of scope and report inconclusive.
+`code.claude.com`, `modelcontextprotocol.io` — 360 of 561 repo citations, 64.2%)
+and evaluates Check 1 (quotes) and Check 2 (backticked identifiers) alongside
+Check 3 (advisory figure annotation). Citations on non-`.md` hosts (AWS, Microsoft
+Learn, and `anthropic.com/engineering` which 404s on `.md`) report inconclusive.
 
-#### Measurement across `ccar-p` (126 questions, 90 in-scope on `.md` hosts, 36 out of scope on `www.anthropic.com`)
+#### Measurement across all five banks
 
-- **Check 1 (Quotes — hard)**: 74 quoted spans checked across in-scope items.
-  - **64 matched verbatim** (86.5%)
-  - **10 mismatched** (13.5%)
-  - True findings identified:
-    - `stakeholder-...-003`: quoted `'Compare models on cost per completed task, not per token.'` — vendor page states `"Compare on cost per solved task, not per token"`.
-    - `stakeholder-...-010`: quotation contains ellipsis `...` inserted where vendor text had `, but many finish sooner. `, and quotes `'in less than 1 hour'` where page states `"within 1 hour"`.
-    - `stakeholder-...-018`: quotes `'Develop tests and evaluations'` — the page title is `"Define success criteria and build evaluations"` and the quoted phrase appears nowhere on the cited page.
-- **Check 2 (Backticked identifiers — hard)**: 33 identifiers checked across in-scope items.
-  - **32 matched** (97.0%)
-  - **1 missing** (3.0%): `claude-models-...-002` references `output_config.effort`, which does not appear on its cited `extended-thinking` page (the page uses `output_config: {effort: ...}` and links to `effort.md`).
-- **Check 3 (Figures — advisory)**: 100 figures listed across 34 figure-bearing items.
-  - **44 found on cited page** (44.0%)
-  - **31 absent from cited page** (31.0% — illustrative hypotheticals, stem echoes, and unstated derived calculations)
-  - **25 inconclusive** (25.0% — citations on `www.anthropic.com/engineering/...` which 404s on `.md`)
+| Bank | Total Qs | Figure-bearing | In-scope citations | Quotes checked (match / mismatch) | Identifiers checked (match / missing) | Findings emitted |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| `aws-clf-c02` | 130 | 11 | 0 (all AWS) | 0 (0 / 0) | 0 (0 / 0) | 0 |
+| `az-900` | 18 | 0 | 0 (all MS Learn) | 0 (0 / 0) | 0 (0 / 0) | 0 |
+| `ccar-f` | 110 | 9 | 110 | 68 (42 / 26) | 38 (29 / 9) | 35 |
+| `ccar-p` | 126 | 34 | 90 (36 Anthropic eng) | 62 (59 / 3) | 33 (32 / 1) | 4 |
+| `ccdv-f` | 177 | 8 | 160 (17 Anthropic eng) | 90 (87 / 3) | 3 (2 / 1) | 4 |
+| **Corpus total** | **561** | **62** | **360** | **220 (188 / 32)** | **74 (63 / 11)** | **43** |
+
+All 18 unique source URLs across the emitted findings were fetched directly and
+verified (0 inconclusive fetches).
+
+> **Amended after the measurement.** One of the 44 findings this section originally
+> recorded was a defect in the checker, not in the bank: `ccdv-f-tools-and-mcps-004`
+> quotes a heading the page writes as `## Handling errors with is\_error`, and the
+> backslash escape — invisible to any reader — made the comparison fail. Markdown
+> escapes are now unescaped before stripping, and the figure below is 43, not 44.
+> The verdict is unchanged: precision moves from 9.1% to 9.3%.
+
+#### Adjudication of all 43 findings
+
+Every hard-check finding across the corpus was adjudicated against its fetched vendor documentation:
+
+##### True findings (4 of 43)
+
+- **`ccar-p-stakeholder-communication-and-lifecycle-management-003`** (Check 1, quote mismatch):
+  Quotes `'Compare models on cost per completed task, not per token.'`. The cited vendor page
+  (`optimizing-for-cost-and-intelligence`) has `"Compare on cost per completed task, not per token"`
+  in its summary table and `"...so compare models on cost per completed task"` in prose. The
+  author combined/inserted the word "models" into the table's quoted imperative. **TRUE** (non-verbatim quote).
+- **`ccar-p-stakeholder-communication-and-lifecycle-management-018`** (Check 1, quote mismatch):
+  Quotes `'Develop tests and evaluations'`. The cited vendor page (`develop-tests`) is titled
+  `"Define success criteria and build evaluations"`; the quoted phrase appears zero times on the page.
+  **TRUE** (unsourced quote).
+- **`ccar-p-claude-models-prompting-and-context-engineering-002`** (Check 2, missing identifier):
+  Backticks `output_config.effort`. The cited page (`extended-thinking`) uses object notation
+  `output_config: {effort: ...}`. **TRUE (notation-level)** (object structure vs dot notation).
+- **`ccar-f-claude-code-configuration-and-workflows-003`** (Check 2, missing identifier):
+  Backticks `@import`. The cited page (`memory.md`) documents `@path/to/import` syntax (e.g. `@README`,
+  `@AGENTS.md`). `@import` appears zero times on the page; the question teaches an invented syntax.
+  **TRUE** (unstated/invented syntax).
+
+##### False positives (39 of 43), by reason class
+
+1. **Illustrative prompt fragments (10 findings)** — sample prompt instructions or negative constraints:
+   - `ccar-p-evaluation-...-004`: `"do not hallucinate"` (negative constraint example in distractor note)
+   - `ccar-f-claude-code-...-016`: `"do not do X"`, `"think carefully"`, `"write enterprise-grade code"`
+   - `ccar-f-prompt-eng-...-002`: `"be conservative"` (flagged twice across fields), `"only report high-confidence issues"`
+   - `ccar-f-prompt-eng-...-008`: `"Effective Date:"`, `"never return null"`
+   - `ccar-f-tool-design-...-017`: `"Jira operations"` (example of a vague tool description)
+2. **Invented scenario identifiers / tool names (8 findings)** — domain entities in architectural scenarios:
+   - `ccar-f-agentic-...-018`: `invoice_id`
+   - `ccar-f-prompt-eng-...-016`: `detected_pattern`
+   - `ccar-f-tool-design-...-004`: `create_record`, `read_record`, `archive_record`
+   - `ccar-f-tool-design-...-012`: `verify_fact` (flagged twice across fields)
+   - `ccar-f-tool-design-...-013`: `extract_metadata`
+3. **Config / YAML values from distractor options (4 findings)** — invented frontmatter properties in options/notes:
+   - `ccar-f-claude-code-...-007`: `"context: background"`, `"output: silent"`, `"context: isolated"`
+   - `ccar-f-claude-code-...-009`: `"arguments: required"`
+4. **Scenario entity nouns / domain concepts / labels (4 findings)** — non-vendor terms:
+   - `ccar-f-agentic-...-007`: `"Global Clean Energy"` (scenario research topic)
+   - `ccar-f-context-...-003`: `"case facts"` (scenario architectural block, flagged twice across fields)
+   - `ccar-f-prompt-eng-...-004`: `"major"` (severity rating label)
+5. **Scare quotes / informal terminology / external concepts (4 findings)**:
+   - `ccar-f-agentic-...-017`: `"anchoring"` (cognitive bias)
+   - `ccar-f-context-...-004`: `"lost in the middle"` (standard NLP literature term)
+   - `ccdv-f-claude-code-004`: `"soft"` (scare quotes contrasting soft prompt guidance with hooks)
+   - `ccdv-f-claude-code-005`: `"headless"` (informal CLI mode jargon derived from URL slug)
+6. **Invented distractor concepts / return values (4 findings)**:
+   - `ccar-f-prompt-eng-...-019`: `"analytical mode"` (invented mode rejected in distractor note)
+   - `ccar-f-tool-design-...-005`: `"broader"` (adjective from distractor)
+   - `ccar-f-tool-design-...-009`: `"No records found"` (illustrative tool result string)
+   - `ccdv-f-model-selection-...-005`: `"cache-clear"` (invented manual command in distractor)
+7. **Globs / path patterns in configuration examples (2 findings)**:
+   - `ccar-f-claude-code-...-011`: `"terraform/**/*"`, `"**/*.tf"`
+8. **Code / dictionary string literals in unbackticked syntax (2 findings)**:
+   - `ccar-f-prompt-eng-...-013`: `"none"` (from `tool_choice: {'type': 'none'}` in unbackticked option)
+   - `ccar-f-tool-design-...-014`: `"none"` (same unbackticked pseudo-code dictionary)
+9. **Cross-page feature identifier in distractor note (1 finding)**:
+   - `ccdv-f-claude-code-004`: `.claudecodeignore` (distractor note explaining file ignore vs hooks)
+*(A tenth class recorded here originally — `ccdv-f-tools-and-mcps-004`'s
+`"Handling errors with is_error"` — was a checker defect rather than a property of the
+question, and has been fixed rather than classified. See the amendment above.)*
+
+#### Measured precision
+
+- **Check 1 (Quotes — hard)**:
+  - Corpus-wide: **2 / 32 = 6.3%** (30 false positives, 93.8% noise)
+  - `ccar-p`: 2 / 3 = 66.7%
+  - `ccar-f`: 0 / 26 = 0.0%
+  - `ccdv-f`: 0 / 3 = 0.0%
+- **Check 2 (Backticked identifiers — hard)**:
+  - Corpus-wide: **2 / 11 = 18.2%** (9 false positives, 81.8% noise)
+  - `ccar-p`: 1 / 1 = 100.0% (notation-level)
+  - `ccar-f`: 1 / 9 = 11.1%
+  - `ccdv-f`: 0 / 1 = 0.0%
+- **Combined hard checks**:
+  - Corpus-wide: **4 / 43 = 9.3%** (39 false positives, **90.7% noise**)
+  - `ccar-p`: 3 / 4 = 75.0%
+  - `ccar-f`: 1 / 35 = 2.9%
+  - `ccdv-f`: 0 / 4 = 0.0%
+- **Check 3 (Figures — advisory)**:
+  - Lists 100 figures across 34 figure-bearing questions on `ccar-p` (44 found on page, 31 absent from cited page, 25 inconclusive on non-`.md` Anthropic engineering host).
 
 #### Disagreement report: `sda-014` host status
 
@@ -971,9 +1070,28 @@ Because all 53 `www.anthropic.com/engineering` citations return 404 when `.md` i
 it falls within the 201 out-of-scope citations and reports inconclusive in live sweeps.
 Its four quoted spans are verified verbatim in unit test fixtures using injected mock page text.
 
-#### Verdict on Stage B
+#### Kill criterion verdict on Stage B
 
-Stage B's hard checks produce true findings on non-verbatim quotes and unstated identifiers
-across the `.md`-host citations (also catching `@import` on `ccar-f-...-003`). Stage B earns
-its keep and is preserved outside `npm run check`, gated behind `--strict`.
+The plan binds Stage B to a strict kill criterion: hard checks must achieve near-zero false
+positives, and a gate with 40% noise gets switched off. Measured precision across the corpus
+is **9.3% (90.7% noise)**. False positives dominate the output by an order of magnitude across
+every bank except `ccar-p`, driven by non-lexically separable shapes: illustrative prompts,
+scenario identifiers, and distractor config values.
+
+The per-bank split is worth recording, because it is sharper than the corpus figure and the
+corpus figure hides it: **`ccar-p` 3/4 = 75%, `ccdv-f` 0/4, `ccar-f` 1/35 = 2.9%.** The check
+is not uniformly bad. It performs well where a bank's free-text surface quotes actual vendor
+prose, and collapses where the surface quotes prompt fragments, config values and invented
+scenario nouns — which is what `ccar-f`, a Claude Code bank, is mostly made of. That does not
+change the verdict here: a check cannot gate when its precision depends on which bank it is
+pointed at. But it says the failure is about *what these banks quote*, not about quote-checking
+as such, and a future attempt should scope by field or by bank rather than widen the regex.
+
+Stage B fails the precision bar for a gating check. In accordance with the kill criterion:
+1. Checks 1 and 2 are **demoted to advisory checks** alongside Check 3. The script reports
+   them as advisory findings but does not gate release.
+2. The `--strict` gating flag and non-zero exit are **reverted**.
+3. The `package.json` `"check-claims"` entry is **reverted**.
+4. The documentation wiring in `CONTRIBUTING.md` and `certs/ADDING-A-CERT.md` is **reverted**,
+   restoring the count words ("Three further tasks", "None of the three").
 

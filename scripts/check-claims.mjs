@@ -13,11 +13,10 @@ import { sourcePageUrl } from "./lib/source-url.mjs";
 /**
  * Workstream 5 Stage B: check claims against cited vendor documentation.
  *
- * Neither hard check fires on any of the five motivating defects. They protect
- * the quote-and-identifier surface the bank now leans on after b74a91a; the
- * figure class is advisory-only by design, because no regex draws the
- * vendor-attribution distinction. Do not let the framing imply otherwise —
- * that is how the hole stays open behind a green check.
+ * Checks 1 and 2 (quotes and backticked identifiers) and Check 3 (figures) are
+ * all advisory — none gate. A reviewer adjudicates findings against the cited
+ * page; no regex reliably separates real citations from config values, globs,
+ * illustrative prompt fragments, or scenario entity nouns.
  *
  * Scope:
  * - Stage A enumerates the figure-bearing population offline.
@@ -29,12 +28,10 @@ import { sourcePageUrl } from "./lib/source-url.mjs";
  * - A failed, thin, or non-.md fetch is inconclusive, NEVER a finding.
  * - Normalises both sides before comparing: casefold, collapse whitespace,
  *   straighten curly quotes.
- * - Check 1 (hard): quoted spans in the provenance surface must appear verbatim
- *   on the cited page.
- * - Check 2 (hard): backticked identifiers must appear on the page.
+ * - Check 1 (advisory): quoted spans in the provenance surface compared against
+ *   the cited page.
+ * - Check 2 (advisory): backticked identifiers compared against the cited page.
  * - Check 3 (advisory): annotates Stage A's figure listing with page presence.
- *   Advisory only — never a gate.
- * - Gated behind an explicit opt-in flag (--strict), mirroring check-sources.mjs.
  */
 
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -96,10 +93,17 @@ export function stripMarkdown(text) {
   if (!text) {
     return "";
   }
-  return text
-    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
-    .replace(/[*_~`#]/g, " ")
-    .replace(/^[-*+]\s+/gm, "");
+  return (
+    text
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+      // Unescape before stripping: a heading written `## Handling errors with
+      // is\_error` carries the underscore escaped, and leaving the backslash in
+      // makes the page text differ from the quote by a character the reader
+      // never sees.
+      .replace(/\\([\\`*_{}[\]()#+\-.!])/g, "$1")
+      .replace(/[*_~`#]/g, " ")
+      .replace(/^[-*+]\s+/gm, "")
+  );
 }
 
 /**
@@ -192,9 +196,8 @@ export function extractFigures(q) {
 }
 
 /**
- * A quoted span that is not a citation of the cited page. Check 1 is a hard check,
- * so anything it flags must be a claim about the page; these shapes are not, and
- * left in they dominate the findings with noise.
+ * A quoted span that is not a citation of the cited page. Check 1 is advisory,
+ * but shapes that are clearly not page prose are filtered to reduce noise.
  *
  * - Placeholders: "<prompt>", "<ticket-number>".
  * - Identifier-shaped single tokens: "record_filing_entity", "maxTokens" — a code
@@ -303,8 +306,9 @@ export function isTextOnPage(pageText, needle) {
   // "cache control" while the quoted needle keeps the underscore. Compare a
   // variant with the emphasis characters flattened on BOTH sides, so any quote
   // carrying a snake_case identifier still matches.
-  const loose = (value) => normalizeText(value.replace(/[_*~`]/g, " "));
+  const loose = (value) => normalizeText(value.replace(/[_*~`\\]/g, " "));
   const looseRaw = loose(normRaw);
+  const looseStripped = loose(normStripped);
 
   const present = (candidate) => {
     const trimmed = candidate.trim();
@@ -317,11 +321,14 @@ export function isTextOnPage(pageText, needle) {
     return (
       normRaw.includes(trimmed) ||
       normStripped.includes(trimmed) ||
-      (looseTrimmed.length > 0 && looseRaw.includes(looseTrimmed)) ||
+      (looseTrimmed.length > 0 &&
+        (looseRaw.includes(looseTrimmed) ||
+          looseStripped.includes(looseTrimmed))) ||
       (noPunct.length > 0 &&
         (normRaw.includes(noPunct) ||
           normStripped.includes(noPunct) ||
-          looseRaw.includes(looseNoPunct)))
+          looseRaw.includes(looseNoPunct) ||
+          looseStripped.includes(looseNoPunct)))
     );
   };
 
@@ -660,7 +667,7 @@ export function formatClaimsReport(report) {
 
   if (report.hasPageResults) {
     if (report.findings.length > 0) {
-      lines.push(`  Hard check findings (${report.findings.length}):`);
+      lines.push(`  Advisory findings (${report.findings.length}):`);
       for (const f of report.findings) {
         if (f.type === "quote-mismatch") {
           lines.push(`    ${f.id}: quote mismatch "${f.item}"`);
@@ -670,7 +677,7 @@ export function formatClaimsReport(report) {
       }
     } else {
       lines.push(
-        `  Hard checks: 0 findings (${report.quotesChecked} quote(s), ${report.identifiersChecked} identifier(s) checked)`,
+        `  Advisory checks: 0 findings (${report.quotesChecked} quote(s), ${report.identifiersChecked} identifier(s) checked)`,
       );
     }
   }
@@ -690,7 +697,6 @@ async function main() {
   const slugs = [];
   const options = {
     json: false,
-    strict: false,
     offline: false,
     concurrency: DEFAULT_CONCURRENCY,
     timeoutMs: DEFAULT_TIMEOUT_MS,
@@ -700,8 +706,6 @@ async function main() {
     const arg = argv[i];
     if (arg === "--json") {
       options.json = true;
-    } else if (arg === "--strict") {
-      options.strict = true;
     } else if (arg === "--offline") {
       options.offline = true;
     } else if (arg === "--concurrency" || arg === "--timeout-ms") {
@@ -793,18 +797,6 @@ async function main() {
     for (const report of reports) {
       console.log(formatClaimsReport(report));
     }
-  }
-
-  const totalFindings = reports.reduce(
-    (sum, report) => sum + report.findings.length,
-    0,
-  );
-
-  if (options.strict && totalFindings > 0) {
-    console.error(
-      `\nClaims check failed: ${totalFindings} hard-check finding(s) detected across cited documentation.`,
-    );
-    process.exitCode = 1;
   }
 }
 

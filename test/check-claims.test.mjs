@@ -13,6 +13,7 @@ import {
   fetchPageText,
   formatClaimsReport,
   isMdHost,
+  isTextOnPage,
   normalizeText,
   provenanceSurface,
   stripMarkdown,
@@ -414,6 +415,24 @@ test("Stage B: stripMarkdown removes inline formatting markers while keeping tex
   assert.doesNotMatch(stripped, /https:\/\/example\.com/);
 });
 
+test("Stage B: a markdown-escaped underscore on the page still matches the quote", () => {
+  // handle-tool-calls.md carries the heading "## Handling errors with is\\_error".
+  // The backslash is invisible to a reader, so a quote of that heading is verbatim
+  // and must not be reported as a mismatch.
+  const page = "## Handling errors with is\\_error\n\nReturn is_error true.";
+  assert.equal(isTextOnPage(page, "Handling errors with is_error"), true);
+});
+
+test("Stage B: a snake_case identifier inside a quote survives emphasis stripping", () => {
+  // stripMarkdown reads `_` as emphasis, so the page side loses the underscore
+  // while the needle keeps it. Both sides must be flattened, not just one.
+  const page = "**Key takeaway:** Place `cache_control` on the last block.";
+  assert.equal(
+    isTextOnPage(page, "place cache_control on the last block"),
+    true,
+  );
+});
+
 test("Stage B: extractQuotedSpans extracts double and single quoted spans without apostrophe collisions", () => {
   const text = `The doc says "exact match required" and notes 'single quoted term'. But don't break on model's internal contractions.`;
   const spans = extractQuotedSpans(text);
@@ -649,7 +668,7 @@ focuses on synthesizing and analyzing the results.
   assert.ok(check.quotes.every((q) => q.status === "matched"));
 });
 
-test("Stage B: buildClaimsReport and formatClaimsReport format hard check findings and page presence", () => {
+test("Stage B: buildClaimsReport and formatClaimsReport format advisory findings and page presence", () => {
   const manifest = { cert: "test-cert" };
   const questions = [
     mockQuestion({
@@ -683,7 +702,7 @@ test("Stage B: buildClaimsReport and formatClaimsReport format hard check findin
   assert.equal(report.findings[1].item, "unsupported_param");
 
   const formatted = formatClaimsReport(report);
-  assert.match(formatted, /Hard check findings \(2\):/);
+  assert.match(formatted, /Advisory findings \(2\):/);
   assert.match(formatted, /quote mismatch "strict compliance"/);
   assert.match(formatted, /missing identifier `unsupported_param`/);
   assert.match(formatted, /explanation: 5 minutes \(found\)/);
