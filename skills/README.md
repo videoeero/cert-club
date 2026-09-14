@@ -43,6 +43,10 @@ wins and the workflow is wrong — fix it rather than following it.
 Do not add a rule to this folder. A rule stated in two places drifts, and this
 repository has already had to repair one instance of exactly that.
 
+For the end-to-end operator runbook showing how to chain these skills together
+to build a complete cert bank from scratch, see
+[`certs/AUTHORING-A-CERT-WITH-SKILLS.md`](../certs/AUTHORING-A-CERT-WITH-SKILLS.md).
+
 | Workflow                                                      | Use it when                                                             |
 | ------------------------------------------------------------- | ----------------------------------------------------------------------- |
 | [`assess-new-cert`](assess-new-cert/SKILL.md)                 | Deciding whether a proposed cert can be banked from public sources      |

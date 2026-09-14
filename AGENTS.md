@@ -139,7 +139,9 @@ new question types. They are **procedural wrappers** over this file,
 [`certs/ADDING-A-CERT.md`](certs/ADDING-A-CERT.md): they say in what order to
 do the work and where the judgement calls are, and they carry no rules of
 their own. Where a workflow and one of those documents disagree, the document
-wins and the workflow is wrong.
+wins and the workflow is wrong. For the end-to-end orchestration runbook
+chaining these skills into a complete cert bank, see
+[`certs/AUTHORING-A-CERT-WITH-SKILLS.md`](certs/AUTHORING-A-CERT-WITH-SKILLS.md).
 
 They are plain markdown in the portable [Agent Skills](https://agentskills.io/)
 layout, so read one directly at any time. `npx skills@1.5.25 add .` symlinks them

@@ -3,6 +3,11 @@
 This document is the authoritative guide for adding a certification to
 Cert Club — for human contributors and AI agents alike.
 
+> **Building with AI agents?** Follow the [Agent Authoring Runbook](./AUTHORING-A-CERT-WITH-SKILLS.md)
+> for the step-by-step skill orchestration sequence and prompt recipes. Use this
+> document as the authoritative specification for data formats, blueprint balance,
+> and content validation rules.
+
 ## Before you start
 
 Re-read the **source boundary** section in [README.md](../README.md) and the
