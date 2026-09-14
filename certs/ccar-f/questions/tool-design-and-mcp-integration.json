@@ -828,5 +828,87 @@
     "sourceUrl": "https://code.claude.com/docs/en/mcp.md",
     "sourceNote": "Scope hierarchy, precedence, and field isolation across local, project, and user scopes",
     "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-tool-design-and-mcp-integration-021",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "tool-design-and-mcp-integration",
+    "subdomain": "builtin-tools",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An engineer tasks Claude Code with diagnosing an unhandled application event: InvoicePaymentFailed within a repository containing hundreds of nested packages. To trace the event to its dispatch point and handler logic without consuming unnecessary context window tokens, which built-in tool invocation strategy should Claude Code use?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Run Glob with the pattern **/InvoicePaymentFailed* to locate files associated with the event name, then invoke Read on the returned file paths to inspect their internal contents."
+      },
+      {
+        "id": "b",
+        "text": "Execute Read across all files in the project directory simultaneously to construct a comprehensive in-memory symbol graph before searching for specific identifier strings."
+      },
+      {
+        "id": "c",
+        "text": "Use Grep to search file contents for the string InvoicePaymentFailed to locate entry points, then use Read selectively on matching files to trace the execution flow."
+      },
+      {
+        "id": "d",
+        "text": "Execute a recursive find and grep command via the Bash tool across the repository tree, streaming all matching output directly into the conversational context."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Claude Code is designed to build codebase understanding incrementally. Using Grep allows Claude to search file contents across the repository for specific string literals, function identifiers, or event dispatchers without reading unnecessary files. Once entry points are identified, Claude selectively uses Read on those specific files to trace imports and execution paths, minimizing context window usage and avoiding early compaction.",
+    "distractorNotes": {
+      "a": "Glob performs pattern matching on file paths and file names, not file contents. Unless a file happens to be named after the event string, Glob will not locate where InvoicePaymentFailed is defined or handled.",
+      "b": "Reading numerous files upfront fills the context window with irrelevant code, burning tokens and triggering auto-compaction that degrades model performance.",
+      "d": "The flaw is volume rather than the shell: streaming every match as raw stdout into the conversation spends far more context than a targeted Grep call followed by selective Read of the files it names, which is the incremental pattern the stem asks for."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/tools-reference.md",
+    "sourceNote": "Grep tool behavior for searching file contents and Read for inspecting code",
+    "sourceCheckedAt": "2026-09-14"
+  },
+  {
+    "id": "ccar-f-tool-design-and-mcp-integration-022",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "tool-design-and-mcp-integration",
+    "subdomain": "mcp-configuration",
+    "difficulty": "medium",
+    "status": "draft",
+    "stem": "An organization connects six Model Context Protocol (MCP) servers providing over fifty tools for database management, ticket tracking, and cloud deployment to Claude Code. Despite the large number of integrated tools, the developer observes that sessions start with minimal context token consumption before any tool is called. What architectural mechanism explains this behavior?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Claude Code imposes a fixed per-server tool limit, loading schemas for the first few endpoints and omitting the remainder from the prompt."
+      },
+      {
+        "id": "b",
+        "text": "Claude Code loads each server's tool list from a discovery cache saved in a previous session, so tool schemas never enter the context window."
+      },
+      {
+        "id": "c",
+        "text": "Claude Code embeds all fifty schemas into a local vector index on startup, retrieving matching tool schemas via similarity search on each turn."
+      },
+      {
+        "id": "d",
+        "text": "Claude Code enables tool search by default, deferring full tool schemas and loading only tool names and server instructions until needed."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Claude Code implements MCP tool search by default to keep context consumption low when connecting multiple MCP servers. Instead of loading every tool's complete JSON schema into the prompt upfront, Claude Code defers tool schemas and loads only tool names and server instructions at session start. When Claude determines that an external tool is required, it discovers and retrieves the full parameter definitions on demand.",
+    "distractorNotes": {
+      "a": "Claude Code does not impose a fixed per-server or per-session tool cap; tool search allows scaling across many servers without arbitrarily truncating tool catalogs.",
+      "b": "The discovery cache does exist, but it stores a server's tool list so Claude Code can defer connecting until Claude first calls one of its tools; it governs connection timing rather than schema deferral, is off by default, and cached tools are still available from the first message.",
+      "c": "Claude Code does not embed schemas into a local vector index or perform cosine similarity retrieval; it uses native MCP tool search (tool_reference blocks), where Claude inspects deferred tool names and server instructions and requests schemas on demand."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/mcp.md",
+    "sourceNote": "Scale with MCP tool search by deferring tool schemas until needed",
+    "sourceCheckedAt": "2026-09-14"
   }
 ]

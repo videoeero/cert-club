@@ -1197,5 +1197,128 @@
     "sourceUrl": "https://code.claude.com/docs/en/hooks-guide.md",
     "sourceNote": "PreToolUse hooks execute in parallel and enforce the most restrictive permission decision",
     "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-agentic-architecture-and-orchestration-030",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agentic-architecture-and-orchestration",
+    "subdomain": "session-management",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A development team wants to run multiple autonomous Claude Code sessions simultaneously on the same repository—one implementing a new payment integration and another refactoring user authentication. When developers ran both sessions in the main repository checkout, file modifications conflicted and corrupted the git staging index. How does running sessions in dedicated git worktrees prevent these collisions?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Each session executes in a distinct filesystem directory on an isolated branch, and Claude Code blocks tool calls that attempt file edits or git mutations targeting the primary checkout."
+      },
+      {
+        "id": "b",
+        "text": "Each session runs against an isolated local git clone over the loopback network interface, preventing file collisions by buffering git push operations through an in-memory transaction queue."
+      },
+      {
+        "id": "c",
+        "text": "Sessions share the main working directory under an advisory file lock, causing Claude Code to defer pending file edits until the preceding session finishes its conversational turn."
+      },
+      {
+        "id": "d",
+        "text": "Worktree isolation encapsulates file modifications within transient in-memory buffers, committing file updates directly to the remote repository without touching the local disk."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "A git worktree creates a separate working directory with its own files and dedicated branch, sharing repository history with the main checkout. When running inside a worktree, Claude Code actively enforces filesystem isolation by blocking Edit, Write, or NotebookEdit tool calls targeting the main checkout and rejecting git commands or subdirectories that attempt to mutate the primary repository working tree.",
+    "distractorNotes": {
+      "b": "Worktrees share the same repository history and remote as the main checkout rather than creating separate clones or loopback network interfaces, and they operate on the local filesystem rather than via push queues.",
+      "c": "Claude Code does not use advisory file locking or serialized turn queues within a shared directory; running parallel sessions in the same checkout without worktrees causes collisions.",
+      "d": "Worktrees create real filesystem directories on disk (under .claude/worktrees/ by default) rather than transient in-memory buffers, and changes are committed locally to their dedicated branch."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/worktrees.md",
+    "sourceNote": "Isolating parallel Claude Code sessions using git worktrees and mutation enforcement",
+    "sourceCheckedAt": "2026-09-14"
+  },
+  {
+    "id": "ccar-f-agentic-architecture-and-orchestration-031",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agentic-architecture-and-orchestration",
+    "subdomain": "task-decomposition",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An engineering team needs to perform a security and dependency audit across 400 microservice configuration files in a monorepo. An architect compares deploying a single autonomous coordinator agent that delegates tasks to subagents turn-by-turn against using a dynamic workflow. What primary architectural advantage makes a dynamic workflow the better choice for this large-scale operation?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A dynamic workflow merges all 400 target configuration files into a single consolidated prompt payload, enabling a single model inference turn to evaluate security issues without delegating to subagents."
+      },
+      {
+        "id": "b",
+        "text": "A dynamic workflow compiles subagent system prompts into native WebAssembly modules, executing security checks inside the local runtime without making external Claude API inference calls."
+      },
+      {
+        "id": "c",
+        "text": "The orchestration plan and intermediate findings reside in script variables rather than accumulating in Claude's context window, allowing dozens to hundreds of subagents to execute in phases."
+      },
+      {
+        "id": "d",
+        "text": "The dynamic workflow runtime bypasses tool permission verification and hook interceptors, maximizing execution speed across file reading and validation tasks during monorepo sweeps."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "In standard subagent or agent team patterns, an autonomous coordinator makes turn-by-turn decisions and accumulates intermediate findings inside its conversational context window, leading to context exhaustion and high token costs on massive tasks. A dynamic workflow moves orchestration into a JavaScript script where the runtime manages execution, intermediate results are maintained in script variables, and subagents are dispatched in structured phases across dozens or hundreds of workers, returning only the consolidated report to the main session.",
+    "distractorNotes": {
+      "a": "Concatenating hundreds of files into a single prompt would rapidly exceed model context limits and degrade recall; workflows orchestrate many focused subagents across phases rather than avoiding them.",
+      "b": "Workflows are JavaScript scripts executing subagent calls that still invoke Claude model inference; they do not compile agent prompts into WebAssembly or run offline without API calls.",
+      "d": "Dynamic workflows execute in accordance with standard permission modes and security boundaries, and do not bypass permission checks or hook enforcement to increase speed."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/workflows.md",
+    "sourceNote": "Dynamic workflows versus autonomous coordinator agents for large-scale multi-agent execution",
+    "sourceCheckedAt": "2026-09-14"
+  },
+  {
+    "id": "ccar-f-agentic-architecture-and-orchestration-032",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agentic-architecture-and-orchestration",
+    "subdomain": "multi-agent-orchestration",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A solutions architect is designing an AI-assisted development workflow in Claude Code for an open-ended architectural spike, where multiple specialized agents must investigate competing database migration strategies and challenge each other's conclusions. The architect considers configuring an Agent Team (CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1) instead of standard subagents. Which communication and coordination characteristic distinguishes Agent Teams from the standard subagent pattern?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Teammates automatically run in isolated git worktrees created on demand, preventing any two teammates from modifying the same files during concurrent implementation."
+      },
+      {
+        "id": "b",
+        "text": "Teammates share a single unified context window with the team lead, ensuring that all prior turn histories, tool call results, and memory buffers are immediately visible to every peer agent."
+      },
+      {
+        "id": "c",
+        "text": "Agent teams spawn and operate in non-interactive CI/CD pipelines using headless mode (-p), whereas standard subagents require an active terminal session."
+      },
+      {
+        "id": "d",
+        "text": "Teammates communicate directly with each other via peer messaging and coordinate via a shared task list, whereas subagents report results only back to the calling agent."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "In standard subagent orchestration, workers execute in isolation and report results back to the caller, with the main agent managing all delegation and synthesis. In an Agent Team, teammates operate with independent context windows but communicate directly with one another through peer messaging and collaborate via a shared task list, enabling peer discussion and challenge without routing every interaction through the lead agent.",
+    "distractorNotes": {
+      "a": "Agent teams do not automatically isolate teammates in separate git worktrees; developers must explicitly partition work across different files to prevent conflicts.",
+      "b": "Teammates execute in their own separate context windows rather than sharing a single unified context window; they exchange information via explicit peer messages.",
+      "c": "Agent teams require an interactive terminal session and do not spawn in headless mode (-p); in non-interactive or Agent SDK environments, named agents run as standard subagents."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/agent-teams.md",
+    "sourceNote": "Coordination differences between agent teams and subagents in Claude Code",
+    "sourceCheckedAt": "2026-09-14"
   }
 ]

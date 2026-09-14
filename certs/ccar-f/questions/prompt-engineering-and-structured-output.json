@@ -910,5 +910,87 @@
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/batch-processing.md",
     "sourceNote": "Message Batches result types, per-request billing, and cancellation partial results",
     "sourceCheckedAt": "2026-09-13"
+  },
+  {
+    "id": "ccar-f-prompt-engineering-and-structured-output-023",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "prompt-engineering-and-structured-output",
+    "subdomain": "multi-pass-review",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An engineering organization implements automated pull request reviews using Claude Code with push-triggered reviews. Developers report review churn: after an author pushes a targeted fix for an initial review finding, the subsequent review pass surfaces fresh, low-severity stylistic nits on unchanged parts of the PR, leading to prolonged review cycles. How should the team configure REVIEW.md to establish review convergence while maintaining rigorous defect detection?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Configure a global nit volume rule in REVIEW.md that caps reported nits at zero across all review passes, relying on manual peer review for all stylistic feedback."
+      },
+      {
+        "id": "b",
+        "text": "Split stylistic rules into a separate guidelines document and reference it via @ import syntax in REVIEW.md so review agents load styling checks only on the initial run."
+      },
+      {
+        "id": "c",
+        "text": "Add a re-review convergence instruction in REVIEW.md directing Claude to suppress new nit-level findings and report only Important findings on subsequent review passes."
+      },
+      {
+        "id": "d",
+        "text": "Direct Claude in REVIEW.md to skip verification steps on subsequent pushes and approve the pull request automatically if all previously flagged line comments are resolved."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "According to the Claude Code documentation on customizing reviews in REVIEW.md, teams can tune re-review convergence to guide reviewer behavior on already-reviewed pull requests. Adding a rule such as 'after the first review, suppress new nits and post Important findings only' stops minor revisions from triggering endless style cycles while ensuring critical bugs remain caught. REVIEW.md does not expand @ import syntax (rules must be written inline), and Code Review does not issue formal approvals.",
+    "distractorNotes": {
+      "a": "Setting a blanket zero-nit cap suppresses stylistic feedback during the initial review when such guidance is intended and actionable, rather than addressing re-review churn across iterative pushes.",
+      "b": "Review agents read REVIEW.md as plain instructions as-is; @ import syntax is not expanded and referenced external files are not loaded during review execution.",
+      "d": "Code Review check runs do not approve or block pull requests directly, and skipping verification on subsequent pushes risks missing newly introduced regressions or broken fixes."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/code-review.md",
+    "sourceNote": "Re-review convergence guidelines and plain-instruction formatting in REVIEW.md",
+    "sourceCheckedAt": "2026-09-14"
+  },
+  {
+    "id": "ccar-f-prompt-engineering-and-structured-output-024",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "prompt-engineering-and-structured-output",
+    "subdomain": "structured-outputs",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An architect designs an agentic extraction pipeline using Claude's Structured Outputs feature with strict tool definitions (strict: true). During load testing with multi-tool extraction schemas, the Messages API rejects requests with HTTP 400 and the error message 'Schema is too complex for compilation'. The team must preserve strict schema validation without dropping required extraction fields. Which architectural adjustment directly reduces the compiled grammar state space to resolve this error?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Wrap all optional properties inside anyOf union definitions so that the constrained decoding grammar compiler can defer parameter validation until inference time."
+      },
+      {
+        "id": "b",
+        "text": "Set additionalProperties to true on nested tool objects and remove explicit field declarations, allowing Claude to emit arbitrary JSON keys without validation errors."
+      },
+      {
+        "id": "c",
+        "text": "Convert existing required properties into optional properties with default schema annotations, allowing the compiler to prune unassigned branch paths during generation."
+      },
+      {
+        "id": "d",
+        "text": "Reduce optional parameters by making fields with known defaults required with explicit values, and flatten deeply nested object hierarchies across the tool definitions."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Claude compiles JSON schemas into a grammar that constrains token decoding. As documented under Structured Outputs complexity limits, optional parameters are particularly expensive because each optional parameter roughly doubles a portion of the grammar's state space. The recommended strategies to reduce compiled grammar complexity are making parameters required where sensible defaults exist (requiring Claude to emit the default explicitly), flattening deeply nested structures, and marking only critical tools as strict. In contrast, anyOf union types incur exponential compilation cost, and strict schemas reject additionalProperties: true with a 400 error.",
+    "distractorNotes": {
+      "a": "Union types (anyOf) and type arrays create exponential compilation cost in grammar construction, worsening compilation complexity rather than resolving it.",
+      "b": "Strict schemas require additionalProperties to be set to false on object schemas; setting additionalProperties to true returns an immediate 400 validation error.",
+      "c": "In constrained decoding, each optional parameter roughly doubles a portion of the grammar's state space; converting required fields to optional expands complexity rather than reducing it."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs.md",
+    "sourceNote": "Strategies for reducing schema complexity and compiled grammar state space",
+    "sourceCheckedAt": "2026-09-14"
   }
 ]

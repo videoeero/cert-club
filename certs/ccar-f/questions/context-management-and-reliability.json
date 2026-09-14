@@ -705,5 +705,46 @@
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/citations.md",
     "sourceNote": "Uniform citation enablement constraint and output token billing exemption for cited_text",
     "sourceCheckedAt": "2026-09-10"
+  },
+  {
+    "id": "ccar-f-context-management-and-reliability-018",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "context-management-and-reliability",
+    "subdomain": "error-propagation",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A customer service agent uses a lookup_policy(customer_id) tool to retrieve active warranty coverage before authorizing product replacements. During an outage of the policy database, the tool query times out. The tool integration catches the timeout exception and returns an empty list [] without flagging an error (is_error: false). As a result, the agent incorrectly informs customers that their products have no warranty and refuses replacements. What architectural principle explains why this design is flawed?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The tool integration should allow the timeout exception to bubble up unhandled to a top-level error handler, terminating the entire conversation session so the user is forced to reconnect later."
+      },
+      {
+        "id": "b",
+        "text": "The tool integration should return an empty result list alongside a natural-language note instructing the model to probabilistically infer whether zero matches reflect an outage or an uninsured customer."
+      },
+      {
+        "id": "c",
+        "text": "The tool integration should return a generic failure string such as 'search unavailable' without setting is_error, relying on the model to deduce from conversation history that a transport failure occurred."
+      },
+      {
+        "id": "d",
+        "text": "The tool integration should distinguish access failures from valid empty results by returning is_error: true with diagnostic context, reserving empty payloads for queries that completed with zero matches."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "In agentic tool execution, there is a critical distinction between an access failure (such as an API timeout, rate limit, or network disconnection) and a valid empty result (a successfully executed query that confirmed zero records exist). When an access failure is caught and returned as an empty result payload ([]) without setting is_error: true, the model misinterprets infrastructure unreachability as semantic proof of non-existence, leading it to assert false business claims (such as claiming a customer has no warranty). The integration must return is_error: true along with instructive error details and retry context, allowing the agent or coordinator to initiate retries or inform the customer of a service disruption.",
+    "distractorNotes": {
+      "a": "Allowing the exception to terminate the entire conversation aborts the session unnecessarily, discarding existing context when transient timeouts can be retried or handled gracefully.",
+      "b": "Instructing the model to infer whether an empty list represents an outage relies on guesswork; the model cannot determine transport-layer status unless the tool integration explicitly signals the error.",
+      "c": "Returning a generic error string without setting is_error: true hides the failure from the API tool-call protocol, preventing automated error handling and forcing the model to guess whether the lookup succeeded."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls.md",
+    "sourceNote": "Differentiating tool execution errors using is_error from valid empty tool results",
+    "sourceCheckedAt": "2026-09-14"
   }
 ]
