@@ -6,6 +6,7 @@ import {
   BalanceReportError,
   buildBalanceReport,
   buildRepositoryReports,
+  parseCliArgs,
 } from "../scripts/balance-report.mjs";
 
 const manifest = {
@@ -218,4 +219,51 @@ test("buildRepositoryReports throws BalanceReportError when requested slug is mi
       return true;
     },
   );
+});
+
+/**
+ * `--strict` is the whole reason the balance step of `npm run check` is a gate
+ * rather than a report. A swallowed typo leaves it exit 0 with no strict
+ * check, which is indistinguishable from a pass — so the rejection is tested,
+ * not just the happy path.
+ */
+test("parseCliArgs rejects unknown flags", () => {
+  assert.throws(() => parseCliArgs(["--stict"]), BalanceReportError);
+  assert.throws(() => parseCliArgs(["--stict"]), /unknown flag\(s\): --stict/);
+});
+
+test("parseCliArgs rejects a --target that is not a positive integer", () => {
+  for (const bad of ["abc", "0", "-3", "12questions", ""]) {
+    assert.throws(
+      () => parseCliArgs(["--target", bad]),
+      /--target must be a positive integer/,
+      `--target ${bad} was accepted`,
+    );
+  }
+  // A missing value must not silently read the next flag as the count.
+  assert.throws(
+    () => parseCliArgs(["--target"]),
+    /--target must be a positive integer/,
+  );
+});
+
+test("parseCliArgs parses valid flags and slugs", () => {
+  assert.deepEqual(parseCliArgs([]), {
+    strict: false,
+    useExamMultiplier: false,
+    target: undefined,
+    slugs: [],
+  });
+  assert.deepEqual(parseCliArgs(["--strict", "--2x", "ccdv-f"]), {
+    strict: true,
+    useExamMultiplier: true,
+    target: undefined,
+    slugs: ["ccdv-f"],
+  });
+});
+
+test("parseCliArgs does not read the --target value as a cert slug", () => {
+  assert.deepEqual(parseCliArgs(["--target", "120", "ccar-f"]).slugs, [
+    "ccar-f",
+  ]);
 });

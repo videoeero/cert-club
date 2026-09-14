@@ -67,8 +67,8 @@ should go. Courses teach you to build; these exams test what to choose.
 | Certification                             | Slug          | Bank status | How this bank was built                                 |
 | ----------------------------------------- | ------------- | ----------- | ------------------------------------------------------- |
 | Claude Certified Developer – Foundations  | `ccdv-f`      | stable      | [review record](./certs/ccdv-f/review-progress.md)      |
-| Claude Certified Architect – Foundations  | `ccar-f`      | draft       | [review record](./certs/ccar-f/review-progress.md)      |
-| Claude Certified Architect – Professional | `ccar-p`      | draft       | [review record](./certs/ccar-p/review-progress.md)      |
+| Claude Certified Architect – Foundations  | `ccar-f`      | stable      | [review record](./certs/ccar-f/review-progress.md)      |
+| Claude Certified Architect – Professional | `ccar-p`      | stable      | [review record](./certs/ccar-p/review-progress.md)      |
 | Microsoft Certified: Azure Fundamentals   | `az-900`      | draft       | [review record](./certs/az-900/review-progress.md)      |
 | AWS Certified Cloud Practitioner          | `aws-clf-c02` | stable      | [review record](./certs/aws-clf-c02/review-progress.md) |
 

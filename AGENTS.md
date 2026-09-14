@@ -46,6 +46,13 @@ covered. It is still not a valid `sourceUrl`, because it states what a course
 claims to teach rather than a verifiable technical fact. Cite the
 documentation that establishes the fact instead.
 
+Both tests are general. What they cannot tell you is which of a _particular_
+vendor's hosts are legacy redirects, which keep superseded guide revisions
+live, and which properties must never be cited even though they are open and
+first-party. That is recorded per vendor in
+[`certs/VENDORS.md`](certs/VENDORS.md), and it is not derivable from the banks
+— read it before citing a host you have not cited before.
+
 ## Dev setup
 
 ```sh
@@ -63,6 +70,15 @@ This runs, in order: sync manifest dates check → content validation → bluepr
 Node test runner → ESLint → Prettier check. All must pass. Do not commit if any
 step fails.
 
+`check` covers content and lint only — it does **not** typecheck or bundle. If
+you touched anything under `src/`, run the build as well:
+
+```sh
+npm run build   # tsc -b, then vite build
+```
+
+CI runs both on every pull request, in that order.
+
 To sync manifest dates automatically: `npm run sync-dates`.
 To fix formatting automatically: `npm run format`.
 
@@ -76,6 +92,8 @@ certs/                  Question banks (JSON) and the cert catalog
     questions/          One JSON file per domain, named after its domain slug
     review-progress.md  Standing record of how the bank was built and reviewed
   ADDING-A-CERT.md      Step-by-step guide for adding a new cert bank
+  ADDING-A-QUESTION-TYPE.md  Gate on answer shapes beyond single/multi select
+  VENDORS.md            Per-vendor sourcing profiles — citable and forbidden hosts
 schemas/
   question-bank.mjs     Zod schemas — the canonical definition of all formats
 scripts/

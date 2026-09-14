@@ -16,6 +16,12 @@ README.
 - The source must be published by whoever owns the fact. Open is not enough:
   a vendor's exam guide re-hosted in someone's public repository is a copy,
   and a copy can be stale or edited. Cite the vendor's own page.
+- **Check the vendor's profile in [`certs/VENDORS.md`](certs/VENDORS.md)
+  before citing a host for the first time.** It records which of each vendor's
+  hosts are citable and, more importantly, which must *not* be — legacy
+  redirects, and properties that keep superseded guide revisions live. Those
+  pass every rule in this list and are still wrong, and nothing under `certs/`
+  would reveal it.
 - **Cite the URL that serves the page, not one that redirects to it.** Vendor
   docs get reorganised, and a legacy URL degrades quietly: at the time of
   writing `docs.anthropic.com/en/docs/agents-and-tools/claude-code/overview`

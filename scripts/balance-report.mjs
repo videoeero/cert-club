@@ -197,8 +197,22 @@ export async function buildRepositoryReports(
   return reports;
 }
 
-async function main() {
-  const argv = process.argv.slice(2);
+/**
+ * Unknown flags are rejected rather than ignored. `--strict` is what makes the
+ * balance step of `npm run check` a gate at all, so a typo that silently
+ * degraded it into a reporting run — still exit 0, still no output worth
+ * noticing — would retire the gate without anyone finding out. Mirrors
+ * `parseCliArgs` in `bank-metrics.mjs`.
+ */
+export function parseCliArgs(argv) {
+  const KNOWN_FLAGS = new Set(["--strict", "--2x", "--target"]);
+  const unknown = argv.filter(
+    (arg) => arg.startsWith("--") && !KNOWN_FLAGS.has(arg),
+  );
+  if (unknown.length > 0) {
+    throw new BalanceReportError([`unknown flag(s): ${unknown.join(", ")}`]);
+  }
+
   const strict = argv.includes("--strict");
   const useExamMultiplier = argv.includes("--2x");
   const targetIndex = argv.indexOf("--target");
@@ -206,15 +220,32 @@ async function main() {
     targetIndex >= 0 ? parsePositiveInteger(argv[targetIndex + 1]) : undefined;
 
   if (targetIndex >= 0 && target === null) {
-    console.error("--target must be a positive integer");
-    process.exitCode = 1;
-    return;
+    throw new BalanceReportError(["--target must be a positive integer"]);
   }
 
+  // The value after --target is consumed by the flag, not a cert slug.
   const slugs = argv.filter(
     (arg, index) =>
       !arg.startsWith("--") && (targetIndex < 0 || index !== targetIndex + 1),
   );
+
+  return { strict, useExamMultiplier, target, slugs };
+}
+
+async function main() {
+  const argv = process.argv.slice(2);
+
+  let strict;
+  let useExamMultiplier;
+  let target;
+  let slugs;
+  try {
+    ({ strict, useExamMultiplier, target, slugs } = parseCliArgs(argv));
+  } catch (error) {
+    console.error(error instanceof Error ? error.message : error);
+    process.exitCode = 1;
+    return;
+  }
 
   let reports;
   try {
