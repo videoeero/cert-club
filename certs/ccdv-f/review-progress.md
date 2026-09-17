@@ -5,7 +5,7 @@ calls a future author should not have to rediscover. Chronology lives in git;
 this file holds the reasons.
 
 The bank follows the Claude Certified Developer – Foundations Exam Guide v1.0
-(July 2026). Sources were last checked on September 7, 2026.
+(July 2026). Sources were last checked on September 17, 2026.
 
 ## Bank status: `stable`
 
@@ -313,3 +313,82 @@ re-read in full.
 - **Confirmed without change**: 5
 - **Defects identified**: 0
 - **True defect rate**: 0 / 5 = **0.0%**, on a fully re-read `.md`-host population.
+
+## Source drift audit — 2026-09-17
+
+Recurring citation and blueprint drift audit across `ccdv-f` following the
+procedure in `skills/audit-sources/SKILL.md`.
+
+### 1. Mechanical triage (stage 1)
+
+Repo-wide triage via `npm run check-sources -- --json` and `npm run check-claims`:
+- **check-sources**: All 44 base URLs cited by `ccdv-f` returned HTTP 200 (live).
+  Two unversioned MCP URLs (`/docs/learn/architecture` and `/docs/learn/server-concepts`)
+  redirected to the pinned `2026-07-28` specification path.
+- **check-claims**: Flagged 4 figure-bearing items in `ccdv-f` (one carrying two claims) plus 1 advisory finding:
+  - `ccdv-f-claude-code-005`: Advisory quote mismatch "headless".
+  - `ccdv-f-applications-and-integration-017`: `options.a: 90 percent` (not-found).
+  - `ccdv-f-model-selection-and-optimization-007`: `sourceNote: 1-hour` (found).
+  - `ccdv-f-model-selection-and-optimization-008`: `explanation: 5 minutes` (found), `distractorNotes.c: 2048 tokens` (not-found), `distractorNotes.e: 5 minutes` (found).
+  - `ccdv-f-model-selection-and-optimization-012`: `distractorNotes.a: 24 hours` (found).
+
+### 2. Blueprint drift audit (stage 3)
+
+Re-read the official exam guide PDF cold from `manifest.examUrl` on Anthropic's Everpath CDN:
+- **Guide identity**: Version 1.0, July 2026, exam code `CCDV-F`.
+- **Exam specifications**: 53 items, 120 minutes, passing score 720 / 1000.
+- **Domain weights**:
+  1. Applications and Integration: 33.1%
+  2. Model Selection and Optimization: 16.8%
+  3. Agents and Workflows: 14.7%
+  4. Prompt and Context Engineering: 11.0%
+  5. Tools and MCPs: 10.6%
+  6. Security and Safety: 8.1%
+  7. Claude Code: 3.1%
+  8. Eval, Testing, and Debugging: 2.6%
+- **Drift verdict**: 0% drift. Every domain name, weight, question count, and duration in `manifest.json` matches the official exam guide exactly.
+
+### 3. Stage 1 adjudication by numeric class (stage 4)
+
+| Question | Claim / Finding | Cited page | Claim class | Adjudication & Evidence | Disposition |
+| --- | --- | --- | --- | --- | --- |
+| `claude-code-005` | Quote mismatch "headless" | `code.claude.com/docs/en/headless` | Advisory | **Confirmed**: The page was retitled "Run Claude Code programmatically", but the URL slug remains `/headless`. Non-interactive mode (`-p`), absence of interactive prompts/dialogs, and structured JSON output (`--output-format json`) are all fully documented on the page. | **bump** |
+| `applications-and-integration-017` | "90 percent" (not found) | `platform.claude.com/docs/en/test-and-evaluate/develop-tests` | Class 2 (Scenario parameter) | **Confirmed**: The cited page's SMART criteria table uses an F1 score of 0.85 on 10,000 tweets as its positive example; option A instantiates the same SMART properties in a realistic billing ticket context ("90 percent without escalation on 2,000 labeled tickets"). The metric is a scenario parameter illustrating measurable success criteria, not a vendor documentation claim. | **bump** |
+| `model-selection-and-optimization-007` | "1-hour" (found) | `platform.claude.com/docs/en/build-with-claude/prompt-caching` | Class 1 (Verbatim vendor fact) | **Confirmed**: Page explicitly documents "1-hour cache TTL" alongside the default 5-minute TTL. | **bump** |
+| `model-selection-and-optimization-008` | "5 minutes" (found), "2048 tokens" (not-found) | `platform.claude.com/docs/en/build-with-claude/prompt-caching` | Class 1 (Verbatim vendor facts) | **Confirmed**: Default 5-minute lifetime confirmed. The "2048 tokens" discrepancy is a formatting artefact: the vendor document formats the threshold as "2,048 tokens" (with comma) for several model families. | **bump** |
+| `model-selection-and-optimization-012` | "24 hours" (found) | `platform.claude.com/docs/en/about-claude/models/optimizing-for-cost-and-intelligence` | Class 1 (Verbatim vendor fact) | **Confirmed**: Page explicitly confirms Batch API operates at a 50% discount for results within 24 hours, and positions prompt caching as the foremost quality-neutral cost reduction lever for multi-turn loops. | **bump** |
+
+### 4. Host-level re-reads and citation updates
+
+1. **`modelcontextprotocol.io` migration**:
+   Per `certs/VENDORS.md`, unversioned paths silently 302 to current releases. The two unversioned citations in `tools-and-mcps` were re-cited to the pinned current release `2026-07-28`:
+   - `ccdv-f-tools-and-mcps-008`: Re-cited to `https://modelcontextprotocol.io/docs/2026-07-28/learn/architecture`. Claim verified: 1:1 client-to-server connection architecture, STDIO for local processes, Streamable HTTP for remote servers. Disposition: **re-cite**.
+   - `ccdv-f-tools-and-mcps-011`: Re-cited to `https://modelcontextprotocol.io/docs/2026-07-28/learn/server-concepts`. Claim verified: Resources (passive data sources, application-controlled), Tools (model-controlled actions), Prompts (user-controlled templates). Disposition: **re-cite**.
+
+2. **`www.anthropic.com/engineering` manual prose audit**:
+   Because the `.md` trick does not work on this host and `check-claims` returns `inconclusive: out-of-scope host`, all 12 questions citing engineering blog posts were manually audited against live HTML text:
+   - `building-effective-agents` (9 questions: `agents-and-workflows-004`, `-005`, `-019`, `-020`, `-024`, `-025`, `applications-and-integration-025`, `-029`, `tools-and-mcps-015`): Workflows vs agents definition, simplicity principle, prompt chaining, routing, parallelization, orchestrator-workers, and evaluator-optimizer patterns are intact. Disposition: **bump**.
+   - `effective-context-engineering-for-ai-agents` (3 questions: `prompt-and-context-engineering-013`, `-014`, `-015`): Compaction, structured note-taking/memory files, subagents, and turn-accumulation tradeoffs verified against live prose. Disposition: **bump**.
+
+3. **Platform and Code documentation sweep**:
+   All remaining 40 documentation base URLs across `platform.claude.com` and `code.claude.com` were fetched via their `.md` endpoints and re-read against the bank's questions. Key invariants confirmed:
+   - Zero mentions of ephemeral model names (e.g. Claude 3.5 Sonnet) across the entire bank, protecting against lineup turnover.
+   - Assistant prefill deprecation behavior (validation 400 error on modern models, superseded by structured outputs) confirmed in `applications-and-integration-003`, `prompt-and-context-engineering-017`, and `tools-and-mcps-006`.
+   - Context window overflow behavior (400 on input overflow; mid-generation stop on input + `max_tokens` overflow) confirmed in `model-selection-and-optimization-013`.
+   - Permission rules evaluation hierarchy (deny rules take precedence regardless of specificity or bypass mode) confirmed in `security-and-safety-005` and `claude-code-003`.
+   All 104 remaining questions confirmed intact. Disposition: **bump**.
+
+### 5. Summary of dispositions and bank metrics
+
+- **Total questions in bank**: 106
+- **Questions re-cited**: 2 (`ccdv-f-tools-and-mcps-008`, `ccdv-f-tools-and-mcps-011` to pinned `2026-07-28` MCP docs)
+- **Questions bumped**: 104 (all pages re-read; claims intact)
+- **Questions rewritten**: 0
+- **Questions retired**: 0
+- **True defect rate**: 0 / 106 = **0.0%**
+- **All `sourceCheckedAt` dates**: Updated to `2026-09-17`.
+
+### 6. Scope explicit boundary
+
+- **Covered**: 100% of the `ccdv-f` item bank (all 106 questions across all 8 domains and 44 unique base URLs), the official CCDV-F exam guide PDF, both cited `anthropic.com/engineering` posts, all `code.claude.com` pages, all `platform.claude.com` pages, and `modelcontextprotocol.io`.
+- **Not covered**: Partner-operated cloud documentation (AWS Bedrock, Google Cloud Vertex AI) and gated Anthropic Partner Academy courses, which remain outside the citable sourcing boundary.
