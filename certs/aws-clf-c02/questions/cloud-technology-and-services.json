@@ -43,7 +43,7 @@
     },
     "sourceUrl": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html",
     "sourceNote": "EC2 Regions and Zones - Regions contain multiple isolated AZs; multi-AZ protects against single-location failure",
-    "sourceCheckedAt": "2026-09-03"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "aws-clf-c02-cloud-technology-and-services-002",
@@ -84,7 +84,7 @@
     },
     "sourceUrl": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/glacier-storage-classes.html",
     "sourceNote": "S3 Glacier storage classes - Deep Archive for less-than-annual access, lowest-cost option, bulk retrieval within 48 hours",
-    "sourceCheckedAt": "2026-09-03"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "aws-clf-c02-cloud-technology-and-services-003",
@@ -130,7 +130,7 @@
     },
     "sourceUrl": "https://docs.aws.amazon.com/whitepapers/latest/aws-overview/compute-services.html",
     "sourceNote": "AWS Overview compute services - Lambda listed as serverless, Fargate as serverless compute for containers",
-    "sourceCheckedAt": "2026-09-03"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "aws-clf-c02-cloud-technology-and-services-004",
@@ -171,7 +171,7 @@
     },
     "sourceUrl": "https://docs.aws.amazon.com/whitepapers/latest/aws-overview/database.html",
     "sourceNote": "AWS Overview databases - in-memory category maps caching use cases to ElastiCache at microsecond latency",
-    "sourceCheckedAt": "2026-09-03"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "aws-clf-c02-cloud-technology-and-services-005",
@@ -212,7 +212,7 @@
     },
     "sourceUrl": "https://docs.aws.amazon.com/vpc/latest/userguide/infrastructure-security.html",
     "sourceNote": "Amazon VPC - security group versus network ACL comparison, return traffic automatically allowed (stateful)",
-    "sourceCheckedAt": "2026-09-03"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "aws-clf-c02-cloud-technology-and-services-006",
@@ -258,7 +258,7 @@
     },
     "sourceUrl": "https://docs.aws.amazon.com/whitepapers/latest/aws-overview/application-integration.html",
     "sourceNote": "AWS Overview application integration - SQS message queuing without losing messages; SNS topics fan out to many subscribers",
-    "sourceCheckedAt": "2026-09-03"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "aws-clf-c02-cloud-technology-and-services-007",
@@ -632,7 +632,7 @@
     },
     "sourceUrl": "https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html",
     "sourceNote": "Amazon EC2 Auto Scaling User Guide - Automatically add or remove EC2 instances and replace unhealthy instances",
-    "sourceCheckedAt": "2026-09-11"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "aws-clf-c02-cloud-technology-and-services-016",
@@ -755,7 +755,7 @@
     },
     "sourceUrl": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-spot-instances.html",
     "sourceNote": "Amazon EC2 User Guide - Spot Instances use spare EC2 capacity at steep discounts for fault-tolerant workloads",
-    "sourceCheckedAt": "2026-09-11"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "aws-clf-c02-cloud-technology-and-services-019",
@@ -834,15 +834,15 @@
       "a",
       "d"
     ],
-    "explanation": "Amazon Aurora is a MySQL and PostgreSQL-compatible relational database built for the cloud. It features a distributed, fault-tolerant, self-healing storage system that replicates six copies of data across three Availability Zones and automatically grows storage up to 128 TiB.",
+    "explanation": "Amazon Aurora is a MySQL and PostgreSQL-compatible relational database built for the cloud. It features a distributed, fault-tolerant, self-healing storage system that replicates six copies of data across three Availability Zones and automatically grows storage up to 256 TiB.",
     "distractorNotes": {
       "b": "Amazon Aurora supports MySQL and PostgreSQL compatibility only; it does not provide native Aurora compatibility for Oracle or Microsoft SQL Server engines (which are supported under standard Amazon RDS).",
-      "c": "Amazon Aurora automatically allocates storage in 10 GB increments up to 128 TiB as data grows, eliminating the need to manually provision or resize Amazon EBS volumes in advance.",
+      "c": "Amazon Aurora automatically allocates storage in 10 GB increments up to 256 TiB as data grows, eliminating the need to manually provision or resize Amazon EBS volumes in advance.",
       "e": "Aurora is a relational database system, whereas ElastiCache provides Redis-compatible in-memory caching."
     },
     "sourceUrl": "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html",
     "sourceNote": "Amazon Aurora User Guide - MySQL and PostgreSQL compatibility with distributed 3-AZ auto-repairing storage",
-    "sourceCheckedAt": "2026-09-11"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "aws-clf-c02-cloud-technology-and-services-021",
@@ -1173,9 +1173,9 @@
       "b": "Amazon S3 is an object storage service accessed over HTTP/HTTPS APIs, not a block device suitable for mounting as a native database filesystem.",
       "d": "Amazon EFS is a shared network file system (NFS), not a dedicated low-latency block storage volume for raw database drives."
     },
-    "sourceUrl": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-volume-types.html",
-    "sourceNote": "Amazon EC2 User Guide - EBS volumes provide persistent block-level storage independent of the instance life cycle",
-    "sourceCheckedAt": "2026-09-11"
+    "sourceUrl": "https://docs.aws.amazon.com/ebs/latest/userguide/what-is-ebs.html",
+    "sourceNote": "Amazon EBS User Guide - What is Amazon EBS? Persistent block-level storage volumes with S3 snapshots",
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "aws-clf-c02-cloud-technology-and-services-029",
@@ -1301,9 +1301,9 @@
       "c": "EBS volumes are cloud-only block devices attached to EC2 instances in an AWS data center, not accessible from local on-premises servers.",
       "d": "AWS Snowball is a physical appliance used for bulk one-off data transport, not continuous hybrid file caching and backup offloading."
     },
-    "sourceUrl": "https://docs.aws.amazon.com/storagegateway/latest/userguide/WhatIsStorageGateway.html",
-    "sourceNote": "AWS Storage Gateway User Guide - Connects on-premises software appliances with AWS cloud storage seamlessly",
-    "sourceCheckedAt": "2026-09-11"
+    "sourceUrl": "https://docs.aws.amazon.com/filegateway/latest/files3/what-is-file-s3.html",
+    "sourceNote": "AWS Storage Gateway User Guide (S3 File Gateway) - Hybrid cloud storage connecting on-premises environments to Amazon S3",
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "aws-clf-c02-cloud-technology-and-services-032",
@@ -1762,9 +1762,9 @@
       "c": "Amazon SNS coordinates publish/subscribe topic fanout to subscribers, but is not a serverless event bus with native partner event bus integrations for SaaS applications.",
       "d": "Amazon SQS provides point-to-point message queuing for consumer polling, not an event-driven router that automatically ingests and filters SaaS events."
     },
-    "sourceUrl": "https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-what-is-how-it-works.html",
+    "sourceUrl": "https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-what-is.html",
     "sourceNote": "Amazon EventBridge User Guide - Serverless event bus that routes events from SaaS applications and AWS services",
-    "sourceCheckedAt": "2026-09-11"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "aws-clf-c02-cloud-technology-and-services-043",
