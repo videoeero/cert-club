@@ -65,6 +65,7 @@ flowchart TD
 
     subgraph p5["Phase 5: Ongoing Maintenance"]
         N --> O[audit-sources<br/>Periodic Drift & Liveness Check]
+        O --> P[condense-review-progress<br/>Distill Review Record]
     end
 ```
 
@@ -358,6 +359,17 @@ Run audit-sources for cert "<slug>"
 
 The skill resolves broken URLs, re-dates verified citations, updates [`certs/VENDORS.md`](./VENDORS.md), and detects blueprint revisions.
 
+### Review Record Hygiene (`condense-review-progress`)
+
+After completing a major batch expansion, bank promotion, or source drift pass, `review-progress.md` often accumulates bloated drafting narratives or extensive clean-pass item listings.
+
+Invoke [`skills/condense-review-progress`](../skills/condense-review-progress/SKILL.md):
+```text
+Run condense-review-progress for cert "<slug>"
+```
+
+The agent audits the review record against permanent invariants (sample questions, deliberate non-defects, architectural rulings) and condenses repetitive tables and narrative prose down to a clean, readable standing record.
+
 ---
 
 ## Quick Reference: Skill Sequencing
@@ -370,7 +382,8 @@ The skill resolves broken URLs, re-dates verified citations, updates [`certs/VEN
 | **2. Calibrate** | [`harden-domain-questions`](../skills/harden-domain-questions/SKILL.md) | Domain slug; sample inventory | Next domain/skill (or Phase 3 sweep) |
 | **3. Sweep** | [`evaluate-questions`](../skills/evaluate-questions/SKILL.md) | `--diff` or full slug; `npm run metrics`; `npm run check-sources` / `check-claims` | `audit-coverage` |
 | **4. Promote** | [`audit-coverage`](../skills/audit-coverage/SKILL.md) | `npm run metrics`; balance check | **Human developer** |
-| **5. Maintain** | [`audit-sources`](../skills/audit-sources/SKILL.md) | Full bank or host | Ongoing review record |
+| **5. Maintain** | [`audit-sources`](../skills/audit-sources/SKILL.md) | Full bank or host | `condense-review-progress` (or ongoing) |
+| **5. Hygiene** | [`condense-review-progress`](../skills/condense-review-progress/SKILL.md) | `certs/<slug>/review-progress.md` | Clean standing review record |
 
 > [!NOTE]
 > **Question Types Outside Single/Multi Select:**

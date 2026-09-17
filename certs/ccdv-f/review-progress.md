@@ -5,390 +5,139 @@ calls a future author should not have to rediscover. Chronology lives in git;
 this file holds the reasons.
 
 The bank follows the Claude Certified Developer – Foundations Exam Guide v1.0
-(July 2026). Sources were last checked on September 17, 2026.
+(July 2026, Exam code: CCDV-F). Sources and bank verified on September 17, 2026.
 
 ## Bank status: `stable`
 
 `manifest.status` is `stable`. All 106 questions are `reviewed` (0 draft). Coverage
-is fully proportional across all eight domains and 25 declared skills.
+is fully proportional across all eight domains and 25 declared skills, achieving exactly 2×
+the 53-question live exam baseline (35 / 18 / 15 / 12 / 11 / 9 / 3 / 3) with every declared skill floor at ≥ 2 questions.
 All quality, balance, and bias guards pass cleanly.
 
-## Composition
+## Blueprint and weights
 
-106 questions, all at `status: reviewed`.
+The guide publishes exact domain weights in Section 4:
 
-The questions track the published domain weights:
+| Domain                           | Slug                               |   Weight | Target (2× of 53) | Bank Questions |
+| -------------------------------- | ---------------------------------- | -------: | ----------------: | -------------: |
+| Applications and Integration     | `applications-and-integration`     |    33.1% |                35 |             35 |
+| Model Selection and Optimization | `model-selection-and-optimization` |    16.8% |                18 |             18 |
+| Agents and Workflows             | `agents-and-workflows`             |    14.7% |                15 |             15 |
+| Prompt and Context Engineering   | `prompt-and-context-engineering`   |    11.0% |                12 |             12 |
+| Tools and MCPs                   | `tools-and-mcps`                   |    10.6% |                11 |             11 |
+| Security and Safety              | `security-and-safety`              |     8.1% |                 9 |              9 |
+| Claude Code                      | `claude-code`                      |     3.1% |                 3 |              3 |
+| Eval, Testing, and Debugging     | `eval-testing-and-debugging`       |     2.6% |                 3 |              3 |
+| **Total**                        |                                    | **100%** |           **106** |        **106** |
 
-| Domain                           | Questions | Share | Weight |
-| -------------------------------- | --------: | ----: | -----: |
-| applications-and-integration     |        35 | 33.0% |  33.1% |
-| model-selection-and-optimization |        18 | 17.0% |  16.8% |
-| agents-and-workflows             |        15 | 14.2% |  14.7% |
-| prompt-and-context-engineering   |        12 | 11.3% |  11.0% |
-| tools-and-mcps                   |        11 | 10.4% |  10.6% |
-| security-and-safety              |         9 |  8.5% |   8.1% |
-| claude-code                      |         3 |  2.8% |   3.1% |
-| eval-testing-and-debugging       |         3 |  2.8% |   2.6% |
+Exam specs from blueprint:
 
-All domains match their targets exactly under the 2× exam baseline (106 questions, 2× the 53-question live form), with zero surplus and every declared skill floor at ≥ 2.
+- Total items: 53 questions
+- Duration: 120 minutes
+- Passing standard: 720 scaled score (scale 100–1,000)
+- Format: Single-select and multiple-response (multi-select)
 
-Formats: 67 single-select, 39 multi-select (24 select-TWO, 15 select-THREE).
-44 distinct source pages across the whole bank.
+## Composition and coverage audit
 
-## Pruning to 106 questions (2× baseline)
+Audited against the 106-question bank:
 
-In September 2026, following the removal of the 28 `deep` items, the bank was pruned from 149
-to 106 questions (exactly 2× the 53-question live exam). The pruning removed 43 questions across
-all eight domains to eliminate concept overlaps, retire low-value trivia, and align domain
-sizes with blueprint weights while ensuring every declared skill floor remains at ≥ 2 questions.
+- **Distribution**: Proportional across all 8 domains and 25 declared skills with zero surplus.
+- **Item formats**: 67 single-select, 39 multi-select (24 select-TWO, 15 select-THREE).
+- **Difficulty breakdown**: 17 easy (single), 37 medium (single), 23 medium (multi), 13 hard (single), 16 hard (multi).
+- **Sourcing**: 44 distinct authoritative documentation pages across `platform.claude.com`, `code.claude.com`, `anthropic.com/engineering`, and `modelcontextprotocol.io`.
+- **Single-select position distribution**: 11 A / 24 B / 18 C / 14 D across `a`–`d` (max 35.8%, well within 50% ceiling).
+- **No multi-select key is a leading run of options**.
+- **Distractor notes and subdomains**: 100% complete across all 106 questions.
+- **Bias guards**: All pass cleanly (`positionBias`, `lengthBiasMeanDelta`, `longestOptionIsKey`).
 
-## Removal of the legacy "deep" question category
+### Evolution and pruning history
 
-The bank originally held 177 questions, with 28 questions tagged with a `"deep"` scope
-to separate items that exceeded the blueprint's cognitive level or turned on narrow documentation
-mechanics from the 149 core questions.
+- **Pruning to 106 questions (September 2026)**: Bank was pruned from 149 to 106 questions (2× baseline), retiring 43 questions across all eight domains to eliminate concept overlaps, retire low-value trivia, and align domain sizes with blueprint weights while keeping declared skill floors at ≥ 2.
+- **Removal of legacy "deep" category**: The bank originally held 177 questions, including 28 tagged `"deep"` for items exceeding blueprint cognitive level or testing narrow mechanics. The two-tier hierarchy was retired to focus the entire bank directly on the exam blueprint at the proper cognitive level.
 
-In September 2026, the question scope feature and the 28 `deep` questions were removed
-from the repository. Questions in the bank now focus directly on the exam blueprint at
-the appropriate cognitive level, eliminating the maintenance debt of a two-tier question hierarchy.
+## Official sample question inventory
 
-## Calibration against the guide's own sample questions
+Section 8 of the exam guide carries **three official sample items** (Domain 2 batch processing, Domain 7 prompt injection, Domain 8 MCP server) with answer keys and rationales. The guide states they illustrate "the style and cognitive level of the exam" without being drawn from live forms.
 
-Section 8 of the exam guide carries **three official sample items** (Domain 2
-batch processing, Domain 7 prompt injection, Domain 8 MCP server) with answer
-keys and rationales. The guide calls them illustrative of "the style and
-cognitive level of the exam" and states they are not drawn from the live item
-bank. They are published in the guide itself, so they sit inside the sourcing
-boundary, which makes them the strongest anchor available: they are published
-by the vendor itself as representative of the exam's style and cognitive
-level, which is a claim no third-party set can carry.
+All three share one shape: 2–3 sentences of concrete scenario with an explicit constraint, asking "which approach best fits" or "which mitigation is most effective". Single-select, four options, ~35-word stems, ~15-word options. Keys name mechanisms; distractors are transparently eliminable by high-level judgement. None tests a parameter name, status code, precedence rule, or token accounting.
 
-All three share one shape: two or three sentences of concrete scenario with an
-explicit constraint, then "which approach best fits" or "which mitigation is
-most effective". Single-select, four options, ~35-word stems, ~15-word
-options. The key names a mechanism. Crucially the distractors are
-*transparently* bad — raise the temperature so behaviour is harder to predict;
-add a line asking users not to include malicious instructions; hard-code the
-logic into each system prompt. A competent practitioner eliminates three
-options without recalling any documentation detail. None of the three tests a
-parameter name, a status code, a precedence rule, or token accounting.
+The bank contains direct analogues of all three samples (`applications-and-integration-008`, `security-and-safety-003` / `-004`, `tools-and-mcps-012`), and the "which documented pattern fits" family (`agents-and-workflows-005`, `-024`, `-025`) matches sample 3 closely.
 
-Structurally the bank matches closely: median stem **38 words**, **99 of 106**
-open on a concrete scenario, four options the norm. The bank also contains
-direct analogues of all three samples — `applications-and-integration-008`,
-`security-and-safety-003` and `-004`, `tools-and-mcps-012` — and
-the "which documented pattern fits" family (`agents-and-workflows-005`,
-`-024`, `-025`) is sample-3 shape almost exactly.
+## Calibration principles and deliberate headroom
 
-Cognitively, about a quarter of the bank sits **above** the samples, along four
-identifiable axes:
+About a quarter of the bank sits **above** the samples along four deliberate axes:
 
-1. **Distractor subtlety.** Where the samples allow elimination by high-level
-   judgement, these turn on recalling specific documented rules. Representative
-   examples:
+1. **Distractor subtlety**: Questions turn on recalling specific documented rules rather than transparent elimination:
    - `claude-code-003`: deny rules bind in `bypassPermissions`, allow rules do not.
    - `security-and-safety-005`: deny → ask → allow precedence; first match wins regardless of specificity.
-   - `model-selection-and-optimization-013`: input over window is a 400; input + `max_tokens` over window may be accepted and stopped mid-generation.
+   - `model-selection-and-optimization-013`: input over window returns 400; input + `max_tokens` over window may be accepted and stopped mid-generation.
    - `model-selection-and-optimization-015`: thinking tokens count against `max_tokens`, window, and rate limits.
    - `applications-and-integration-002`: adjacent same-role messages are combined rather than rejected.
    - `agents-and-workflows-001`: hinges on there being no default turn ceiling.
-   - `tools-and-mcps-008`: one client per server connection, plus transport mapping.
+   - `tools-and-mcps-008`: 1:1 client-to-server connection architecture, plus transport mapping.
    - `eval-testing-and-debugging-006`: telemetry is opt-in and requires your own collector.
-2. **Multi-select share.** 39 of 106 (36.8%), of which 15 are select-THREE and 5
-   of those are also `hard`. All three samples are single-select; the guide
-   confirms the exam mixes both formats but publishes no ratio, so ~37% is an
-   unanchored choice. Under all-or-nothing scoring a select-THREE needs three
-   independent facts to land.
-3. **Compound stems.** Questions asking two things simultaneously (e.g.
-   `applications-and-integration-001`, `-003`, `-047`, `security-and-safety-005`,
-   `agents-and-workflows-003`), driving mean option length to 20.3 words
-   against the samples' ~15.
-4. **Self-reported difficulty.** The bank is 17 easy/single, 37 medium/single,
-   23 medium/multi, 13 hard/single, 16 hard/multi. The samples are
-   easy-to-medium single on this bank's own scale, so the 29 `hard` items
-   (27.4%) are the headroom by the bank's own labelling.
+2. **Multi-select share**: 39 of 106 (36.8%), including 15 select-THREE (5 of which are `hard`). All-or-nothing scoring requires 3 independent facts to land.
+3. **Compound stems**: Questions asking two things simultaneously (`applications-...-001`, `-003`, `-047`, `security-...-005`, `agents-...-003`), driving mean option length to 20.3 words vs samples' ~15.
+4. **Self-reported difficulty**: 29 `hard` items (27.4%) provide intentional headroom above the easy-to-medium samples.
 
 ### This headroom is deliberate — do not "fix" it
 
-Practising above the bar is the goal. A learner who scores well here should
-find the real exam more comfortable, which is the useful direction for the
-error to run. The four axes above are recorded so a future author recognises
-them as intent rather than rediscovering them as a defect and flattening the
-bank toward the samples.
+Practising above the bar is the goal. A learner who scores well here should find the real exam more comfortable. These axes are recorded so a future author recognizes them as intent rather than flattening the bank toward the samples.
 
-Two boundaries on that licence:
+**Boundaries on headroom:**
 
-- **"Above the samples" is not "above the exam."** The anchor is three items
-  the guide itself calls illustrative, and vendors tend to publish easy
-  samples; a real 53-item form almost certainly contains harder items than its
-  own showcase. The 24% figure is *how many items exceed the sample
-  set*, not a claim that every question is a quarter harder. It is not
-  evidence that further escalation is safe.
-- **Overshoot must be avoided.** Questions that turn on narrow documentation
-  mechanics with no analogue in the exam reference material should be removed
-  or rewritten rather than retained in the bank.
+- "Above the samples" is not "above the exam": vendors tend to publish easy samples; real forms contain harder items.
+- Overshoot must be avoided: questions turning on narrow documentation mechanics without exam analogues should be removed or rewritten.
+- Headroom is cheap: scaled score (720 / 1000) with no per-domain minimums means a hard item carries no structural penalty.
 
-The scoring facts make the headroom cheap. Section 9 of the guide confirms the
-result is a single scaled score (720 on 100–1,000) against a fixed standard,
-and that per-domain percentages "are not used to determine your pass or fail
-result". There are no per-domain minimums, so a hard item costs one item and
-nothing more — practising against a harder bank carries no structural penalty.
+## Bias guards and pattern tells
 
-## Answer-length bias
+### Answer-length bias
 
-An audit of the reviewed bank found a systematic answer-length bias: correct
-options ran markedly longer than their distractors, because the key carried the
-source doc's full hedged claim while distractors were written as crisp wrong
-assertions. This survived source review precisely because that review only
-proves the key is faithful to the cited source — it says nothing about whether
-the question discriminates.
+An audit found correct options originally ran longer than distractors (+24.4 character mean delta; longest option was key in 61% of single-select items).
 
-"Always pick the longest option" scored **37/61 = 61%** on single-select
-against a ~25% random baseline, enough to clear the exam's 720/1000 bar on
-typography alone.
+- **Distractor padding**: Distractors were padded with qualifying clauses leaving their documented reason-for-wrongness intact. Keys were trimmed only where accuracy was unaffected (never trim a key into inaccuracy).
+- **Current state**: Mean delta is +3.2 characters (median +3.0 chars); longest option is key in 22% of single-select items. Locked in `schemas/question-bank.mjs` via `LENGTH_BIAS_MAX_MEAN_DELTA = 10` and `LENGTH_BIAS_MAX_LONGEST_SHARE = 0.45`.
 
-| Metric                                     | Before | Now  |
-| ------------------------------------------ | -----: | ---: |
-| mean(correct) − mean(distractor)           |  +24.4 | +3.2 |
-| — median                                   |  +11.2 | +3.0 |
-| key is the single longest option (singles) |    61% |  22% |
+### Distractor quality and temperature elimination
 
-"Before" was measured on the 100-question bank the audit ran against; "Now" is
-the current 106 post-pruning. The populations differ, so read the columns as bank states
-rather than as a controlled before/after.
+- 14 items originally offered irrelevant "raise/lower temperature" distractors. The 10 costliest were rewritten into authentic near-misses (e.g. `agents-and-workflows-017` deny rule vs hook; `eval-testing-and-debugging-007` throughput vs spend-cap 429).
+- Five six-option multi-select items retain a temperature distractor where it costs proportionally less; non-urgent.
 
-The fix was applied to distractors first: each was padded with equivalent
-qualifying clauses leaving its documented reason-for-wrongness intact, and
-several were tightened into genuine near-misses. Keys were trimmed only where
-it cost no accuracy. Provenance outranks cosmetic balance — never trim a key
-into inaccuracy to satisfy a metric.
+### Absolute qualifiers
 
-Thresholds in `schemas/question-bank.mjs` lock in the achieved state:
+- Absolutes (`always`, `never`, `only`, `must`, `every`, `cannot`, `all`, `any`, `no`) appear in 48% of distractors vs 29% of keys.
+- **Distribution deliberately left alone**: Eliminating absolutes scores 25% (random baseline) and uniquely solves 0 of 67 single-select items. Flattening it would require hedged falsehoods or stripping accurate qualifiers from keys.
+- **Decisive items fixed**: 7 items where the key was the sole option lacking an absolute were rewritten on 2026-09-12 and are now enforced by `questionSchema`.
 
-- `LENGTH_BIAS_MAX_MEAN_DELTA = 10` characters, checked in **both** directions,
-  since a bank whose keys are reliably shorter is just as guessable as one
-  whose keys are reliably longer.
-- `LENGTH_BIAS_MAX_LONGEST_SHARE = 0.45` for single-select, against a ~25%
-  chance rate and the position guard's comparable 50% ceiling.
+## Architectural and sourcing adjudications
 
-Run against the pre-fix bank the guard fails on both axes, which is the
-regression it exists to catch.
+- **Near-duplicate adjudications**:
+  - `applications-and-integration-017` / `eval-testing-and-debugging-001` (develop-tests): Resolved; `-001` retired with deep items, leaving `-017` as the SMART criteria question.
+  - `applications-and-integration-007` / `prompt-and-context-engineering-005` (context-windows): Resolved; `-007` cut during 106-pruning, subsumed by `-005`.
+  - `security-and-safety-005` / `claude-code-003` (permissions / permission-modes): Both kept; `-005` tests deny-first precedence, `-003` tests the `bypassPermissions` carve-out. Complementary.
+- **Reading documentation**: Client-rendered pages on `platform.claude.com` and `code.claude.com` are fetched reliably by appending `.md` to the URL.
+- **Sourcing boundaries**: Partner cloud documentation (AWS Bedrock, Vertex AI) and gated Partner Academy courses remain strictly outside citable sourcing.
 
-## Distractor quality
+## Maintenance audits
 
-A separate pass measured how often a distractor could be eliminated for free.
-14 questions offered a "raise/lower the temperature" option in a context where
-temperature was plainly irrelevant — a gift of 25% of the option space in a
-four-option item.
+### Figure-bearing claims baseline (2026-09-13)
 
-The 10 costliest were rewritten into genuine near-misses that encode real
-misconceptions rather than filler. Two illustrate the intended standard:
+Evaluated 5 figure-bearing questions on `platform.claude.com` against re-read documentation:
 
-- `agents-and-workflows-017` now offers a **deny rule**, which really does
-  block the write. The stem also requires every attempt to be recorded, which
-  a deny rule does not do and a hook does.
-- `security-and-safety-013` (subsequently retired in the 106-question pruning pass)
-  offered **classifier screening**, which is recommended guidance — but the stem was
-  explicitly about an instruction that slipped past screening.
+- All 5 confirmed intact as Class 1 verbatim vendor facts: `model-...-005` and `-008` (5-minute cache TTL), `model-...-010` (50% discount, 24 hours), `model-...-012` (24 hours), `prompt-...-001` (up to 30 percent).
+- **True defect rate**: 0 / 5 = **0.0%**.
 
-`eval-testing-and-debugging-007` was fixed for the opposite reason: its two
-surviving options both said "spend limit reached" and differed only on which
-flavour returns 429 versus 400. A coin-flip on a lookup value is not a hard
-question. The distractor is now a workspace-limit throttle, wrong for a
-learnable reason: throughput 429s carry retry-after guidance and recover, spend-cap
-429s do not.
+### Recurring source drift audit (2026-09-17)
 
-**Five questions still carry a free temperature elimination**, all
-six-option multi-selects where one gift costs proportionally less. Worth
-doing; not urgent.
+Comprehensive drift audit across all 106 questions and 44 base URLs:
 
-## Other pattern tells — measured, and one acted on
-
-**Absolute qualifiers** (`always`, `never`, `only`, `must`, `every`, `cannot`,
-`all`, `any`, `no`) appear in **48% of distractors against 29% of keys**. The
-corresponding strategy — eliminate every option containing an absolute, then
-guess among what is left — scores an expected **25% against a 25% baseline**,
-and uniquely identifies the key in **0 of 67** single-select items (previously
-26% across 97 items before the 106-question pruning).
-
-**The distribution is deliberately left alone**, and that has not changed. The
-residual edge is an order of magnitude weaker than the length bias was
-(+36pp), it cannot carry anyone to 720/1000, and the skew is largely
-*legitimate*: the cited docs state correct behaviour with genuine hedging,
-while a distractor is frequently wrong precisely because it over-claims.
-Flattening it would mean either writing hedged falsehoods or stripping
-accurate qualifiers out of keys — both trade factual fidelity for cosmetics,
-which is the trade this project's provenance rule declines to make. It is
-recorded so the number is known rather than assumed, and so a future author
-does not "discover" it as a new defect.
-
-**The decisive items were not left alone.** This measurement first read 30%
-expected and **7 of 109 uniquely identified** — seven items where the key was
-the sole option carrying no absolute, so eliminating absolutes answered them
-outright with no subject knowledge at all. On 2026-09-12 each of those seven
-had one distractor rewritten, and `questionSchema` now rejects the shape, so
-it cannot reappear unnoticed.
-
-That is a narrower intervention than the one this section declines, and it is
-not the same trade. Every rewrite left the distractor exactly as false as it
-was and changed only the register it was false in — "Only a single image is
-ever allowed per request, and it must always be positioned after all of the
-text content" became "A single image per request is the documented limit, and
-it belongs after the text content". No key was touched, and no hedged
-falsehood was written. A distractor that is wrong on substance rather than
-wrong on style is the better distractor whatever the strategy scores against
-it.
-
-## Near-duplicate adjudications
-
-| Pair | Source | Resolution |
-| --- | --- | --- |
-| `applications-and-integration-017` / `eval-testing-and-debugging-001` | develop-tests | **Resolved.** `eval-testing-and-debugging-001` was retired with the legacy deep items, leaving `-017` as the SMART properties question. |
-| `applications-and-integration-007` / `prompt-and-context-engineering-005` | context-windows | **Resolved in 106 pruning.** `applications-and-integration-007` was cut (subsumed by `prompt-and-context-engineering-005` which provides the richer context accounting coverage). |
-| `security-and-safety-005` / `claude-code-003` | permissions / permission-modes | **Both kept.** Different source pages. The first tests deny-first evaluation order, the second the `bypassPermissions` carve-out. Complementary, not redundant. |
-
-## Source review
-
-Every key was independently answered cold against its cited source and
-adjudicated where the cold reader disagreed. In every disagreement the answer
-key proved correct and the cold reader had erred: once by conflating two
-mechanisms the source described separately, once by stopping at the first
-correct option in a multi-select, once by answering a different question than
-the stem asked.
-
-The docs render client-side, so the reliable way to read a page is to append
-`.md` to its URL:
-
-```sh
-curl -sL https://platform.claude.com/docs/en/build-with-claude/compaction.md
-```
-
-An early review pass reported `404` / "content moved" for seven source pages.
-All seven were live and correct; the failures were an artefact of that pass's
-URL fetcher, not doc drift. No `sourceUrl` needed changing. Confirm a page is
-genuinely gone before editing a `sourceUrl`.
-
-## Verified clean
-
-- Answer position across single-select: 11 / 24 / 18 / 14 (n=67, max is 35.8%,
-  well within the 50% ceiling).
-- No multi-select key is a leading run of options.
-- `subdomain` and `distractorNotes` present on all 106.
-
-```
-npm run check   # validate + balance --strict + 340 tests + lint + format
-npm run typecheck
-```
-
-Both pass.
-
-## Figure-bearing claims audit and baseline — 2026-09-13
-
-Following the provenance rules codified in `CONTRIBUTING.md`, this pass evaluated the
-figure-bearing questions in `ccdv-f` against their cited documentation. All citations in
-this population are on `platform.claude.com`, which serves `.md`, so each page was
-re-read in full.
-
-### Summary of adjudications (5 items)
-
-| Question | Claim under review | Cited page | Claim class | Verdict | Disposition |
-| --- | --- | --- | --- | --- | --- |
-| `model-...-005` | "5 minutes" | `prompt-caching` | Class 1 (Verbatim vendor fact) | **Confirmed**: "By default, the cache has a 5-minute lifetime." | **bump** |
-| `model-...-008` | "5 minutes" | `prompt-caching` | Class 1 (Verbatim vendor fact) | **Confirmed**: same statement; 1-hour TTL documented as the alternative. | **bump** |
-| `model-...-010` | "50 percent discount", "24 hours" | `batch-processing` | Class 1 (Verbatim vendor facts) | **Confirmed**: "All usage is charged at 50% of the standard API prices"; "Batches expire if processing does not complete within 24 hours." | **bump** |
-| `model-...-012` | "24 hours" | `optimizing-for-cost-and-intelligence` | Class 1 (Verbatim vendor fact) | **Confirmed**: the cited page itself states batch processing is "at 50% off for work that can wait up to 24 hours" — so this is a same-page fact, not the cross-page fact an earlier version of this table recorded. | **bump** |
-| `prompt-...-001` | "up to 30 percent" | `claude-prompting-best-practices` | Class 1 (Verbatim vendor fact) | **Confirmed**: "Queries at the end can improve response quality by up to 30 percent in tests, especially with complex, multidocument inputs." | **bump** |
-
-> **Correction (same day).** An earlier version of this section covered only the four
-> `model-selection-and-optimization` items and recorded their disposition as **bump**
-> without moving any `sourceCheckedAt`. Both are fixed here:
-> `prompt-and-context-engineering-001` was missing from the hand-selected population and
-> has been adjudicated, and all five `sourceCheckedAt` values are now bumped to match the
-> re-read.
-
-### Bank metrics and true defect rate
-
-- **Total questions in bank**: 106 (audit conducted on the 177-question pre-pruning population)
-- **Figure-bearing questions evaluated**: 5 (mechanically detected; an earlier hand-selected population had 4)
-- **Confirmed without change**: 5
-- **Defects identified**: 0
-- **True defect rate**: 0 / 5 = **0.0%**, on a fully re-read `.md`-host population.
-
-## Source drift audit — 2026-09-17
-
-Recurring citation and blueprint drift audit across `ccdv-f` following the
-procedure in `skills/audit-sources/SKILL.md`.
-
-### 1. Mechanical triage (stage 1)
-
-Repo-wide triage via `npm run check-sources -- --json` and `npm run check-claims`:
-- **check-sources**: All 44 base URLs cited by `ccdv-f` returned HTTP 200 (live).
-  Two unversioned MCP URLs (`/docs/learn/architecture` and `/docs/learn/server-concepts`)
-  redirected to the pinned `2026-07-28` specification path.
-- **check-claims**: Flagged 4 figure-bearing items in `ccdv-f` (one carrying two claims) plus 1 advisory finding:
-  - `ccdv-f-claude-code-005`: Advisory quote mismatch "headless".
-  - `ccdv-f-applications-and-integration-017`: `options.a: 90 percent` (not-found).
-  - `ccdv-f-model-selection-and-optimization-007`: `sourceNote: 1-hour` (found).
-  - `ccdv-f-model-selection-and-optimization-008`: `explanation: 5 minutes` (found), `distractorNotes.c: 2048 tokens` (not-found), `distractorNotes.e: 5 minutes` (found).
-  - `ccdv-f-model-selection-and-optimization-012`: `distractorNotes.a: 24 hours` (found).
-
-### 2. Blueprint drift audit (stage 3)
-
-Re-read the official exam guide PDF cold from `manifest.examUrl` on Anthropic's Everpath CDN:
-- **Guide identity**: Version 1.0, July 2026, exam code `CCDV-F`.
-- **Exam specifications**: 53 items, 120 minutes, passing score 720 / 1000.
-- **Domain weights**:
-  1. Applications and Integration: 33.1%
-  2. Model Selection and Optimization: 16.8%
-  3. Agents and Workflows: 14.7%
-  4. Prompt and Context Engineering: 11.0%
-  5. Tools and MCPs: 10.6%
-  6. Security and Safety: 8.1%
-  7. Claude Code: 3.1%
-  8. Eval, Testing, and Debugging: 2.6%
-- **Drift verdict**: 0% drift. Every domain name, weight, question count, and duration in `manifest.json` matches the official exam guide exactly.
-
-### 3. Stage 1 adjudication by numeric class (stage 4)
-
-| Question | Claim / Finding | Cited page | Claim class | Adjudication & Evidence | Disposition |
-| --- | --- | --- | --- | --- | --- |
-| `claude-code-005` | Quote mismatch "headless" | `code.claude.com/docs/en/headless` | Advisory | **Confirmed**: The page was retitled "Run Claude Code programmatically", but the URL slug remains `/headless`. Non-interactive mode (`-p`), absence of interactive prompts/dialogs, and structured JSON output (`--output-format json`) are all fully documented on the page. | **bump** |
-| `applications-and-integration-017` | "90 percent" (not found) | `platform.claude.com/docs/en/test-and-evaluate/develop-tests` | Class 2 (Scenario parameter) | **Confirmed**: The cited page's SMART criteria table uses an F1 score of 0.85 on 10,000 tweets as its positive example; option A instantiates the same SMART properties in a realistic billing ticket context ("90 percent without escalation on 2,000 labeled tickets"). The metric is a scenario parameter illustrating measurable success criteria, not a vendor documentation claim. | **bump** |
-| `model-selection-and-optimization-007` | "1-hour" (found) | `platform.claude.com/docs/en/build-with-claude/prompt-caching` | Class 1 (Verbatim vendor fact) | **Confirmed**: Page explicitly documents "1-hour cache TTL" alongside the default 5-minute TTL. | **bump** |
-| `model-selection-and-optimization-008` | "5 minutes" (found), "2048 tokens" (not-found) | `platform.claude.com/docs/en/build-with-claude/prompt-caching` | Class 1 (Verbatim vendor facts) | **Confirmed**: Default 5-minute lifetime confirmed. The "2048 tokens" discrepancy is a formatting artefact: the vendor document formats the threshold as "2,048 tokens" (with comma) for several model families. | **bump** |
-| `model-selection-and-optimization-012` | "24 hours" (found) | `platform.claude.com/docs/en/about-claude/models/optimizing-for-cost-and-intelligence` | Class 1 (Verbatim vendor fact) | **Confirmed**: Page explicitly confirms Batch API operates at a 50% discount for results within 24 hours, and positions prompt caching as the foremost quality-neutral cost reduction lever for multi-turn loops. | **bump** |
-
-### 4. Host-level re-reads and citation updates
-
-1. **`modelcontextprotocol.io` migration**:
-   Per `certs/VENDORS.md`, unversioned paths silently 302 to current releases. The two unversioned citations in `tools-and-mcps` were re-cited to the pinned current release `2026-07-28`:
-   - `ccdv-f-tools-and-mcps-008`: Re-cited to `https://modelcontextprotocol.io/docs/2026-07-28/learn/architecture`. Claim verified: 1:1 client-to-server connection architecture, STDIO for local processes, Streamable HTTP for remote servers. Disposition: **re-cite**.
-   - `ccdv-f-tools-and-mcps-011`: Re-cited to `https://modelcontextprotocol.io/docs/2026-07-28/learn/server-concepts`. Claim verified: Resources (passive data sources, application-controlled), Tools (model-controlled actions), Prompts (user-controlled templates). Disposition: **re-cite**.
-
-2. **`www.anthropic.com/engineering` manual prose audit**:
-   Because the `.md` trick does not work on this host and `check-claims` returns `inconclusive: out-of-scope host`, all 12 questions citing engineering blog posts were manually audited against live HTML text:
-   - `building-effective-agents` (9 questions: `agents-and-workflows-004`, `-005`, `-019`, `-020`, `-024`, `-025`, `applications-and-integration-025`, `-029`, `tools-and-mcps-015`): Workflows vs agents definition, simplicity principle, prompt chaining, routing, parallelization, orchestrator-workers, and evaluator-optimizer patterns are intact. Disposition: **bump**.
-   - `effective-context-engineering-for-ai-agents` (3 questions: `prompt-and-context-engineering-013`, `-014`, `-015`): Compaction, structured note-taking/memory files, subagents, and turn-accumulation tradeoffs verified against live prose. Disposition: **bump**.
-
-3. **Platform and Code documentation sweep**:
-   All remaining 40 documentation base URLs across `platform.claude.com` and `code.claude.com` were fetched via their `.md` endpoints and re-read against the bank's questions. Key invariants confirmed:
-   - Zero mentions of ephemeral model names (e.g. Claude 3.5 Sonnet) across the entire bank, protecting against lineup turnover.
-   - Assistant prefill deprecation behavior (validation 400 error on modern models, superseded by structured outputs) confirmed in `applications-and-integration-003`, `prompt-and-context-engineering-017`, and `tools-and-mcps-006`.
-   - Context window overflow behavior (400 on input overflow; mid-generation stop on input + `max_tokens` overflow) confirmed in `model-selection-and-optimization-013`.
-   - Permission rules evaluation hierarchy (deny rules take precedence regardless of specificity or bypass mode) confirmed in `security-and-safety-005` and `claude-code-003`.
-   All 104 remaining questions confirmed intact. Disposition: **bump**.
-
-### 5. Summary of dispositions and bank metrics
-
-- **Total questions in bank**: 106
-- **Questions re-cited**: 2 (`ccdv-f-tools-and-mcps-008`, `ccdv-f-tools-and-mcps-011` to pinned `2026-07-28` MCP docs)
-- **Questions bumped**: 104 (all pages re-read; claims intact)
-- **Questions rewritten**: 0
-- **Questions retired**: 0
-- **True defect rate**: 0 / 106 = **0.0%**
-- **All `sourceCheckedAt` dates**: Updated to `2026-09-17`.
-
-### 6. Scope explicit boundary
-
-- **Covered**: 100% of the `ccdv-f` item bank (all 106 questions across all 8 domains and 44 unique base URLs), the official CCDV-F exam guide PDF, both cited `anthropic.com/engineering` posts, all `code.claude.com` pages, all `platform.claude.com` pages, and `modelcontextprotocol.io`.
-- **Not covered**: Partner-operated cloud documentation (AWS Bedrock, Google Cloud Vertex AI) and gated Anthropic Partner Academy courses, which remain outside the citable sourcing boundary.
+- **Blueprint drift**: 0% drift. Exam guide v1.0 (July 2026, CCDV-F) re-verified on CDN. All 8 domain names, weights (33.1/16.8/14.7/11.0/10.6/8.1/3.1/2.6), 53 items, 120 minutes match `manifest.json` exactly.
+- **Source liveness**: All 44 base URLs return HTTP 200.
+- **Re-citations (2 items)**: `tools-and-mcps-008` and `-011` re-cited to pinned `2026-07-28` MCP specification paths per `certs/VENDORS.md`.
+- **Claim adjudications**:
+  - `claude-code-005`: Advisory quote mismatch "headless" confirmed intact; page retitled "Run Claude Code programmatically" while slug `/headless` and CLI flags `-p`/`--output-format json` remain documented.
+  - `applications-and-integration-017`: "90 percent" confirmed as a Class 2 scenario parameter illustrating SMART properties.
+  - `model-...-007`, `-008`, `-012`: Confirmed verbatim vendor facts (1-hr TTL, 5-min TTL / 2,048 tokens comma formatting, 24-hr batch).
+  - Engineering blog posts (12 items citing `building-effective-agents` and `effective-context-engineering`): Confirmed intact via manual HTML review.
+- **Dispositions**: 104 bump, 2 re-cite, 0 rewrite, 0 retire. True defect rate: 0 / 106 = **0.0%**. All `sourceCheckedAt` dates updated to `2026-09-17`.

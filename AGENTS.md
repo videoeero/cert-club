@@ -133,8 +133,8 @@ Summary:
 
 [`skills/`](skills/) holds the recurring content workflows — recon for a new
 cert, authoring a batch, evaluating per-question correctness, hardening domain
-difficulty, auditing coverage, auditing citations for drift, and the gate on
-new question types. They are **procedural wrappers** over this file,
+difficulty, auditing coverage, auditing citations for drift, condensing a
+review record, and the gate on new question types. They are **procedural wrappers** over this file,
 [`CONTRIBUTING.md`](CONTRIBUTING.md) and
 [`certs/ADDING-A-CERT.md`](certs/ADDING-A-CERT.md): they say in what order to
 do the work and where the judgement calls are, and they carry no rules of
