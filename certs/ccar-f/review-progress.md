@@ -13,7 +13,7 @@ verified on September 11, 2026.
 `manifest.status` is `stable`. Promoted on 2026-09-14 following complete blueprint coverage and explicit human confirmation.
 With 120 questions against a 60-question live exam, the bank provides exactly 2× exam coverage
 proportionally distributed across all five domains to match blueprint weights with zero delta (32 / 22 / 24 / 24 / 18).
-119 questions are `reviewed` and 1 is `draft` (`ccar-f-tool-design-and-mcp-integration-022`, pending cold-evaluation of its hardened distractor `b`).
+All 120 questions are `reviewed`.
 All quality, balance, and bias guards pass cleanly.
 
 ## Recon verdict: `GO`
@@ -233,3 +233,99 @@ Authored 10 single-select questions across all five domains to eliminate remaini
 - **Adversarial evaluation (`evaluate-questions`)**: All 10 expansion items were independently cold-derived against official vendor documentation. Nine items were confirmed and promoted to `status: "reviewed"`; `-022` remains at `status: "draft"` due to its updated distractor.
 - **Difficulty calibration (`harden-domain-questions`)**: Calibrated Domain 2 against Sample Question 2. 20 items were confirmed at or above sample depth without changes; 2 items (`-021`, `-022`) were hardened to replace synthetic distractors with authentic architectural near-misses.
 - **Full bank status**: 119 `reviewed`, 1 `draft`. All 120 items are scenario-grounded and sit firmly at or above the official sample anchor. Single-select position distribution (27 A / 26 B / 28 C / 29 D), length delta (-3.31 chars), and longest-option-as-key share (17.3%) all pass repository bias guards cleanly.
+
+## Recurring source drift audit — 2026-09-17
+
+Comprehensive, repo-wide source drift and claims verification pass executed across the complete 120-question bank following the `audit-sources` workflow.
+
+### Scope covered and not covered
+
+- **Scope covered**: All 120 questions across all 5 domains and all 28 distinct authoritative vendor documentation URLs across 3 hosts (`modelcontextprotocol.io`, `code.claude.com`, and `platform.claude.com`). Official blueprint PDF re-verified against live CDN.
+- **Scope not covered**: Draft-to-reviewed status promotion for `ccar-f-tool-design-and-mcp-integration-022` was not conducted (held at `status: "draft"` pending independent evaluation under `evaluate-questions`). Question stems and option text were not altered.
+
+### Blueprint drift evaluation
+
+The canonical exam guide PDF was fetched cold from Anthropic's Everpath CDN (`https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf`) and extracted via text parsing:
+- **Guide version**: `Version 1.0 · Effective July 2026 · Exam code: CCAR-F`.
+- **Exam specifications**: 60 questions, 120 minutes, 720 scaled passing threshold.
+- **Domain weights**:
+  1. Agentic Architecture & Orchestration: 27%
+  2. Tool Design & MCP Integration: 18%
+  3. Claude Code Configuration & Workflows: 20%
+  4. Prompt Engineering & Structured Output: 20%
+  5. Context Management & Reliability: 15%
+- **Verdict**: Zero blueprint drift. Manifest metadata, domain slugs, and percentage weights match the official guide exactly.
+
+### Mechanical triage and claim adjudications
+
+Automated triage via `scripts/check-sources.mjs` and `scripts/check-claims.mjs` evaluated all citations and free-text surfaces across the bank:
+- **Source liveness**: 0 failed URLs. All 28 distinct pages return HTTP 200.
+- **Advisory findings (quote mismatches, 2 items)**:
+  - `ccar-f-tool-design-and-mcp-integration-014`: Advisory mismatch on `"none"`. Root cause: question was citing `handle-tool-calls.md`, but `tool_choice` is documented in `define-tools.md` § "Forcing tool use", which explicitly specifies the four possible options (`auto`, `any`, `tool`, `none`). Grounded and re-cited.
+  - `ccar-f-tool-design-and-mcp-integration-017`: Advisory mismatch on `"Jira operations"`. Adjudicated as Class 2 illustrative scenario example in explanation, contrasting vague tool descriptions with descriptive schemas per `code.claude.com/docs/en/mcp.md`. Confirmed intact.
+- **Figure-bearing claim adjudications (10 items evaluated)**:
+  - `ccar-f-agentic-architecture-and-orchestration-015`: "2%" — Class 2 scenario parameter from stem (non-compliance rate). Confirmed.
+  - `ccar-f-agentic-architecture-and-orchestration-020`: "$500" — Class 2 scenario parameter from stem (spending limit policy threshold). Confirmed.
+  - `ccar-f-claude-code-configuration-and-workflows-022`: "5-second", "10-minute" — Class 1 verbatim vendor facts: `code.claude.com/docs/en/headless.md` § "Background tasks at exit" explicitly documents the five-second grace period for background Bash tasks and the 10-minute idle wait ceiling for background subagents. Confirmed.
+  - `ccar-f-context-management-and-reliability-014`: "98%", "40%" — Class 2 scenario parameters from stem (aggregate accuracy and localized failure rate). Confirmed.
+  - `ccar-f-prompt-engineering-and-structured-output-001`: "50%", "24 hours" — Class 1 verbatim vendor facts: `platform.claude.com/docs/en/build-with-claude/batch-processing.md` confirms 50% discount and 24-hour turnaround window. Confirmed.
+  - `ccar-f-prompt-engineering-and-structured-output-009`: "100%" — Class 1/4 mechanism property: constrained decoding guarantees valid JSON syntax. Confirmed.
+  - `ccar-f-prompt-engineering-and-structured-output-014`: "$450", "$500" — Class 2 scenario parameters from stem (invoice amounts). Confirmed.
+  - `ccar-f-prompt-engineering-and-structured-output-018`: "24 hours" — Class 1 verbatim vendor fact: Message Batches turnaround. Confirmed.
+  - `ccar-f-prompt-engineering-and-structured-output-022`: "50%" — Class 1 verbatim vendor fact: batch discount. Confirmed.
+  - `ccar-f-tool-design-and-mcp-integration-012`: Verified intact following 2026-09-13 fix removing unsourced percentage. Confirmed.
+
+### Sourcing re-citations and updates (8 items)
+
+1. **MCP specification pinning (5 items)**:
+   - `ccar-f-tool-design-and-mcp-integration-006`, `-007`, `-009`: Re-cited from superseded tutorial path `https://modelcontextprotocol.io/docs/2025-06-18/develop/build-server.md` to authoritative pinned specification `https://modelcontextprotocol.io/specification/2026-07-28/server/tools.md` § "Error Handling" (which establishes protocol-level errors vs tool execution errors with `isError: true`).
+   - `ccar-f-tool-design-and-mcp-integration-016`, `-019`: Re-cited from superseded revision `https://modelcontextprotocol.io/docs/2025-06-18/learn/server-concepts.md` to current pinned revision `https://modelcontextprotocol.io/docs/2026-07-28/learn/server-concepts.md` per `certs/VENDORS.md` rules.
+2. **Messages API `tool_choice` realignment (3 items)**:
+   - `ccar-f-prompt-engineering-and-structured-output-013`, `ccar-f-tool-design-and-mcp-integration-013`, `ccar-f-tool-design-and-mcp-integration-014`: Re-cited from `https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls.md` to `https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools.md` § "Forcing tool use" (which documents `tool_choice` parameter semantics: `auto`, `any`, `tool`, `none`).
+
+### Summary of dispositions
+
+- **bump**: 112 questions (all pages re-read cold, claims intact, `sourceCheckedAt` bumped to `2026-09-17`).
+- **re-cite**: 8 questions (claims intact, re-cited to current pinned or section-specific documentation, `sourceCheckedAt` bumped to `2026-09-17`).
+- **rewrite**: 0 questions.
+- **retire**: 0 questions.
+- **Defect rate**: 0 / 120 = **0.0%**.
+
+## Adversarial evaluation and confirmation — 2026-09-17
+
+Targeted adversarial correctness pass evaluating `ccar-f-tool-design-and-mcp-integration-022` (the sole remaining `draft` question in the bank) following the `evaluate-questions` workflow, plus independent verification of the 8 items re-cited during the 2026-09-17 source drift audit.
+
+### Scope covered and not covered
+
+- **Scope covered**:
+  - `ccar-f-tool-design-and-mcp-integration-022`: Independently cold-derived against `https://code.claude.com/docs/en/mcp.md` § "Scale with MCP tool search" and § "Server status detail".
+  - 8 re-cited questions from the drift pass (`tool-...-006`, `-007`, `-009`, `-013`, `-014`, `-016`, `-019`, and `prompt-...-013`): Cold-derived against pinned MCP specification pages and `define-tools.md`.
+- **Scope not covered**: Remaining 111 items already adjudicated and confirmed `reviewed` in prior adversarial passes (2026-09-10, 2026-09-11, 2026-09-14) were not re-litigated.
+
+### Item evaluation: `ccar-f-tool-design-and-mcp-integration-022`
+
+- **Cold derivation**: The question asks what architectural mechanism explains why Claude Code sessions start with minimal context token consumption despite connecting six MCP servers with over fifty tools. Official vendor documentation (`code.claude.com/docs/en/mcp.md` § "Scale with MCP tool search") documents that "Tool search keeps MCP context usage low by deferring tool definitions until Claude needs them. Only tool names and server instructions load at session start... Tool search is enabled by default: MCP tools are deferred and discovered on demand." Key `d` uniquely and correctly captures this.
+- **Distractor quality**:
+  - `a`: Plausible fixed-limit assumption, cleanly rebutted by docs stating Claude Code "doesn't impose a fixed per-server tool cap".
+  - `b`: Plausible technical near-miss invoking the documented `MCP_DISCOVERY_CACHE`, which caches tool lists across sessions to defer server connections until first use, but does not defer tool schemas or eliminate them from context; cached tools remain available from turn 1.
+  - `c`: Plausible architectural near-miss invoking vector search / embeddings, which Claude Code does not use (it relies on native model `tool_reference` blocks).
+- **Free-text and claims check**: No unsourced figures or APIs; explanation and distractorNotes accurately reflect `mcp.md`.
+- **Disposition**: **confirmed**. Promoted from `status: "draft"` to `status: "reviewed"`.
+
+### Re-cited items audit (8 items)
+
+All 8 items re-cited in the 2026-09-17 drift pass were cold-evaluated against their new target endpoints:
+- `tool-...-006`, `-007`, `-009` (MCP tools spec): Confirmed protocol-level JSON-RPC error separation vs `isError: true` tool execution results and non-retryable policy rejections.
+- `tool-...-013`, `-014`, and `prompt-...-013` (`define-tools.md` § "Forcing tool use"): Confirmed `tool_choice: {'type': 'tool', 'name': ...}`, `tool_choice: {'type': 'any'}`, and `tool_choice: {'type': 'auto'}` semantics.
+- `tool-...-016`, `-019` (MCP concepts): Confirmed Resource URI exposure vs repetitive exploratory tool invocations, and Resources (application-controlled read-only) vs Tools (model-controlled executable) primitives.
+- **Disposition**: **confirmed** (8 items).
+
+### Summary of dispositions
+
+- **confirmed**: 9 questions (promoted 1 from draft to reviewed; re-confirmed 8).
+- **miskeyed**: 0 questions.
+- **unsupported**: 0 questions.
+- **weak-distractors**: 0 questions.
+- **unsourced-claim**: 0 questions.
+- **Defect rate**: 0 / 9 = **0.0%**.
+- **Bank status**: 120 of 120 questions (100%) now confirmed `status: "reviewed"`.

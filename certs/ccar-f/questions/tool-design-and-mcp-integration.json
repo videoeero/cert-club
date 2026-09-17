@@ -38,7 +38,7 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/mcp.md",
     "sourceNote": "Configure MCP servers in project-scoped .mcp.json with environment variable expansion",
-    "sourceCheckedAt": "2026-09-10"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-002",
@@ -79,7 +79,7 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools.md",
     "sourceNote": "Expanding tool descriptions with input formats, examples, and boundaries for reliable selection",
-    "sourceCheckedAt": "2026-09-10"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-003",
@@ -120,7 +120,7 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools.md",
     "sourceNote": "Eliminating functional overlap in tool naming and descriptions to prevent misselection",
-    "sourceCheckedAt": "2026-09-10"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-004",
@@ -161,7 +161,7 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools.md",
     "sourceNote": "Splitting monolithic tools into focused, single-purpose tools with tight schemas",
-    "sourceCheckedAt": "2026-09-10"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-005",
@@ -202,7 +202,7 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools.md",
     "sourceNote": "Harmonizing system prompt phrasing with tool definitions to avoid unintended keyword bias",
-    "sourceCheckedAt": "2026-09-10"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-006",
@@ -241,9 +241,9 @@
       "b": "Masking failures as successful empty responses misleads the agent into believing data does not exist.",
       "d": "Returning error messages with isError: false misinforms the client framework that the tool invocation succeeded, preventing automated error handling and recovery workflows."
     },
-    "sourceUrl": "https://modelcontextprotocol.io/docs/2025-06-18/develop/build-server.md",
+    "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28/server/tools.md",
     "sourceNote": "Returning structured error responses with isError: true and recovery metadata in MCP tools",
-    "sourceCheckedAt": "2026-09-10"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-007",
@@ -282,9 +282,9 @@
       "b": "Marking a permanent policy violation as retryable makes the agent waste tokens on retries that can never succeed before finally failing without a clear explanation for the customer.",
       "c": "Returning isError: false for a failed business rule violation misinforms the agent that the operation succeeded and forces unreliable probabilistic inference from missing fields."
     },
-    "sourceUrl": "https://modelcontextprotocol.io/docs/2025-06-18/develop/build-server.md",
+    "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28/server/tools.md",
     "sourceNote": "Using isRetryable: false in tool error payloads to halt futile retry loops",
-    "sourceCheckedAt": "2026-09-10"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-008",
@@ -325,7 +325,7 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
     "sourceNote": "Partitioning local subagent error recovery versus coordinator escalation",
-    "sourceCheckedAt": "2026-09-10"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-009",
@@ -364,9 +364,9 @@
       "c": "Omitting the content block violates MCP tool result schemas and causes client deserialization failures instead of cleanly conveying empty results.",
       "d": "The parameters passed were syntactically and semantically valid; returning an invalid-params protocol error misrepresents a successful database query as a client formatting defect."
     },
-    "sourceUrl": "https://modelcontextprotocol.io/docs/2025-06-18/develop/build-server.md",
+    "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28/server/tools.md",
     "sourceNote": "Distinguishing successful empty query results from operational tool execution errors",
-    "sourceCheckedAt": "2026-09-10"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-010",
@@ -407,7 +407,7 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools.md",
     "sourceNote": "Cognitive complexity and selection degradation from tool over-provisioning",
-    "sourceCheckedAt": "2026-09-10"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-011",
@@ -448,7 +448,7 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
     "sourceNote": "Restricting subagent tool sets via allowedTools to enforce functional separation of concerns",
-    "sourceCheckedAt": "2026-09-10"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-012",
@@ -489,7 +489,7 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
     "sourceNote": "Providing scoped helper tools for frequent minor verifications without role bloat",
-    "sourceCheckedAt": "2026-09-10"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-013",
@@ -528,9 +528,9 @@
       "c": "System prompt directives are probabilistic; while they guide model reasoning, they do not guarantee deterministic tool selection or execution order like the tool_choice parameter does.",
       "d": "tool_choice: 'any' forces the model to call some tool but lets it pick which one; it does not pin the first call to extract_metadata specifically."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls.md",
+    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools.md",
     "sourceNote": "Forcing specific tool invocation using tool_choice parameter",
-    "sourceCheckedAt": "2026-09-10"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-014",
@@ -569,9 +569,9 @@
       "b": "tool_choice: {'type': 'auto'} lets Claude choose whether to execute a tool or respond conversationally, failing the requirement to guarantee tool execution.",
       "d": "Forcing a specific tool name guarantees execution but eliminates dynamic tool selection, inappropriately forcing extract_invoice on receipts and contracts."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls.md",
+    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools.md",
     "sourceNote": "Guaranteeing tool calling over conversational text using tool_choice: any",
-    "sourceCheckedAt": "2026-09-10"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-015",
@@ -612,7 +612,7 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/mcp.md",
     "sourceNote": "Configuring personal MCP servers in ~/.claude.json alongside project .mcp.json",
-    "sourceCheckedAt": "2026-09-10"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-016",
@@ -651,9 +651,9 @@
       "c": "Prompts are user-controlled, interactive prompt templates requiring explicit invocation; they do not provide standardized application-attached context data.",
       "d": "Server-side caching may speed up backend database queries but does not eliminate the client-agent round trips or token costs of the 4-6 exploratory tool invocations."
     },
-    "sourceUrl": "https://modelcontextprotocol.io/docs/2025-06-18/learn/server-concepts.md",
+    "sourceUrl": "https://modelcontextprotocol.io/docs/2026-07-28/learn/server-concepts.md",
     "sourceNote": "Using MCP Resources to expose structured catalogs and schemas without exploratory tool calls",
-    "sourceCheckedAt": "2026-09-10"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-017",
@@ -694,7 +694,7 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/mcp.md",
     "sourceNote": "Crafting rich MCP tool descriptions to prevent fallback to generic built-in tools",
-    "sourceCheckedAt": "2026-09-10"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-018",
@@ -735,7 +735,7 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/overview.md",
     "sourceNote": "Fallback to Read and Write when Edit fails on non-unique string matches",
-    "sourceCheckedAt": "2026-09-10"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-019",
@@ -779,9 +779,9 @@
       "c": "Resources are passive, read-only data endpoints controlled by the application; active execution and state modifications must be implemented as Tools.",
       "e": "Tools are schema-defined, parameterized interfaces discovered and invoked autonomously by the model, not static user-selected menu snippets (which describes Prompts)."
     },
-    "sourceUrl": "https://modelcontextprotocol.io/docs/2025-06-18/learn/server-concepts.md",
+    "sourceUrl": "https://modelcontextprotocol.io/docs/2026-07-28/learn/server-concepts.md",
     "sourceNote": "Core Server Features table and operational control models for Tools, Resources, and Prompts",
-    "sourceCheckedAt": "2026-09-10"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-020",
@@ -827,7 +827,7 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/mcp.md",
     "sourceNote": "Scope hierarchy, precedence, and field isolation across local, project, and user scopes",
-    "sourceCheckedAt": "2026-09-10"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-021",
@@ -868,7 +868,7 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/tools-reference.md",
     "sourceNote": "Grep tool behavior for searching file contents and Read for inspecting code",
-    "sourceCheckedAt": "2026-09-14"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-022",
@@ -878,7 +878,7 @@
     "domain": "tool-design-and-mcp-integration",
     "subdomain": "mcp-configuration",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "stem": "An organization connects six Model Context Protocol (MCP) servers providing over fifty tools for database management, ticket tracking, and cloud deployment to Claude Code. Despite the large number of integrated tools, the developer observes that sessions start with minimal context token consumption before any tool is called. What architectural mechanism explains this behavior?",
     "options": [
       {
@@ -909,6 +909,6 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/mcp.md",
     "sourceNote": "Scale with MCP tool search by deferring tool schemas until needed",
-    "sourceCheckedAt": "2026-09-14"
+    "sourceCheckedAt": "2026-09-17"
   }
 ]
