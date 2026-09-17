@@ -229,3 +229,56 @@ did not change any manifest domain names or weights, and did not treat source
 liveness alone as evidence of claim correctness. The Anthropic vendor profile
 was re-confirmed for the cited model, platform, Claude Code, engineering, and
 MCP hosts and re-dated accordingly.
+
+## Source audit — 2026-09-17
+
+Scope was limited to the CCAR-P bank. The official Version 1.0 exam guide
+(Effective July 2026, Exam code: CCAR-P) was re-read first; its version, date,
+domains, weights (17%, 13%, 19%, 16%, 14%, 14%, 7%), item count (63),
+duration (120 minutes), and question format still match `manifest.json`, so no
+blueprint revision was needed.
+
+Repo-wide triage via `check-sources` verified 248 source URLs across all banks:
+0 stale and 0 network failures (11 documented redirects on AWS documentation and
+unversioned MCP docs in other banks). For CCAR-P specifically, all 60 normalized
+source pages (64 citation URLs, including anchored variants) were re-read
+independently. Every page returned HTTP 200, no cited URL moved through a
+redirect, and no citation was stale. All 126 questions received an explicit
+**bump** disposition and their `sourceCheckedAt` values were advanced to
+`2026-09-17`. No question required re-citation, rewriting, or retirement.
+
+### Figure adjudication for this pass
+
+`check-claims` returned 100 figure checks across CCAR-P's 34 figure-bearing
+questions: 45 present on the cited page (including `integration-003` "over 85%",
+which matches the page text "over 85 percent" following the matcher's spelled-out
+percent enhancement), 30 absent, and 25 on `www.anthropic.com` which the
+automated tool cannot read (`inconclusive: out-of-scope host`). All 100 checks
+were fully adjudicated and verified against the cited pages and official
+documentation, classified by the repository's four numeric classes:
+
+| Disposition | n | Basis |
+| --- | --- | --- |
+| Class 1 — Verbatim vendor fact on cited page | 54 | 45 confirmed mechanically by `check-claims` on cited `.md` pages; and 9 confirmed on `www.anthropic.com` engineering posts (`eval-010` 100% regression pass rate [2], `integration-008` 50–100 token chunk prefix [1], `integration-009` 49% and 67% retrieval failure reductions [2], `integration-022` 200,000-token in-context threshold [2], `solution-design-014` 1,000–2,000 token subagent summary [2]). |
+| Class 2 — Scenario parameter / distractor rebuttal / math property | 35 | Figures introduced in stems and echoed in explanations or distractor notes to trace scenario arithmetic (22 absent figures in stems/distractor rebuttals such as `300ms`, `80%`/`20%`, `70%`/`150%`, `8,000-token`, `48-hour`, `2-second`, `1.5-second`, `15 minutes`, `8-hour`, `30,000-token`, `4-second`, `10,000 tokens`, `50 tokens`, `33%` Base64 expansion; 13 confirmed on `www.anthropic.com` engineering posts: `eval-007` [1], `integration-008` [1], `integration-021` [1], `integration-022` [2], `solution-design-003` [1], `solution-design-012` [2], `stakeholder-001` [1], `stakeholder-015` [2], `stakeholder-016` [2]). |
+| Class 3 — Cross-page vendor fact | 10 | Genuine Anthropic facts used in distractor notes to build authentic trade-offs, none attributed to the question's own `sourceUrl`: 7 absent figures in distractor rebuttals (Batch API 24-hr turnaround [`eval-006`, `governance-012`], Batch API 50% discount [`eval-019`], 200,000-token context window [`governance-004`], prompt caching 5-minute / 1-hour TTLs [`solution-design-017`], Claude Code 15,000-token subagent description warning limit [`developer-productivity-009`]); 3 confirmed on `www.anthropic.com` engineering posts (Batch API 50% discount [`eval-020`, `integration-021`], 200,000-token context window [`integration-022`]). |
+| Class 4 — Derived, in option text | 1 | `eval-019` option `b` inverts the cache-read mechanism into a "90% discount". Permitted in option text per `CONTRIBUTING.md` because computing the consequence is the item's point. |
+| **Total** | **100** | **All 100 checks resolved; 0 open.** |
+
+### Adjudication of tool-flagged items
+
+- `evaluation-testing-and-optimization-004`: Advisory quote mismatch (`"do not hallucinate"`)
+  is a distractor rebuttal example in note `d` of a negative constraint, not a
+  vendor attribution.
+- The 25 figures on `www.anthropic.com` across 13 questions were verified by hand
+  against the 4 cited engineering posts (`building-effective-agents`,
+  `demystifying-evals-for-ai-agents`, `contextual-retrieval`, and
+  `effective-context-engineering-for-ai-agents`), confirming 9 Class 1 vendor facts,
+  13 Class 2 scenario parameters, and 3 Class 3 cross-page facts.
+
+This pass did not perform page-level review of the other certification banks
+(`ccdv-f`, `ccar-f`, `az-900`, `aws-clf-c02`), did not change any manifest domain
+names or weights, and did not treat source liveness alone as evidence of claim
+correctness. The Anthropic vendor profile in `certs/VENDORS.md` was re-confirmed
+for the cited model, platform, Claude Code, engineering, and MCP hosts and
+re-dated accordingly.
