@@ -347,7 +347,7 @@ Run audit-sources for cert "<slug>"
 ```
 
 ### Triage Tools & Caveats
-`audit-sources` automatically runs `npm run check-sources` and `npm run check-claims` as Stage 1 of its triage pass:
+`audit-sources` automatically runs `npm run check-sources` and `npm run check-claims` as the mechanical-triage stage (Stage 2) of its pass:
 - `npm run check-sources` verifies URL liveness and reports citation age against `--max-age-days`.
 - `npm run check-claims` is **advisory only** ([`CONTRIBUTING.md § Validate content changes`](../CONTRIBUTING.md)):
   - It checks quotes, identifiers, and figures against pages served from `.md`-capable documentation hosts.

@@ -25,7 +25,7 @@ fabrication problem in a new place.
 
 ## Anthropic
 
-_Checked 2026-09-14 · banks: `ccdv-f`, `ccar-f`, `ccar-p`_
+_Checked 2026-09-17 · banks: `ccdv-f`, `ccar-f`, `ccar-p`_
 
 - **Exam guides** are PDFs on Anthropic's Everpath CDN, all under one
   instructor path, with adjacent numeric IDs per guide:
@@ -65,7 +65,7 @@ _Checked 2026-09-14 · banks: `ccdv-f`, `ccar-f`, `ccar-p`_
   text: `curl -sL https://code.claude.com/docs/en/mcp.md`. This works on
   `modelcontextprotocol.io` too, including its `/specification/` paths.
 - **The `.md` trick does *not* work on `www.anthropic.com`** — the engineering
-  posts return `404` for a `.md` suffix (re-confirmed 2026-09-14). That host is
+  posts return `404` for a `.md` suffix (re-confirmed 2026-09-17). That host is
   citable, so this is not a sourcing restriction; it is a verification one.
   `npm run check-claims` reads only hosts that serve `.md`, so every citation
   here comes back `inconclusive: out-of-scope host` and **a quiet run proves
@@ -162,13 +162,43 @@ _Checked 2026-09-03 · bank: `az-900`_
 
 ## AWS
 
-_Checked 2026-09-11 · bank: `aws-clf-c02`_
+_Checked 2026-09-17 · bank: `aws-clf-c02`_
 
 - **Exam guides** are HTML on the AWS docs site:
   `https://docs.aws.amazon.com/aws-certification/latest/<guide-slug>/<guide-slug>.html`
 - **Citable documentation:** `https://docs.aws.amazon.com/*`, and
   `https://aws.amazon.com/*` for product and compliance pages that state a
   verifiable fact.
+- **`docs.aws.amazon.com` docs render client-side.** Replace `.html` with `.md`
+  (e.g., `curl -sL https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-purchasing-options.md`)
+  to read them directly as clean markdown text. Appending `.md` to `.html` also
+  301-redirects to the `.md` endpoint. This works across service user guides,
+  whitepapers, and exam guide pages.
+- **The `.md` trick does *not* work on `aws.amazon.com`** (product landing and
+  pricing pages like `/free/` or `/ec2/pricing/on-demand/`). These pages return
+  HTML and must be fetched and parsed as HTML.
+- **Restructured guide URLs 302-redirect to directory roots.** When AWS
+  reorganizes a documentation guide, legacy `.html` pages (such as
+  `what-is-snowball.html` or `WhatIsStorageGateway.html`) may 302-redirect to the
+  directory index or 404 on `.md`. Check `toc-contents.json` or inspect redirects
+  with `curl -sIL` to find the canonical page (e.g., `whatisedge.html`).
+- **Guide reorganizations and service splits:** AWS frequently breaks monolithic
+  guides into dedicated sub-guides. Amazon EBS was split from EC2
+  (`/AWSEC2/latest/UserGuide/`) into `/ebs/latest/userguide/`, and AWS Storage
+  Gateway was separated into `/filegateway/latest/files3/` (S3 File Gateway),
+  `/filegateway/latest/filefsxw/` (FSx File Gateway), `/storagegateway/latest/vgw/`
+  (Volume Gateway), and `/storagegateway/latest/tgw/` (Tape Gateway). Legacy
+  URLs redirect to directory roots that fail claim checks; cite the dedicated
+  service guide.
+- **Migration Hub availability change:** AWS Migration Hub stopped accepting new
+  customers as of November 2025 (superseded by AWS Transform). Legacy sub-pages
+  redirect to the guide root; for cloud economics and data center TCO modeling,
+  cite AWS Prescriptive Guidance (`/prescriptive-guidance/latest/application-portfolio-assessment-guide/`).
+- **Snowball Edge availability change:** As of November 7, 2025, Snowball Edge is
+  no longer available to new AWS customers (AWS recommends AWS DataSync or AWS Data
+  Transfer Terminal for data transfers, and AWS Outposts for edge compute).
+  Hardware options have also consolidated: the legacy 80 TB HDD variant has been
+  retired, leaving the 210 TB NVMe storage-optimized configuration.
 - **Do not cite:**
   - `explore.skillbuilder.aws` / AWS Skill Builder — gated behind account
     registration. Official practice question sets and exam prep materials may
