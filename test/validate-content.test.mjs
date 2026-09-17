@@ -9,10 +9,6 @@ import {
   validateCertContent,
   validateRepository,
 } from "../scripts/validate-content.mjs";
-import {
-  SCOPE_MIN_CORE_SHARE,
-  SCOPE_MIN_SAMPLE,
-} from "../schemas/question-bank.mjs";
 
 const fixtureUrl = new URL("./fixtures/", import.meta.url);
 const repositoryFixtureUrl = new URL("repository/", fixtureUrl);
@@ -131,6 +127,82 @@ test("requires answer keys to reference real option IDs", async () => {
   );
 });
 
+test("rejects an option repeated as another option", async () => {
+  const { manifest, questions } = await validContent();
+  const [first, second] = questions[0].options;
+  second.text = first.text;
+
+  assert.throws(
+    () => validateCertContent("ccdv-f", manifest, questions),
+    /duplicate option text/,
+  );
+});
+
+test("treats options differing only in case or spacing as duplicates", async () => {
+  // How a candidate reads them, not how they compare byte-for-byte: an
+  // authoring pass that clobbers one option with another rarely reproduces
+  // the whitespace exactly, and the item still has one fewer distractor.
+  const { manifest, questions } = await validContent();
+  const [first, second] = questions[0].options;
+  second.text = `  ${first.text.toUpperCase()}  `;
+
+  assert.throws(
+    () => validateCertContent("ccdv-f", manifest, questions),
+    /duplicate option text/,
+  );
+});
+
+test("rejects a single-select item whose key is the only unqualified option", async () => {
+  const { manifest, questions } = await validContent();
+  const [distractor] = questions[0].options;
+  distractor.text = "This one is always wrong";
+
+  assert.throws(
+    () => validateCertContent("ccdv-f", manifest, questions),
+    /only one carrying no absolute qualifier/,
+  );
+});
+
+test("accepts the same item once one distractor drops its absolute", async () => {
+  // The documented fix, exercised end to end: softening the over-claim in a
+  // single distractor is enough, because the strategy then leaves two options
+  // standing and no longer answers the item on its own.
+  const { manifest, questions } = await validContent();
+  const [first] = questions[0].options;
+  first.text = "This one is always wrong";
+  questions[0].options.push({ id: "c", text: "This one is wrong too" });
+  questions[0].distractorNotes = {
+    ...questions[0].distractorNotes,
+    c: "Wrong for a second reason.",
+  };
+
+  assert.doesNotThrow(() => validateCertContent("ccdv-f", manifest, questions));
+});
+
+test("ignores an absolute qualifier that the key itself carries", async () => {
+  // The key is not the survivor here, so the strategy gains nothing. Keys are
+  // allowed their absolutes: a source often states a genuinely universal rule,
+  // and hedging the key to satisfy a word list would make it less true.
+  const { manifest, questions } = await validContent();
+  const [distractor, key] = questions[0].options;
+  distractor.text = "This one is always wrong";
+  key.text = "This one is never wrong";
+
+  assert.doesNotThrow(() => validateCertContent("ccdv-f", manifest, questions));
+});
+
+test("leaves multi-select items outside the absolute-qualifier check", async () => {
+  const { manifest, questions } = await validContent();
+  const multi = questions.find((question) => question.type === "multi");
+  for (const option of multi.options) {
+    if (!multi.correct.includes(option.id)) {
+      option.text = `${option.text} in every case`;
+    }
+  }
+
+  assert.doesNotThrow(() => validateCertContent("ccdv-f", manifest, questions));
+});
+
 test("requires question domains and certs to match the manifest", async () => {
   const { manifest, questions } = await validContent();
   questions[0].domain = "unknown-domain";
@@ -178,6 +250,81 @@ test("requires every manifest to declare a bank status", async () => {
     () => validateCertContent("ccdv-f", manifest, questions),
     /manifest\.status/,
   );
+});
+
+test("requires every manifest to declare an updatedAt date", async () => {
+  const { manifest, questions } = await validContent();
+  delete manifest.updatedAt;
+
+  assert.throws(
+    () => validateCertContent("ccdv-f", manifest, questions),
+    /manifest\.updatedAt/,
+  );
+});
+
+test("rejects an updatedAt date older than a question's sourceCheckedAt", async () => {
+  const { manifest, questions } = await validContent();
+  manifest.updatedAt = "2020-01-01";
+
+  assert.throws(
+    () => validateCertContent("ccdv-f", manifest, questions),
+    /manifest\.updatedAt: "2020-01-01" is older than question/,
+  );
+});
+
+test("reports the latest question sourceCheckedAt when manifest.updatedAt is older", async () => {
+  const { manifest, questions } = await validContent();
+  questions[0].sourceCheckedAt = "2026-05-01";
+  questions[1].sourceCheckedAt = "2026-09-08";
+  manifest.updatedAt = "2026-08-01";
+
+  assert.throws(
+    () => validateCertContent("ccdv-f", manifest, questions),
+    new RegExp(
+      `manifest\\.updatedAt: "2026-08-01" is older than question ${questions[1].id}'s sourceCheckedAt "2026-09-08"`,
+    ),
+  );
+});
+
+test("rejects an unparsable or malformed updatedAt date", async () => {
+  const { manifest, questions } = await validContent();
+  manifest.updatedAt = "not-a-date";
+
+  assert.throws(
+    () => validateCertContent("ccdv-f", manifest, questions),
+    /manifest\.updatedAt/,
+  );
+});
+
+test("rejects an updatedAt date in the future", async () => {
+  const { manifest, questions } = await validContent();
+  manifest.updatedAt = "2099-01-01";
+
+  assert.throws(
+    () => validateCertContent("ccdv-f", manifest, questions),
+    /manifest\.updatedAt: cannot be in the future/,
+  );
+});
+
+test("rejects a question sourceCheckedAt in the future", async () => {
+  const { manifest, questions } = await validContent();
+  questions[0].sourceCheckedAt = "2099-01-01";
+
+  assert.throws(
+    () => validateCertContent("ccdv-f", manifest, questions),
+    /questions\.0\.sourceCheckedAt: cannot be in the future/,
+  );
+});
+
+test("accepts dates matching the earliest active calendar day on Earth (UTC+14)", async () => {
+  const { manifest, questions } = await validContent();
+  const earthToday = new Date(Date.now() + 14 * 60 * 60 * 1000)
+    .toISOString()
+    .slice(0, 10);
+  manifest.updatedAt = earthToday;
+  questions[0].sourceCheckedAt = earthToday;
+
+  assert.doesNotThrow(() => validateCertContent("ccdv-f", manifest, questions));
 });
 
 test("rejects an unknown manifest status", async () => {
@@ -286,15 +433,17 @@ function lengthBiasBank(count, keyText, prefix) {
     domain: "tools-and-mcps",
     difficulty: "medium",
     status: "reviewed",
-    scope: "core",
     stem: "Which option is correct?",
     // The key rotates through every position, so only length is exploitable.
     options: positions.map((id) => ({
       id,
+      // Distinct per option, and all the same length: the bank-level length
+      // guards these fixtures exercise measure means, so uniform padding
+      // leaves the arithmetic alone while keeping the options non-identical.
       text:
         id === positions[index % positions.length]
           ? keyText
-          : "A short distractor.",
+          : `A short distractor ${id}.`,
     })),
     correct: [positions[index % positions.length]],
     explanation: "The key is the correct option.",
@@ -331,7 +480,7 @@ test("rejects a bank whose correct answers are systematically shorter", async ()
       text:
         option.text === "Short."
           ? option.text
-          : "A distractor carrying a great deal more qualifying detail than the key does.",
+          : `A distractor carrying a great deal more qualifying detail ${option.id}.`,
     })),
   }));
 
@@ -439,83 +588,4 @@ test("leaves subdomains unchecked for domains without a skill breakdown", async 
   questions[0].subdomain = "anything-at-all";
 
   assert.doesNotThrow(() => validateCertContent("ccdv-f", manifest, questions));
-});
-
-test("requires a scope note on questions that are not core", async () => {
-  const { manifest, questions } = await validContent();
-  questions[0].scope = "deep";
-
-  assert.throws(
-    () => validateCertContent("ccdv-f", manifest, questions),
-    /is required when scope is "deep"/,
-  );
-
-  questions[0].scopeNote =
-    "Tests exact CLI flag semantics, above sample level.";
-  assert.doesNotThrow(() => validateCertContent("ccdv-f", manifest, questions));
-});
-
-test("rejects a scope note on a core question", async () => {
-  const { manifest, questions } = await validContent();
-  questions[0].scopeNote = "Unjustified note.";
-
-  assert.throws(
-    () => validateCertContent("ccdv-f", manifest, questions),
-    /must only be set when scope is not "core"/,
-  );
-});
-
-test("rejects an unknown scope value", async () => {
-  const { manifest, questions } = await validContent();
-  questions[0].scope = "extended";
-
-  assert.throws(
-    () => validateCertContent("ccdv-f", manifest, questions),
-    ContentValidationError,
-  );
-});
-
-test("requires every question to declare a scope", async () => {
-  const { manifest, questions } = await validContent();
-  delete questions[0].scope;
-
-  assert.throws(
-    () => validateCertContent("ccdv-f", manifest, questions),
-    /questions\.0\.scope/,
-  );
-});
-
-function scopedBank(count, deepCount) {
-  const bank = lengthBiasBank(count, "A short distractor.", "scope");
-
-  for (const question of bank.slice(0, deepCount)) {
-    question.scope = "deep";
-    question.scopeNote = "Above the sample questions' cognitive level.";
-  }
-
-  return bank;
-}
-
-test("rejects a bank whose exam-aligned slice falls below the floor", async () => {
-  const { manifest } = await validContent();
-  // One more than the floor tolerates: 24 * (1 - 0.8) = 4.8, so 5 tips it.
-  const deep = Math.floor(24 * (1 - SCOPE_MIN_CORE_SHARE)) + 1;
-
-  assert.throws(
-    () => validateCertContent("ccdv-f", manifest, scopedBank(24, deep)),
-    /too little of the bank is exam-aligned/,
-  );
-
-  assert.doesNotThrow(() =>
-    validateCertContent("ccdv-f", manifest, scopedBank(24, deep - 1)),
-  );
-});
-
-test("ignores the exam-aligned floor below the minimum sample size", async () => {
-  const { manifest } = await validContent();
-  const size = SCOPE_MIN_SAMPLE - 1;
-
-  assert.doesNotThrow(() =>
-    validateCertContent("ccdv-f", manifest, scopedBank(size, size)),
-  );
 });

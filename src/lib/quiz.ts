@@ -11,7 +11,6 @@ import type {
   RetakeMode,
   RetakeReviewContext,
   ReviewScope,
-  ScopeFilter,
   SimulationPreset,
 } from "../types";
 
@@ -27,6 +26,10 @@ export class QuizSelectionError extends Error {
 export function answerCountLabel(count: number): string {
   const labels = ["ZERO", "ONE", "TWO", "THREE", "FOUR", "FIVE"];
   return labels[count] ?? String(count);
+}
+
+export function formatOptionLabel(optionId: string): string {
+  return optionId.replace(/^opt-/, "").toUpperCase();
 }
 
 function randomValue(random: RandomSource): number {
@@ -63,19 +66,6 @@ function randomSample(
     ];
   }
   return shuffled.slice(0, count);
-}
-
-export const DEFAULT_SCOPE_FILTER: ScopeFilter = "core-only";
-
-/** Restricts the pool to the slice of the bank the user opted into. */
-export function filterQuestionsByScope(
-  questions: readonly Question[],
-  scopeFilter: ScopeFilter = DEFAULT_SCOPE_FILTER,
-): Question[] {
-  if (scopeFilter === "with-deep") {
-    return [...questions];
-  }
-  return questions.filter((question) => question.scope === "core");
 }
 
 /**
@@ -334,15 +324,8 @@ export function selectQuestions(
     throw new QuizSelectionError("The question bank is empty.");
   }
 
-  const scoped = filterQuestionsByScope(questions, config.scopeFilter);
-  if (scoped.length === 0) {
-    throw new QuizSelectionError(
-      "No questions match the selected question scope.",
-    );
-  }
-
   if (config.mode === "all") {
-    return [...scoped];
+    return [...questions];
   }
 
   if (config.mode === "domain") {
@@ -351,7 +334,7 @@ export function selectQuestions(
         "A domain is required for domain selection.",
       );
     }
-    const matchingQuestions = scoped.filter(
+    const matchingQuestions = questions.filter(
       (question) => question.domain === config.domain,
     );
     if (matchingQuestions.length === 0) {
@@ -371,8 +354,8 @@ export function selectQuestions(
 
   if (config.mode === "review") {
     const matchingQuestions = config.domain
-      ? scoped.filter((question) => question.domain === config.domain)
-      : [...scoped];
+      ? questions.filter((question) => question.domain === config.domain)
+      : [...questions];
     if (matchingQuestions.length === 0) {
       throw new QuizSelectionError(
         "No questions are available for the selected review filters.",
@@ -388,13 +371,13 @@ export function selectQuestions(
     );
   }
 
-  const count = selectionCount(config.count, scoped.length);
+  const count = selectionCount(config.count, questions.length);
   if (config.mode === "random") {
-    return randomSample(scoped, count, random);
+    return randomSample(questions, count, random);
   }
 
   if (config.mode === "weighted") {
-    return weightedSample(scoped, domains, count, random);
+    return weightedSample(questions, domains, count, random);
   }
 
   throw new QuizSelectionError(
@@ -569,8 +552,7 @@ export function getUnusedQuizQuestions(
   questions: readonly Question[],
   attemptOrUsedIds:
     Pick<AttemptRecord, "config" | "questionIds"> | readonly string[],
-  scopeFilterOrContext?: ScopeFilter | RetakeReviewContext,
-  domain?: string,
+  reviewContextOrDomain?: RetakeReviewContext | string,
 ): Question[] {
   let config: QuizConfig;
   let usedQuestionIds: readonly string[];
@@ -580,23 +562,22 @@ export function getUnusedQuizQuestions(
     config = attemptOrUsedIds.config;
   } else {
     usedQuestionIds = attemptOrUsedIds;
+    const effectiveDomain =
+      typeof reviewContextOrDomain === "string"
+        ? reviewContextOrDomain
+        : undefined;
     config = {
-      mode: domain ? "domain" : "random",
+      mode: effectiveDomain ? "domain" : "random",
       revealMode: "immediate",
-      scopeFilter:
-        typeof scopeFilterOrContext === "string"
-          ? scopeFilterOrContext
-          : undefined,
-      domain,
+      domain: effectiveDomain,
     };
   }
 
   const reviewContext: RetakeReviewContext | undefined =
     "config" in attemptOrUsedIds
-      ? (scopeFilterOrContext as RetakeReviewContext | undefined)
+      ? (reviewContextOrDomain as RetakeReviewContext | undefined)
       : undefined;
 
-  const scoped = filterQuestionsByScope(questions, config.scopeFilter);
   const domainFilter =
     config.mode === "domain" || config.mode === "review"
       ? config.domain
@@ -608,16 +589,16 @@ export function getUnusedQuizQuestions(
     const missed = reviewContext?.missedQuestionIds ?? [];
     const bookmarked = reviewContext?.bookmarkedQuestionIds ?? [];
     eligible = filterReviewQuestions(
-      scoped,
+      questions,
       missed,
       bookmarked,
       reviewScope,
       domainFilter,
     );
   } else if (domainFilter) {
-    eligible = scoped.filter((question) => question.domain === domainFilter);
+    eligible = questions.filter((question) => question.domain === domainFilter);
   } else {
-    eligible = scoped;
+    eligible = [...questions];
   }
 
   const used = new Set(usedQuestionIds);
@@ -660,22 +641,18 @@ export function prepareRetakeSession(
   if (mode === "random") {
     let pool: Question[];
     if (attempt.config.mode === "review") {
-      const scoped = filterQuestionsByScope(
-        questions,
-        attempt.config.scopeFilter,
-      );
       const reviewScope = attempt.config.reviewScope ?? "missed-or-bookmarked";
       const missed = reviewContext?.missedQuestionIds ?? [];
       const bookmarked = reviewContext?.bookmarkedQuestionIds ?? [];
       pool = filterReviewQuestions(
-        scoped,
+        questions,
         missed,
         bookmarked,
         reviewScope,
         attempt.config.domain,
       );
     } else {
-      pool = filterQuestionsByScope(questions, attempt.config.scopeFilter);
+      pool = [...questions];
     }
 
     const configToUse: QuizConfig =

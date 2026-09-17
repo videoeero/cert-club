@@ -8,8 +8,11 @@ material is already public.
 
 > **Live at [videoeero.github.io/cert-club](https://videoeero.github.io/cert-club/).**
 > No sign-up, nothing to install. Still early — the quiz flow is complete, but
-> bank coverage varies by certification. [`PLAN.md`](./PLAN.md) has the v1
-> scope, question schema, and phase-by-phase build order.
+> bank coverage varies by certification.
+> [`AGENTS.md`](./AGENTS.md) covers the architecture and the source boundary,
+> [`CONTRIBUTING.md`](./CONTRIBUTING.md) the question rules, and
+> [`certs/ADDING-A-CERT.md`](./certs/ADDING-A-CERT.md) the step-by-step for a
+> new bank.
 
 Each cert's `manifest.json` declares a bank `status`: `stable` means the bank
 covers its blueprint proportionally, `draft` means coverage is still partial —
@@ -64,11 +67,13 @@ should go. Courses teach you to build; these exams test what to choose.
 
 ## Certifications
 
-| Certification                            | Slug          | Bank status | How this bank was built                                 |
-| ---------------------------------------- | ------------- | ----------- | ------------------------------------------------------- |
-| Claude Certified Developer – Foundations | `ccdv-f`      | stable      | [review record](./certs/ccdv-f/review-progress.md)      |
-| Microsoft Certified: Azure Fundamentals  | `az-900`      | draft       | [review record](./certs/az-900/review-progress.md)      |
-| AWS Certified Cloud Practitioner         | `aws-clf-c02` | draft       | [review record](./certs/aws-clf-c02/review-progress.md) |
+| Certification                             | Slug          | Bank status | How this bank was built                                 |
+| ----------------------------------------- | ------------- | ----------- | ------------------------------------------------------- |
+| Claude Certified Developer – Foundations  | `ccdv-f`      | stable      | [review record](./certs/ccdv-f/review-progress.md)      |
+| Claude Certified Architect – Foundations  | `ccar-f`      | stable      | [review record](./certs/ccar-f/review-progress.md)      |
+| Claude Certified Architect – Professional | `ccar-p`      | stable      | [review record](./certs/ccar-p/review-progress.md)      |
+| Microsoft Certified: Azure Fundamentals   | `az-900`      | draft       | [review record](./certs/az-900/review-progress.md)      |
+| AWS Certified Cloud Practitioner          | `aws-clf-c02` | stable      | [review record](./certs/aws-clf-c02/review-progress.md) |
 
 Each cert's `manifest.json` holds the authoritative metadata — official exam
 guide URL, question count, duration, and blueprint domain weights — and the app
@@ -109,6 +114,14 @@ npm run preview
 See [`certs/ADDING-A-CERT.md`](./certs/ADDING-A-CERT.md) for the step-by-step
 guide covering file layout, manifest format, question schema, bias-guard rules,
 and the mandatory validation step.
+
+If you work with an AI coding agent, [`skills/`](./skills/) holds the recurring
+content procedures — assessing a proposed cert, authoring a batch, evaluating
+question correctness, hardening domain difficulty, auditing coverage and
+citations — in the portable [Agent Skills](https://agentskills.io/) format. Read them directly, or run `npx skills@1.5.25 add .` to install them for
+whichever agents you use; the install targets are gitignored. They are optional
+and carry no rules of their own — the guide above stays authoritative. See
+[`skills/README.md`](./skills/README.md).
 
 ## Licensing
 

@@ -29,12 +29,29 @@ Never source questions from:
 Always source questions from public vendor documentation and official exam
 guides/blueprints only.
 
-The rule is about the gate, never about the vendor. A course's **public
+Two independent tests, and a source must pass both. The first is the gate
+above: can anyone open it without an account? The second is **authority**: is
+it published by the party that owns the fact? A copy of a vendor's exam guide
+in someone's public GitHub repository passes the gate perfectly and fails
+authority — it is a mirror that can be stale, partial or edited, and nothing
+in this repository would reveal it. Cite the vendor's own copy, always, and
+`manifest.examUrl` most of all: every domain name and weight in a bank derives
+from it. Third-party material may be read as calibration, never cited; see the
+firewall in `certs/ccdv-f/review-progress.md`.
+
+The gate test is about the gate, never about the vendor. A course's **public
 landing page** — syllabus, learning objectives, prerequisites — is genuinely
 open and may be read, but only as a cross-check on whether a skill is
 covered. It is still not a valid `sourceUrl`, because it states what a course
 claims to teach rather than a verifiable technical fact. Cite the
 documentation that establishes the fact instead.
+
+Both tests are general. What they cannot tell you is which of a _particular_
+vendor's hosts are legacy redirects, which keep superseded guide revisions
+live, and which properties must never be cited even though they are open and
+first-party. That is recorded per vendor in
+[`certs/VENDORS.md`](certs/VENDORS.md), and it is not derivable from the banks
+— read it before citing a host you have not cited before.
 
 ## Dev setup
 
@@ -49,9 +66,20 @@ npm run dev   # Vite dev server
 npm run check
 ```
 
-This runs, in order: content validation → blueprint balance → Node test runner →
-ESLint → Prettier check. All five must pass. Do not commit if any step fails.
+This runs, in order: sync manifest dates check → content validation → blueprint balance →
+Node test runner → ESLint → Prettier check. All must pass. Do not commit if any
+step fails.
 
+`check` covers content and lint only — it does **not** typecheck or bundle. If
+you touched anything under `src/`, run the build as well:
+
+```sh
+npm run build   # tsc -b, then vite build
+```
+
+CI runs both on every pull request, in that order.
+
+To sync manifest dates automatically: `npm run sync-dates`.
 To fix formatting automatically: `npm run format`.
 
 ## Repository layout
@@ -64,6 +92,8 @@ certs/                  Question banks (JSON) and the cert catalog
     questions/          One JSON file per domain, named after its domain slug
     review-progress.md  Standing record of how the bank was built and reviewed
   ADDING-A-CERT.md      Step-by-step guide for adding a new cert bank
+  ADDING-A-QUESTION-TYPE.md  Gate on answer shapes beyond single/multi select
+  VENDORS.md            Per-vendor sourcing profiles — citable and forbidden hosts
 schemas/
   question-bank.mjs     Zod schemas — the canonical definition of all formats
 scripts/
@@ -98,6 +128,27 @@ Summary:
    `certs/<slug>/questions/<domain-slug>.json` per domain the manifest declares
 2. Add the slug to `certs/catalog.json`
 3. Run `npm run check` — fix all errors before committing
+
+## Agent workflows
+
+[`skills/`](skills/) holds the recurring content workflows — recon for a new
+cert, authoring a batch, evaluating per-question correctness, hardening domain
+difficulty, auditing coverage, auditing citations for drift, condensing a
+review record, and the gate on new question types. They are **procedural wrappers** over this file,
+[`CONTRIBUTING.md`](CONTRIBUTING.md) and
+[`certs/ADDING-A-CERT.md`](certs/ADDING-A-CERT.md): they say in what order to
+do the work and where the judgement calls are, and they carry no rules of
+their own. Where a workflow and one of those documents disagree, the document
+wins and the workflow is wrong. For the end-to-end orchestration runbook
+chaining these skills into a complete cert bank, see
+[`certs/AUTHORING-A-CERT-WITH-SKILLS.md`](certs/AUTHORING-A-CERT-WITH-SKILLS.md).
+
+They are plain markdown in the portable [Agent Skills](https://agentskills.io/)
+layout, so read one directly at any time. `npx skills@1.5.25 add .` symlinks them
+into whichever agent directories you use, which is what makes an agent retrieve
+them on its own; those targets are gitignored, since the agent is a
+per-developer choice. The version is pinned deliberately, and the CLI has
+telemetry worth knowing about — see [`skills/README.md`](skills/README.md).
 
 ## Licensing when creating files
 

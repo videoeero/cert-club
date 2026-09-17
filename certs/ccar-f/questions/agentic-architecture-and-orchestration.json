@@ -1,0 +1,1324 @@
+[
+  {
+    "id": "ccar-f-agentic-architecture-and-orchestration-001",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agentic-architecture-and-orchestration",
+    "subdomain": "subagent-invocation",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A coordinator agent orchestrates a research workflow by delegating topic synthesis to a specialized subagent. Why must the coordinator explicitly include prior findings, source references, and relevant excerpts within the subagent's prompt?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Subagents execute in an isolated context window and do not automatically inherit the coordinator's prior conversation history."
+      },
+      {
+        "id": "b",
+        "text": "Passing the excerpts is only a performance optimization; the subagent could retrieve the coordinator's history itself, but re-sending avoids an extra lookup round trip."
+      },
+      {
+        "id": "c",
+        "text": "Subagents share the coordinator's context window but read it in reverse order, so prior findings must be restated to appear near the start of their prompt."
+      },
+      {
+        "id": "d",
+        "text": "Spawning a subagent automatically resets the model's system prompt and deletes previous tool call definitions."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Subagents run in their own isolated context windows and do not inherit the coordinator's conversation history automatically. The coordinator must explicitly provide all relevant facts, prior research findings, and metadata in the prompt when invoking the subagent.",
+    "distractorNotes": {
+      "b": "The subagent cannot reach back into the coordinator's history at all — it runs in an isolated context — so including the excerpts is necessary, not merely an optimization.",
+      "c": "Subagents do not share the coordinator's context window in any order; each runs in its own isolated window, so required context must be passed explicitly in the prompt.",
+      "d": "Subagent spawning does not reset system prompts or delete existing tool definitions in the session."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
+    "sourceNote": "Subagents execute with isolated context and require explicit context passing from the coordinator",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-agentic-architecture-and-orchestration-002",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agentic-architecture-and-orchestration",
+    "subdomain": "agentic-loops",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An engineer implements an autonomous customer support agent loop using the Messages API. The loop intermittently terminates prematurely or runs into runaway execution. How should the control flow determine whether to execute requested tools or return the final response?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Inspect the response stop_reason: continue the execution loop when it is 'tool_use', and terminate the loop when it is 'end_turn'."
+      },
+      {
+        "id": "b",
+        "text": "Parse the raw assistant text blocks for natural language completion markers such as 'FINAL_ANSWER' before evaluating tool use content blocks."
+      },
+      {
+        "id": "c",
+        "text": "Inspect the assistant message blocks for text content, exiting the loop immediately whenever any non-empty conversational text precedes tool calls."
+      },
+      {
+        "id": "d",
+        "text": "Rely strictly on a fixed client counter capping execution at five turns, forcing loop termination when the counter threshold is reached."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "In standard agentic loops with the Messages API, the canonical control flow checks stop_reason on each turn. A stop_reason of 'tool_use' indicates that Claude has generated tool call requests and is awaiting tool_result blocks. A stop_reason of 'end_turn' indicates Claude has concluded its turn and provided its final response. Relying on text parsing, presence of conversational text, or arbitrary iteration caps leads to premature termination or uncontrolled execution.",
+    "distractorNotes": {
+      "b": "Natural language markers in text are probabilistic, brittle, and not part of the API contract for loop termination.",
+      "c": "Claude frequently provides explanatory text alongside tool_use content blocks; presence of text does not imply completion.",
+      "d": "Hard iteration caps are safety backstops against infinite loops, not the primary mechanism for normal workflow termination."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons.md",
+    "sourceNote": "Handling stop reasons tool_use and end_turn to control agentic loop lifecycles",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-agentic-architecture-and-orchestration-003",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agentic-architecture-and-orchestration",
+    "subdomain": "agentic-loops",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An agent generates a tool_use block requesting customer order details. What is the required structure for passing the backend database response back into the conversation for the next model turn?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Overwrite the initial system prompt with a JSON payload containing the retrieved order data before dispatching the next conversational turn."
+      },
+      {
+        "id": "b",
+        "text": "Send a user message containing a tool_result content block referencing the matching tool_use_id from the assistant message."
+      },
+      {
+        "id": "c",
+        "text": "Append a simulated assistant message containing the retrieved order JSON formatted inside markdown code fences to represent the tool output."
+      },
+      {
+        "id": "d",
+        "text": "Send a new user message containing the order JSON as plain text, without a tool_result block or the tool_use_id."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "When Claude requests a tool call, the caller must respond with a message having role: 'user' containing a content block of type 'tool_result' that specifies tool_use_id matching the id of the tool_use block. This maintains the conversational turn structure required by the Messages API so Claude can reason over the result in subsequent turns.",
+    "distractorNotes": {
+      "a": "The system prompt provides static instructions; mutating it with dynamic tool outputs degrades prompt caching and violates API patterns.",
+      "c": "Tool outputs must be provided in user messages with type 'tool_result', not as fabricated assistant messages.",
+      "d": "Plain text in a user message does not satisfy the pending tool_use and leaves the tool call unresolved; the API requires a tool_result block referencing the matching tool_use_id."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls.md",
+    "sourceNote": "Returning tool_result content blocks in user messages paired with tool_use_id",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-agentic-architecture-and-orchestration-004",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agentic-architecture-and-orchestration",
+    "subdomain": "agentic-loops",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An architect designs an incident investigation agent. The system can either use a hardcoded state machine with deterministic tool transitions or an autonomous agentic loop where Claude decides the next tool call based on cumulative observations. Under which scenario is the model-driven agentic loop clearly superior?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The investigation requires strictly uniform auditing steps where every incident must trigger the exact same sequence of five read queries."
+      },
+      {
+        "id": "b",
+        "text": "The incident system must guarantee zero token spend variability and deterministic round-trip response latency under 500 milliseconds."
+      },
+      {
+        "id": "c",
+        "text": "The investigation involves unknown failure modes requiring dynamic hypothesis testing, exploratory queries, and adaptive tool selection."
+      },
+      {
+        "id": "d",
+        "text": "The operational policies mandate that query parameters are fixed in advance and stay independent of diagnostic data collected during earlier steps."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Model-driven agentic loops excel in high-ambiguity, exploratory problem spaces where the sequence of operations cannot be predicted in advance. The model analyzes preliminary tool results, forms hypotheses, and chooses subsequent investigation actions adaptively. In contrast, predictable, invariant workflows with strict timing or auditing requirements are better served by deterministic code.",
+    "distractorNotes": {
+      "a": "Invariant, fixed sequences should be implemented as standard deterministic code scripts, not autonomous agentic loops.",
+      "b": "Agentic loops exhibit variable token consumption and multiple model round-trips that exceed sub-second latency constraints.",
+      "d": "If downstream operations have no dependency on upstream findings, parallel batch execution without an agentic loop is preferable."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/how-tool-use-works.md",
+    "sourceNote": "Contrasting autonomous tool selection with deterministic workflows in agentic systems",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-agentic-architecture-and-orchestration-005",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agentic-architecture-and-orchestration",
+    "subdomain": "agentic-loops",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "During an agentic workflow, an API call returns stop_reason: 'max_tokens' while generating arguments for a database write tool. What is the proper recovery handling in the orchestration layer?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Execute the partial tool call immediately with whatever arguments were streamed before the token cutoff occurred in the output stream."
+      },
+      {
+        "id": "b",
+        "text": "Treat the response as a complete turn and present the truncated output to the user as the final resolution without attempting recovery."
+      },
+      {
+        "id": "c",
+        "text": "Retry the identical request unchanged, assuming the max_tokens cutoff was a transient glitch that will not recur."
+      },
+      {
+        "id": "d",
+        "text": "Reject the truncated tool call, notify the conversation of the token limit exhaustion, and prompt the model to resubmit or chunk."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "When stop_reason is 'max_tokens', the model's generation was abruptly truncated before completing its payload. If this happens during tool call generation, the JSON arguments are malformed and incomplete. Executing partial parameters can corrupt data. The orchestration layer must discard the partial call and instruct the model to produce a more compact request or break the task into smaller chunks.",
+    "distractorNotes": {
+      "a": "Executing truncated JSON parameters leads to syntax errors, incomplete records, or unintended database corruption.",
+      "b": "Truncated responses represent incomplete operations and must not be presented as finished resolutions.",
+      "c": "An unchanged retry hits the same max_tokens ceiling and truncates again; recovery means raising the limit or chunking, and rejecting the truncated call rather than executing it."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons.md",
+    "sourceNote": "Detecting and recovering from max_tokens stop reason during tool execution",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-agentic-architecture-and-orchestration-006",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agentic-architecture-and-orchestration",
+    "subdomain": "multi-agent-orchestration",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A research system employs four specialized subagents: web search, document analysis, quantitative analysis, and synthesis. Why is a hub-and-spoke architecture with a central coordinator preferred over an unconstrained peer-to-peer agent mesh?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A central coordinator provides centralized observability, deterministic error containment, and controlled information flow."
+      },
+      {
+        "id": "b",
+        "text": "A hub-and-spoke topology lets the coordinator run all four subagents inside a single shared context window, which a peer mesh cannot provide."
+      },
+      {
+        "id": "c",
+        "text": "In a peer-to-peer mesh, a failing subagent's error cannot be caught at all, because only a coordinator is technically capable of receiving a tool error result."
+      },
+      {
+        "id": "d",
+        "text": "The Claude Agent SDK strictly prohibits subagents from receiving natural language inputs or prompts from other orchestrating models."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "In multi-agent systems, the hub-and-spoke pattern channels all inter-agent delegation through a coordinator agent. This architecture ensures complete observability of subagent tasks, prevents chaotic circular delegations, simplifies audit logging, enforces uniform error recovery policies, and prevents context bloating from unstructured peer-to-peer chatter.",
+    "distractorNotes": {
+      "b": "Hub-and-spoke does not merge subagents into one shared window — each stays isolated; its advantage is centralized observability and error containment, not a shared context.",
+      "c": "Any agent can receive structured errors; the mesh problem is that failures propagate unpredictably across many links, whereas a coordinator contains and observes them centrally.",
+      "d": "Subagents receive prompts from the invoking agent; the architecture choice is driven by governance and reliability, not SDK syntax blocks."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
+    "sourceNote": "Hub-and-spoke coordinator architecture for centralized observability and delegation control",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-agentic-architecture-and-orchestration-007",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agentic-architecture-and-orchestration",
+    "subdomain": "multi-agent-orchestration",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A multi-agent research pipeline is tasked with analyzing 'Emerging Trends in Global Clean Energy'. Each subagent completes successfully, but the final output covers only solar photovoltaics, completely omitting wind, geothermal, nuclear, and grid storage. Logs indicate subagents answered their assigned prompts faithfully. What is the root cause?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The web search subagent exceeded its token context window and silently truncated non-solar search results before coordinator retrieval."
+      },
+      {
+        "id": "b",
+        "text": "The coordinator agent decomposed the topic too narrowly into solar-specific subtasks, failing to partition the full research scope."
+      },
+      {
+        "id": "c",
+        "text": "The document analysis subagent applied an overly aggressive relevance filter that rejected non-solar whitepapers during preprocessing."
+      },
+      {
+        "id": "d",
+        "text": "The synthesis subagent lacks few-shot examples demonstrating how to merge disparate renewable energy technologies into cohesive reports."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "When subagents execute their assigned tasks accurately but the overarching output exhibits major thematic omissions, the failure originates in the coordinator's task decomposition. If the coordinator decomposes 'Global Clean Energy' into only solar subtasks, the subagents will diligently research only solar topics, resulting in complete omission of other sectors.",
+    "distractorNotes": {
+      "a": "Logs showed subagents answered their assigned prompts faithfully; token truncation would produce incomplete or error responses.",
+      "c": "The problem lies in what tasks were assigned, not in the filtering of valid assigned topics.",
+      "d": "Synthesis agents cannot combine information that upstream agents were never assigned to collect."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
+    "sourceNote": "Coordinator task decomposition risks leading to incomplete domain coverage in multi-agent systems",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-agentic-architecture-and-orchestration-008",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agentic-architecture-and-orchestration",
+    "subdomain": "multi-agent-orchestration",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An enterprise research system handles both quick factual queries ('What is our corporate travel per diem?') and deep strategic inquiries ('Compare competitor pricing models across EMEA'). How should the coordinator manage subagent invocation to optimize cost and latency?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Always spawn all four subagents concurrently for every query to maintain deterministic pipeline architecture across all workflows."
+      },
+      {
+        "id": "b",
+        "text": "Require human operations engineers to manually inspect and tag incoming requests with the exact list of subagents to be executed before the run starts."
+      },
+      {
+        "id": "c",
+        "text": "Analyze query complexity and dynamically route simple queries to direct tool calls while reserving subagents for multi-source research."
+      },
+      {
+        "id": "d",
+        "text": "Route every query to a single large subagent first and only fan out to the others if that agent reports low confidence in its answer."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "A coordinator agent should assess the complexity and information requirements of the query. Straightforward factual questions can be resolved immediately via direct tool use (e.g. searching a policy handbook) without spawning subagents, whereas complex, ambiguous, or multi-faceted queries justify delegating to specialized subagents.",
+    "distractorNotes": {
+      "a": "Spawning the full multi-agent pipeline for simple factual queries wastes substantial tokens and adds unnecessary multi-second latency.",
+      "b": "Manual tagging defeats the purpose of an autonomous orchestrator and impairs user experience.",
+      "d": "Funneling every query through one large subagent first adds latency and cost to simple lookups; analyzing complexity up front lets simple queries go straight to direct tool calls."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
+    "sourceNote": "Dynamic coordinator delegation based on query complexity to reduce unnecessary subagent overhead",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-agentic-architecture-and-orchestration-009",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agentic-architecture-and-orchestration",
+    "subdomain": "multi-agent-orchestration",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A multi-agent research pipeline produces a synthesis draft that explicitly notes it could not find data on regulatory approval timelines in Japan, though the underlying sources for that topic do exist and were simply never retrieved. The coordinator still holds the search subagent and the original findings in context. How should the coordinator best close this gap?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Re-run the entire multi-agent pipeline from the top with a higher temperature so the search subagent explores more sources on its next pass."
+      },
+      {
+        "id": "b",
+        "text": "Have the synthesis subagent estimate the missing Japanese approval timelines by extrapolating from the European regulatory benchmarks it already retrieved."
+      },
+      {
+        "id": "c",
+        "text": "Accept the draft as final, appending an explicit 'data unavailable for Japan' limitation note so the gap is disclosed rather than silently hidden."
+      },
+      {
+        "id": "d",
+        "text": "Re-delegate only a targeted query for the Japanese approval timelines to the search subagent, then hand the new findings back to synthesis for an updated draft."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Iterative refinement evaluates the intermediate synthesis output, isolates the specific gap, and issues a targeted follow-up to the agent best equipped to fill it—here the search subagent—before re-invoking synthesis with the supplemental findings. It recovers the missing data without discarding valid work. Because the sources exist and the subagent is still in context, a scoped re-query is both cheaper and more complete than the alternatives.",
+    "distractorNotes": {
+      "a": "Restarting the whole pipeline discards valid completed research and raising temperature adds variance without targeting the specific missing topic.",
+      "b": "Extrapolating factual approval dates from a different jurisdiction fabricates data and violates provenance; the gap is retrievable, not genuinely absent.",
+      "c": "Disclosing the limitation is honest but the data is recoverable and the subagent is still available, so a refinement loop that actually fills the gap is superior to shipping it unfilled."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
+    "sourceNote": "Iterative refinement loops in multi-agent systems to address identified coverage gaps",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-agentic-architecture-and-orchestration-010",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agentic-architecture-and-orchestration",
+    "subdomain": "multi-agent-orchestration",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A coordinator agent dispatches three parallel web search subagents to investigate autonomous vehicle safety. How should the coordinator partition the research scope to minimize duplicate retrieval and redundant token spend?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Assign distinct dimensions such as regulatory frameworks, crash incident statistics, and sensor hardware reliability across the subagents."
+      },
+      {
+        "id": "b",
+        "text": "Provide all three subagents with identical broad search prompts and merge identical search hits using post-processing deduplication scripts."
+      },
+      {
+        "id": "c",
+        "text": "Give each subagent the same broad topic but a different time window (last month, last year, last decade) to divide the work."
+      },
+      {
+        "id": "d",
+        "text": "Configure each subagent with a different system prompt role while allowing them to search whatever topics they prefer autonomously."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Partitioning research scope by distinct conceptual dimensions, subtopics, or orthogonal source categories ensures that subagents explore non-overlapping domains. This maximizes informational coverage while preventing redundant search queries, duplicate web scraping, and wasted tokens.",
+    "distractorNotes": {
+      "b": "Giving identical prompts to parallel agents results in nearly identical search calls and wasted token expenditure.",
+      "c": "Slicing one broad topic by time window still returns heavily overlapping evergreen results; partitioning by distinct thematic dimensions is what actually eliminates duplicate retrieval.",
+      "d": "Changing role descriptions without constraining research topics still results in overlapping search execution."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
+    "sourceNote": "Partitioning research scope across subagents to minimize duplicate search retrieval",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-agentic-architecture-and-orchestration-011",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agentic-architecture-and-orchestration",
+    "subdomain": "subagent-invocation",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "When configuring a coordinator agent using the Claude Agent SDK, what configuration is mandatory to allow the coordinator to spawn subagents?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The coordinator must embed each subagent's full system prompt inside its own system prompt, since the SDK cannot load subagent definitions separately."
+      },
+      {
+        "id": "b",
+        "text": "The coordinator's allowedTools configuration must explicitly include the 'Task' tool."
+      },
+      {
+        "id": "c",
+        "text": "The coordinator must set a maxSubagents concurrency limit in its options, or the SDK refuses to spawn any subagent at all."
+      },
+      {
+        "id": "d",
+        "text": "The coordinator must declare a shared SQLite database connection string in its environment to coordinate state across processes."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "In the Claude Agent SDK, spawning subagents is mediated by the 'Task' tool. For a coordinator or parent agent to delegate tasks to subagents, 'Task' must be included in its allowedTools list. Without this tool permission, the coordinator cannot emit subagent delegation calls.",
+    "distractorNotes": {
+      "a": "Subagents are declared through AgentDefinition or agent configuration, not by inlining their prompts into the coordinator; what is mandatory is exposing the 'Task' tool in allowedTools.",
+      "c": "There is no mandatory concurrency-limit option gating subagent spawning; delegation requires that the 'Task' tool be present in allowedTools.",
+      "d": "Subagents do not communicate via shared SQLite databases; delegation is managed in-memory by the SDK runtime."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
+    "sourceNote": "Configuring allowedTools to include the Task tool for subagent delegation",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-agentic-architecture-and-orchestration-012",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agentic-architecture-and-orchestration",
+    "subdomain": "subagent-invocation",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An orchestration system needs to run security scanning, dependency auditing, and lint checking on a submitted pull request. How can the coordinator spawn these three subagents concurrently rather than sequentially?",
+    "options": [
+      {
+        "id": "a",
+        "text": "By setting a parallel: true flag on a single Task tool call and listing all three agents in its arguments."
+      },
+      {
+        "id": "b",
+        "text": "By issuing one Task tool call and passing a comma-separated list of agent names in a single text field for sequential interpretation."
+      },
+      {
+        "id": "c",
+        "text": "By emitting three separate Task tool calls within a single assistant message turn."
+      },
+      {
+        "id": "d",
+        "text": "By pausing the coordinator and polling an external message broker until all three agents register their execution status flags."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Claude supports parallel tool execution. To invoke multiple subagents concurrently, the coordinator emits multiple Task tool use content blocks in a single assistant turn. The orchestration runtime executes these tool requests in parallel, gathers their outputs, and returns all tool_result blocks together for the next coordinator turn.",
+    "distractorNotes": {
+      "a": "There is no parallel flag on a single Task call that fans out to multiple agents; concurrency comes from emitting three separate Task tool calls in one assistant message.",
+      "b": "The Task tool schema defines parameters for a single subagent execution; batching comma-separated names bypasses typed parameters.",
+      "d": "External message broker polling is unnecessary when parallel tool calling is natively supported by the model and SDK."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
+    "sourceNote": "Emitting multiple Task tool calls in a single turn to execute subagents in parallel",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-agentic-architecture-and-orchestration-013",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agentic-architecture-and-orchestration",
+    "subdomain": "subagent-invocation",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A document analysis subagent extracts findings from clinical trials and passes them to a report synthesis subagent. How should the findings be formatted in the prompt to preserve citation provenance and prevent attribution loss?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Compress all findings into a single unstructured narrative paragraph with all source citations removed to minimize downstream input token overhead."
+      },
+      {
+        "id": "b",
+        "text": "Write each finding to a shared database and pass only the row IDs, letting the synthesis subagent fetch the full text and citations as needed."
+      },
+      {
+        "id": "c",
+        "text": "Concatenate the findings into one block and prepend a single 'Sources' list at the top, letting the synthesis agent map claims to citations by inference."
+      },
+      {
+        "id": "d",
+        "text": "Structure each finding with explicit separation between factual claim content and metadata including source URL, document title, and page number."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "When passing context between subagents, structured data formats (such as JSON or clearly marked XML blocks) that decouple factual assertions from attribution metadata (URLs, document titles, page numbers, publication dates) allow the downstream synthesis agent to cite sources accurately without hallucinating or losing provenance.",
+    "distractorNotes": {
+      "a": "Removing citations destroys provenance, making it impossible for the synthesis agent to generate verifiable references.",
+      "b": "Passing bare row IDs assumes the synthesis subagent shares database access and adds retrieval round trips; the reliable pattern is to include each claim with its source metadata directly in the handoff.",
+      "c": "A single sources list forces the synthesis agent to guess which source backs which claim; pairing each claim with its own source metadata is what prevents attribution loss."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
+    "sourceNote": "Formatting subagent findings with structured claim and metadata separation to preserve provenance",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-agentic-architecture-and-orchestration-014",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agentic-architecture-and-orchestration",
+    "subdomain": "subagent-invocation",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A coordinator agent delegates a refactoring task to a coding subagent. Which prompting strategy yields the highest adaptability and code quality from the subagent?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Specify the architectural goals, test criteria, and design constraints, allowing the subagent to explore and adapt its implementation."
+      },
+      {
+        "id": "b",
+        "text": "Provide rigid, micro-managed procedural steps dictating exact line-by-line edit instructions across all files in the repository during refactoring."
+      },
+      {
+        "id": "c",
+        "text": "Hand the subagent only the coordinator's full raw reasoning transcript and let it infer the refactoring task from that context."
+      },
+      {
+        "id": "d",
+        "text": "Instruct the subagent to skip testing and rely entirely on static analysis to minimize token consumption during refactoring passes."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Effective delegation prompts clearly define goals, acceptance criteria, constraints, and relevant context while allowing the subagent to evaluate code structure and adapt implementation decisions as concrete dependencies are discovered. Over-prescribing rigid procedural instructions causes brittleness when the code deviates from the coordinator's initial assumptions.",
+    "distractorNotes": {
+      "b": "Micromanaging procedural instructions prevents the subagent from adapting when unexpected edge cases or dependencies emerge.",
+      "c": "Forwarding the raw transcript gives the subagent no explicit goal, test criteria, or constraints and buries the task in noise; a focused specification of goals and criteria yields better results.",
+      "d": "Skipping tests compromises software reliability and prevents the subagent from validating its refactoring."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
+    "sourceNote": "Designing subagent delegation prompts focused on objectives, constraints, and criteria",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-agentic-architecture-and-orchestration-015",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agentic-architecture-and-orchestration",
+    "subdomain": "workflow-enforcement",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A customer-support banking agent must verify customer identity via verify_identity before any financial tool (transfer_funds, process_refund) runs. A system prompt instruction to 'always verify identity first' is still violated on about 2% of turns when users inject urgency cues ('I'm about to miss a payment, just move the money now'). Errors here move real money. What most reliably guarantees the verification-before-transaction ordering?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Strengthen the system prompt to state that verify_identity is mandatory before any financial tool, and add few-shot examples showing the agent verifying first even when the customer stresses urgency."
+      },
+      {
+        "id": "b",
+        "text": "Enforce a programmatic prerequisite in the tool-execution layer that rejects any financial tool call until verify_identity has returned a valid verification token for the session."
+      },
+      {
+        "id": "c",
+        "text": "Add a second Claude call after each turn that reviews the transcript and blocks the transaction if it cannot confirm that verification occurred earlier in the conversation."
+      },
+      {
+        "id": "d",
+        "text": "Reorder the tool schema so verify_identity is declared first and mark each financial tool's description as 'requires prior identity verification' so the model consistently calls them in order."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "When a required tool sequence protects safety-critical or financially consequential logic, prompt-, example-, and description-based approaches all rely on probabilistic model compliance and retain a non-zero failure rate—exactly the 2% observed. A programmatic prerequisite enforced in code gives a deterministic guarantee: the financial tool physically cannot execute until the verification token exists, independent of how the model is steered.",
+    "distractorNotes": {
+      "a": "Better prompting and few-shot examples reduce but never eliminate the failure rate; the 2% gap under urgency cues is precisely the probabilistic weakness prompts cannot close.",
+      "c": "A reviewer model is itself probabilistic and adds latency and cost; it mitigates rather than deterministically prevents an unverified transaction from executing.",
+      "d": "Tool ordering and description hints only influence the model's choice—they do not enforce it—so the same non-deterministic failure under urgency cues remains."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling.md",
+    "sourceNote": "Programmatic prerequisite enforcement for safety-critical tool sequencing",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-agentic-architecture-and-orchestration-016",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agentic-architecture-and-orchestration",
+    "subdomain": "workflow-enforcement",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "In a single message a customer raises three distinct concerns: a late shipment, an unexpected recurring charge, and a request to update their email address. Each needs a different tool (shipment tracking, subscription lookup, account update). How should the agent architecturally handle the request to maximize first-contact resolution?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Address only the first concern mentioned and instruct the customer to open separate tickets for the other two through the web portal."
+      },
+      {
+        "id": "b",
+        "text": "Spawn three parallel subagents, one per concern, and return each subagent's independent reply to the customer verbatim as three separate messages."
+      },
+      {
+        "id": "c",
+        "text": "Decompose the message into the three concerns, investigate each with the appropriate tool, and synthesize one coherent response that resolves all three."
+      },
+      {
+        "id": "d",
+        "text": "Handle the highest-priority concern now and queue the other two as asynchronous follow-ups the agent will return to in a later turn."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "The agent should decompose the input into independent concerns, run the relevant tool for each (shipment tracking, subscription lookup, account update), and synthesize a single structured reply that addresses all three. Internal decomposition improves thoroughness, while synthesizing one coherent resolution is what preserves first-contact resolution and a clean customer experience.",
+    "distractorNotes": {
+      "a": "Forcing separate tickets fragments a solvable request and directly harms first-contact resolution.",
+      "b": "Decomposing to parallel subagents is reasonable internally, but returning three unsynthesized replies verbatim pushes the integration burden onto the customer instead of delivering one coherent resolution.",
+      "d": "Deferring two of the three concerns still splits the resolution across turns and lowers first-contact success when all three could be handled now."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/how-tool-use-works.md",
+    "sourceNote": "Decomposing multi-concern user requests and synthesizing unified resolutions",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-agentic-architecture-and-orchestration-017",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agentic-architecture-and-orchestration",
+    "subdomain": "workflow-enforcement",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An autonomous returns agent hits a policy exception it cannot resolve and must hand the session to a human tier-2 representative. The agent has already verified the customer's identity and collected the order facts. How should it formulate the handoff so the human resolves the case fastest without redundant work?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Forward the complete verbatim conversation transcript and all raw tool-call JSON so the human has the full record and nothing is lost."
+      },
+      {
+        "id": "b",
+        "text": "Send a one-line notice naming the exception plus a link to the session, letting the human open the session and pull whatever details they need on demand."
+      },
+      {
+        "id": "c",
+        "text": "Provide only the customer's original message and have the human independently re-run the lookups, so the human's judgment is not anchored by the agent's findings."
+      },
+      {
+        "id": "d",
+        "text": "Compile a structured summary: customer identifiers, the verified order facts already gathered, the specific exception that triggered escalation, and recommended next actions."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "An effective human-in-the-loop handoff is a concise structured summary: who the customer is, the facts already verified via tools, the exact reason for escalation, and recommended next steps. It lets the representative act immediately without re-deriving context or asking the customer to repeat themselves, minimizing handle time.",
+    "distractorNotes": {
+      "a": "A full verbatim transcript plus raw JSON is complete but unstructured, forcing the human to sift for the salient facts and slowing resolution.",
+      "b": "A bare pointer to the session defers all the work to the human, who must reconstruct the context the agent already has—wasting the facts already gathered.",
+      "c": "Discarding the verified facts to avoid 'anchoring' forces the human to redo lookups the agent already completed, adding effort and customer friction for no real benefit."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
+    "sourceNote": "Structured handoff protocols for human escalation in agentic workflows",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-agentic-architecture-and-orchestration-018",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agentic-architecture-and-orchestration",
+    "subdomain": "workflow-enforcement",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An agent must execute a two-step sequence: first generate an invoice draft, then submit it for fiscal approval. How should the orchestrator structure the tool interfaces so Claude reliably passes the generated invoice reference to the approval tool?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Have create_invoice return a clear structured identifier in its tool_result, and declare invoice_id as a required parameter in submit_approval."
+      },
+      {
+        "id": "b",
+        "text": "Hardcode the expected invoice ID in the system prompt before the conversation begins, assuming deterministic backend assignment."
+      },
+      {
+        "id": "c",
+        "text": "Have submit_approval accept the entire raw create_invoice tool_result blob as one string parameter and parse the ID out inside the backend."
+      },
+      {
+        "id": "d",
+        "text": "Store the invoice ID in a module-level global variable after create_invoice runs and have submit_approval read it implicitly instead of taking a parameter."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "When tool actions depend on outputs from earlier tools, the upstream tool should return a structured result with clear field names (e.g. `invoice_id`), and the downstream tool's JSON schema should declare that field as a required parameter. The model observes the return value in the tool_result and supplies it into the subsequent call.",
+    "distractorNotes": {
+      "b": "The invoice ID is generated dynamically at runtime; it cannot be known in advance before session creation.",
+      "c": "Forwarding the whole raw result as an opaque string drops parameter typing and validation and makes the model's linkage error-prone; declaring invoice_id as a required typed parameter is the reliable contract.",
+      "d": "Relying on a hidden global variable removes the linkage from the model's visible tool contract and breaks under concurrent invoices; the identifier should flow explicitly as a required parameter."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls.md",
+    "sourceNote": "Managing data dependencies between sequential tool calls via structured inputs and outputs",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-agentic-architecture-and-orchestration-019",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agentic-architecture-and-orchestration",
+    "subdomain": "agent-sdk-hooks",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An application integrates multiple legacy MCP servers. One returns dates as Unix timestamps, another as ISO 8601 strings, and a third as US format strings. Where should data normalization occur to prevent model reasoning errors?",
+    "options": [
+      {
+        "id": "a",
+        "text": "In the system prompt by listing every possible date format and asking the model to mentally normalize them during conversational reasoning."
+      },
+      {
+        "id": "b",
+        "text": "In a PostToolUse hook that intercepts raw tool outputs and normalizes dates into standard ISO 8601 before the model sees them."
+      },
+      {
+        "id": "c",
+        "text": "In each MCP server's own code, but only for the two servers you control, leaving the third-party server's format for the model to interpret."
+      },
+      {
+        "id": "d",
+        "text": "In a downstream reporting layer that reformats dates after the agent has already produced its answer."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "PostToolUse hooks in the Agent SDK intercept tool results after execution but before they are returned to the model context. Transforming heterogeneous data formats (such as dates, currencies, and status codes) into uniform representations in a hook ensures consistent model reasoning while eliminating prompt bloat.",
+    "distractorNotes": {
+      "a": "Prompting the model to handle multiple date formats adds token overhead and increases the probability of parsing errors.",
+      "c": "Normalizing only in the servers you control leaves the third server's format reaching the model; a PostToolUse hook normalizes every tool output uniformly regardless of source.",
+      "d": "Reformatting after the agent answers is too late — the model has already reasoned over inconsistent dates; normalization must happen in a PostToolUse hook before the model sees the output."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/hooks-guide.md",
+    "sourceNote": "PostToolUse hooks for normalizing heterogeneous tool output data formats",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-agentic-architecture-and-orchestration-020",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agentic-architecture-and-orchestration",
+    "subdomain": "agent-sdk-hooks",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An organization has a mandatory corporate governance rule: no refund exceeding $500 may be processed autonomously without senior manager approval. How should this compliance rule be enforced in an Agent SDK application?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Rely on a system prompt instruction specifying: 'Do not issue refunds above $500 under any circumstances without human approval.'"
+      },
+      {
+        "id": "b",
+        "text": "Filter out the process_refund tool from the tools list whenever a customer message mentions a large purchase amount or expensive item."
+      },
+      {
+        "id": "c",
+        "text": "Implement a PreToolUse hook that intercepts process_refund calls, checks the amount argument, and blocks execution if it exceeds $500."
+      },
+      {
+        "id": "d",
+        "text": "Prompt the user after every refund to confirm whether they think the amount was compliant with corporate policy guidelines."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Pre-tool execution hooks (PreToolUse) inspect outgoing tool calls and their arguments before dispatching to backend systems. If a policy violation is detected (such as amount > 500), the hook deterministically blocks execution, returns an error or redirection result, and routes the task to an approval workflow, providing a non-bypassable guardrail.",
+    "distractorNotes": {
+      "a": "System prompt instructions can be bypassed by jailbreaks, adversarial prompting, or complex reasoning edge cases.",
+      "b": "Filtering tools based on keyword mentions is brittle and prevents valid sub-$500 refunds on large order tickets.",
+      "d": "Asking end-users to self-audit corporate financial compliance provides no security or regulatory governance."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/hooks-guide.md",
+    "sourceNote": "Tool call interception hooks to enforce deterministic policy and spending limits",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-agentic-architecture-and-orchestration-021",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agentic-architecture-and-orchestration",
+    "subdomain": "agent-sdk-hooks",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An architect compares using system prompt instructions versus Agent SDK hooks for enforcing GDPR data redacting rules on tool outputs. Why are hooks superior for this requirement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "System prompts are stripped from the payload whenever a tool result is returned, so the redaction instruction is lost mid-conversation."
+      },
+      {
+        "id": "b",
+        "text": "Hooks execute inside Anthropic's servers before inference, so redacted data never leaves the vendor's trust boundary the way a system prompt does."
+      },
+      {
+        "id": "c",
+        "text": "GDPR compliance standards explicitly outlaw large language models from reading or generating any natural language text strings."
+      },
+      {
+        "id": "d",
+        "text": "Hooks run deterministic code on tool payloads, guaranteeing that sensitive fields are scrubbed before reaching model context or storage."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Compliance and regulatory standards like GDPR require deterministic guarantees. Prompt-based redaction is probabilistic and susceptible to omission or leakage. Agent SDK hooks run compiled deterministic code that can strip, mask, or hash sensitive fields (PII, SSNs, credit cards) before data enters model context or persistence logs.",
+    "distractorNotes": {
+      "a": "The system prompt persists across tool-calling turns and is not stripped when results return; the reason hooks win is that they run deterministic code on payloads rather than relying on probabilistic instruction-following.",
+      "b": "Hooks are client-side SDK code that run in your own runtime, not inside the vendor's servers; their advantage is deterministic scrubbing of tool payloads before the data reaches model context or storage.",
+      "c": "GDPR governs data protection and lawful processing; it does not ban language models from reading text."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/hooks-guide.md",
+    "sourceNote": "Deterministic data scrubbing using SDK hooks versus probabilistic prompt guidance",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-agentic-architecture-and-orchestration-022",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agentic-architecture-and-orchestration",
+    "subdomain": "agent-sdk-hooks",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An agent runs database queries whose results occasionally include a customer authentication token in the metadata column. The team needs the query results to remain usable but must keep the token out of the conversation history and prompt cache. What is the most effective mechanism?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Add a PostToolUse hook that strips or masks the authentication-token field from the query output before the result is appended to the message history."
+      },
+      {
+        "id": "b",
+        "text": "Instruct Claude in the system prompt to ignore the metadata column when it responds, trusting the model not to surface the token."
+      },
+      {
+        "id": "c",
+        "text": "Add a PreToolUse hook that blocks any query selecting the metadata column, so a token can never be returned in the first place."
+      },
+      {
+        "id": "d",
+        "text": "Enable prompt caching on the tool results so the token-bearing responses are stored in the cache tier and kept out of the active context window."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "A PostToolUse hook runs deterministic code on the raw tool output before it becomes a tool_result message, so it can redact just the token field while leaving the rest of the query result intact and usable. The secret never enters the conversation history or prompt cache, which is exactly the requirement.",
+    "distractorNotes": {
+      "b": "A system-prompt instruction is probabilistic and, even if followed, the raw token still sits in the message history and cache—the leak the team must prevent.",
+      "c": "Blocking every query that touches the metadata column is overbroad: it discards legitimate result data and breaks queries that need other metadata fields, whereas the goal is to keep the results and remove only the token.",
+      "d": "Prompt caching stores content for reuse; it does not redact anything, so the token remains present in cached context rather than being removed."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/hooks-guide.md",
+    "sourceNote": "Scrubbing sensitive credentials and tokens in tool results using PostToolUse hooks",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-agentic-architecture-and-orchestration-023",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agentic-architecture-and-orchestration",
+    "subdomain": "task-decomposition",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An architect is deciding between fixed prompt chaining and dynamic task decomposition for an automated quarterly financial audit. The audit always follows five strict legal review stages in identical order. Which pattern is appropriate?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Dynamic agentic decomposition, allowing Claude to decide the order of auditing stages on the fly based on intermediate findings."
+      },
+      {
+        "id": "b",
+        "text": "Fixed prompt chaining, orchestrating the five stages as a deterministic sequential pipeline with typed step boundaries."
+      },
+      {
+        "id": "c",
+        "text": "A single prompt containing all 500 audit questions executed in one turn without intermediate checks or structured validation gates."
+      },
+      {
+        "id": "d",
+        "text": "A supervisor agent that re-plans the stage order at each step to optimize for whichever checks it predicts will fail first."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "When a workflow follows a known, invariant sequence of structured steps (like regulatory legal compliance stages), fixed prompt chaining is superior. It ensures deterministic ordering, predictable resource usage, easy auditability, and clear validation gates between stages without the unpredictability of dynamic decomposition.",
+    "distractorNotes": {
+      "a": "Dynamic decomposition introduces unnecessary variability and failure modes into a strictly standardized process.",
+      "c": "Packing 500 complex auditing criteria into a single prompt leads to severe attention dilution and missed violations.",
+      "d": "Re-planning the stage order defeats the requirement that the five legal stages always run in the same fixed sequence; a deterministic prompt chain preserves that order."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices.md",
+    "sourceNote": "Prompt chaining for predictable sequential workflows versus dynamic decomposition",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-agentic-architecture-and-orchestration-024",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agentic-architecture-and-orchestration",
+    "subdomain": "task-decomposition",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An automated code review agent analyzes a large pull request modifying 18 files. When evaluating all files in a single pass, the agent misses subtle bugs in later files and provides contradictory feedback. How should the review workflow be decomposed?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Instruct the model to run in thinking mode with an 8,000 token budget while keeping the entire PR in a single prompt and unified pass."
+      },
+      {
+        "id": "b",
+        "text": "Review only the files with the largest diffs, assuming the smaller changes are low-risk and can be skipped."
+      },
+      {
+        "id": "c",
+        "text": "Split into per-file local analysis passes to catch localized issues, followed by a separate cross-file integration pass for data flow."
+      },
+      {
+        "id": "d",
+        "text": "Run the single-pass prompt five times in parallel and only report bugs identified in all five passes to eliminate random noise."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Evaluating many files simultaneously causes attention dilution. Decomposing the review into focused passes—first analyzing each file individually for local syntax, logic, and conventions, then conducting a separate integration pass focused strictly on cross-file contracts and data flows—ensures thorough coverage and eliminates contradictions.",
+    "distractorNotes": {
+      "a": "Thinking mode helps reasoning depth but does not solve input attention dilution across 18 disparate files.",
+      "b": "Prioritizing only large diffs leaves smaller changes unreviewed, and a one-line change can introduce a critical bug; the fix is per-file passes plus a cross-file integration pass, not skipping files.",
+      "d": "Requiring 5-pass consensus would suppress intermittent detections of real bugs and multiply token costs fivefold."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/code-review.md",
+    "sourceNote": "Decomposing multi-file reviews into per-file local passes and cross-file integration passes",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-agentic-architecture-and-orchestration-025",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agentic-architecture-and-orchestration",
+    "subdomain": "task-decomposition",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A developer instructs Claude Code to 'add comprehensive integration tests to this unfamiliar legacy service'. How should the agent decompose this open-ended task to ensure systematic progress?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Immediately generate mock test files for every file in the directory without reading existing implementations or dependency trees."
+      },
+      {
+        "id": "b",
+        "text": "Rewrite the legacy service in a modern framework before attempting to write test cases, deferring test creation entirely."
+      },
+      {
+        "id": "c",
+        "text": "Generate one enormous test file covering every method at once, then run it and fix failures until the suite passes."
+      },
+      {
+        "id": "d",
+        "text": "First map service architecture and entry points, identify untested critical paths, create a prioritized test plan, and implement tests iteratively."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "For broad, open-ended tasks in legacy codebases, effective decomposition begins with exploration and discovery: mapping the directory layout, locating entry points, and identifying critical dependencies. The agent then drafts a prioritized test plan and implements tests incrementally, verifying test execution against the code at each step.",
+    "distractorNotes": {
+      "a": "Generating mocks without inspecting implementation produces invalid, non-executable test code.",
+      "b": "Rewriting legacy systems without tests destroys existing functionality and violates scope.",
+      "c": "A single big-bang test file over an unfamiliar service skips architecture mapping and critical-path prioritization and produces brittle tests; systematic decomposition maps entry points first and builds tests iteratively."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/large-codebases.md",
+    "sourceNote": "Systematic task decomposition for open-ended exploration and testing in large codebases",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-agentic-architecture-and-orchestration-026",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agentic-architecture-and-orchestration",
+    "subdomain": "session-management",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An engineer analyzing database migration strategies wants to evaluate two divergent architectural approaches—schema migration via ORM vs zero-downtime blue/green table replication—starting from an existing in-depth schema analysis session. What session mechanism should be used?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Use fork_session to branch two independent sessions from the baseline analysis, exploring each approach without cross-contamination."
+      },
+      {
+        "id": "b",
+        "text": "Alternate user prompts between the two competing strategies in the same active session thread, relying on context to keep them distinct."
+      },
+      {
+        "id": "c",
+        "text": "Clear the conversation history using /clear and prompt the model to remember the prior schema analysis from its internal parameters."
+      },
+      {
+        "id": "d",
+        "text": "Copy the key findings into two brand-new prompts started from scratch, re-establishing the schema context manually in each."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Session forking (fork_session / context: fork) allows branching multiple child sessions from a common analysis baseline. Each fork can explore different implementation strategies independently without polluting the parent context or mixing conflicting code artifacts.",
+    "distractorNotes": {
+      "b": "Interleaving competing proposals in a single session causes context confusion and hallucinations regarding shared state.",
+      "c": "/clear wipes session context entirely; Claude cannot remember cleared history without reinjecting it.",
+      "d": "Manually re-pasting findings into two fresh sessions is lossy and drops the detailed prior context; fork_session branches both explorations from the exact baseline analysis without that effort or loss."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
+    "sourceNote": "Using session forking to explore divergent architectural approaches from a shared baseline",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-agentic-architecture-and-orchestration-027",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agentic-architecture-and-orchestration",
+    "subdomain": "session-management",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer returns to a complex refactoring task after teammates pushed major structural changes to the repository overnight. How should the developer resume work with Claude Code?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Resume the previous session with --resume and assume Claude automatically detects remote git commit history changes without prompting."
+      },
+      {
+        "id": "b",
+        "text": "Start a fresh session with a concise summary of the remaining refactoring goals, or inform the resumed session explicitly about modified files."
+      },
+      {
+        "id": "c",
+        "text": "Revert the teammates' git commits locally so that Claude's stale session context matches the filesystem without re-running tools."
+      },
+      {
+        "id": "d",
+        "text": "Ask Claude to run git pull inside the resumed session and assume its cached view of the files updates automatically to match."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "When underlying files change outside a Claude Code session, prior tool outputs and cached file readings in the session history become stale. The developer should either start a clean session initialized with a structured summary of remaining work, or explicitly inform the resumed session which files have changed so it avoids acting on outdated context.",
+    "distractorNotes": {
+      "a": "Claude Code does not automatically diff session history against git remote heads on resume without explicit commands.",
+      "c": "Reverting teammates' commits destroys team collaboration to accommodate stale session state.",
+      "d": "Pulling the changes updates the working tree but not the session's already-loaded snapshots of those files; the resumed session must be explicitly told which files changed, or started fresh."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/memory.md",
+    "sourceNote": "Handling stale session context after external repository modifications",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-agentic-architecture-and-orchestration-028",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "agentic-architecture-and-orchestration",
+    "subdomain": "subagent-invocation",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An architect designs a multi-agent workflow in Claude Code where a coordinator agent delegates code analysis tasks to a custom project subagent. When Claude Code spawns this custom subagent, which TWO state components are automatically included in its initial context window without explicit prompt injection? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "The repository's Git status snapshot captured at the start of the parent session."
+      },
+      {
+        "id": "b",
+        "text": "The full transcript of prior conversation turns and tool outputs from the coordinator."
+      },
+      {
+        "id": "c",
+        "text": "Active CLAUDE.md hierarchy configurations, including project and local policy rules."
+      },
+      {
+        "id": "d",
+        "text": "The coordinator agent's auto memory storage and runtime output style configurations."
+      },
+      {
+        "id": "e",
+        "text": "Cached in-memory buffers of source files read by the coordinator earlier in the turn."
+      }
+    ],
+    "correct": [
+      "a",
+      "c"
+    ],
+    "explanation": "When Claude Code spawns a custom subagent, its initial context window is isolated from the coordinator's conversational turn history and prior tool outputs, but it automatically loads every level of the active CLAUDE.md hierarchy (such as project instructions and CLAUDE.local.md) along with a Git status snapshot from the start of the parent session. Prior conversation transcripts, file contents read by the coordinator, auto memory, and output styles do not reach the subagent unless explicitly passed in the delegation prompt.",
+    "distractorNotes": {
+      "b": "Subagents execute in an isolated context window and do not inherit prior conversation turns or tool call transcripts from the coordinator.",
+      "d": "Parent auto memory and output styles are not loaded into a non-fork subagent context window.",
+      "e": "Subagents start fresh and must read files independently using their allowed tools; parent file read buffers are not retained."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
+    "sourceNote": "Custom subagents load the CLAUDE.md hierarchy and git status into their initial context window",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-agentic-architecture-and-orchestration-029",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "agentic-architecture-and-orchestration",
+    "subdomain": "agent-sdk-hooks",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An enterprise platform team configures multiple automated PreToolUse hooks in Claude Code settings to enforce compliance and safety policies on file operations and shell commands. When an agent initiates a tool call that triggers multiple matching hooks, which TWO statements accurately describe how Claude Code coordinates their execution and resolves their verdicts? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Claude Code executes hooks sequentially in listed order and stops immediately once the first hook returns a decision."
+      },
+      {
+        "id": "b",
+        "text": "Conflicting permission decisions resolve to the most restrictive verdict following the order deny, defer, ask, allow."
+      },
+      {
+        "id": "c",
+        "text": "Hooks evaluate when the session is in interactive mode and are bypassed when automated permissions are configured."
+      },
+      {
+        "id": "d",
+        "text": "Matching hooks execute in parallel to completion, and returned additionalContext payloads are aggregated together."
+      },
+      {
+        "id": "e",
+        "text": "An explicit allow verdict takes precedence over sibling denials to prevent automated workflow execution deadlocks."
+      }
+    ],
+    "correct": [
+      "b",
+      "d"
+    ],
+    "explanation": "When a tool call matches multiple PreToolUse hooks, Claude Code executes all matching hooks in parallel to completion rather than stopping on the first response. Output text from additionalContext across all hooks is aggregated and provided to Claude. If hooks return conflicting permission decisions, Claude Code deterministically enforces the most restrictive verdict in the hierarchy: deny > defer > ask > allow.",
+    "distractorNotes": {
+      "a": "Hooks run in parallel to completion rather than sequentially; a deny verdict in one hook does not halt execution of sibling hooks.",
+      "c": "PreToolUse hooks fire across all permission modes, including dontAsk and bypassPermissions, providing non-bypassable policy enforcement.",
+      "e": "Claude Code resolves conflicting decisions toward the most restrictive outcome (deny > defer > ask > allow), so allow never overrides deny."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/hooks-guide.md",
+    "sourceNote": "PreToolUse hooks execute in parallel and enforce the most restrictive permission decision",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-agentic-architecture-and-orchestration-030",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agentic-architecture-and-orchestration",
+    "subdomain": "session-management",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A development team wants to run multiple autonomous Claude Code sessions simultaneously on the same repository—one implementing a new payment integration and another refactoring user authentication. When developers ran both sessions in the main repository checkout, file modifications conflicted and corrupted the git staging index. How does running sessions in dedicated git worktrees prevent these collisions?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Each session executes in a distinct filesystem directory on an isolated branch, and Claude Code blocks tool calls that attempt file edits or git mutations targeting the primary checkout."
+      },
+      {
+        "id": "b",
+        "text": "Each session runs against an isolated local git clone over the loopback network interface, preventing file collisions by buffering git push operations through an in-memory transaction queue."
+      },
+      {
+        "id": "c",
+        "text": "Sessions share the main working directory under an advisory file lock, causing Claude Code to defer pending file edits until the preceding session finishes its conversational turn."
+      },
+      {
+        "id": "d",
+        "text": "Worktree isolation encapsulates file modifications within transient in-memory buffers, committing file updates directly to the remote repository without touching the local disk."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "A git worktree creates a separate working directory with its own files and dedicated branch, sharing repository history with the main checkout. When running inside a worktree, Claude Code actively enforces filesystem isolation by blocking Edit, Write, or NotebookEdit tool calls targeting the main checkout and rejecting git commands or subdirectories that attempt to mutate the primary repository working tree.",
+    "distractorNotes": {
+      "b": "Worktrees share the same repository history and remote as the main checkout rather than creating separate clones or loopback network interfaces, and they operate on the local filesystem rather than via push queues.",
+      "c": "Claude Code does not use advisory file locking or serialized turn queues within a shared directory; running parallel sessions in the same checkout without worktrees causes collisions.",
+      "d": "Worktrees create real filesystem directories on disk (under .claude/worktrees/ by default) rather than transient in-memory buffers, and changes are committed locally to their dedicated branch."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/worktrees.md",
+    "sourceNote": "Isolating parallel Claude Code sessions using git worktrees and mutation enforcement",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-agentic-architecture-and-orchestration-031",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agentic-architecture-and-orchestration",
+    "subdomain": "task-decomposition",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An engineering team needs to perform a security and dependency audit across 400 microservice configuration files in a monorepo. An architect compares deploying a single autonomous coordinator agent that delegates tasks to subagents turn-by-turn against using a dynamic workflow. What primary architectural advantage makes a dynamic workflow the better choice for this large-scale operation?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A dynamic workflow merges all 400 target configuration files into a single consolidated prompt payload, enabling a single model inference turn to evaluate security issues without delegating to subagents."
+      },
+      {
+        "id": "b",
+        "text": "A dynamic workflow compiles subagent system prompts into native WebAssembly modules, executing security checks inside the local runtime without making external Claude API inference calls."
+      },
+      {
+        "id": "c",
+        "text": "The orchestration plan and intermediate findings reside in script variables rather than accumulating in Claude's context window, allowing dozens to hundreds of subagents to execute in phases."
+      },
+      {
+        "id": "d",
+        "text": "The dynamic workflow runtime bypasses tool permission verification and hook interceptors, maximizing execution speed across file reading and validation tasks during monorepo sweeps."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "In standard subagent or agent team patterns, an autonomous coordinator makes turn-by-turn decisions and accumulates intermediate findings inside its conversational context window, leading to context exhaustion and high token costs on massive tasks. A dynamic workflow moves orchestration into a JavaScript script where the runtime manages execution, intermediate results are maintained in script variables, and subagents are dispatched in structured phases across dozens or hundreds of workers, returning only the consolidated report to the main session.",
+    "distractorNotes": {
+      "a": "Concatenating hundreds of files into a single prompt would rapidly exceed model context limits and degrade recall; workflows orchestrate many focused subagents across phases rather than avoiding them.",
+      "b": "Workflows are JavaScript scripts executing subagent calls that still invoke Claude model inference; they do not compile agent prompts into WebAssembly or run offline without API calls.",
+      "d": "Dynamic workflows execute in accordance with standard permission modes and security boundaries, and do not bypass permission checks or hook enforcement to increase speed."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/workflows.md",
+    "sourceNote": "Dynamic workflows versus autonomous coordinator agents for large-scale multi-agent execution",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-agentic-architecture-and-orchestration-032",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "agentic-architecture-and-orchestration",
+    "subdomain": "multi-agent-orchestration",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A solutions architect is designing an AI-assisted development workflow in Claude Code for an open-ended architectural spike, where multiple specialized agents must investigate competing database migration strategies and challenge each other's conclusions. The architect considers configuring an Agent Team (CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1) instead of standard subagents. Which communication and coordination characteristic distinguishes Agent Teams from the standard subagent pattern?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Teammates automatically run in isolated git worktrees created on demand, preventing any two teammates from modifying the same files during concurrent implementation."
+      },
+      {
+        "id": "b",
+        "text": "Teammates share a single unified context window with the team lead, ensuring that all prior turn histories, tool call results, and memory buffers are immediately visible to every peer agent."
+      },
+      {
+        "id": "c",
+        "text": "Agent teams spawn and operate in non-interactive CI/CD pipelines using headless mode (-p), whereas standard subagents require an active terminal session."
+      },
+      {
+        "id": "d",
+        "text": "Teammates communicate directly with each other via peer messaging and coordinate via a shared task list, whereas subagents report results only back to the calling agent."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "In standard subagent orchestration, workers execute in isolation and report results back to the caller, with the main agent managing all delegation and synthesis. In an Agent Team, teammates operate with independent context windows but communicate directly with one another through peer messaging and collaborate via a shared task list, enabling peer discussion and challenge without routing every interaction through the lead agent.",
+    "distractorNotes": {
+      "a": "Agent teams do not automatically isolate teammates in separate git worktrees; developers must explicitly partition work across different files to prevent conflicts.",
+      "b": "Teammates execute in their own separate context windows rather than sharing a single unified context window; they exchange information via explicit peer messages.",
+      "c": "Agent teams require an interactive terminal session and do not spawn in headless mode (-p); in non-interactive or Agent SDK environments, named agents run as standard subagents."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/agent-teams.md",
+    "sourceNote": "Coordination differences between agent teams and subagents in Claude Code",
+    "sourceCheckedAt": "2026-09-17"
+  }
+]

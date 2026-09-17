@@ -8,7 +8,6 @@
     "subdomain": "claude-api-mechanics",
     "difficulty": "easy",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A chat application sends only the newest user message to the Messages endpoint on each turn. Users report that Claude has no awareness of anything said earlier in the same conversation. What explains this behavior, and what is the correct remedy?",
     "options": [
       {
@@ -39,7 +38,7 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/working-with-messages",
     "sourceNote": "Using the Messages API — 'Multiple conversational turns'",
-    "sourceCheckedAt": "2026-09-03"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccdv-f-applications-and-integration-002",
@@ -50,7 +49,6 @@
     "subdomain": "claude-api-mechanics",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A developer is reviewing how the Messages API interprets the body of a create-message request. Which statements are correct? Select THREE.",
     "options": [
       {
@@ -91,7 +89,7 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/api/messages/create",
     "sourceNote": "Messages API reference — 'Body parameters' (messages and max_tokens)",
-    "sourceCheckedAt": "2026-09-03"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccdv-f-applications-and-integration-003",
@@ -102,7 +100,6 @@
     "subdomain": "claude-api-mechanics",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "To force a particular output shape, an integration ends its messages array with an assistant message containing a partial sentence. Against a model that does not support assistant-message prefill, the request fails. What does the API return, and what is the documented alternative?",
     "options": [
       {
@@ -133,7 +130,7 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/api/errors",
     "sourceNote": "Claude API errors — 'Common validation errors' (Prefill not supported)",
-    "sourceCheckedAt": "2026-09-03"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccdv-f-applications-and-integration-004",
@@ -144,7 +141,6 @@
     "subdomain": "claude-api-mechanics",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An agent runs for a few turns and then stops making progress. The logs show a response in which the model asked to call a client-side tool. The integration recorded that response as the assistant's final answer and returned its text to the user. What did the integration misread?",
     "options": [
       {
@@ -175,7 +171,7 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons",
     "sourceNote": "Handling stop reasons — client-side tool call requests",
-    "sourceCheckedAt": "2026-09-03"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccdv-f-applications-and-integration-005",
@@ -186,7 +182,6 @@
     "subdomain": "claude-api-mechanics",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A development team is implementing streaming for a new Claude-powered application. Which of the following statements about how the Claude API handles streaming are true? Select THREE.",
     "options": [
       {
@@ -227,92 +222,7 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/streaming",
     "sourceNote": "Streaming messages — event types and content block deltas",
-    "sourceCheckedAt": "2026-09-03"
-  },
-  {
-    "id": "ccdv-f-applications-and-integration-006",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "single",
-    "domain": "applications-and-integration",
-    "subdomain": "claude-api-mechanics",
-    "difficulty": "hard",
-    "status": "reviewed",
-    "scope": "deep",
-    "scopeNote": "Tests that appending a text block after a tool_result inside the same user message leads the model to end its turn early. On-blueprint under Claude API mechanics, but this is a specific transcript-construction gotcha recognisable only from the stop-reason page's edge-case note, not a diagnosis reachable from principle.",
-    "stem": "An agent loop frequently receives a near-empty assistant response carrying a stop_reason of end_turn. Inspecting the transcript shows that each tool_result block is followed, inside the same user message, by an extra text block that summarizes what the tool returned. What is the documented cause?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Appending a text block after a tool_result leads the model to treat its own turn as already concluded, so it ends the turn early."
-      },
-      {
-        "id": "b",
-        "text": "tool_result blocks belong in an assistant message, and placing them in a user message causes the turn to terminate prematurely."
-      },
-      {
-        "id": "c",
-        "text": "The identifier linking the result to its originating tool call was omitted, so the API discards the result and the model has nothing to answer."
-      },
-      {
-        "id": "d",
-        "text": "Near-empty responses of this shape always indicate that the model's available context window has been completely exhausted."
-      }
-    ],
-    "correct": [
-      "a"
-    ],
-    "explanation": "This is a documented and easily missed failure mode. When a client appends its own commentary text directly after a tool_result, the model learns from the pattern that the user always supplies text once results arrive, and it concludes its own turn accordingly, yielding a very short response with an ordinary end_turn stop reason. The fix is to return tool results on their own, with no additional text blocks in that message. A related instance of the same pattern occurs when a client sends Claude's already-completed response back unchanged: the model has already judged itself finished and will remain so. Note that this presents as a well-formed successful response rather than an error, which is why it usually surfaces as a quality complaint rather than an exception.",
-    "distractorNotes": {
-      "b": "tool_result blocks are correctly returned inside a user message. Moving them to an assistant message would misrepresent who produced the result and is not the cause described here.",
-      "c": "A missing tool identifier is a request validation problem and would surface as an error, not as a well-formed response carrying an end_turn stop reason.",
-      "d": "Exhausting the context window is reported through its own dedicated stop reason. An end_turn response reflects the model choosing to stop rather than the window running out."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons",
-    "sourceNote": "Stop reasons and fallback — 'Empty responses with end_turn'",
-    "sourceCheckedAt": "2026-09-03"
-  },
-  {
-    "id": "ccdv-f-applications-and-integration-007",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "single",
-    "domain": "applications-and-integration",
-    "subdomain": "claude-application-design",
-    "difficulty": "easy",
-    "status": "reviewed",
-    "scope": "core",
-    "stem": "A team is estimating whether a planned request will fit inside a model's context window. Which components have to be counted?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Only the user and assistant message text, since system prompts and tool definitions are billed but sit outside the window itself."
-      },
-      {
-        "id": "b",
-        "text": "Only the input side, since generated output is bounded separately by max_tokens and does not occupy space in the window."
-      },
-      {
-        "id": "c",
-        "text": "Only the most recent turn, since earlier turns are summarized and compacted automatically before the request is processed."
-      },
-      {
-        "id": "d",
-        "text": "The system prompt, every message including tool results and documents, the tool definitions, and the tokens generated in reply."
-      }
-    ],
-    "correct": [
-      "d"
-    ],
-    "explanation": "The context window is the model's entire working memory for a request, and everything sent counts toward it: the system prompt, every entry in the messages array including tool results, images, and documents, and the tool definitions themselves. Critically, the output side counts too, because the window has to hold the response being generated alongside everything that prompted it. Tool definitions are the component teams most often forget, since they are configuration rather than conversation and can grow substantial once a toolset expands. The token counting endpoint exists to estimate a request before it is sent, and each response reports actual consumption in its usage field, which is the more reliable signal for capacity planning.",
-    "distractorNotes": {
-      "a": "System prompts and tool definitions are part of the request the model reads, so they occupy the window like any other input. Tool definitions in particular can dominate the budget in a tool-heavy agent.",
-      "b": "The window holds the response as well as the prompt. max_tokens caps how much may be generated, but that generated output still has to fit inside the same window.",
-      "c": "Server-side compaction is an explicitly enabled feature rather than default behavior. On an ordinary request, prior turns are present because the client resent them and they consume window space in full."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/context-windows",
-    "sourceNote": "Context windows — 'How the context window works'",
-    "sourceCheckedAt": "2026-09-03"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccdv-f-applications-and-integration-008",
@@ -323,7 +233,6 @@
     "subdomain": "claude-application-design",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A nightly job classifies a large backlog of documents. No result is consumed interactively, and cost is the dominant constraint. Which approach fits, and which design constraint must be accepted alongside it?",
     "options": [
       {
@@ -354,7 +263,7 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/batch-processing",
     "sourceNote": "Batch processing — limitations and unsupported parameters",
-    "sourceCheckedAt": "2026-09-03"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccdv-f-applications-and-integration-009",
@@ -365,7 +274,6 @@
     "subdomain": "claude-application-design",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A development team is building an application that will process many user queries against a large, static repository of technical documentation. They are considering using prompt caching for the documentation content. Which statements represent the high-level benefits and appropriate use cases for prompt caching in this scenario? Select THREE.",
     "options": [
       {
@@ -406,7 +314,7 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
     "sourceNote": "Prompt caching — 'How prompt caching works'",
-    "sourceCheckedAt": "2026-09-03"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccdv-f-applications-and-integration-010",
@@ -417,7 +325,6 @@
     "subdomain": "claude-application-design",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An API-driven agent recalls details from its transcript less and less reliably as a session runs on, even though the transcript remains comfortably inside the model's context window. What does the guidance identify as the underlying issue and the appropriate response?",
     "options": [
       {
@@ -448,145 +355,7 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/context-windows",
     "sourceNote": "Context windows — context rot and curation",
-    "sourceCheckedAt": "2026-09-03"
-  },
-  {
-    "id": "ccdv-f-applications-and-integration-011",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "single",
-    "domain": "applications-and-integration",
-    "subdomain": "claude-api-mechanics",
-    "difficulty": "easy",
-    "status": "reviewed",
-    "scope": "deep",
-    "scopeNote": "Tests the exact set of headers a non-SDK caller must send on every request. On-blueprint under Claude API mechanics, but it is direct recall of a required-header list; the exam tests why a team would adopt an SDK, not which headers the SDK sets on their behalf.",
-    "stem": "A service calls the Messages endpoint over plain HTTP without using an official SDK. Which set of request headers must be present on every call?",
-    "options": [
-      {
-        "id": "a",
-        "text": "The API key header and a content type header only, since the API version is negotiated between client and server automatically."
-      },
-      {
-        "id": "b",
-        "text": "A credential header, either the API key header or an Authorization bearer token, plus the version header and a content type header."
-      },
-      {
-        "id": "c",
-        "text": "The API key header, the version header, the content type header, and a workspace identifier header, regardless of how the key is scoped."
-      },
-      {
-        "id": "d",
-        "text": "The version header and a beta feature header only, with the credential supplied as a query string parameter on the request URL."
-      }
-    ],
-    "correct": [
-      "b"
-    ],
-    "explanation": "Three headers are required on every direct HTTP request: a credential, which is either the API key header or an Authorization bearer token obtained through workload identity federation; the API version header; and a JSON content type header. The version header is the one most often overlooked, because the official SDKs set it automatically along with the other two, so the requirement becomes visible only when a team writes its own client or reproduces a call with a command-line tool. A workspace identifier header is conditional rather than universal: it is required when the key is permitted to act across multiple workspaces, and omitted when the key is already bound to a single workspace.",
-    "distractorNotes": {
-      "a": "The API version is never negotiated implicitly. Omitting the version header is a request error, and pinning a version is what makes the compatibility guarantees meaningful in the first place.",
-      "c": "The workspace identifier header is conditional rather than universal. A key scoped to one workspace already determines where the request runs, so sending the header there is unnecessary.",
-      "d": "Credentials travel in headers, never as query parameters, which would leak them into logs and referrer data. A beta header is needed only when a beta feature is actually being used."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/api/overview",
-    "sourceNote": "API overview — 'Authentication' header requirements",
-    "sourceCheckedAt": "2026-09-03"
-  },
-  {
-    "id": "ccdv-f-applications-and-integration-012",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "single",
-    "domain": "applications-and-integration",
-    "subdomain": "configuration-management",
-    "difficulty": "medium",
-    "status": "reviewed",
-    "scope": "core",
-    "stem": "A development team wants Claude to automatically pick up their project's conventions and coding standards every session, without anyone re-typing instructions into chat or the API request. Which configuration approach achieves that?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Providing the standards in a system prompt for every individual API call."
-      },
-      {
-        "id": "b",
-        "text": "Placing a CLAUDE.md file containing the conventions at the root of the project repository."
-      },
-      {
-        "id": "c",
-        "text": "Writing the conventions into a PreToolUse hook, since hooks are the mechanism the documentation names for enforcing behavior regardless of what Claude decides."
-      },
-      {
-        "id": "d",
-        "text": "Setting environment variables on developer machines with the required conventions."
-      }
-    ],
-    "correct": [
-      "b"
-    ],
-    "explanation": "A project CLAUDE.md at the repository root is read at the start of every session and carries team-shared instructions such as coding standards and architectural conventions, without anyone re-supplying them per call. Hooks solve a related but distinct problem: because CLAUDE.md is delivered as context rather than enforced configuration, a hook is the documented way to guarantee an action is blocked or forced regardless of what Claude decides, at the cost of only covering the specific event the hook is wired to rather than general guidance.",
-    "distractorNotes": {
-      "a": "A system prompt repeated on every call can convey the same conventions, but it must be assembled and sent by the caller each time rather than being read automatically from the repository.",
-      "c": "Hooks execute as shell commands at fixed lifecycle events and are the right tool for deterministic enforcement, but they are not where narrative coding-standards guidance lives; a hook cannot substitute for CLAUDE.md's role as general instructions Claude reads and reasons over.",
-      "d": "Environment variables are typically used for secrets like API keys or basic application settings, not for conveying detailed narrative instructions, coding standards, or project context to Claude."
-    },
-    "sourceUrl": "https://code.claude.com/docs/en/memory",
-    "sourceNote": "Memory — 'CLAUDE.md files' and 'CLAUDE.md vs auto memory'",
-    "sourceCheckedAt": "2026-09-07"
-  },
-  {
-    "id": "ccdv-f-applications-and-integration-013",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "multi",
-    "domain": "applications-and-integration",
-    "subdomain": "software-engineering-foundations",
-    "difficulty": "hard",
-    "status": "reviewed",
-    "scope": "deep",
-    "scopeNote": "Tests the API version compatibility contract — which additive changes a client pinning a version must tolerate without breaking. On-blueprint under software engineering foundations, but enumerating the guarantee's clauses is reference-page recall rather than the applied versioning judgement the exam samples.",
-    "stem": "A client library pins a specific API version value on every request. Under the documented version guarantees, which changes must that client tolerate without breaking? Select THREE.",
-    "options": [
-      {
-        "id": "a",
-        "text": "New optional request parameters being introduced on endpoints the client already calls."
-      },
-      {
-        "id": "b",
-        "text": "Removal of a response field the client currently reads, with no change to the pinned version value."
-      },
-      {
-        "id": "c",
-        "text": "Renaming of existing request parameters between releases inside the same pinned version."
-      },
-      {
-        "id": "d",
-        "text": "Additional fields appearing in response payloads the client already parses."
-      },
-      {
-        "id": "e",
-        "text": "Previously unseen values turning up in enumerated outputs, such as new streaming event types."
-      },
-      {
-        "id": "f",
-        "text": "Silent redefinition of what an existing field's values mean, with the field name left unchanged."
-      }
-    ],
-    "correct": [
-      "a",
-      "d",
-      "e"
-    ],
-    "explanation": "Pinning a version buys a specific and bounded guarantee: existing input parameters and existing output parameters are preserved. What it does not buy is a frozen surface. Additional optional inputs may appear, additional values may appear in outputs, and new variants may be added to enumerated outputs, streaming event types being the example the documentation calls out. The engineering consequence is that a client must parse defensively, ignoring unknown response fields rather than rejecting them, and handling unrecognized enumerated values gracefully rather than treating them as corruption. A strict parser that fails on anything unexpected will break on an additive change the version contract explicitly permits.",
-    "distractorNotes": {
-      "b": "Existing output parameters are preserved within a version. Field removal is precisely the kind of breaking change that pinning a version is meant to protect against.",
-      "c": "Existing input parameters are preserved within a version, so parameters are not renamed underneath a client that has pinned one.",
-      "f": "Redefining the meaning of existing values would break clients silently and is not among the permitted changes. The surface grows by adding new values, not by repurposing old ones."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/api/versioning",
-    "sourceNote": "Versions — preserved features and permitted additive changes",
-    "sourceCheckedAt": "2026-09-03"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccdv-f-applications-and-integration-014",
@@ -597,7 +366,6 @@
     "subdomain": "software-engineering-foundations",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A production integration currently classifies failures by matching substrings of error messages and wraps every failure in its own fixed-interval retry loop. Which change aligns with the documented guidance?",
     "options": [
       {
@@ -628,7 +396,7 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/api/errors",
     "sourceNote": "Claude API errors — automatic SDK retries and error types",
-    "sourceCheckedAt": "2026-09-03"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccdv-f-applications-and-integration-015",
@@ -639,7 +407,6 @@
     "subdomain": "systems-life-cycle",
     "difficulty": "easy",
     "status": "reviewed",
-    "scope": "core",
     "stem": "Which description of the documented model lifecycle states is correct?",
     "options": [
       {
@@ -670,7 +437,7 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/about-claude/model-deprecations",
     "sourceNote": "Model deprecations - 'Overview' section defining the active, legacy, deprecated, and retired lifecycle states",
-    "sourceCheckedAt": "2026-09-03"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccdv-f-applications-and-integration-016",
@@ -681,7 +448,6 @@
     "subdomain": "systems-life-cycle",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A model that an application depends on has been announced for retirement. Which actions are supported by the documented migration guidance? Select THREE.",
     "options": [
       {
@@ -722,7 +488,7 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/about-claude/model-deprecations",
     "sourceNote": "Model deprecations — migration, notification, and partner schedules",
-    "sourceCheckedAt": "2026-09-03"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccdv-f-applications-and-integration-017",
@@ -733,7 +499,6 @@
     "subdomain": "understanding-requirements",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A stakeholder asks only that the assistant should give good answers to billing questions. The team must turn that into a usable success criterion. Which restatement best satisfies the documented properties of being specific, measurable, achievable, and relevant?",
     "options": [
       {
@@ -764,7 +529,7 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
     "sourceNote": "Develop tests — 'Define your success criteria' (SMART criteria)",
-    "sourceCheckedAt": "2026-09-03"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccdv-f-applications-and-integration-018",
@@ -775,7 +540,6 @@
     "subdomain": "understanding-requirements",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A team is building an evaluation suite for a Claude-based feature before it ships. Which practices match the documented evaluation design principles? Select THREE.",
     "options": [
       {
@@ -816,150 +580,7 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
     "sourceNote": "Develop tests — 'Eval design principles' (task specificity and volume)",
-    "sourceCheckedAt": "2026-09-03"
-  },
-  {
-    "id": "ccdv-f-applications-and-integration-019",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "single",
-    "domain": "applications-and-integration",
-    "subdomain": "software-engineering-foundations",
-    "difficulty": "medium",
-    "status": "reviewed",
-    "scope": "core",
-    "stem": "A report generation job issues non-streaming Messages requests with a very large max_tokens value. Most calls succeed, but some fail after several minutes with no response body at all, and failures cluster on particular network paths. Which change matches the documented guidance?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Switch long generations to the streaming Messages API or the Message Batches API, since idle connections can be dropped."
-      },
-      {
-        "id": "b",
-        "text": "Keep the non-streaming call and raise the client timeout, since the response is held server side until the client reconnects."
-      },
-      {
-        "id": "c",
-        "text": "Treat the failures as a throughput limit and retry the identical non-streaming request with exponential backoff."
-      },
-      {
-        "id": "d",
-        "text": "Lower max_tokens until responses return, since the failures show the requested ceiling exceeded the context window."
-      }
-    ],
-    "correct": [
-      "a"
-    ],
-    "explanation": "A non-streaming request holds one connection open for the entire generation, so a large max_tokens turns an ordinary call into a long-lived connection. Networks differ in reliability and some drop idle connections after a variable period, which is why the request can fail or time out without any response arriving. The documented remedies are to stream, so that data flows continuously and the client can process events as they arrive, or to use the Message Batches API, which lets the client poll for results instead of depending on an uninterrupted connection. Two supporting details are worth knowing: the official SDKs validate that a non-streaming request is not expected to exceed the service timeout, and they set a TCP keep-alive socket option, which a hand-rolled direct integration must arrange for itself. A request that does time out server side surfaces as a timeout error whose documented advice is likewise to move to streaming.",
-    "distractorNotes": {
-      "b": "There is no reconnect-and-collect mechanism for a dropped non-streaming call, so the partially generated response is simply lost. Extending the timeout does not help when an intermediary severs an idle connection.",
-      "c": "Throughput rejections arrive quickly with an explicit error, not as a silent multi-minute stall. Replaying the same non-streaming shape reproduces exactly the condition that failed.",
-      "d": "A max_tokens value larger than the model allows is rejected during validation, immediately and with an error. Failures that appear only after minutes of waiting point at connection duration instead."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/api/errors",
-    "sourceNote": "Claude API errors — long requests and idle connections",
-    "sourceCheckedAt": "2026-09-03"
-  },
-  {
-    "id": "ccdv-f-applications-and-integration-020",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "multi",
-    "domain": "applications-and-integration",
-    "subdomain": "software-engineering-foundations",
-    "difficulty": "medium",
-    "status": "reviewed",
-    "scope": "deep",
-    "scopeNote": "Tests the request-id response header and the open-endedness of error type values. On-blueprint under software engineering foundations, but both are observability details of the error surface rather than the failure-handling design the objective covers.",
-    "stem": "A team is hardening the logging and failure handling of a direct HTTP integration that does not use an official SDK. Which practices match the documented guidance? Select TWO.",
-    "options": [
-      {
-        "id": "a",
-        "text": "Record the request identifier header returned with every response so it can be quoted when escalating one call to support."
-      },
-      {
-        "id": "b",
-        "text": "Correlate incidents by timestamp alone and treat the identifier as one value reused across a whole conversation."
-      },
-      {
-        "id": "c",
-        "text": "Treat the set of error type values as open ended, because the values inside error objects may expand over time."
-      },
-      {
-        "id": "d",
-        "text": "Read the identifier only from successful response bodies, since it is returned in the body rather than in a header."
-      },
-      {
-        "id": "e",
-        "text": "Reject any response whose error type is not already known to the client, since only the documented type values are ever considered valid."
-      }
-    ],
-    "correct": [
-      "a",
-      "c"
-    ],
-    "explanation": "Two disciplines make a direct integration supportable. First, every response carries a request identifier header, and error bodies repeat the same value in a dedicated field; capturing it on successes as well as failures is what allows a specific call to be traced later, and support asks for it when investigating an individual request. Second, the error contract is explicitly open ended: the versioning policy allows the values inside error objects to expand, so the list of error type strings can grow. A parser that treats the enumeration as closed will break on an addition the contract permits. The safe handling for an unfamiliar type is neither to crash nor to retry blindly, since many conditions are permanent, but to fall through to a default that reports the failure with its identifier attached so a human can classify it.",
-    "distractorNotes": {
-      "b": "The identifier is unique per request, not per conversation, which is precisely what makes it useful for pinpointing one call. Timestamps alone cannot disambiguate concurrent requests.",
-      "d": "The identifier is returned as a response header on every response, and appears in the body only for errors. A client that looks solely at successful bodies will not find it.",
-      "e": "Hard failing on an unfamiliar type breaks the client on a change the contract expressly allows. Unknown types should fall through to a safe default that reports the failure for a human to classify."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/api/errors",
-    "sourceNote": "Claude API errors — request ID tracking and error shapes",
-    "sourceCheckedAt": "2026-09-03"
-  },
-  {
-    "id": "ccdv-f-applications-and-integration-021",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "multi",
-    "domain": "applications-and-integration",
-    "subdomain": "configuration-management",
-    "difficulty": "medium",
-    "status": "reviewed",
-    "scope": "deep",
-    "scopeNote": "Tests the three rate-limit metrics by name and administrator-configured per-workspace limits. On-blueprint under configuration management, but the exam tests how a client should react to a 429, not the metric taxonomy or console-level limit administration.",
-    "stem": "A development team is preparing to launch an application powered by the Claude API and is reviewing how rate limits will affect their production traffic. Which foundational statements about Claude API rate limits are correct? Select THREE.",
-    "options": [
-      {
-        "id": "a",
-        "text": "Rate limits are measured using three distinct metrics: Requests Per Minute (RPM), Input Tokens Per Minute (ITPM), and Output Tokens Per Minute (OTPM)."
-      },
-      {
-        "id": "b",
-        "text": "Rate limits are shared globally across all Claude models, so heavy usage of one model reduces the available capacity for others."
-      },
-      {
-        "id": "c",
-        "text": "When a rate limit is exceeded, the API returns a 429 Too Many Requests error, which developers should handle using exponential backoff or by honoring the Retry-After header."
-      },
-      {
-        "id": "d",
-        "text": "Organization administrators can configure custom rate limits for individual Workspaces to prevent a single project from consuming the organization's entire API capacity."
-      },
-      {
-        "id": "e",
-        "text": "Rate limits are only enforced based on the number of requests made; the length of the prompts and generated responses does not impact rate limiting."
-      },
-      {
-        "id": "f",
-        "text": "Exceeding a rate limit will automatically trigger higher billing tiers, allowing the requests to succeed while charging an overage fee."
-      }
-    ],
-    "correct": [
-      "a",
-      "c",
-      "d"
-    ],
-    "explanation": "Claude API rate limits are enforced at the organization and workspace levels to ensure fair usage and system stability. They are measured using three distinct metrics: Requests Per Minute (RPM), Input Tokens Per Minute (ITPM), and Output Tokens Per Minute (OTPM). When an application exceeds any of these limits, the API returns a 429 error, which should be handled gracefully using retry logic or by observing the provided Retry-After header. To manage capacity effectively within a company, organization administrators can apply custom rate limits to individual Workspaces, ensuring that one runaway project does not exhaust the capacity available to other teams.",
-    "distractorNotes": {
-      "b": "Rate limits are applied per model (e.g., Claude 3.5 Sonnet vs. Claude 3 Opus). Usage of one model does not consume the rate limit capacity of a different model.",
-      "e": "Rate limits consider both the number of requests (RPM) and the volume of text processed, measured in input and output tokens per minute (ITPM and OTPM).",
-      "f": "Exceeding a rate limit results in a 429 error (Too Many Requests) and temporary rejection of further requests, not automatic overage billing. Limits are increased by advancing through usage tiers, which requires a history of successful spend and payment."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/api/rate-limits",
-    "sourceNote": "Rate limits — token bucket algorithm and limits (RPM, ITPM, OTPM)",
-    "sourceCheckedAt": "2026-09-03"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccdv-f-applications-and-integration-022",
@@ -970,7 +591,6 @@
     "subdomain": "configuration-management",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An organization is building multiple distinct applications using the Anthropic API. They want to separate each application's resources, manage API keys independently, and set individual spend limits while maintaining centralized billing. Which Anthropic Console feature should they use to achieve this?",
     "options": [
       {
@@ -1001,107 +621,7 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/manage-claude/workspaces",
     "sourceNote": "Workspaces — project isolation, key scoping, and archiving",
-    "sourceCheckedAt": "2026-09-03"
-  },
-  {
-    "id": "ccdv-f-applications-and-integration-023",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "multi",
-    "domain": "applications-and-integration",
-    "subdomain": "systems-life-cycle",
-    "difficulty": "medium",
-    "status": "reviewed",
-    "scope": "deep",
-    "scopeNote": "Tests beta-feature governance: breaking changes with notice, rate limits and pricing that diverge from the GA surface, and regional availability. On-blueprint under systems life cycle, but beta-surface detail sits past the lifecycle reasoning the exam samples.",
-    "stem": "An architect is deciding whether a feature currently offered in beta can carry a long-lived production workload. Which statements about beta features are accurate? Select THREE.",
-    "options": [
-      {
-        "id": "a",
-        "text": "Beta features can undergo breaking changes with notice, and they can also be deprecated or removed entirely."
-      },
-      {
-        "id": "b",
-        "text": "Pinning an API version extends the same compatibility guarantees to beta features as it does to stable ones."
-      },
-      {
-        "id": "c",
-        "text": "An unrecognized or unauthorized beta name is ignored, so the request simply proceeds without that feature."
-      },
-      {
-        "id": "d",
-        "text": "Only one beta feature can be enabled per request, so betas have to be adopted strictly one at a time."
-      },
-      {
-        "id": "e",
-        "text": "A beta feature may carry rate limits or pricing that differ from the generally available surface."
-      },
-      {
-        "id": "f",
-        "text": "A beta feature may be unavailable in some regions, so availability has to be checked for each deployment."
-      }
-    ],
-    "correct": [
-      "a",
-      "e",
-      "f"
-    ],
-    "explanation": "Betas give early access to experimental capability, and the documentation is explicit about what that costs. A beta may change in a breaking way with notice, may be deprecated or removed, may have different rate limits or pricing, and may not be available in every region. Each of those is a distinct planning risk, so depending on a beta in a long-lived system means budgeting for migration work and verifying regional availability wherever the workload runs. Mechanically, a beta is enabled by naming it in the dedicated beta header, using the exact documented name, which conventionally embeds a release date; the SDKs send that header when the feature names are supplied through their beta parameter. Several betas can be enabled at once by listing their names together in the header, and some beta APIs additionally require a feature-specific header on every request to their endpoints.",
-    "distractorNotes": {
-      "b": "The compatibility guarantees attached to a pinned version cover the stable surface. Beta features sit outside them, which is the whole reason the warnings about breaking changes exist.",
-      "c": "An invalid beta name, or one the organization cannot access, is rejected with a request validation error. Requests do not quietly fall back to behavior without the feature.",
-      "d": "Multiple betas can be enabled on the same request by listing their names together, so features need not be adopted one at a time."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/api/beta-headers",
-    "sourceNote": "Beta headers — beta feature stability, pricing, and error handling",
-    "sourceCheckedAt": "2026-09-03"
-  },
-  {
-    "id": "ccdv-f-applications-and-integration-024",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "multi",
-    "domain": "applications-and-integration",
-    "subdomain": "understanding-requirements",
-    "difficulty": "medium",
-    "status": "reviewed",
-    "scope": "core",
-    "stem": "A product owner writes that a new assistant simply has to feel fast. Before the team can build against that, the requirement must be restated in terms it can measure. Which statements reflect the documented guidance on latency? Select TWO.",
-    "options": [
-      {
-        "id": "a",
-        "text": "Latency targets should be fixed before prompt quality is explored, since no quality work can start until they are met."
-      },
-      {
-        "id": "b",
-        "text": "Time to first token and time to a complete response are separate measures, and the requirement must say which it binds."
-      },
-      {
-        "id": "c",
-        "text": "Capping the output ceiling is a precise way to hit a latency target, because generation is trimmed at a clean boundary."
-      },
-      {
-        "id": "d",
-        "text": "Streaming returns output before generation finishes, improving perceived responsiveness rather than total generation time."
-      },
-      {
-        "id": "e",
-        "text": "Once streaming is enabled the two latency measures converge, so only a single number needs to be tracked afterwards."
-      }
-    ],
-    "correct": [
-      "b",
-      "d"
-    ],
-    "explanation": "Feeling fast is not one quantity. Baseline latency covers processing the prompt and producing the response, while time to first token measures only how long the user waits before anything appears, and the two move independently. A requirement that does not say which one it constrains cannot be verified, and it also cannot be designed against, because the levers differ: trimming input and output length and choosing a faster model move total time, whereas streaming mainly moves the perceived figure by letting output appear while generation continues. Naming the measure is therefore the first step in turning the request into something testable. The guidance also warns against sequencing this work wrongly: engineer a prompt that performs well first, then apply latency reduction, because optimizing for speed too early can hide what good performance would have looked like.",
-    "distractorNotes": {
-      "a": "This inverts the recommended order. Establishing quality first and reducing latency afterwards is advised, since premature constraints can prevent the team from discovering top performance.",
-      "c": "An output ceiling is described as a blunt instrument. It cuts generation wherever it lands, possibly mid-sentence, so it usually requires post-processing rather than delivering a clean result.",
-      "e": "The two stay distinct under streaming, which is exactly when the distinction matters most: first output can appear quickly while the complete response still takes just as long to finish."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-latency",
-    "sourceNote": "Reducing latency — latency measurement and streaming responses",
-    "sourceCheckedAt": "2026-09-03"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccdv-f-applications-and-integration-025",
@@ -1112,7 +632,6 @@
     "subdomain": "claude-application-design",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A team asks the model to read a raw support email, decide a category, draft a reply, and translate that reply, all inside one large prompt. Accuracy on the categorisation step is poor and hard to debug. What design change best fits this situation?",
     "options": [
       {
@@ -1135,7 +654,7 @@
     "correct": [
       "b"
     ],
-    "explanation": "opt-b is correct because decomposing a task into a chain of smaller calls, where each call handles one easier subtask and its output feeds the next, trades a little latency for higher accuracy and lets you insert programmatic checks (gates) between steps for debugging. opt-a treats a structural problem as a sampling problem; opt-c makes the single overloaded call harder, not easier; opt-d misuses tools, which supply capabilities rather than replacing the model's step-by-step reasoning.",
+    "explanation": "Option B is correct because decomposing a task into a chain of smaller calls, where each call handles one easier subtask and its output feeds the next, trades a little latency for higher accuracy and lets you insert programmatic checks (gates) between steps for debugging. Option A treats a structural problem as a sampling problem; option C makes the single overloaded call harder, not easier; option D misuses tools, which supply capabilities rather than replacing the model's step-by-step reasoning.",
     "distractorNotes": {
       "a": "Labelled sections do make the output easier to read, but every step is still produced in a single pass, so a mis-categorisation flows straight into the reply and the translation with no gate between them.",
       "c": "Plausible because more explicit instructions sometimes help, but concatenating everything keeps the hard, hard-to-inspect single call intact.",
@@ -1143,7 +662,7 @@
     },
     "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
     "sourceNote": "Workflow: Prompt chaining",
-    "sourceCheckedAt": "2026-09-07"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccdv-f-applications-and-integration-026",
@@ -1154,7 +673,6 @@
     "subdomain": "claude-application-design",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "Deterministic code downstream of the model repeatedly breaks because the JSON it receives is sometimes malformed or missing fields, even after careful prompting. The team is deciding how to harden the boundary between the model's output and their parser. Which statements reflect the intended design? Select TWO.",
     "options": [
       {
@@ -1178,14 +696,14 @@
       "b",
       "d"
     ],
-    "explanation": "opt-b and opt-d are correct: structured outputs constrain the response to a declared schema so calling code gets valid, typed, parseable results and can drop bespoke retry-on-bad-JSON handling, and they are meant for cases where downstream software consumes the output directly. opt-a describes the brittle status quo the feature exists to replace; opt-c is wrong because schema constraints materially change what the model can emit rather than being cosmetic.",
+    "explanation": "Options B and D are correct: structured outputs constrain the response to a declared schema so calling code gets valid, typed, parseable results and can drop bespoke retry-on-bad-JSON handling, and they are meant for cases where downstream software consumes the output directly. Option A describes the brittle status quo the feature exists to replace; option C is wrong because schema constraints materially change what the model can emit rather than being cosmetic.",
     "distractorNotes": {
       "a": "Plausible because defensive parsing is common, but the design point is to constrain generation upstream instead of endlessly patching the parser.",
       "c": "Plausible-sounding caution, but incorrect: constrained decoding actually restricts the output shape, so treating it as arbitrary text misses the guarantee."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs",
     "sourceNote": "Why use structured outputs",
-    "sourceCheckedAt": "2026-09-07"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccdv-f-applications-and-integration-027",
@@ -1196,7 +714,6 @@
     "subdomain": "claude-application-design",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "In a production support system, most incoming questions are simple and repetitive while a small fraction are genuinely complex. The team wants strong quality on the hard cases without paying top-tier cost on every request. Which architecture best fits the constraint?",
     "options": [
       {
@@ -1219,7 +736,7 @@
     "correct": [
       "c"
     ],
-    "explanation": "opt-c is correct because a routing step that classifies input and directs each class to the appropriately sized model captures most of the cost savings while preserving quality where it matters, a documented multi-model strategy for the cost-to-intelligence tradeoff. opt-a underserves the hard minority; opt-b overpays on the easy majority; opt-d ignores the actual difficulty of each request, so it randomly misroutes hard work to the cheap model.",
+    "explanation": "Option C is correct because a routing step that classifies input and directs each class to the appropriately sized model captures most of the cost savings while preserving quality where it matters, a documented multi-model strategy for the cost-to-intelligence tradeoff. Option A underserves the hard minority; option B overpays on the easy majority; option D ignores the actual difficulty of each request, so it randomly misroutes hard work to the cheap model.",
     "distractorNotes": {
       "a": "Plausible as a cost play, but it sacrifices exactly the complex cases the team cares about.",
       "b": "Plausible as a quality play, but it spends top-tier cost on the easy majority the requirement wants to economise.",
@@ -1227,49 +744,7 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/about-claude/models/optimizing-for-cost-and-intelligence",
     "sourceNote": "Tradeoffs: model choice and multi-model architectures",
-    "sourceCheckedAt": "2026-09-07"
-  },
-  {
-    "id": "ccdv-f-applications-and-integration-028",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "multi",
-    "domain": "applications-and-integration",
-    "subdomain": "claude-application-design",
-    "difficulty": "hard",
-    "status": "reviewed",
-    "scope": "core",
-    "stem": "A team is scoping a new feature and defaults to a fully autonomous agent that plans and directs its own tool use. A reviewer pushes back and asks them to justify the complexity. Which considerations correctly inform whether an autonomous agent is the right choice here? Select TWO.",
-    "options": [
-      {
-        "id": "a",
-        "text": "Autonomy is the recommended baseline for any Claude feature, and simpler compositions are legacy patterns to avoid."
-      },
-      {
-        "id": "b",
-        "text": "The simplest thing that works is preferred, with complexity added only when a requirement clearly demands it."
-      },
-      {
-        "id": "c",
-        "text": "A framework must be adopted first, because agentic behaviour cannot be built by calling the API directly."
-      },
-      {
-        "id": "d",
-        "text": "Agents trade latency and cost for flexibility, so a predefined workflow is better when the steps are well understood."
-      }
-    ],
-    "correct": [
-      "b",
-      "d"
-    ],
-    "explanation": "opt-b and opt-d are correct: the guidance is to find the simplest solution and add complexity only when needed, and to reserve autonomous agents for tasks needing model-driven flexibility because agents trade latency and cost for that flexibility, whereas well-defined tasks are better served by predictable workflows. opt-a inverts the guidance, which does not treat autonomy as the default; opt-c is false because many patterns are a few lines against the API directly and a framework is optional.",
-    "distractorNotes": {
-      "a": "Plausible given the hype around agents, but the documented stance is to start simple, not to default to autonomy.",
-      "c": "Plausible because frameworks exist, but they are optional conveniences, not a prerequisite for agentic behaviour."
-    },
-    "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
-    "sourceNote": "When (and when not) to use agents",
-    "sourceCheckedAt": "2026-09-07"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccdv-f-applications-and-integration-029",
@@ -1280,7 +755,6 @@
     "subdomain": "claude-application-design",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A coding assistant must change an unpredictable number of files per request, and the set of files and edits cannot be known before the task is examined. The team wants a structure that decides the subtasks at runtime and then combines the results. Which pattern fits best?",
     "options": [
       {
@@ -1303,7 +777,7 @@
     "correct": [
       "d"
     ],
-    "explanation": "opt-d is correct because the orchestrator-workers pattern is designed for tasks where subtasks cannot be predicted in advance: a central call decomposes the work dynamically, delegates to workers, and merges the outputs. opt-a and opt-c both hard-code a fixed set of steps, which the scenario rules out because the number and nature of edits vary per task; opt-b collapses the work into one overloaded call, losing the focused, per-file handling the task needs.",
+    "explanation": "Option D is correct because the orchestrator-workers pattern is designed for tasks where subtasks cannot be predicted in advance: a central call decomposes the work dynamically, delegates to workers, and merges the outputs. Options A and C both hard-code a fixed set of steps, which the scenario rules out because the number and nature of edits vary per task; option B collapses the work into one overloaded call, losing the focused, per-file handling the task needs.",
     "distractorNotes": {
       "a": "Plausible because chaining is a real pattern, but a fixed chain cannot express a per-request-variable number of subtasks.",
       "b": "Plausible as a shortcut, but one big call forgoes the decomposition that keeps each file's change tractable.",
@@ -1311,7 +785,7 @@
     },
     "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
     "sourceNote": "Workflow: Orchestrator-workers",
-    "sourceCheckedAt": "2026-09-07"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccdv-f-applications-and-integration-030",
@@ -1322,7 +796,6 @@
     "subdomain": "claude-application-design",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A team is about to start tuning prompts and swapping models to improve a classification feature, but different engineers disagree about whether the current output is even 'good enough'. What should the design put in place before this optimisation work begins?",
     "options": [
       {
@@ -1345,7 +818,7 @@
     "correct": [
       "a"
     ],
-    "explanation": "opt-a is correct because defining specific, measurable success criteria and building evaluations to measure against them is the starting point of the develop-and-refine cycle; without a fixed target, prompt and model changes cannot be judged objectively. opt-b optimises before knowing what 'better' means; opt-c ships without a yardstick and risks user harm while still lacking criteria; opt-d confuses a verbose prompt with an actual measurement method.",
+    "explanation": "Option A is correct because defining specific, measurable success criteria and building evaluations to measure against them is the starting point of the develop-and-refine cycle; without a fixed target, prompt and model changes cannot be judged objectively. Option B optimises before knowing what 'better' means; option C ships without a yardstick and risks user harm while still lacking criteria; option D confuses a verbose prompt with an actual measurement method.",
     "distractorNotes": {
       "b": "Plausible because bigger models can help, but choosing one before defining the target is optimising blind.",
       "c": "Plausible because real feedback is valuable, but it is not a substitute for measurable criteria and can expose users to a poor feature.",
@@ -1353,7 +826,7 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
     "sourceNote": "Define your success criteria",
-    "sourceCheckedAt": "2026-09-07"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccdv-f-applications-and-integration-031",
@@ -1364,7 +837,6 @@
     "subdomain": "claude-application-design",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A team keeps re-typing the same project conventions to Claude Code every session, and also needs one rule that must never be violated regardless of what the model decides. How should responsibility for these two needs be split in the design? Select TWO.",
     "options": [
       {
@@ -1388,14 +860,14 @@
       "a",
       "c"
     ],
-    "explanation": "opt-a and opt-c are correct: persistent instruction files carry project context into every session so it need not be re-explained, but the model treats loaded instructions as context rather than enforced configuration, so a rule that must always hold should be enforced with a deterministic hook. opt-b ignores the persistence mechanism that exists precisely to avoid re-pasting; opt-d is wrong because stronger wording does not make context binding, which is exactly why a hook is needed.",
+    "explanation": "Options A and C are correct: persistent instruction files carry project context into every session so it need not be re-explained, but the model treats loaded instructions as context rather than enforced configuration, so a rule that must always hold should be enforced with a deterministic hook. Option B ignores the persistence mechanism that exists precisely to avoid re-pasting; option D is wrong because stronger wording does not make context binding, which is exactly why a hook is needed.",
     "distractorNotes": {
       "b": "Plausible as a brute-force habit, but it defeats the purpose of a persistent file and still does not make any rule binding.",
       "d": "Plausible because firm wording feels authoritative, but instructions are guidance, not enforcement, so a hard guarantee needs a hook."
     },
     "sourceUrl": "https://code.claude.com/docs/en/memory",
     "sourceNote": "CLAUDE.md vs auto memory",
-    "sourceCheckedAt": "2026-09-07"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccdv-f-applications-and-integration-032",
@@ -1406,7 +878,6 @@
     "subdomain": "claude-application-design",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A summariser concatenates the user's fixed instructions with a block of user-submitted article text into one plain-text prompt. Occasionally the model follows directives embedded in the article instead of the real instructions. Which prompt-design change most directly reduces this confusion?",
     "options": [
       {
@@ -1429,7 +900,7 @@
     "correct": [
       "c"
     ],
-    "explanation": "opt-c is correct because using structured tags to separate the trusted instructions from the untrusted content makes each part's role explicit and helps the model avoid conflating data with directives. opt-a weakens the very instructions that should govern behaviour; opt-b adds redundancy without drawing a boundary between roles; opt-d changes sampling determinism, which does nothing to clarify which text is an instruction versus data.",
+    "explanation": "Option C is correct because using structured tags to separate the trusted instructions from the untrusted content makes each part's role explicit and helps the model avoid conflating data with directives. Option A weakens the very instructions that should govern behaviour; option B adds redundancy without drawing a boundary between roles; option D changes sampling determinism, which does nothing to clarify which text is an instruction versus data.",
     "distractorNotes": {
       "a": "Plausible because concise prompts help generally, but cutting the instructions makes them easier, not harder, to override.",
       "b": "Plausible because emphasis can help, but repetition without a structural boundary still mixes instructions and data.",
@@ -1437,7 +908,7 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices#structure-prompts-with-xml-tags",
     "sourceNote": "Structure prompts with XML tags",
-    "sourceCheckedAt": "2026-09-07"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccdv-f-applications-and-integration-033",
@@ -1448,7 +919,6 @@
     "subdomain": "claude-application-design",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A growing integration exposes many narrow, terse tools (create_pr, review_pr, merge_pr, and dozens more), and the model increasingly picks the wrong one or calls tools at the wrong time. Which design moves are aligned with the guidance on defining tools? Select THREE.",
     "options": [
       {
@@ -1473,55 +943,13 @@
       "b",
       "d"
     ],
-    "explanation": "opt-a, opt-b, and opt-d are correct: detailed descriptions are the single biggest factor in tool performance, consolidating related actions into fewer capable tools reduces selection ambiguity, and namespaced names keep selection clear as the surface grows. opt-c is the opposite of the guidance; skimping on descriptions to save tokens removes the very context the model needs to choose and invoke tools correctly.",
+    "explanation": "Options A, B, and D are correct: detailed descriptions are the single biggest factor in tool performance, consolidating related actions into fewer capable tools reduces selection ambiguity, and namespaced names keep selection clear as the surface grows. Option C is the opposite of the guidance; skimping on descriptions to save tokens removes the very context the model needs to choose and invoke tools correctly.",
     "distractorNotes": {
       "c": "Plausible because token thrift is a real concern, but starving tools of descriptions directly causes the wrong-tool selection the scenario describes."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools",
     "sourceNote": "Best practices for tool definitions",
-    "sourceCheckedAt": "2026-09-07"
-  },
-  {
-    "id": "ccdv-f-applications-and-integration-034",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "multi",
-    "domain": "applications-and-integration",
-    "subdomain": "claude-application-design",
-    "difficulty": "medium",
-    "status": "reviewed",
-    "scope": "core",
-    "stem": "A translation feature produces serviceable but flat output, and the team notices that when a human reviewer writes specific critiques, a second pass reliably improves the result against clear criteria. They want to bake this into the application. Which pattern and which precondition make it a good fit? Select TWO.",
-    "options": [
-      {
-        "id": "a",
-        "text": "A parallel voting scheme that runs many identical translations at once and returns whichever variant appears most often."
-      },
-      {
-        "id": "b",
-        "text": "A loop in which one call produces a draft and another evaluates it and returns feedback for the next revision."
-      },
-      {
-        "id": "c",
-        "text": "The fit depends on having evaluation criteria clear enough that articulated feedback measurably improves the output."
-      },
-      {
-        "id": "d",
-        "text": "A single high-effort call, because iterative critique cannot improve a translation beyond the first attempt anyway."
-      }
-    ],
-    "correct": [
-      "b",
-      "c"
-    ],
-    "explanation": "opt-b and opt-c are correct: the evaluator-optimizer pattern pairs a generator call with an evaluator call that gives feedback in a loop, and it fits precisely when evaluation criteria are clear and articulated feedback demonstrably improves the result, which the scenario reports. opt-a describes voting, which aggregates independent attempts rather than iteratively refining one; opt-d denies the observed improvement from feedback, contradicting the premise.",
-    "distractorNotes": {
-      "a": "Plausible because it also uses multiple calls, but voting picks among parallel attempts instead of refining a draft against critique.",
-      "d": "Plausible as a simplicity argument, but it contradicts the observed fact that reviewer feedback already improves the second pass."
-    },
-    "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
-    "sourceNote": "Workflow: Evaluator-optimizer",
-    "sourceCheckedAt": "2026-09-07"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccdv-f-applications-and-integration-035",
@@ -1532,7 +960,6 @@
     "subdomain": "claude-api-mechanics",
     "difficulty": "easy",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A team is adding image understanding to an application that already calls the Messages API. They want to know how images are supplied to a request and how to arrange them relative to the accompanying question. Which statement is correct?",
     "options": [
       {
@@ -1545,7 +972,7 @@
       },
       {
         "id": "c",
-        "text": "Only a single image is ever allowed per request, and it must always be positioned after all of the text content."
+        "text": "A single image per request is the documented limit, and it belongs after the text content."
       },
       {
         "id": "d",
@@ -1555,7 +982,7 @@
     "correct": [
       "b"
     ],
-    "explanation": "opt-b is correct because vision requests supply images as image content blocks (via base64, a URL, or a Files API file_id), and the guidance is that Claude works best when the image comes before the text. opt-a is false since the request carries the image directly; opt-c invents a single-image, image-last rule that does not exist; opt-d is wrong because base64 and file_id sources are supported alongside URLs.",
+    "explanation": "Option B is correct because vision requests supply images as image content blocks (via base64, a URL, or a Files API file_id), and the guidance is that Claude works best when the image comes before the text. Option A is false since the request carries the image directly; option C invents a single-image, image-last rule that does not exist; option D is wrong because base64 and file_id sources are supported alongside URLs.",
     "distractorNotes": {
       "a": "Plausible to someone thinking of fine-tuning, but vision is a request-time capability and the body carries the image.",
       "c": "Plausible as a guessed constraint, but multiple images are allowed and image-before-text is preferred, not the reverse.",
@@ -1563,49 +990,7 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/vision",
     "sourceNote": "Send images to Claude",
-    "sourceCheckedAt": "2026-09-07"
-  },
-  {
-    "id": "ccdv-f-applications-and-integration-036",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "single",
-    "domain": "applications-and-integration",
-    "subdomain": "claude-api-mechanics",
-    "difficulty": "medium",
-    "status": "reviewed",
-    "scope": "core",
-    "stem": "For compliance reasons, a company must invoke Claude through its existing Google Cloud vendor account rather than calling Anthropic's API directly. An engineer worries the whole integration must be rebuilt. What is the most accurate characterisation of the change?",
-    "options": [
-      {
-        "id": "a",
-        "text": "The request format is entirely different, so the messages-based structure of the integration has to be rewritten from scratch."
-      },
-      {
-        "id": "b",
-        "text": "Going through a cloud vendor is unsupported for production, so requests must still terminate at Anthropic's own endpoint."
-      },
-      {
-        "id": "c",
-        "text": "Model choice disappears at the vendor, because the platform selects a model automatically for every incoming request."
-      },
-      {
-        "id": "d",
-        "text": "The interface stays close to the Messages API, with mainly authentication and a few request-format details differing."
-      }
-    ],
-    "correct": [
-      "d"
-    ],
-    "explanation": "opt-d is correct because accessing Claude through Google Cloud uses an API nearly identical to the Messages API, differing chiefly in how the model is specified, where the version value is passed, and vendor authentication via the official SDK, so the core messages structure carries over. opt-a overstates the change; opt-b is false because vendor access is a supported path; opt-c is wrong because the caller still selects the model, just specified through the endpoint rather than the body.",
-    "distractorNotes": {
-      "a": "Plausible if you assume each vendor is bespoke, but the request shape is nearly identical to the Messages API.",
-      "b": "Plausible to someone unaware of vendor deployments, but invoking Claude through cloud vendors is fully supported.",
-      "c": "Plausible because endpoints encode the model, but the developer still chooses which model to call."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/claude-on-vertex-ai",
-    "sourceNote": "Differences from the Messages API",
-    "sourceCheckedAt": "2026-09-07"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccdv-f-applications-and-integration-037",
@@ -1616,7 +1001,6 @@
     "subdomain": "claude-api-mechanics",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A data team is integrating the Message Batches API to process a large evaluation set and needs to design how their code submits work and collects answers. Which statements about how the batch workflow behaves are correct? Select TWO.",
     "options": [
       {
@@ -1640,56 +1024,14 @@
       "a",
       "c"
     ],
-    "explanation": "opt-a and opt-c are correct: each batched request is handled independently, allowing a mix of request types in one batch, and the workflow is asynchronous, so callers submit, poll for status, and retrieve results after processing ends. opt-b is false because streaming is not supported inside a batch; results come back as a file rather than a live token stream. opt-d contradicts the asynchronous, non-blocking design of batching.",
+    "explanation": "Options A and C are correct: each batched request is handled independently, allowing a mix of request types in one batch, and the workflow is asynchronous, so callers submit, poll for status, and retrieve results after processing ends. Option B is false because streaming is not supported inside a batch; results come back as a file rather than a live token stream. Option D contradicts the asynchronous, non-blocking design of batching.",
     "distractorNotes": {
       "b": "Plausible by analogy to synchronous calls, but stream is unsupported in batch requests and results are returned as a file.",
       "d": "Plausible if you picture a long request, but batching is asynchronous and does not block the caller on an open connection."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/batch-processing",
     "sourceNote": "How the Message Batches API works",
-    "sourceCheckedAt": "2026-09-07"
-  },
-  {
-    "id": "ccdv-f-applications-and-integration-038",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "single",
-    "domain": "applications-and-integration",
-    "subdomain": "claude-api-mechanics",
-    "difficulty": "easy",
-    "status": "reviewed",
-    "scope": "core",
-    "stem": "A product manager proposes routing an interactive chat feature's live requests through the Message Batches API to cut cost, since batching is cheaper per token. Users expect a reply within a second or two. Why is this the wrong tool for the workload?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Batch processing is asynchronous and latency-tolerant, so it does not fit a request that needs an immediate reply."
-      },
-      {
-        "id": "b",
-        "text": "Batch processing costs more per token than synchronous calls, so it never helps once user wait time is considered."
-      },
-      {
-        "id": "c",
-        "text": "Batch processing rejects any conversational messages, so a chat turn cannot be expressed as a batched request at all."
-      },
-      {
-        "id": "d",
-        "text": "Batch processing guarantees sub-second responses but caps throughput too low to serve a busy chat feature's traffic."
-      }
-    ],
-    "correct": [
-      "a"
-    ],
-    "explanation": "opt-a is correct because the Batches API is an asynchronous, latency-tolerant path suited to work that can wait, which is the opposite of an interactive request needing an immediate response; the realtime-versus-batch tradeoff turns on whether latency matters, not just on price. opt-b misstates pricing, since batching is cheaper per token; opt-c is false because conversational messages can be batched; opt-d inverts the latency profile of batching entirely.",
-    "distractorNotes": {
-      "b": "Plausible if you conflate cost with latency, but batching is cheaper per token; the real issue is response time.",
-      "c": "Plausible as a guessed limitation, but multi-turn conversational requests can be included in a batch.",
-      "d": "Plausible-sounding but backwards: batching is latency-tolerant and asynchronous, not a sub-second path."
-    },
-    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/batch-processing",
-    "sourceNote": "When batch processing is useful",
-    "sourceCheckedAt": "2026-09-07"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccdv-f-applications-and-integration-039",
@@ -1700,7 +1042,6 @@
     "subdomain": "software-engineering-foundations",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An engineer must migrate a large module onto a new internal framework and wants Claude's help without destabilising the codebase. Which approach is safest for a change of this size?",
     "options": [
       {
@@ -1723,7 +1064,7 @@
     "correct": [
       "c"
     ],
-    "explanation": "opt-c is correct because a safe large refactor proceeds in small, testable increments that each preserve behaviour, with the suite run between steps so a regression is caught while the change that caused it is still small. The others fail because a single big rewrite (a) makes any failure hard to localise, deferring tests (b) lets defects pile up undetected, and freezing tests (d) removes the very signal that keeps the migration honest.",
+    "explanation": "Option C is correct because a safe large refactor proceeds in small, testable increments that each preserve behaviour, with the suite run between steps so a regression is caught while the change that caused it is still small. The others fail because a single big rewrite (a) makes any failure hard to localise, deferring tests (b) lets defects pile up undetected, and freezing tests (d) removes the very signal that keeps the migration honest.",
     "distractorNotes": {
       "a": "Plausible because one pass feels efficient, but a whole-module rewrite verified only at the end gives no way to tell which change broke what.",
       "b": "Changing everything before testing sounds orderly, yet it maximises the blast radius and hides regressions until they are expensive to trace.",
@@ -1731,49 +1072,7 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/common-workflows",
     "sourceNote": "Common workflows — refactoring code in small testable increments",
-    "sourceCheckedAt": "2026-09-07"
-  },
-  {
-    "id": "ccdv-f-applications-and-integration-040",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "multi",
-    "domain": "applications-and-integration",
-    "subdomain": "software-engineering-foundations",
-    "difficulty": "medium",
-    "status": "reviewed",
-    "scope": "core",
-    "stem": "A reviewer is assigned a pull request whose changes were produced with Claude. Which review practices fit the documented guidance for AI-assisted changes? Select TWO.",
-    "options": [
-      {
-        "id": "a",
-        "text": "Merge without a close read, since a generated diff has already cleared the model's own internal checks."
-      },
-      {
-        "id": "b",
-        "text": "Read the diff with the same scrutiny applied to any human change before it is allowed to be submitted."
-      },
-      {
-        "id": "c",
-        "text": "Skip local verification on the basis that the assistant reran the suite while it was producing the change."
-      },
-      {
-        "id": "d",
-        "text": "Ask Claude to surface the risks and edge cases in its own change so a human can check each of them."
-      }
-    ],
-    "correct": [
-      "b",
-      "d"
-    ],
-    "explanation": "opt-b and opt-d are correct because AI-generated changes warrant the same review discipline as human ones: read the diff before it is submitted, and use Claude to highlight the risks in its own work so those points get verified rather than trusted. The distractors fail because merging on trust (a) and skipping verification (c) both treat generation as a substitute for review, which the guidance explicitly warns against.",
-    "distractorNotes": {
-      "a": "Generated code can still be wrong; treating an internal pass as sufficient skips the human review the guidance calls for before submitting.",
-      "c": "Whether the model ran tests while drafting is not a substitute for the reviewer verifying the change in their own environment."
-    },
-    "sourceUrl": "https://code.claude.com/docs/en/common-workflows",
-    "sourceNote": "Common workflows — reviewing generated pull requests",
-    "sourceCheckedAt": "2026-09-07"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccdv-f-applications-and-integration-041",
@@ -1784,7 +1083,6 @@
     "subdomain": "software-engineering-foundations",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "During a task Claude proposes a sweeping set of edits spanning many files, and the developer wants to stay in control of what actually lands. What is the best way to work?",
     "options": [
       {
@@ -1807,7 +1105,7 @@
     "correct": [
       "b"
     ],
-    "explanation": "opt-b is correct because reviewing the plan and diff before changes are written keeps the developer in control and lets edits land in small, reviewable steps. The others fail because applying first and undoing later (a) risks broken intermediate states, accepting everything blindly (c) abandons control for false tidiness, and turning off tracking (d) removes the history that makes incremental review possible.",
+    "explanation": "Option B is correct because reviewing the plan and diff before changes are written keeps the developer in control and lets edits land in small, reviewable steps. The others fail because applying first and undoing later (a) risks broken intermediate states, accepting everything blindly (c) abandons control for false tidiness, and turning off tracking (d) removes the history that makes incremental review possible.",
     "distractorNotes": {
       "a": "Undoing after the fact is error-prone and can leave the tree in a broken state; reviewing before edits land avoids that entirely.",
       "c": "Avoiding a half-changed tree is not worth surrendering review; small reviewed increments are precisely the recommended pattern.",
@@ -1815,7 +1113,7 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/common-workflows",
     "sourceNote": "Plan before editing: review changes before they touch disk, and refactor in small, testable increments",
-    "sourceCheckedAt": "2026-09-07"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccdv-f-applications-and-integration-042",
@@ -1826,7 +1124,6 @@
     "subdomain": "software-engineering-foundations",
     "difficulty": "easy",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A developer hits an intermittent failure when running the test command and wants Claude to help find the cause. What gives Claude the best chance of locating the source?",
     "options": [
       {
@@ -1849,7 +1146,7 @@
     "correct": [
       "d"
     ],
-    "explanation": "opt-d is correct because a concrete reproduction command plus the stack trace gives Claude the specific signal it needs to trace a failure to its source. The others fail because vague framing (a and c) and pure guessing (b) withhold the reproduction detail the documented bug-fixing recipe relies on.",
+    "explanation": "Option D is correct because a concrete reproduction command plus the stack trace gives Claude the specific signal it needs to trace a failure to its source. The others fail because vague framing (a and c) and pure guessing (b) withhold the reproduction detail the documented bug-fixing recipe relies on.",
     "distractorNotes": {
       "a": "An open-ended search with no reproduction wastes effort; the guidance is to hand over the command and stack trace.",
       "b": "Guessing without reproducing skips the evidence that lets the cause be pinpointed rather than speculated about.",
@@ -1857,7 +1154,7 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/common-workflows",
     "sourceNote": "Fix bugs efficiently: tell Claude the command to reproduce the issue and get a stack trace",
-    "sourceCheckedAt": "2026-09-07"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccdv-f-applications-and-integration-043",
@@ -1868,7 +1165,6 @@
     "subdomain": "software-engineering-foundations",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A developer asks Claude to add tests to a service that currently has none. Which expectations match how Claude approaches writing those tests? Select TWO.",
     "options": [
       {
@@ -1892,56 +1188,14 @@
       "a",
       "c"
     ],
-    "explanation": "opt-a and opt-c are correct because Claude examines existing test files to match their conventions and, when prompted, can suggest edge cases and error conditions a person might miss. The distractors fail because it works within your existing framework rather than replacing it (b), and generated tests still have to be run to be trusted (d).",
+    "explanation": "Options A and C are correct because Claude examines existing test files to match their conventions and, when prompted, can suggest edge cases and error conditions a person might miss. The distractors fail because it works within your existing framework rather than replacing it (b), and generated tests still have to be run to be trusted (d).",
     "distractorNotes": {
       "b": "The guidance is to match existing frameworks and patterns, not to replace a team's chosen test framework on its own initiative.",
       "d": "No coverage guarantee is implied, and the recipe explicitly ends by running the new tests and fixing failures."
     },
     "sourceUrl": "https://code.claude.com/docs/en/common-workflows",
     "sourceNote": "Common workflows — working with tests and test frameworks",
-    "sourceCheckedAt": "2026-09-07"
-  },
-  {
-    "id": "ccdv-f-applications-and-integration-044",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "single",
-    "domain": "applications-and-integration",
-    "subdomain": "software-engineering-foundations",
-    "difficulty": "medium",
-    "status": "reviewed",
-    "scope": "core",
-    "stem": "A team wants to run Claude as a non-interactive step inside their continuous-integration pipeline to process changes in batch. Which characterisation of this use is accurate?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Claude can be piped into scripts so it runs headless, which suits CI and batch processing."
-      },
-      {
-        "id": "b",
-        "text": "Claude only works inside an interactive terminal and cannot be scripted into a pipeline at all."
-      },
-      {
-        "id": "c",
-        "text": "Running Claude under CI first requires switching off every one of its file-editing abilities."
-      },
-      {
-        "id": "d",
-        "text": "Batch use forces each individual request through a separate manual approval before it can run."
-      }
-    ],
-    "correct": [
-      "a"
-    ],
-    "explanation": "opt-a is correct because Claude can be piped into scripts to run headless, which is exactly the pattern documented for CI and batch processing. The others fail because it is not confined to an interactive terminal (b), CI use does not require disabling editing (c), and headless batch runs are not gated on per-request manual approval (d).",
-    "distractorNotes": {
-      "b": "This contradicts the documented headless mode, where Claude is piped into scripts precisely so it runs without a terminal.",
-      "c": "Nothing about CI requires stripping editing abilities; headless mode is about scripting, not disabling tools.",
-      "d": "Manual per-request approval would defeat batch use; the documented pattern is unattended scripted execution."
-    },
-    "sourceUrl": "https://code.claude.com/docs/en/common-workflows",
-    "sourceNote": "Pipe Claude into scripts for CI and batch processing",
-    "sourceCheckedAt": "2026-09-07"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccdv-f-applications-and-integration-045",
@@ -1952,7 +1206,6 @@
     "subdomain": "software-engineering-foundations",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "Two developers want to run separate Claude sessions against the same repository at the same time without their edits colliding. What is the recommended setup?",
     "options": [
       {
@@ -1975,7 +1228,7 @@
     "correct": [
       "c"
     ],
-    "explanation": "opt-c is correct because git worktrees give each session an isolated checkout, letting parallel work proceed without colliding edits. The others fail because sharing one working copy (a) invites collisions, serialising to one session (b) needlessly forgoes parallelism, and muting one session's writes (d) defeats the goal of two developers working at once.",
+    "explanation": "Option C is correct because git worktrees give each session an isolated checkout, letting parallel work proceed without colliding edits. The others fail because sharing one working copy (a) invites collisions, serialising to one session (b) needlessly forgoes parallelism, and muting one session's writes (d) defeats the goal of two developers working at once.",
     "distractorNotes": {
       "a": "A single shared checkout is exactly what causes the collisions; taking turns just serialises the work by hand.",
       "b": "Concurrent sessions do not inevitably corrupt a repo; worktrees are the documented way to run them safely in parallel.",
@@ -1983,49 +1236,7 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/common-workflows",
     "sourceNote": "Run parallel sessions with worktrees so concurrent edits don't collide",
-    "sourceCheckedAt": "2026-09-07"
-  },
-  {
-    "id": "ccdv-f-applications-and-integration-046",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "single",
-    "domain": "applications-and-integration",
-    "subdomain": "configuration-management",
-    "difficulty": "medium",
-    "status": "reviewed",
-    "scope": "core",
-    "stem": "A team commits shared settings in the project settings file, but one developer needs a different model for that project only, without changing it for teammates. Which statement about how the configuration layers resolve is correct?",
-    "options": [
-      {
-        "id": "a",
-        "text": "User settings in the home directory outrank the shared project file, so the home value wins here."
-      },
-      {
-        "id": "b",
-        "text": "The shared project file always wins, so a per-developer override for a single project is impossible."
-      },
-      {
-        "id": "c",
-        "text": "Only an organisation-managed file is able to change a value that the shared project file has set."
-      },
-      {
-        "id": "d",
-        "text": "A project-local file overrides the shared file, so that developer sets the value there for their own sessions."
-      }
-    ],
-    "correct": [
-      "d"
-    ],
-    "explanation": "opt-d is correct because project-local settings sit above the shared project file in precedence, so a personal per-project override lives there and affects only that developer. The others fail because user settings rank below the shared project file (a), per-developer overrides are supported rather than impossible (b), and it takes a local file, not only a managed one, to override the shared value (c).",
-    "distractorNotes": {
-      "a": "Precedence runs the other way for these two: the shared project file outranks user settings, so a home-directory value does not win.",
-      "b": "A local override for one project is exactly the supported mechanism, so the shared file does not always win.",
-      "c": "Managed settings are not the only higher layer; a developer's own project-local file already overrides the shared value."
-    },
-    "sourceUrl": "https://code.claude.com/docs/en/settings",
-    "sourceNote": "Settings — precedence and local configuration overrides",
-    "sourceCheckedAt": "2026-09-07"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccdv-f-applications-and-integration-047",
@@ -2036,7 +1247,6 @@
     "subdomain": "configuration-management",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A developer is deciding where a new instruction belongs. It is a build-and-test convention every teammate on the project should follow. Which placement fits the intended scope, and why?",
     "options": [
       {
@@ -2059,7 +1269,7 @@
     "correct": [
       "b"
     ],
-    "explanation": "opt-b is correct because a convention the whole team must follow belongs in the project memory file, which is shared through source control so everyone gets it. The others fail because the user file is personal and per-developer (a and d) and a git-ignored local file is not shared at all, forcing brittle manual syncing (c).",
+    "explanation": "Option B is correct because a convention the whole team must follow belongs in the project memory file, which is shared through source control so everyone gets it. The others fail because the user file is personal and per-developer (a and d) and a git-ignored local file is not shared at all, forcing brittle manual syncing (c).",
     "distractorNotes": {
       "a": "Load reliability does not depend on the home directory; the deciding factor is scope, and a team standard is project-scoped.",
       "c": "A local, ignored file is explicitly personal; using it for a team standard means it never reaches teammates automatically.",
@@ -2067,50 +1277,7 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/memory",
     "sourceNote": "Memory — 'Choose where to put CLAUDE.md files'",
-    "sourceCheckedAt": "2026-09-07"
-  },
-  {
-    "id": "ccdv-f-applications-and-integration-048",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "multi",
-    "domain": "applications-and-integration",
-    "subdomain": "configuration-management",
-    "difficulty": "hard",
-    "status": "reviewed",
-    "scope": "deep",
-    "scopeNote": "Tests which Claude Code configuration files belong outside version control, file by file. On-blueprint under configuration management, but per-file gitignore judgement is finer-grained than the exam's treatment of committing prompts and pinned model versions.",
-    "stem": "A developer wants to keep some Claude configuration private to their own machine while still committing the team's shared setup. Which items should be kept out of version control? Select TWO.",
-    "options": [
-      {
-        "id": "a",
-        "text": "The project memory file holding the team's architecture notes and shared coding standards."
-      },
-      {
-        "id": "b",
-        "text": "The local settings file carrying personal, single-project overrides and standing approvals."
-      },
-      {
-        "id": "c",
-        "text": "The shared project settings file that defines the team's agreed permissions and hooks."
-      },
-      {
-        "id": "d",
-        "text": "Personal scratch values such as sandbox URLs and preferred test data used in one project."
-      }
-    ],
-    "correct": [
-      "b",
-      "d"
-    ],
-    "explanation": "opt-b and opt-d are correct because the local settings file and personal scratch values (sandbox URLs, test data) are individual, per-project preferences that are meant to stay out of git. The distractors fail because the project memory file (a) and the shared project settings file (c) are exactly what a team commits so everyone shares the same setup.",
-    "distractorNotes": {
-      "a": "Team architecture notes and standards are meant to be shared through source control, so this belongs in the repository.",
-      "c": "Shared permissions and hooks are committed precisely so every teammate who clones the repo gets the same setup."
-    },
-    "sourceUrl": "https://code.claude.com/docs/en/settings",
-    "sourceNote": "Settings — shared settings.json versus local settings",
-    "sourceCheckedAt": "2026-09-07"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccdv-f-applications-and-integration-049",
@@ -2121,7 +1288,6 @@
     "subdomain": "configuration-management",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A team finds that regenerating a year-old report yields different results over time from identical inputs, and traces it to the model their configuration resolves to. Which practice most directly addresses this?",
     "options": [
       {
@@ -2144,7 +1310,7 @@
     "correct": [
       "a"
     ],
-    "explanation": "opt-a is correct because pinning an explicit model version keeps behaviour stable across runs, so results are reproducible until the team chooses to migrate. The others fail because the output ceiling does not govern which model answers (b), always taking the newest model guarantees drift rather than stability (c), and deferring to per-environment defaults makes results depend on where the job runs (d).",
+    "explanation": "Option A is correct because pinning an explicit model version keeps behaviour stable across runs, so results are reproducible until the team chooses to migrate. The others fail because the output ceiling does not govern which model answers (b), always taking the newest model guarantees drift rather than stability (c), and deferring to per-environment defaults makes results depend on where the job runs (d).",
     "distractorNotes": {
       "b": "The output ceiling changes how much text can return, not which model runs, so it does not stop version-driven drift.",
       "c": "Chasing the newest model on every run is the opposite of reproducibility; it introduces exactly the variation being seen.",
@@ -2152,50 +1318,7 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/about-claude/model-deprecations",
     "sourceNote": "Model deprecations — lifecycle overview and replacement migration",
-    "sourceCheckedAt": "2026-09-07"
-  },
-  {
-    "id": "ccdv-f-applications-and-integration-050",
-    "cert": "ccdv-f",
-    "schemaVersion": 1,
-    "type": "multi",
-    "domain": "applications-and-integration",
-    "subdomain": "configuration-management",
-    "difficulty": "medium",
-    "status": "reviewed",
-    "scope": "deep",
-    "scopeNote": "Tests plugin packaging and that consumers receive updates only when the plugin's version field is bumped. On-blueprint under configuration management, but plugin distribution mechanics sit past the configuration-management objective the exam samples.",
-    "stem": "A developer has skills and hooks in their local Claude directory that several teams now want to reuse and version. Which statements about packaging this as a plugin are accurate? Select TWO.",
-    "options": [
-      {
-        "id": "a",
-        "text": "Setting a version on the plugin means users receive updates only when that version field is bumped."
-      },
-      {
-        "id": "b",
-        "text": "Standalone local configuration is the recommended channel for distributing config across many teams."
-      },
-      {
-        "id": "c",
-        "text": "A plugin cannot declare its own version, so every consumer always tracks the latest commit by default."
-      },
-      {
-        "id": "d",
-        "text": "Packaging it as a versioned plugin suits sharing and reuse better than copying the local files around."
-      }
-    ],
-    "correct": [
-      "a",
-      "d"
-    ],
-    "explanation": "opt-a and opt-d are correct because a plugin's version field gates when consumers receive updates, and a versioned plugin is the recommended way to share and reuse configuration across teams. The distractors fail because standalone local config is meant for personal or single-project use rather than wide distribution (b), and a plugin can indeed set an explicit version (c).",
-    "distractorNotes": {
-      "b": "Standalone local configuration suits personal and project-specific use; sharing across teams is what plugins and marketplaces are for.",
-      "c": "This is backwards: a plugin can declare a version, and doing so is what controls when consumers get updates."
-    },
-    "sourceUrl": "https://code.claude.com/docs/en/plugins",
-    "sourceNote": "Plugins — standalone configuration versus plugins and versioning",
-    "sourceCheckedAt": "2026-09-07"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccdv-f-applications-and-integration-051",
@@ -2206,7 +1329,6 @@
     "subdomain": "configuration-management",
     "difficulty": "hard",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A developer keeps adding rules to the project memory file expecting them to be enforced like hard constraints, and is surprised when Claude occasionally deviates. Which statements reflect how these files are designed to work? Select TWO.",
     "options": [
       {
@@ -2230,14 +1352,14 @@
       "b",
       "c"
     ],
-    "explanation": "opt-b and opt-c are correct because memory files are treated as context that guides Claude rather than enforced configuration, and blocking an action regardless of the model's choice is a job for a hook. The distractors fail because deviation is not a parsing bug but a consequence of context not being a hard constraint (a), and load order runs broadest-first with no guarantee that a narrower entry strictly overrides a broader one (d).",
+    "explanation": "Options B and C are correct because memory files are treated as context that guides Claude rather than enforced configuration, and blocking an action regardless of the model's choice is a job for a hook. The distractors fail because deviation is not a parsing bug but a consequence of context not being a hard constraint (a), and load order runs broadest-first with no guarantee that a narrower entry strictly overrides a broader one (d).",
     "distractorNotes": {
       "a": "Because entries are guidance rather than enforced rules, occasional deviation is expected behaviour, not evidence of a parse error.",
       "d": "Files load from broadest to most specific, and since they are context rather than strict precedence, a narrow rule is not guaranteed to override a broad one."
     },
     "sourceUrl": "https://code.claude.com/docs/en/memory",
     "sourceNote": "Memory — 'CLAUDE.md vs auto memory' (context vs enforcement)",
-    "sourceCheckedAt": "2026-09-07"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccdv-f-applications-and-integration-052",
@@ -2248,7 +1370,6 @@
     "subdomain": "understanding-requirements",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A business goal states that a support assistant must answer accurately and stay responsive under load. A developer is separating this into requirement types before design begins. Which reading is correct?",
     "options": [
       {
@@ -2271,7 +1392,7 @@
     "correct": [
       "c"
     ],
-    "explanation": "opt-c is correct because accuracy describes what the system must do (functional), while responsiveness under load is an operational quality of how it performs (non-functional). The others fail because they collapse the two categories together (a and b) or deny that an as-yet-unquantified goal is a requirement at all (d), when the task is precisely to classify then make it measurable.",
+    "explanation": "Option C is correct because accuracy describes what the system must do (functional), while responsiveness under load is an operational quality of how it performs (non-functional). The others fail because they collapse the two categories together (a and b) or deny that an as-yet-unquantified goal is a requirement at all (d), when the task is precisely to classify then make it measurable.",
     "distractorNotes": {
       "a": "Observability does not make both functional; responsiveness under load is an operational quality attribute, which is non-functional.",
       "b": "Answer accuracy is a core functional requirement describing what the assistant must do, so treating both as non-functional is wrong.",
@@ -2279,7 +1400,7 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
     "sourceNote": "Define your success criteria: task-fidelity criteria versus operational metrics such as response time and uptime",
-    "sourceCheckedAt": "2026-09-07"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccdv-f-applications-and-integration-053",
@@ -2290,7 +1411,6 @@
     "subdomain": "understanding-requirements",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A stakeholder gives only the business aim to pick a model that keeps costs sane while handling the hardest tickets. Which criteria should the team derive to turn this into something decidable? Select TWO.",
     "options": [
       {
@@ -2314,14 +1434,14 @@
       "a",
       "c"
     ],
-    "explanation": "opt-a and opt-c are correct because the documented starting criteria for choosing a model are the capabilities the task demands and the cost budget for development and production; both turn a vague aim into decidable requirements. The distractors fail because memorising every historical price (b) is trivia rather than a criterion, and personal UI preferences (d) are irrelevant to model selection.",
+    "explanation": "Options A and C are correct because the documented starting criteria for choosing a model are the capabilities the task demands and the cost budget for development and production; both turn a vague aim into decidable requirements. The distractors fail because memorising every historical price (b) is trivia rather than a criterion, and personal UI preferences (d) are irrelevant to model selection.",
     "distractorNotes": {
       "b": "A precise recall of all historical prices is not a decision criterion; the relevant factor is a cost budget the model must fit.",
       "d": "Theme and editor preferences have nothing to do with matching a model to business needs; they are unrelated to the requirement."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/about-claude/models/choosing-a-model",
     "sourceNote": "Establish key criteria: capabilities, speed, and cost when choosing a model",
-    "sourceCheckedAt": "2026-09-07"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "ccdv-f-applications-and-integration-054",
@@ -2332,7 +1452,6 @@
     "subdomain": "systems-life-cycle",
     "difficulty": "easy",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A service has run in production for a year on a model that was just marked deprecated with a retirement date. Which operate-and-maintain action best fits managing the system across the model lifecycle?",
     "options": [
       {
@@ -2355,7 +1474,7 @@
     "correct": [
       "b"
     ],
-    "explanation": "opt-b is correct because the documented maintenance practice is to test a recommended replacement ahead of the retirement date and migrate before requests to the retired model start failing. The others fail because waiting for failures invites an avoidable outage (a), treating deprecation as cosmetic ignores the scheduled retirement (c), and there is no way to pin past a retirement date, since retired-model requests simply fail (d).",
+    "explanation": "Option B is correct because the documented maintenance practice is to test a recommended replacement ahead of the retirement date and migrate before requests to the retired model start failing. The others fail because waiting for failures invites an avoidable outage (a), treating deprecation as cosmetic ignores the scheduled retirement (c), and there is no way to pin past a retirement date, since retired-model requests simply fail (d).",
     "distractorNotes": {
       "a": "Reacting only after failures means an outage that the notice period and pre-retirement testing were meant to prevent.",
       "c": "Deprecation is not cosmetic; a retirement date is set, after which requests to the model fail, so inaction is unsafe.",
@@ -2363,6 +1482,6 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/about-claude/model-deprecations",
     "sourceNote": "Model deprecations — replacement testing and retirement dates",
-    "sourceCheckedAt": "2026-09-07"
+    "sourceCheckedAt": "2026-09-17"
   }
 ]

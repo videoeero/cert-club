@@ -1,4 +1,3 @@
-import { readFile, readdir } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
@@ -7,17 +6,18 @@ import {
   manifestSchema,
   questionBankSchema,
 } from "../schemas/question-bank.mjs";
+import { ContentValidationError } from "./lib/errors.mjs";
+import {
+  listCertFolders,
+  readCertQuestions,
+  readJson,
+} from "./lib/read-certs.mjs";
+
+// Re-exported because this module has been the import site for the error type
+// since before the shared library existed.
+export { ContentValidationError };
 
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-
-export class ContentValidationError extends Error {
-  constructor(messages) {
-    super(
-      `Content validation failed:\n${messages.map((message) => `- ${message}`).join("\n")}`,
-    );
-    this.name = "ContentValidationError";
-  }
-}
 
 function formatIssues(label, issues) {
   return issues.map((issue) => {
@@ -71,6 +71,25 @@ export function validateCertContent(folderName, manifestInput, questionsInput) {
         `manifest.domains: "${domain}" has no questions/${domain}.json file`,
       );
     }
+  }
+
+  let latestQuestion = null;
+  for (const question of questions) {
+    if (
+      latestQuestion === null ||
+      question.sourceCheckedAt > latestQuestion.sourceCheckedAt
+    ) {
+      latestQuestion = question;
+    }
+  }
+
+  if (
+    latestQuestion !== null &&
+    latestQuestion.sourceCheckedAt > manifest.updatedAt
+  ) {
+    messages.push(
+      `manifest.updatedAt: "${manifest.updatedAt}" is older than question ${latestQuestion.id}'s sourceCheckedAt "${latestQuestion.sourceCheckedAt}" (latest source check in bank)`,
+    );
   }
 
   questions.forEach((question, index) => {
@@ -148,76 +167,28 @@ export function validateCatalog(catalogInput, folderNames) {
   return catalogCerts;
 }
 
-async function readJson(path) {
-  let source;
-  try {
-    source = await readFile(path, "utf8");
-  } catch (error) {
-    throw new ContentValidationError([`${path}: ${error.message}`]);
-  }
-
-  try {
-    return JSON.parse(source);
-  } catch (error) {
-    throw new ContentValidationError([
-      `${path}: invalid JSON (${error.message})`,
-    ]);
-  }
-}
-
-async function readCertQuestions(certPath) {
-  const questionsPath = join(certPath, "questions");
-  let entries;
-  try {
-    entries = await readdir(questionsPath, { withFileTypes: true });
-  } catch (error) {
-    throw new ContentValidationError([`${questionsPath}: ${error.message}`]);
-  }
-
-  const files = entries
-    .filter((entry) => entry.isFile() && entry.name.endsWith(".json"))
-    .map((entry) => join(questionsPath, entry.name))
-    .sort();
-
-  const perFile = await Promise.all(files.map((file) => readJson(file)));
-  return perFile.flat();
-}
-
 export async function validateRepository(root = repositoryRoot) {
   const certsPath = join(root, "certs");
-  let entries;
-
-  try {
-    entries = await readdir(certsPath, { withFileTypes: true });
-  } catch (error) {
-    throw new ContentValidationError([`${certsPath}: ${error.message}`]);
-  }
-
-  const certFolders = entries
-    .filter((entry) => entry.isDirectory() && !entry.name.startsWith("."))
-    .sort((left, right) => left.name.localeCompare(right.name));
+  const certFolders = await listCertFolders(certsPath);
 
   if (certFolders.length === 0) {
     throw new ContentValidationError([`${certsPath}: no cert folders found`]);
   }
 
   const catalogInput = await readJson(join(certsPath, "catalog.json"));
-  validateCatalog(
-    catalogInput,
-    certFolders.map((folder) => folder.name),
-  );
+  validateCatalog(catalogInput, certFolders);
 
   const questionIds = new Set();
   let questionCount = 0;
 
-  for (const folder of certFolders) {
-    const certPath = join(certsPath, folder.name);
+  for (const folderName of certFolders) {
+    const certPath = join(certsPath, folderName);
     const [manifestInput, questionsInput] = await Promise.all([
       readJson(join(certPath, "manifest.json")),
       readCertQuestions(certPath),
     ]);
     const { questions } = validateCertContent(
-      folder.name,
+      folderName,
       manifestInput,
       questionsInput,
     );

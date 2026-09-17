@@ -8,7 +8,6 @@
     "subdomain": "shared-responsibility-model",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A company runs a web application on an Amazon EC2 instance. Under the AWS shared responsibility model, who is responsible for applying operating system updates and security patches to that instance's guest operating system?",
     "options": [
       {
@@ -39,7 +38,7 @@
     },
     "sourceUrl": "https://aws.amazon.com/compliance/shared-responsibility-model/",
     "sourceNote": "AWS shared responsibility model - EC2 customers manage the guest OS including updates and security patches",
-    "sourceCheckedAt": "2026-09-03"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "aws-clf-c02-security-and-compliance-002",
@@ -50,7 +49,6 @@
     "subdomain": "root-user",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An engineer holds full IAM administrator permissions in a standalone AWS account that is not part of AWS Organizations. Which task still requires signing in with the account root user credentials?",
     "options": [
       {
@@ -81,7 +79,7 @@
     },
     "sourceUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_root-user.html",
     "sourceNote": "IAM User Guide - tasks that require root user credentials, including closing a standalone AWS account",
-    "sourceCheckedAt": "2026-09-03"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "aws-clf-c02-security-and-compliance-003",
@@ -92,7 +90,6 @@
     "subdomain": "root-user",
     "difficulty": "easy",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A startup has just created its first AWS account and wants to protect the account root user. Which TWO actions match the AWS root user best practices? (Select TWO.)",
     "options": [
       {
@@ -128,7 +125,7 @@
     },
     "sourceUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/root-user-best-practices.html",
     "sourceNote": "IAM User Guide - root user best practices: enable MFA, use a group email, avoid root access keys",
-    "sourceCheckedAt": "2026-09-03"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "aws-clf-c02-security-and-compliance-004",
@@ -139,7 +136,6 @@
     "subdomain": "compliance",
     "difficulty": "easy",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An external auditor asks a company to supply AWS SOC and PCI compliance reports covering the AWS infrastructure that the company's workloads run on. Where should the company obtain those reports?",
     "options": [
       {
@@ -170,7 +166,7 @@
     },
     "sourceUrl": "https://docs.aws.amazon.com/artifact/latest/ug/what-is-aws-artifact.html",
     "sourceNote": "What is AWS Artifact - on-demand downloads of AWS SOC, PCI, and ISO compliance documents",
-    "sourceCheckedAt": "2026-09-03"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "aws-clf-c02-security-and-compliance-005",
@@ -181,7 +177,6 @@
     "subdomain": "threat-detection",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "A security team wants a service that continuously analyzes AWS CloudTrail management events, VPC flow logs, and DNS logs to surface findings such as compromised credentials or unauthorized cryptomining on EC2 instances. Which service does this?",
     "options": [
       {
@@ -212,7 +207,7 @@
     },
     "sourceUrl": "https://docs.aws.amazon.com/guardduty/latest/ug/what-is-guardduty.html",
     "sourceNote": "What is Amazon GuardDuty - foundational data sources and detected threat scenarios",
-    "sourceCheckedAt": "2026-09-03"
+    "sourceCheckedAt": "2026-09-17"
   },
   {
     "id": "aws-clf-c02-security-and-compliance-006",
@@ -223,7 +218,6 @@
     "subdomain": "governance-and-auditing",
     "difficulty": "medium",
     "status": "reviewed",
-    "scope": "core",
     "stem": "An Amazon S3 bucket is deleted unexpectedly. An investigator needs to establish which identity made the deletion API call and at what time. Which AWS service records that information?",
     "options": [
       {
@@ -254,6 +248,1384 @@
     },
     "sourceUrl": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-user-guide.html",
     "sourceNote": "What is AWS CloudTrail - records who took which action, on what resource, and when",
-    "sourceCheckedAt": "2026-09-03"
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "aws-clf-c02-security-and-compliance-007",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-and-compliance",
+    "subdomain": "access-management",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An application running on an Amazon EC2 instance needs to read and write objects in an Amazon S3 bucket. What is the AWS-recommended best practice for granting the application permissions to perform these operations?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Store long-term IAM user access keys in a configuration file on the Amazon EC2 instance"
+      },
+      {
+        "id": "b",
+        "text": "Configure an Amazon VPC security group rule allowing inbound traffic from the Amazon S3 service"
+      },
+      {
+        "id": "c",
+        "text": "Attach an IAM role with the required Amazon S3 permissions to the Amazon EC2 instance"
+      },
+      {
+        "id": "d",
+        "text": "Create an AWS Key Management Service (AWS KMS) key to authenticate S3 data requests directly"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "AWS recommends using IAM roles to manage temporary credentials for applications running on Amazon EC2 instances. When an IAM role is attached to an instance (via an instance profile), AWS automatically provides temporary, rotating credentials to applications on the instance. This avoids the operational overhead and security risk of storing, distributing, or rotating long-term IAM access keys directly on the instance.",
+    "distractorNotes": {
+      "a": "Storing long-term IAM user access keys on the instance creates significant security risks if the instance or credentials are compromised, and requires manual rotation.",
+      "b": "Security groups operate as network-level firewalls controlling IP traffic in a VPC; they cannot authenticate an identity or grant permissions to S3 API operations.",
+      "d": "AWS KMS provides encryption and decryption key management for data at rest, but it does not authenticate caller identity or grant S3 read and write permissions."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2.html",
+    "sourceNote": "IAM User Guide - Use an IAM role to grant permissions to applications running on Amazon EC2 instances",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-security-and-compliance-008",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-and-compliance",
+    "subdomain": "network-security",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "Security monitoring detects repeated unauthorized connection attempts originating from a specific external IP address. The security team needs to block all inbound traffic from this single IP address before it reaches any instances in a VPC subnet. Why must the team configure a network access control list (network ACL) rather than a security group rule?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Network ACLs support explicit deny rules, whereas security groups support allow rules only"
+      },
+      {
+        "id": "b",
+        "text": "Network ACLs are stateful firewalls that automatically filter return traffic from unverified networks"
+      },
+      {
+        "id": "c",
+        "text": "Network ACLs operate at the individual network interface level of each affected Amazon EC2 instance"
+      },
+      {
+        "id": "d",
+        "text": "Network ACLs evaluate all rules simultaneously rather than processing rules in sequential numbered order"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "In Amazon VPC, network ACLs support both allow and deny rules, making it possible to explicitly block traffic from a specific IP address or CIDR range before it enters a subnet. By contrast, security groups only support allow rules (all unmatched traffic is denied by default), so you cannot create an explicit deny rule in a security group to block an individual IP address.",
+    "distractorNotes": {
+      "b": "Network ACLs are stateless, not stateful. Return traffic must be explicitly allowed by rules, and statefulness is a property of security groups.",
+      "c": "Network ACLs operate at the subnet boundary level for all instances in the subnet, whereas security groups operate at the instance/ENI level.",
+      "d": "Network ACLs evaluate rules in ascending numerical order until a match is found, whereas security groups evaluate all rules before deciding."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/vpc/latest/userguide/infrastructure-security.html",
+    "sourceNote": "Infrastructure security in Amazon VPC - Compare security groups and network ACLs: rule types and subnet filtering",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-security-and-compliance-009",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-and-compliance",
+    "subdomain": "shared-responsibility-model",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A company migrates an on-premises database to Amazon RDS. Under the AWS shared responsibility model, which task does AWS perform on the customer's behalf?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Applying security patches and maintenance updates to the database engine and underlying operating system"
+      },
+      {
+        "id": "b",
+        "text": "Creating application user accounts and assigning granular SELECT and UPDATE permissions to database tables"
+      },
+      {
+        "id": "c",
+        "text": "Designing relational database table structures and defining primary key indexes for optimal query execution"
+      },
+      {
+        "id": "d",
+        "text": "Configuring database client connection pooling and optimizing application SQL query execution plans in code"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Under the AWS shared responsibility model for managed database services such as Amazon RDS, AWS manages the database engine installation, operating system patches, automated backups, and underlying host infrastructure. The customer remains responsible for managing database user credentials, table schemas, queries, and network access to the database.",
+    "distractorNotes": {
+      "b": "User management and granular database table permissions are managed directly by the customer inside the database.",
+      "c": "Database schema design, table architecture, and index definitions are customer responsibilities.",
+      "d": "Application query tuning and database connection pool sizing reside entirely within the customer's application scope."
+    },
+    "sourceUrl": "https://aws.amazon.com/compliance/shared-responsibility-model/",
+    "sourceNote": "Shared responsibility model - PaaS services like Amazon RDS where AWS manages OS and DB engine patching",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "aws-clf-c02-security-and-compliance-010",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-and-compliance",
+    "subdomain": "shared-responsibility-model",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "A compliance team reviews the physical security controls protecting the cloud infrastructure. Under the AWS shared responsibility model, which responsibility belongs solely to AWS?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Configuring network access control lists and security groups to filter traffic to virtual server instances"
+      },
+      {
+        "id": "b",
+        "text": "Enforcing multi-factor authentication policies for employees accessing the AWS Management Console daily"
+      },
+      {
+        "id": "c",
+        "text": "Securing physical data center facilities, uninterruptible power systems, and decommissioned disk destruction"
+      },
+      {
+        "id": "d",
+        "text": "Encrypting application payloads and customer data at rest before transmitting records across internal subnets"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "AWS is responsible for security 'of' the cloud. This explicitly includes the physical security of data centers, environmental infrastructure (heating, cooling, uninterrupted power supplies), and physical disposal/decommissioning of hardware storage devices.",
+    "distractorNotes": {
+      "a": "Configuring virtual firewalls (security groups and network ACLs) in a customer VPC is a customer responsibility.",
+      "b": "Enforcing MFA and credential policies for IAM users is a customer responsibility under identity management.",
+      "d": "Encrypting customer data in transit and at rest within the cloud is the customer's responsibility."
+    },
+    "sourceUrl": "https://aws.amazon.com/compliance/shared-responsibility-model/",
+    "sourceNote": "Shared responsibility model - AWS responsibility for physical facilities and hardware infrastructure",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "aws-clf-c02-security-and-compliance-011",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "security-and-compliance",
+    "subdomain": "shared-responsibility-model",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "Under the AWS shared responsibility model, which TWO controls are classified as shared controls that apply to both AWS and the customer in their respective operational contexts? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Maintaining physical perimeter fencing and biometric entry badge readers at AWS data center facilities"
+      },
+      {
+        "id": "b",
+        "text": "Patch management, where AWS patches host infrastructure and customers patch their guest operating systems"
+      },
+      {
+        "id": "c",
+        "text": "Demagnetizing and shredding decommissioned hard drives according to industry disk sanitation standards"
+      },
+      {
+        "id": "d",
+        "text": "Maintaining the hypervisor virtualization software that isolates virtual machines on physical host hardware"
+      },
+      {
+        "id": "e",
+        "text": "Configuration management, where AWS configures infrastructure devices and customers configure their resources"
+      }
+    ],
+    "correct": [
+      "b",
+      "e"
+    ],
+    "explanation": "AWS defines shared controls as controls that apply to both the infrastructure layer (managed by AWS) and the customer layers (managed by the customer). Standard shared controls include Patch Management (AWS patches physical hosts; customers patch guest OS/applications), Configuration Management (AWS configures infrastructure devices; customers configure cloud resources), and Awareness & Training.",
+    "distractorNotes": {
+      "a": "Physical facility security and perimeter fencing are inherited controls owned solely by AWS.",
+      "c": "Physical disk sanitation and hardware decommissioning are inherited physical controls owned entirely by AWS.",
+      "d": "Virtualization hypervisor software maintenance is an infrastructure control owned exclusively by AWS."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/whitepapers/latest/aws-risk-and-compliance/shared-responsibility-model.html",
+    "sourceNote": "Shared controls - Patch Management, Configuration Management, and Awareness & Training in AWS Risk & Compliance",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-security-and-compliance-012",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-and-compliance",
+    "subdomain": "shared-responsibility-model",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A software engineering team deploys backend business logic using AWS Lambda functions. Under the AWS shared responsibility model, what is the customer responsible for securing?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Managing the underlying server operating system updates and hypervisor vulnerability patches"
+      },
+      {
+        "id": "b",
+        "text": "Maintaining physical host server hardware availability and scaling data center capacity dynamically"
+      },
+      {
+        "id": "c",
+        "text": "Decommissioning defective physical server memory modules and replacing damaged network hardware"
+      },
+      {
+        "id": "d",
+        "text": "Writing secure application code and configuring IAM execution roles with least-privilege permissions"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "In serverless architectures such as AWS Lambda, AWS manages the underlying operating system, server hardware, virtualization layer, and runtime patching. The customer is responsible for writing secure application code, managing dependencies, and configuring appropriate IAM execution roles and resource-based permission policies.",
+    "distractorNotes": {
+      "a": "AWS Lambda is serverless; AWS fully manages the operating system, language runtime updates, and hypervisor patches.",
+      "b": "Hardware server maintenance and capacity scaling are managed automatically by AWS in serverless compute.",
+      "c": "Hardware lifecycle management and component replacement are solely AWS infrastructure responsibilities."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/lambda/latest/dg/security-dataprotection.html",
+    "sourceNote": "AWS Lambda Developer Guide - Shared responsibility model and data protection for serverless functions",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "aws-clf-c02-security-and-compliance-013",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-and-compliance",
+    "subdomain": "shared-responsibility-model",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "An organization stores sensitive financial records in an Amazon S3 bucket. Under the AWS shared responsibility model, which action is the customer's responsibility to implement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Replacing malfunctioning physical hard disk drives within the underlying storage rack enclosures"
+      },
+      {
+        "id": "b",
+        "text": "Configuring bucket policies and enabling encryption mechanisms for data stored in the bucket"
+      },
+      {
+        "id": "c",
+        "text": "Applying security patches to the proprietary storage management software operating on the cluster"
+      },
+      {
+        "id": "d",
+        "text": "Managing biometric security access scanners controlling physical entry to AWS storage facilities"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "For Amazon S3, AWS manages the underlying storage infrastructure, hardware lifecycle, and storage software stack. The customer is responsible for managing data classification, configuring bucket policies and access control mechanisms, and managing encryption options for data at rest and in transit.",
+    "distractorNotes": {
+      "a": "Storage hardware maintenance and disk drive replacement are physical duties performed exclusively by AWS.",
+      "c": "Storage cluster operating software and microcode maintenance are managed entirely by AWS behind the service API.",
+      "d": "Physical facility security controls and access monitoring are handled exclusively by AWS."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/security.html",
+    "sourceNote": "Amazon S3 User Guide - Security and shared responsibility for Amazon S3",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "aws-clf-c02-security-and-compliance-014",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-and-compliance",
+    "subdomain": "shared-responsibility-model",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An organization processes customer payment transactions using an e-commerce application deployed on AWS. Although AWS maintains PCI DSS compliance for its underlying cloud infrastructure, what must the customer do to achieve overall compliance?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Architect, configure, and assess their application workload and data flows to meet PCI DSS requirements"
+      },
+      {
+        "id": "b",
+        "text": "Request an automated compliance waiver from AWS to inherit full application-level PCI DSS certification"
+      },
+      {
+        "id": "c",
+        "text": "Rely exclusively on the AWS PCI DSS audit attestation without conducting any customer application audits"
+      },
+      {
+        "id": "d",
+        "text": "Deploy all database workloads onto unmanaged EC2 instances so AWS assumes total application audit scope"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "While AWS provides PCI DSS Level 1 compliant infrastructure, customers running applications on AWS must build, configure, and operate their workloads in compliance with PCI DSS standards and obtain their own compliance assessment for their application layer.",
+    "distractorNotes": {
+      "b": "AWS does not grant waivers; application-layer compliance cannot be automatically inherited from the cloud provider.",
+      "c": "The AWS PCI DSS certificate covers only AWS infrastructure; it does not certify the customer's application.",
+      "d": "Running workloads on unmanaged EC2 instances actually increases customer responsibility, not AWS responsibility."
+    },
+    "sourceUrl": "https://aws.amazon.com/compliance/pci-faqs/",
+    "sourceNote": "AWS PCI DSS Compliance FAQs - Customer responsibility for compliance certification of applications built on AWS",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "aws-clf-c02-security-and-compliance-015",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-and-compliance",
+    "subdomain": "governance-and-compliance",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A cloud administrator needs to centrally prevent member accounts within an organization from launching resources in unapproved AWS Regions. Which AWS Organizations capability should be implemented?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon VPC peering connections configured to block inter-region network traffic across subnets"
+      },
+      {
+        "id": "b",
+        "text": "IAM permission boundaries attached individually to local developers across every member account"
+      },
+      {
+        "id": "c",
+        "text": "Service control policies attached to organizational units to enforce central permission guardrails"
+      },
+      {
+        "id": "d",
+        "text": "AWS Secrets Manager automated policies configured to reject credentials in unauthorized regions"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Service control policies (SCPs) in AWS Organizations enable administrators to define central permission guardrails across member accounts. An SCP can explicitly deny actions (such as launching EC2 instances or creating S3 buckets) in any Region outside an approved list, regardless of what IAM policies account administrators attach.",
+    "distractorNotes": {
+      "a": "VPC peering connects virtual networks; it cannot restrict IAM actions or prevent resource creation in Regions.",
+      "b": "IAM permission boundaries are managed locally in individual accounts and cannot enforce central organization-wide guardrails.",
+      "d": "Secrets Manager stores and rotates secrets; it does not govern multi-region infrastructure provisioning."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html",
+    "sourceNote": "AWS Organizations User Guide - Service control policies (SCPs) establish central permission guardrails",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-security-and-compliance-016",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-and-compliance",
+    "subdomain": "governance-and-compliance",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A security director requires a centralized dashboard that aggregates security findings across multiple AWS accounts and continuously evaluates compliance against standards like the CIS AWS Foundations Benchmark. Which service meets this requirement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "AWS CloudTrail, which logs management API calls and records user activity across accounts"
+      },
+      {
+        "id": "b",
+        "text": "AWS Security Hub, which consolidates security findings and checks adherence to standards"
+      },
+      {
+        "id": "c",
+        "text": "Amazon GuardDuty, which monitors network telemetry to detect anomalous compute behavior"
+      },
+      {
+        "id": "d",
+        "text": "AWS Systems Manager, which automates operational configuration and software patch updates"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "AWS Security Hub provides a comprehensive, centralized view of security alerts and compliance posture across AWS accounts. It aggregates findings from services like GuardDuty, Inspector, and Macie, and conducts automated security checks against standards such as CIS AWS Foundations Benchmark and AWS Foundational Security Best Practices.",
+    "distractorNotes": {
+      "a": "CloudTrail records API activity for audit trails; it does not evaluate resources against benchmark standards.",
+      "c": "GuardDuty detects intelligent threats from log streams; it feeds its findings into Security Hub rather than assessing standards.",
+      "d": "Systems Manager handles operations, automation, and patching on nodes rather than security standards auditing."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/securityhub/latest/userguide/what-is-securityhub.html",
+    "sourceNote": "What is AWS Security Hub - Centralized security posture management and standards compliance checks",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-security-and-compliance-017",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "security-and-compliance",
+    "subdomain": "governance-and-compliance",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "A healthcare organization subject to HIPAA compliance requires documentation of AWS security attestations and a formal Business Associate Addendum (BAA). Which TWO tasks can be performed directly within AWS Artifact? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Reviewing and accepting AWS compliance agreements such as the Business Associate Addendum"
+      },
+      {
+        "id": "b",
+        "text": "Executing automated penetration tests against the physical hypervisor of AWS host servers"
+      },
+      {
+        "id": "c",
+        "text": "Configuring custom VPC firewall rules to prevent unapproved outbound network connections"
+      },
+      {
+        "id": "d",
+        "text": "Downloading third-party audit reports certifying AWS compliance with SOC and ISO standards"
+      },
+      {
+        "id": "e",
+        "text": "Generating automated KMS encryption keys to encrypt patient records stored in Amazon RDS"
+      }
+    ],
+    "correct": [
+      "a",
+      "d"
+    ],
+    "explanation": "AWS Artifact is a self-service compliance portal consisting of two main sections: AWS Artifact Agreements (allowing customers to review, accept, and manage agreements with AWS like the BAA) and AWS Artifact Reports (providing on-demand access to AWS compliance reports such as SOC and ISO certifications).",
+    "distractorNotes": {
+      "b": "Customers are not permitted to perform penetration testing on AWS physical data centers or the hypervisor layer.",
+      "c": "Configuring VPC firewall rules is managed in Amazon VPC or AWS Network Firewall, not AWS Artifact.",
+      "e": "Key generation and encryption are managed in AWS Key Management Service (AWS KMS), not AWS Artifact."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/artifact/latest/ug/what-is-aws-artifact.html",
+    "sourceNote": "What is AWS Artifact - AWS Artifact Reports and AWS Artifact Agreements portal",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-security-and-compliance-018",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-and-compliance",
+    "subdomain": "governance-and-compliance",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A financial institution needs to continuously record configuration changes made to AWS resources over time and automatically evaluate whether Amazon S3 buckets remain compliant with required encryption rules. Which service should they use?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon CloudWatch, which collects operational metrics and triggers alarms on threshold limits"
+      },
+      {
+        "id": "b",
+        "text": "AWS CloudTrail, which records identity actions and API call history across account services"
+      },
+      {
+        "id": "c",
+        "text": "AWS Trusted Advisor, which provides automated architectural recommendations on environments"
+      },
+      {
+        "id": "d",
+        "text": "AWS Config, which tracks resource configuration histories and evaluates adherence to rules"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "AWS Config continuously assesses, audits, and evaluates the configurations of AWS resources. It records resource configuration changes over time, provides a detailed configuration history, and evaluates configurations against desired rules (e.g. verifying that S3 buckets have default encryption enabled).",
+    "distractorNotes": {
+      "a": "CloudWatch monitors operational metrics, application performance, and log streams; it does not record resource configuration histories.",
+      "b": "CloudTrail records who made an API call and when; AWS Config records what the resource configuration looked like and whether it complied with rules.",
+      "c": "Trusted Advisor provides high-level best practice guidance across five pillars rather than detailed configuration state tracking."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/config/latest/developerguide/WhatIsConfig.html",
+    "sourceNote": "What is AWS Config - Continuous resource configuration recording and compliance evaluation",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-security-and-compliance-019",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-and-compliance",
+    "subdomain": "governance-and-compliance",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An enterprise wants to establish a secure, well-architected multi-account environment following AWS best practices, automated account provisioning, and centrally managed guardrails. Which service should they choose?",
+    "options": [
+      {
+        "id": "a",
+        "text": "AWS Control Tower, which sets up an automated landing zone with pre-configured governance guardrails"
+      },
+      {
+        "id": "b",
+        "text": "AWS CloudFormation, which provisions isolated application resource stacks using declarative templates"
+      },
+      {
+        "id": "c",
+        "text": "AWS Elastic Beanstalk, which deploys web applications while managing runtime platform environments"
+      },
+      {
+        "id": "d",
+        "text": "AWS CodePipeline, which orchestrates multi-stage continuous delivery workflows for application code"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "AWS Control Tower automates the setup of a multi-account environment ('landing zone') based on AWS best practices. It implements pre-configured governance rules (preventive and detective controls/guardrails) and streamlines account factory provisioning.",
+    "distractorNotes": {
+      "b": "CloudFormation is an Infrastructure-as-Code tool for deploying templates, but it does not orchestrate multi-account landing zones out of the box.",
+      "c": "Elastic Beanstalk is a Platform-as-a-Service application deployment tool, not a multi-account governance service.",
+      "d": "CodePipeline automates software release pipelines; it does not govern multi-account cloud landing zones."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/controltower/latest/userguide/what-is-control-tower.html",
+    "sourceNote": "What is AWS Control Tower - Automates landing zone setup with multi-account governance and guardrails",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-security-and-compliance-020",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-and-compliance",
+    "subdomain": "governance-and-compliance",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A security analyst needs to identify anomalous API call spikes and sudden surges in AccessDenied error codes in an AWS account without building custom log parsing scripts. Which AWS CloudTrail feature provides this capability?",
+    "options": [
+      {
+        "id": "a",
+        "text": "CloudTrail Lake, which runs complex SQL queries across historical event data stored in data lakes"
+      },
+      {
+        "id": "b",
+        "text": "CloudTrail Event History, which maintains an unalterable 90-day record of standard management events"
+      },
+      {
+        "id": "c",
+        "text": "CloudTrail Insights, which uses machine learning to detect unusual operational and API activity patterns"
+      },
+      {
+        "id": "d",
+        "text": "CloudTrail Digests, which deliver cryptographic hash files to verify that S3 log archives are intact"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "CloudTrail Insights continuously analyzes management events in an account to identify anomalous API call rates or error patterns. When unusual activity occurs (such as a sudden spike in call volume or access denials), Insights generates actionable event notifications.",
+    "distractorNotes": {
+      "a": "CloudTrail Lake is a query and storage feature for running SQL on audit logs, not an automated anomaly detection engine.",
+      "b": "Event History provides standard lookup for the last 90 days of management events, but does not flag anomalies automatically.",
+      "d": "Digests provide cryptographic integrity checking for delivered log files, not behavioral anomaly detection."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-insights-events-with-cloudtrail.html",
+    "sourceNote": "Logging Insights events with AWS CloudTrail - Identifies unusual operational and API activity patterns",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "aws-clf-c02-security-and-compliance-021",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-and-compliance",
+    "subdomain": "governance-and-compliance",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "A solutions architect needs to review an existing cloud architecture against AWS best practices across pillars like Security and Reliability, and generate an actionable improvement plan. Which AWS tool should be used?",
+    "options": [
+      {
+        "id": "a",
+        "text": "AWS Budgets, which sets custom spending alerts and tracks cost anomalies across service resources"
+      },
+      {
+        "id": "b",
+        "text": "AWS Well-Architected Tool, which evaluates workloads against foundational architecture pillars"
+      },
+      {
+        "id": "c",
+        "text": "AWS Trusted Advisor, which runs automated checks to monitor live infrastructure configurations"
+      },
+      {
+        "id": "d",
+        "text": "AWS Cost Explorer, which forecasts future billing trends based on historical resource consumption"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "The AWS Well-Architected Tool provides a formal process for measuring cloud workloads against AWS architectural best practices across the six pillars (Operational Excellence, Security, Reliability, Performance Efficiency, Cost Optimization, Sustainability) and generates milestone reviews and guidance.",
+    "distractorNotes": {
+      "a": "AWS Budgets manages cost and usage thresholds; it does not review architectural designs against best practice pillars.",
+      "c": "Trusted Advisor automates environment checks on live resources; the Well-Architected Tool is a structured review framework.",
+      "d": "Cost Explorer analyzes and graphs billing data, not architectural pillar alignment."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/wellarchitected/latest/userguide/intro.html",
+    "sourceNote": "What is the AWS Well-Architected Tool - Reviews workloads against AWS best practice pillars",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-security-and-compliance-022",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-and-compliance",
+    "subdomain": "governance-and-compliance",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A compliance auditor requires proof that AWS CloudTrail log files stored in Amazon S3 have not been altered, modified, or deleted after their initial delivery. Which mechanism fulfills this requirement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Enabling Amazon S3 lifecycle policies to transition log files to Glacier Flexible Retrieval archive"
+      },
+      {
+        "id": "b",
+        "text": "Creating an Amazon CloudWatch alarm to notify administrators whenever S3 deletion calls are detected"
+      },
+      {
+        "id": "c",
+        "text": "Attaching a restrictive VPC endpoint policy to block internet-based access to the destination bucket"
+      },
+      {
+        "id": "d",
+        "text": "Enabling CloudTrail log file integrity validation to produce cryptographic SHA-256 digest files"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "CloudTrail log file integrity validation generates SHA-256 hashed digest files signed with private keys. Auditors can use these digest files to mathematically verify whether log files were modified, overwritten, or deleted after CloudTrail delivered them to Amazon S3.",
+    "distractorNotes": {
+      "a": "S3 lifecycle rules transition objects between storage classes for cost management, not cryptographic integrity proof.",
+      "b": "CloudWatch alarms send operational alerts after events occur, but do not provide verifiable proof of file immutability.",
+      "c": "VPC endpoint policies limit network routing to S3, but do not provide mathematical verification of file integrity."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-log-file-validation-intro.html",
+    "sourceNote": "Validating CloudTrail log file integrity - SHA-256 and RSA cryptographic digests",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-security-and-compliance-023",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-and-compliance",
+    "subdomain": "access-management",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "A corporate security standard requires that developers and automated applications receive only the minimum permissions necessary to execute their assigned tasks. Which security principle does this mandate?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The principle of least privilege, which restricts permissions to the minimum necessary for the job"
+      },
+      {
+        "id": "b",
+        "text": "The principle of defense in depth, which implements multiple redundant network security boundaries"
+      },
+      {
+        "id": "c",
+        "text": "The principle of separation of duties, which prevents one person from controlling all approval steps"
+      },
+      {
+        "id": "d",
+        "text": "The principle of zero trust access, which mandates full transport encryption across private subnets"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "The principle of least privilege is a fundamental security best practice in AWS IAM: granting only the permissions required to complete a specific task, and no more. This limits the blast radius of any compromised credentials or unintended actions.",
+    "distractorNotes": {
+      "b": "Defense in depth refers to layering multiple security controls across network, host, and application tiers.",
+      "c": "Separation of duties divides critical tasks among different individuals to prevent fraud, rather than scoping individual permissions.",
+      "d": "Zero trust focuses on continuous authentication and verification rather than permission minimization."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html",
+    "sourceNote": "IAM Best Practices - Grant least privilege permissions",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-security-and-compliance-024",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "security-and-compliance",
+    "subdomain": "access-management",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An organization requires multi-factor authentication (MFA) for all IAM users accessing the AWS Management Console. Which TWO authentication methods are supported by AWS IAM? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "SMS text messages delivered to personal mobile devices for standard IAM console sign-in"
+      },
+      {
+        "id": "b",
+        "text": "Virtual authenticator applications generating time-based one-time passwords on smartphones"
+      },
+      {
+        "id": "c",
+        "text": "Automated voice callback phone calls delivering numeric access codes to office extensions"
+      },
+      {
+        "id": "d",
+        "text": "FIDO2-certified hardware security keys plugged into a physical USB port on a workstation"
+      },
+      {
+        "id": "e",
+        "text": "Email verification links sent to the IAM user's registered corporate email account inbox"
+      }
+    ],
+    "correct": [
+      "b",
+      "d"
+    ],
+    "explanation": "AWS IAM supports virtual authenticator applications (such as Google Authenticator or Microsoft Authenticator generating TOTP codes) and FIDO-certified hardware security keys (such as YubiKeys), as well as hardware TOTP tokens. Note: SMS-based MFA is not supported for standard IAM users in AWS.",
+    "distractorNotes": {
+      "a": "AWS IAM does not support SMS text messages as an MFA mechanism for IAM users.",
+      "c": "Voice callback phone calls are not supported as an IAM MFA mechanism in AWS.",
+      "e": "Email verification links or codes are not supported as an MFA factor in AWS IAM."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_mfa.html",
+    "sourceNote": "Using Multi-Factor Authentication (MFA) in AWS - Supported MFA device types (FIDO2 keys, virtual authenticator apps)",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-security-and-compliance-025",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-and-compliance",
+    "subdomain": "access-management",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An enterprise wants to connect its corporate Microsoft Entra ID directory to AWS so employees can use single sign-on (SSO) to access multiple AWS accounts and business applications from a central portal. Which service should they deploy?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon Cognito, which provides user pools and federation for consumer-facing mobile and web apps"
+      },
+      {
+        "id": "b",
+        "text": "AWS Directory Service for Simple AD, which runs a standalone Samba-compatible identity directory"
+      },
+      {
+        "id": "c",
+        "text": "AWS IAM Identity Center, which centralizes workforce identity access and SSO across AWS accounts"
+      },
+      {
+        "id": "d",
+        "text": "AWS Secrets Manager, which stores and automatically rotates corporate database credentials on RDS"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "AWS IAM Identity Center (the successor to AWS Single Sign-On) helps administrators centrally manage workforce identities and single sign-on access across multiple AWS accounts and cloud business applications. It connects seamlessly with external identity providers such as Microsoft Entra ID, Okta, or Google Workspace.",
+    "distractorNotes": {
+      "a": "Amazon Cognito manages authentication and sign-up for external customer-facing web and mobile apps, not workforce employee SSO.",
+      "b": "Simple AD provides a standalone directory in the cloud, but does not provide multi-account workforce federation or portal SSO.",
+      "d": "Secrets Manager manages database passwords and API tokens, not human user identity federation."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/singlesignon/latest/userguide/what-is.html",
+    "sourceNote": "What is AWS IAM Identity Center - Centralizes workforce identities and single sign-on across AWS accounts",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-security-and-compliance-026",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-and-compliance",
+    "subdomain": "access-management",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "A platform team hires four new cloud engineers who require identical administrative access to Amazon EC2 and Amazon S3. What is the AWS-recommended best practice for assigning their permissions?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Attach identical inline IAM policies directly to each individual cloud engineer IAM user"
+      },
+      {
+        "id": "b",
+        "text": "Create an IAM user group, attach the required IAM policy to it, and assign users to the group"
+      },
+      {
+        "id": "c",
+        "text": "Generate shared root user access keys and distribute the credentials among the team members"
+      },
+      {
+        "id": "d",
+        "text": "Configure VPC security groups allowing SSH access to the engineers' workstation IP addresses"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "AWS recommends using IAM user groups to assign permissions rather than attaching policies directly to individual users. This simplifies permission management: when engineers join or leave, or permissions need updating, modifying the group updates permissions for all members uniformly.",
+    "distractorNotes": {
+      "a": "Attaching inline policies directly to users makes permission maintenance redundant and error-prone as teams scale.",
+      "c": "Sharing root user access keys is a severe security violation that violates AWS root user best practices.",
+      "d": "Security groups control network packet routing, not IAM permissions for AWS services and console access."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html",
+    "sourceNote": "IAM Best Practices - Use user groups to assign permissions to IAM users",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-security-and-compliance-027",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-and-compliance",
+    "subdomain": "access-management",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A business needs to grant an external partner's AWS account access to read objects stored in an Amazon S3 bucket without creating IAM users for the partner in its own account. Where should the permission policy be attached?",
+    "options": [
+      {
+        "id": "a",
+        "text": "To an IAM user group in the host account as a customer managed identity-based permission policy"
+      },
+      {
+        "id": "b",
+        "text": "To an Amazon VPC network access control list configured with an inbound allow rule on port 443"
+      },
+      {
+        "id": "c",
+        "text": "To an AWS Organizations service control policy attached to the root level organizational unit"
+      },
+      {
+        "id": "d",
+        "text": "Directly to the Amazon S3 bucket as a resource-based policy specifying the partner as principal"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Resource-based policies (such as Amazon S3 bucket policies) are attached directly to the resource and specify which principals (including external AWS accounts) can access that resource. This allows cross-account access without creating IAM users in the resource-owning account.",
+    "distractorNotes": {
+      "a": "An identity-based policy on a local user group only applies to users within the host account, not external partner accounts.",
+      "b": "Network ACLs control subnet IP traffic; they cannot inspect AWS credentials or evaluate S3 permissions.",
+      "c": "Service control policies set guardrail boundaries in an organization; they cannot grant cross-account permissions to external partners."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_identity-vs-resource.html",
+    "sourceNote": "Identity-based policies and resource-based policies - Resource-based policies attached directly to resources like S3 buckets",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-security-and-compliance-028",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-and-compliance",
+    "subdomain": "access-management",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "Which statement accurately describes a key architectural characteristic of an AWS IAM role compared to an IAM user?",
+    "options": [
+      {
+        "id": "a",
+        "text": "An IAM role has no long-term credentials and provides temporary security credentials when assumed"
+      },
+      {
+        "id": "b",
+        "text": "An IAM role is uniquely associated with a specific human and requires a verified personal password"
+      },
+      {
+        "id": "c",
+        "text": "An IAM role cannot be assumed by AWS services and is limited solely to external identity federation"
+      },
+      {
+        "id": "d",
+        "text": "An IAM role automatically inherits root account privileges that bypass all service control policies"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "An IAM role does not have long-term credentials (such as a password or persistent access keys). Instead, when an identity (a user, application, or AWS service) assumes a role, AWS provides temporary, rotating security credentials through AWS STS.",
+    "distractorNotes": {
+      "b": "An IAM user is associated with a specific person or application and has long-term credentials; an IAM role can be assumed by anyone who needs it.",
+      "c": "IAM roles are commonly assumed by AWS services (such as EC2 instances or Lambda functions) via service principal trust policies.",
+      "d": "IAM roles do not bypass service control policies; SCPs set maximum permission guardrails for all principals in an account."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html",
+    "sourceNote": "IAM Roles - Temporary security credentials, no long-term credentials like passwords or access keys",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-security-and-compliance-029",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "security-and-compliance",
+    "subdomain": "access-management",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A security administrator configures an account password policy for all IAM users who access the AWS Management Console. Which TWO requirements can be enforced directly by an IAM password policy? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Requiring biometric fingerprint authentication before allowing any console login attempt"
+      },
+      {
+        "id": "b",
+        "text": "Restricting console access requests exclusively to trusted corporate public IP addresses"
+      },
+      {
+        "id": "c",
+        "text": "Setting a minimum password length and requiring a mix of uppercase, lowercase, and symbols"
+      },
+      {
+        "id": "d",
+        "text": "Terminating all active console sessions automatically after sixty minutes of inactivity"
+      },
+      {
+        "id": "e",
+        "text": "Preventing password reuse by remembering a specified number of previous user passwords"
+      }
+    ],
+    "correct": [
+      "c",
+      "e"
+    ],
+    "explanation": "An IAM account password policy allows administrators to set minimum password complexity rules (e.g. minimum character length, requiring uppercase, lowercase, numbers, and non-alphanumeric symbols), enforce password expiration, and prevent password reuse by remembering previous passwords.",
+    "distractorNotes": {
+      "a": "Biometrics cannot be configured directly as an IAM password policy rule.",
+      "b": "IP restrictions are implemented using IAM policy condition keys (`aws:SourceIp`), not the account password policy.",
+      "d": "Session duration limits are configured on IAM role session policies or console settings, not the password policy."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_passwords_account-policy.html",
+    "sourceNote": "Setting an account password policy for IAM users - Minimum length, character requirements, prevent password reuse",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-security-and-compliance-030",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-and-compliance",
+    "subdomain": "access-management",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A security engineer needs to identify which Amazon S3 buckets, AWS KMS keys, or IAM roles in an account have been configured with resource policies granting access to external AWS accounts or public users. Which tool provides this analysis?",
+    "options": [
+      {
+        "id": "a",
+        "text": "AWS CloudTrail, which audits chronological records of management and data API call events"
+      },
+      {
+        "id": "b",
+        "text": "AWS IAM Access Analyzer, which uses automated reasoning to evaluate resource-based policies"
+      },
+      {
+        "id": "c",
+        "text": "Amazon GuardDuty, which analyzes network traffic telemetry to uncover cryptomining malware"
+      },
+      {
+        "id": "d",
+        "text": "Amazon CloudWatch, which collects application performance metrics and generates alarms"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "AWS IAM Access Analyzer helps identify resources (such as Amazon S3 buckets, IAM roles, KMS keys, and Secrets Manager secrets) that are shared with an external entity outside of your zone of trust (account or organization) using mathematical automated reasoning.",
+    "distractorNotes": {
+      "a": "CloudTrail records past API calls made in an account; it does not analyze whether a resource policy permits external access.",
+      "c": "GuardDuty detects active security threats using log feeds; it does not audit static resource access policies.",
+      "d": "CloudWatch tracks operational performance metrics and logs, not resource policy sharing boundaries."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/what-is-access-analyzer.html",
+    "sourceNote": "What is AWS IAM Access Analyzer - Identifies resources shared with external principals using automated reasoning",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-security-and-compliance-031",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-and-compliance",
+    "subdomain": "security-services-and-encryption",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A financial application stores customer transactions in Amazon DynamoDB. The company requires encryption of all data at rest and needs centralized management and auditing of the cryptographic keys. Which service should be used?",
+    "options": [
+      {
+        "id": "a",
+        "text": "AWS Secrets Manager, which securely stores application database credentials and API tokens"
+      },
+      {
+        "id": "b",
+        "text": "AWS Certificate Manager, which provisions and manages public and private SSL/TLS certificates"
+      },
+      {
+        "id": "c",
+        "text": "AWS CloudHSM, which deploys dedicated single-tenant hardware security appliances in a VPC"
+      },
+      {
+        "id": "d",
+        "text": "AWS Key Management Service, which creates and controls cryptographic keys used for encryption"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "AWS Key Management Service (AWS KMS) makes it easy to create and manage cryptographic keys and control their use across a wide range of AWS services (including DynamoDB, S3, EBS, and RDS) and in applications for data encryption at rest.",
+    "distractorNotes": {
+      "a": "Secrets Manager stores secrets like database credentials and API tokens, not cryptographic encryption keys for encrypting data at rest.",
+      "b": "AWS Certificate Manager (ACM) manages SSL/TLS certificates for in-transit encryption, not encryption keys for databases.",
+      "c": "AWS CloudHSM is used when dedicated, single-tenant hardware under direct customer control is required by strict compliance mandates."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/kms/latest/developerguide/overview.html",
+    "sourceNote": "AWS Key Management Service concepts - Managed encryption keys for data at rest",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-security-and-compliance-032",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-and-compliance",
+    "subdomain": "security-services-and-encryption",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A public web application hosted on Amazon EC2 behind an Application Load Balancer is targeted by cross-site scripting (XSS) and SQL injection attempts. Which AWS service should be deployed to inspect HTTP/HTTPS requests and block these application-layer exploits?",
+    "options": [
+      {
+        "id": "a",
+        "text": "AWS WAF, which inspects HTTP/HTTPS web requests and filters common application-layer attack vectors"
+      },
+      {
+        "id": "b",
+        "text": "AWS Shield Standard, which defends infrastructure against Layer 3 and Layer 4 volumetric attacks"
+      },
+      {
+        "id": "c",
+        "text": "Amazon VPC Network ACLs, which filter subnet packets based solely on IP addresses and TCP/UDP ports"
+      },
+      {
+        "id": "d",
+        "text": "Amazon GuardDuty, which monitors foundational AWS account logs to detect compromised user identities"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "AWS WAF is a web application firewall that lets customers monitor HTTP and HTTPS requests forwarded to protected web application resources (such as Application Load Balancers, Amazon CloudFront, or Amazon API Gateway) and filter out malicious web exploits like SQL injection and cross-site scripting (XSS).",
+    "distractorNotes": {
+      "b": "AWS Shield Standard defends against Layer 3 and Layer 4 DDoS attacks (like SYN floods); it does not inspect HTTP payload contents.",
+      "c": "Network ACLs operate at the network layer (Layers 3 and 4) filtering by IP and port; they cannot inspect application-layer HTTP payloads.",
+      "d": "Amazon GuardDuty is an intelligent threat detection service based on log analysis; it does not block live HTTP requests in line."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/waf/latest/developerguide/what-is-aws-waf.html",
+    "sourceNote": "What is AWS WAF - Web application firewall protecting against common Layer 7 web exploits like SQLi and XSS",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-security-and-compliance-033",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-and-compliance",
+    "subdomain": "security-services-and-encryption",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A company running mission-critical workloads on AWS wants round-the-clock direct access to the AWS Shield Response Team (SRT) during DDoS attacks and cost protection against billing spikes caused by DDoS attacks. Which tier provides these benefits?",
+    "options": [
+      {
+        "id": "a",
+        "text": "AWS Shield Standard, which is automatically enabled at no additional charge for all AWS customers"
+      },
+      {
+        "id": "b",
+        "text": "AWS WAF Managed Rules, which offer pre-configured security rule sets maintained by security vendors"
+      },
+      {
+        "id": "c",
+        "text": "AWS Shield Advanced, which offers dedicated DDoS mitigation support and economic spike protection"
+      },
+      {
+        "id": "d",
+        "text": "AWS Firewall Manager, which deploys and centrally manages firewall rules across multi-account fleets"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "AWS Shield Advanced provides enhanced DDoS protection for applications running on Amazon EC2, Elastic Load Balancing, CloudFront, Global Accelerator, and Route 53. It includes 24/7 access to the AWS Shield Response Team (SRT), advanced metrics, and 'DDoS cost protection for charges incurred during attacks'.",
+    "distractorNotes": {
+      "a": "AWS Shield Standard provides foundational, automatic Layer 3/4 protection, but excludes SRT access and financial cost protection.",
+      "b": "AWS WAF Managed Rules provide application-layer inspection rule sets, but do not provide SRT engagement or billing spike reimbursement.",
+      "d": "AWS Firewall Manager is a central management service for security policies across accounts, not a DDoS response and cost protection service."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/waf/latest/developerguide/shield-chapter.html",
+    "sourceNote": "AWS Shield - Compare Shield Standard and Shield Advanced features and cost protection",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-security-and-compliance-034",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-and-compliance",
+    "subdomain": "security-services-and-encryption",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A DevOps team wants an automated security assessment service that continuously scans Amazon EC2 instances, container images in Amazon ECR, and AWS Lambda functions for software vulnerabilities and unintended network exposure. Which service should they choose?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon GuardDuty, which monitors cloud telemetry logs to identify active suspicious behavior"
+      },
+      {
+        "id": "b",
+        "text": "Amazon Inspector, which automates vulnerability assessment and exposure scanning for workloads"
+      },
+      {
+        "id": "c",
+        "text": "AWS Security Hub, which aggregates security findings from multiple services into a single view"
+      },
+      {
+        "id": "d",
+        "text": "AWS Systems Manager Patch Manager, which automates operational installation of updates on nodes"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Amazon Inspector is an automated vulnerability management service that continually scans Amazon EC2 instances, container images stored in Amazon Elastic Container Registry (Amazon ECR), and AWS Lambda functions for common vulnerabilities (CVEs) and unintended network exposure.",
+    "distractorNotes": {
+      "a": "Amazon GuardDuty detects active threats and anomalies by analyzing log feeds, rather than scanning software packages for CVEs.",
+      "c": "AWS Security Hub aggregates findings from Inspector and other tools, but does not perform the actual workload vulnerability scans itself.",
+      "d": "Systems Manager Patch Manager deploys operating system patches to managed nodes, but does not scan container images or Lambda functions."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/inspector/latest/user/what-is-inspector.html",
+    "sourceNote": "What is Amazon Inspector - Automated vulnerability assessment for EC2, ECR container images, and Lambda",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-security-and-compliance-035",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-and-compliance",
+    "subdomain": "security-services-and-encryption",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "A healthcare organization stores medical documents in Amazon S3 and needs an automated service that uses machine learning and pattern matching to discover, classify, and protect sensitive data such as personally identifiable information (PII). Which service provides this?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon Rekognition, which uses computer vision to detect objects and faces in images and videos"
+      },
+      {
+        "id": "b",
+        "text": "Amazon Comprehend, which uses natural language processing to extract insights and sentiment from text"
+      },
+      {
+        "id": "c",
+        "text": "AWS CloudTrail, which logs user operations and API calls across cloud resources for security audits"
+      },
+      {
+        "id": "d",
+        "text": "Amazon Macie, which uses machine learning to discover, classify, and protect sensitive data in S3"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Amazon Macie is a fully managed data security and data privacy service that uses machine learning and pattern matching to discover, monitor, and protect sensitive data (such as personally identifiable information, credit card numbers, or credentials) stored in Amazon S3 buckets.",
+    "distractorNotes": {
+      "a": "Amazon Rekognition analyzes visual media (images/videos); it does not scan S3 buckets for sensitive textual PII records.",
+      "b": "Amazon Comprehend performs NLP text analytics (sentiment, key phrases), but is not a specialized data security and PII compliance service.",
+      "c": "AWS CloudTrail records administrative API activity, not the content of files stored within S3 objects."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/macie/latest/user/what-is-macie.html",
+    "sourceNote": "What is Amazon Macie - Machine learning service that discovers and protects sensitive data in Amazon S3",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-security-and-compliance-036",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "security-and-compliance",
+    "subdomain": "security-services-and-encryption",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An application team needs to manage database passwords and API tokens securely. Which TWO capabilities are native features provided by AWS Secrets Manager? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Built-in automatic credential rotation schedules for supported services such as Amazon RDS"
+      },
+      {
+        "id": "b",
+        "text": "Complimentary unlimited storage of sensitive secrets with zero monthly maintenance charges"
+      },
+      {
+        "id": "c",
+        "text": "Automatic replacement of database secrets using customizable AWS Lambda rotation functions"
+      },
+      {
+        "id": "d",
+        "text": "Physical installation of dedicated hardware appliances inside on-premises server racks"
+      },
+      {
+        "id": "e",
+        "text": "Deep inspection of inbound HTTP packet payloads to block structured query injection attempts"
+      }
+    ],
+    "correct": [
+      "a",
+      "c"
+    ],
+    "explanation": "AWS Secrets Manager helps manage, retrieve, and rotate database credentials, API keys, and other secrets throughout their lifecycle. It offers built-in automatic rotation integration for databases like Amazon RDS and Amazon Aurora, and uses AWS Lambda functions to programmatically rotate credentials.",
+    "distractorNotes": {
+      "b": "AWS Secrets Manager charges a monthly fee per secret stored and per API call; it is not completely free.",
+      "d": "Secrets Manager is a cloud-based managed service, not an on-premises physical hardware appliance.",
+      "e": "Deep packet inspection for SQL injection is performed by AWS WAF, not AWS Secrets Manager."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html",
+    "sourceNote": "What is AWS Secrets Manager - Secure credential storage, built-in rotation schedules with Lambda",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-security-and-compliance-037",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-and-compliance",
+    "subdomain": "security-services-and-encryption",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "A business wants to secure communications to its public website by provisioning and deploying SSL/TLS certificates across an Application Load Balancer and Amazon CloudFront, with automatic certificate renewals. Which service should they use?",
+    "options": [
+      {
+        "id": "a",
+        "text": "AWS Key Management Service, which creates and controls encryption keys used to encrypt data at rest"
+      },
+      {
+        "id": "b",
+        "text": "AWS Certificate Manager, which provisions, manages, and automatically renews public SSL/TLS certificates"
+      },
+      {
+        "id": "c",
+        "text": "AWS CloudHSM, which provisions dedicated cloud-based hardware security modules for key compliance"
+      },
+      {
+        "id": "d",
+        "text": "AWS Secrets Manager, which protects database credentials and API tokens with automated rotation"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "AWS Certificate Manager (ACM) makes it easy to provision, manage, and deploy public and private SSL/TLS certificates for use with AWS services like Elastic Load Balancing, CloudFront, and API Gateway. ACM removes the manual process of purchasing, uploading, and renewing SSL/TLS certificates.",
+    "distractorNotes": {
+      "a": "AWS KMS creates cryptographic keys for encrypting data at rest; it does not issue SSL/TLS certificates for transport security.",
+      "c": "CloudHSM provides dedicated hardware security modules under direct customer control, not automated public SSL/TLS certificate management.",
+      "d": "Secrets Manager manages database passwords and API tokens, not website SSL/TLS certificates."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/acm/latest/userguide/acm-overview.html",
+    "sourceNote": "What is AWS Certificate Manager - Manages and automatically renews SSL/TLS certificates for AWS resources",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-security-and-compliance-038",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-and-compliance",
+    "subdomain": "security-services-and-encryption",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A network engineer adds an inbound rule to an Amazon VPC security group allowing HTTPS traffic on port 443 to an Amazon EC2 instance. Why does the engineer NOT need to configure a matching outbound rule to allow responses back to the client?",
+    "options": [
+      {
+        "id": "a",
+        "text": "HTTPS responses bypass network firewalls because TLS encrypts transport packets end-to-end"
+      },
+      {
+        "id": "b",
+        "text": "Inbound traffic on port 443 automatically converts into uninspected VPC internal protocol packets"
+      },
+      {
+        "id": "c",
+        "text": "Security groups are stateful firewalls, so return traffic is automatically allowed regardless of rules"
+      },
+      {
+        "id": "d",
+        "text": "Security groups evaluate outbound rules only when connections originate internally from the instance"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Security groups in Amazon VPC are stateful. If you send an inbound request from an external client that is allowed by an inbound security group rule, the security group automatically allows the outbound return response regardless of outbound security group rules.",
+    "distractorNotes": {
+      "a": "TLS encryption does not bypass firewall inspection; firewalls inspect IP and TCP port headers regardless of payload encryption.",
+      "b": "Inbound traffic is not converted to internal non-inspected packets; security groups evaluate packets at the ENI.",
+      "d": "The reason return traffic is allowed is state tracking, not a distinction in rule evaluation logic."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/vpc/latest/userguide/vpc-security-groups.html",
+    "sourceNote": "Amazon VPC Security Groups - Security groups are stateful; return traffic is automatically allowed",
+    "sourceCheckedAt": "2026-09-11"
+  },
+  {
+    "id": "aws-clf-c02-security-and-compliance-039",
+    "cert": "aws-clf-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-and-compliance",
+    "subdomain": "security-services-and-encryption",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An enterprise must comply with contractual regulations requiring cryptographic keys to be stored in dedicated, single-tenant, FIPS 140-2 Level 3 validated hardware security modules where the enterprise retains exclusive administrative control. Which service fulfills this requirement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "AWS CloudHSM, which provides dedicated single-tenant hardware security module appliances inside a VPC"
+      },
+      {
+        "id": "b",
+        "text": "AWS Key Management Service, which provides multi-tenant managed cryptographic key operations across AWS"
+      },
+      {
+        "id": "c",
+        "text": "AWS Secrets Manager, which secures and rotates application database connection credentials and API keys"
+      },
+      {
+        "id": "d",
+        "text": "AWS Shield Advanced, which delivers tailored protection and mitigation against distributed denial of service"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "AWS CloudHSM provides dedicated, single-tenant hardware security module (HSM) appliances under the customer's direct administrative control within their Amazon VPC. It satisfies strict regulatory compliance standards (such as FIPS 140-2 Level 3) where multi-tenant shared cryptographic services are prohibited.",
+    "distractorNotes": {
+      "b": "AWS KMS uses multi-tenant HSM fleets managed by AWS, which does not provide dedicated single-tenant hardware under exclusive customer control.",
+      "c": "Secrets Manager manages database passwords and secrets, not dedicated hardware security modules.",
+      "d": "Shield Advanced provides DDoS defense, not cryptographic key storage hardware."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/cloudhsm/latest/userguide/introduction.html",
+    "sourceNote": "What is AWS CloudHSM - Dedicated single-tenant hardware security modules under direct customer control",
+    "sourceCheckedAt": "2026-09-11"
   }
 ]

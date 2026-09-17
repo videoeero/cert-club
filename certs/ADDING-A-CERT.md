@@ -3,6 +3,11 @@
 This document is the authoritative guide for adding a certification to
 Cert Club — for human contributors and AI agents alike.
 
+> **Building with AI agents?** Follow the [Agent Authoring Runbook](./AUTHORING-A-CERT-WITH-SKILLS.md)
+> for the step-by-step skill orchestration sequence and prompt recipes. Use this
+> document as the authoritative specification for data formats, blueprint balance,
+> and content validation rules.
+
 ## Before you start
 
 Re-read the **source boundary** section in [README.md](../README.md) and the
@@ -59,6 +64,7 @@ reads directly, and must not be restated in the README.
   "cert": "<slug>",
   "name": "Full certification name",
   "status": "draft",
+  "updatedAt": "2026-09-11",
   "examUrl": "https://example.com/public-exam-guide.pdf",
   "contentLicense": "CC-BY-SA-4.0",
   "examQuestionCount": 50,
@@ -75,6 +81,8 @@ reads directly, and must not be restated in the README.
 - `cert` must equal the folder name.
 - `status` must be `"draft"` or `"stable"` — see below. It is required, so a
   new bank cannot ship as stable by leaving the field out.
+- `updatedAt` must be a valid calendar date in `YYYY-MM-DD` format and cannot be
+  older than any question's `sourceCheckedAt` in that bank.
 - `examUrl` must be a public HTTP/HTTPS URL.
 - `examQuestionCount` (optional) must be a positive integer matching the official exam question count.
 - `examDurationMinutes` (optional) must be a positive integer matching the official exam time limit in minutes.
@@ -96,7 +104,9 @@ independent: a bank can hold nothing but `reviewed` questions and still be a
   a notice on the setup and results screens saying a score is practice rather
   than a readiness signal.
 - **`stable`** — coverage across the blueprint is there, so a session is a
-  fair rehearsal of the exam and a score means something.
+  fair rehearsal of the exam and a score means something. A complete bank
+  targets **2× the official exam question count** (`2 * manifest.examQuestionCount`),
+  ensuring learners can complete two full non-overlapping mock exam sessions.
 
 There is no mechanical threshold for the promotion, deliberately. Question
 count alone is the wrong test: a bank could reach the live exam's question
@@ -130,6 +140,7 @@ Check the result at any time:
 
 ```sh
 npm run balance                # measure the shape of the bank as it stands
+npm run balance -- --2x        # measure against the 2x exam baseline
 npm run balance -- --target 150   # measure it against an authoring goal
 ```
 
@@ -151,15 +162,15 @@ A minimal single-select example:
     "status": "draft",
     "stem": "A team observes X and wants Y. What explains it?",
     "options": [
-      { "id": "opt-a", "text": "First option" },
-      { "id": "opt-b", "text": "Second option" },
-      { "id": "opt-c", "text": "Third option" },
-      { "id": "opt-d", "text": "Fourth option" }
+      { "id": "a", "text": "First option" },
+      { "id": "b", "text": "Second option" },
+      { "id": "c", "text": "Third option" },
+      { "id": "d", "text": "Fourth option" }
     ],
-    "correct": ["opt-c"],
-    "explanation": "opt-c is correct because … opt-a is wrong because …",
+    "correct": ["c"],
+    "explanation": "Option c is correct because … option a is wrong because …",
     "distractorNotes": {
-      "opt-a": "Plausible because …, but wrong because …"
+      "a": "Plausible because …, but wrong because …"
     },
     "sourceUrl": "https://docs.example.com/relevant-page",
     "sourceNote": "Section heading or topic that supports the answer",
@@ -187,10 +198,14 @@ A minimal single-select example:
 
 **Per-question structural rules:**
 
-- Option IDs must be unique within a question.
+- Option IDs must be unique within a question, and so must option **texts** —
+  compared case- and whitespace-insensitively, since two options a candidate
+  reads as identical are one option however they differ in bytes. A repeated
+  option is not a distractor: it removes one, and if the repeat is the key the
+  item has two correct answers.
 - `correct` entries must reference IDs that exist in `options`.
 - For `multi` questions: the correct set must not be exactly the leading
-  run of options in listed order (e.g. `["opt-a", "opt-b"]` when options
+  run of options in listed order (e.g. `["a", "b"]` when options
   are listed a/b/c/d) — this is guessable from position alone.
 - `distractorNotes` keys must reference distractor IDs, not correct ones.
 
@@ -241,30 +256,14 @@ A conceptual version of the same objective would ask what property a CI
 invocation needs — non-interactive, machine-parseable, reproducible — and let
 the flag names ride along inside the correct option.
 
-### When the bank is already too deep
+### Depth problems are allocation problems
 
 Depth problems are usually **allocation** problems. If a skill worth 3% of the
 exam holds 7% of the bank, its author ran out of blueprint-level facts and
 started mining detail to fill the quota. Fix the allocation and the depth
-problem largely dissolves. `npm run balance` is how you see it.
-
-### Tagging instead of deleting
-
-Questions that overshoot need not be lost. Two optional fields keep them in the
-bank but out of exam-aligned practice:
-
-| Field | Purpose |
-| --- | --- |
-| `scope` | `"core"` (default when absent), `"deep"`, or `"out-of-scope"` |
-| `scopeNote` | Required whenever `scope` is not `core`; justifies the call against the blueprint |
-
-- **`deep`** — the topic is a real blueprint objective, but the discrimination
-  sits above the sample questions' level. Still worth studying for mastery, and
-  a candidate for rewriting down to conceptual discrimination later.
-- **`out-of-scope`** — not traceable to any blueprint objective at all.
-
-Learners choose their appetite in the quiz setup form; the default excludes
-both. Untagged questions are unaffected, so existing banks need no migration.
+problem largely dissolves. `npm run balance` is how you see it. Questions that
+overshoot the exam's cognitive level or objectives should be rewritten to focus
+on conceptual discrimination or removed from the bank entirely.
 
 ## Step 4 — Validate
 
@@ -278,6 +277,41 @@ linter, and the formatter check. All must pass before opening a pull request.
 The balance check only constrains banks whose manifest declares `skills`. A
 bank without them is reported as aligned by definition, so existing banks are
 unaffected.
+
+### Supporting npm tasks
+
+Three tasks generate and audit content along the steps above; use them as the
+supported route through the work rather than hand-rolling it.
+
+- `npm run scaffold` — generates the `manifest.json` / `questions/*.json` /
+  `review-progress.md` file set for Step 1–2 from `--slug`, `--name`,
+  `--exam-url` and repeated `--domain` (and `--skill`) flags, optionally
+  appending the catalog entry (`--register`) or previewing with no writes
+  (`--dry-run`). Its `--normalize` sub-mode does the midpoint-and-largest-
+  remainder weight arithmetic described in Step 2 for you — pass `--target`
+  to allocate a question count across weights instead of allocating to 100.
+- `npm run metrics` — reports the composition and bias figures
+  (`review-progress.md`'s Composition table, the position/length bias
+  guards, source-age buckets) for one or more cert slugs, as text, `--json`,
+  or `--markdown`.
+- `npm run check-sources` — reports citation staleness
+  (`sourceCheckedAt` age against a threshold, `--max-age-days`) and, unless
+  run with `--offline`, liveness (fetches every cited URL; tune with
+  `--concurrency` and `--timeout-ms`); `--strict` / `--strict-network` turn
+  its findings into a non-zero exit.
+- `npm run check-claims` — **advisory only.** Lists every figure in the
+  free-text provenance surface per bank (offline), and where the citation is on
+  a `.md`-serving host, compares quoted spans and backticked identifiers against
+  the fetched page (tune with `--concurrency` and `--timeout-ms`; `--json` for
+  machine-readable output). It never gates and always exits 0. Expect roughly
+  nine noise findings for every real one — adjudicate each against the page
+  yourself, and never read a clean run as proof a claim is sourced.
+
+None of the four is part of `npm run check`: `check-sources` and `check-claims`
+hit the network by default, and the gate must stay runnable offline and
+deterministic in CI. `scaffold` and `metrics` are excluded alongside them for
+the same reason they aren't validators — they generate and report, they don't
+gate.
 
 ## Content license
 

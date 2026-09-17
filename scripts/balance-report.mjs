@@ -1,8 +1,24 @@
-import { readFile, readdir } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
+import { parsePositiveInteger } from "./lib/cli.mjs";
+import { AggregateMessageError } from "./lib/errors.mjs";
+import { skillKey } from "./lib/skills.mjs";
+import {
+  listCertFolders,
+  readCertQuestions,
+  readJson,
+} from "./lib/read-certs.mjs";
+import { normalizeWeights } from "./scaffold-cert.mjs";
+
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+
+export class BalanceReportError extends AggregateMessageError {
+  constructor(messages = []) {
+    super("Balance check failed:", messages);
+    this.name = "BalanceReportError";
+  }
+}
 
 // A skill may sit this many questions away from its blueprint share before the
 // bank is considered distorted. Absolute rather than proportional, because the
@@ -13,25 +29,55 @@ export const BALANCE_TOLERANCE = 2;
 // that reaches it asks the same one.
 export const MINIMUM_SKILL_TARGET = 2;
 
-/**
- * Core questions are the ones a blueprint-aligned session draws from. Questions
- * tagged "deep" are opt-in extras and are excluded from the balance arithmetic
- * entirely.
- */
-export function isCoreQuestion(question) {
-  return question.scope === "core";
-}
-
 export function buildBalanceReport(manifest, questions, options = {}) {
-  const core = questions.filter(isCoreQuestion);
-  const target = options.target ?? core.length;
+  let target = options.target;
+  if (target === undefined) {
+    if (options.useExamMultiplier && manifest.examQuestionCount) {
+      target = manifest.examQuestionCount * 2;
+    } else {
+      target = questions.length;
+    }
+  }
 
+  // Domain balance
+  const domainCounts = new Map();
+  for (const question of questions) {
+    domainCounts.set(
+      question.domain,
+      (domainCounts.get(question.domain) ?? 0) + 1,
+    );
+  }
+  const domainTargets =
+    target > 0
+      ? normalizeWeights(
+          manifest.domains.map((d) => d.weight),
+          target,
+        )
+      : manifest.domains.map(() => 0);
+  const domains = manifest.domains.map((domain, index) => {
+    const domainTarget = domainTargets[index];
+    const actual = domainCounts.get(domain.slug) ?? 0;
+    return {
+      slug: domain.slug,
+      name: domain.name,
+      weight: domain.weight,
+      target: domainTarget,
+      actual,
+      delta: actual - domainTarget,
+    };
+  });
+
+  // domainSchema enforces skill-slug uniqueness only within a domain, so two
+  // domains may both declare e.g. "overview". Keying on the subdomain alone
+  // pooled their questions together and misreported both targets. No shipped
+  // manifest collides yet, so this changes no current output.
   const counts = new Map();
-  for (const question of core) {
+  for (const question of questions) {
     if (question.subdomain === undefined) {
       continue;
     }
-    counts.set(question.subdomain, (counts.get(question.subdomain) ?? 0) + 1);
+    const key = skillKey(question.domain, question.subdomain);
+    counts.set(key, (counts.get(key) ?? 0) + 1);
   }
 
   const skills = [];
@@ -39,7 +85,7 @@ export function buildBalanceReport(manifest, questions, options = {}) {
     for (const skill of domain.skills ?? []) {
       const ideal = (skill.weight / 100) * target;
       const skillTarget = Math.max(MINIMUM_SKILL_TARGET, Math.round(ideal));
-      const actual = counts.get(skill.slug) ?? 0;
+      const actual = counts.get(skillKey(domain.slug, skill.slug)) ?? 0;
       skills.push({
         domain: domain.slug,
         slug: skill.slug,
@@ -57,8 +103,8 @@ export function buildBalanceReport(manifest, questions, options = {}) {
   return {
     cert: manifest.cert,
     target,
-    coreCount: core.length,
-    taggedCount: questions.length - core.length,
+    questionCount: questions.length,
+    domains,
     skills,
     offBalance: skills.filter(
       (skill) => Math.abs(skill.delta) > BALANCE_TOLERANCE,
@@ -69,10 +115,33 @@ export function buildBalanceReport(manifest, questions, options = {}) {
 function formatReport(report) {
   const lines = [];
   lines.push(
-    `${report.cert}: ${report.coreCount} core question(s), ${report.taggedCount} tagged out, target ${report.target}`,
+    `${report.cert}: ${report.questionCount} question(s), target ${report.target}`,
   );
 
   if (report.skills.length === 0) {
+    if (report.domains && report.domains.length > 0) {
+      lines.push("  domain balance (no skill breakdown declared in manifest):");
+      const width = Math.max(
+        ...report.domains.map((domain) => domain.slug.length),
+      );
+      for (const domain of report.domains) {
+        const delta =
+          domain.delta > 0 ? `+${domain.delta}` : String(domain.delta);
+        lines.push(
+          `  ${domain.slug.padEnd(width)}  ${String(domain.weight).padStart(5)}%  target ${String(domain.target).padStart(3)}  have ${String(domain.actual).padStart(3)}  ${delta.padStart(4)}`,
+        );
+      }
+      const needed = report.domains
+        .filter((domain) => domain.delta < 0)
+        .reduce((sum, domain) => sum + -domain.delta, 0);
+      const surplus = report.domains
+        .filter((domain) => domain.delta > 0)
+        .reduce((sum, domain) => sum + domain.delta, 0);
+      lines.push(
+        `  ${needed} question(s) short, ${surplus} surplus against target ${report.target}`,
+      );
+      return lines.join("\n");
+    }
     lines.push(
       "  no skill breakdown declared in the manifest — nothing to check",
     );
@@ -101,32 +170,24 @@ function formatReport(report) {
   return lines.join("\n");
 }
 
-async function readJson(path) {
-  return JSON.parse(await readFile(path, "utf8"));
-}
-
-async function readCertQuestions(certPath) {
-  const questionsPath = join(certPath, "questions");
-  const entries = await readdir(questionsPath, { withFileTypes: true });
-  const files = entries
-    .filter((entry) => entry.isFile() && entry.name.endsWith(".json"))
-    .map((entry) => join(questionsPath, entry.name))
-    .sort();
-
-  const perFile = await Promise.all(files.map((file) => readJson(file)));
-  return perFile.flat();
-}
-
-export async function buildRepositoryReports(root = repositoryRoot, options) {
+export async function buildRepositoryReports(
+  root = repositoryRoot,
+  options = {},
+) {
   const certsPath = join(root, "certs");
-  const entries = await readdir(certsPath, { withFileTypes: true });
-  const folders = entries
-    .filter((entry) => entry.isDirectory() && !entry.name.startsWith("."))
-    .sort((left, right) => left.name.localeCompare(right.name));
+  const allFolders = await listCertFolders(certsPath);
+  const requested = options.slugs ?? [];
+  const missing = requested.filter((slug) => !allFolders.includes(slug));
+  if (missing.length > 0) {
+    throw new BalanceReportError(
+      missing.map((slug) => `"${slug}" has no matching certs/ folder`),
+    );
+  }
+  const folderNames = requested.length > 0 ? requested : allFolders;
 
   const reports = [];
-  for (const folder of folders) {
-    const certPath = join(certsPath, folder.name);
+  for (const folderName of folderNames) {
+    const certPath = join(certsPath, folderName);
     const [manifest, questions] = await Promise.all([
       readJson(join(certPath, "manifest.json")),
       readCertQuestions(certPath),
@@ -136,23 +197,80 @@ export async function buildRepositoryReports(root = repositoryRoot, options) {
   return reports;
 }
 
-async function main() {
-  const argv = process.argv.slice(2);
+/**
+ * Unknown flags are rejected rather than ignored. `--strict` is what makes the
+ * balance step of `npm run check` a gate at all, so a typo that silently
+ * degraded it into a reporting run — still exit 0, still no output worth
+ * noticing — would retire the gate without anyone finding out. Mirrors
+ * `parseCliArgs` in `bank-metrics.mjs`.
+ */
+export function parseCliArgs(argv) {
+  const KNOWN_FLAGS = new Set(["--strict", "--2x", "--target"]);
+  const unknown = argv.filter(
+    (arg) => arg.startsWith("--") && !KNOWN_FLAGS.has(arg),
+  );
+  if (unknown.length > 0) {
+    throw new BalanceReportError([`unknown flag(s): ${unknown.join(", ")}`]);
+  }
+
   const strict = argv.includes("--strict");
+  const useExamMultiplier = argv.includes("--2x");
   const targetIndex = argv.indexOf("--target");
   const target =
-    targetIndex >= 0 ? Number.parseInt(argv[targetIndex + 1], 10) : undefined;
+    targetIndex >= 0 ? parsePositiveInteger(argv[targetIndex + 1]) : undefined;
 
-  if (target !== undefined && (!Number.isInteger(target) || target < 1)) {
-    console.error("--target must be a positive integer");
+  if (targetIndex >= 0 && target === null) {
+    throw new BalanceReportError(["--target must be a positive integer"]);
+  }
+
+  // The value after --target is consumed by the flag, not a cert slug.
+  const slugs = argv.filter(
+    (arg, index) =>
+      !arg.startsWith("--") && (targetIndex < 0 || index !== targetIndex + 1),
+  );
+
+  return { strict, useExamMultiplier, target, slugs };
+}
+
+async function main() {
+  const argv = process.argv.slice(2);
+
+  let strict;
+  let useExamMultiplier;
+  let target;
+  let slugs;
+  try {
+    ({ strict, useExamMultiplier, target, slugs } = parseCliArgs(argv));
+  } catch (error) {
+    console.error(error instanceof Error ? error.message : error);
     process.exitCode = 1;
     return;
   }
 
-  const reports = await buildRepositoryReports(repositoryRoot, { target });
+  let reports;
+  try {
+    reports = await buildRepositoryReports(repositoryRoot, {
+      target,
+      useExamMultiplier,
+      slugs,
+    });
+  } catch (error) {
+    console.error(error instanceof Error ? error.message : error);
+    process.exitCode = 1;
+    return;
+  }
   const withSkills = reports.filter((report) => report.skills.length > 0);
+  const toPrint = strict
+    ? withSkills
+    : reports.filter(
+        (report) =>
+          report.skills.length > 0 ||
+          slugs.length > 0 ||
+          useExamMultiplier ||
+          target !== undefined,
+      );
 
-  for (const report of withSkills) {
+  for (const report of toPrint) {
     console.log(formatReport(report));
   }
 

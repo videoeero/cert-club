@@ -1,11 +1,14 @@
 import assert from "node:assert/strict";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 import test from "node:test";
 
+import { readCertQuestions, readJson } from "../scripts/lib/read-certs.mjs";
 import {
   answerCountLabel,
   calculateQuizResults,
-  filterQuestionsByScope,
   filterReviewQuestions,
+  formatOptionLabel,
   getUnusedQuizQuestions,
   prepareRetakeSession,
   QuizSelectionError,
@@ -27,7 +30,6 @@ function question(id, domain, type = "single", correct = ["a"]) {
     domain,
     difficulty: "medium",
     status: "reviewed",
-    scope: "core",
     stem: `Question ${id}`,
     options: [
       { id: "a", text: "Option A" },
@@ -275,11 +277,132 @@ test("keeps every domain's count within one of its exact blueprint share, on eve
   assert.deepEqual([...seenAlphaCounts].sort(), [3, 4]);
 });
 
+/**
+ * The test above proves the mechanism on a two-domain fixture. This one runs
+ * it against the shipped `ccdv-f` bank at its real exam count, because the
+ * allocation is two-level — the domain quota is drawn first, then split across
+ * that domain's published skills — and a fixture with no skill breakdown never
+ * exercises the interaction between the layers. Each skill's target depends on
+ * the domain quota *that run* drew, so the second level is allocating against
+ * a moving total, which is the part a synthetic case cannot reproduce.
+ *
+ * This is the verification that justified replacing the original
+ * `weightedSample`: it drew buckets one at a time rather than allocating a
+ * quota, which left per-domain counts swinging several questions either side
+ * of their blueprint target on any single run, and the two smallest domains
+ * drawing nothing at all on a noticeable fraction of runs. The mean across
+ * many runs was unbiased, but no one sits an average of exams, and the
+ * per-domain breakdown this app shows is read off one run.
+ *
+ * Targets are derived from the manifest rather than hardcoded, so authoring
+ * changes do not touch this test. A failure here is a real signal and not a
+ * stale expectation: either the sampler regressed, or a domain's pool has
+ * grown too thin to fill its share of a blueprint-weighted exam.
+ */
+test("allocates the real ccdv-f blueprint exactly, at both levels, on every run", async () => {
+  const certPath = join(
+    fileURLToPath(new URL("../certs/ccdv-f", import.meta.url)),
+  );
+  const manifest = await readJson(join(certPath, "manifest.json"));
+  const bank = await readCertQuestions(certPath);
+  const count = manifest.examQuestionCount;
+
+  const domainWeight = manifest.domains.reduce(
+    (total, domain) => total + domain.weight,
+    0,
+  );
+  const domainTarget = new Map(
+    manifest.domains.map((domain) => [
+      domain.slug,
+      (count * domain.weight) / domainWeight,
+    ]),
+  );
+  const seenDomainCounts = new Map(
+    manifest.domains.map((domain) => [domain.slug, new Set()]),
+  );
+
+  for (let seed = 0; seed < 200; seed += 1) {
+    let state = seed + 1;
+    const random = () => {
+      state = (state * 1103515245 + 12345) % 2147483648;
+      return state / 2147483648;
+    };
+
+    const selected = selectQuestions(
+      bank,
+      manifest.domains,
+      { mode: "weighted", count },
+      random,
+    );
+
+    assert.equal(selected.length, count);
+    assert.equal(new Set(selected.map((q) => q.id)).size, count);
+
+    for (const domain of manifest.domains) {
+      const drawn = selected.filter((q) => q.domain === domain.slug);
+      const target = domainTarget.get(domain.slug);
+
+      assert.ok(
+        drawn.length >= Math.floor(target) && drawn.length <= Math.ceil(target),
+        `seed ${seed}: ${domain.slug} drew ${drawn.length}, outside the ` +
+          `integers adjacent to its exact target ${target.toFixed(2)}`,
+      );
+      // The smallest domains are the ones the old sampler starved, so a zero
+      // draw is called out separately from the bound that already implies it.
+      assert.notEqual(
+        drawn.length,
+        0,
+        `seed ${seed}: ${domain.slug} drew no questions`,
+      );
+      seenDomainCounts.get(domain.slug).add(drawn.length);
+
+      const skillWeight = domain.skills.reduce(
+        (total, skill) => total + skill.weight,
+        0,
+      );
+      for (const skill of domain.skills) {
+        const skillDrawn = drawn.filter((q) => q.subdomain === skill.slug);
+        // Against this run's domain quota, not the exam count: the domain
+        // level has already rounded by the time the skills are split.
+        const skillTarget = (drawn.length * skill.weight) / skillWeight;
+        assert.ok(
+          skillDrawn.length >= Math.floor(skillTarget) &&
+            skillDrawn.length <= Math.ceil(skillTarget),
+          `seed ${seed}: ${domain.slug}/${skill.slug} drew ` +
+            `${skillDrawn.length} against a target of ` +
+            `${skillTarget.toFixed(2)} from a domain quota of ${drawn.length}`,
+        );
+      }
+    }
+  }
+
+  // Every domain must land on both integers adjacent to its target across the
+  // runs. Largest-remainder rounding passes every assertion above and fails
+  // this one: it resolves each fractional remainder the same way every time,
+  // which is a fixed bias rather than the variance it replaces.
+  for (const domain of manifest.domains) {
+    const target = domainTarget.get(domain.slug);
+    assert.deepEqual(
+      [...seenDomainCounts.get(domain.slug)].sort((a, b) => a - b),
+      [Math.floor(target), Math.ceil(target)],
+      `${domain.slug} never varied across both integers adjacent to ` +
+        `${target.toFixed(2)} — the remainder is being resolved deterministically`,
+    );
+  }
+});
+
 test("formats answer counts as words with a numeric fallback", () => {
   assert.equal(answerCountLabel(0), "ZERO");
   assert.equal(answerCountLabel(1), "ONE");
   assert.equal(answerCountLabel(5), "FIVE");
   assert.equal(answerCountLabel(6), "6");
+});
+
+test("formatOptionLabel strips opt- prefix and uppercases", () => {
+  assert.equal(formatOptionLabel("a"), "A");
+  assert.equal(formatOptionLabel("b"), "B");
+  assert.equal(formatOptionLabel("opt-a"), "A");
+  assert.equal(formatOptionLabel("opt-d"), "D");
 });
 
 test("rejects invalid question selection configurations", () => {
@@ -426,81 +549,13 @@ test("simulateQuizAnswers: degenerate question with no distractors", () => {
   assert.equal(scoreAnswer(degenerateQ, answers[degenerateQ.id]), false);
 });
 
-function scopedQuestion(id, domain, scope = "core", subdomain) {
+function questionWithSkill(id, domain, subdomain) {
   const built = question(id, domain);
-  built.scope = scope;
-  if (scope !== "core") {
-    built.scopeNote = "Tagged for test purposes.";
-  }
   if (subdomain !== undefined) {
     built.subdomain = subdomain;
   }
   return built;
 }
-
-const scopedBank = [
-  scopedQuestion("core-1", "alpha"),
-  scopedQuestion("core-2", "alpha", "core"),
-  scopedQuestion("deep-1", "alpha", "deep"),
-  scopedQuestion("deep-2", "beta", "deep"),
-];
-
-test("defaults to the exam-aligned slice of the bank", () => {
-  assert.deepEqual(
-    filterQuestionsByScope(scopedBank).map((q) => q.id),
-    ["core-1", "core-2"],
-  );
-});
-
-test("widens the pool when the scope filter opens up", () => {
-  assert.deepEqual(
-    filterQuestionsByScope(scopedBank, "core-only").map((q) => q.id),
-    ["core-1", "core-2"],
-  );
-  assert.deepEqual(
-    filterQuestionsByScope(scopedBank, "with-deep").map((q) => q.id),
-    ["core-1", "core-2", "deep-1", "deep-2"],
-  );
-});
-
-test("applies the scope filter to every selection mode", () => {
-  for (const mode of ["all", "random", "weighted"]) {
-    const selected = selectQuestions(scopedBank, domains, {
-      mode,
-      ...(mode === "all" ? {} : { count: 4 }),
-    });
-    assert.deepEqual(
-      selected.map((q) => q.id).sort(),
-      ["core-1", "core-2"],
-      `mode ${mode} leaked a tagged question`,
-    );
-  }
-
-  // beta holds only a deep question, so the default filter empties it.
-  assert.throws(
-    () =>
-      selectQuestions(scopedBank, domains, {
-        mode: "domain",
-        domain: "beta",
-      }),
-    /No questions are available for the selected domain "beta"/,
-  );
-});
-
-test("defaults the scope filter to core-only when unset", () => {
-  const selected = selectQuestions(scopedBank, domains, { mode: "all" });
-  assert.equal(selected.length, 2);
-});
-
-test("reports when the scope filter empties the pool", () => {
-  assert.throws(
-    () =>
-      selectQuestions([scopedQuestion("deep-only", "alpha", "deep")], domains, {
-        mode: "all",
-      }),
-    /No questions match the selected question scope/,
-  );
-});
 
 test("weights by skill when a domain publishes a skill breakdown", () => {
   const skillDomains = [
@@ -515,10 +570,10 @@ test("weights by skill when a domain publishes a skill breakdown", () => {
     },
   ];
   const bank = [
-    scopedQuestion("big-1", "alpha", undefined, "big"),
-    scopedQuestion("big-2", "alpha", undefined, "big"),
-    scopedQuestion("small-1", "alpha", undefined, "small"),
-    scopedQuestion("small-2", "alpha", undefined, "small"),
+    questionWithSkill("big-1", "alpha", "big"),
+    questionWithSkill("big-2", "alpha", "big"),
+    questionWithSkill("small-1", "alpha", "small"),
+    questionWithSkill("small-2", "alpha", "small"),
   ];
 
   // Domain-level weighting cannot distinguish these four; skill-level weighting
@@ -548,10 +603,7 @@ test("weights by skill when a domain publishes a skill breakdown", () => {
 });
 
 test("falls back to domain weighting when no skills are declared", () => {
-  const bank = [
-    scopedQuestion("alpha-1", "alpha"),
-    scopedQuestion("beta-1", "beta"),
-  ];
+  const bank = [question("alpha-1", "alpha"), question("beta-1", "beta")];
 
   const selected = selectQuestions(bank, domains, {
     mode: "weighted",
@@ -568,8 +620,8 @@ test("redistributes a domain's shortfall to other domains when its pool runs dry
   // "small" is weighted at 90% but only has one question available; "big"
   // must absorb the rest of the quota without exceeding its own pool either.
   const bank = [
-    scopedQuestion("small-1", "small"),
-    ...Array.from({ length: 9 }, (_, i) => scopedQuestion(`big-${i}`, "big")),
+    question("small-1", "small"),
+    ...Array.from({ length: 9 }, (_, i) => question(`big-${i}`, "big")),
   ];
 
   for (let seed = 0; seed < 50; seed += 1) {
@@ -613,9 +665,9 @@ test("only reaches a question with an undeclared subdomain once every declared s
   // "unknown" names no declared skill — content validation rejects this in
   // the real bank, so this exercises the defensive fallback bucket only.
   const bank = [
-    scopedQuestion("a-1", "alpha", "core", "known-a"),
-    scopedQuestion("b-1", "alpha", "core", "known-b"),
-    scopedQuestion("orphan-1", "alpha", "core", "unknown"),
+    questionWithSkill("a-1", "alpha", "known-a"),
+    questionWithSkill("b-1", "alpha", "known-b"),
+    questionWithSkill("orphan-1", "alpha", "unknown"),
   ];
 
   for (let seed = 0; seed < 50; seed += 1) {
@@ -651,46 +703,29 @@ test("only reaches a question with an undeclared subdomain once every declared s
   }
 });
 
-test("getUnusedQuizQuestions excludes used questions and respects scope/domain", () => {
+test("getUnusedQuizQuestions excludes used questions and respects domain", () => {
   const bank = [
     question("q1", "alpha"),
     question("q2", "alpha"),
     question("q3", "beta"),
-    { ...question("q4", "beta"), scope: "deep", scopeNote: "Advanced topic" },
   ];
 
   // Exclude seen questions
-  const unused1 = getUnusedQuizQuestions(bank, ["q1"], "core-only");
+  const unused1 = getUnusedQuizQuestions(bank, ["q1"]);
   assert.deepEqual(
     unused1.map((q) => q.id),
     ["q2", "q3"],
   );
 
-  // Deep questions included when scope is with-deep
-  const unused2 = getUnusedQuizQuestions(bank, ["q1"], "with-deep");
-  assert.deepEqual(
-    unused2.map((q) => q.id),
-    ["q2", "q3", "q4"],
-  );
-
   // Domain filter applied
-  const unusedDomain = getUnusedQuizQuestions(
-    bank,
-    ["q1"],
-    "core-only",
-    "alpha",
-  );
+  const unusedDomain = getUnusedQuizQuestions(bank, ["q1"], "alpha");
   assert.deepEqual(
     unusedDomain.map((q) => q.id),
     ["q2"],
   );
 
   // All questions used
-  const unusedAll = getUnusedQuizQuestions(
-    bank,
-    ["q1", "q2", "q3"],
-    "core-only",
-  );
+  const unusedAll = getUnusedQuizQuestions(bank, ["q1", "q2", "q3"]);
   assert.deepEqual(unusedAll, []);
 });
 
@@ -705,7 +740,6 @@ test("prepareRetakeSession: exact retake reproduces questions in order", () => {
       mode: "random",
       count: 2,
       revealMode: "immediate",
-      scopeFilter: "core-only",
     },
     questionIds: ["q3", "q1"],
   };
@@ -760,7 +794,6 @@ test("prepareRetakeSession: random retake re-runs selection with attempt config"
       mode: "random",
       count: 2,
       revealMode: "end",
-      scopeFilter: "core-only",
     },
     questionIds: ["q1", "q2"],
   };
@@ -773,7 +806,7 @@ test("prepareRetakeSession: random retake re-runs selection with attempt config"
 
   // Mode "all" is randomized with count set
   const allAttempt = {
-    config: { mode: "all", revealMode: "immediate", scopeFilter: "core-only" },
+    config: { mode: "all", revealMode: "immediate" },
     questionIds: ["q1", "q2", "q3"],
   };
   const allRetake = prepareRetakeSession(bank, domains, allAttempt, "random");
@@ -797,7 +830,6 @@ test("prepareRetakeSession: other retake selects from unseen questions", () => {
       mode: "random",
       count: 2,
       revealMode: "immediate",
-      scopeFilter: "core-only",
     },
     questionIds: ["q1", "q2"],
   };
@@ -812,7 +844,6 @@ test("prepareRetakeSession: other retake selects from unseen questions", () => {
       mode: "random",
       count: 4,
       revealMode: "immediate",
-      scopeFilter: "core-only",
     },
     questionIds: ["q1", "q2", "q3", "q4"],
   };
@@ -828,7 +859,6 @@ test("prepareRetakeSession: other retake selects from unseen questions", () => {
       domain: "alpha",
       count: 1,
       revealMode: "end",
-      scopeFilter: "core-only",
     },
     questionIds: ["q1"],
   };
@@ -850,7 +880,6 @@ test("prepareRetakeSession: other retake selects from unseen questions", () => {
       mode: "random",
       count: 5,
       revealMode: "immediate",
-      scopeFilter: "core-only",
     },
     questionIds: ["q1", "q2", "q3", "q4", "q5"],
   };
@@ -867,7 +896,6 @@ test("prepareRetakeSession: throws on unsupported mode", () => {
       mode: "random",
       count: 1,
       revealMode: "immediate",
-      scopeFilter: "core-only",
     },
     questionIds: ["q1"],
   };
@@ -898,7 +926,6 @@ test("prepareRetakeSession: review mode retake respects reviewScope and domain i
       reviewScope: "missed",
       count: 2,
       revealMode: "immediate",
-      scopeFilter: "core-only",
     },
     questionIds: ["m1", "m2"],
   };
@@ -925,7 +952,6 @@ test("prepareRetakeSession: review mode retake respects reviewScope and domain i
       domain: "alpha",
       count: 2,
       revealMode: "immediate",
-      scopeFilter: "core-only",
     },
     questionIds: ["m1", "m2"],
   };
@@ -970,7 +996,6 @@ test("prepareRetakeSession: review mode retake respects reviewScope and domain i
             domain: "alpha",
             count: 2,
             revealMode: "immediate",
-            scopeFilter: "core-only",
           },
           questionIds: ["m1", "m2"],
         },

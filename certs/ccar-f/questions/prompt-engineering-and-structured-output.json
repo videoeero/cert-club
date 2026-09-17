@@ -1,0 +1,996 @@
+[
+  {
+    "id": "ccar-f-prompt-engineering-and-structured-output-001",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "prompt-engineering-and-structured-output",
+    "subdomain": "batch-processing",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An engineering team wants to reduce API expenses across their automated systems. They operate two workloads: a blocking pull request check that developers wait on before merging, and an overnight technical debt analysis report. How should the team evaluate using the Message Batches API?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Retain synchronous API calls for both workflows because the Message Batches API cannot correlate individual responses with requests."
+      },
+      {
+        "id": "b",
+        "text": "Adopt the Message Batches API for the overnight report only, while keeping synchronous API calls for the blocking pull request check."
+      },
+      {
+        "id": "c",
+        "text": "Adopt the Message Batches API for both workflows with short polling intervals to guarantee immediate returns on blocking checks."
+      },
+      {
+        "id": "d",
+        "text": "Adopt the Message Batches API for both workflows while setting a client-side timeout that cancels delayed batch jobs after five minutes."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "The Message Batches API offers a 50% cost discount but processes asynchronously with completion windows up to 24 hours and no real-time latency guarantee. This makes it ideal for latency-tolerant, non-blocking overnight reports, but inappropriate for blocking pre-merge checks where developers need immediate feedback.",
+    "distractorNotes": {
+      "a": "The Message Batches API correlates request and response records reliably using custom_id fields.",
+      "c": "Polling cannot force the Message Batches API to return immediate results for blocking pull request checks.",
+      "d": "Client-side timeouts cannot accelerate batch completion and will simply abort viable batch requests."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/batch-processing.md",
+    "sourceNote": "Message Batches API 50% discount and 24-hour SLA considerations for synchronous vs asynchronous workloads",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-prompt-engineering-and-structured-output-002",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "prompt-engineering-and-structured-output",
+    "subdomain": "review-criteria-design",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An automated PR review bot has a 45% false positive rate on comment accuracy checks, causing developers to ignore all comments. Prompts currently say: 'Check that comments are accurate and report any issues with high confidence.' How should the prompt be improved to reduce false positives?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Add 'Be extremely conservative and report only issues with absolute certainty' to the system prompt text."
+      },
+      {
+        "id": "b",
+        "text": "Add negative constraints in the system prompt instructing Claude to never flag formatting choices, variable names, or missing docs."
+      },
+      {
+        "id": "c",
+        "text": "Define explicit criteria: only flag comments when claimed behavior directly contradicts actual code behavior; ignore stylistic preferences or missing docs."
+      },
+      {
+        "id": "d",
+        "text": "Add a second Claude pass that re-scores each flagged comment's confidence and drops any below a fixed threshold."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Vague instructions like 'be conservative' or 'only report high-confidence issues' fail because models lack concrete decision boundaries. Explicit criteria specifying what constitutes a reportable violation (e.g. documentation that contradicts executable logic) versus what must be ignored (style choices, unstated assumptions) dramatically increases precision and eliminates false positives.",
+    "distractorNotes": {
+      "a": "Vague directives like 'be conservative' fail to define concrete decision boundaries for ambiguous cases.",
+      "b": "Negative constraints tell the model what to avoid but fail to define positive decision criteria for what constitutes a reportable violation; explicit contradiction criteria establish reliable decision boundaries.",
+      "d": "A confidence re-scoring pass still relies on the same undefined notion of 'accurate'; without concrete contradiction criteria it keeps most of the false positives it inherited."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/code-review.md",
+    "sourceNote": "Defining explicit review criteria to increase precision and reduce false positive findings",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-prompt-engineering-and-structured-output-003",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "prompt-engineering-and-structured-output",
+    "subdomain": "review-criteria-design",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A newly deployed code review system produces high-value security bug reports, but also floods developers with noisy, low-value style nitpicks, causing developers to distrust and dismiss the entire tool. What is the best immediate operational strategy?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Add a prompt directive instructing the reviewer to self-filter low-confidence style issues before posting comments on the pull request."
+      },
+      {
+        "id": "b",
+        "text": "Downgrade all style findings to nits while continuing to post every comment inline across all incoming pull requests."
+      },
+      {
+        "id": "c",
+        "text": "Batch all style comments into a single collapsable summary comment at the bottom of the pull request to reduce visual clutter."
+      },
+      {
+        "id": "d",
+        "text": "Temporarily disable the noisy style review category in REVIEW.md while keeping the high-value security checks active."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "When automated review tools produce high false-positive rates in specific categories, developer fatigue quickly leads to ignoring all findings, including critical security alerts. Temporarily disabling the noisy category (for example, via skip rules in REVIEW.md) preserves developer trust in the security rules while the team refines and evaluates better prompting for the disabled checks.",
+    "distractorNotes": {
+      "a": "Directives asking the model to self-filter without concrete contradiction criteria do not resolve subjective style noise, leaving developer alert fatigue unaddressed.",
+      "b": "Downgrading style issues to nits still floods PRs with inline comments, leaving comment fatigue and distrust unaddressed.",
+      "c": "Collapsing low-value style comments still generates notification noise and fails to prevent developers from distrusting the review bot's overall quality; temporarily disabling the noisy category preserves trust."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/code-review.md",
+    "sourceNote": "Managing review rule categories to protect developer trust and tool adoption",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-prompt-engineering-and-structured-output-004",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "prompt-engineering-and-structured-output",
+    "subdomain": "review-criteria-design",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An engineering team wants Claude to classify code findings into severity levels ('critical', 'major', 'minor'). Currently, similar issues receive inconsistent severity ratings across different files. How can the prompt achieve consistent severity classification?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Provide an explicit severity classification matrix with concrete code examples illustrating typical issues for each severity tier."
+      },
+      {
+        "id": "b",
+        "text": "Provide abstract definitions of 'critical', 'major', and 'minor' in the system prompt text without concrete code exemplars."
+      },
+      {
+        "id": "c",
+        "text": "Instruct Claude to estimate a confidence score from 0.0 to 1.0 and map scores above 0.8 automatically to critical severity."
+      },
+      {
+        "id": "d",
+        "text": "Instruct Claude to assign severity based on the number of lines each finding touches, treating larger diffs as higher severity."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Ambiguous severity ratings occur when models rely on subjective interpretations of terms like 'major' or 'minor'. Defining a concrete classification matrix paired with code examples for each level (e.g. unhandled exceptions on critical paths = critical; missing type hints = minor) calibrates model judgment consistently.",
+    "distractorNotes": {
+      "b": "Abstract prose definitions remain subjective and yield inconsistent ratings across files; concrete code examples illustrating each severity tier calibrate boundaries reliably.",
+      "c": "Model confidence does not correlate with defect severity — an agent can be highly confident about a minor stylistic nit; severity requires an objective classification matrix.",
+      "d": "Diff size does not track defect severity — a single-line injection can be critical while a large refactor is minor; consistent rating needs a criteria matrix, not a size proxy."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/code-review.md",
+    "sourceNote": "Establishing explicit severity rubrics with examples for consistent defect classification",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-prompt-engineering-and-structured-output-005",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "prompt-engineering-and-structured-output",
+    "subdomain": "few-shot-prompting",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A prompt instructs Claude to produce structured bug reports with location, issue description, severity, and remediation. Despite extensive instructions, the formatting fluctuates between bullet points, JSON, and prose across runs. What is the most effective prompt modification?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Expand the natural-language field descriptions and repeatedly stress that prose formatting is strictly forbidden."
+      },
+      {
+        "id": "b",
+        "text": "Include 2-3 few-shot examples demonstrating the exact desired output format and structure."
+      },
+      {
+        "id": "c",
+        "text": "Wrap the instructions in XML tags (<output_format>) specifying field order and rules in bulleted prose."
+      },
+      {
+        "id": "d",
+        "text": "Lower the temperature to 0.0 so the model produces the same formatting deterministically on every run."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Few-shot examples are the most effective technique for establishing consistent structural and stylistic formatting in LLM outputs. Providing 2-3 complete examples demonstrating the expected fields, tone, and formatting anchors the generation pattern far more reliably than prose instructions alone.",
+    "distractorNotes": {
+      "a": "Adding longer natural-language rules and negative constraints is the approach that already failed to stabilize formatting; concrete few-shot examples anchor layout far more reliably.",
+      "c": "XML tags provide structural clarity for instructions, but descriptive bullet points alone do not constrain model token generation to the desired output structure.",
+      "d": "Lowering temperature reduces token sampling randomness but does not define the target structure; with the format still underspecified, the output continues to fluctuate."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices.md",
+    "sourceNote": "Using few-shot examples to achieve consistent output formatting and structure",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-prompt-engineering-and-structured-output-006",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "prompt-engineering-and-structured-output",
+    "subdomain": "few-shot-prompting",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An agent must choose between two tools: `search_customers` and `search_orders`. In borderline cases (e.g. 'Track order for customer Jane Doe'), model tool selection fluctuates unpredictably. How should few-shot examples be designed to fix this?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Provide dozens of obvious, non-ambiguous examples where user queries reference only a single explicit identifier."
+      },
+      {
+        "id": "b",
+        "text": "Include examples where both search tools are called in parallel on every borderline query to ensure complete data."
+      },
+      {
+        "id": "c",
+        "text": "Provide targeted few-shot boundary examples that demonstrate the disambiguation reasoning for borderline queries."
+      },
+      {
+        "id": "d",
+        "text": "Include negative few-shot examples demonstrating which tool to avoid invoking when ambiguous terms are present."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Targeted few-shot examples that address ambiguous boundary cases and explicitly demonstrate the reasoning used to select one tool over another allow the model to learn the discrimination logic and generalize to novel, ambiguous user requests. Adding obvious non-ambiguous examples fails to teach the model how to resolve edge cases where multiple tools appear viable.",
+    "distractorNotes": {
+      "a": "Trivial non-ambiguous examples do not train the model on how to discriminate borderline cases where multiple tools appear viable.",
+      "b": "Calling both tools wastes latency and tokens, failing to resolve the fundamental tool selection ambiguity.",
+      "d": "Negative examples showing what not to do are less effective than positive examples showing the desired reasoning and selection."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices.md",
+    "sourceNote": "Designing targeted few-shot examples demonstrating decision reasoning for ambiguous boundary cases",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-prompt-engineering-and-structured-output-007",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "prompt-engineering-and-structured-output",
+    "subdomain": "few-shot-prompting",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An extraction system processes scientific research papers where citation formats vary widely: some use inline brackets [1], some use parenthetical author-year (Smith, 2024), and some use footnotes. How can the prompt ensure consistent extraction across all layouts?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Specify detailed regex pattern rules in the system prompt instructing Claude on how to parse each citation syntax."
+      },
+      {
+        "id": "b",
+        "text": "Instruct Claude in the system prompt to normalize all citations into standard markdown footnotes before extraction."
+      },
+      {
+        "id": "c",
+        "text": "Configure low temperature (0.0) and top_p (0.1) to eliminate token sampling variance across the extraction requests."
+      },
+      {
+        "id": "d",
+        "text": "Add few-shot examples illustrating correct extraction across each of the distinct citation formats."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Providing few-shot examples that demonstrate correct data extraction from each common layout variation (inline brackets, parenthetical, footnotes) teaches the model how to locate and parse target entities across diverse document structures without failing on unfamiliar formats.",
+    "distractorNotes": {
+      "a": "Embedding complex regex rules in prompts is brittle and relies on the model simulating a regex engine, whereas few-shot examples directly demonstrate the parsing transformation.",
+      "b": "Requesting intermediate footnote normalization in prose does not teach the model how to parse unfamiliar citation formats; few-shot examples anchor pattern recognition across layouts.",
+      "c": "Sampling hyperparameters reduce randomness among candidate tokens but cannot provide the model with structural understanding of diverse layout conventions."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices.md",
+    "sourceNote": "Using few-shot examples to demonstrate extraction across diverse structural layouts",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-prompt-engineering-and-structured-output-008",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "prompt-engineering-and-structured-output",
+    "subdomain": "few-shot-prompting",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "When extracting contractual start dates from vendor agreements, Claude frequently returns null when dates are stated indirectly (e.g. 'Effective upon mutual signature of Exhibit A, dated May 4, 2026'). What prompt technique resolves this?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Provide few-shot examples demonstrating how to infer and extract dates from indirect phrasing and cross-referenced clauses."
+      },
+      {
+        "id": "b",
+        "text": "Add negative constraints in the system prompt warning Claude that returning null for the start date field is strictly forbidden."
+      },
+      {
+        "id": "c",
+        "text": "Instruct the model to search strictly for explicit anchor phrases like 'Commencement Date:' or 'Effective Date:' in the text."
+      },
+      {
+        "id": "d",
+        "text": "Increase sampling temperature to 0.8 to encourage creative semantic associations when standard date labels are missing."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "LLMs often hesitate to extract information that is not explicitly labeled with exact keywords like 'Effective Date:'. Few-shot examples illustrating how to parse indirect references and composite clauses demonstrate the acceptable reasoning boundary, improving recall on indirect mentions.",
+    "distractorNotes": {
+      "b": "Negative constraints like 'never return null' force the model to hallucinate or fabricate dates rather than teaching it how to resolve dates from cross-referenced clauses.",
+      "c": "Restricting extraction to explicit keyword labels guarantees null returns when agreements use indirect phrasing or cross-referenced exhibits.",
+      "d": "Elevating temperature increases stochastic variance and hallucination risk without teaching the model how to parse indirect contractual clauses."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices.md",
+    "sourceNote": "Few-shot examples demonstrating extraction from indirect and cross-referenced clauses",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-prompt-engineering-and-structured-output-009",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "prompt-engineering-and-structured-output",
+    "subdomain": "structured-outputs",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An application requires extracted data to strictly adhere to a JSON schema. When asking Claude for JSON via standard text prompts, occasional syntax errors (missing commas, unescaped quotes) crash downstream parsers. What feature guarantees schema-compliant JSON?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Provide the JSON schema inside <schema> XML tags and instruct the model to self-validate its syntax before finishing generation."
+      },
+      {
+        "id": "b",
+        "text": "Structured outputs / strict tool use (strict: true), which enforce schema compliance and valid JSON via constrained decoding."
+      },
+      {
+        "id": "c",
+        "text": "Wrap the prompt inside nested XML tags (<instructions>, <schema>, <output>) and instruct the model to think carefully before generating JSON."
+      },
+      {
+        "id": "d",
+        "text": "Prefill the assistant response turn with an open curly brace ({) and set sampling temperature to 0.0 to eliminate syntax variance."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Structured outputs and strict tool use (`strict: true`) leverage constrained decoding at the model inference layer. This guarantees that generated tokens strictly follow the specified JSON schema and are 100% valid JSON syntax, completely eliminating JSON.parse() syntax errors.",
+    "distractorNotes": {
+      "a": "Self-validation and XML tags improve prompt clarity but remain probabilistic; only constrained decoding (strict: true) mathematically guarantees valid JSON syntax.",
+      "c": "XML tags provide structural organization but do not enforce JSON schema compliance or syntax validity.",
+      "d": "Prefilling an opening brace starts JSON formatting but does not constrain subsequent tokens to follow schema rules or prevent syntax errors."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs.md",
+    "sourceNote": "Structured outputs and strict tool use via constrained decoding to guarantee valid JSON syntax",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-prompt-engineering-and-structured-output-010",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "prompt-engineering-and-structured-output",
+    "subdomain": "structured-outputs",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A financial extraction pipeline uses strict JSON schemas via tool use. An invoice is processed where the extracted line items sum to $850, but the extracted total_amount field is $1,200. Why did strict JSON schema enforcement fail to prevent this discrepancy?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The sampling temperature was set above 0.0, which disables constrained decoding and relaxes numeric validation rules in strict mode."
+      },
+      {
+        "id": "b",
+        "text": "The line item prices were defined as numbers rather than integers, which disables arithmetic equality checks in JSON Schema engines."
+      },
+      {
+        "id": "c",
+        "text": "JSON schemas enforce data types and structural syntax, but cannot compute or validate semantic cross-field arithmetic invariants."
+      },
+      {
+        "id": "d",
+        "text": "Strict mode was configured with additionalProperties set to false, which suppresses validation across nested line item array objects."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "JSON schemas enforce structural and type constraints (such as requiring total_amount to be a number and items to be an array of objects). They cannot validate semantic cross-field logic (such as ensuring that individual line item prices sum up to total_amount). Validating semantic consistency requires programmatic post-validation or multi-turn reflection.",
+    "distractorNotes": {
+      "a": "Temperature influences token sampling variance, but constrained decoding strictly enforces schema constraints regardless of temperature.",
+      "b": "JSON Schema data types (number vs integer) enforce value formats, but standard schemas cannot compute cross-field arithmetic sums.",
+      "d": "The additionalProperties: false parameter restricts undeclared properties, but has no effect on validating cross-field arithmetic."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs.md",
+    "sourceNote": "Distinction between schema syntax/type enforcement and semantic cross-field validation",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-prompt-engineering-and-structured-output-011",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "prompt-engineering-and-structured-output",
+    "subdomain": "structured-outputs",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An extraction system processes medical clinic receipts to extract 'tax_id'. Many receipts do not contain a tax ID. When 'tax_id' is defined as a required string in the JSON schema, Claude occasionally hallucinates fake IDs like 'TAX-123456'. How should the schema be designed?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Keep tax_id required and write a regex validator in the client application that rejects fake IDs and retries the prompt."
+      },
+      {
+        "id": "b",
+        "text": "Define tax_id with a default empty string (default: '') while keeping the field marked as required in the schema definition."
+      },
+      {
+        "id": "c",
+        "text": "Provide a few-shot example showing a placeholder value like 'N/A' for tax_id so the required string field is always satisfied."
+      },
+      {
+        "id": "d",
+        "text": "Define tax_id as optional or nullable (e.g. ['string', 'null']) and instruct the model to return null if absent from the document."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "If a field is marked as strictly required in the schema, the model is constrained to output a value even if the information is missing from the source text, which forces it to hallucinate plausible values. Allowing the field to be nullable (`type: ['string', 'null']`) or optional gives the model a valid, schema-compliant path to indicate that the information is absent.",
+    "distractorNotes": {
+      "a": "Keeping it required still forces the model to generate a string, causing validation failures or endless retries.",
+      "b": "Marking a field as required still constrains the model to generate a value for that property during decoding; declaring it nullable or optional lets the model emit null when absent.",
+      "c": "Filling a required field with a placeholder like 'N/A' still emits a fabricated non-null value that downstream consumers must special-case; declaring the field nullable lets the model return an explicit null."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs.md",
+    "sourceNote": "Using nullable or optional schema fields to prevent hallucination when source data is missing",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-prompt-engineering-and-structured-output-012",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "prompt-engineering-and-structured-output",
+    "subdomain": "structured-outputs",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An architect designs an extraction schema for categorizing legal contract dispute clauses. The schema defines an enum with standard categories ('arbitration', 'litigation', 'mediation'). What pattern accommodates unexpected dispute mechanisms without causing schema validation errors?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Include an 'other' option in the enum paired with an optional 'other_detail' string field."
+      },
+      {
+        "id": "b",
+        "text": "Define a union (anyOf) combining the strict enum with an open string type in the schema."
+      },
+      {
+        "id": "c",
+        "text": "Enable additionalProperties: true on the object schema so Claude can emit custom category fields."
+      },
+      {
+        "id": "d",
+        "text": "Remove the enum constraint entirely and rely on post-processing regex to map free-form strings."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "The 'other' enum value plus a companion detail string field (e.g. `dispute_type: enum['arbitration', 'litigation', 'mediation', 'other']`, `other_description: string | null`) is the standard extensible schema pattern. It retains the benefits of strict categorical indexing for known types while safely capturing edge cases.",
+    "distractorNotes": {
+      "b": "Wrapping the enum in an anyOf with an open string type lets free-form values bypass the closed category set, so downstream analytics lose the guaranteed enumerated values that an 'other' value plus a detail field preserves.",
+      "c": "Allowing additionalProperties lets the model invent new top-level keys instead of recording edge cases in one controlled field, losing the stable categorical index that an 'other' enum value with a detail string keeps.",
+      "d": "Discarding the enum eliminates schema-level categorization guarantees and introduces complex, error-prone post-processing regex logic."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs.md",
+    "sourceNote": "Extensible schema design using 'other' enum values paired with detail string fields",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-prompt-engineering-and-structured-output-013",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "prompt-engineering-and-structured-output",
+    "subdomain": "structured-outputs",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An application provides five distinct structured extraction tools corresponding to different invoice layouts. The incoming document format is unknown, but the application requires that Claude must output structured data via one of the five tools rather than returning conversational text. Which parameter should be set?",
+    "options": [
+      {
+        "id": "a",
+        "text": "tool_choice: {'type': 'none'}, which disables all tool execution and forces the model to respond with unconstrained text."
+      },
+      {
+        "id": "b",
+        "text": "tool_choice: {'type': 'any'}, which forces Claude to call one of the provided tools while letting it select which schema fits."
+      },
+      {
+        "id": "c",
+        "text": "tool_choice: {'type': 'auto'}, which lets Claude decide whether to return conversational text or invoke one of the five tools."
+      },
+      {
+        "id": "d",
+        "text": "tool_choice: {'type': 'tool', 'name': 'extract_layout_a'}, which forces tool use but restricts execution to a single fixed schema."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "When multiple extraction tools exist and the document type is unknown in advance, configuring `tool_choice: {'type': 'any'}` ensures that Claude must call one of the provided tools (guaranteeing structured schema output) while allowing Claude to evaluate the document and select which specific tool schema applies.",
+    "distractorNotes": {
+      "a": "tool_choice: {'type': 'none'} prevents the model from calling any tools, forcing text output.",
+      "c": "tool_choice: {'type': 'auto'} allows the model to respond in plain conversational text instead of guaranteeing a structured tool call.",
+      "d": "Forcing a single named tool would execute the layout A schema on every document regardless of actual layout; {'type': 'any'} forces a tool call while letting Claude choose the matching schema."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools.md",
+    "sourceNote": "Using tool_choice: 'any' to enforce structured tool output across multiple schemas",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-prompt-engineering-and-structured-output-014",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "prompt-engineering-and-structured-output",
+    "subdomain": "validation-and-feedback",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An extraction tool call produces a semantic validation error: the extracted line items sum to $450, but the invoice header total is $500. How should the application implement an automated retry loop?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Resend the initial prompt in a new conversation without error feedback, relying on stochastic variance to produce matching numbers."
+      },
+      {
+        "id": "b",
+        "text": "Send a follow-up user turn asking Claude to recalculate, while omitting the preceding assistant message and tool call from history."
+      },
+      {
+        "id": "c",
+        "text": "Append the failed tool call turn and return a tool_result detailing the validation mismatch so the model can inspect and self-correct."
+      },
+      {
+        "id": "d",
+        "text": "Reset the conversation history and re-execute the extraction with sampling temperature increased to 1.0 to explore varied token outputs."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "In a retry-with-error-feedback loop, the application appends the assistant's failed tool call and returns a tool_result block detailing the specific discrepancy (e.g. line item sum $450 does not match header total $500). Claude uses this explicit feedback to re-inspect the source text and self-correct its extraction.",
+    "distractorNotes": {
+      "a": "Resending the exact same prompt without error context forces the model to repeat the same extraction path and assumptions.",
+      "b": "Omitting the assistant's previous tool call and tool_result violates tool use conversation ordering requirements and deprives the model of context needed to inspect and self-correct.",
+      "d": "Increasing temperature increases stochastic variance and hallucination risk without explaining what failed in the previous attempt."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/troubleshooting-tool-use.md",
+    "sourceNote": "Implementing retry-with-error-feedback loops for semantic self-correction",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-prompt-engineering-and-structured-output-015",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "prompt-engineering-and-structured-output",
+    "subdomain": "validation-and-feedback",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An automated document extraction pipeline validates structured tool outputs against backend business rules and triggers an automated correction turn when validation fails. For which scenario is returning validation feedback in a retry turn fundamentally incapable of resolving the error?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The model mapped an address block to city instead of postal_code due to multi-column layout ambiguity."
+      },
+      {
+        "id": "b",
+        "text": "The model extracted an invoice date in DD/MM/YYYY format instead of the required ISO 8601 standard format."
+      },
+      {
+        "id": "c",
+        "text": "The model overlooked an unlabelled promotional discount line item printed in fine print at the document footer."
+      },
+      {
+        "id": "d",
+        "text": "The document omits the vendor tax registration identifier because the merchant operates as an unregistered entity."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Retry loops with validation feedback succeed when the model made a formatting, placement, or omission error regarding information present in context. When the required data simply does not exist in the source document (such as an unregistered merchant that has no tax ID), retrying cannot extract the missing fact and merely encourages hallucination.",
+    "distractorNotes": {
+      "a": "Field placement errors caused by layout confusion can be corrected when the validation feedback specifies the expected location or format.",
+      "b": "Date format mismatches are readily corrected when validation feedback specifies the expected ISO 8601 format.",
+      "c": "Overlooked information present in context can be recovered when validation feedback prompts the model to re-examine specific document sections."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs.md",
+    "sourceNote": "Understanding the fundamental limits of retry loops when source data is absent",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-prompt-engineering-and-structured-output-016",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "prompt-engineering-and-structured-output",
+    "subdomain": "validation-and-feedback",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An automated code review bot tags each reported finding with a structured `detected_pattern` identifier (e.g. `comment-contradiction`, `sql-string-interpolation`). Why is this structured metadata valuable for long-term pipeline optimization?",
+    "options": [
+      {
+        "id": "a",
+        "text": "It enables systematic aggregation of developer dismissal rates per rule to identify and refine prompt criteria for high false-positive patterns."
+      },
+      {
+        "id": "b",
+        "text": "It allows the pipeline to dynamically route flagged code snippets to specialized sub-prompts tailored to each defect category during review."
+      },
+      {
+        "id": "c",
+        "text": "It lets the pipeline automatically suppress any finding whose detected_pattern was ever dismissed before, guaranteeing zero false positives going forward."
+      },
+      {
+        "id": "d",
+        "text": "It guarantees the model returns identical severity scores across runs because each pattern identifier is bound to a fixed numeric severity."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Including a structured pattern tag (`detected_pattern`) in review findings allows the engineering team to track developer feedback and dismissal rates across specific rules. Categories with high dismissal rates can be isolated, audited, and improved via targeted prompt criteria, few-shot examples, or temporary suppression.",
+    "distractorNotes": {
+      "b": "Pattern tags are generated as output metadata on identified findings, not used upfront to route unanalyzed code snippets; the primary long-term pipeline value is telemetry on developer dismissals.",
+      "c": "Blanket-suppressing every previously dismissed pattern would discard valid future findings; the tags enable measuring per-rule dismissal rates and refining criteria, not automatic suppression.",
+      "d": "A pattern identifier labels what was found; it does not pin a severity to the finding or make scoring deterministic across runs."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/code-review.md",
+    "sourceNote": "Tracking rule dismissal rates via structured pattern tags to drive prompt improvements",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-prompt-engineering-and-structured-output-017",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "prompt-engineering-and-structured-output",
+    "subdomain": "batch-processing",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A batch job processing 10,000 PDF invoices with the Message Batches API completes with 9,920 successes and 80 errors due to context length exceedance on oversized files. How should the application handle this partial failure?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Call the batch retry endpoint with the original batch_id to automatically reprocess records that terminated in an errored state."
+      },
+      {
+        "id": "b",
+        "text": "Identify failed records via their custom_id, chunk or summarize the 80 oversized files, and submit only those 80 in a new batch."
+      },
+      {
+        "id": "c",
+        "text": "Poll the batch results URL with exponential backoff until the 80 failed requests automatically re-execute and return valid JSON."
+      },
+      {
+        "id": "d",
+        "text": "Append status=errored query parameters to the batch results endpoint to stream only the failed records for automatic in-memory replay."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "In the Message Batches API, each request is tracked by a client-defined custom_id. When a batch completes with partial errors, the application retrieves the results JSONL, identifies the failed records by their custom_id, applies appropriate remediations (such as chunking or summarizing oversized files), and resubmits only the 80 failed items in a new batch, preserving the 9,920 successful extractions.",
+    "distractorNotes": {
+      "a": "The Message Batches API has no in-place retry endpoint; once a batch reaches ended, errored requests are terminal and must be submitted as a new batch.",
+      "c": "Once a batch has reached the ended status, errored requests are terminal and will not be re-executed by polling.",
+      "d": "The batch results endpoint returns a single static JSONL file containing all results and does not support query filtering or streaming replays."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/batch-processing.md",
+    "sourceNote": "Resubmitting failed batch requests by custom_id after applying document chunking",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-prompt-engineering-and-structured-output-018",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "prompt-engineering-and-structured-output",
+    "subdomain": "batch-processing",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An architect evaluates migrating an interactive customer support agent to the Message Batches API to take advantage of the 50% discount. Why is the Message Batches API architecturally unsuitable for this use case?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Message Batches enforce strict FIFO queue processing across the workspace, which causes head-of-line blocking for concurrent users."
+      },
+      {
+        "id": "b",
+        "text": "Message Batches do not support prompt caching breakpoints, so multi-turn support sessions forfeit prompt caching discounts."
+      },
+      {
+        "id": "c",
+        "text": "Message Batches are asynchronous with turnaround times up to 24 hours and do not support interactive multi-turn tool loops."
+      },
+      {
+        "id": "d",
+        "text": "The 50% batch discount applies only to prompts under 1,000 tokens, so a support agent's long conversation context would forfeit the savings entirely."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "The Message Batches API is designed for latency-tolerant, offline workloads with turnaround windows up to 24 hours and no real-time latency SLA. Furthermore, it operates on single-request payloads and cannot execute interactive multi-turn agentic loops where tool results are returned mid-conversation to guide subsequent actions.",
+    "distractorNotes": {
+      "a": "Requests in the Message Batches API execute concurrently across Anthropic's processing fleet without sequential FIFO head-of-line blocking.",
+      "b": "Prompt caching is fully supported in Message Batches; the architectural blocker is the asynchronous completion window and lack of interactive turnaround.",
+      "d": "The batch discount is not gated on prompt size; the architectural mismatch is the asynchronous, non-interactive turnaround, not a lost discount."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/batch-processing.md",
+    "sourceNote": "Workload fit and conversational tool-use limitations of the Message Batches API",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-prompt-engineering-and-structured-output-019",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "prompt-engineering-and-structured-output",
+    "subdomain": "multi-pass-review",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A software team generates code using Claude Code and attempts to review it in the same session by prompting: 'Now critique your previous implementation for security vulnerabilities.' The review rarely catches subtle flaws. What explains this failure?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The model has a fixed output token budget, so a combined generate-then-review session exhausts its tokens before it can analyze the code deeply."
+      },
+      {
+        "id": "b",
+        "text": "Asking a model to critique its own output triggers a safety refusal, so it returns a shallow, non-committal review instead of flagging flaws."
+      },
+      {
+        "id": "c",
+        "text": "Reviewing code requires a dedicated review system prompt, and reusing the generation system prompt silently disables the model's analytical evaluation mode."
+      },
+      {
+        "id": "d",
+        "text": "The session context contains the generator's own reasoning history, creating confirmation bias that makes it unlikely to question its own design."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "When an agent reviews its own code within the same conversation context, the preceding chain-of-thought and rationales remain in the prompt history. The model exhibits strong self-confirmation bias, rationalizing its earlier decisions rather than evaluating the code with a fresh, adversarial perspective. Running an independent review instance without the generative history resolves this.",
+    "distractorNotes": {
+      "a": "A review prompt begins a fresh generation with its own token budget; the weakness is confirmation bias from the shared reasoning history, not exhausted tokens.",
+      "b": "Self-critique prompts are not refused; the review is shallow because the session already holds the generator's own justifications, biasing it toward agreement.",
+      "c": "There is no separate 'analytical mode' that a shared system prompt disables; the failure is confirmation bias, because the reviewer sees its own prior reasoning and tends to ratify it."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/code-review.md",
+    "sourceNote": "Overcoming generative confirmation bias by using independent review instances",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-prompt-engineering-and-structured-output-020",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "prompt-engineering-and-structured-output",
+    "subdomain": "multi-pass-review",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An automated PR review pipeline evaluates large pull requests. What multi-pass architecture achieves high review quality without attention dilution?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Run focused per-file passes to evaluate local syntax and logic, followed by a cross-file integration pass to examine data flows and contracts."
+      },
+      {
+        "id": "b",
+        "text": "Concatenate every file into a single large prompt and run one comprehensive review pass, relying on the long context window to hold all files at once."
+      },
+      {
+        "id": "c",
+        "text": "Partition the modified files into arbitrary chunks and run multiple parallel passes, aggregating findings with majority voting."
+      },
+      {
+        "id": "d",
+        "text": "Summarize each file into a short synopsis first, then review only the concatenated summaries to keep the total prompt small."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Multi-pass review architectures separate local analysis from integration analysis. In the first pass, individual files are evaluated for localized bugs, logic errors, and style conformance. In the second pass, the cross-file diff, data flow, and interface contracts are evaluated. This division prevents attention dilution and guarantees depth across both scopes.",
+    "distractorNotes": {
+      "b": "Loading all files into one monolithic pass is exactly what causes attention dilution on large PRs; focused per-file passes plus an integration pass preserve review depth.",
+      "c": "Arbitrary chunking breaks cross-file interface context, and majority voting discards valid localized findings; structured multi-pass reviews separate local file passes from integration passes.",
+      "d": "Reviewing only summaries discards the line-level detail needed to catch real defects; the per-file passes must see actual code, with a later pass for cross-file concerns."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/code-review.md",
+    "sourceNote": "Structuring multi-pass code reviews into localized file passes and cross-file integration passes",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-prompt-engineering-and-structured-output-021",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "prompt-engineering-and-structured-output",
+    "subdomain": "structured-outputs",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An architect designs an extraction service using Claude's Structured Outputs feature (output_config.format and strict: true tool definitions). The team must handle edge cases in downstream pipelines, including safety refusals, property ordering expectations, and schema compilation limits. According to Anthropic documentation, which TWO statements accurately describe the behavioral guarantees and constraints of Claude's Structured Outputs engine? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Standard JSON Schema numerical limits (minimum, maximum) and string length bounds (minLength, maxLength) are compiled natively into the token decoding grammar engine."
+      },
+      {
+        "id": "b",
+        "text": "Properties in generated JSON objects maintain their declared schema order, except that all required properties are emitted before optional properties across the output payload."
+      },
+      {
+        "id": "c",
+        "text": "String enum and const definitions are guaranteed to match the exact character capitalization declared in the schema, preventing case discrepancies in downstream systems."
+      },
+      {
+        "id": "d",
+        "text": "When Claude refuses a request on safety grounds, the API returns HTTP 200 with stop_reason set to refusal and natural language text that does not conform to the schema."
+      },
+      {
+        "id": "e",
+        "text": "Safety refusals under structured outputs immediately terminate generation and return an HTTP 422 status code to prevent invalid schema payloads from reaching downstream callers."
+      }
+    ],
+    "correct": [
+      "b",
+      "d"
+    ],
+    "explanation": "According to the official Structured Outputs documentation, properties in generated JSON objects follow the schema's defined order, with one critical invariant: required properties always appear first, followed by optional properties. Furthermore, when Claude refuses a prompt for safety reasons, the refusal message takes precedence over schema constraints; the API returns an HTTP 200 status code with `stop_reason: 'refusal'`, billing for tokens generated, and output text that does not adhere to the schema.",
+    "distractorNotes": {
+      "a": "Numerical constraints (minimum, maximum, multipleOf) and string length constraints (minLength, maxLength) are not supported natively by the structured outputs engine and return a 400 error unless an SDK automatically transforms them into field descriptions.",
+      "c": "Structured outputs do not guarantee capitalization of string enum and const values (Claude may return title-cased words); applications must compare enum values case-insensitively.",
+      "e": "Safety refusals return HTTP 200 with stop_reason: 'refusal', not HTTP 422 Unprocessable Entity."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs.md",
+    "sourceNote": "Property ordering guarantees and safety refusal precedence under structured outputs",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-prompt-engineering-and-structured-output-022",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "prompt-engineering-and-structured-output",
+    "subdomain": "batch-processing",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An architect designs an asynchronous pipeline using the Message Batches API to process tens of thousands of extraction requests overnight. The engineering team establishes operational policies for handling batch cancellations, request-level failures, and cost tracking. According to vendor documentation, which TWO statements accurately describe the execution lifecycle, billing rules, and failure isolation of the Message Batches API? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Requests within a batch execute independently across four terminal states (succeeded, errored, canceled, expired), and callers are billed exclusively for requests that reach succeeded."
+      },
+      {
+        "id": "b",
+        "text": "If an individual request encounters a schema validation or server error, the entire batch aborts immediately to prevent downstream consumers from ingesting partial output datasets."
+      },
+      {
+        "id": "c",
+        "text": "Canceling an in-flight batch transitions its status to canceling and then ended, preserving downloadable results for all individual requests completed prior to cancellation."
+      },
+      {
+        "id": "d",
+        "text": "Batch requests support setting stream: true to deliver Server-Sent Events (SSE) as each message finishes, enabling real-time streaming ingestion prior to final batch completion."
+      },
+      {
+        "id": "e",
+        "text": "Workspaces are billed at the 50% discounted batch rate for the full estimated token volume of all submitted requests immediately upon batch acceptance, regardless of outcome."
+      }
+    ],
+    "correct": [
+      "a",
+      "c"
+    ],
+    "explanation": "According to the Message Batches API documentation, individual requests in a batch are processed independently and conclude in one of four states: succeeded, errored, canceled, or expired. Workspaces are billed exclusively for succeeded requests (at 50% discount); errored, canceled, and expired requests incur no token charges. When an active batch is canceled via the API, its status transitions to canceling and then ended, and the results URL retains partial results for all requests that completed before cancellation.",
+    "distractorNotes": {
+      "b": "Requests in a batch are handled independently; a validation error or server failure in one request has no impact on sibling requests in the batch.",
+      "d": "Message Batches do not support stream: true because results are returned as a single downloadable JSONL file rather than an SSE stream; including stream: true returns a validation error.",
+      "e": "Workspaces are only billed for requests that successfully complete; billing is not charged upfront or assessed on failed, canceled, or expired items."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/batch-processing.md",
+    "sourceNote": "Message Batches result types, per-request billing, and cancellation partial results",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-prompt-engineering-and-structured-output-023",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "prompt-engineering-and-structured-output",
+    "subdomain": "multi-pass-review",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An engineering organization implements automated pull request reviews using Claude Code with push-triggered reviews. Developers report review churn: after an author pushes a targeted fix for an initial review finding, the subsequent review pass surfaces fresh, low-severity stylistic nits on unchanged parts of the PR, leading to prolonged review cycles. How should the team configure REVIEW.md to establish review convergence while maintaining rigorous defect detection?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Configure a global nit volume rule in REVIEW.md that caps reported nits at zero across all review passes, relying on manual peer review for all stylistic feedback."
+      },
+      {
+        "id": "b",
+        "text": "Split stylistic rules into a separate guidelines document and reference it via @ import syntax in REVIEW.md so review agents load styling checks only on the initial run."
+      },
+      {
+        "id": "c",
+        "text": "Add a re-review convergence instruction in REVIEW.md directing Claude to suppress new nit-level findings and report only Important findings on subsequent review passes."
+      },
+      {
+        "id": "d",
+        "text": "Direct Claude in REVIEW.md to skip verification steps on subsequent pushes and approve the pull request automatically if all previously flagged line comments are resolved."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "According to the Claude Code documentation on customizing reviews in REVIEW.md, teams can tune re-review convergence to guide reviewer behavior on already-reviewed pull requests. Adding a rule such as 'after the first review, suppress new nits and post Important findings only' stops minor revisions from triggering endless style cycles while ensuring critical bugs remain caught. REVIEW.md does not expand @ import syntax (rules must be written inline), and Code Review does not issue formal approvals.",
+    "distractorNotes": {
+      "a": "Setting a blanket zero-nit cap suppresses stylistic feedback during the initial review when such guidance is intended and actionable, rather than addressing re-review churn across iterative pushes.",
+      "b": "Review agents read REVIEW.md as plain instructions as-is; @ import syntax is not expanded and referenced external files are not loaded during review execution.",
+      "d": "Code Review check runs do not approve or block pull requests directly, and skipping verification on subsequent pushes risks missing newly introduced regressions or broken fixes."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/code-review.md",
+    "sourceNote": "Re-review convergence guidelines and plain-instruction formatting in REVIEW.md",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-prompt-engineering-and-structured-output-024",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "prompt-engineering-and-structured-output",
+    "subdomain": "structured-outputs",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An architect designs an agentic extraction pipeline using Claude's Structured Outputs feature with strict tool definitions (strict: true). During load testing with multi-tool extraction schemas, the Messages API rejects requests with HTTP 400 and the error message 'Schema is too complex for compilation'. The team must preserve strict schema validation without dropping required extraction fields. Which architectural adjustment directly reduces the compiled grammar state space to resolve this error?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Wrap all optional properties inside anyOf union definitions so that the constrained decoding grammar compiler can defer parameter validation until inference time."
+      },
+      {
+        "id": "b",
+        "text": "Set additionalProperties to true on nested tool objects and remove explicit field declarations, allowing Claude to emit arbitrary JSON keys without validation errors."
+      },
+      {
+        "id": "c",
+        "text": "Convert existing required properties into optional properties with default schema annotations, allowing the compiler to prune unassigned branch paths during generation."
+      },
+      {
+        "id": "d",
+        "text": "Reduce optional parameters by making fields with known defaults required with explicit values, and flatten deeply nested object hierarchies across the tool definitions."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Claude compiles JSON schemas into a grammar that constrains token decoding. As documented under Structured Outputs complexity limits, optional parameters are particularly expensive because each optional parameter roughly doubles a portion of the grammar's state space. The recommended strategies to reduce compiled grammar complexity are making parameters required where sensible defaults exist (requiring Claude to emit the default explicitly), flattening deeply nested structures, and marking only critical tools as strict. In contrast, anyOf union types incur exponential compilation cost, and strict schemas reject additionalProperties: true with a 400 error.",
+    "distractorNotes": {
+      "a": "Union types (anyOf) and type arrays create exponential compilation cost in grammar construction, worsening compilation complexity rather than resolving it.",
+      "b": "Strict schemas require additionalProperties to be set to false on object schemas; setting additionalProperties to true returns an immediate 400 validation error.",
+      "c": "In constrained decoding, each optional parameter roughly doubles a portion of the grammar's state space; converting required fields to optional expands complexity rather than reducing it."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs.md",
+    "sourceNote": "Strategies for reducing schema complexity and compiled grammar state space",
+    "sourceCheckedAt": "2026-09-17"
+  }
+]

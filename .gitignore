@@ -16,3 +16,15 @@ coverage/
 # Question-authoring scratch dumps. Working notes in a bespoke text format,
 # superseded by the JSON banks under certs/ — keep locally, never commit.
 _audit_*.txt
+
+# Agent skill installs. `npx skills add .` copies skills/ into .agents/skills/
+# — the vendor-neutral directory most coding agents read natively — and
+# symlinks the few that use their own path (.claude/skills for Claude Code).
+# All of it is generated from skills/, and which agent you run is a personal
+# choice, so none of it is repository content. skills-lock.json pins external
+# skill sources; ours are local, so it only churns when a workflow is edited.
+# these three are what `npx skills add . -a '*'` actually creates
+.agents/
+.claude/
+agent/
+skills-lock.json

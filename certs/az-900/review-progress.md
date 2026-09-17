@@ -50,3 +50,17 @@ This is a forcing-function bank for validating multi-cert support, not a
 full-size replacement for Microsoft's learning material. Future expansion
 should prioritize availability zones, compute-type comparisons, management
 groups, and serverless concepts.
+
+## Figure-bearing claims baseline — 2026-09-13
+
+A mechanical sweep of the free-text surface (`explanation`, `sourceNote`,
+`distractorNotes`, keyed option text) across all 18 questions found **no figure-bearing
+items** in this bank.
+
+- **Total questions in bank**: 18
+- **Figure-bearing questions**: 0
+
+**No defect rate is defined for this bank.** With an empty population there is no rate
+to report; an earlier version of this section recorded "0 / 0 = 0.0%", which is not a
+measurement and must not be averaged into a corpus-wide figure as though it were a
+clean bank.

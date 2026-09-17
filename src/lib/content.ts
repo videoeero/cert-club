@@ -42,8 +42,6 @@ function isQuestion(value: unknown): value is Question {
       value.difficulty === "medium" ||
       value.difficulty === "hard") &&
     (value.status === "draft" || value.status === "reviewed") &&
-    (value.scope === "core" || value.scope === "deep") &&
-    (value.scopeNote === undefined || typeof value.scopeNote === "string") &&
     typeof value.stem === "string" &&
     Array.isArray(value.options) &&
     value.options.every(isOption) &&
@@ -75,8 +73,13 @@ function isManifest(value: unknown): value is Manifest {
     typeof value.cert === "string" &&
     typeof value.name === "string" &&
     (value.status === "draft" || value.status === "stable") &&
+    typeof value.updatedAt === "string" &&
     typeof value.examUrl === "string" &&
     typeof value.contentLicense === "string" &&
+    (value.examQuestionCount === undefined ||
+      typeof value.examQuestionCount === "number") &&
+    (value.examDurationMinutes === undefined ||
+      typeof value.examDurationMinutes === "number") &&
     Array.isArray(value.domains) &&
     value.domains.every(
       (domain) =>

@@ -1,0 +1,996 @@
+[
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-001",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "path-specific-rules",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A project has test files distributed across multiple subdirectories alongside source code. The team wants uniform testing conventions to apply automatically whenever Claude Code works on test files, without loading those conventions during unrelated edits. What is the recommended configuration?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Add nested CLAUDE.md files in every test subdirectory instructing Claude Code to inspect neighboring source files."
+      },
+      {
+        "id": "b",
+        "text": "Define a custom slash command in .claude/commands/ that runs an interactive linter check before every write operation."
+      },
+      {
+        "id": "c",
+        "text": "Create rule files in .claude/rules/ with YAML frontmatter specifying paths glob patterns matching the test files."
+      },
+      {
+        "id": "d",
+        "text": "Configure the root CLAUDE.md file with an @include-glob directive pointing to the workspace test configuration file."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Rule files placed in .claude/rules/ support YAML frontmatter with a paths field containing glob patterns (such as **/*.test.ts). Claude Code conditionally loads these rules only when editing matching files, ensuring conventions apply across all directories without bloating context for non-test tasks.",
+    "distractorNotes": {
+      "a": "Subdirectory CLAUDE.md files do not scale when test files are distributed throughout dozens of folders.",
+      "b": "Slash commands require manual invocation and do not provide automatic convention loading during edits.",
+      "d": "CLAUDE.md supports @import for file inclusion, but does not support an @include-glob directive for path matching."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/memory.md",
+    "sourceNote": "Path-specific rules in .claude/rules/ using YAML frontmatter paths glob patterns",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-002",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "claude-md-hierarchy",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A tech lead configures testing conventions for a repository, but newly onboarded engineers report that Claude Code ignores these conventions on their fresh checkouts. The lead's own environment follows the conventions perfectly. What is the most likely configuration error?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The lead placed the conventions in a nested subdirectory's CLAUDE.md that sits below their own working directory, so root-level sessions on fresh checkouts skip it."
+      },
+      {
+        "id": "b",
+        "text": "The new engineers must run a one-time claude init command to register the repository's CLAUDE.md before it takes effect on their machines."
+      },
+      {
+        "id": "c",
+        "text": "Project-level CLAUDE.md files require an explicit --project flag during CLI startup, without which Claude Code reads only user-scoped configuration."
+      },
+      {
+        "id": "d",
+        "text": "The conventions were saved in ~/.claude/CLAUDE.md on the lead's machine rather than in the repository's root CLAUDE.md."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Claude Code's configuration hierarchy includes user-scoped memory (`~/.claude/CLAUDE.md`) and project-scoped memory (`CLAUDE.md` or `.claude/CLAUDE.md` in the project root). Instructions placed in `~/.claude/` only affect that individual user's machine. To share conventions across all developers, they must be placed in the project repository and committed to version control.",
+    "distractorNotes": {
+      "a": "A nested CLAUDE.md is still committed and pulled, and Claude Code loads it when working in that subtree; the symptom points to a user-scoped ~/.claude/CLAUDE.md that never leaves the lead's machine.",
+      "b": "Claude Code auto-discovers the repository's CLAUDE.md with no init or registration step; it works for everyone once it lives at the repo root and is committed.",
+      "c": "Claude Code automatically discovers project-scoped CLAUDE.md files by traversing upward from the current directory without requiring a --project flag."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/memory.md",
+    "sourceNote": "Distinguishing user-scoped ~/.claude/CLAUDE.md from project-scoped CLAUDE.md",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-003",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "claude-md-hierarchy",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A monorepo contains several distinct packages maintained by different squads. The team wants to keep the root CLAUDE.md concise while importing specialized package standards maintained in separate files. What syntax should be used?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Use the `@path/to/import` syntax (for example `@./packages/billing/CLAUDE.md`) inside the project markdown configuration."
+      },
+      {
+        "id": "b",
+        "text": "Use standard Markdown link syntax [Billing Standards](./packages/billing/CLAUDE.md) to instruct Claude Code to inline the file at launch."
+      },
+      {
+        "id": "c",
+        "text": "Add each package's CLAUDE.md path to a 'memory' array in the repository's package.json so Claude Code loads them at startup."
+      },
+      {
+        "id": "d",
+        "text": "Define an 'imports' array in the root .claude/settings.json listing the relative file paths of each package memory file."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Claude Code supports modular memory through the `@path/to/import` syntax in CLAUDE.md files: a line beginning with `@` followed by a path inlines that file. This enables referencing external markdown files across packages or documentation trees, keeping the root memory clean and maintainable while pulling in domain-specific standards. Imports resolve recursively to a maximum depth of four hops, and import parsing skips Markdown code spans and fenced code blocks.",
+    "distractorNotes": {
+      "b": "Standard Markdown links [label](path) are rendered as regular link text and do not inline file contents into the context window; an `@path` import line is required.",
+      "c": "package.json is not part of Claude Code memory resolution; specialized files are pulled in with an `@path` import line inside the markdown, not a package.json array.",
+      "d": ".claude/settings.json configures permissions and environment settings, not markdown memory concatenation; importing modular memory files is performed performed with `@path` import lines inside the markdown itself."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/memory.md",
+    "sourceNote": "Import additional files — `@path/to/import` syntax for modular, maintainable CLAUDE.md configurations",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-004",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "claude-md-hierarchy",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A monolithic CLAUDE.md file has expanded to over 4,000 lines, covering frontend styling, database migration rules, Docker setup, and API security. Developers notice slower startup and frequent token waste on unrelated tasks. What is the recommended architectural remedy?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Move the conventions into individual developer CLAUDE.local.md files so the shared project CLAUDE.md file stays under 50 lines."
+      },
+      {
+        "id": "b",
+        "text": "Split the monolithic file into focused topic files inside .claude/rules/ (e.g. testing.md, db.md) using conditional path scoping where appropriate."
+      },
+      {
+        "id": "c",
+        "text": "Move the entire 4,000-line file into a system prompt via settings so it loads once and is cached, rather than keeping it as CLAUDE.md."
+      },
+      {
+        "id": "d",
+        "text": "Keep the single file but wrap each section in HTML comments so Claude Code skips the irrelevant sections automatically."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Monolithic memory files inflate context windows and consume tokens regardless of task relevance. Decomposing instructions into topic-specific files under `.claude/rules/`—and leveraging YAML frontmatter paths to conditionally load them only when editing relevant files—keeps context focused and reduces overhead.",
+    "distractorNotes": {
+      "a": "CLAUDE.local.md is intended for personal user-specific overrides and is gitignored by default, making it incapable of maintaining shared team standards.",
+      "c": "Relocating the same 4,000 lines into a system prompt still injects all of it every turn; the remedy is splitting into focused, path-scoped topic files so only relevant rules load.",
+      "d": "HTML comments do not make Claude Code skip or unload a section — the text is still read and tokenized; conditional path scoping across separate rule files is what limits what loads."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/memory.md",
+    "sourceNote": "Splitting monolithic CLAUDE.md files into topic-specific rule files in .claude/rules/",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-005",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "claude-md-hierarchy",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An engineer edits a file in a deeply nested subdirectory and observes unexpected model behavior. How can the engineer inspect which memory files and rules are currently loaded in the active session?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Run /doctor to validate the installation, which also lists every CLAUDE.md and rule file loaded into the current session."
+      },
+      {
+        "id": "b",
+        "text": "Run the /rules slash command to display a live evaluation tree of all glob patterns matched against the current working file."
+      },
+      {
+        "id": "c",
+        "text": "Run the /memory slash command to inspect active memory files and diagnostic rule loading status."
+      },
+      {
+        "id": "d",
+        "text": "Add --verbose to the launch command so startup logs print the configuration file paths, then read them from the terminal scrollback."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Claude Code provides the `/memory` command (or `/context`) to inspect what memory sources, CLAUDE.md files, and path-specific rules are currently loaded into context. This provides immediate visibility into configuration resolution.",
+    "distractorNotes": {
+      "a": "/doctor diagnoses installation and environment health; it does not enumerate the memory files loaded for the session — that is what /memory reports.",
+      "b": "There is no /rules command in Claude Code; active memory files and path-scoped rules are inspected using /memory (or /context).",
+      "d": "Verbose launch logging is not the documented way to inspect resolved memory and does not show which rules are active mid-session; the /memory command reports the loaded memory files directly."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/memory.md",
+    "sourceNote": "Using /memory to inspect active memory files and rule resolution diagnostics",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-006",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "commands-and-skills",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A team wants to define a custom slash command /e2e-check that runs end-to-end regression tests and generates a summary. All developers on the project should have access to it immediately upon git pull. Where must the command file be placed?",
+    "options": [
+      {
+        "id": "a",
+        "text": "In ~/.claude/commands/e2e-check.md on the lead developer's machine, relying on background cloud synchronization across accounts."
+      },
+      {
+        "id": "b",
+        "text": "Inside the root package.json under a 'slashCommands' key configured with raw bash execution scripts for pipeline automation."
+      },
+      {
+        "id": "c",
+        "text": "Committed to the repository root as e2e-check.md alongside the README, where Claude Code auto-discovers top-level command files."
+      },
+      {
+        "id": "d",
+        "text": "In the project repository under .claude/commands/e2e-check.md"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Project-scoped custom slash commands are stored in `.claude/commands/` within the repository root. When committed to git, any team member who pulls the repository gets the custom command automatically available in their Claude Code sessions.",
+    "distractorNotes": {
+      "a": "Files placed in ~/.claude/commands/ are user-scoped and not shared through project git repositories.",
+      "b": "Claude Code does not parse package.json for custom slash command definitions.",
+      "c": "Claude Code resolves project slash commands from .claude/commands/, not from arbitrary top-level markdown files; placing it at the repo root does not register the command."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/skills.md",
+    "sourceNote": "Project-scoped custom slash commands in .claude/commands/ for version-controlled team sharing",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-007",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "commands-and-skills",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An engineer authors a custom skill in .claude/skills/audit-architecture/SKILL.md that performs extensive codebase exploration, reading dozens of files and generating lengthy diagnostic trees. What frontmatter configuration prevents this exploratory context from polluting the main conversation?",
+    "options": [
+      {
+        "id": "a",
+        "text": "context: fork, which executes the skill in an isolated subagent context and returns only the final response to the main session."
+      },
+      {
+        "id": "b",
+        "text": "context: background, which dispatches the skill to run asynchronously as an unmonitored background job without blocking user input."
+      },
+      {
+        "id": "c",
+        "text": "output: silent, which suppresses all intermediate tool call outputs and file reading tokens from being appended to the transcript."
+      },
+      {
+        "id": "d",
+        "text": "context: isolated, which executes the skill in the main session but automatically purges tool call history upon skill completion."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Setting `context: fork` in a skill's YAML frontmatter instructs Claude Code to run the skill inside an isolated sub-agent context. The exploratory reading and voluminous intermediate outputs remain confined to the fork, and only the final synthesis is returned to the main conversation.",
+    "distractorNotes": {
+      "b": "'context: background' is not a valid Agent Skills frontmatter property; isolated execution in child contexts is configured with 'context: fork'.",
+      "c": "'output: silent' is an invented property; suppressing exploration tokens from polluting the main conversation is achieved via 'context: fork'.",
+      "d": "'context: isolated' is not a valid frontmatter value; Claude Code uses 'context: fork' to run the skill in a child subagent."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/skills.md",
+    "sourceNote": "Using context: fork frontmatter to isolate verbose skill execution from main conversation context",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-008",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "commands-and-skills",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A skill is created to generate architectural documentation. To ensure that invoking this skill can never inadvertently modify or delete source code files, how should the skill frontmatter be configured?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Instruct Claude in the skill text: 'Please do not edit files, we strictly forbid any write operations during this task.'"
+      },
+      {
+        "id": "b",
+        "text": "Configure allowed-tools to include only read and search tools (such as Read, Grep, Glob), omitting Write and Edit."
+      },
+      {
+        "id": "c",
+        "text": "Add a hook that runs after each Edit or Write and reverts any change the skill makes to source files."
+      },
+      {
+        "id": "d",
+        "text": "Configure git pre-commit hooks to reject all commits on the current branch during the duration of the skill execution."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "The `allowed-tools` frontmatter field in a skill explicitly defines which tools are accessible during its execution. By restricting `allowed-tools` to read-only utilities (`Read`, `Grep`, `Glob`), the model is deterministically prevented from calling write or modification tools (`Write`, `Edit`, `Bash`).",
+    "distractorNotes": {
+      "a": "Prompt instructions are probabilistic and do not offer deterministic security guarantees.",
+      "c": "A revert-after-write hook still lets the skill perform writes and only undoes them afterward, leaving a window for damage; omitting Write and Edit from allowed-tools prevents the writes entirely.",
+      "d": "Git commit rejection does not prevent the agent from modifying working tree files on disk."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/skills.md",
+    "sourceNote": "Restricting tool access during skill execution using allowed-tools frontmatter",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-009",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "commands-and-skills",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A skill requires a mandatory ticket number argument when invoked (e.g. /deploy-check PROJ-123). What frontmatter property prompts the developer for the required argument if they invoke the skill without parameters?",
+    "options": [
+      {
+        "id": "a",
+        "text": "required-param: true, throwing a runtime validation error if the parameter is omitted in the shell"
+      },
+      {
+        "id": "b",
+        "text": "ask-input: yes, pausing execution to prompt the developer for missing arguments interactively"
+      },
+      {
+        "id": "c",
+        "text": "argument-hint: '<ticket-number>', displaying an interactive prompt when invoked without arguments"
+      },
+      {
+        "id": "d",
+        "text": "arguments: required, which blocks invocation and returns an error until the developer supplies the ticket number."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "In Agent Skills, the `argument-hint` frontmatter property provides an autocompletion and prompting hint in the CLI. When a developer types the command without arguments, Claude Code displays the argument hint to prompt for required parameters.",
+    "distractorNotes": {
+      "a": "required-param is not a valid Agent Skills frontmatter specification.",
+      "b": "ask-input is not a recognized property in Claude Code skills.",
+      "d": "There is no 'arguments: required' property; Claude Code uses 'argument-hint' to show the expected argument when a skill is invoked without one."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/skills.md",
+    "sourceNote": "Using argument-hint frontmatter to prompt users for required parameters in skills",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-010",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "commands-and-skills",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An architect needs to establish guidelines for when to place instructions in CLAUDE.md versus when to package them as a custom Skill. What is the fundamental distinction?",
+    "options": [
+      {
+        "id": "a",
+        "text": "CLAUDE.md is loaded only in interactive sessions, whereas Skills are the only mechanism that works in non-interactive or CI runs."
+      },
+      {
+        "id": "b",
+        "text": "Skills can bundle helper scripts and resources, whereas CLAUDE.md can hold at most a few hundred words before Claude Code truncates it."
+      },
+      {
+        "id": "c",
+        "text": "CLAUDE.md conventions apply to every model, while a Skill activates only when the user picks it from a mandatory dropdown before each session."
+      },
+      {
+        "id": "d",
+        "text": "CLAUDE.md holds universal project conventions loaded continually, while Skills package task-specific workflows invoked on demand."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "CLAUDE.md provides ambient, persistent context (coding standards, architectural invariants, testing commands) loaded into every session. Skills provide specialized, on-demand procedural capabilities (such as code review checklists, database migration audits, or release notes generators) invoked when specific tasks are performed.",
+    "distractorNotes": {
+      "a": "Both CLAUDE.md and Skills are available in interactive and non-interactive runs; the real distinction is that CLAUDE.md loads continuously while a Skill is invoked on demand.",
+      "b": "CLAUDE.md is not truncated at a few hundred words; while Skills can bundle resources, the fundamental distinction is continuous project conventions versus on-demand task workflows.",
+      "c": "Skills are invoked on demand by the model or user when relevant, not selected from a mandatory pre-session dropdown; CLAUDE.md holds always-loaded conventions and Skills package task-specific workflows."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/skills.md",
+    "sourceNote": "Architectural distinction between ambient CLAUDE.md instructions and on-demand Skills",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-011",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "path-specific-rules",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A full-stack project has strict Terraform security policies that are completely irrelevant when editing React UI components. How can the team ensure Terraform rules load only when infrastructure files are being modified?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Create .claude/rules/terraform.md with YAML frontmatter paths: ['terraform/**/*', '**/*.tf']."
+      },
+      {
+        "id": "b",
+        "text": "Add an exclude pattern under claudeMdExcludes in .claude/settings.json to ignore the rules during frontend file editing."
+      },
+      {
+        "id": "c",
+        "text": "Configure a PreToolUse hook that inspects target file paths and dynamically appends Terraform policies into system context."
+      },
+      {
+        "id": "d",
+        "text": "Add a conditional at the top of the root CLAUDE.md instructing Claude to apply the Terraform rules only when it notices it is editing infrastructure files."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Files placed in `.claude/rules/` support YAML frontmatter with a `paths` property. By specifying glob patterns (e.g. `paths: ['terraform/**/*', '**/*.tf']`), Claude Code conditionally loads the rule file into context only when files matching those paths are being inspected or edited, preserving context tokens during frontend work.",
+    "distractorNotes": {
+      "b": "claudeMdExcludes suppresses matching CLAUDE.md files globally across all turns, rather than conditionally loading them when editing specific files.",
+      "c": "Hooks execute shell scripts or validate operations, but do not provide declarative path-based memory injection; .claude/rules/ with paths frontmatter is the documented mechanism.",
+      "d": "A natural-language conditional in the root CLAUDE.md still loads the Terraform rules into every session and relies on the model to self-apply them; path frontmatter in a rules file loads them only when matching files are touched."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/memory.md",
+    "sourceNote": "Using YAML frontmatter paths in .claude/rules/ to conditionally load path-scoped conventions",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-012",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "path-specific-rules",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A repository has unit test files co-located next to implementation files across 60 directories (e.g. src/utils/format.test.ts next to format.ts). Why are path-specific rules in .claude/rules/ preferred over directory-level CLAUDE.md files for testing conventions?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Directory-level CLAUDE.md files override the root project configuration, discarding global build commands whenever test files are read."
+      },
+      {
+        "id": "b",
+        "text": "A single rule file using a glob pattern matches all test files across the repository, avoiding duplicated maintenance across 60 folders."
+      },
+      {
+        "id": "c",
+        "text": "Directory-level CLAUDE.md files require explicit @path import statements in the root CLAUDE.md to be loaded during codebase exploration."
+      },
+      {
+        "id": "d",
+        "text": "Path-specific rules enforce strict sandbox constraints that prevent edits to non-test files, whereas CLAUDE.md files are strictly ignored."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "When files sharing conventions (such as test files) are distributed throughout many subdirectories, relying on directory-level CLAUDE.md files requires creating and maintaining duplicate configuration files across every directory. In contrast, a single rule file in `.claude/rules/` with a glob pattern like `paths: ['**/*.test.ts']` automatically applies to all matching files across the entire repository while loading only when relevant files are inspected.",
+    "distractorNotes": {
+      "a": "Claude Code concatenates ancestor CLAUDE.md files down the directory tree from root to leaf; nested files supplement root instructions rather than overriding or discarding them.",
+      "c": "Claude Code automatically discovers and loads nested CLAUDE.md files on demand when reading files in those subdirectories; explicit @ imports in root CLAUDE.md are not required.",
+      "d": "Path-specific rules provide contextual guidance to the model rather than hard sandbox enforcement; blocking tool actions requires settings or hooks."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/memory.md",
+    "sourceNote": "Glob-based path matching versus maintaining numerous directory-level memory files",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-013",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "plan-mode-workflows",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An architect is tasked with upgrading an authentication library across 45 files, which requires evaluating two competing breaking changes and establishing cross-module token refresh contracts. How should the work be initiated in Claude Code?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Begin in direct execution mode and immediately edit the core security module, letting unit tests reveal broken dependencies."
+      },
+      {
+        "id": "b",
+        "text": "Launch a custom subagent with context: fork to execute the full refactoring immediately without creating an upfront plan."
+      },
+      {
+        "id": "c",
+        "text": "Use plan mode to explore the codebase, assess dependencies, and establish an approved design before executing changes."
+      },
+      {
+        "id": "d",
+        "text": "Execute the migration using headless claude -p in the background, allowing the model to autonomously commit edits across all files."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Plan mode is designed specifically for complex, multi-file tasks involving architectural choices, trade-offs, and broad refactoring. It allows Claude Code to safely inspect the codebase, identify dependencies, evaluate alternative approaches, and present a structured implementation plan for user review before committing any changes.",
+    "distractorNotes": {
+      "a": "Jumping directly into code modifications on broad multi-file refactorings risks breaking cross-module contracts and requires costly rework.",
+      "b": "Executing broad architectural refactoring in a subagent without an approved implementation plan risks compounding broken contracts across dependent modules.",
+      "d": "Running headless batch commands without an approved plan and user review creates compounding architectural drift across complex multi-file migrations."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/overview.md",
+    "sourceNote": "Using plan mode for complex multi-file architectural analysis before committing modifications",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-014",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "plan-mode-workflows",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A CI failure points to a single null pointer exception in src/utils/date.ts with an explicit line number and stack trace. Which interaction mode is most efficient?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Full plan mode with an exhaustive architectural review and comprehensive dependency mapping across all modules."
+      },
+      {
+        "id": "b",
+        "text": "Launch a general codebase-exploration subagent to map the full dependency graph of date.ts before touching the reported line."
+      },
+      {
+        "id": "c",
+        "text": "Turn on extended thinking with a large reasoning budget to reason exhaustively about every edge case before editing the single line."
+      },
+      {
+        "id": "d",
+        "text": "Direct execution mode, allowing Claude to inspect the specific file and apply the targeted fix immediately."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Direct execution mode is optimal for well-defined, localized tasks where the problem and target file are already known (e.g. a simple bug fix with a clear stack trace). Entering plan mode for small, well-scoped fixes adds unnecessary conversational overhead and planning latency.",
+    "distractorNotes": {
+      "a": "Entering plan mode for a single-line null check adds unnecessary steps and slows developer velocity.",
+      "b": "The stack trace already localizes the defect to one line, so mapping the whole dependency graph first adds exploration overhead with no benefit; direct execution fixes it immediately.",
+      "c": "A pinpointed null-pointer fix does not need a large extended-thinking budget; direct inspection and a targeted edit resolve it without the added latency and tokens."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/overview.md",
+    "sourceNote": "Direct execution mode for well-scoped, localized bug fixes with known stack traces",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-015",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "plan-mode-workflows",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "During a large refactoring task in Claude Code, extensive exploration of legacy source trees threatens to fill the context window with file contents. How does Claude Code's Explore subagent protect session context?",
+    "options": [
+      {
+        "id": "a",
+        "text": "It isolates verbose file searching and reading inside a child context, returning only high-level findings to the main session."
+      },
+      {
+        "id": "b",
+        "text": "It summarizes each file with a smaller, cheaper model and injects those summaries directly into the main session's context."
+      },
+      {
+        "id": "c",
+        "text": "It triggers automatic context compaction after every individual file read, discarding earlier conversation turns from the main session."
+      },
+      {
+        "id": "d",
+        "text": "It caps the main session to a fixed number of files per task, refusing to open additional files once the limit is reached."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "The Explore subagent operates in an isolated context window. When tasked with locating files, patterns, or architectural relationships, it performs verbose searches and file inspections within its own window and passes only concise summaries back to the parent session, preventing main context window exhaustion.",
+    "distractorNotes": {
+      "b": "The protection comes from isolating the verbose reading in a separate child context and returning only findings, not from summarizing files with a cheaper model into the main session.",
+      "c": "Context compaction (/compact) can summarize prior turns, but the Explore subagent prevents context bloat natively by running searches in an isolated child context rather than compacting the main session after every read.",
+      "d": "The Explore subagent does not enforce a hard per-task file cap on the main session; it offloads verbose searching and reading into a child context and returns only high-level findings."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
+    "sourceNote": "Isolating verbose codebase exploration in subagents to preserve main session context",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-016",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "iterative-refinement",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A team asks Claude Code to implement a complex date formatting function using a lengthy natural language prompt, but the generated output repeatedly fails edge cases. What is the most effective prompt engineering refinement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Expand the prompt with an exhaustive list of negative constraints describing every forbidden date format output."
+      },
+      {
+        "id": "b",
+        "text": "Provide concrete input and output examples that demonstrate expected transformations across tricky edge cases."
+      },
+      {
+        "id": "c",
+        "text": "Increase the sampling temperature to 1.0 to encourage diverse probabilistic exploration of date arithmetic paths."
+      },
+      {
+        "id": "d",
+        "text": "Append general quality modifiers instructing the model to think carefully and write bug-free enterprise-grade code."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "When natural language specifications are complex or ambiguous, providing concrete input/output examples (multishot prompting) is the most reliable way to clarify expected transformations and boundary behavior. Examples ground the model in exact data shapes and edge cases far more effectively than stacking negative constraints, raising temperature, or adding generic quality adjectives.",
+    "distractorNotes": {
+      "a": "Negative constraints ('do not do X') are harder for language models to parse consistently than positive specifications and concrete input/output demonstrations.",
+      "c": "Increasing temperature increases output variance and randomness, which is counterproductive for deterministic formatting and edge-case logic.",
+      "d": "Vague quality modifiers and generic exhortations ('think carefully', 'write enterprise-grade code') do not provide concrete specifications for ambiguous edge cases."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices.md",
+    "sourceNote": "Using concrete input/output examples to disambiguate complex transformation requirements",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-017",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "iterative-refinement",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "When iterating with Claude Code to resolve a complex test suite failure, which approach enables the fastest and most accurate convergence on the fix?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Clear session context and describe the intended feature behavior in natural language without the error output."
+      },
+      {
+        "id": "b",
+        "text": "Enter plan mode to perform an architectural review of the entire test framework before inspecting the failure."
+      },
+      {
+        "id": "c",
+        "text": "Feed the actual test failure output and stack traces to Claude Code so it can diagnose root causes from errors."
+      },
+      {
+        "id": "d",
+        "text": "Instruct Claude Code to rewrite the entire affected module from scratch without inspecting test failure outputs."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Test-driven debugging in Claude Code converges fastest when the model is provided with concrete diagnostic feedback, such as terminal test outputs, stack traces, and expected-versus-actual assertion diffs. Claude Code uses these exact error details to trace code execution paths and apply targeted corrections, rather than guessing from abstract descriptions or rewriting entire modules.",
+    "distractorNotes": {
+      "a": "Starting over and re-describing requirements in natural language discards the precise diagnostic symptoms needed to isolate the bug.",
+      "b": "Entering plan mode to review the entire test framework adds conversational latency and broad exploration overhead when a concrete stack trace already isolates the bug.",
+      "d": "Rewriting entire modules from scratch introduces massive regression risk and discards established, working implementation logic."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/overview.md",
+    "sourceNote": "Feeding test failure traces to guide targeted, test-driven iterative fixes",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-018",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "iterative-refinement",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An engineer needs Claude Code to design a high-throughput caching layer for an unfamiliar domain. Which prompt pattern helps uncover architectural failure modes and design trade-offs before writing code?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The persona pattern: instruct Claude to adopt the persona of a senior cache engineer and immediately generate the implementation."
+      },
+      {
+        "id": "b",
+        "text": "The few-shot pattern: supply code snippets from an existing Redis service and ask Claude to adapt them directly without asking questions."
+      },
+      {
+        "id": "c",
+        "text": "Direct implementation prompt: ask Claude to produce a complete caching module from default assumptions, resolving edge cases later in testing."
+      },
+      {
+        "id": "d",
+        "text": "The interview pattern: ask Claude to interview the engineer with clarifying questions about invalidation, consistency, and traffic patterns."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "The interview pattern instructs Claude to probe the user with targeted questions regarding requirements, failure modes, scale constraints, and invalidation strategies before writing code. This surfaces critical architectural considerations that the developer might not have anticipated.",
+    "distractorNotes": {
+      "a": "Adopting a persona directs style or focus, but does not probe the engineer for unstated domain constraints, invalidation rules, or scale requirements before writing code.",
+      "b": "Few-shot examples provide syntax or formatting patterns, but do not uncover architectural constraints or operational trade-offs for an unfamiliar domain.",
+      "c": "Generating code immediately based on default assumptions bypasses crucial requirement analysis and leads to expensive architectural rework."
+    },
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices.md",
+    "sourceNote": "Using the interview pattern to surface requirements and design considerations before implementation",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-019",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "ci-cd-integration",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A CI/CD pipeline step invokes Claude Code to review incoming pull requests: `claude 'Review this PR for security vulnerabilities'`. The CI build hangs indefinitely and times out. What flag is required to run Claude Code in non-interactive CI environments?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The -p (or --print) flag to run non-interactively, stream or return results to stdout, and exit cleanly."
+      },
+      {
+        "id": "b",
+        "text": "The --daemon flag to detach the process into a background systemd unit that runs detached from the terminal session."
+      },
+      {
+        "id": "c",
+        "text": "The --batch flag to queue the prompt into Claude Code's background worker daemon and poll for job completion."
+      },
+      {
+        "id": "d",
+        "text": "Set a CLAUDE_NONINTERACTIVE=1 environment variable, which suppresses the interactive prompt while keeping the default REPL running."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "By default, Claude Code runs as an interactive terminal application awaiting user prompts. In automated pipelines and scripts, the `-p` (or `--print`) flag runs Claude Code non-interactively in headless mode, processing the prompt, outputting the result, and exiting immediately.",
+    "distractorNotes": {
+      "b": "Claude Code does not use a --daemon flag for CI/CD runs.",
+      "c": "Claude Code does not provide a --batch flag for asynchronous worker queuing; headless runs in CI pipelines execute synchronously via -p (or --print).",
+      "d": "No environment variable turns the interactive REPL into a clean one-shot run; the -p/--print flag is what makes Claude Code execute non-interactively and exit."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/headless.md",
+    "sourceNote": "Running Claude Code non-interactively in automated pipelines with the -p flag",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-020",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "ci-cd-integration",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An automated pipeline runs Claude Code to perform security scanning on PRs and needs to parse the results programmatically to post GitHub inline comments. What CLI flags ensure reliable, structured output?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Instruct Claude in the prompt to format output as XML and parse stdout using custom regular expressions in bash scripts."
+      },
+      {
+        "id": "b",
+        "text": "Use --output-format json with --json-schema to enforce structured, machine-parseable JSON adhering to the review schema."
+      },
+      {
+        "id": "c",
+        "text": "Set --output-format text and parse the human-readable summary with a downstream LLM call that converts it into JSON."
+      },
+      {
+        "id": "d",
+        "text": "Pipe standard error through grep and awk to extract line numbers and file paths from compiler and linter stack traces."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Running Claude Code in CI with `--output-format json` and `--json-schema` enforces structured outputs matching a defined schema. This guarantees that findings (file paths, line numbers, severity, descriptions) are returned as valid JSON that downstream CI scripts can reliably parse and post as inline comments.",
+    "distractorNotes": {
+      "a": "Parsing unstructured text or informal XML with regex is brittle and prone to breakage.",
+      "c": "Converting free-text output to JSON with a second LLM call adds cost and a new failure point; --output-format json with a schema produces machine-parseable results directly.",
+      "d": "Piping stderr with awk fails when review findings are conversational or multi-line."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/headless.md",
+    "sourceNote": "Using --output-format json and --json-schema for machine-readable pipeline integrations",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-021",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "claude-md-hierarchy",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An architect designs the configuration hierarchy for a multi-package monorepo using Claude Code. The team wants to ensure project conventions, shared standards, and team-specific instructions load predictably without bloating context or causing silent configuration overrides. According to Claude Code's memory resolution architecture, which TWO statements accurately describe how CLAUDE.md files are discovered, ordered, and loaded across the project hierarchy? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Discovered CLAUDE.md files from ancestor directories down to the working directory are concatenated into context in root-to-leaf order rather than overriding each other."
+      },
+      {
+        "id": "b",
+        "text": "Personal preferences in CLAUDE.local.md are evaluated before project CLAUDE.md instructions at each level to ensure team standards take precedence over personal settings."
+      },
+      {
+        "id": "c",
+        "text": "Memory files residing in subdirectories below the working directory are loaded on demand when Claude Code reads files in those directories, rather than at session launch."
+      },
+      {
+        "id": "d",
+        "text": "Organization managed policy CLAUDE.md files can be selectively bypassed by individual repositories by specifying their absolute file paths in the claudeMdExcludes setting."
+      },
+      {
+        "id": "e",
+        "text": "Nested subdirectory CLAUDE.md files completely shadow and discard all instructions inherited from ancestor CLAUDE.md files located in parent directories across the project tree."
+      }
+    ],
+    "correct": [
+      "a",
+      "c"
+    ],
+    "explanation": "In Claude Code's memory hierarchy, discovered CLAUDE.md and CLAUDE.local.md files from the filesystem root down to the current working directory are concatenated together into the context window rather than overriding or shadowing each other; ordering root-to-leaf ensures that instructions closer to where the session launched are read last. Furthermore, memory files located in subdirectories beneath the working directory are not loaded at launch to prevent context bloat; they are included on demand when Claude Code reads files in those subdirectories.",
+    "distractorNotes": {
+      "b": "CLAUDE.local.md is appended after CLAUDE.md within each directory level, so personal notes are the last instructions injected into context at that level rather than loading first.",
+      "d": "Managed policy CLAUDE.md files deployed by IT or MDM apply unconditionally across all repositories on the machine and cannot be bypassed or excluded via claudeMdExcludes.",
+      "e": "Claude Code concatenates ancestor memory files together rather than shadowing them; instructions from parent folders remain active alongside subdirectory instructions."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/memory.md",
+    "sourceNote": "Concatenation hierarchy, subdirectory on-demand loading, and local override ordering",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-022",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "ci-cd-integration",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An infrastructure engineer configures automated Claude Code jobs in a continuous integration (CI/CD) pipeline using headless mode (claude -p). The team wants reproducible, secure script executions that prevent untrusted repository hooks from running and avoid interactive authentication prompts. According to vendor documentation, which TWO statements accurately describe the operational and security behavior of Claude Code in this non-interactive environment? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Running claude -p without the --bare flag suspends execution and prompts the runner console for interactive workspace trust before executing repository hooks."
+      },
+      {
+        "id": "b",
+        "text": "Passing the --bare flag skips auto-discovery of CLAUDE.md files, hooks, custom skills, and MCP servers, ensuring clean and reproducible execution in CI runners."
+      },
+      {
+        "id": "c",
+        "text": "Background subagents spawned during a claude -p run are abruptly terminated after a 5-second grace period following completion of the primary coordinator prompt turn."
+      },
+      {
+        "id": "d",
+        "text": "In bare mode, Claude Code never reads stored OAuth credentials or the system keychain, requiring explicit API key provisioning through environment variables."
+      },
+      {
+        "id": "e",
+        "text": "Bare mode restricts Claude Code to executing custom slash commands while completely stripping access to the built-in Bash shell and file editing tool primitives."
+      }
+    ],
+    "correct": [
+      "b",
+      "d"
+    ],
+    "explanation": "When running Claude Code in non-interactive CI/CD pipelines, passing `--bare` reduces startup overhead and enforces security by skipping auto-discovery of CLAUDE.md files, hooks, skills, MCP servers, and auto memory, preventing repository configurations from introducing non-deterministic behavior. In bare mode, Claude Code never reads OAuth credentials or the system keychain, so automated runners must supply authentication via `ANTHROPIC_API_KEY` (or `--settings`). Claude Code retains core file editing and Bash tools in bare mode, and while background Bash processes terminate after a 5-second grace period at exit, background subagents stay open until completion (up to a 10-minute timeout ceiling).",
+    "distractorNotes": {
+      "a": "Non-interactive claude -p runs never display interactive workspace trust prompts; without --bare, repository hooks in .claude/settings.json execute automatically.",
+      "c": "The 5-second grace period applies strictly to background Bash tasks; background subagents hold the claude -p process open until their work finishes.",
+      "e": "Bare mode skips custom skills and commands but maintains standard access to core primitive tools including Bash, file reading, and file editing."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/headless.md",
+    "sourceNote": "Bare mode startup isolation, authentication requirements, and headless lifecycle management",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-023",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "iterative-refinement",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An engineer reviews a proposed refactoring generated by Claude Code for an order processing module and identifies three defects: the inventory reservation call omits a required timeout, the downstream payment client requires an idempotency key derived from the reservation ID, and the exception handler's transaction rollback references a stale variable. Because these three issues share state and lifecycle dependencies across the checkout flow, what is the recommended prompting strategy to resolve them?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Address each defect in sequential turns, starting with the reservation timeout, verifying that single change, and then prompting for the idempotency key and rollback logic in follow-up messages."
+      },
+      {
+        "id": "b",
+        "text": "Dispatch three concurrent subagents using separate workspace worktrees to isolate each defect into a parallel branch, then merge the resulting pull requests into the feature branch."
+      },
+      {
+        "id": "c",
+        "text": "Instruct Claude Code with a high-level directive to resolve all unhandled edge cases and transaction anomalies across the module, relying on the model to infer the state relationships."
+      },
+      {
+        "id": "d",
+        "text": "Bundle all three defects into a single detailed prompt detailing their interdependencies, allowing Claude Code to reconcile the shared lifecycle state and apply a unified fix."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "When defects are interdependent and share operational state (such as passing identifiers between service calls and managing joint transaction rollbacks), addressing them across sequential conversational turns often produces circular regressions, as each piecemeal fix may invalidate assumptions made in the prior turn. Supplying all interacting issues in a single detailed message enables Claude Code to reason over the shared contracts and produce a coherent, unified implementation across components. Sequential iteration is preferred only when bugs are strictly independent.",
+    "distractorNotes": {
+      "a": "Sequential turn-by-turn prompts work well for independent, decoupled bugs, but when defects interact, piecemeal edits frequently invalidate prior fixes and cause circular regressions.",
+      "b": "Isolating interacting changes into independent parallel worktrees or subagents causes severe merge conflicts and semantic mismatches because all three defects modify shared execution flow and state.",
+      "c": "High-level directives lacking specific architectural context force the model to guess at the cross-service dependencies, often leading to superficial patches that fail to reconcile the shared state."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/best-practices.md",
+    "sourceNote": "Providing specific context in prompts: scoping the task and naming constraints rather than issuing vague directives",
+    "sourceCheckedAt": "2026-09-17"
+  },
+  {
+    "id": "ccar-f-claude-code-configuration-and-workflows-024",
+    "cert": "ccar-f",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "claude-code-configuration-and-workflows",
+    "subdomain": "ci-cd-integration",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An engineering team enables Code Review on its repository and wants any pull request carrying unresolved Important findings to be prevented from merging. They add the Claude Code Review check to the repository's required status checks under branch protection, but pull requests with Important findings continue to merge cleanly. What explains this behavior, and how should the team implement the merge gate?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The check run always finishes with a neutral conclusion, so branch protection cannot block on it; gating needs a separate CI step that parses the severity breakdown from the check run output."
+      },
+      {
+        "id": "b",
+        "text": "The Claude Code Review check has to be registered as a required status check at the organization level rather than per repository before its neutral conclusion is converted into a blocking failure."
+      },
+      {
+        "id": "c",
+        "text": "The repository must switch its Review Behavior from Once after PR creation to After every push, because only push-triggered reviews emit the pass or fail conclusion that branch protection evaluates."
+      },
+      {
+        "id": "d",
+        "text": "The REVIEW.md severity rules must escalate the finding classes the team cares about to Important, because the check run derives its pass or fail conclusion from the highest severity it posted inline."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Code Review deliberately decouples reporting from gating. The Claude Code Review check run always completes with a neutral conclusion, which by design means it never blocks merging through branch protection rules, so adding it as a required check cannot enforce anything on its own. To gate merges on findings, the team reads the severity breakdown from the check run output in its own CI: the last line of the Details text is a machine-readable comment a workflow can parse with gh and jq, returning per-severity counts such as {\"normal\": 2, \"nit\": 1, \"pre_existing\": 0}. The normal key holds the count of Important findings, and a non-zero value means at least one bug is worth fixing before merge, which is the signal the workflow should fail on.",
+    "distractorNotes": {
+      "b": "Required status checks are configured per repository in branch protection, and the scope at which a check is required does not change the conclusion the check itself reports; a neutral conclusion stays neutral.",
+      "c": "Review Behavior controls when reviews are triggered, not what conclusion the check run reports. Every review populates the same check run with a neutral conclusion regardless of the trigger mode.",
+      "d": "REVIEW.md can redefine which finding classes count as Important, which changes how findings are classified and reported, but it does not alter the check run's neutral conclusion or make the check blocking."
+    },
+    "sourceUrl": "https://code.claude.com/docs/en/code-review.md",
+    "sourceNote": "Check run completes neutral and never blocks branch protection; gate merges by parsing its severity output",
+    "sourceCheckedAt": "2026-09-17"
+  }
+]

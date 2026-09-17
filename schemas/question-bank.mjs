@@ -29,7 +29,15 @@ const checkedDateSchema = z
     return (
       !Number.isNaN(date.valueOf()) && date.toISOString().startsWith(value)
     );
-  }, "must be a valid calendar date");
+  }, "must be a valid calendar date")
+  .refine((value) => {
+    // The calendar day must not be in the future anywhere on Earth (UTC+14
+    // in the Line Islands is the earliest active timezone).
+    const latestActiveEarthDate = new Date(Date.now() + 14 * 60 * 60 * 1000)
+      .toISOString()
+      .slice(0, 10);
+    return value <= latestActiveEarthDate;
+  }, "cannot be in the future");
 
 export const skillSchema = z
   .object({
@@ -110,6 +118,7 @@ export const manifestSchema = z
     // because its coverage of the blueprint is thin. Required, so a new bank
     // cannot ship as stable by omission.
     status: z.enum(["draft", "stable"]),
+    updatedAt: checkedDateSchema,
     examUrl: sourceUrlSchema,
     contentLicense: z.string().min(1),
     examQuestionCount: z.number().int().positive().optional(),
@@ -144,12 +153,45 @@ export const manifestSchema = z
     }
   });
 
+/**
+ * Options carry a stable `id`, and `correct` references those ids rather than
+ * an index into this array. The app shuffles option order, and any hand-edit
+ * that reorders options would silently invert the answer key under positional
+ * indexing — a defect no validator could see, because both the old and the new
+ * index are in range. Ids make reordering and diffing safe.
+ */
 export const optionSchema = z
   .object({
     id: slugSchema,
     text: z.string().min(1),
   })
   .strict();
+
+/**
+ * Words that let a candidate discard an option without reading it closely.
+ *
+ * Defined here rather than in scripts/bank-metrics.mjs, which reports the
+ * guessing baseline these words drive, because the guard below and that report
+ * have to mean the same thing by "absolute qualifier". When they were allowed
+ * to disagree the report would say a bank was clean while the gate called it
+ * biased, and there is no way to tell from either output which one is wrong.
+ */
+export const ABSOLUTE_QUALIFIER_WORDS = [
+  "always",
+  "never",
+  "only",
+  "must",
+  "every",
+  "cannot",
+  "all",
+  "any",
+  "no",
+];
+
+export const ABSOLUTE_QUALIFIER_PATTERN = new RegExp(
+  `\\b(${ABSOLUTE_QUALIFIER_WORDS.join("|")})\\b`,
+  "i",
+);
 
 export const questionSchema = z
   .object({
@@ -161,8 +203,6 @@ export const questionSchema = z
     subdomain: slugSchema.optional(),
     difficulty: z.enum(["easy", "medium", "hard"]),
     status: z.enum(["draft", "reviewed"]),
-    scope: z.enum(["core", "deep"]),
-    scopeNote: z.string().min(1).optional(),
     stem: z.string().min(1),
     options: z.array(optionSchema).min(2),
     correct: z.array(slugSchema).min(1),
@@ -181,27 +221,11 @@ export const questionSchema = z
   })
   .strict()
   .superRefine((question, context) => {
-    // "core" means the question is traceable to a blueprint objective and
-    // discriminates at the exam's cognitive level; "deep" means it is sound and
-    // sourced but sits past that level, so it is served only on request. Every
-    // question must say which, so a new one cannot slip in unclassified.
-    const scope = question.scope;
-    if (scope !== "core" && question.scopeNote === undefined) {
-      context.addIssue({
-        code: "custom",
-        path: ["scopeNote"],
-        message: `is required when scope is "${scope}", to justify the classification against the blueprint`,
-      });
-    }
-    if (scope === "core" && question.scopeNote !== undefined) {
-      context.addIssue({
-        code: "custom",
-        path: ["scopeNote"],
-        message: 'must only be set when scope is not "core"',
-      });
-    }
-
     const optionIds = new Set();
+    // Option text is compared case- and whitespace-insensitively: two options
+    // differing only in spacing read as identical to a candidate, and the
+    // question silently has one fewer distractor than it appears to.
+    const optionTexts = new Map();
 
     question.options.forEach((option, index) => {
       if (optionIds.has(option.id)) {
@@ -212,6 +236,18 @@ export const questionSchema = z
         });
       }
       optionIds.add(option.id);
+
+      const normalized = option.text.trim().replace(/\s+/g, " ").toLowerCase();
+      const firstSeen = optionTexts.get(normalized);
+      if (firstSeen !== undefined) {
+        context.addIssue({
+          code: "custom",
+          path: ["options", index, "text"],
+          message: `duplicate option text: identical to option "${firstSeen}". A repeated option is not a distractor — it removes one, and if the repeat is the key the item has two correct answers`,
+        });
+      } else {
+        optionTexts.set(normalized, option.id);
+      }
     });
 
     const correctIds = new Set();
@@ -271,6 +307,40 @@ export const questionSchema = z
       }
     }
 
+    // The same family as the check above: an item answerable without knowing
+    // the subject. Cross out every option containing an absolute qualifier,
+    // and if exactly the key survives, the wording alone has given it away.
+    //
+    // Note what this does *not* police. Absolutes are far commoner in
+    // distractors than in keys across every bank here, and that skew is
+    // largely legitimate — the cited docs state correct behaviour with genuine
+    // hedging, while a distractor is frequently wrong precisely because it
+    // over-claims. Flattening the distribution would mean writing hedged
+    // falsehoods or stripping true qualifiers out of keys, which trades
+    // factual fidelity for cosmetics; certs/ccdv-f/review-progress.md
+    // § "Other pattern tells" records that decision and its reasoning. Only
+    // the decisive case is an error, and its fix costs neither of those things.
+    //
+    // Single-select only. The multi-select analogue — the surviving set being
+    // exactly the key set — is a far weaker signal across five or six options,
+    // and nothing in this repository has measured it.
+    if (question.type === "single" && question.correct.length === 1) {
+      const unqualified = question.options.filter(
+        (option) => !ABSOLUTE_QUALIFIER_PATTERN.test(option.text),
+      );
+
+      if (
+        unqualified.length === 1 &&
+        unqualified[0].id === question.correct[0]
+      ) {
+        context.addIssue({
+          code: "custom",
+          path: ["options"],
+          message: `correct option "${unqualified[0].id}" is the only one carrying no absolute qualifier (${ABSOLUTE_QUALIFIER_WORDS.join(", ")}), so eliminating the absolutes answers this item without knowing the subject. Soften the over-claim in one distractor so it is wrong on substance rather than on style, or add a qualifier to another option where it is true — do not hedge the key into a weaker claim than its source supports`,
+        });
+      }
+    }
+
     for (const optionId of Object.keys(question.distractorNotes ?? {})) {
       if (!optionIds.has(optionId)) {
         context.addIssue({
@@ -295,14 +365,16 @@ export const LENGTH_BIAS_MIN_SAMPLE = 20;
 export const LENGTH_BIAS_MAX_MEAN_DELTA = 10;
 export const LENGTH_BIAS_MAX_LONGEST_SHARE = 0.45;
 
-export const SCOPE_MIN_SAMPLE = 20;
-export const SCOPE_MIN_CORE_SHARE = 0.8;
-
 function mean(values) {
   return values.reduce((sum, value) => sum + value, 0) / values.length;
 }
 
-function optionLengths(question) {
+/**
+ * Exported so scripts/bank-metrics.mjs can report the length-bias figures
+ * against the same key/distractor split the guard below enforces, rather than
+ * keeping a second definition of it in step by hand.
+ */
+export function optionLengths(question) {
   const correct = new Set(question.correct);
   const keys = [];
   const distractors = [];
@@ -406,25 +478,6 @@ export const questionBankSchema = z
           code: "custom",
           path: [],
           message: `single-select answers are biased toward the longest option: the key is the longest option in ${longest} of ${scoredSingles.length} (${Math.round(share * 100)}%), which exceeds the ${Math.round(LENGTH_BIAS_MAX_LONGEST_SHARE * 100)}% ceiling`,
-        });
-      }
-    }
-
-    // Bank-level guard: the default "core-only" scope filter is what a learner
-    // practising for the exam actually sits. If too much of the bank is tagged
-    // deep, that default pool shrinks below a useful size and the bank stops
-    // being a rehearsal of the real thing.
-    if (questions.length >= SCOPE_MIN_SAMPLE) {
-      const core = questions.filter(
-        (question) => question.scope === "core",
-      ).length;
-      const share = core / questions.length;
-
-      if (share < SCOPE_MIN_CORE_SHARE) {
-        context.addIssue({
-          code: "custom",
-          path: [],
-          message: `too little of the bank is exam-aligned: ${core} of ${questions.length} questions (${Math.round(share * 100)}%) are scope "core", below the ${Math.round(SCOPE_MIN_CORE_SHARE * 100)}% floor`,
         });
       }
     }

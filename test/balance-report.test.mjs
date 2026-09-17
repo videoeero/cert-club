@@ -3,8 +3,10 @@ import test from "node:test";
 
 import {
   BALANCE_TOLERANCE,
+  BalanceReportError,
   buildBalanceReport,
-  isCoreQuestion,
+  buildRepositoryReports,
+  parseCliArgs,
 } from "../scripts/balance-report.mjs";
 
 const manifest = {
@@ -30,17 +32,11 @@ function questions(counts, extra = []) {
   const built = [];
   for (const [subdomain, count] of Object.entries(counts)) {
     for (let index = 0; index < count; index += 1) {
-      built.push({ domain: "tools-and-mcps", subdomain, scope: "core" });
+      built.push({ domain: "tools-and-mcps", subdomain });
     }
   }
   return [...built, ...extra];
 }
-
-test("counts only questions explicitly scoped core", () => {
-  assert.equal(isCoreQuestion({ scope: "core" }), true);
-  assert.equal(isCoreQuestion({ scope: "deep" }), false);
-  assert.equal(isCoreQuestion({}), false);
-});
 
 test("reports an evenly split bank as balanced", () => {
   const report = buildBalanceReport(
@@ -48,7 +44,7 @@ test("reports an evenly split bank as balanced", () => {
     questions({ "tool-implementation": 10, "mcp-server-development": 10 }),
   );
 
-  assert.equal(report.coreCount, 20);
+  assert.equal(report.questionCount, 20);
   assert.equal(report.target, 20);
   assert.deepEqual(report.offBalance, []);
   assert.deepEqual(
@@ -84,30 +80,6 @@ test("stays silent inside the tolerance", () => {
     }),
   );
 
-  assert.deepEqual(report.offBalance, []);
-});
-
-test("excludes tagged questions from the core count and the targets", () => {
-  const report = buildBalanceReport(
-    manifest,
-    questions({ "tool-implementation": 10, "mcp-server-development": 10 }, [
-      {
-        domain: "tools-and-mcps",
-        subdomain: "tool-implementation",
-        scope: "deep",
-        scopeNote: "Above the sample questions' cognitive level.",
-      },
-      {
-        domain: "tools-and-mcps",
-        subdomain: "mcp-server-development",
-        scope: "deep",
-        scopeNote: "Not traceable to a blueprint objective.",
-      },
-    ]),
-  );
-
-  assert.equal(report.coreCount, 20);
-  assert.equal(report.taggedCount, 2);
   assert.deepEqual(report.offBalance, []);
 });
 
@@ -159,4 +131,139 @@ test("reports no skills for a manifest without a breakdown", () => {
 
   assert.deepEqual(report.skills, []);
   assert.deepEqual(report.offBalance, []);
+});
+
+test("useExamMultiplier sets target to twice the examQuestionCount", () => {
+  const manifestWithExam = {
+    cert: "custom-cert",
+    examQuestionCount: 50,
+    domains: [{ slug: "d", name: "D", weight: 100 }],
+  };
+  const report = buildBalanceReport(manifestWithExam, [{ domain: "d" }], {
+    useExamMultiplier: true,
+  });
+  assert.equal(report.target, 100);
+  assert.equal(report.domains[0].target, 100);
+  assert.equal(report.domains[0].delta, -99);
+});
+
+test("calculates domain balance with correct deltas", () => {
+  const report = buildBalanceReport(
+    {
+      cert: "custom-cert",
+      domains: [
+        { slug: "d1", name: "D1", weight: 40 },
+        { slug: "d2", name: "D2", weight: 60 },
+      ],
+    },
+    [{ domain: "d1" }, { domain: "d1" }, { domain: "d2" }],
+    { target: 10 },
+  );
+  assert.deepEqual(
+    report.domains.map((d) => [d.slug, d.target, d.actual, d.delta]),
+    [
+      ["d1", 4, 2, -2],
+      ["d2", 6, 1, -5],
+    ],
+  );
+});
+
+test("useExamMultiplier falls back to questions.length when examQuestionCount is missing", () => {
+  const manifestWithoutExam = {
+    cert: "custom-cert",
+    domains: [{ slug: "d", name: "D", weight: 100 }],
+  };
+  const report = buildBalanceReport(
+    manifestWithoutExam,
+    [{ domain: "d" }, { domain: "d" }],
+    { useExamMultiplier: true },
+  );
+  assert.equal(report.target, 2);
+  assert.equal(report.domains[0].target, 2);
+  assert.equal(report.domains[0].delta, 0);
+});
+
+test("apportions domain targets with largest remainder so sum matches target exactly", () => {
+  const report = buildBalanceReport(
+    {
+      cert: "az-900",
+      domains: [
+        { slug: "concepts", name: "Concepts", weight: 28 },
+        { slug: "arch", name: "Architecture", weight: 39 },
+        { slug: "gov", name: "Governance", weight: 33 },
+      ],
+    },
+    [],
+    { target: 80 },
+  );
+  // Math.round gives 22 + 31 + 26 = 79. Apportionment ensures [23, 31, 26] summing to 80.
+  assert.deepEqual(
+    report.domains.map((d) => d.target),
+    [23, 31, 26],
+  );
+  assert.equal(
+    report.domains.reduce((sum, d) => sum + d.target, 0),
+    80,
+  );
+});
+
+test("buildRepositoryReports throws BalanceReportError when requested slug is missing", async () => {
+  await assert.rejects(
+    () => buildRepositoryReports(undefined, { slugs: ["non-existent-cert"] }),
+    (error) => {
+      assert.ok(error instanceof BalanceReportError);
+      assert.match(
+        error.message,
+        /"non-existent-cert" has no matching certs\/ folder/,
+      );
+      return true;
+    },
+  );
+});
+
+/**
+ * `--strict` is the whole reason the balance step of `npm run check` is a gate
+ * rather than a report. A swallowed typo leaves it exit 0 with no strict
+ * check, which is indistinguishable from a pass — so the rejection is tested,
+ * not just the happy path.
+ */
+test("parseCliArgs rejects unknown flags", () => {
+  assert.throws(() => parseCliArgs(["--stict"]), BalanceReportError);
+  assert.throws(() => parseCliArgs(["--stict"]), /unknown flag\(s\): --stict/);
+});
+
+test("parseCliArgs rejects a --target that is not a positive integer", () => {
+  for (const bad of ["abc", "0", "-3", "12questions", ""]) {
+    assert.throws(
+      () => parseCliArgs(["--target", bad]),
+      /--target must be a positive integer/,
+      `--target ${bad} was accepted`,
+    );
+  }
+  // A missing value must not silently read the next flag as the count.
+  assert.throws(
+    () => parseCliArgs(["--target"]),
+    /--target must be a positive integer/,
+  );
+});
+
+test("parseCliArgs parses valid flags and slugs", () => {
+  assert.deepEqual(parseCliArgs([]), {
+    strict: false,
+    useExamMultiplier: false,
+    target: undefined,
+    slugs: [],
+  });
+  assert.deepEqual(parseCliArgs(["--strict", "--2x", "ccdv-f"]), {
+    strict: true,
+    useExamMultiplier: true,
+    target: undefined,
+    slugs: ["ccdv-f"],
+  });
+});
+
+test("parseCliArgs does not read the --target value as a cert slug", () => {
+  assert.deepEqual(parseCliArgs(["--target", "120", "ccar-f"]).slugs, [
+    "ccar-f",
+  ]);
 });

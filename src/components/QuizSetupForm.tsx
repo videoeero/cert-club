@@ -2,7 +2,6 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 
 import styles from "./QuizSetupForm.module.css";
 import {
-  filterQuestionsByScope,
   filterReviewQuestions,
   selectQuestions,
   simulateQuizAnswers,
@@ -15,7 +14,6 @@ import type {
   QuizConfig,
   ReviewScope,
   RevealMode,
-  ScopeFilter,
   SimulationPreset,
 } from "../types";
 
@@ -28,18 +26,6 @@ const REVIEW_SCOPE_LABELS: Record<ReviewScope, string> = {
   missed: "Missed questions",
   bookmarked: "Bookmarked questions",
   "missed-or-bookmarked": "Missed or bookmarked",
-};
-
-const SCOPE_FILTER_LABELS: Record<ScopeFilter, string> = {
-  "core-only": "Exam-aligned only",
-  "with-deep": "Include deeper practice",
-};
-
-const SCOPE_FILTER_HINTS: Record<ScopeFilter, string> = {
-  "core-only":
-    "Only questions traceable to a blueprint objective and pitched at the exam's level.",
-  "with-deep":
-    "Adds questions on blueprint topics that go deeper than the exam is likely to.",
 };
 
 interface QuestionSetFieldsetProps {
@@ -57,11 +43,6 @@ interface QuestionSetFieldsetProps {
   reviewQuestionsCount: number;
   reviewQuestionCountByDomain: Map<string, number>;
   questionCountByDomain: Map<string, number>;
-  scopeFilter: ScopeFilter;
-  onScopeFilterChange: (scopeFilter: ScopeFilter) => void;
-  scopedQuestionCount: number;
-  totalQuestionCount: number;
-  hasTaggedQuestions: boolean;
 }
 
 function QuestionSetFieldset({
@@ -79,11 +60,6 @@ function QuestionSetFieldset({
   reviewQuestionsCount,
   reviewQuestionCountByDomain,
   questionCountByDomain,
-  scopeFilter,
-  onScopeFilterChange,
-  scopedQuestionCount,
-  totalQuestionCount,
-  hasTaggedQuestions,
 }: QuestionSetFieldsetProps) {
   return (
     <fieldset className={styles.setupFieldset}>
@@ -112,30 +88,6 @@ function QuestionSetFieldset({
           </li>
         </ul>
       </div>
-      {hasTaggedQuestions && (
-        <label className={styles.formField}>
-          <span>Question scope</span>
-          <select
-            value={scopeFilter}
-            onChange={(event) =>
-              onScopeFilterChange(event.target.value as ScopeFilter)
-            }
-          >
-            {(Object.keys(SCOPE_FILTER_LABELS) as ScopeFilter[]).map(
-              (filter) => (
-                <option key={filter} value={filter}>
-                  {SCOPE_FILTER_LABELS[filter]}
-                </option>
-              ),
-            )}
-          </select>
-          <small>
-            {SCOPE_FILTER_HINTS[scopeFilter]} {scopedQuestionCount} of{" "}
-            {totalQuestionCount} question
-            {totalQuestionCount === 1 ? "" : "s"} in scope.
-          </small>
-        </label>
-      )}
 
       <label className={styles.formField}>
         <span>Selection mode</span>
@@ -367,8 +319,6 @@ export interface QuizSetupFormProps {
   certSlug: string;
   bookmarkedQuestionIds: Set<string>;
   missedQuestionIds: Set<string>;
-  scopeFilter: ScopeFilter;
-  onScopeFilterChange: (scopeFilter: ScopeFilter) => void;
   storageError: string | null;
   onStartSession: (selectedQuestions: Question[], config: QuizConfig) => void;
   onCompleteAttempt: (
@@ -384,8 +334,6 @@ export function QuizSetupForm({
   certSlug,
   bookmarkedQuestionIds,
   missedQuestionIds,
-  scopeFilter,
-  onScopeFilterChange,
   storageError,
   onStartSession,
   onCompleteAttempt,
@@ -415,17 +363,12 @@ export function QuizSetupForm({
     setSelectionCount(String(defaultCount));
   }, [manifest, questions]);
 
-  const scopedQuestions = filterQuestionsByScope(questions, scopeFilter);
-  const hasTaggedQuestions = questions.some(
-    (question) => question.scope !== "core",
-  );
-
   const selectedDomain = selectionDomain || manifest.domains[0]?.slug || "";
-  const domainQuestionCount = scopedQuestions.filter(
+  const domainQuestionCount = questions.filter(
     (q) => q.domain === selectedDomain,
   ).length;
   const reviewQuestions = filterReviewQuestions(
-    scopedQuestions,
+    questions,
     [...missedQuestionIds],
     [...bookmarkedQuestionIds],
     reviewScope,
@@ -435,7 +378,7 @@ export function QuizSetupForm({
     manifest.domains.map((d) => [
       d.slug,
       filterReviewQuestions(
-        scopedQuestions,
+        questions,
         [...missedQuestionIds],
         [...bookmarkedQuestionIds],
         reviewScope,
@@ -446,7 +389,7 @@ export function QuizSetupForm({
   const questionCountByDomain = new Map(
     manifest.domains.map((d) => [
       d.slug,
-      scopedQuestions.filter((q) => q.domain === d.slug).length,
+      questions.filter((q) => q.domain === d.slug).length,
     ]),
   );
   const countLimit =
@@ -454,7 +397,7 @@ export function QuizSetupForm({
       ? domainQuestionCount
       : selectionMode === "review"
         ? reviewQuestions.length
-        : scopedQuestions.length;
+        : questions.length;
   const parsedCount = Number(selectionCount);
   const boundedSelectionCount =
     countLimit > 0 && Number.isInteger(parsedCount) && parsedCount > countLimit
@@ -486,7 +429,6 @@ export function QuizSetupForm({
     return {
       mode: selectionMode,
       revealMode: customRevealMode,
-      scopeFilter,
       ...(count === undefined ? {} : { count }),
       ...(selectionMode === "domain" ? { domain: selectedDomain } : {}),
       ...(selectionMode === "review"
@@ -567,11 +509,6 @@ export function QuizSetupForm({
       reviewQuestionsCount={reviewQuestions.length}
       reviewQuestionCountByDomain={reviewQuestionCountByDomain}
       questionCountByDomain={questionCountByDomain}
-      scopeFilter={scopeFilter}
-      onScopeFilterChange={onScopeFilterChange}
-      scopedQuestionCount={scopedQuestions.length}
-      totalQuestionCount={questions.length}
-      hasTaggedQuestions={hasTaggedQuestions}
     />
   );
 
