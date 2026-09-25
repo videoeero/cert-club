@@ -59,10 +59,22 @@ Audited against the 120-question bank on 2026-09-14:
 - **Difficulty breakdown**: 78 medium (71 single, 7 multi), 42 hard (39 single, 3 multi).
 - **Sourcing**: 28 distinct authoritative documentation pages across 3 hosts (`platform.claude.com`, `code.claude.com`, `modelcontextprotocol.io`).
 - **Single-select position distribution**: 27 A / 26 B / 28 C / 29 D across `a`–`d` (max 26.4%, ceiling 50%).
-- **Option length delta**: Mean correct-option length minus distractor length is -3.28 characters (median -0.83 chars), well within the ±10 character ceiling.
+- **Option length delta**: Mean correct-option length minus distractor length is -3.31 characters (median -0.83 chars), well within the ±10 character ceiling. (An earlier revision of this section said -3.28; that figure does not reproduce from the bank at this date under `bank-metrics`' all-items formula, which gives -3.31, or its single-select-only form, which gives -3.68. The -0.83 median reproduces under the all-items formula only; the single-select-only median is -1.17.)
 - **Longest option as key share**: 19 of 110 single-select items (17.3%), comfortably below the 45% ceiling.
 - **Distractor notes coverage**: 100% of distractor options across all 120 questions carry complete explanations in `distractorNotes`.
 - **All three bias guards pass**: `positionBias`, `lengthBiasMeanDelta`, and `longestOptionIsKey`.
+
+### Composition after the 2026-09-25 renovation
+
+`npm run metrics -- ccar-f`, re-run after the five-domain renovation:
+
+- **Distribution and formats**: unchanged — 120 items, 32 / 22 / 24 / 24 / 18, 110 single-select and 10 multi-select, 100% `distractorNotes` coverage.
+- **Difficulty breakdown**: 63 medium (56 single, 7 multi), 57 hard (54 single, 3 multi). The shift from the 78 / 42 recorded above is entirely Domain 1's 15 `medium` → `hard` reclassifications.
+- **Sourcing**: 29 distinct pages (the exam guide PDF joined the three documentation hosts; 24 Domain 1–3 items were re-cited to its task statements in the 2026-09-24 evaluation wave, and the same day's adjudication pass below re-cited 8 more — 29 Domain 1–3 items and 32 bank-wide now cite it).
+- **Single-select position distribution**: 24 A / 29 B / 28 C / 29 D (max 26.4%, ceiling 50%).
+- **Option length delta**: +3.34 characters mean, +1.33 median (limit ±10) — the sign flipped as keys grew richer qualifying clauses.
+- **Longest option as key share**: 41 of 110 single-select items (37.3%), up from 17.3% and now the guard with the least headroom. Still inside its 45% ceiling, but the renovation spent most of the margin, and this is the figure to watch on the next batch rather than the length delta.
+- **All three bias guards pass**.
 
 ### Known coverage limits
 
@@ -209,9 +221,11 @@ elimination-by-inspection (e.g. `tool-...-003`, `-004`, `-006` through `-008`,
 `-011`, `-014` through `-016`, `-018` through `-022`), consistent with the
 domain already sitting at or above its sample anchor.
 
-`npm run check` and `npm run metrics -- ccar-f` stay green post-edit; no
-`correct` keys, `sourceUrl`s, or tested facts changed — only distractor
-substance.
+`npm run check` and `npm run metrics -- ccar-f` stay green post-edit. The
+hardening edits above changed distractor substance only: none of the six items
+had its `correct` key or an option's tested fact altered. Two of them
+(`-005`, `-009`) were re-cited to the exam guide in the same day's evaluation
+pass, recorded below.
 
 ### Real-exam calibration: Agentic Architecture & Orchestration hardening (2026-09-24)
 
@@ -305,7 +319,9 @@ scenario, verified against re-fetched `memory.md`, `skills.md` and
   exists with a schema.
 
 **Miskeys surfaced, handed off to `evaluate-questions` (not actioned here;
-keys untouched per this skill's stop rule):**
+keys untouched per this skill's stop rule).** *(All three were actioned the
+next day and then partly reversed on 2026-09-25; see the adjudication section
+at the end of this file before reading these as the current state.)*
 
 - **`claude-code-...-005`**: keyed `/memory`, but `memory.md` now says "To
   check which `CLAUDE.md` and rules files loaded into the current session,
@@ -350,10 +366,20 @@ the fact being tested. The fact came, often verbatim, from an exam-guide task
 statement. In one case (`tool-...-004`) the cited `define-tools.md` actually
 recommends the opposite ("Consolidate related operations into fewer tools").
 With the maintainer's approval, these were re-cited in this pass rather than
-demoted. `sourceCheckedAt` was bumped only on items whose citation changed
-or was rewritten.
+demoted. `sourceCheckedAt` was bumped on items whose `sourceUrl` or citation
+text changed; question text was rewritten without a bump, except that
+`tool-...-020`, whose distractor was rewritten in this pass, was left at
+`2026-09-17` — a bookkeeping inconsistency to fold into the next bump rather
+than a claim about that item's freshness.
 
 **Miskeys (fixed and re-confirmed):**
+
+> **Superseded 2026-09-25.** All three of the fixes below were made against
+> the current vendor pages and were reversed in the blueprint-adjudication
+> pass recorded at the end of this file: the exam guide's task statements name
+> the opposite mechanism for each of them. The bullets are left in place to
+> show what was tried and why it did not stand; see § "Review pass:
+> blueprint-versus-documentation adjudication" for the keys as they now stand.
 
 - **`claude-...-005`**: keyed `/memory`. `memory.md` § Troubleshoot says to
   run `/context` and check **Memory files** to see what loaded, while
@@ -504,10 +530,22 @@ not used. It would create two defensible answers, which CONTRIBUTING forbids.
 `-026` a→b, `-027` b→d, `-030` a→c, `-031` c→a, `-032` d→b. Each move is a
 rewrite of the item, not a miskey fix.
 
+**Difficulty:** the 15 items whose stem and options became constraint-based
+eliminations — `-001`, `-006`, `-008`, `-010`, `-012`, `-013`, `-014`, `-018`,
+`-019`, `-021`, `-026`, `-027`, `-030`, `-031`, `-032` — were reclassified
+`medium` → `hard` in the same commit, matching the live-exam signal that this
+domain was under-calibrated. Domain 1 is now 8 medium / 24 hard, and the bank
+as a whole moved from 78 / 42 to 63 medium / 57 hard. The two sample anchors
+(`-007`, `-015`) were already `hard` before the renovation and keep that rating.
+
 **Sources.** Re-fetched on 2026-09-25: `sub-agents.md`, `hooks.md`,
 `agent-teams.md`, `workflows.md`, `worktrees.md`, `agent-sdk/sessions.md`,
-`handling-stop-reasons.md` and exam guide v1.0 § Domain 1. Re-cited: `-001`
-(exam guide → `sub-agents.md`) and `-020` (`hooks-guide.md` → `hooks.md`).
+`handling-stop-reasons.md` and exam guide v1.0 § Domain 1. Re-cited:
+`-020` (`hooks-guide.md` → `hooks.md`). `-001` changed its explanation and
+`sourceNote` text in this pass but kept citing `sub-agents.md`, which it has
+cited since the bank was scaffolded — an earlier version of this record
+described that as a re-citation from the exam guide, and no such transition
+exists in the committed history.
 
 ### Adversarial evaluation pass: Domain 1 rewrites (2026-09-25)
 
@@ -559,8 +597,12 @@ architectural trade-offs under constraints ("X while maintaining Y").
 - **Options polished (3 items)**: `-007` (business rule policy violation with
   `isRetryable: false`), `-009` (empty query result vs failure), `-013` (forcing
   first-turn tool execution with `tool_choice: {"type": "tool", "name": "..."}`).
-- **Kept (11 items)**: `-002` (sample Q2 anchor), `-003`, `-004`, `-008`,
-  `-012` (sample Q9 anchor), `-016`, `-018`, `-019`–`-020` (select-2), `-021`,
+- **Kept (11 items)**: `-002` (re-authored counterpart of sample Q2) and
+  `-012` (re-authored counterpart of sample Q9) — the 2026-09-24 pass replaced
+  their near-verbatim text for originality and superseded the earlier "anchor"
+  label; they still test the same facts and still set the difficulty bar for
+  their sample questions. Then `-003`, `-004`, `-008`,
+  `-016`, `-018`, `-019`–`-020` (select-2), `-021`,
   `-022`.
 
 Adversarial cold-evaluation (`evaluate-questions`) independently verified all 11
@@ -581,9 +623,13 @@ under constraints ("X while maintaining Y").
   - `-002`: Team conventions configuration discrepancy between personal
     `~/.claude/CLAUDE.md` and repository `CLAUDE.md`.
   - `-005`: Session memory troubleshooting: verifying active memory files via
-    `/context` Memory files section vs `/memory` editing paths.
+    `/context` Memory files section vs `/memory` editing paths. *(Reversed
+    2026-09-25 — the blueprint names `/memory`; see the adjudication section
+    at the end of this file.)*
   - `-009`: Custom skill parameter discoverability: `argument-hint` autocomplete
     hints vs invalid frontmatter properties or missing interactive prompts.
+    *(Notes corrected and the key re-framed onto the guide's wording
+    2026-09-25; see the adjudication section at the end of this file.)*
   - `-010`: Ambient always-loaded repository standards in `CLAUDE.md` vs
     on-demand procedural workflows in custom Skills.
   - `-012`: Co-located test rules across 60 directories: centrally scoped
@@ -683,3 +729,58 @@ signal outranks the guide's sample questions as the difficulty anchor.
 CONTRIBUTING § Difficulty calibration says real exams "tend to be easier than
 the bank". That holds for ccdv-f but is the opposite of what two candidates
 reported here.
+
+### Review pass: blueprint-versus-documentation adjudication (2026-09-25)
+
+A post-renovation review of the branch found two classes of defect, both fixed
+in the same pass.
+
+**1. Three Domain 3 items were keyed to the current documentation against the
+blueprint's own task statements.** The 2026-09-24 pass re-keyed `claude-...-005`,
+`-008` and `-009` from live vendor pages; re-reading the exam guide afterwards
+shows each objective names the opposite mechanism, and that the same fields
+appear in § 17 Appendix and the In-Scope list — which is what item writers use.
+The guide is what the exam grades, so the keys were restored to the guide's
+mechanism, the item now cites `manifest.examUrl`, and the documented behaviour
+is retained as the distractor with the divergence stated in its note so a
+learner can see both:
+
+- **`claude-...-005`**: TS 3.1 skill — "Using the `/memory` command to verify
+  which memory files are loaded". `memory.md` § View and edit with `/memory`
+  says to check loaded `CLAUDE.md` and rules files under `/context` instead.
+  Key restored to `/memory`; `/context` is distractor `b`.
+- **`claude-...-008`**: TS 3.2 skill — "Configuring `allowed-tools` in skill
+  frontmatter to restrict tool access during skill execution". `skills.md` says
+  `allowed-tools` "does not restrict which tools are available" and documents
+  `disallowed-tools` for removal. Key restored to `allowed-tools`;
+  `disallowed-tools` is distractor `d`.
+- **`claude-...-009`**: TS 3.2 skill — "Using `argument-hint` frontmatter to
+  prompt developers for required parameters when they invoke the skill without
+  arguments". `skills.md` defines `argument-hint` as the autocomplete hint.
+  Key stays `argument-hint` on the guide's framing; the notes on `arguments`
+  and `when_to_use` now state their real semantics (they are real frontmatter
+  fields — the earlier notes wrongly said they did not exist).
+
+**Standing decision, recorded so it is not rediscovered:** where the exam guide
+and the current vendor docs disagree about a mechanism the guide lists as exam
+content, the guide wins, because the exam is written from the guide. If a later
+`audit-sources` pass finds the guide revised to the documented behaviour, these
+three items flip back — the divergence is deliberate, not drift.
+
+**2. Five items cited a page that does not state the fact being tested**
+(`tool-...-010`, `tool-...-017`, `prompt-...-010`, `-016`, `-019`). The keys
+were correct and the facts are the guide's; the 2026-09-24 pass re-cited ~30
+sibling items for exactly this reason and missed these five, while their
+evaluation dispositions read "0 unsupported-claim". All five now cite
+`manifest.examUrl` with their task statement in `sourceNote`.
+
+**Also fixed in this pass:** `tool-...-015` distractor `c` (invented
+`.mcp.local.json` path) and `tool-...-018` distractors `b` and `d` (invented
+`allowMultiple` and `force: true` flags) were replaced with real mechanisms
+applied to the wrong scope — `${VAR}` expansion in project `.mcp.json`,
+`replace_all: true`, and a Glob lookup — per the standing rule that a distractor
+uses a real mechanism wrongly rather than inventing one.
+
+`npm run check`, `npm run metrics -- ccar-f` and `npm run check-sources --
+`ccar-f` all pass post-edit (372/372 tests; 29 URLs live, 0 stale). No `status`
+changed: all 120 items remain `reviewed`.

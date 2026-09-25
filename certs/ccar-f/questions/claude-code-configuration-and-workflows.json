@@ -176,33 +176,33 @@
     "options": [
       {
         "id": "a",
-        "text": "Run /doctor to inspect system health and verify the list of active memory files and active rule overrides."
+        "text": "Run /doctor, whose setup checkup lists the memory files and rules files that are active in the current session."
       },
       {
         "id": "b",
-        "text": "Run /memory, which displays the live contents of all memory files currently injected into the active session context."
+        "text": "Run /context, which visualizes what is filling the context window and reports the CLAUDE.md and rules files that were loaded into the session."
       },
       {
         "id": "c",
-        "text": "Run /context and inspect the Memory files section, which lists the exact CLAUDE.md and rules files loaded into the current session."
+        "text": "Run /memory, which lists the memory files loaded for the session and lets the engineer open any of them to inspect the active instructions."
       },
       {
         "id": "d",
-        "text": "Run /rules, which evaluates and displays active frontmatter glob patterns against the current working directory."
+        "text": "Run /status, whose session rows report which memory files and rules were loaded when the session started."
       }
     ],
     "correct": [
       "c"
     ],
-    "explanation": "The /context command shows token consumption across session components and explicitly lists which CLAUDE.md and rules files are loaded in the current session under the Memory files section. In contrast, /memory only displays file paths where memory can be edited (including files that do not exist yet), but does not verify active loading.",
+    "explanation": "The exam guide's skill for this objective is verifying which memory files are loaded with `/memory`, which lists the memory files in scope for the session and opens any of them for inspection. `/doctor` runs a setup checkup (installation health, PATH, settings, unused skills and MCP servers, CLAUDE.md dedup), `/status` reports version, model, account and connectivity, and `/context` visualizes context usage. Divergence recorded in review-progress.md: current `memory.md` says to check the Memory files list under `/context` and describes `/memory` as listing file locations, including files that do not exist yet; the exam guide names `/memory`, so that is the key here.",
     "distractorNotes": {
-      "a": "/doctor diagnoses installation health, CLI binaries, authentication state, and connectivity, not active per-session memory file loading.",
-      "b": "/memory lists locations of memory files to edit rather than verifying which files are currently loaded into the active session context.",
-      "d": "/rules is not a built-in Claude Code slash command."
+      "a": "/doctor is a setup checkup: it diagnoses installation and configuration health, flags unused skills, MCP servers and plugins, and can deduplicate or trim CLAUDE.md files. It does not report which memory files the current session loaded.",
+      "b": "The near miss: current `memory.md` points at `/context` for this check and its Memory files list does show loaded CLAUDE.md and rules files. The exam guide's task statement names `/memory` as the command that verifies which memory files are loaded, so `/context` is the trap. (Divergence recorded in review-progress.md.)",
+      "d": "/status opens the Settings interface on the Status tab, showing version, model, account and connectivity. It carries no per-session inventory of memory files."
     },
-    "sourceUrl": "https://code.claude.com/docs/en/memory.md",
-    "sourceNote": "Troubleshoot memory issues - /context lists loaded CLAUDE.md files under Memory files, while /memory lists file locations for editing",
-    "sourceCheckedAt": "2026-09-24"
+    "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
+    "sourceNote": "Exam Guide v1.0 § Task Statement 3.1 — /memory verifies which memory files are loaded",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-f-claude-code-configuration-and-workflows-006",
@@ -303,7 +303,7 @@
       },
       {
         "id": "b",
-        "text": "Configure disallowed-tools with Write, Edit and Bash, removing them from Claude's tool pool while the skill is active."
+        "text": "Configure allowed-tools with only read and search tools (Read, Grep, Glob), restricting the skill to those tools and withholding Write and Edit while it runs."
       },
       {
         "id": "c",
@@ -311,21 +311,21 @@
       },
       {
         "id": "d",
-        "text": "Configure allowed-tools to include only read and search tools (such as Read, Grep, Glob), omitting Write and Edit."
+        "text": "List Write, Edit and Bash in disallowed-tools, which removes them from Claude's tool pool while the skill is active."
       }
     ],
     "correct": [
       "b"
     ],
-    "explanation": "The `disallowed-tools` frontmatter field lists tools removed from Claude's available pool while the skill is active; the restriction clears when you send your next message. Removing Write and Edit takes away the file-editing tools, and removing Bash closes the shell route to changing or deleting files. `allowed-tools` is the near miss: it pre-approves the listed tools for the invoking turn so they run without a permission prompt, but it does not restrict which tools are available, so every tool remains callable. To block tools across all skills and prompts, add deny rules in permission settings.",
+    "explanation": "The exam guide's skill for this objective is configuring `allowed-tools` in skill frontmatter to restrict tool access during skill execution, leaving the write-capable tools out so the skill cannot modify or delete source. The other options do not deliver that: a prompt-level prohibition is probabilistic, and a revert-after-write hook lets the write land before undoing it. `disallowed-tools` is the near miss — the field current `skills.md` documents for removing tools from the pool while a skill is active — but the exam guide names `allowed-tools` for this objective, which is what the item keys. Divergence recorded in review-progress.md: current `skills.md` says `allowed-tools` pre-approves the tools it lists without restricting which are available.",
     "distractorNotes": {
       "a": "Prompt instructions are probabilistic and do not offer deterministic security guarantees.",
-      "c": "A revert-after-write hook still lets the writes happen and only undoes them afterward; disallowed-tools removes the write-capable tools so Claude can't call them while the skill is active.",
-      "d": "allowed-tools pre-approves the listed tools for the invoking turn; it does not restrict which tools are available, so Write and Edit remain callable under the normal permission settings."
+      "c": "A revert-after-write hook lets the write happen and undoes it afterwards, so the skill still reaches the source files; the frontmatter has to determine what the skill can use.",
+      "d": "The near miss: current `skills.md` documents `disallowed-tools` as the field that removes tools from Claude's pool while a skill is active. The blueprint's task statement names `allowed-tools` as the frontmatter configuration that restricts tool access during skill execution, which is what this item tests. (Divergence recorded in review-progress.md.)"
     },
-    "sourceUrl": "https://code.claude.com/docs/en/skills.md",
-    "sourceNote": "Pre-approve tools for a skill - disallowed-tools removes tools while a skill is active; allowed-tools restricts nothing",
-    "sourceCheckedAt": "2026-09-24"
+    "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
+    "sourceNote": "Exam Guide v1.0 § Task Statement 3.2 — allowed-tools frontmatter restricts tool access during skill execution",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-f-claude-code-configuration-and-workflows-009",
@@ -336,37 +336,37 @@
     "subdomain": "commands-and-skills",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "A DevOps team creates a custom slash command /deploy-check in .claude/skills/deploy-check/SKILL.md that accepts an issue key (e.g., /deploy-check JIRA-101). Developers frequently forget the required parameter format when invoking the command. Which frontmatter configuration displays the expected parameter syntax as an autocomplete hint while the developer is typing?",
+    "stem": "A DevOps team creates a custom slash command /deploy-check in .claude/skills/deploy-check/SKILL.md that takes an issue key (e.g. /deploy-check JIRA-101). Developers frequently invoke it without the required argument. Which frontmatter configuration prompts developers for the required parameter when the skill is invoked without it?",
     "options": [
       {
         "id": "a",
-        "text": "arguments: ['[ticket-number]'], which declares typed positional arguments that Claude Code validates before execution."
+        "text": "arguments: '[ticket-number]', which declares the skill's positional argument and prompts for its value when developers omit it."
       },
       {
         "id": "b",
-        "text": "when_to_use: 'invoke with ticket number', which adds a usage tooltip to the slash command autocomplete popup."
+        "text": "when_to_use: 'invoke with ticket number', which prompts for the missing argument by describing the expected invocation in the skill listing."
       },
       {
         "id": "c",
-        "text": "argument-hint: '[ticket-number]', which displays the parameter placeholder during autocomplete typing."
+        "text": "argument-hint: '[ticket-number]', the frontmatter field for prompting developers for the required parameter when they invoke the skill without it."
       },
       {
         "id": "d",
-        "text": "disable-model-invocation: false with an interactive prompt directive asking for the missing ticket number."
+        "text": "disable-model-invocation: true, which makes Claude Code request the missing argument before allowing the skill to run."
       }
     ],
     "correct": [
       "c"
     ],
-    "explanation": "The argument-hint frontmatter property specifies the text displayed in the autocomplete menu alongside the skill name, guiding users on expected arguments (e.g. argument-hint: '[ticket-number]'). Claude Code does not provide interactive prompting for missing skill arguments, so the hint is the documented mechanism for parameter discoverability.",
+    "explanation": "The exam guide's skill for this objective is using `argument-hint` frontmatter to prompt developers for required parameters when they invoke the skill without arguments. The other fields are real but do something else: `arguments` names positional arguments for `$name` substitution in the skill body, `when_to_use` appends invocation guidance to the skill listing, and `disable-model-invocation` controls whether Claude may load the skill at all. Divergence recorded in review-progress.md: current `skills.md` describes `argument-hint` as the hint shown during autocomplete to indicate expected arguments.",
     "distractorNotes": {
-      "a": "arguments is not a recognized Skill frontmatter property in Claude Code; parameters are passed to skills via $ARGUMENTS or positional references.",
-      "b": "when_to_use is not a frontmatter field for skills; skills rely on description and argument-hint for discovery and completion.",
-      "d": "disable-model-invocation controls whether Claude processes the skill invocation, not autocomplete presentation or interactive parameter prompting."
+      "a": "`arguments` is a real frontmatter field: it names positional arguments so the skill body can substitute `$name`. It declares names for substitution and does not prompt for a missing value.",
+      "b": "`when_to_use` is a real frontmatter field: it adds invocation guidance to `description` in the skill listing. It shapes when Claude should invoke the skill, not whether an argument is supplied.",
+      "d": "`disable-model-invocation` prevents Claude from loading the skill automatically; it controls who invokes the skill, not whether an argument is supplied."
     },
-    "sourceUrl": "https://code.claude.com/docs/en/skills.md",
-    "sourceNote": "Frontmatter reference - argument-hint is the hint shown during autocomplete to indicate expected arguments",
-    "sourceCheckedAt": "2026-09-24"
+    "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
+    "sourceNote": "Exam Guide v1.0 § Task Statement 3.2 — argument-hint prompts developers for required parameters when a skill is invoked without arguments",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-f-claude-code-configuration-and-workflows-010",

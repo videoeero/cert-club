@@ -405,9 +405,9 @@
       "b": "A single mega-tool with untyped inputs discards schema validation, worsening hallucinations and parameter errors.",
       "d": "Pairwise few-shot examples explode prompt token consumption quadratically and become impossible to maintain as tools evolve."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools.md",
-    "sourceNote": "Cognitive complexity and selection degradation from tool over-provisioning",
-    "sourceCheckedAt": "2026-09-24"
+    "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
+    "sourceNote": "Exam Guide v1.0 § Task Statement 2.3 — too many tools degrade selection; restrict each agent's tool set to its role",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-011",
@@ -594,7 +594,7 @@
       },
       {
         "id": "c",
-        "text": "Create a .mcp.local.json file in the repository root, which Claude Code automatically discovers and merges over .mcp.json."
+        "text": "Add the SQLite server to the project's .mcp.json with its database path supplied through ${SQLITE_DB_PATH} environment variable expansion, so no literal path is stored in the file."
       },
       {
         "id": "d",
@@ -608,11 +608,11 @@
     "distractorNotes": {
       "a": "Using git assume-unchanged is a fragile local git index workaround that can still be overwritten by upstream merges or accidentally committed.",
       "b": "CLAUDE.md provides context and instructions to the model; it is not a configuration file for registering executable MCP servers.",
-      "c": ".mcp.local.json is not a recognized MCP configuration file in Claude Code; only .mcp.json and ~/.claude.json are supported."
+      "c": "Environment variable expansion is the documented way to keep a credential or path out of a project config, which is why this reads plausibly. The entry still lands in the tracked project file, so it alters git status and hands the engineer's personal server to every teammate; user scope is what leaves version control untouched."
     },
     "sourceUrl": "https://code.claude.com/docs/en/mcp.md",
     "sourceNote": "Configuring personal MCP servers in ~/.claude.json alongside project .mcp.json",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-016",
@@ -692,9 +692,9 @@
       "c": "Forcing get_issue via tool_choice breaks non-issue queries, preventing Claude Code from executing normal development workflows.",
       "d": "Claude Code does not deprioritize tools based on transport type; stdio and SSE tools are evaluated equally based on description and schema relevance."
     },
-    "sourceUrl": "https://code.claude.com/docs/en/mcp.md",
-    "sourceNote": "Crafting rich MCP tool descriptions to prevent fallback to generic built-in tools",
-    "sourceCheckedAt": "2026-09-24"
+    "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
+    "sourceNote": "Exam Guide v1.0 § Task Statement 2.4 — enhancing MCP tool descriptions so the agent does not prefer built-in tools such as Grep",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-018",
@@ -713,7 +713,7 @@
       },
       {
         "id": "b",
-        "text": "Repeatedly invoke Edit with allowMultiple: true to overwrite all matching occurrences across the file without anchoring lines."
+        "text": "Invoke Edit again with replace_all: true, which is the documented way to edit a text block that appears more than once."
       },
       {
         "id": "c",
@@ -721,7 +721,7 @@
       },
       {
         "id": "d",
-        "text": "Execute the Glob tool to locate duplicate occurrences, then invoke Edit with force: true to bypass the uniqueness constraint."
+        "text": "Run Glob first to list the files containing the repeated block, then re-run the identical Edit call against the intended file."
       }
     ],
     "correct": [
@@ -730,12 +730,12 @@
     "explanation": "The Edit tool requires a unique string match to ensure targeted replacements. When the target content occurs multiple times and cannot be uniquely anchored, the exam guide's fallback is to use Read to obtain the full file context, apply the modifications in memory, and use Write to save the updated file safely.",
     "distractorNotes": {
       "a": "Invoking sed via Bash is fragile, platform-dependent, and bypasses Claude Code's safe file editing lifecycle; the exam guide's fallback uses Read and Write.",
-      "b": "The Edit parameter is replace_all, not allowMultiple, and replacing every occurrence changes all matches rather than the single intended one.",
-      "d": "The Edit tool does not support a force: true flag to override uniqueness checks."
+      "b": "`replace_all: true` is a real Edit parameter, but it rewrites every occurrence of the match rather than the single one the task intends.",
+      "d": "Glob matches files by name or path pattern; the collision here is inside a single file, whose identity was never in question. Re-targeting the file does not disambiguate the anchor text."
     },
     "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
-    "sourceNote": "Exam guide Task Statement 2.5 - Read + Write as the fallback when Edit cannot find unique anchor text",
-    "sourceCheckedAt": "2026-09-24"
+    "sourceNote": "Exam Guide v1.0 § Task Statement 2.5 — Read + Write as the fallback when Edit cannot find unique anchor text",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-019",
