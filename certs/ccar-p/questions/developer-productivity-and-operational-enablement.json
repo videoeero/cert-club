@@ -7,37 +7,37 @@
     "domain": "developer-productivity-and-operational-enablement",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "An enterprise platform team is rolling out Claude Code to 200 developers working across a monorepo. The platform team needs to enforce mandatory corporate repository coding guidelines and prevent developers from accidentally running dangerous destructive commands (such as git push --force or rm -rf), while allowing Claude to learn individual developer preferences across sessions. Which combination of mechanisms should the platform architect configure?",
+    "stem": "A platform team shares coding conventions through project CLAUDE.md and uses auto memory for developer preferences. A repository maintenance command may delete generated assets, but corporate policy permits it only when a local approval record matches the requested target. The same command text can be permitted or forbidden as that record changes. Which control should the architect add to evaluate the record before Claude Code executes the command, while retaining approved maintenance?",
     "options": [
       {
         "id": "a",
-        "text": "Define repository coding guidelines in user-level CLAUDE.md files, auto memory for individual preferences, and PostToolUse hooks to inspect and roll back destructive commands."
+        "text": "Use a PostToolUse command hook to compare the deletion target with the approval record and report a policy failure before Claude continues its next turn."
       },
       {
         "id": "b",
-        "text": "Place repository guidelines in CLAUDE.md, auto memory for individual preferences, and permissions.deny rules in settings.json to block destructive commands via pattern matching."
+        "text": "Add a permissions.deny pattern for the maintenance command so unapproved deletions are blocked, leaving the approval record to document permitted exceptions."
       },
       {
         "id": "c",
-        "text": "Hardcode destructive command blocklists into .claude/rules/*.md files, which programmatically prevent tool execution before the tool call reaches the OS shell."
+        "text": "Put the approval-check procedure in a project skill and instruct Claude to invoke it before maintenance, retaining CLAUDE.md for conventions and auto memory for preferences."
       },
       {
         "id": "d",
-        "text": "Use project-level CLAUDE.md files for coding guidelines, auto memory for individual preferences, and PreToolUse hooks to deterministically block destructive commands."
+        "text": "Use a PreToolUse command hook to inspect the proposed target and approval record, denying the tool call when they do not match and otherwise leaving normal permissions in effect."
       }
     ],
     "correct": [
       "d"
     ],
-    "explanation": "In Claude Code's architectural memory and control model: CLAUDE.md files provide persistent instructions and project context; auto memory allows Claude to record individual developer preferences and patterns across sessions; and PreToolUse hooks provide deterministic programmatic guards that can inspect and block tool calls (such as destructive shell commands) before execution. Claude treats memory files as context rather than absolute programmatic constraints, so blocking actions deterministically requires a hook.",
+    "explanation": "PreToolUse runs before tool execution and can return a deny decision. A command handler can inspect the proposed input and check the scenario's approval record before deciding, rather than relying on Claude to follow an instruction. A successful check can leave the ordinary permission flow unchanged. This is an execution-time check on the matched tool call, not a claim that hooks automatically recognize every destructive command. CLAUDE.md and auto memory remain useful context, not enforcement mechanisms.",
     "distractorNotes": {
-      "a": "User-level CLAUDE.md applies only to an individual workstation rather than the monorepo, and PostToolUse hooks run after execution when irreversible actions (such as git push --force) have already completed.",
-      "b": "Literal permissions.deny rules in settings.json match exact command string prefixes and do not catch flags before arguments, subshells, or command aliases; deterministic prevention requires PreToolUse hook inspection.",
-      "c": "Rules files in .claude/rules/*.md are loaded into context as guidance for Claude; they do not provide deterministic programmatic execution barriers before tool execution."
+      "a": "PostToolUse is suitable for inspecting completed operations, but the deletion has already happened. It does not meet the requirement to reject an unapproved call before execution.",
+      "b": "Deny patterns are genuine enforcement and can block matching commands. A static command pattern does not evaluate a changing approval record, so this choice also blocks the approved use of the same command.",
+      "c": "Skills package reusable procedures, but an instruction to invoke a skill is not the automatic execution checkpoint required here. The model could request the maintenance tool without performing that check."
     },
-    "sourceUrl": "https://code.claude.com/docs/en/memory",
-    "sourceNote": "CLAUDE.md vs auto memory / PreToolUse hooks for blocking",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://code.claude.com/docs/en/hooks",
+    "sourceNote": "Hook lifecycle; How a hook resolves; PreToolUse decision control",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-p-developer-productivity-and-operational-enablement-002",
@@ -47,37 +47,37 @@
     "domain": "developer-productivity-and-operational-enablement",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "A platform team wants to integrate Claude Code into an automated GitHub Actions workflow to review pull requests submitted from public and internal contributor forks. During testing, the team observes that Claude automatically executes pre-commit hooks configured in developer repositories and attempts to load untrusted MCP server configurations committed into branch forks. Which invocation configuration best ensures that Claude Code runs deterministically and securely in the CI/CD pipeline?",
+    "stem": "A CI job reviews pull requests from contributor forks with Claude Code. It already runs in an isolated runner with controlled credentials and tool permissions, but standard -p non-interactive runs still discover branch-provided Claude Code hooks and MCP servers. The team wants to skip discovered customizations and supply its trusted review configuration explicitly. Which launch policy best addresses that remaining risk?",
     "options": [
       {
         "id": "a",
-        "text": "Execute claude -p with --dangerously-skip-permissions to auto-approve tool execution and prevent interactive approval prompts from blocking the unattended runner."
+        "text": "Use standard -p non-interactive mode with pre-approved review tools, retaining configuration discovery so the job can use repository-specific conventions without prompts."
       },
       {
         "id": "b",
-        "text": "Run Claude Code using the --bare and -p flags while providing explicit trusted tools and settings through CLI arguments and dedicated environment variables."
+        "text": "Use bare non-interactive mode (--bare -p), provide API credentials explicitly, and load trusted settings and MCP configuration through their dedicated CLI options."
       },
       {
         "id": "c",
-        "text": "Set enableAllProjectMcpServers: true in .claude/settings.json and execute claude -p, relying on default workspace trust policies to sanitize untrusted fork hooks."
+        "text": "Use standard -p non-interactive mode with a trusted MCP configuration and --strict-mcp-config, retaining discovered hooks to preserve repository-specific review preparation."
       },
       {
         "id": "d",
-        "text": "Launch Claude Code using claude --safe-mode -p, allowing Claude to execute repository lifecycle hooks while temporarily disabling external network MCP servers."
+        "text": "Use standard -p non-interactive mode from an untrusted checkout, relying on interactive workspace and MCP approval records to stop branch-provided startup configuration."
       }
     ],
     "correct": [
       "b"
     ],
-    "explanation": "In automated CI/CD environments and scripted pipelines, running Claude Code with claude --bare -p \"<prompt>\" is recommended. The --bare flag ensures deterministic and safe execution by skipping auto-discovery of repository-level or user-level hooks, skills, MCP servers, plugins, and auto memory, preventing untrusted fork code from executing unauthorized scripts. The pipeline should pass explicitly authorized tools (via --allowedTools) and settings directly.",
+    "explanation": "Bare mode skips automatic discovery of hooks, skills, plugins, MCP servers, auto memory, CLAUDE.md, and other customizations. Trusted settings and MCP servers can instead be supplied explicitly. For the Anthropic API, bare mode uses an API key or an explicitly configured key helper rather than subscription OAuth credentials. Standard -p runs can execute project Claude Code hooks and connect project MCP servers without workspace or per-server approval prompts. Bare mode reduces this configuration-loading risk; it is not an OS sandbox or a guarantee about code subsequently executed by tools.",
     "distractorNotes": {
-      "a": "--dangerously-skip-permissions bypasses interactive prompts, but without --bare, Claude Code still auto-discovers and executes untrusted hooks and MCP servers committed in the PR branch.",
-      "c": "Settings committed in an untrusted cloned repository cannot approve its own MCP servers or hooks; Claude Code ignores enableAllProjectMcpServers in untrusted folders.",
-      "d": "--safe-mode is intended for interactive troubleshooting; --bare is the dedicated non-interactive flag that skips auto-discovery of hooks, skills, MCP servers, plugins, and auto memory."
+      "a": "Pre-approving tools addresses unattended tool use, not startup discovery. The headless documentation explicitly states that -p otherwise loads the working directory's and user's configured context.",
+      "c": "Strict MCP configuration limits which MCP configuration is used, but it does not disable Claude Code hook discovery. The requirement covers both surfaces.",
+      "d": "Non-interactive -p runs do not show workspace trust or per-server approval prompts. Interactive trust assumptions therefore do not protect this job from branch-provided hooks and MCP configuration."
     },
     "sourceUrl": "https://code.claude.com/docs/en/headless",
-    "sourceNote": "headless execution with --bare mode and explicit tool permissions",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceNote": "Basic usage; Start faster with bare mode",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-p-developer-productivity-and-operational-enablement-003",
@@ -87,37 +87,37 @@
     "domain": "developer-productivity-and-operational-enablement",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "An enterprise security architect must enforce mandatory data protection policies across 500 developer workstations running Claude Code. The policy requires that Claude Code sessions cannot bypass permission prompts, cannot read files inside ./.env or ./secrets/**, and cannot permit developers to override these restrictions using local .claude/settings.json or CLI flags. How should the architect implement this requirement?",
+    "stem": "A platform team centrally manages Claude Code on developer workstations. It needs to disable bypass-permissions mode and apply organization-owned Read deny rules for designated secret paths, ignoring permission rules supplied by users, projects, local settings, or --allowedTools. OS-level protection against arbitrary subprocess file access is handled separately. Which deployment meets the Claude Code policy requirement?",
     "options": [
       {
         "id": "a",
-        "text": "Deploy an endpoint managed-settings.json file in the OS system directory with deny rules, disableBypassPermissionsMode set to disable, and allowManagedPermissionRulesOnly set to true."
+        "text": "Deploy managed-settings.json in the system directory with the Read deny rules, permissions.disableBypassPermissionsMode set to disable, and allowManagedPermissionRulesOnly enabled."
       },
       {
         "id": "b",
-        "text": "Add file deny rules to a global CLAUDE.md template in developer home directories, relying on the model's instruction-following capabilities to reject prompts targeting sensitive files."
+        "text": "Distribute the same Read deny rules and bypass-mode setting in developer ~/.claude/settings.json, using fleet configuration management to restore that file after each login."
       },
       {
         "id": "c",
-        "text": "Configure repository-level .claude/rules/security.md files in each Git repository, because project rules take precedence over endpoint configurations and command-line execution flags."
+        "text": "Commit the Read deny rules and bypass-mode setting in each project's .claude/settings.json, using required code-owner approval to protect policy changes in the central repository."
       },
       {
         "id": "d",
-        "text": "Configure global deny rules in developer ~/.claude/settings.json and set permissions.defaultMode to dontAsk, preventing developers from manually approving sensitive file reads."
+        "text": "Publish a trusted settings file and require launcher scripts to pass it with --settings, using the launcher to select permission rules instead of deploying system-managed policy."
       }
     ],
     "correct": [
       "a"
     ],
-    "explanation": "Enterprise policies in Claude Code are enforced via endpoint-managed settings (such as /Library/Application Support/ClaudeCode/managed-settings.json on macOS or /etc/claude-code/managed-settings.json on Linux). Setting disableBypassPermissionsMode: \"disable\" prevents users from bypassing approval prompts, explicit deny entries block tool operations on sensitive file patterns, and setting allowManagedPermissionRulesOnly: true prevents project-level or user-level configuration files from overriding administrative security rules.",
+    "explanation": "Managed settings apply above user, project, local, and --settings values. The documented deployment example combines Read deny entries, permissions.disableBypassPermissionsMode: disable, and allowManagedPermissionRulesOnly: true. Together these disable bypass mode and exclude permission rules from lower-trust sources, including --allowedTools. This does not require a prompt for every action or promise universal file confidentiality: the permissions documentation distinguishes built-in file checks and recognized shell operations from arbitrary subprocesses that open files indirectly.",
     "distractorNotes": {
-      "b": "CLAUDE.md files provide context and instructions to Claude, not deterministic security barriers; developers can also edit or delete files in their home directories.",
-      "c": "Repository-level rules files are advisory context loaded into the model and can be overridden or modified by developers; they do not enforce system-wide administrative control.",
-      "d": "Developer ~/.claude/settings.json resides in user space, so developers have write access and can modify rules or override restrictions using command-line flags such as --permission-mode."
+      "b": "Restoring a user file periodically does not make it managed policy. It remains a user-scope setting rather than the enforced organization-owned source required here.",
+      "c": "Repository review protects changes to the central copy, not a developer's local configuration. Project settings do not provide the managed scope or managed-only permission-rule control.",
+      "d": "A --settings file is an explicit configuration source, not the managed tier. A launcher convention does not make every developer session consume it or prevent lower-trust permission configuration as required."
     },
     "sourceUrl": "https://code.claude.com/docs/en/managed-settings",
-    "sourceNote": "managed-settings.json and allowManagedPermissionRulesOnly",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceNote": "Deploy a managed settings file; managed settings precedence",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-p-developer-productivity-and-operational-enablement-004",
@@ -127,37 +127,37 @@
     "domain": "developer-productivity-and-operational-enablement",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "A software team frequently relies on Claude Code to perform deep security vulnerability audits across their repository. When the team adds exhaustive static-analysis checklists and detailed scanning guidelines to the root CLAUDE.md, developers report that ordinary day-to-day coding prompts suffer from noticeable token bloat, increased latency, and diluted instruction following. Which architectural adjustment best resolves this issue while retaining comprehensive audit capabilities?",
+    "stem": "A team placed a detailed repository audit checklist in root CLAUDE.md, bloating ordinary coding sessions. Audits are self-contained: they need repository searches rather than the developer's conversation history, should have read/search tools but no editing tools, and should return findings without adding their intermediate exploration to the main conversation. Which restructuring best meets those constraints?",
     "options": [
       {
         "id": "a",
-        "text": "Move the audit instructions into auto memory so that Claude Code dynamically injects the checklist only when security-related keywords appear in prompts."
+        "text": "Move the checklist into an on-demand skill that runs in the main conversation, leaving the coding session's tools available so the audit can inspect and repair findings together."
       },
       {
         "id": "b",
-        "text": "Instruct developers to run /clear before beginning regular coding tasks, purging the root CLAUDE.md audit instructions from active context for that session."
+        "text": "Move the checklist into path-scoped project rules for the audited directories, loading it as matching files are inspected and performing the searches in the coding conversation."
       },
       {
         "id": "c",
-        "text": "Create a dedicated custom subagent in .claude/agents/ with a specialized system prompt, scoped read tools, and a concise description for delegation."
+        "text": "Move the checklist into a custom audit subagent with read/search tools and a focused system prompt, delegating each audit with a request for a concise findings report."
       },
       {
         "id": "d",
-        "text": "Migrate the audit checklist into modular .claude/rules/ files without path filters, delaying instruction ingestion until security tools are called."
+        "text": "Fork the coding conversation for each audit so the worker inherits its current tools and full history, and ask the worker to avoid edits while returning a concise findings report."
       }
     ],
     "correct": [
       "c"
     ],
-    "explanation": "Custom subagents (.claude/agents/<name>.md) run in their own isolated context windows with specialized system prompts and restricted tool sets. Because a subagent's detailed instructions and intermediate exploration steps load only when Claude delegates to it (or when explicitly called), the primary conversation context remains lightweight and unpolluted during regular development tasks.",
+    "explanation": "A custom subagent combines a dedicated system prompt, its own context, and an explicitly scoped tool set. The documentation recommends subagents for self-contained work with verbose output and specific tool restrictions. Here, the audit's checklist and intermediate searches belong in that separate context, with findings returned to the main conversation. Ordinary skills provide on-demand instructions but need not isolate execution; a skill configured to run through an appropriately restricted subagent could also meet the requirements, unlike the main-conversation skill offered here.",
     "distractorNotes": {
-      "a": "Auto memory is maintained dynamically by Claude to track individual user habits across sessions; it is not a keyword-triggered procedural retrieval engine.",
-      "b": "The /clear command empties conversation history, but CLAUDE.md is loaded into context automatically at the start of every session and on every turn.",
-      "d": "Rules files in .claude/rules/*.md without path frontmatter are loaded unconditionally into context at session start, reproducing the same token bloat."
+      "a": "An ordinary skill reduces always-loaded instructions but runs its exploration in the main conversation. This option also retains editing tools rather than enforcing the required read/search-only tool set.",
+      "b": "Path-scoped rules reduce irrelevant instruction loading, but do not create a separate worker context or restrict that worker's tools. The audit's intermediate searches still occupy the coding conversation.",
+      "d": "A conversation fork keeps its output separate but inherits the main conversation's tools and history. A request not to edit is not the scoped read/search tool set the scenario requires."
     },
     "sourceUrl": "https://code.claude.com/docs/en/sub-agents",
-    "sourceNote": "custom subagent context isolation and scoped tool permissions",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceNote": "Choose between subagents and main conversation; Write subagent files; Fork the current conversation",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-p-developer-productivity-and-operational-enablement-005",
@@ -167,37 +167,37 @@
     "domain": "developer-productivity-and-operational-enablement",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "During a complex refactoring session in Claude Code, an engineer repeatedly encounters the error: \"Autocompact is thrashing: the context refilled to the limit...\". Investigation reveals that after compaction, Claude immediately invokes a tool that outputs a 4MB generated bundle file into the conversation context. Which remediation strategy is most effective to restore progress in this session?",
+    "stem": "During a refactor, Claude Code stops with an auto-compaction thrashing error. A trace shows that compaction succeeds, then another full read of a generated bundle immediately fills the context again. The engineer needs to preserve the current plan and diff while continuing to inspect relevant bundle code. Which recovery addresses both the immediate context pressure and its recurring cause?",
     "options": [
       {
         "id": "a",
-        "text": "Increase MAX_MCP_OUTPUT_TOKENS in the environment to permit multi-megabyte tool outputs, allowing autocompact to bypass context window threshold limits."
+        "text": "Run /clear and repeat the original refactoring request, then have Claude inspect the complete bundle in the new conversation before reconstructing the implementation plan."
       },
       {
         "id": "b",
-        "text": "Run /compact focused on preserving only the current plan and diff, and direct Claude to read the bundle in specific chunk ranges or via a subagent."
+        "text": "Run /compact with a focus on the plan and diff while dropping the large output, then inspect targeted bundle ranges or delegate the large-file work to a subagent."
       },
       {
         "id": "c",
-        "text": "Restart the terminal and run claude --resume, which automatically strips oversized tool outputs from the session transcript before restoring conversation turns."
+        "text": "Run /compact with a focus on the plan and diff before each retry, retaining whole-bundle reads so each subsequent tool call has the complete source available."
       },
       {
         "id": "d",
-        "text": "Run /doctor --fix to prune accumulated conversation artifacts and automatically raise the internal compaction thrashing threshold in project settings."
+        "text": "Add the generated directory to .gitignore to reduce repository search noise, then repeat the explicit whole-bundle read in the current conversation to continue the investigation."
       }
     ],
     "correct": [
       "b"
     ],
-    "explanation": "Auto-compaction thrashing occurs when automatic compaction succeeds, but an oversized tool output or file read immediately refills the context window to its ceiling several times in succession. To recover, developers should run /compact with a specific focus (e.g., preserving only the current plan and diff), direct Claude to inspect files in targeted line ranges or function slices, or offload large-file exploration to a subagent whose context is isolated from the main conversation.",
+    "explanation": "The troubleshooting guide describes this loop as successful compaction followed by immediate refilling from a file or tool output. It recommends reading smaller ranges, compacting with a focus that drops the large output, or moving large-file work to a subagent. Combining focused compaction with a changed inspection strategy retains useful task state and avoids immediately recreating the problem. /clear is a documented fallback when the earlier conversation is no longer needed, which is not this scenario.",
     "distractorNotes": {
-      "a": "MAX_MCP_OUTPUT_TOKENS configures limits for external MCP tools up to fixed limits and does not alter the underlying model context window or prevent autocompaction thrashing.",
-      "c": "Resuming with claude --resume restores the full transcript from disk, including the oversized tool results that caused the thrashing error in the first place.",
-      "d": "/doctor diagnoses installation health, settings syntax, and unused extensions; it cannot prune conversation history or alter model compaction thresholds."
+      "a": "Clearing is appropriate when the prior conversation is dispensable. Here it discards needed conversational state, and the repeated whole-bundle read recreates the input pattern that caused thrashing.",
+      "c": "Focused compaction addresses the accumulated output, but repeating the same oversized read immediately refills the window. Recovery also needs a narrower read or separate exploration context.",
+      "d": "The guide recommends ignoring large build directories for broader performance and search issues. That does not reduce the explicit whole-file read identified here or compact the output already in context."
     },
     "sourceUrl": "https://code.claude.com/docs/en/troubleshooting",
-    "sourceNote": "auto-compaction thrashing and context recovery",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceNote": "Performance and stability; Auto-compaction stops with a thrashing error",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-p-developer-productivity-and-operational-enablement-006",
@@ -207,37 +207,37 @@
     "domain": "developer-productivity-and-operational-enablement",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "A backend engineer is actively writing code on an API feature branch in a Git repository. The engineer wants Claude Code to concurrently investigate an unrelated database migration script and draft unit tests without interfering with the active working tree, dirty staging area, or current branch state. How should the platform architect recommend structuring this workflow?",
+    "stem": "An engineer is editing an API feature with uncommitted and staged changes. Claude Code should concurrently modify an unrelated migration and its tests. Both workstreams must keep running, but their file edits and staging operations must be separated. The migration does not need the API conversation history. Which setup provides the needed isolation?",
     "options": [
       {
         "id": "a",
-        "text": "Spawn a background subagent in the main session, because subagent execution runs in an isolated sandbox that prevents filesystem edits on the active branch."
+        "text": "Delegate migration work to a custom subagent using its default working directory, giving it a separate context and instructions to avoid the API feature's files."
       },
       {
         "id": "b",
-        "text": "Open a second terminal in the same repository directory and run Claude Code, allowing concurrent execution without altering git branch pointers."
+        "text": "Fork the conversation into a second session launched in the same checkout, giving the migration its own message history while retaining the existing local files."
       },
       {
         "id": "c",
-        "text": "Instruct the engineer to run git stash, let Claude Code complete the migration tests on the current branch, and pop the stash to reapply dirty edits."
+        "text": "Pause API work, stash the current changes, and let Claude complete the migration in the checkout before restoring the feature work and continuing development."
       },
       {
         "id": "d",
-        "text": "Launch Claude using the --worktree flag to create an isolated working directory and branch while sharing the same underlying repository history and remote."
+        "text": "Start the migration session in its own git worktree using --worktree, with a separate working directory and branch that share the repository's history and remote."
       }
     ],
     "correct": [
       "d"
     ],
-    "explanation": "Claude Code provides native support for Git worktrees via the --worktree (or -w) flag. A Git worktree creates a separate working directory and dedicated branch (by default under .claude/worktrees/<name>) that shares the existing local repository's Git object database and remote configuration. This enables Claude to run concurrently on separate tasks, edit files, and execute tests without colliding with the engineer's working tree or branch.",
+    "explanation": "Worktrees provide separate files and branches while sharing repository history and remote configuration, allowing the two workstreams to proceed without sharing a checkout's edits and staging state. Subagent context isolation or a forked conversation does not by itself supply this filesystem separation. Subagents can also be configured with isolation: worktree, but the default-directory subagent offered here is not configured that way. A new worktree may need its own development-environment setup.",
     "distractorNotes": {
-      "a": "Subagents operate with isolated context windows, but execute tools directly in the local repository working directory, risking dirty tree collisions and overwrites.",
-      "b": "Running two Claude Code sessions in the same working directory causes concurrent edits and git operations on the same files, leading to collisions.",
-      "c": "Stashing local work blocks the engineer's active workflow and risks severe merge conflicts when popping stashed changes over Claude's file edits."
+      "a": "A default subagent starts in the main conversation's current directory. Separate context and cooperative file ownership do not separate the checkout or staging state.",
+      "b": "Forking separates conversation state, not the files in the launch directory. Running both sessions in that checkout retains the collision the scenario needs to avoid.",
+      "c": "Serializing work through a stash can avoid simultaneous edits, but it pauses the API workstream and therefore fails the concurrency requirement."
     },
     "sourceUrl": "https://code.claude.com/docs/en/worktrees",
-    "sourceNote": "running parallel sessions with git worktrees",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceNote": "Start Claude in a worktree; Resume a worktree session; Isolate subagents with worktrees",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-p-developer-productivity-and-operational-enablement-007",
@@ -247,37 +247,37 @@
     "domain": "developer-productivity-and-operational-enablement",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "Following an update to a developer's workstation, Claude Code hangs indefinitely during startup and fails to load the interactive prompt. The developer suspects that a recently installed extension, hook, or MCP server is responsible for the hang, but cannot launch the CLI normally to view settings. What is the recommended operational troubleshooting procedure to diagnose and isolate the issue?",
+    "stem": "Claude Code stops reaching the interactive prompt after a developer changes a personal plugin and project hook. The support engineer wants a reversible comparison that disables customizations while retaining normal authentication, built-in tools, and permissions. Configuration files should remain intact for subsequent diagnosis, and organization-managed hooks and settings must remain in force. Which first step best isolates the suspected customization problem?",
     "options": [
       {
         "id": "a",
-        "text": "Start Claude with the --safe-mode flag to temporarily disable customizations, or execute claude doctor from the system shell to inspect diagnostics."
+        "text": "Launch with --safe-mode and compare startup behavior; if it succeeds, use targeted configuration checks to isolate the responsible customization before changing the saved setup."
       },
       {
         "id": "b",
-        "text": "Launch Claude with the --debug flag to bypass hanging startup hooks and force the CLI to open an interactive emergency configuration console."
+        "text": "Launch with --debug and reproduce the startup failure under the existing configuration, collecting event logs before comparing the hook and plugin definitions on disk."
       },
       {
         "id": "c",
-        "text": "Run claude --bare -p \"/doctor\" to execute automated repair routines in headless mode and unregister non-responsive Model Context Protocol servers."
+        "text": "Run claude doctor from the shell and correct reported installation or settings errors, then retry startup with the existing customizations still enabled for the session."
       },
       {
         "id": "d",
-        "text": "Delete ~/.claude.json to purge user configuration, reset active MCP connections, and force Claude Code to regenerate default plugin dependencies."
+        "text": "Point CLAUDE_CONFIG_DIR at a fresh directory and launch outside the project, redoing first-run setup and authentication before comparing behavior with the usual configuration."
       }
     ],
     "correct": [
       "a"
     ],
-    "explanation": "When Claude Code hangs during startup due to a faulty extension, hook, or MCP server, running with claude --safe-mode disables all customizations (plugins, MCP servers, hooks, and custom commands) for that session, allowing the user to start Claude and verify whether a customization is the cause. Additionally, running claude doctor directly from the shell performs an automated diagnosis of settings, extensions, network access, and configuration health even when the interactive session cannot start.",
+    "explanation": "Safe mode provides the requested comparison: it disables customizations while normal authentication, model selection, built-in tools, and permissions continue to work. Organization-managed hooks and settings policy still apply. If startup succeeds, targeted checks can narrow the customization responsible. This is different from a fresh configuration directory, which also changes user setup and requires authentication, and from diagnostics that observe the existing configuration without disabling it.",
     "distractorNotes": {
-      "b": "--debug enables detailed log output to stderr and debug log files, but does not bypass startup hooks or MCP connections; the process will still hang.",
-      "c": "--bare is designed for headless scripting without loading customizations; it does not repair configurations, unregister MCP servers, or run interactive doctor fixes.",
-      "d": "~/.claude.json contains user state and local MCP server configs, not project hooks; deleting it destroys settings without isolating the specific cause of the hang."
+      "b": "Debug logging is useful evidence and may help later, but it does not supply the requested comparison with customizations disabled.",
+      "c": "The shell doctor command provides read-only installation and settings diagnostics without starting a session. It does not create a customization-disabled comparison, and fixing files first changes the saved setup.",
+      "d": "A clean configuration directory is a useful broader isolation test, but it changes user settings and triggers first-run authentication. Safe mode more closely preserves the baseline required here."
     },
     "sourceUrl": "https://code.claude.com/docs/en/debug-your-config",
-    "sourceNote": "diagnosing configuration loading issues with safe mode and doctor",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceNote": "Check resolved settings; Check hooks; Test against a clean configuration",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-p-developer-productivity-and-operational-enablement-008",
@@ -287,37 +287,37 @@
     "domain": "developer-productivity-and-operational-enablement",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "An engineering organization wants to standardize complex multi-step developer operations across teams (such as generating release notes from git commits, generating component boilerplate, and executing database rollback validations). The platform architect wants these procedures to be version-controlled in each repository and invocable via slash commands, without permanently loading several thousand tokens of instructional text into the context window of every developer turn. Which Claude Code feature should the architect implement?",
+    "stem": "A team wants a version-controlled release-preparation runbook that developers invoke as a slash command. Its detailed steps should load on demand, and because timing matters, Claude must not invoke the runbook automatically when a discussion merely mentions a release. Which configuration best meets the invocation and context requirements?",
     "options": [
       {
         "id": "a",
-        "text": "Define custom subagents in .claude/agents/ for each workflow, which register user-invocable slash commands while isolating intermediate execution context."
+        "text": "Create a project skill with default invocation settings and a precise description saying to use it when release preparation is requested, keeping the body out of startup context."
       },
       {
         "id": "b",
-        "text": "Store the runbooks in .claude/rules/*.md files with path-filtering globs, so instructions load into the prompt only when relevant files are edited."
+        "text": "Create a project skill with user-invocable set to false and a release-specific description, leaving its procedure available for Claude to discover when the conversation is relevant."
       },
       {
         "id": "c",
-        "text": "Create project-level skills inside .claude/skills/ that define reusable workflows and load instructions on demand only when invoked by the developer."
+        "text": "Create .claude/skills/release-prep/SKILL.md with disable-model-invocation: true, retaining developer slash-command invocation while loading its body when the developer invokes it."
       },
       {
         "id": "d",
-        "text": "Configure PreToolUse hooks in settings.json that intercept tool calls and inject the operational instructions into active context before execution."
+        "text": "Create a project skill with context: fork so release preparation runs in a separate subagent, leaving its default invocation settings to support discovery and direct slash commands."
       }
     ],
     "correct": [
       "c"
     ],
-    "explanation": "Claude Code skills (defined in .claude/skills/<skill-name>/SKILL.md or .claude/skills/<skill-name>.md) provide structured, invocable workflows that can be triggered via slash commands. Unlike CLAUDE.md, which is continuously loaded into context on every interaction, skill contents and supporting instructions load on demand only when the skill is invoked, conserving token context while providing standardized, repository-tracked operational playbooks.",
+    "explanation": "A project skill packages the version-controlled runbook and exposes its slash command. By default both Claude and the user can invoke skills. Setting disable-model-invocation: true disables Claude's automatic invocation while preserving explicit developer invocation; its description is not placed in context, and the full body loads when the user invokes it. This controls invocation of the skill, not authorization of every underlying release operation, which still needs appropriate tool and system permissions.",
     "distractorNotes": {
-      "a": "Subagents (.claude/agents/*.md) define specialized autonomous agents that Claude delegates to; they do not register slash commands for direct user invocation.",
-      "b": "Rules files in .claude/rules/ apply instructions automatically based on file paths during file editing, but do not provide user-invocable slash commands.",
-      "d": "PreToolUse hooks intercept tool execution for deterministic policy enforcement; they are not designed to structure multi-step interactive workflows or slash commands."
+      "a": "Default skills load their bodies on demand, but Claude can invoke them automatically. A careful description guides selection rather than disabling model invocation.",
+      "b": "user-invocable: false does the opposite of the requirement: it removes the user's slash-command invocation while leaving the skill available to Claude.",
+      "d": "context: fork selects execution in a subagent. It does not disable automatic invocation, so execution isolation is not a substitute for controlling who starts the runbook."
     },
     "sourceUrl": "https://code.claude.com/docs/en/skills",
-    "sourceNote": "custom skills for reusable team workflows and token conservation",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceNote": "Choose where skills load; Control who invokes a skill; Run skills in a subagent",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-p-developer-productivity-and-operational-enablement-009",
@@ -327,36 +327,36 @@
     "domain": "developer-productivity-and-operational-enablement",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "A platform team builds an internal Model Context Protocol (MCP) server running over standard input and output (stdio) transport to allow Claude Code to query database schemas. When developers invoke schema tools, the session intermittently freezes for 60 seconds before reporting a tool timeout. Debug logs reveal that the server process prints informational startup banners and connection progress strings directly to stdout. What is the architectural root cause of this operational issue?",
+    "stem": "An internal MCP server queries database schemas over stdio. After verbose diagnostics are enabled, the client reports malformed messages and some requests time out. A captured stream shows plain-text connection logs interleaved with otherwise valid newline-delimited JSON-RPC responses. The team must retain diagnostics and compatibility with unmodified MCP clients. Which remediation targets the demonstrated protocol defect?",
     "options": [
       {
         "id": "a",
-        "text": "Claude Code treats unformatted text on stdout as streaming tool result tokens that exceed the default MCP token ceiling, triggering an automated safety timeout."
+        "text": "Flush stdout after each connection log and JSON-RPC response so the client receives complete lines promptly, preserving the existing shared stream for diagnostics and results."
       },
       {
         "id": "b",
-        "text": "Printing startup messages to stdout exceeds the 15,000-token tool description limit, which prevents Claude Code from initializing the tool schema parser."
+        "text": "Serialize each diagnostic as a standalone JSON string on stdout before continuing JSON-RPC responses, ensuring the client encounters syntactically valid JSON on each line."
       },
       {
         "id": "c",
-        "text": "The stdio transport buffers non-protocol stdout chunks in the OS pipe until an EOF marker is received, deadlocking the client until process termination."
+        "text": "Serialize writes under a shared output lock so connection logs and JSON-RPC responses cannot interleave within a line, retaining both kinds of output on the same stream."
       },
       {
         "id": "d",
-        "text": "Arbitrary text printed to stdout corrupts JSON-RPC protocol message framing on the stdio channel, causing the client to hang until the request times out."
+        "text": "Send diagnostic logs to stderr and reserve stdout for valid newline-delimited MCP messages, including output produced by imported libraries and server startup routines."
       }
     ],
     "correct": [
       "d"
     ],
-    "explanation": "In the Model Context Protocol (MCP) using stdio transport, standard input and standard output are reserved strictly for JSON-RPC protocol message exchange. If an MCP server or any of its imported libraries prints arbitrary text, banners, or diagnostic logs directly to stdout, the JSON-RPC framing is corrupted. The MCP client cannot parse the stream as valid JSON-RPC and hangs waiting for a valid response until the request times out. Server diagnostic logging must always be directed to stderr or to a separate log file.",
+    "explanation": "The stdio binding reserves stdout for valid MCP messages, one JSON-RPC message per line, and explicitly permits informational, debug, and error logging on stderr. The observed connection logs violate that contract even if they are flushed promptly or written without byte-level interleaving. Routing them to stderr preserves diagnostics without changing the client protocol. The specification establishes the violation, not a guaranteed timeout duration or a universal client response to malformed input.",
     "distractorNotes": {
-      "a": "Tool results are transmitted within structured JSON-RPC responses; raw stdout text is not parsed as streaming result tokens and cannot trigger the token ceiling.",
-      "b": "The 15,000-token limit applies to subagent descriptions at startup, not to runtime stdout messages from an MCP server process.",
-      "c": "The issue is not operating system pipe buffering; non-JSON-RPC text directly violates the JSON-RPC framing contract on the stdio protocol channel."
+      "a": "Flushing can address delayed delivery, but prompt delivery does not make plain-text log lines valid MCP messages. The demonstrated defect remains.",
+      "b": "Valid JSON syntax is insufficient: a standalone JSON string is not a JSON-RPC request, response, or notification. Diagnostic encoding must not violate the MCP message contract.",
+      "c": "A lock can prevent bytes from concurrent writers corrupting one another, but complete plain-text log lines still violate the stdout message contract."
     },
     "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/stdio",
-    "sourceNote": "stdio binding: the server MUST NOT write anything to stdout that is not a valid MCP message; logging goes to stderr.",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceNote": "stdio message framing and standard-stream rules; Receiving Messages",
+    "sourceCheckedAt": "2026-09-25"
   }
 ]

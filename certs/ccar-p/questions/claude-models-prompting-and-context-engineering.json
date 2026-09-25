@@ -5,39 +5,37 @@
     "schemaVersion": 1,
     "type": "single",
     "domain": "claude-models-prompting-and-context-engineering",
-    "difficulty": "medium",
+    "difficulty": "hard",
     "status": "reviewed",
-    "stem": "A legal tech solution uses Claude to analyze contracts against a static 15,000-token corporate policy document. The system prompt contains the policy document, but each request currently prefixes the prompt with a dynamic timestamp and user session ID before the policy text. Latency and token costs are unacceptable. How should the architect reorganize the prompt structure to enable effective prompt caching?",
+    "stem": "A contract service sends independent requests containing a session timestamp, a complete corporate policy, and a different contract. It uses automatic prompt caching, but sees cache writes without reads even when requests arrive seconds apart. The full policy must remain available, and no conversation history is carried between requests. Which change enables policy reuse without changing the information available to Claude?",
     "options": [
       {
         "id": "a",
-        "text": "Place cache control breakpoints on every message object while keeping the dynamic session ID at the very start of the system prompt."
+        "text": "Move the policy ahead of the timestamp and contract, retaining automatic caching on the varying final block to discover the stable policy."
       },
       {
         "id": "b",
-        "text": "Split the 15,000-token policy document into 500-token chunks distributed across user messages so they bypass prefix ordering constraints."
+        "text": "Keep the existing block order and add an explicit breakpoint at the policy's end, separating its cache entry from the changing contract."
       },
       {
         "id": "c",
-        "text": "Move the dynamic timestamp and session metadata after the static policy document so the invariant prefix matches across requests."
+        "text": "Move the policy before the timestamp and contract, and explicitly mark the policy's final block so requests write and reuse that stable prefix."
       },
       {
         "id": "d",
-        "text": "Configure the API request to use zero-shot instructions only, because prompt caching is automatically disabled whenever system prompts exceed 10,000 tokens."
+        "text": "Keep automatic caching and the existing block order, but select a longer cache lifetime so entries remain available across more requests."
       }
     ],
-    "correct": [
-      "c"
-    ],
-    "explanation": "Claude's prompt caching relies on exact prefix matching from the very beginning of the prompt. If variable content (such as timestamps or session IDs) appears before static content (such as large policy documents or system instructions), the cache prefix is broken on every call, resulting in cache misses. Moving variable elements after the static prefix ensures high cache hit rates, reducing latency and input token costs.",
+    "correct": ["c"],
+    "explanation": "Caching reuses the prefix through a marked block, not an independently matching passage. The policy must precede varying content, and its endpoint must actually have been written to the cache. Automatic caching on a changing final block does not create entries at earlier stable positions; lookback finds prior writes rather than discovering and caching stable content. An explicit breakpoint at the policy endpoint satisfies both requirements.",
     "distractorNotes": {
-      "a": "Breakpoints cannot rescue cache hits if the prefix preceding them changes on every request, because cache lookups require byte-for-byte prefix continuity.",
-      "b": "Chunking into user messages fragments the policy and still requires identical prefix ordering for caching, while adding context management overhead.",
-      "d": "Prompt caching supports system prompts well beyond 10,000 tokens (minimum cacheable prefix is 1,024 or 2,048 tokens depending on model); it is not disabled."
+      "a": "Ordering is necessary but insufficient for these independent requests: the final block changes, and no prior request wrote an entry at the policy endpoint.",
+      "b": "The timestamp remains part of the prefix through the policy, so a new timestamp still produces a different cache entry.",
+      "d": "Longer retention helps expired entries, not entries whose prefixes differ. Requests already arrive within the cache lifetime."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
-    "sourceNote": "Prompt caching / Structure your prompt",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceNote": "Structuring your prompt / How automatic prefix checking works / Common mistake: breakpoint on changing content",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-p-claude-models-prompting-and-context-engineering-002",
@@ -45,39 +43,37 @@
     "schemaVersion": 1,
     "type": "single",
     "domain": "claude-models-prompting-and-context-engineering",
-    "difficulty": "medium",
+    "difficulty": "hard",
     "status": "reviewed",
-    "stem": "An enterprise architect is designing an automated financial analysis service on Claude Sonnet 4.5, a model that supports manual extended thinking only. The workload receives two distinct types of requests: high-volume simple balance inquiries requiring sub-second response times, and low-volume portfolio stress tests requiring deep multi-step mathematical verification. What is the most architecturally sound approach to satisfy both SLA profiles within a single model deployment?",
+    "stem": "A financial service is pinned to Claude Sonnet 4.5 during a validation freeze. Tests show that balance summaries meet their latency and quality targets with thinking disabled, while portfolio stress tests need extended thinking to meet the accuracy gate. Requests are independent, and a router already identifies the two classes. Which configuration best preserves both measured outcomes without adding model calls?",
     "options": [
       {
         "id": "a",
-        "text": "Configure the thinking.budget_tokens parameter per request, disabling thinking for balance inquiries while allocating a dedicated token budget for stress tests."
+        "text": "Disable thinking for balance summaries; give stress tests a validated manual thinking budget with an output limit that leaves room for the answer."
       },
       {
         "id": "b",
-        "text": "Fix the thinking budget at 8,192 tokens for all calls while reducing max_tokens to 256 tokens on balance inquiries to force the model to exit reasoning early."
+        "text": "Use the validated stress-test thinking budget for both classes, but stream balance responses so the interface can display the final answer sooner."
       },
       {
         "id": "c",
-        "text": "Route balance inquiries through a temperature of 0.0 to eliminate thinking latency while setting temperature to 1.0 on stress tests to activate chain-of-thought."
+        "text": "Use a shared small thinking budget for both classes, increasing the final answer allowance for stress tests to accommodate their extra complexity."
       },
       {
         "id": "d",
-        "text": "Deploy an external speculative decoding sidecar that intercepts and aborts reasoning tokens whenever incoming requests match balance inquiry schemas."
+        "text": "Disable thinking for both classes and ask stress tests to reason within their final report, preserving the balance endpoint's existing configuration."
       }
     ],
-    "correct": [
-      "a"
-    ],
-    "explanation": "On models that support manual extended thinking, `thinking: {\"type\": \"enabled\", \"budget_tokens\": N}` sets a per-request target for internal reasoning, so reasoning depth can be tuned per call: omit thinking for balance inquiries to preserve sub-second turnaround, and provision a budget for stress tests. Note the boundary the documentation draws — manual extended thinking is deprecated on the Claude 4.6 models and is rejected with a 400 error on Claude 4.7 and later, where adaptive thinking and `output_config: {effort: ...}` replace it. Claude Sonnet 4.5 supports only the manual mode, so `budget_tokens` is the correct control there.",
+    "correct": ["a"],
+    "explanation": "Sonnet 4.5 supports manual extended thinking, with a per-request budget for reasoning before the final answer. The two independently evaluated request classes need different settings: disabled thinking preserves the measured balance behavior, while the validated stress-test budget preserves the accuracy gate. The output allowance must accommodate thinking and the answer. This is a Sonnet 4.5 configuration, not a recommendation to use manual budgets on newer models that require adaptive thinking.",
     "distractorNotes": {
-      "b": "Reducing max_tokens does not truncate thinking cleanly; max_tokens must exceed budget_tokens, otherwise the request fails validation with an API 400 error.",
-      "c": "Temperature controls sampling randomness, not whether extended thinking runs. Manual thinking is turned on only by the `thinking` object, and reasoning depth is set by its `budget_tokens` value.",
-      "d": "Speculative decoding sidecars cannot intercept internal reasoning tokens to bypass latency; reasoning depth is configured directly via API parameters."
+      "b": "Streaming changes delivery but does not remove the reasoning that precedes a final answer; the balance latency result was measured with thinking disabled.",
+      "c": "More room for the final answer does not restore the larger thinking budget under which stress tests passed validation.",
+      "d": "Explicit reasoning in an answer is a real prompting technique, but replacing the validated thinking configuration would require new accuracy evidence."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/extended-thinking",
-    "sourceNote": "Extended thinking / Controlling thinking budget and latency trade-offs",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceNote": "Manual extended thinking / Thinking budgets / Budget and output limits / Migration to adaptive thinking",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-p-claude-models-prompting-and-context-engineering-003",
@@ -85,39 +81,37 @@
     "schemaVersion": 1,
     "type": "single",
     "domain": "claude-models-prompting-and-context-engineering",
-    "difficulty": "medium",
+    "difficulty": "hard",
     "status": "reviewed",
-    "stem": "A customer service platform processes 100,000 inbound interactions daily. Approximately 80% are straightforward intent classification and routing requests with strict 300ms p95 latency targets, while 20% involve resolving multi-policy billing disputes that require synthesizing ambiguous contractual terms. Which model selection strategy best balances cost, latency, and reasoning capability?",
+    "stem": "A support platform evaluates two models under production-like load. Haiku 4.5 meets the quality and latency gates for routine classification, which accounts for 80% of traffic, but misses the billing-dispute accuracy gate. Sonnet 5 passes the dispute gate; using it for all traffic exceeds the budget. Classification and dispute queues are identified before inference. Which deployment best fits this evidence?",
     "options": [
       {
         "id": "a",
-        "text": "Standardize exclusively on Claude Opus 5 across all requests to guarantee maximum reasoning quality and prevent misclassification incidents."
+        "text": "Standardize on Sonnet 5 and reduce its effort across both queues, relying on the previously passing dispute results to justify the cheaper setting."
       },
       {
         "id": "b",
-        "text": "Route high-volume classification requests to Claude Haiku 4.5, and escalate complex multi-policy billing disputes to Claude Sonnet 5."
+        "text": "Use the evaluated Haiku configuration for classification and the evaluated Sonnet configuration for disputes, then monitor each queue's gates."
       },
       {
         "id": "c",
-        "text": "Deploy Claude Haiku 4.5 for all workloads and apply iterative few-shot prompt chaining loops whenever complex billing disputes arise."
+        "text": "Start both queues on Haiku and retry disputes on Sonnet when Haiku reports low confidence, reducing how often the more expensive model is used."
       },
       {
         "id": "d",
-        "text": "Process incoming interactions with Claude Sonnet 5 using aggressive prompt caching to compress classification latency down toward target thresholds."
+        "text": "Standardize on Haiku and add a second Haiku critique call for disputes, treating the extra review as a substitute for Sonnet's measured accuracy."
       }
     ],
-    "correct": [
-      "b"
-    ],
-    "explanation": "The model overview page describes Claude Haiku 4.5 as 'the fastest model with near-frontier intelligence' and Claude Sonnet 5 as 'the best combination of speed and intelligence'. A tiered routing architecture sends high-volume, low-complexity classification and routing to the fastest model and escalates only the minority of genuinely ambiguous multi-policy disputes to the more capable one, so the 300ms p95 target is met on the 80% without giving up reasoning quality on the 20%.",
+    "correct": ["b"],
+    "explanation": "Model selection should balance capability, speed, and cost against workload evaluations. The scenario establishes that the efficient model is sufficient for routine classification and that disputes need the tested higher-capability configuration. Routing by the already known task class preserves those results. The latency and quality outcomes here are measurements supplied by the scenario, not guarantees associated with either model name.",
     "distractorNotes": {
-      "a": "Directing routine classification to Opus incurs extreme latency and unnecessary cost without providing perceptible quality improvements over Haiku.",
-      "c": "Haiku lacks the nuanced multi-policy synthesis needed for complex disputes, and running multiple chaining loops adds latency that negates Haiku's speed.",
-      "d": "Prompt caching reduces time-to-first-token on static prefixes, but generation time on Sonnet cannot reliably match Haiku's 300ms p95 latency profile."
+      "a": "Lower effort is a valid optimization to test, but changing it invalidates the assumption that the previously measured dispute quality still holds.",
+      "c": "Confidence-based escalation introduces an unvalidated routing gate. The supplied evidence does not show that Haiku recognizes its dispute errors.",
+      "d": "A critique workflow may improve results, but it has not been shown to meet the dispute gate; an additional call is not itself accuracy evidence."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/models/overview",
-    "sourceNote": "Model selection / Choosing the right model for latency and capability trade-offs",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://platform.claude.com/docs/en/about-claude/models/choosing-a-model",
+    "sourceNote": "Establish key criteria / Efficiency-first and capability-first selection / Evaluate against requirements",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-p-claude-models-prompting-and-context-engineering-004",
@@ -127,37 +121,35 @@
     "domain": "claude-models-prompting-and-context-engineering",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "An enterprise insurance claim processing system builds a single prompt that mixes standing adjuster instructions, the claimant's policy record, several worked examples, and the free-text body of a user-uploaded repair estimate. Claude intermittently treats the worked examples as live claims to process and quotes policy-record fields as if they were estimate line items. Which prompt engineering technique most directly addresses this?",
+    "stem": "An insurance prompt interleaves adjuster instructions, a policy record, worked examples, and a live repair estimate as unlabeled text. Claude produces valid output but sometimes treats an example as the live claim. The team must retain the examples and full policy in a single call. Which template change most directly addresses this failure?",
     "options": [
       {
         "id": "a",
-        "text": "Wrap each kind of content in its own XML tag, so instructions, context, examples and the variable input are unambiguously delimited for the model."
+        "text": "Delimit instructions, policy context, examples, and the live estimate with descriptive XML tags, and refer to those sections explicitly in the task."
       },
       {
         "id": "b",
-        "text": "Encode the uploaded estimate into a base64 string so its contents cannot be confused with the surrounding natural-language instructions."
+        "text": "Constrain the answer with a JSON Schema containing separate policy and estimate fields, while preserving the existing unlabeled input template."
       },
       {
         "id": "c",
-        "text": "Concatenate the sections in a fixed order separated by blank lines, relying on positional convention to signal where each section begins and ends."
+        "text": "Add contrasting worked examples showing the correct treatment of policy and estimate values, while preserving their current placement in the text."
       },
       {
         "id": "d",
-        "text": "Append a postscript at the end of the prompt restating which sections are instructions and which are data."
+        "text": "Move the adjuster role into the system prompt and instruct Claude to prioritize the latest claim, while leaving the source sections interleaved."
       }
     ],
-    "correct": [
-      "a"
-    ],
-    "explanation": "The prompting best practices page is explicit that XML tags 'help Claude parse complex prompts unambiguously, especially when your prompt mixes instructions, context, examples, and variable inputs', and that wrapping each type of content in its own tag (for example `<instructions>`, `<context>`, `<input>`) reduces misinterpretation. For multi-document inputs it goes further, recommending `<document>` tags with `<document_content>` and `<source>` subtags. That is precisely the failure here: four kinds of content share one undelimited prompt, so the model cannot tell an example from a live claim.",
+    "correct": ["a"],
+    "explanation": "The documented XML pattern separates instructions, context, examples, and variable input so Claude can distinguish their roles. The observed error concerns which input is live, not the syntax of the generated answer. Descriptive boundaries address that source ambiguity while retaining the required material. Tags are a clarity technique, not an enforcement boundary for untrusted instructions.",
     "distractorNotes": {
-      "b": "Base64 makes the content harder for the model to read without making its role any clearer, and costs tokens to no benefit. The problem is delimitation, not visibility.",
-      "c": "Blank lines and a fixed order are exactly the ambiguous convention that is failing. Nothing in the prompt tells the model which block is which, and the page recommends explicit tags over positional convention for this reason.",
-      "d": "A trailing postscript competes with the content it describes and leaves the boundaries themselves unmarked. Tagging the sections removes the ambiguity at the source rather than commenting on it afterwards."
+      "b": "Structured outputs constrain answer shape but do not identify which unmarked source passage supplies a field.",
+      "c": "Examples can teach behavior, but adding more unlabeled examples leaves the specific example-versus-live-input ambiguity unresolved.",
+      "d": "A role can focus behavior and tone, but it does not give the interleaved input sections clear boundaries."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices#structure-prompts-with-xml-tags",
-    "sourceNote": "Structure prompts with XML tags: tags disambiguate prompts mixing instructions, context, examples and variable inputs.",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceNote": "Structure prompts with XML tags / Give Claude a role / Use examples effectively",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-p-claude-models-prompting-and-context-engineering-005",
@@ -167,37 +159,35 @@
     "domain": "claude-models-prompting-and-context-engineering",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "An architect reviews an enterprise knowledge assistant for medical researchers. The assistant frequently issues false-positive refusals on benign pharmaceutical queries because its system prompt contains broad negative guardrails such as 'Do not discuss toxic chemicals, dangerous compounds, or biological hazards.' How should the system prompt be redesigned to prevent these refusal spirals while maintaining safety?",
+    "stem": "A financial research assistant should explain published investment concepts but refer requests for personalized recommendations to an adviser. Its application prompt says to avoid discussing investments, causing refusals on approved educational queries. The business wants to restore those explanations without changing the referral boundary. Which prompt revision should be evaluated first?",
     "options": [
       {
         "id": "a",
-        "text": "Prefix user queries with an automated disclaimer confirming that the requesting researcher holds authenticated compliance credentials."
+        "text": "Keep the broad restriction and prepend each request with the research department's role and the user's entitlement to access the assistant."
       },
       {
         "id": "b",
-        "text": "Increase model temperature to 0.9 to encourage flexible semantic interpretations of sensitive chemical terminology in user prompts."
+        "text": "Keep the broad restriction and add successful educational answers as demonstrations, leaving Claude to infer when examples override the rule."
       },
       {
         "id": "c",
-        "text": "Append explicit negative prompt penalties to the top-level API payload to penalize refusal phrases in the generated response tokens."
+        "text": "Replace the investment restriction with a general instruction to be helpful, retaining an adviser disclaimer at the end of generated answers."
       },
       {
         "id": "d",
-        "text": "Frame instructions with positive behavioral criteria, contrasting permitted educational discussions with prohibited synthesis protocols."
+        "text": "Replace the broad restriction with explicit allowed educational behavior and referral criteria, illustrated by contrasting boundary examples."
       }
     ],
-    "correct": [
-      "d"
-    ],
-    "explanation": "Anthropic's prompt engineering guidance recommends telling Claude what to do rather than relying solely on negative constraints ('what not to do'). Broad negative constraints induce over-refusals because models struggle to delineate safe academic inquiry from harmful action. Defining positive boundaries—explicitly permitting theoretical and pharmacological discussion while defining the exact threshold for refusal (e.g., actionable synthesis steps)—eliminates false-positive refusals.",
+    "correct": ["d"],
+    "explanation": "Clear instructions should specify the desired behavior and constraints; relevant, diverse examples can illustrate the boundary. Replacing the contradictory broad ban with an explicit educational scope and referral rule targets the observed prompt failure while preserving the business requirement. The revision still needs evaluation: clearer instructions do not guarantee the elimination of false refusals or enforce a safety boundary by themselves.",
     "distractorNotes": {
-      "a": "Claude assesses safety based on context semantics rather than natural language claims of external user credentials.",
-      "b": "Raising temperature increases output randomness and token hallucination without resolving the underlying constraint conflict in the prompt.",
-      "c": "The Anthropic Messages API does not provide logit bias or negative phrase penalties, and suppressing refusal words would cause broken responses."
+      "a": "Role and entitlement context do not resolve the prompt's prohibition on the very topic the assistant is supposed to explain.",
+      "b": "Examples are useful, but keeping the conflicting broad instruction makes the intended precedence implicit rather than clear.",
+      "c": "A disclaimer can accompany an answer but does not preserve the requirement to refer personalized recommendations instead of providing them."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices#be-clear-and-direct",
-    "sourceNote": "Claude prompting best practices / Guiding negative constraints and boundary conditions",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceNote": "Be clear and direct / Use examples effectively / Tell Claude what to do instead of what not to do",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-p-claude-models-prompting-and-context-engineering-006",
@@ -207,37 +197,35 @@
     "domain": "claude-models-prompting-and-context-engineering",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "A support triage classifier tags incoming customer inquiries into priority tiers. Zero-shot prompting achieves 74% accuracy, struggling primarily with subtle edge cases where customers report minor product defects that imply severe safety liabilities. How should the architect structure few-shot examples to achieve the highest classification fidelity on these boundary cases?",
+    "stem": "A support classifier correctly handles routine defects but misses cases where a minor-sounding defect creates a safety risk. Its instruction already states the escalation criterion. The prompt has room for four reviewed examples, and evaluation data shows that both wording and product type vary. Which few-shot set best targets the error without teaching a spurious shortcut?",
     "options": [
       {
         "id": "a",
-        "text": "Provide diverse boundary examples wrapped in XML tags, showing the intermediate reasoning trace before outputting the priority classification."
+        "text": "Use diverse examples on both sides of the risk boundary, including similar-sounding defects with different labels, clearly separated from live input."
       },
       {
         "id": "b",
-        "text": "Include 50 high-confidence routine examples directly in the system prompt without explanatory reasoning to maximize statistical pattern exposure."
+        "text": "Use the four most frequent routine defects, preserving production class proportions so the examples reflect what the classifier most often receives."
       },
       {
         "id": "c",
-        "text": "Append few-shot demonstrations as alternate assistant messages at the end of the conversation history immediately before invoking generation."
+        "text": "Use four missed safety cases from the same product family, keeping wording consistent so Claude can learn the escalation pattern from repeated terms."
       },
       {
         "id": "d",
-        "text": "Provide minimal input-output label pairs while setting temperature to 0.0 to guarantee deterministic adherence to the provided demonstrations."
+        "text": "Use four paraphrases of the most informative safety case, holding its label and product constant to reinforce the consequence of missing that case."
       }
     ],
-    "correct": [
-      "a"
-    ],
-    "explanation": "When classifying difficult edge cases, high-quality few-shot prompting requires providing diverse, representative demonstrations that target the exact decision boundary. Anthropic recommends formatting examples within <example> XML tags and including the reasoning process before the final label so Claude learns the rationale behind distinguishing routine defects from safety liabilities.",
+    "correct": ["a"],
+    "explanation": "Anthropic recommends relevant examples that cover edge cases and vary enough to avoid unintended patterns, with explicit example boundaries. Contrasting cases around the failure boundary teach the relevant distinction, while variation in product and wording discourages shortcuts. The documentation does not require exposing an internal reasoning trace for few-shot classification.",
     "distractorNotes": {
-      "b": "Flooding prompts with routine examples increases token cost and distracts from edge cases without illustrating the boundary criteria.",
-      "c": "Appending examples as trailing conversation turns pollutes the interaction history and breaks prompt caching prefix alignment.",
-      "d": "Bare label pairs without reasoning fail to convey the conceptual distinction needed to resolve subtle liability implications."
+      "b": "Production frequency is useful for evaluation, but these four routine cases spend the limited demonstration budget away from the known failure boundary.",
+      "c": "Missed cases are relevant, but a single label and product family can teach product or wording cues instead of the safety distinction.",
+      "d": "Paraphrasing improves wording variety without adding the contrasting labels or product diversity needed to distinguish risk from superficial similarity."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices#use-examples-effectively",
-    "sourceNote": "Use examples effectively / Few-shot prompting for edge cases and boundary conditions",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceNote": "Use examples effectively: relevant, diverse, structured examples covering edge cases without unintended patterns",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-p-claude-models-prompting-and-context-engineering-007",
@@ -247,37 +235,35 @@
     "domain": "claude-models-prompting-and-context-engineering",
     "difficulty": "hard",
     "status": "reviewed",
-    "stem": "A backend service transforms unstructured diagnostic logs into a specific JSON schema. It has always eliminated Claude's conversational preambles by prefilling the assistant turn with the opening brace. After the team repoints the service at a Claude 4.6 model, every request fails with an HTTP 400 error. Which migration best restores deterministic preamble-free output on the newer model?",
+    "stem": "A diagnostic-log extractor migrates to Claude Sonnet 4.6 and receives HTTP 400 errors because requests end with an assistant opening brace. The consumer requires a JSON response body matching a supported schema without string enum or const constraints, not tool-call arguments. It already handles refusals and output truncation separately. Which migration restores the supported path with generation-time format enforcement?",
     "options": [
       {
         "id": "a",
-        "text": "Append 'Respond immediately without thinking' to the system prompt so Claude bypasses its default conversational greeting patterns."
+        "text": "Remove the partial assistant turn and specify the schema in the system prompt, retrying completed responses that fail a local schema validator."
       },
       {
         "id": "b",
-        "text": "Constrain the response with the Structured Outputs feature so the model's output conforms to the required schema without a prefilled turn."
+        "text": "Remove the partial assistant turn and supply the schema through JSON structured outputs, consuming the completed response's text content block."
       },
       {
         "id": "c",
-        "text": "Set the stop_sequences array to include common greetings such as 'Here is' so generation halts if introductory commentary occurs."
+        "text": "Remove the partial assistant turn and define a strict extraction tool, keeping the existing consumer pointed at the response's text content block."
       },
       {
         "id": "d",
-        "text": "Move the prefilled assistant turn earlier in the messages array so it is no longer the final assistant message in the request."
+        "text": "Replace the partial assistant turn with a complete JSON example earlier in the conversation, using that example to establish the response format."
       }
     ],
-    "correct": [
-      "b"
-    ],
-    "explanation": "Starting with Claude 4.6 models, a prefilled response on the last assistant turn is no longer supported and the request returns a 400 error. Anthropic's documented migration for the output-formatting use of prefill is the Structured Outputs feature, which is designed specifically to constrain Claude's response to a given schema; newer models also match complex schemas reliably when simply told to. For the narrower preamble case the documentation additionally suggests direct system-prompt instructions, XML-tagged output, or tool calling, with post-processing for the occasional preamble that slips through.",
+    "correct": ["b"],
+    "explanation": "Sonnet 4.6 no longer supports last-turn assistant prefill. The documented migration for schema-controlled output is structured outputs. JSON outputs constrain the response text to the supplied schema, whereas strict tool use constrains tool names and inputs. Removing prefill fixes the unsupported request shape; selecting JSON outputs also supplies the generation-time enforcement the consumer requires. The scenario excludes string enum and const constraints, whose capitalization the structured-output documentation does not guarantee.",
     "distractorNotes": {
-      "a": "This is the instruction-only approach the service already tried, and it does nothing about the 400 error the removed prefill now causes.",
-      "c": "Stop sequences abort generation when a greeting occurs rather than producing the required JSON, so a preamble becomes a truncated response instead of a clean one.",
-      "d": "Only a prefill on the last assistant turn is rejected; moving it earlier makes it an ordinary conversation turn that no longer constrains the model's next output at all."
+      "a": "Prompting and validation with retries are viable when retries are acceptable, but they detect failures after generation rather than constrain generation.",
+      "c": "Strict tools provide constrained tool arguments, not a schema-constrained text response for the unchanged consumer.",
+      "d": "Earlier complete assistant examples remain supported, but examples guide the next response rather than enforcing its schema."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices#migrating-away-from-prefilled-responses",
-    "sourceNote": "Migrating away from prefilled responses / Controlling output formatting",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceNote": "Migrating away from prefilled responses / Controlling output formatting; structured outputs linked migration",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-p-claude-models-prompting-and-context-engineering-008",
@@ -285,39 +271,37 @@
     "schemaVersion": 1,
     "type": "single",
     "domain": "claude-models-prompting-and-context-engineering",
-    "difficulty": "medium",
+    "difficulty": "hard",
     "status": "reviewed",
-    "stem": "An architect is designing an automated regulatory compliance checker on Claude Opus 5. The model must analyze complex mortgage applications against statutory lending rules and return a strict machine-readable JSON object containing audit findings. When using standard zero-shot prompting, Claude makes logical deduction errors, but when prompted to think step-by-step in a scratchpad, the thinking text contaminates the JSON payload. How should the architect resolve this issue?",
+    "stem": "A compliance checker uses Claude Opus 5. Evaluation shows that adaptive thinking at a tested effort level improves its multistep rule analysis. The integration must produce a schema-constrained findings object in one model call, with no scratchpad field or string enum or const constraints. Refusals and truncated responses go to an existing exception handler. Which design meets both the reasoning and output requirements?",
     "options": [
       {
         "id": "a",
-        "text": "Use a two-pass workflow where an initial Claude call produces free-form reasoning and a second call converts that reasoning into JSON."
+        "text": "Use the tested thinking configuration for a free-form analysis call, then pass that analysis to a separate structured-output call for serialization."
       },
       {
         "id": "b",
-        "text": "Enforce JSON generation by prefilling the assistant turn with '{' while setting temperature to 0.0 to implicitly activate reasoning."
+        "text": "Use the tested thinking configuration and describe the JSON schema in the prompt, removing non-JSON material from the text block before parsing."
       },
       {
         "id": "c",
-        "text": "Enable adaptive thinking and set the reasoning depth through output_config.effort, so reasoning is isolated into a distinct thinking content block."
+        "text": "Use the tested adaptive thinking configuration with JSON structured outputs, and parse the final text block rather than concatenating thinking blocks."
       },
       {
         "id": "d",
-        "text": "Instruct Claude to write its reasoning inside a JSON string field named 'reasoning_trace' within the final output schema object."
+        "text": "Use JSON structured outputs with thinking disabled, and ask the model to resolve the rule dependencies while directly filling the findings fields."
       }
     ],
-    "correct": [
-      "c"
-    ],
-    "explanation": "Claude's native thinking encapsulates intermediate reasoning in a separate thinking content block, leaving the final response in standard text or tool blocks so the machine-readable JSON stays clean, with no two-pass workflow or fragile scratchpad parsing. On Claude Opus 5 the correct configuration is adaptive thinking (thinking: {\"type\": \"adaptive\"}) with reasoning depth controlled by output_config.effort. The older manual form, thinking: {\"type\": \"enabled\", \"budget_tokens\": N}, is deprecated on the 4.6 models and rejected with a 400 error on Claude 4.7 and later.",
+    "correct": ["c"],
+    "explanation": "Structured-output grammars apply to the direct answer rather than the thinking section, so thinking and schema-constrained JSON can be used together in one call. Opus 5 supports adaptive thinking; its tested effort configuration can be retained while JSON outputs constrain the final text block. Thinking alone does not enforce JSON, and schema enforcement alone does not establish reasoning quality. The existing exception path remains necessary for refusals and truncation; the scenario excludes the documented string enum and const capitalization exception.",
     "distractorNotes": {
-      "a": "A two-pass workflow doubles latency, API calls, and cost, whereas native extended thinking accomplishes reasoning and structuring in one call.",
-      "b": "Prefilling the last assistant turn returns a 400 error starting with the Claude 4.6 models, and temperature does not activate reasoning.",
-      "d": "Embedding intermediate deduction inside a single JSON string forces the model to structure syntax while reasoning, which degrades both."
+      "a": "Two-pass reasoning and serialization is a credible design, but it violates the explicit one-call constraint rather than being inherently ineffective.",
+      "b": "Thinking blocks separate reasoning from the answer, but prompt instructions and text cleanup do not enforce the answer's JSON schema.",
+      "d": "The format mechanism is appropriate, but disabling the reasoning configuration discards the condition under which the accuracy improvement was measured."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/extended-thinking",
-    "sourceNote": "Migrating to adaptive thinking / thinking blocks separated from the final response",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs",
+    "sourceNote": "JSON outputs / Grammar scope excludes thinking / Refusals and token-limit exceptions",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-p-claude-models-prompting-and-context-engineering-009",
@@ -325,39 +309,37 @@
     "schemaVersion": 1,
     "type": "single",
     "domain": "claude-models-prompting-and-context-engineering",
-    "difficulty": "medium",
+    "difficulty": "hard",
     "status": "reviewed",
-    "stem": "An enterprise contract review tool loads 150,000 tokens of cross-referenced vendor agreements into Claude's context window. Users report that when queries ask about specific indemnity liability caps buried deep within the middle schedules of the documents, Claude often returns generic answers or overlooks relevant clauses. Which context engineering adjustment best improves retrieval accuracy across these long contexts?",
+    "stem": "A contract reviewer can fit the complete agreement package in context, but misses liability exceptions in middle schedules. Legal reviewers require the original wording and cross-schedule relationships to remain available in the same analysis call. The next release is limited to prompt changes; retrieval and multi-call workflows are not available. Which adjustment best targets the failure within those constraints?",
     "options": [
       {
         "id": "a",
-        "text": "Split the 150,000-token payload into 5,000-token chunks and send them concurrently across 30 separate API calls with identical instructions."
+        "text": "Replace each schedule with a concise summary before analysis, keeping its title and cross-reference list so the prompt devotes less space to source text."
       },
       {
         "id": "b",
-        "text": "Place user instructions and analytical questions at the beginning of the prompt and append large reference documents at the bottom."
+        "text": "Place the question and output instructions first, followed by the complete tagged documents, so the model reads the task before it encounters evidence."
       },
       {
         "id": "c",
-        "text": "Re-encode tabular financial schedules as comma-separated values to compress the middle context below 100,000 tokens before prompting."
+        "text": "Move schedules containing liability keywords to the top and remove the remaining schedules, focusing the analysis on passages with explicit topic matches."
       },
       {
         "id": "d",
-        "text": "Position reference documents near the top, place specific instructions at the end, and instruct Claude to quote relevant clauses first."
+        "text": "Place the complete tagged documents first and the question last, asking Claude to identify relevant quoted clauses before synthesizing the liability answer."
       }
     ],
-    "correct": [
-      "d"
-    ],
-    "explanation": "Anthropic's long-context prompting guidelines recommend placing background context and reference documents near the top of the prompt, followed by specific task instructions, schemas, and user queries at the bottom. Additionally, directing Claude to find and quote relevant text passages before synthesizing its answer grounds attention on the middle context and dramatically reduces retrieval failures.",
+    "correct": ["d"],
+    "explanation": "The long-context guidance recommends long documents near the top, the query toward the end, and quotation of relevant passages before answering. These changes keep the original package and its relationships available while grounding synthesis in evidence. They are prompting improvements to evaluate, not guarantees that a long-context model will retrieve every relevant clause.",
     "distractorNotes": {
-      "a": "Splitting into 30 independent chunks fragments cross-schedule references, increases cost, and requires a complex map-reduce synthesis layer.",
-      "b": "Placing instructions at the top before 150k tokens of data causes instruction recency fade; instructions belong at the end.",
-      "c": "Changing format to CSV does not solve the attention distribution problem and may obscure complex hierarchical contract clauses."
+      "a": "Summarization reduces context, but replacing the originals violates the requirement to keep original wording available during analysis.",
+      "b": "It retains the source material but reverses the documented long-context arrangement of longform data before the query and task instructions.",
+      "c": "Keyword filtering can reduce noise, but exceptions and cross-references may depend on the schedules it removes; it also violates the full-package requirement."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices#long-context-prompting",
-    "sourceNote": "Long-context prompting / Structuring large inputs and quotation anchoring",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceNote": "Long context prompting / Longform data first / Query last / Ground responses in quotes",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-p-claude-models-prompting-and-context-engineering-010",
@@ -365,39 +347,37 @@
     "schemaVersion": 1,
     "type": "single",
     "domain": "claude-models-prompting-and-context-engineering",
-    "difficulty": "medium",
+    "difficulty": "hard",
     "status": "reviewed",
-    "stem": "An AI orchestrator manages dynamic conversation sessions where users upload arbitrary documentation alongside chat messages. The orchestrator must enforce strict per-request token budgets and decide whether to summarize history before issuing a call. The team currently estimates token counts using character-length heuristics (4 characters per token), which frequently causes unexpected 400 context limit errors on source code and non-English inputs. How should the architect remediate this?",
+    "stem": "An orchestrator accepts multilingual text, source code, and client-tool definitions. Character-count heuristics frequently misjudge whether a request fits the selected Claude model. The orchestrator must decide whether to summarize before generation while retaining room for the response. It can afford a preflight request. Which budgeting policy is best supported?",
     "options": [
       {
         "id": "a",
-        "text": "Use the Messages Token Counting API endpoint before execution to obtain exact token consumption across system, messages, and tools."
+        "text": "Count the structured input for the selected model, treat the result as an estimate, and leave headroom for count differences and the planned response."
       },
       {
         "id": "b",
-        "text": "Reduce the heuristic ratio from 4 characters to 2 characters per token to guarantee conservative overestimation for all payloads."
+        "text": "Count the structured input for the selected model and admit requests up to the exact remaining capacity after subtracting the planned response allowance."
       },
       {
         "id": "c",
-        "text": "Implement client-side tiktoken libraries calibrated for third-party tokenizers to approximate Claude's BPE vocabulary encodings."
+        "text": "Count the conversation text for the selected model and reuse that value across tool configurations, retaining a response allowance before admission."
       },
       {
         "id": "d",
-        "text": "Wrap API calls in a retry handler that catches 400 errors, chops conversation history in half, and retries the request automatically."
+        "text": "Use usage reported by the preceding generated response to budget the next request, retaining a response allowance and summarizing after a limit error."
       }
     ],
-    "correct": [
-      "a"
-    ],
-    "explanation": "Anthropic provides the Token Counting API (messages/count_tokens), which takes the identical payload intended for messages/create (including system prompt, messages array, and tool definitions) and returns the exact token count before invoking generation. This allows systems to make deterministic context budgeting, truncation, or caching decisions without relying on inaccurate character heuristics or incompatible third-party tokenizers.",
+    "correct": ["a"],
+    "explanation": "The token-counting endpoint accepts structured inputs including system content, messages, and client tools and returns an input-token estimate. The documentation explicitly warns that actual generation-time input usage can differ slightly. Count the intended input against the intended model, allow for that uncertainty, and reserve response capacity when deciding whether to summarize. Counting is better-informed preflight planning, not an exact-fit guarantee.",
     "distractorNotes": {
-      "b": "Decreasing character ratios leads to severe over-truncation of standard English text while still failing on dense token modalities like whitespace-heavy code.",
-      "c": "Claude uses proprietary tokenization byte-pair encodings that differ significantly from OpenAI tokenizers like tiktoken, leading to mismatch errors.",
-      "d": "Reactive retries after 400 errors waste network latency and arbitrarily discard user context without addressing the root budgeting failure."
+      "b": "This correctly includes the input and response allowance but treats an estimate as exact, leaving no headroom for documented count differences.",
+      "c": "Tool definitions are part of the structured input, so counting conversation text alone can understate requests with different tool configurations.",
+      "d": "Response usage is useful telemetry, but it describes a previous input and makes summarization reactive rather than satisfying the preflight requirement."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/token-counting",
-    "sourceNote": "Token counting API / Pre-flight context budgeting and estimation",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceNote": "How to count message tokens / Structured inputs / Counts are estimates / Recount for the selected model",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-p-claude-models-prompting-and-context-engineering-011",
@@ -405,39 +385,37 @@
     "schemaVersion": 1,
     "type": "single",
     "domain": "claude-models-prompting-and-context-engineering",
-    "difficulty": "medium",
+    "difficulty": "hard",
     "status": "reviewed",
-    "stem": "An enterprise customer support bot caches its 12,000-token system prompt and product catalog using prompt caching. During peak business hours with continuous traffic, cache read rates exceed 95%, providing significant cost savings. However, during sporadic off-peak hours when user inquiries arrive 15 minutes apart, every inquiry incurs full cache creation write costs. What architectural mechanism explains this behavior?",
+    "stem": "A support service has verified identical cacheable prefixes and an explicit breakpoint on its catalog. Daytime requests seconds apart get cache hits, but off-peak requests spaced about fifteen minutes apart get new writes with the default lifetime. Off-peak interactive latency matters more than the higher cache-write rate, and synthetic keep-alive calls are prohibited. Which change best preserves reuse across these gaps?",
     "options": [
       {
         "id": "a",
-        "text": "Prompt caching automatically invalidates cached prefixes whenever total daily token consumption surpasses organization workspace quotas."
+        "text": "Retain the default lifetime and switch to automatic caching at the request level, so the last cacheable block is selected without manual maintenance."
       },
       {
         "id": "b",
-        "text": "The default prompt cache TTL is 5 minutes, refreshing on each hit, so requests spaced 15 minutes apart encounter expired cache entries."
+        "text": "Select the one-hour lifetime for the catalog prefix, accepting its higher write price to keep entries reusable across the observed off-peak gaps."
       },
       {
         "id": "c",
-        "text": "Off-peak queries are routed to different physical datacenter clusters that maintain disjoint and unshared in-memory KV cache pools."
+        "text": "Retain the default lifetime and add breakpoints inside the catalog, giving requests several shorter cached prefixes to search when the final one misses."
       },
       {
         "id": "d",
-        "text": "Prompt caching requires continuous background polling pulses from client applications to prevent ephemeral cache memory eviction."
+        "text": "Retain the default lifetime and issue scheduled requests using the catalog between customer inquiries, refreshing the prefix before each expected expiry."
       }
     ],
-    "correct": [
-      "b"
-    ],
-    "explanation": "Prompt cache entries have a default time-to-live (TTL) of 5 minutes. Every cache hit refreshes the TTL for an additional 5 minutes. When inquiries arrive with idle intervals greater than 5 minutes (such as 15 minutes), the cached prefix expires and is evicted, causing the subsequent request to rewrite the cache at full write pricing. (For longer intervals, applications can specify an extended 1-hour TTL).",
+    "correct": ["b"],
+    "explanation": "The default cache lifetime is five minutes and is refreshed when the cached content is used. A fifteen-minute gap exceeds it. The documented one-hour option is intended for reuse beyond five minutes, including latency-sensitive follow-ups, at a higher write price. Prefix matching is already verified, so changing the lifetime addresses the failure without synthetic traffic.",
     "distractorNotes": {
-      "a": "Cache invalidation is governed by time-to-live and prefix continuity, not organization daily consumption thresholds.",
-      "c": "Anthropic handles distributed cache lookup routing across API nodes transparently; datacenter affinity is not the cause of idle expiration.",
-      "d": "Client applications do not need background polling pulses; cache lifetime is extended natively by genuine user requests or by selecting a 1-hour TTL."
+      "a": "Automatic caching manages breakpoint placement; its default lifetime is still five minutes and does not bridge these gaps.",
+      "c": "Multiple breakpoints help with prefix structure and lookback, but entries with the same expired lifetime are not rescued by additional markers.",
+      "d": "Using the prefix can refresh its lifetime, but scheduled refresh traffic violates the scenario's explicit prohibition on synthetic calls."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
-    "sourceNote": "Prompt caching / Cache duration and TTL refresh mechanics",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceNote": "Cache lifetime and refresh / 1-hour cache duration / When to use the 1-hour cache",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-p-claude-models-prompting-and-context-engineering-012",
@@ -447,42 +425,39 @@
     "domain": "claude-models-prompting-and-context-engineering",
     "difficulty": "hard",
     "status": "reviewed",
-    "stem": "An architect is designing a multi-turn software development agent using the Anthropic Messages API. Each interaction includes a static 8,000-token repository architecture guide, 12 tool definitions, and an incrementally growing conversation history of user messages and tool responses. The architect wants to maximize prompt cache hits across successive conversation turns while adhering to API caching constraints. Which two strategies should the architect implement? (Select TWO.)",
+    "stem": "A development agent on the direct Claude API uses identical tools and a cache-eligible architecture guide across new sessions. Each session then grows through short, append-only turns within the cache lifetime and lookback window. The team wants to reuse the shared guide when a session starts and reuse prior history as that session grows. Which two measures together support both forms of reuse? (Select TWO.)",
     "options": [
       {
         "id": "a",
-        "text": "Place an ephemeral cache control breakpoint on every single message turn throughout the whole of the conversation history."
+        "text": "Use automatic caching alone at the end of each request, relying on its lookback to create a shared-guide entry behind different sessions' first messages."
       },
       {
         "id": "b",
-        "text": "Place a cache control breakpoint on the static tool definitions and architecture guide to create an invariant prefix."
+        "text": "Put the shared guide after the stable tool definitions and mark its endpoint explicitly, before session-specific content changes the reusable prefix."
       },
       {
         "id": "c",
-        "text": "Insert dynamic user timestamps immediately before the architecture guide to accurately benchmark cache lookup latency."
+        "text": "Place the session identifier before the shared guide and mark the guide's endpoint explicitly, keeping separate cache entries for the different sessions."
       },
       {
         "id": "d",
-        "text": "Set the breakpoint on the final block of each request, or enable automatic caching, so history is cached incrementally."
+        "text": "Keep earlier turns unchanged and enable automatic caching for the growing history, letting its moving endpoint reuse entries written by earlier turns."
       },
       {
         "id": "e",
-        "text": "Rely on the lookback window alone with no breakpoint on the static prefix, because the system walks back until it finds any earlier cache entry."
+        "text": "Use an explicit breakpoint on the shared guide alone and omit history breakpoints, letting subsequent history remain uncached to keep cache writes smaller."
       }
     ],
-    "correct": [
-      "b",
-      "d"
-    ],
-    "explanation": "Two anchors maximise hits. First, an explicit breakpoint on the static tool definitions and architecture guide fixes an invariant prefix that every turn reuses. Second, for the growing history the documentation's guidance is to 'place `cache_control` on the last block whose prefix is identical across the requests you want to share a cache' — in a growing conversation the final block works, because earlier content never changes and the next request's lookback finds the prior write. Automatic caching does this for you, applying the breakpoint to the last cacheable block and moving it forward as the conversation grows; the page recommends starting there for multi-turn conversations.",
+    "correct": ["b", "d"],
+    "explanation": "An explicit breakpoint after the invariant tools-and-guide prefix creates an entry that new sessions can share. Automatic caching can coexist with that explicit breakpoint and moves a second endpoint forward as a conversation grows. With unchanged prior turns and the stated lifetime and lookback conditions, later turns can reuse the previous history entry. Lookback reads earlier writes; it does not create an entry at an unmarked stable guide endpoint.",
     "distractorNotes": {
-      "a": "Breakpoints are capped at 4, so one per turn is not expressible. Adding breakpoints also does not reduce cost on its own — you are billed for what is actually written and read, not for the markers.",
-      "c": "A dynamic timestamp before the architecture guide changes the prefix hash on every request, so the guide is never reused. The documented rule is the opposite: put the breakpoint at the end of the static prefix, not on the varying block.",
-      "e": "The lookback checks at most 20 positions per breakpoint and can only find entries earlier requests actually wrote. With no breakpoint on the static prefix, a conversation that grows past that window loses the hit entirely — which is one of the documented reasons to use multiple breakpoints."
+      "a": "Automatic caching can handle append-only history, but different initial session messages do not produce a shared-guide write by themselves.",
+      "c": "A session identifier before the guide makes the cached prefix session-specific, defeating the requested reuse across new sessions.",
+      "e": "Caching the guide alone satisfies the shared-prefix goal, but deliberately leaves the growing-history goal unaddressed."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
-    "sourceNote": "Structure your prompt, automatic caching, and the 20-block lookback window for breakpoints in a growing conversation.",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceNote": "Automatic caching with block-level caching / Writes at breakpoints / Lookback in a growing conversation",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-p-claude-models-prompting-and-context-engineering-013",
@@ -490,39 +465,37 @@
     "schemaVersion": 1,
     "type": "single",
     "domain": "claude-models-prompting-and-context-engineering",
-    "difficulty": "medium",
+    "difficulty": "hard",
     "status": "reviewed",
-    "stem": "An architect is building a data ingestion pipeline that extracts customer entity records from unstructured emails and commits them directly into an enterprise relational database. When prompting Claude with natural language instructions specifying a JSON schema, downstream database inserts occasionally fail because Claude wraps JSON in markdown fences, omits required attributes, or adds explanatory closing notes. Which architectural approach provides deterministic schema compliance?",
+    "stem": "An email ingestion service needs extracted records in a fixed JSON response body. Its supported schema requires fields and types but has no string enum or const constraints. A deterministic application layer owns database writes and checks business rules after extraction; Claude must not execute the write. Prompt-only responses sometimes omit required fields. Refusals and truncation already take an exception path. Which approach enforces the response schema while preserving that separation of responsibilities?",
     "options": [
       {
         "id": "a",
-        "text": "Append a post-processing regex pipeline that parses markdown code fences and fills missing required attributes with default null values."
+        "text": "Define a strict database-insert tool and execute its schema-valid arguments immediately, using tool-input validation in place of the application checks."
       },
       {
         "id": "b",
-        "text": "Add ten few-shot demonstrations to the system prompt showing valid JSON syntax alongside warnings that non-compliant output is rejected."
+        "text": "Keep extraction in the response body, add representative JSON examples, and retry local schema failures before applying the existing business checks."
       },
       {
         "id": "c",
-        "text": "Switch the prompt to request XML formatted entities because Claude parses XML hierarchies more reliably than nested JSON structures."
+        "text": "Constrain the JSON response to the record schema and let matching fields bypass the existing checks, because schema-valid records are ready to insert."
       },
       {
         "id": "d",
-        "text": "Constrain the response with Structured Outputs, supplying the entity schema as a JSON Schema in output_config.format."
+        "text": "Use JSON structured outputs for the record schema, then apply the existing business checks before the application decides whether to write the record."
       }
     ],
-    "correct": [
-      "d"
-    ],
-    "explanation": "Structured outputs constrain Claude's response to follow a specific schema, which is exactly the guarantee a direct database insert needs. The documented mechanism for getting a response in a fixed JSON shape is JSON outputs via `output_config.format` with a `json_schema`; the page's companion feature, strict tool use (`strict: true`), validates tool *parameters* rather than the response body. Because the schema is enforced during generation, the markdown fences, missing required attributes and trailing commentary are structurally impossible rather than merely discouraged.",
+    "correct": ["d"],
+    "explanation": "JSON outputs constrain the direct response through a supplied JSON Schema, addressing missing required fields and invalid types. Strict tool use instead constrains tool names and inputs. Schema compliance is a structural property, not proof of correct extracted values or satisfied business rules; retaining application-owned validation and writes preserves the required boundary. The scenario excludes string enum and const constraints, whose capitalization is not guaranteed even on a normally completed response.",
     "distractorNotes": {
-      "a": "Post-hoc regex repair treats the symptom. Filling missing required attributes with nulls silently manufactures data the model never extracted, which is worse than a failed insert.",
-      "b": "Few-shot examples and warnings raise compliance without guaranteeing it. The page's premise is that careful prompting alone still yields parsing errors, missing fields and inconsistent types.",
-      "c": "Changing the serialisation format does not add enforcement. The pipeline needs a schema the API validates against, not a different shape of unvalidated text."
+      "a": "Strict tools can constrain arguments, but immediate execution moves write decisions away from the specified application checks.",
+      "b": "Examples and retry validation are legitimate alternatives for some applications, but they do not supply generation-time schema enforcement.",
+      "c": "A valid shape does not establish that values are accurate or that application business rules pass, so bypassing those checks changes the required behavior."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs",
-    "sourceNote": "Structured outputs: JSON outputs via output_config.format constrain the response to a schema; strict tool use validates tool inputs.",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceNote": "JSON outputs versus strict tool use / Schema constraints / Error handling",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-p-claude-models-prompting-and-context-engineering-014",
@@ -530,39 +503,37 @@
     "schemaVersion": 1,
     "type": "single",
     "domain": "claude-models-prompting-and-context-engineering",
-    "difficulty": "medium",
+    "difficulty": "hard",
     "status": "reviewed",
-    "stem": "An architect is designing an autonomous cloud infrastructure remediation agent that diagnoses and resolves complex, distributed system outages over sessions lasting several hours. As the agent executes diagnostic shell commands, queries observability logs, and inspects container clusters, conversational history approaches the context window boundary. The operations team observes that as token usage nears the limit, the agent exhibits context rot—it forgets early diagnostic constraints, repeats already failed remediation steps, and risks abrupt context overflow errors. Which context engineering strategy best ensures reliable long-horizon execution while preserving critical state?",
+    "stem": "An outage-remediation agent runs for hours, repeatedly filling context with diagnostic results. After context resets it retries failed remedies because raw logs do not record why operators rejected them. The agent needs conversational continuity plus a record of failed attempts, verified facts, and operator constraints that can be reloaded after later resets. Which context strategy best meets both needs?",
     "options": [
       {
         "id": "a",
-        "text": "Implement a strict FIFO (First-In, First-Out) sliding window buffer that automatically truncates the oldest 20% of message turns whenever token limits are approached, ignoring conversation roles."
+        "text": "Clear old tool results while retaining conversational messages, then keep the original logs searchable for diagnostics that need to be reconstructed later."
       },
       {
         "id": "b",
-        "text": "Increase the model sampling temperature to 0.7 as context approaches capacity to stimulate broader associative recall across early conversation turns and avoid repetitive diagnostic command patterns."
+        "text": "Compact the conversation into a rolling summary and make that summary the authoritative incident record, replacing its predecessor after each reset."
       },
       {
         "id": "c",
-        "text": "Enable server-side compaction to summarize conversation history into a compaction block, combined with writing durable hypotheses and verified facts to external storage or progress files."
+        "text": "Compact the conversation for continuity and maintain durable incident notes outside context, reloading constraints and failed attempts when work resumes."
       },
       {
         "id": "d",
-        "text": "Append the complete uncompressed output of every diagnostic command into the system prompt across subsequent turns to guarantee permanent attention availability regardless of conversation length."
+        "text": "Delegate each diagnostic branch to a fresh subagent and return concise findings, retaining the coordinator conversation as the record of earlier decisions."
       }
     ],
-    "correct": [
-      "c"
-    ],
-    "explanation": "For long-horizon agentic workflows, Anthropic identifies two complementary strategies to prevent context rot and manage token limits: (1) context compaction (such as server-side compaction), which automatically summarizes accumulated conversation history into a structured compaction block, allowing execution to continue with a lean context; and (2) structured note-taking in external storage (such as progress files, notes, or git checkpoints). Because summarization is inherently lossy, persisting critical milestones, verified hypotheses, and state externally ensures that vital diagnostic facts survive repeated compaction cycles without bloating the context window.",
+    "correct": ["c"],
+    "explanation": "Compaction supports long conversations by summarizing important state and discarding redundant material, but aggressive summarization can lose details. Structured note-taking persists progress and dependencies outside the context window and brings them back when needed. Using both addresses conversational continuity and the requirement to recover incident decisions after resets, without claiming that summaries or notes are automatically lossless.",
     "distractorNotes": {
-      "a": "Arbitrary FIFO message truncation drops vital prompt context, breaks alternating user/assistant message structure, and can delete critical problem descriptions or tool definitions.",
-      "b": "Temperature controls sampling randomness, not context retention; increasing temperature worsens hallucinations and cannot recover information that has degraded or left the window.",
-      "d": "Continuously accumulating uncompressed command outputs in the system prompt accelerates context exhaustion and exacerbates context rot rather than resolving it."
+      "a": "Tool-result clearing is a useful first reduction, but searchable raw logs do not contain the operator rationale identified as missing in this scenario.",
+      "b": "Compaction helps continuity, but relying solely on a repeatedly replaced summary leaves critical facts vulnerable to successive summarization losses.",
+      "d": "Subagents isolate verbose diagnostic work, but keeping the decision record solely in the coordinator context does not preserve it across later resets."
     },
     "sourceUrl": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
-    "sourceNote": "Context engineering for long-horizon tasks / Compaction and structured note-taking",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceNote": "Context engineering for long-horizon tasks / Compaction / Structured note-taking / Sub-agent architectures",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-p-claude-models-prompting-and-context-engineering-015",
@@ -570,39 +541,37 @@
     "schemaVersion": 1,
     "type": "single",
     "domain": "claude-models-prompting-and-context-engineering",
-    "difficulty": "medium",
+    "difficulty": "hard",
     "status": "reviewed",
-    "stem": "An enterprise legal research assistant processes multi-hundred-page commercial loan agreements and statutory regulatory disclosures. To satisfy compliance audit requirements, every legal finding and contractual interpretation emitted by the assistant must provide verifiable, tamper-evident citations back to the source text. When developers relied on natural language system prompting (instructing Claude to 'cite page numbers and verbatim quotes in square brackets'), Claude occasionally hallucinated page numbers or paraphrased non-existent contractual clauses. Which architectural approach provides deterministic, auditable source attribution?",
+    "stem": "A legal assistant receives plain-text agreements and generates narrative findings for human review. Reviewers need clickable links to the actual cited passages; prompted bracketed references sometimes contain invented locations. Document integrity and legal correctness are checked separately. The team wants source locations supplied by the API without building a custom reference-matching service. Which design best fits?",
     "options": [
       {
         "id": "a",
-        "text": "Configure a client-side regex post-processing filter that cross-checks bracketed citations against a local Elasticsearch index and strips unverified paragraphs prior to returning output to the end user."
+        "text": "Request a JSON response with required quote and character-offset fields, using the enforced field types to establish where each finding came from."
       },
       {
         "id": "b",
-        "text": "Split the loan agreements into 200-token chunks, attach unique UUID metadata headers to each chunk, and instruct Claude in the prompt to echo the UUIDs alongside every extracted contractual finding."
+        "text": "Assign source paragraphs stable identifiers and include citation-format examples, rendering the model's returned identifiers as links into the documents."
       },
       {
         "id": "c",
-        "text": "Prefix each user prompt with few-shot demonstrations of strict bracketed citation formats while setting the temperature parameter to 0.0 to eliminate non-deterministic citation hallucinations."
+        "text": "Request verbatim quotes and search the agreements for each returned string, adding a service to resolve repeated passages before creating review links."
       },
       {
         "id": "d",
-        "text": "Provide source documents within document content blocks and enable native citations in the Messages API to receive structured citation blocks with exact passage text and location offsets."
+        "text": "Enable native citations on the document blocks and render their cited text and character locations, retaining human review of the legal interpretations."
       }
     ],
-    "correct": [
-      "d"
-    ],
-    "explanation": "The Anthropic Messages API natively supports citations by passing source texts within document content blocks with citations: {\"enabled\": true}. When citations are enabled, Claude returns structured citation content blocks alongside its generated text, detailing the exact verbatim passage, document index, and start/end character or page location offsets. This provides programmatic, model-level verifiable grounding that eliminates hallucinated page numbers and fabricated quotes, unlike fragile natural language prompting or client-side regex heuristics.",
+    "correct": ["d"],
+    "explanation": "Native document citations return structured references containing cited text, a document index, and source locations. Plain-text documents use character locations. This supplies source pointers for the review interface without a custom citation-matching layer. Valid pointers are not cryptographic document-integrity evidence or proof that a legal interpretation follows from the cited passage; those remain separate checks.",
     "distractorNotes": {
-      "a": "Client-side regex filtering is fragile, adds significant processing latency, and cannot verify whether a paraphrased clause accurately represents the source context.",
-      "b": "Attaching UUIDs to small chunks increases prompt overhead, fragments continuous legal clauses, and still relies on probabilistic model compliance to echo keys correctly.",
-      "c": "Zero temperature and few-shot examples reduce format variability but do not prevent Claude from hallucinating plausible-sounding citations when synthesizing complex multi-page agreements."
+      "a": "A schema can require an offset-shaped value, but it does not ground the generated value in a real source location.",
+      "b": "Identifiers and examples guide citation behavior, but the returned references still depend on prompt compliance rather than native source pointers.",
+      "c": "A custom quote-matching and disambiguation service could support verification, but the scenario explicitly rules out building that additional layer."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/citations",
-    "sourceNote": "Citations / Enabling document citations and passage grounding",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceNote": "How citations work / Valid citations / Plain text document character locations",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-p-claude-models-prompting-and-context-engineering-016",
@@ -612,41 +581,38 @@
     "domain": "claude-models-prompting-and-context-engineering",
     "difficulty": "hard",
     "status": "reviewed",
-    "stem": "An enterprise development organization maintains a shared Claude Code and Agent SDK environment across 40 software engineering teams. Over time, the global workspace configuration and system prompt have grown to over 35,000 tokens, incorporating detailed operational runbooks, database migration procedures, cloud infrastructure checklists, and security review guidelines. As a result, routine coding tasks experience significant baseline token overhead, higher time-to-first-token latency, and occasional attention dilution. The lead architect must restructure the prompt architecture to optimize context efficiency while preserving access to all specialized procedures. Which two strategies should the architect implement? (Select TWO.)",
+    "stem": "A Claude Code organization has grown its base instructions with lengthy migration, deployment, and review runbooks. Most tasks need none of these procedures, but core coding invariants should remain present from the start of regular sessions. The team wants less baseline context without deleting procedures or preloading specialist subagents. Which two changes fit these requirements? (Select TWO.)",
     "options": [
       {
         "id": "a",
-        "text": "Concatenate all operational runbooks into a single base64-encoded string inside the user prompt to bypass token parsing overhead and compress prompt size."
+        "text": "Retain the complete runbooks in the base instructions and rely on prompt caching to lower repeated processing cost without changing what is loaded."
       },
       {
         "id": "b",
-        "text": "Decompose procedural runbooks and specialized workflows into modular Skills (SKILL.md files) whose instructions load dynamically only when invoked or relevant to the task."
+        "text": "Move specialized procedures into descriptively named Skills, making their full instructions available when invoked instead of loading each body at startup."
       },
       {
         "id": "c",
-        "text": "Increase model sampling temperature to 0.8 to encourage the model to skip irrelevant procedural instructions and runbooks during routine code generation tasks."
+        "text": "Move both coding invariants and specialized procedures into Skills, relying on task relevance to decide which rules enter each regular session."
       },
       {
         "id": "d",
-        "text": "Retain core architectural rules and coding invariants in the base instructions and apply prompt caching so shared context is processed at cached read rates."
+        "text": "Retain concise project-wide coding invariants in CLAUDE.md, separating continuously applicable rules from procedures that should load when used."
       },
       {
         "id": "e",
-        "text": "Distribute the 35,000 tokens across separate asynchronous user messages transmitted during the initial handshake turn to avoid loading them into context memory."
+        "text": "Split the runbooks into smaller referenced files and import them all from CLAUDE.md, preserving full initial coverage while modularizing maintenance."
       }
     ],
-    "correct": [
-      "b",
-      "d"
-    ],
-    "explanation": "Anthropic's architectural guidance for modular prompt design and context efficiency emphasizes two core practices: (1) modularizing procedures into Skills (SKILL.md files), where skill descriptions are registered as metadata while the heavy procedural instruction bodies load on demand only when invoked or relevant to the user request, keeping baseline context lean; and (2) keeping core, invariant project rules in base instructions (such as CLAUDE.md or system prompts) and keeping those rules stable across requests so the shared prefix can be cached at the API level and read back at cached read rates on subsequent turns.",
+    "correct": ["b", "d"],
+    "explanation": "The Skills documentation recommends moving repeated procedures out of CLAUDE.md when they become substantial. In regular sessions, descriptions provide discovery while skill bodies load when invoked. Keeping concise project-wide invariants in CLAUDE.md preserves initial guidance, while on-demand procedure bodies reduce baseline context.",
     "distractorNotes": {
-      "a": "Base64 encoding increases token volume by roughly 33%, obscures semantic meaning from the tokenizer, and increases rather than decreases token overhead.",
-      "c": "Temperature controls sampling randomness, not instruction filtering; increasing temperature induces hallucinations and does not reduce token consumption.",
-      "e": "Messages sent during the handshake turn still occupy the active context window, incurring full token billing and degrading attention without solving prompt bloat."
+      "a": "Caching is useful for repeated prefixes, but retaining the runbooks in base instructions leaves the baseline context requirement unchanged.",
+      "c": "Moving procedures is appropriate, but placing mandatory coding invariants behind skill invocation loses the required initial presence.",
+      "e": "Separate files improve maintenance, but importing their complete contents still loads the runbooks rather than deferring them until needed."
     },
     "sourceUrl": "https://code.claude.com/docs/en/skills",
-    "sourceNote": "Skills / Extending Claude with modular skills and on-demand context loading",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceNote": "When to create a skill / Skills versus CLAUDE.md / Invocation and content loading",
+    "sourceCheckedAt": "2026-09-25"
   }
 ]

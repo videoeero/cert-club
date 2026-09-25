@@ -7,37 +7,35 @@
     "domain": "stakeholder-communication-and-lifecycle-management",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "During an architecture review with executive stakeholders, an engineering lead proposes replacing an existing production customer FAQ classifier with a multi-agent autonomous swarm. The existing system uses a single Claude Haiku call with prompt caching and achieves 96% customer resolution with 300ms p95 latency. The multi-agent proposal promises marginal reasoning gains but would increase p95 latency to 4.5 seconds and quintuple operational API costs. How should the architect frame this decision to stakeholders based on Anthropic architectural principles?",
+    "stem": "A support service answers routine policy questions with one Claude call and sends unresolved cases to staff. Discovery confirms that routine traffic meets its quality and latency targets, but exceptions need customer-specific investigation. A pilot agent improves exception resolution while increasing latency and cost on routine questions. A tested classifier reliably separates the two categories. Stakeholders want fewer escalations without disrupting the routine service. Which proposal best fits these findings?",
     "options": [
       {
         "id": "a",
-        "text": "Advise adopting the multi-agent swarm immediately because Anthropic recommends multi-agent architectures as the standard baseline for all production workloads."
+        "text": "Replace both paths with the pilot agent, using a common investigation process to avoid maintaining separate handling for routine and exceptional questions."
       },
       {
         "id": "b",
-        "text": "Recommend migrating the FAQ system to an asynchronous batch processing queue to hide the 4.5-second latency from real-time customer interactions."
+        "text": "Keep one model call for both categories and add customer-investigation instructions to its prompt, preserving the routine service's existing orchestration."
       },
       {
         "id": "c",
-        "text": "Recommend retaining the simple pattern because agentic autonomy trades latency and cost for flexibility, which is unjustified when a simpler pattern meets SLAs."
+        "text": "Retain the single-call path for routine questions and route exceptions to the agent, concentrating the added cost and latency where flexibility pays."
       },
       {
         "id": "d",
-        "text": "Approve the multi-agent swarm on the condition that all worker agents are upgraded to larger models to offset the compounding error probability."
+        "text": "Run the routine responder and investigative agent in parallel for each question, selecting the stronger result before returning a unified customer response."
       }
     ],
-    "correct": [
-      "c"
-    ],
-    "explanation": "Anthropic's core architectural principle for agentic systems is simplicity: 'When building applications with LLMs, we recommend finding the simplest solution possible, and only increasing complexity when needed. Agentic systems often trade latency and cost for better task performance, and you should consider when this tradeoff makes sense.' Because the FAQ classifier is already meeting resolution requirements with 300ms latency, adding agentic complexity violates core architectural guidance by introducing compounding errors, cost, and latency without demonstrable business justification.",
+    "correct": ["c"],
+    "explanation": "Anthropic recommends adding complexity where it demonstrably improves outcomes and describes routing as appropriate when distinct categories can be classified accurately. Here the pilot establishes value for exception handling, not for replacing the successful routine path. Routing preserves the simpler path while accepting agentic cost and latency for the category that needs investigation.",
     "distractorNotes": {
-      "a": "Anthropic explicitly advises against starting with complex agentic frameworks and recommends single optimized LLM calls whenever sufficient.",
-      "b": "Asynchronous batch processing cannot serve real-time customer FAQ interactions, where users expect synchronous interactive responses.",
-      "d": "Upgrading to larger models increases cost and latency even further, worsening the primary SLA violation without solving the mismatch."
+      "a": "A uniform agent simplifies the number of paths but imposes the pilot's observed routine-traffic penalties, contrary to the requirement to preserve that service.",
+      "b": "A single optimized call is a useful baseline, but the discovery findings distinguish a customer-investigation process from routine policy answering; adding instructions does not provide that process.",
+      "d": "Parallel execution can obtain multiple perspectives, but running the investigative path for routine questions still incurs its cost and waiting for selection preserves its latency penalty."
     },
     "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
-    "sourceNote": "When (and when not) to use agents / Summary principles",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceNote": "When (and when not) to use agents; Workflow: Routing; Combining and customizing these patterns",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-p-stakeholder-communication-and-lifecycle-management-002",
@@ -47,37 +45,35 @@
     "domain": "stakeholder-communication-and-lifecycle-management",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "During discovery for an automated compliance analysis platform, legal stakeholders state that Claude's extracted contract summaries must be \"accurate, highly reliable, and safe for production release.\" As the lead architect translating this stakeholder requirement into an engineering evaluation framework, how should this requirement be refined according to Anthropic's guidance?",
+    "stem": "During discovery for a Claude contract-review assistant, legal staff emphasize missed mandatory clauses, reviewers emphasize readable summaries, and operations requires interactive turnaround. The teams currently disagree about what 'production ready' means. Which acceptance design captures these competing requirements without substituting a convenient proxy for the task?",
     "options": [
       {
         "id": "a",
-        "text": "Decompose the subjective requirement into specific, quantifiable metrics such as precision and recall for mandatory clauses, operational latency targets, and a calibrated toxicity threshold below 0.1%."
+        "text": "Agree achievable clause precision and recall targets, an expert rubric for summary quality, and latency thresholds on representative contracts."
       },
       {
         "id": "b",
-        "text": "Adopt a qualitative evaluation rubric where legal domain experts rate sampled contract summaries on a five-point Likert scale for overall fluency and completeness, deferring automated quantitative extraction scoring."
+        "text": "Agree a single expert rating for each complete summary, averaging readability, clause coverage, and perceived responsiveness into one release threshold."
       },
       {
         "id": "c",
-        "text": "Establish an empirical benchmark requiring zero hallucinations across 50,000 synthetic test contracts before approving the pipeline for production deployment, treating any extraction discrepancy as a release blocker."
+        "text": "Agree exact text matching against approved reference summaries plus a latency threshold, treating wording deviations as extraction failures."
       },
       {
         "id": "d",
-        "text": "Implement a binary pass/fail stakeholder sign-off based on legal team spot-checks of twenty sample outputs produced during the initial proof-of-concept demonstration, deferring automated metric pipelines until post-launch."
+        "text": "Agree an aggregate clause accuracy target and average response time, weighting frequent clauses in proportion to their production occurrence."
       }
     ],
-    "correct": [
-      "a"
-    ],
-    "explanation": "Anthropic's guidance on building evaluations specifies that good success criteria must be specific, measurable, and achievable. Subjective stakeholder requirements such as 'accurate' or 'safe' must be translated into quantifiable operational metrics—including task-specific precision/recall, operational latency, and quantifiable safety thresholds (e.g. less than 0.1% flagged outputs)—rather than relying solely on subjective qualitative ratings or informal spot-checks.",
+    "correct": ["a"],
+    "explanation": "The documentation recommends specific, measurable, achievable, and relevant criteria, often across multiple dimensions. Quantitative clause metrics address extraction, a well-defined expert rubric addresses summary quality, and measured latency addresses operations. Qualitative evaluation is valid when consistently applied alongside quantitative measures; it is not inherently inferior to automated scoring.",
     "distractorNotes": {
-      "b": "Qualitative Likert ratings by domain experts provide supplemental insight but cannot replace reproducible, automated quantitative metrics such as precision, recall, and operational latency for compliance systems.",
-      "c": "Setting an unachievable target such as absolute zero hallucinations across 50,000 runs violates Anthropic's rule that criteria must be realistically achievable with frontier models.",
-      "d": "Informal spot-checks on twenty outputs without standardized datasets or quantitative metrics fail to provide statistically sound measurement of system reliability."
+      "b": "A combined rating can hide missed clauses behind strong readability and makes an operational timing requirement depend on a subjective impression.",
+      "c": "Exact matching suits outputs with a single expected form, but valid summaries can use different wording; this substitutes textual identity for the requested quality.",
+      "d": "Aggregate accuracy can conceal failures on uncommon mandatory clauses, and the proposal omits the reviewers' summary-quality requirement."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
-    "sourceNote": "Define success criteria and build evaluations / Define your success criteria",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceNote": "Define your success criteria; Common success criteria; multidimensional evaluation",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-p-stakeholder-communication-and-lifecycle-management-003",
@@ -87,37 +83,35 @@
     "domain": "stakeholder-communication-and-lifecycle-management",
     "difficulty": "hard",
     "status": "reviewed",
-    "stem": "A finance committee challenges an architect's choice of Claude Sonnet 5 over Claude Haiku 4.5 for an automated multi-step regulatory filings audit system, citing Sonnet's higher per-token input and output prices. How should the architect justify this model selection based on Anthropic's architectural guidance for optimizing cost and intelligence?",
+    "stem": "Two Claude configurations pass the quality and latency gates for a regulatory filing workflow. In the same representative pilot, the lower-priced model's full workflow costs $80 for 80 successfully completed filings, while the higher-priced model's workflow costs $90 for 100. These totals include retries and verification for failed as well as successful attempts, and accepted filings have equivalent quality. Finance wants the lower cost per completed filing, not the smaller pilot invoice. Which recommendation follows?",
     "options": [
       {
         "id": "a",
-        "text": "Demonstrate that Sonnet processes input tokens substantially faster than Haiku, offsetting the higher unit token price through reduced cloud infrastructure hosting charges."
+        "text": "Choose the lower-priced model because its pilot invoice is smaller, and treat its unresolved filings as a separate exception-handling budget."
       },
       {
         "id": "b",
-        "text": "Evaluate architectures on total cost per completed task rather than per-token pricing, showing that a more capable model avoids expensive retry loops and verifier passes."
+        "text": "Choose the higher-priced model on these measurements: its complete workflow costs less per successful filing despite the higher unit token price."
       },
       {
         "id": "c",
-        "text": "Argue that enabling prompt caching on static regulatory guidelines guarantees that Sonnet's net API expenditure will remain lower than Haiku's base rates, regardless of filing volume or failure rates."
+        "text": "Choose the lower-priced model by comparing successful first attempts, excluding retry and verifier spending to isolate the model's generation efficiency."
       },
       {
         "id": "d",
-        "text": "Propose deploying Haiku exclusively for generation while using Sonnet solely as an asynchronous background logging parser to satisfy organizational monthly spend caps."
+        "text": "Choose the lower-priced model using the average cost per submitted filing, counting unresolved attempts as processed work for financial comparison."
       }
     ],
-    "correct": [
-      "b"
-    ],
-    "explanation": "Anthropic's architectural guidance for optimizing cost and intelligence emphasizes: 'Compare on cost per completed task, not per token' While Haiku has lower per-token pricing, on complex multi-step reasoning tasks a smaller model may fail more frequently, requiring costly verifier loops, retries, or complex fallback workflows that ultimately result in a higher cost per successfully solved task and greater end-to-end latency.",
+    "correct": ["b"],
+    "explanation": "Anthropic recommends comparing cost per completed task rather than per-token price. The scenario's lower-priced workflow spends $80 for 80 successes, or $1 per success; the higher-priced workflow spends $90 for 100 successes, or $0.90 per success. Since quality and latency already pass, the second workflow meets the stated financial objective. This is a conclusion from the pilot, not a general claim that larger models are cheaper.",
     "distractorNotes": {
-      "a": "Haiku has lower baseline latency than Sonnet; Sonnet's advantage is superior reasoning capability and task completion rate, not raw token throughput speed.",
-      "c": "Prompt caching bills a cached prefix at the cache-read rate, a tenth of the input price, but applies equally to Haiku; on tasks with high input variability or low cache reuse, caching alone cannot overcome the base token pricing difference unless task failure and retry rates are factored in.",
-      "d": "Running the weaker model on the complex generation task and the stronger model on simple logging parsing reverses sound architectural allocation."
+      "a": "The smaller invoice buys fewer completed filings. Moving unresolved work to another budget hides rather than removes its economic effect.",
+      "c": "Excluding retry and verification costs removes precisely the workflow effects that can reverse a per-token price comparison.",
+      "d": "Submitted attempts and successful completions are different denominators. Counting unresolved work as completion does not measure the agreed business outcome."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/about-claude/models/optimizing-for-cost-and-intelligence",
-    "sourceNote": "Optimizing for cost and intelligence / Compare models on cost per task",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceNote": "Start here; Compare models on cost per task",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-p-stakeholder-communication-and-lifecycle-management-004",
@@ -127,37 +121,35 @@
     "domain": "stakeholder-communication-and-lifecycle-management",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "A product team preparing to launch an interactive customer support assistant powered by Claude reports that complete multi-turn diagnostic responses require 3.8 seconds of model processing time, violating a product SLA requiring response delivery within 1.5 seconds. How should the architect resolve this SLA conflict without compromising response quality?",
+    "stem": "A support assistant's launch criterion requires a complete diagnostic response within 1.5 seconds at p95. A streaming pilot measures p95 time to first token of 0.7 seconds and p95 completion time of 3.8 seconds while meeting quality requirements. Product stakeholders are willing to discuss progressive display, but have not changed the criterion. What should the architect recommend at the launch review?",
     "options": [
       {
         "id": "a",
-        "text": "Enforce a strict 50-token output limit on Claude's responses to guarantee that complete generations finish within the required 1.5-second interactive SLA window."
+        "text": "Approve launch against the existing criterion using the measured first-token time, since streaming starts response delivery before the full diagnostic text is ready."
       },
       {
         "id": "b",
-        "text": "Enable prompt caching on the customer support knowledge base, relying on the cache read latency speedup to accelerate the model's token generation rate past 1.5 seconds."
+        "text": "Approve launch with a tighter output-token cap, using the shorter maximum response length as evidence that the existing completion-time criterion will be met."
       },
       {
         "id": "c",
-        "text": "Instruct Claude in the system prompt to enforce concise responses under 100 words, relying solely on output brevity to satisfy the full-response latency SLA without streaming."
+        "text": "Approve launch after replacing the completion-time dashboard with measured first-token latency, retaining the published response-delivery wording to avoid a contract change."
       },
       {
         "id": "d",
-        "text": "Implement server-sent events streaming to deliver initial tokens within sub-second TTFT, ensuring a responsive user experience while full generation proceeds."
+        "text": "Report the completion-time failure; seek agreement on separate first-token and completion criteria for streaming, or optimize and re-test against the original criterion."
       }
     ],
-    "correct": [
-      "d"
-    ],
-    "explanation": "Anthropic distinguishes between baseline total generation latency and Time to First Token (TTFT). For interactive user-facing applications, enabling streaming over server-sent events delivers the first tokens in hundreds of milliseconds. This satisfies perceived user responsiveness SLAs immediately while allowing the model to generate full, comprehensive diagnostic explanations over several seconds without truncation.",
+    "correct": ["d"],
+    "explanation": "The documentation distinguishes time to first token from total response generation and describes streaming as improving perceived responsiveness by exposing output before completion. The measured 0.7-second TTFT therefore does not satisfy a 1.5-second full-response criterion when completion takes 3.8 seconds. Progressive display is an alternative acceptance design that stakeholders must agree to, not evidence that the unchanged criterion passes. The source does not guarantee subsecond TTFT.",
     "distractorNotes": {
-      "a": "Truncating maximum output to 50 tokens cuts off explanations mid-sentence, severely degrading answer completeness and customer satisfaction.",
-      "b": "Prompt caching reduces Time to First Token (TTFT) by accelerating prompt prefill processing, but does not alter the model's output token generation speed (tokens per second).",
-      "c": "Prompting for brevity reduces total generated tokens, but complex multi-turn diagnostics cannot always be compressed without sacrificing quality, and brevity alone does not guarantee consistent sub-1.5s p95 latency under variable network load."
+      "a": "Streaming changes when users start seeing output, not what the existing full-response criterion measures.",
+      "b": "Output limits can reduce generation work, but they can truncate responses. A cap alone is not measured evidence of either completion latency or preserved diagnostic quality.",
+      "c": "Changing the instrumented metric silently changes the meaning of success; the stakeholders have not approved that change."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-latency",
-    "sourceNote": "Reducing latency / How to measure latency / Streaming responses",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceNote": "How to measure latency; Optimize prompt and output length; Stream responses",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-p-stakeholder-communication-and-lifecycle-management-005",
@@ -167,37 +159,35 @@
     "domain": "stakeholder-communication-and-lifecycle-management",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "During an architectural review of an automated software documentation generator, engineering stakeholders recommend deploying a fully autonomous agent that plans its own file inspection order. The lead architect counters by proposing an orchestrator-workers workflow. What architectural trade-off justifies the architect's recommendation?",
+    "stem": "During handoff of a software documentation service, stakeholders require a consolidated report for each repository change. Which files need analysis depends on the change, but once that work is identified, each analysis is independent. Operations wants application-controlled dispatch and a final synthesis rather than a worker that keeps exploring the repository until it decides to stop. Which design best matches this contract?",
     "options": [
       {
         "id": "a",
-        "text": "Orchestrator-workers dynamically delegates bounded subtasks while preventing the compounding errors and runaway token spend typical of open-ended agent loops."
+        "text": "Use an orchestrator to identify change-specific analyses, dispatch workers under application controls, and synthesize their findings into the report."
       },
       {
         "id": "b",
-        "text": "Deploy a prompt chaining workflow instead, because sequential linear chains are strictly required by Anthropic architecture whenever processing multi-file software repositories."
+        "text": "Use a fixed parallel workflow with one worker per predefined repository area, keeping the same task partition for each change and merging the reports."
       },
       {
         "id": "c",
-        "text": "The orchestrator-workers pattern executes worker subtasks sequentially on a single thread, guaranteeing deterministic sub-second application completion times."
+        "text": "Use a tool-equipped agent that selects files, performs their analyses, and decides from intermediate results whether further exploration is worthwhile."
       },
       {
         "id": "d",
-        "text": "Implement an evaluator-optimizer loop where a single generator model drafts documentation for all files simultaneously and an evaluator critiques the combined output in an unconstrained loop."
+        "text": "Use a generator and evaluator to refine a whole-repository draft, with the evaluator deciding which missing details should trigger another revision."
       }
     ],
-    "correct": [
-      "a"
-    ],
-    "explanation": "In Anthropic's architecture guide 'Building effective agents', workflows orchestrate LLMs through predefined programmatic paths, whereas autonomous agents dynamically direct their own processes. The orchestrator-workers pattern provides the flexibility needed for multi-file tasks (dynamically breaking down files into worker tasks) while retaining programmatic bounds, preventing the compounding errors, unpredictability, and unconstrained token spend common in autonomous agent loops.",
+    "correct": ["a"],
+    "explanation": "The orchestrator-workers pattern dynamically decomposes a task, delegates work, and synthesizes results. Unlike fixed parallel sectioning, its subtasks depend on the input. It fits the variable discovery followed by independent analysis in this scenario. Application controls are a design requirement here; the pattern itself does not guarantee bounded spend, deterministic output, or prevention of compounding errors.",
     "distractorNotes": {
-      "b": "Fixed linear prompt chains cannot dynamically adapt to variable repository file trees or dependency graphs; the orchestrator-workers pattern is designed specifically for dynamic task decomposition.",
-      "c": "Worker calls in an orchestrator-workers architecture are typically executed in parallel across multiple model calls, not sequentially on a single thread.",
-      "d": "Drafting documentation for an entire multi-file codebase in a single generator context saturates token windows and causes context degradation, whereas orchestrator-workers isolates each file into bounded worker contexts."
+      "b": "Fixed parallel sectioning suits known independent subtasks, but the proposed fixed partition does not match the requirement to identify change-specific analyses.",
+      "c": "An agent's model-directed process is useful for open-ended exploration, but gives it the continuation decision that operations wants to keep in the application.",
+      "d": "Evaluator-optimizer addresses improving a draft through feedback, rather than dynamically assigning independent analyses and combining their results."
     },
     "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
-    "sourceNote": "Workflows vs agents / Orchestrator-workers workflow",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceNote": "What are agents?; Workflow: Parallelization; Workflow: Orchestrator-workers; Workflow: Evaluator-optimizer",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-p-stakeholder-communication-and-lifecycle-management-006",
@@ -207,37 +197,35 @@
     "domain": "stakeholder-communication-and-lifecycle-management",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "A development team building a Claude-powered customer dispute analyzer starts their project by aggressively trimming system prompts, restricting max_tokens to 150, and selecting Claude Haiku to satisfy prospective latency budgets. What lifecycle guidance does Anthropic provide regarding prompt development and latency optimization?",
+    "stem": "A dispute-analysis proof of concept misses important exceptions after the team simultaneously chose a smaller Claude model, removed examples, and shortened outputs to meet a prospective latency target. The target can still be negotiated during discovery. Stakeholders need evidence about whether the task is feasible and what quality a faster service would sacrifice. Which next experiment best supports that decision?",
     "options": [
       {
         "id": "a",
-        "text": "Begin by deploying few-shot examples into fine-tuned model checkpoints before drafting preliminary system prompts, ensuring latency is minimized from day one."
+        "text": "Hold the current model and short output limit fixed while trying different prompt wording, reporting the best result as the task's achievable quality."
       },
       {
         "id": "b",
-        "text": "Compress the prompt immediately by stripping explanatory context, formatting tags, and few-shot demonstrations to establish the minimum possible baseline latency."
+        "text": "Test successively smaller prompts on the current model and present the fastest variant, using its failure rate as the expected automation ceiling."
       },
       {
         "id": "c",
-        "text": "First engineer an unconstrained prompt that achieves target quality on a capable model, and only apply latency reduction strategies once top performance is known."
+        "text": "Establish a quality baseline without the premature model and prompt constraints, then measure latency reductions against that known performance."
       },
       {
         "id": "d",
-        "text": "Standardize the prompt on a smaller, faster model family first, assuming that instructions optimized for lightweight models will translate seamlessly to larger models later."
+        "text": "Enable streaming on the existing configuration and repeat stakeholder demos, using earlier visible output to establish whether the quality gap matters."
       }
     ],
-    "correct": [
-      "c"
-    ],
-    "explanation": "Anthropic's documentation on latency optimization explicitly warns: 'It's always better to first engineer a prompt that works well without model or prompt constraints, and then try latency reduction strategies afterward. Trying to reduce latency prematurely might prevent you from discovering what top performance looks like.' Establishing a high-performing baseline ensures teams understand peak model capability before pruning tokens or downsizing models.",
+    "correct": ["c"],
+    "explanation": "Anthropic advises first engineering a prompt that works well without model or prompt constraints, then applying latency-reduction strategies. This discovers attainable quality before trading it away. The baseline is an experiment, not permission to ignore production latency: later configurations must be measured against both the baseline and the agreed service requirements.",
     "distractorNotes": {
-      "a": "Anthropic emphasizes prompt engineering and in-context learning over premature model fine-tuning; starting with fine-tuning adds unnecessary overhead.",
-      "b": "Premature prompt compression strips away instructions that guide model accuracy, preventing architects from discovering what peak task performance looks like before optimizing.",
-      "d": "Prompts tuned heavily under the constraints of smaller models often use distinct framing that does not transfer cleanly to frontier models; establishing an unconstrained capability ceiling comes first."
+      "a": "The retained constraints may be responsible for the failures, so this experiment cannot establish the task's unconstrained quality baseline.",
+      "b": "Further compression explores speed before determining whether removed information accounts for the missing exceptions.",
+      "d": "Streaming improves perceived responsiveness, but does not establish whether a less constrained prompt and model can recognize the missing exceptions."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-latency",
-    "sourceNote": "Reducing latency / General principles",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceNote": "Opening guidance on premature latency optimization; Stream responses",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-p-stakeholder-communication-and-lifecycle-management-007",
@@ -247,37 +235,35 @@
     "domain": "stakeholder-communication-and-lifecycle-management",
     "difficulty": "hard",
     "status": "reviewed",
-    "stem": "During enterprise architecture discovery for a telehealth platform, the customer's Chief Information Security Officer mandates a Zero Data Retention (ZDR) agreement for all Claude API interactions. Which integration constraint must the architect communicate to the front-end engineering team before implementation?",
+    "stem": "A telehealth team is handing off a browser-based assistant under a Zero Data Retention agreement. It uses the Messages API and repeatedly supplies a stable clinical policy prefix. Security requires a ZDR-eligible integration, while product wants to retain prompt caching's performance benefits. The prototype calls the API directly from the browser. Which implementation change should the architect specify?",
     "options": [
       {
         "id": "a",
-        "text": "Front-end clients must provision Customer-Managed Encryption Keys (CMEK) in a cloud KMS before API calls can be executed under Zero Data Retention."
+        "text": "Route requests through the backend and disable prompt caching, accepting extra prompt processing because retaining a cached prefix conflicts with ZDR."
       },
       {
         "id": "b",
-        "text": "Browser-based applications cannot call the Claude API directly via CORS under ZDR and must route all traffic through a secure backend proxy server."
+        "text": "Route Messages requests through a backend proxy and retain eligible prompt caching; ZDR does not support browser CORS access to the API."
       },
       {
         "id": "c",
-        "text": "Prompt caching must be disabled across all application sessions because caching persists prompt prefixes in memory, which is prohibited under Zero Data Retention agreements."
+        "text": "Retain direct browser Messages requests but disable prompt caching, treating cached prompt retention as the feature that prevents ZDR compatibility."
       },
       {
         "id": "d",
-        "text": "The front-end client must persist temporary session transcripts in browser storage and upload them to Anthropic's Compliance API at regular intervals."
+        "text": "Route requests through a backend using Message Batches, deleting each batch after retrieving results to provide an equivalent ZDR-compliant handoff."
       }
     ],
-    "correct": [
-      "b"
-    ],
-    "explanation": "Anthropic's documentation on Zero Data Retention explicitly states that Cross-Origin Resource Sharing (CORS) is not supported for organizations with ZDR arrangements. To make API calls from browser-based applications, architecture teams must route client requests through a secure backend proxy server, which also ensures API keys are never exposed in browser code.",
+    "correct": ["b"],
+    "explanation": "The retention documentation says CORS is not supported for organizations with ZDR arrangements and directs browser applications to a backend proxy. It lists prompt caching as ZDR eligible: cache representations and hashes are held in memory for the cache lifetime. Thus a backend Messages integration can retain prompt caching; disabling it is not required by this agreement.",
     "distractorNotes": {
-      "a": "Customer-Managed Encryption Keys (CMEK) are used to encrypt stored customer data at rest; under ZDR, prompts and completions are not retained at rest on Anthropic disks.",
-      "c": "Anthropic explicitly documents that prompt caching is fully supported and compliant under ZDR; cached prompts reside in ephemeral memory subject to standard TTL and are never written to disk.",
-      "d": "ZDR guarantees that prompts and responses are not stored at rest; mandating front-ends to upload transcripts to a compliance feed contradicts ZDR."
+      "a": "The backend change is appropriate, but the source explicitly permits prompt caching under ZDR; disabling it unnecessarily abandons the stated performance requirement.",
+      "c": "Removing caching does not change the documented CORS restriction for a ZDR organization.",
+      "d": "The source lists Message Batches as not ZDR eligible because asynchronous processing requires storage. Deleting results afterward does not make the feature ZDR eligible."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/manage-claude/api-and-data-retention",
-    "sourceNote": "API and data retention / Zero data retention (ZDR) scope and CORS",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceNote": "ZDR scope exclusions: CORS; Feature-specific data retention: prompt caching and batch processing",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-p-stakeholder-communication-and-lifecycle-management-008",
@@ -287,37 +273,35 @@
     "domain": "stakeholder-communication-and-lifecycle-management",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "An enterprise architect is preparing implementation guidance and onboarding documentation for engineering teams adopting Claude Code across a distributed repository. How should team-wide architectural invariants, project conventions, and required build commands be documented so that Claude Code respects them automatically?",
+    "stem": "An architect is handing a repository to several teams using Claude Code. Build commands and architecture conventions should be reviewed with code changes and available at the start of ordinary repository sessions, without developers invoking a special workflow. The same developers work on unrelated projects with different rules. These are guidance, not security enforcement. Where should the handoff instructions live?",
     "options": [
       {
         "id": "a",
-        "text": "Maintain a concise CLAUDE.md file in the repository root containing project guidelines, build commands, and constraints that Claude Code loads into context."
+        "text": "Place concise shared instructions in the repository's CLAUDE.md and version them with the code so sessions receive the current project guidance."
       },
       {
         "id": "b",
-        "text": "Store project conventions in the user personal configuration file (~/.claude/CLAUDE.md) on developer machines to ensure settings apply across all local repositories."
+        "text": "Distribute the instructions in each developer's user-level CLAUDE.md so they load at startup without requiring a repository-specific setup step."
       },
       {
         "id": "c",
-        "text": "Configure an external Model Context Protocol (MCP) server that intercepts developer shell prompts and injects coding style rules as dynamic tool parameters."
+        "text": "Place the instructions in an on-demand project skill so developers can load the handoff procedure when a task requires architectural guidance."
       },
       {
         "id": "d",
-        "text": "Rely on Claude Code's auto memory system to infer architectural constraints and build workflows dynamically from developer terminal interactions."
+        "text": "Teach the conventions through corrections during onboarding and let auto memory preserve the learned project practices for subsequent sessions."
       }
     ],
-    "correct": [
-      "a"
-    ],
-    "explanation": "Anthropic's Claude Code architecture uses `CLAUDE.md` as the designated project-level memory mechanism. Placed in the repository root (or parent directory), `CLAUDE.md` is automatically ingested into Claude Code's context at the start of every session, providing instructions on project structure, code conventions, testing commands, and architectural constraints.",
+    "correct": ["a"],
+    "explanation": "The memory documentation identifies project CLAUDE.md files as team-shared instructions distributed through source control, suitable for build commands, common workflows, and architecture. User instructions span projects, skills are on demand, and auto memory records Claude's learnings. CLAUDE.md supplies context rather than an enforced security boundary, matching the stem's limited requirement.",
     "distractorNotes": {
-      "b": "User configuration in `~/.claude/CLAUDE.md` applies only to an individual developer across their local projects and is not checked into version control or shared across a team.",
-      "c": "MCP servers expose external tools and resources; configuring an MCP server purely to deliver static repository guidelines is unnecessary over `CLAUDE.md`.",
-      "d": "Auto memory records observations and personal workflow habits learned during sessions, but cannot substitute for explicit, version-controlled project rules in `CLAUDE.md`."
+      "b": "User-level instructions are personal and apply across projects, creating the scope conflict the scenario explicitly needs to avoid.",
+      "c": "A skill is useful for a task-specific procedure, but on-demand loading does not satisfy the requirement for ambient guidance in ordinary sessions.",
+      "d": "Auto memory can retain useful learnings, but it does not replace explicit team-reviewed instructions versioned with architectural changes."
     },
     "sourceUrl": "https://code.claude.com/docs/en/memory",
-    "sourceNote": "Claude Code Memory / CLAUDE.md guidelines",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceNote": "CLAUDE.md vs auto memory; Choose where to put CLAUDE.md files; Set up a project CLAUDE.md",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-p-stakeholder-communication-and-lifecycle-management-009",
@@ -327,37 +311,35 @@
     "domain": "stakeholder-communication-and-lifecycle-management",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "An enterprise architecture team is designing the Anthropic account governance model for an organization with multiple independent business units. Each unit manages separate development and production workloads. The security team requires strict credential isolation between environments, while the finance team requires per-unit cost controls. What architecture should the architect recommend?",
+    "stem": "An enterprise wants one Anthropic billing organization for several business units. Each unit has development and production workloads. Security requires application credentials that cannot select another unit's or environment's resources; finance needs separately enforceable monthly budgets for those partitions. Which account design should the architect hand off?",
     "options": [
       {
         "id": "a",
-        "text": "Provision a separate legal Anthropic organization for developer workstations and perform manual monthly invoice consolidation through corporate accounts payable."
+        "text": "Create one workspace per business unit, issue different development and production keys within it, and set the unit's monthly workspace spend limit."
       },
       {
         "id": "b",
-        "text": "Create a single Default Workspace for the entire enterprise and use custom API key prefixes to partition monthly usage data downloaded from the Claude Console billing page."
+        "text": "Create development and production workspaces shared by the business units, assigning each unit distinct keys and using environment-level spend limits."
       },
       {
         "id": "c",
-        "text": "Create a single shared workspace and attach custom billing tags to API request headers, allowing the finance team to filter usage by environment in Claude Console."
+        "text": "Create unit-and-environment workspaces with separate budgets, but give applications multi-workspace credentials and select the workspace in each request."
       },
       {
         "id": "d",
-        "text": "Configure dedicated Workspaces for each business unit and environment, scoping API keys to individual workspaces while enforcing independent monthly spend limits."
+        "text": "Create a workspace per business unit and environment, issue credentials scoped to that workspace, and configure its separate monthly spend limit."
       }
     ],
-    "correct": [
-      "d"
-    ],
-    "explanation": "Anthropic Workspaces (`wrkspc_`) allow organizations to organize API usage by team, project, or environment under a single billing account. API keys can be strictly scoped to a single workspace (e.g. dev vs prod), preventing cross-environment credential access, and each workspace supports independent monthly spend limits to control departmental costs.",
+    "correct": ["d"],
+    "explanation": "Workspaces organize usage by team, project, or environment under one organization and support spend controls. A single-workspace credential runs in its chosen workspace and accesses resources there. Creating a partition for each unit and environment therefore aligns both resource scope and budget scope with the stakeholder requirements. Merely issuing separate keys inside a shared workspace does not create separate workspace resource boundaries.",
     "distractorNotes": {
-      "a": "Creating distinct Anthropic organizations for each developer fragments visibility, multiplies administrative overhead, and prevents centralized billing.",
-      "b": "The Default Workspace cannot enforce separate spend caps or isolate keys between development and production environments.",
-      "c": "Anthropic's Messages API does not support arbitrary billing tags in request headers for cost-allocation filtering in billing dashboards; workspaces are the native mechanism."
+      "a": "This separates units but leaves development and production resources and the spend limit in the same workspace.",
+      "b": "This separates environments but does not provide the required per-unit workspace resource and budget boundaries.",
+      "c": "Multi-workspace credentials are a real supported mechanism, but applications able to select other authorized workspaces do not have the requested credential-level isolation."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/manage-claude/workspaces",
-    "sourceNote": "Workspaces / How workspaces work and roles",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceNote": "How workspaces work; Configuring resource limits; API keys and resource scoping",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-p-stakeholder-communication-and-lifecycle-management-010",
@@ -367,37 +349,35 @@
     "domain": "stakeholder-communication-and-lifecycle-management",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "An architect has moved a weekend analysis of 500,000 archived support transcripts onto the Message Batches API, chunked across several batches to stay inside the per-batch request limit. Operations leadership now wants a turnaround commitment it can publish to the business, and has drafted an internal SLA promising results within one hour of submission. How should the architect respond?",
+    "stem": "A weekend archive analysis sends 500,000 transcripts through Message Batches, split to respect each batch's limits. Operations wants to promise that every transcript will have a successful analysis within 24 hours. No capacity has been reserved or tested for a synchronous recovery path. Which service commitment can the architect justify from the documented batch behavior?",
     "options": [
       {
         "id": "a",
-        "text": "Accept the one-hour commitment, since the documentation records that most batches complete within an hour and stragglers can be resubmitted inside the same window."
+        "text": "Commit to successful analysis within 24 hours, treating the documented batch processing window as the upper bound for completing each transcript."
       },
       {
         "id": "b",
-        "text": "Publish no turnaround figure at all, because asynchronous processing time varies with current demand and request volume and so cannot be bounded in advance."
+        "text": "Commit to successful analysis within one hour for small batches, using extra partitioning to turn the documented typical completion time into a deadline."
       },
       {
         "id": "c",
-        "text": "Commit to the documented 24-hour window instead: most batches do finish sooner, but a batch can still reach its 24-hour expiration with requests unprocessed."
+        "text": "Describe the 24-hour processing expiry and per-request outcomes; agree a recovery policy before promising successful completion for the full archive."
       },
       {
         "id": "d",
-        "text": "Commit to one hour and keep a synchronous Messages API fallback that re-runs any batch still in progress once the sixty-minute mark has passed."
+        "text": "Commit to the 24-hour deadline with synchronous resubmission of unfinished work near expiry, relying on that fallback to cover batch stragglers."
       }
     ],
-    "correct": [
-      "c"
-    ],
-    "explanation": "The documentation gives a typical case and a bound, and only the bound is safe to publish. Most batches complete 'in less than 1 hour', but 'Batches may take up to 24 hours for processing... Actual processing time depends on the size of the batch, current demand, and your request volume', and 'It is possible for a batch to expire and not complete within 24 hours'. Committing the business to the typical case turns a normal slow weekend into a breached SLA. The 24-hour figure is the documented expiration boundary, so it is the number the architect can stand behind, with the sub-hour typical case reported as an expectation rather than a promise.",
+    "correct": ["c"],
+    "explanation": "The batch documentation distinguishes successful results from errored, canceled, and expired requests. A batch can expire at 24 hours before requests have been processed. That boundary supports explaining when processing expires and why recovery may be needed, not guaranteeing successful analysis of every transcript. Most batches finishing sooner is a typical observation, not a completion SLA. The proposed recovery path needs its own evidence before supporting the business commitment.",
     "distractorNotes": {
-      "a": "'Most batches' is a typical case, not a guarantee, and resubmitting a straggler restarts its processing rather than finishing it inside the original hour.",
-      "b": "Processing time does vary, but it is bounded: a batch expires at 24 hours, and unprocessed requests are returned as expired and not billed. Declining to publish any figure discards a commitment the platform actually supports.",
-      "d": "The fallback pays full synchronous price for work already bought at the 50% batch discount, and it consumes Messages API rate limits that the batch deliberately kept clear."
+      "a": "The documented 24-hour boundary includes expiry of unprocessed requests, so it cannot establish universal successful completion.",
+      "b": "Partitioning can improve manageability, but processing also depends on demand and request volume; it does not convert a typical duration into a guarantee.",
+      "d": "A synchronous fallback is a possible architecture, but its untested capacity and remaining deadline budget do not justify the promised outcome in this scenario."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/batch-processing",
-    "sourceNote": "Most batches finish in under 1 hour but may take up to 24 hours; a batch expires if it does not complete inside that window.",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceNote": "Batch limitations; Retrieving batch results; How long does it take for a batch to process?",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-p-stakeholder-communication-and-lifecycle-management-011",
@@ -407,37 +387,35 @@
     "domain": "stakeholder-communication-and-lifecycle-management",
     "difficulty": "hard",
     "status": "reviewed",
-    "stem": "During executive stakeholder reviews for an automated claims fraud detection system, finance leaders report that extended reasoning (\"thinking\") tokens have increased operational API spend by 45%. To curtail costs immediately, product management proposes truncating max_tokens to 500. How should the architect steer this decision based on Anthropic's cost and intelligence optimization principles?",
+    "stem": "A claims-analysis team uses an effort-capable Claude model at high effort. Quality passes, but finance needs lower cost. Prompt caching and input cleanup are already in place. A small pilot shows that lower effort helps routine claims, while difficult claims lose accuracy; the team lacks a reliable runtime verifier to identify incorrect decisions. Which proposal best supports a defensible cost-quality decision?",
     "options": [
       {
         "id": "a",
-        "text": "Tune reasoning effort down to low or adopt an advisor pattern where a low-effort model handles routine claims and escalates ambiguities, rather than imposing blunt output caps."
+        "text": "Sweep effort on representative routine and difficult claims, selecting a lower setting if it preserves the agreed quality gates across both groups."
       },
       {
         "id": "b",
-        "text": "Accept truncating max_tokens to 500 because Claude prioritizes final decision outputs before generating thinking blocks when token budgets are restricted."
+        "text": "Run lower effort in production and repeat failures at high effort, using successful API completion as the signal that a claim needs no retry."
       },
       {
         "id": "c",
-        "text": "Disable thinking tokens across claim types and rely instead on extensive few-shot prompt examples to achieve equivalent complex reasoning without cost overhead."
+        "text": "Keep high effort but impose a tight output-token cap, using the resulting lower invoice to establish savings without changing the model setting."
       },
       {
         "id": "d",
-        "text": "Enable prompt caching on the generated thinking blocks, allowing subsequent fraud evaluation requests with similar claim characteristics to reuse reasoning traces at the cache-read rate."
+        "text": "Deploy lower effort based on the aggregate pilot accuracy, allowing the greater prevalence of routine claims to offset the observed loss on difficult claims."
       }
     ],
-    "correct": [
-      "a"
-    ],
-    "explanation": "Anthropic's guidance for managing extended thinking costs advises sweeping reasoning effort down on your current model (e.g. to `low`) or adopting an advisor strategy where low-effort or smaller models handle routine volume and escalate ambiguous cases. Capping `max_tokens` prematurely is counter-productive because thinking tokens count against `max_tokens`, causing generations to cut off with `stop_reason: max_tokens` before reaching a verdict.",
+    "correct": ["a"],
+    "explanation": "Anthropic recommends sweeping effort down when costs are high and quality is satisfactory, measuring the tradeoff on the workload. Its low-effort-then-retry strategy depends on being able to check outputs. Here that verifier is missing and difficult-case quality matters, so the proposal should measure both groups rather than promise that lower effort preserves quality. A tight output cap can terminate an attempt rather than make it efficiently successful.",
     "distractorNotes": {
-      "b": "Claude generates thinking blocks before its final response text; setting an artificially low `max_tokens` truncates the response before the final decision is reached.",
-      "c": "Few-shot prompting increases prompt input tokens on every turn and cannot substitute for dynamic multi-step extended reasoning on complex fraud patterns.",
-      "d": "Prompt caching applies strictly to input prompt prefixes (system prompts, tools, message history), not assistant output thinking blocks across independent user requests."
+      "b": "A successful API response does not establish claim correctness. Without a reliable output check, the retry strategy cannot identify the failures that need higher effort.",
+      "c": "A lower invoice is not evidence of preserved decision quality; output caps can cut off work before it reaches a useful result.",
+      "d": "A favorable aggregate can hide the difficult-case regression already observed, bypassing rather than evaluating the competing quality requirement."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/about-claude/models/optimizing-for-cost-and-intelligence",
-    "sourceNote": "Optimizing for cost and intelligence / Tune effort and advisor strategy",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceNote": "Tune effort; Re-run failures at higher effort; Set budgets and output caps",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-p-stakeholder-communication-and-lifecycle-management-012",
@@ -447,37 +425,35 @@
     "domain": "stakeholder-communication-and-lifecycle-management",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "During a marketing promotion, a consumer-facing retail assistant experiences an unexpected surge in user traffic. The application begins receiving HTTP 429 errors from the Claude API, and incident managers declare a vendor platform outage. How should the architect clarify the root cause to stakeholders and address the operational impact?",
+    "stem": "A retail assistant using the Messages API receives HTTP 429 responses during a promotion. Its runbook applies exponential backoff, but retries continue failing after traffic subsides. The response has no retry-after header and explicitly identifies the organization's usage-tier monthly spend cap as reached. Incident leaders propose declaring a global platform outage. What operational decision should the architect communicate?",
     "options": [
       {
         "id": "a",
-        "text": "Advise incident managers that HTTP 429 indicates global Anthropic infrastructure overload, requiring immediate client retries without backoff to secure available server slots."
+        "text": "Keep retrying with progressively longer delays, treating the 429 as a temporary token-bucket limit that will clear as the promotion's traffic falls."
       },
       {
         "id": "b",
-        "text": "Explain that HTTP 429 reflects organization rate limit or spend cap exhaustion, and ensure client services implement exponential backoff with jitter."
+        "text": "Stop treating this as transient throttling and seek a higher tier spend cap or wait for its reset; distinguish it from platform overload."
       },
       {
         "id": "c",
-        "text": "Explain that HTTP 429 indicates that individual user request payloads exceeded maximum context window limits, requiring front-end query truncation."
+        "text": "Move the assistant to another workspace in the organization, using a fresh workspace budget to restore access while finance reviews the spend."
       },
       {
         "id": "d",
-        "text": "Rotate the production API keys through the Claude Console immediately, explaining that rate limit counters are tied to key identifiers rather than workspace limits."
+        "text": "Reduce the application's self-imposed workspace spend limit, using the lower spending rate to recover capacity within the current monthly cap."
       }
     ],
-    "correct": [
-      "b"
-    ],
-    "explanation": "Anthropic's error handling documentation defines HTTP 429 as `rate_limit_error`, occurring when an organization exceeds its RPM/TPM limits, token bucket burst thresholds, or monthly spend caps. Global vendor platform overload returns HTTP 529 (`overloaded_error`). Architects should explain rate limiting mechanisms to stakeholders and ensure clients employ exponential backoff with jitter while honoring `retry-after` headers.",
+    "correct": ["b"],
+    "explanation": "The rate-limit documentation says a usage-tier monthly spend-cap 429 has no retry-after header and keeps failing until access resumes. Access resumes at the monthly reset or after a higher limit is obtained. This differs from transient rate limiting, where delayed retries can help. The errors documentation identifies HTTP 529 as platform overload; this response provides a specific organization-level spend cause instead.",
     "distractorNotes": {
-      "a": "Global platform overload returns HTTP 529 (`overloaded_error`), not HTTP 429. Retrying immediately without backoff worsens congestion; exponential backoff with jitter is required.",
-      "c": "Exceeding the context window limit returns an HTTP 400 `invalid_request_error`, not an HTTP 429 `rate_limit_error`.",
-      "d": "Rate limits and token bucket allowances apply at the organization or workspace level, not per individual API key; rotating keys does not reset rate limits."
+      "a": "Backoff is useful for transient throttling, but does not restore access after the identified monthly spend cap is exhausted.",
+      "c": "The exhausted usage-tier cap belongs to the organization, so moving traffic between its workspaces does not provide another tier allowance.",
+      "d": "A user-configured workspace limit is a separate, lower control and cannot replenish an exhausted organization tier cap. Ordinary self-set spend limits normally produce HTTP 400; Claude Code workspace limits have separate behavior."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/api/errors",
-    "sourceNote": "Claude API errors / HTTP errors 429 and 529",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://platform.claude.com/docs/en/api/rate-limits",
+    "sourceNote": "Spend limits: Reaching your spend cap; Setting your own spend limit; Response headers",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-p-stakeholder-communication-and-lifecycle-management-013",
@@ -487,37 +463,35 @@
     "domain": "stakeholder-communication-and-lifecycle-management",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "In an enterprise procurement solution, business stakeholders find that Claude's generated vendor contract risk assessments frequently overlook subtle indemnification exclusions. The engineering lead proposes adding 30 few-shot examples to the generator prompt. What architectural workflow does Anthropic recommend when clear evaluation criteria exist and iterative refinement adds demonstrable value?",
+    "stem": "Procurement reviewers report that Claude contract-risk drafts miss interactions between indemnity clauses and exclusions. In a pilot, a separate review call identifies useful corrections from a legal rubric, and revising a draft from those comments improves accepted-output quality. Independent drafts followed by majority selection did not fix the omission pattern. Stakeholders can accept additional calls within the review deadline. Which workflow should the architect propose?",
     "options": [
       {
         "id": "a",
-        "text": "Deploy an orchestrator-workers workflow where a central coordinator dynamically delegates individual contract clauses to independent subagents without iterative critique."
+        "text": "Delegate each clause to an independent worker and synthesize their risk labels, emphasizing parallel coverage instead of revising a combined draft."
       },
       {
         "id": "b",
-        "text": "Implement a prompt chaining workflow that executes a fixed linear sequence of extraction steps, passing intermediate outputs forward without an evaluation feedback loop."
+        "text": "Use a fixed extraction-then-summary chain with a format gate, concentrating on clearer intermediate representations before producing the final assessment."
       },
       {
         "id": "c",
-        "text": "Implement a voting parallelization workflow where five identical model instances assess the contract and a simple majority vote decides risk validity."
+        "text": "Increase the number of independent complete assessments and retain majority selection, spending the extra call budget on more parallel candidates."
       },
       {
         "id": "d",
-        "text": "Implement an evaluator-optimizer workflow where an evaluator model checks drafts against explicit rubrics and provides structured critique in a loop."
+        "text": "Use a generator and rubric-based evaluator in a revision loop, testing a stopping policy against the agreed review deadline and quality target."
       }
     ],
-    "correct": [
-      "d"
-    ],
-    "explanation": "Anthropic's 'Building effective agents' highlights the evaluator-optimizer workflow as ideal when: 'we have clear evaluation criteria, and when iterative refinement provides measurable value.' Rather than bloating generator prompts with excessive few-shot examples, an evaluator LLM critiques the draft against explicit legal rubrics and returns actionable feedback to the generator model across bounded iterations.",
+    "correct": ["d"],
+    "explanation": "Anthropic identifies evaluator-optimizer as a fit when criteria are clear and iterative refinement demonstrably adds value. The pilot supplies both forms of evidence: useful feedback can be generated, and applying it improves drafts. A stopping policy is an application design choice needed to respect the stated deadline, not an automatic property of the pattern.",
     "distractorNotes": {
-      "a": "Orchestrator-workers dynamically decomposes and delegates subtasks, but does not provide iterative critique and refinement against explicit evaluation criteria.",
-      "b": "Prompt chaining executes fixed sequential steps, but lacks the feedback and revision loop necessary when outputs must be evaluated against rubrics.",
-      "c": "Voting parallelization compares independent parallel completions, but does not provide targeted critique and iterative revision against rubrics."
+      "a": "Parallel sectioning can improve coverage, but independent clause labels do not exploit the demonstrated feedback about interactions in a combined draft.",
+      "b": "Chaining and programmatic gates suit fixed subtasks, but a format gate does not provide the substantive legal critique shown to improve these assessments.",
+      "c": "Voting is a real confidence-building pattern, but the scenario's pilot found that majority selection did not correct this omission pattern."
     },
     "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
-    "sourceNote": "Building effective agents / Workflow: Evaluator-optimizer",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceNote": "Workflow: Evaluator-optimizer; Workflow: Parallelization; Workflow: Prompt chaining",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-p-stakeholder-communication-and-lifecycle-management-014",
@@ -527,37 +501,35 @@
     "domain": "stakeholder-communication-and-lifecycle-management",
     "difficulty": "hard",
     "status": "reviewed",
-    "stem": "A healthcare IT architect oversees a production clinical summary assistant that has operated successfully for six months. Following an update to hospital documentation guidelines, clinical stakeholders notice that summaries occasionally omit updated discharge protocols. What post-launch lifecycle practice should the architect establish to systematically manage system iteration?",
+    "stem": "A hospital changes its discharge-summary rules. Clinicians approve a new Claude prompt that handles the changed cases, but the historical regression suite rejects it because some expected answers encode the superseded rules. Unchanged medication-reconciliation cases still matter. At the lifecycle review, which evaluation plan distinguishes a real regression from an obsolete requirement?",
     "options": [
       {
         "id": "a",
-        "text": "Apply prompt patches directly to the production service configuration based on clinician incident tickets, monitoring live error telemetry in APM dashboards."
+        "text": "Keep the historical expected answers unchanged and block the release until the new prompt matches them, preserving comparability with earlier scores."
       },
       {
         "id": "b",
-        "text": "Fine-tune the base model using historical electronic health record transcripts to permanently encode the updated discharge protocols into model weights."
+        "text": "Replace the historical suite with clinician-approved discharge examples, using the current policy set as the complete definition of release readiness."
       },
       {
         "id": "c",
-        "text": "Update the golden evaluation test suite with new clinical requirements, validate prompt revisions against regression benchmarks, and monitor drift."
+        "text": "Revise expectations for superseded rules with clinicians, retain unchanged regression cases, and add the new cases before evaluating the candidate."
       },
       {
         "id": "d",
-        "text": "Deploy an automated prompt optimization loop that tunes prompt wording against new discharge guideline examples alone, bypassing baseline historical evaluations."
+        "text": "Combine old and new cases into one pass rate and release if the total improves, allowing gains on current discharge cases to offset historical failures."
       }
     ],
-    "correct": [
-      "c"
-    ],
-    "explanation": "Anthropic's lifecycle guidance emphasizes rigorous evaluation-driven iteration: when requirements change or drift is observed, architects should update test datasets with new golden examples, iteratively refine prompts against quantitative evaluation criteria, run regression tests to ensure existing capabilities do not degrade, and validate outputs before deploying updates to production.",
+    "correct": ["c"],
+    "explanation": "Anthropic recommends unambiguous tasks, expert-aligned graders, investigation of unexpected failures, and ongoing evaluation-suite maintenance. Regression suites protect capabilities that should still work; obsolete expectations should not penalize valid behavior under revised requirements. Updating the changed expectations while retaining unaffected cases tests both the new policy and the existing medication-reconciliation behavior.",
     "distractorNotes": {
-      "a": "Modifying production prompts without running offline evaluations against golden test suites risks regressions on previously validated edge cases.",
-      "b": "Fine-tuning base models is expensive, slow, and unsuited for adapting to updated clinical documentation guidelines, which should be handled via in-context prompt updates.",
-      "d": "Optimizing solely against newly introduced cases without evaluating against the full regression benchmark risks catastrophic degradation on existing clinical workflows."
+      "a": "Stable tests are useful when requirements remain stable; preserving superseded expectations misgrades the requested new behavior as a failure.",
+      "b": "Discarding the unaffected historical cases removes protection for medication reconciliation and other still-required behavior.",
+      "d": "A higher combined score can conceal a regression on an unchanged requirement and leaves contradictory expected answers unresolved."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
-    "sourceNote": "Define success criteria and build evaluations / Iterative testing and refinement",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+    "sourceNote": "Capability vs. regression evals; Steps 2, 5, 6 and 8: task clarity, graders, transcripts and maintenance",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-p-stakeholder-communication-and-lifecycle-management-015",
@@ -567,37 +539,35 @@
     "domain": "stakeholder-communication-and-lifecycle-management",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "During a discovery workshop for modernizing an enterprise core banking platform, finance and business stakeholders propose deploying an autonomous Claude agent to perform high-volume ledger math, tax calculations, and foreign exchange conversions across 10 million transactions daily. Stakeholders argue that Claude's reasoning capabilities will eliminate custom rules development. How should the architect steer this requirement during discovery according to Anthropic architectural principles?",
+    "stem": "During discovery for a banking modernization, stakeholders want Claude to coordinate ledger arithmetic across 10 million daily transactions. The existing calculation service already implements the required rules, and transaction types are known before processing. The actual unresolved work is interpreting free-text explanations for exceptional discrepancies. Which boundary should the architect recommend to add value without unnecessary model orchestration?",
     "options": [
       {
         "id": "a",
-        "text": "Approve the proposal on the condition that Claude Opus is selected for ledger calculation tasks to eliminate probabilistic rounding variations."
+        "text": "Use Claude to select the calculation tool for each transaction and keep arithmetic in the existing service, centralizing workflow decisions in the model."
       },
       {
         "id": "b",
-        "text": "Advise retaining traditional deterministic code or database rules for arithmetic, reserving Claude for unstructured tasks like exception analysis."
+        "text": "Keep the known calculation paths in application code and use Claude for unstructured exception analysis, where interpretation is still required."
       },
       {
         "id": "c",
-        "text": "Recommend deploying an orchestrator-workers workflow that routes each financial transaction through multiple parallel worker models to vote on totals."
+        "text": "Use an orchestrator to group transactions and delegate calculator-tool calls to worker agents, amortizing coordination across large processing batches."
       },
       {
         "id": "d",
-        "text": "Equip the agent with custom mathematical tool definitions that execute Python calculations in a sandboxed container for each of the 10 million daily transactions."
+        "text": "Keep calculation in the service but have Claude review each ordinary transaction before posting, applying the same review path as exceptional cases."
       }
     ],
-    "correct": [
-      "b"
-    ],
-    "explanation": "Anthropic's architectural guidance in 'Building effective agents' establishes the simplicity principle: 'When building applications with LLMs, we recommend finding the simplest solution possible, and only increasing complexity when needed... If the task is well-defined and deterministic, use traditional code.' Arithmetic, tax schedules, and ledger reconciliation are strictly deterministic mathematical problems where traditional code or SQL procedures execute in microseconds at near-zero cost with 100% precision. Using an LLM or autonomous agent introduces latency, severe token expense, and probabilistic hallucination risks without business benefit. Claude should be reserved for unstructured tasks such as summarizing discrepancies, classifying customer inquiries, or investigating audit logs.",
+    "correct": ["b"],
+    "explanation": "Anthropic's simplicity principle recommends increasing complexity when needed and considering whether agentic cost and latency buy useful task performance. In this scenario, code already selects and executes the known calculations; the unmet need is interpreting free text. Retaining that boundary avoids model coordination without a demonstrated benefit. This does not claim that ordinary software is inherently perfectly accurate or that tools are unsuitable for genuinely agentic tasks.",
     "distractorNotes": {
-      "a": "Larger frontier models are still probabilistic token predictors; they do not transform into deterministic arithmetic engines and would impose prohibitive latency and cost.",
-      "c": "Routing 10 million deterministic arithmetic transactions through voting parallel workflows multiplies token expense and latency without guaranteeing 100% mathematical accuracy.",
-      "d": "Invoking an LLM agent 10 million times daily just to call a Python arithmetic tool introduces immense latency, high API costs, and operational fragility when backend code can execute calculations directly without LLM orchestration."
+      "a": "Tool-backed arithmetic can be appropriate when a model needs to choose actions, but here the transaction type and calculation path are already known to application code.",
+      "c": "Grouping work may reduce coordination overhead, but it still introduces model-driven decomposition for a processing plan the application already knows.",
+      "d": "Reviewing ordinary transactions adds a model call to the successful path without evidence of a review gap there; the discovery findings locate the gap in exceptions."
     },
     "sourceUrl": "https://www.anthropic.com/engineering/building-effective-agents",
-    "sourceNote": "Building effective agents / When to use agents / Simplicity first",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceNote": "When (and when not) to use agents; Combining and customizing these patterns",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-p-stakeholder-communication-and-lifecycle-management-016",
@@ -607,37 +577,35 @@
     "domain": "stakeholder-communication-and-lifecycle-management",
     "difficulty": "hard",
     "status": "reviewed",
-    "stem": "During user acceptance testing for an automated medical claim code extraction pipeline, hospital compliance leaders mandate that the system must return identical, token-for-token extraction outputs across duplicate submissions before approving production release. When testing identical claims over 10 repeated calls, engineering observes slight syntactic variations in justification summaries and occasional differences in secondary diagnostic codes. How should the architect align stakeholder expectations and establish appropriate production release criteria?",
+    "stem": "A medical coding team has already implemented an application cache that returns the same saved result for an identical submission. Compliance clarifies that its remaining release requirement is reliable semantic correctness on previously unseen claims, not identical wording or duplicate replay. Each production claim gets one automatic extraction, and repeated uncached trials reveal occasional incorrect secondary codes. Which acceptance plan best addresses this requirement?",
     "options": [
       {
         "id": "a",
-        "text": "Guarantee token-for-token determinism by caching the output of the first inference call in Redis and returning it on subsequent queries with matching hashes."
+        "text": "Expand cache replay tests across duplicate submissions and score output identity, using stable replay as evidence that the extraction service is reliable."
       },
       {
         "id": "b",
-        "text": "Evaluate release readiness using pass@k metrics over 10 repeated trials, arguing that achieving a successful extraction on at least one attempt proves production readiness."
+        "text": "Run repeated uncached trials and score pass@k against approved codes, accepting claims that yield a correct extraction somewhere among the attempts."
       },
       {
         "id": "c",
-        "text": "Align stakeholders on statistical consistency over multiple trials using pass^k metrics, while routing high-variance edge cases to human adjudicators."
+        "text": "Grade uncached trials on representative held-out claims against approved codes, tracking first-attempt success and pass^k for consistent correctness."
       },
       {
         "id": "d",
-        "text": "Enforce temperature: 0.0 across production inference calls, assuring stakeholders that greedy decoding guarantees 100% token-for-token identical outputs across all runs."
+        "text": "Run repeated uncached trials and compare code agreement between outputs, using agreement across attempts as the release criterion without reference labels."
       }
     ],
-    "correct": [
-      "c"
-    ],
-    "explanation": "In 'Demystifying Evals for AI Agents', Anthropic addresses model non-determinism and production reliability. Generative language models are probabilistic systems; demanding 100% token-for-token identical outputs is an unrealistic expectation that mischaracterizes generative architecture. Instead, architects must educate stakeholders on statistical consistency: evaluating performance across multiple trials using pass^k (the probability of passing all k trials, measuring production consistency) rather than pass@k (passing at least once in k attempts). For mission-critical healthcare workflows, low-confidence extractions or runs exhibiting high variance across repeated checks should be automatically flagged and routed to human adjudicators.",
+    "correct": ["c"],
+    "explanation": "Anthropic distinguishes pass@k, at least one success in k attempts, from pass^k, success in all k trials, and recommends grading the intended outcome. First-attempt success matches the single-extraction production path; pass^k adds evidence about consistency across repeated trials. Approved semantic codes distinguish correctness from repeated wording or repeated mistakes. Output caching can satisfy identical-submission replay, but neither proves novel-input correctness nor makes the underlying inference deterministic.",
     "distractorNotes": {
-      "a": "Caching identical inputs in Redis returns previous answers for exact duplicate payload hashes, but does not address input variation or validate underlying model extraction reliability.",
-      "b": "In 'Demystifying Evals for AI Agents', Anthropic explains that pass@k measures whether the system can solve a problem at least once, which is insufficient for production reliability; mission-critical systems require pass^k (consistent success across all k trials).",
-      "d": "Due to floating-point non-associativity across GPU clusters and batching dynamics, temperature: 0.0 minimizes sampling variance but does not guarantee 100% bitwise token-for-token invariance across distributed production calls, nor does it resolve semantic ambiguity."
+      "a": "The cache legitimately solves duplicate replay, but the remaining requirement explicitly concerns unseen claims and the correctness of their initial extraction.",
+      "b": "A successful result somewhere among several attempts overstates readiness for a production process that performs one extraction and has no selection stage.",
+      "d": "Consistent agreement can repeat the same incorrect codes; without reference grading this measures self-consistency rather than the required correctness."
     },
     "sourceUrl": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
-    "sourceNote": "Demystifying Evals for AI Agents / Measuring agent non-determinism / pass^k vs pass@k",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceNote": "How to think about non-determinism; Steps 2, 4 and 5: reference solutions, isolated trials and graders",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-p-stakeholder-communication-and-lifecycle-management-017",
@@ -647,42 +615,39 @@
     "domain": "stakeholder-communication-and-lifecycle-management",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "An enterprise architect conducts an Operational Readiness Review (ORR) with the platform engineering team prior to deploying a Claude-powered IT support assistant to production. Which TWO operational implementation practices and architectural controls should the architect require to ensure production resilience and governance? (Select TWO.)",
+    "stem": "Before handing off an IT assistant, an architect reviews a Claude API organization with separate non-default development and production workspaces. Development has bursty load that competes with production under shared organization limits. Finance also wants a maximum monthly development budget. Which TWO controls directly address these different concerns without treating workspace limits as reserved capacity? (Select TWO.)",
     "options": [
       {
         "id": "a",
-        "text": "Configure client applications to invoke the Claude API directly using short-lived developer API keys to eliminate backend proxy hops and reduce round-trip latency."
+        "text": "Split development traffic across more workspaces under the same organization, giving the additional workspace identities independent organization allowances."
       },
       {
         "id": "b",
-        "text": "Configure dedicated workspace-level monthly spend limits and alert thresholds while scoping production API keys strictly to the production workspace."
+        "text": "Set a development workspace spend limit to cap its monthly expenditure, separately from controls on short-term requests and token throughput."
       },
       {
         "id": "c",
-        "text": "Deploy scheduled cron jobs that automatically revoke and regenerate production API keys weekly to reset organization token quotas and rate limits."
+        "text": "Raise the production workspace rate limit above the organization limit, reserving the difference for production during development traffic bursts."
       },
       {
         "id": "d",
-        "text": "Implement client-side exponential backoff with jitter that inspects retry-after headers when handling HTTP 429 and HTTP 529 API responses."
+        "text": "Set lower development workspace rate limits for the constrained throughput dimensions, while planning production within the shared organization ceiling."
       },
       {
         "id": "e",
-        "text": "Commit to a fixed per-request latency figure in the contract before any load testing against production traffic shapes has been run."
+        "text": "Use a development workspace monthly spend limit as the burst control, relying on its remaining budget to regulate per-minute token consumption."
       }
     ],
-    "correct": [
-      "b",
-      "d"
-    ],
-    "explanation": "Anthropic's operational governance and integration documentation outline critical production controls: (1) Workspaces allow organizations to isolate production credentials from development environments and enforce monthly spend limits with threshold alerts to prevent runaway costs (platform.claude.com/docs/en/manage-claude/workspaces.md). (2) Robust client architectures must handle operational errors (HTTP 429 rate limit exceeded, HTTP 529 overloaded) by implementing exponential backoff with randomized jitter and respecting retry-after response headers to prevent cascading failures (platform.claude.com/docs/en/api/errors.md). Storing API keys on front-ends compromises credentials and violates CORS rules for Zero Data Retention organizations. Rate limits are tracked at the organization/workspace level, so regenerating API keys does not reset token quotas.",
+    "correct": ["b", "d"],
+    "explanation": "The rate-limit documentation distinguishes monthly spend limits from request and token throughput limits. It recommends lower workspace limits to protect other workspaces from overuse, but states that organization-wide limits still apply and are maximums rather than guaranteed minimums. Thus development needs separate monthly-spend and short-term-throughput controls; neither creates a production capacity reservation.",
     "distractorNotes": {
-      "a": "Calling the Claude API directly from client applications compromises credentials and bypasses centralized governance, and CORS is unsupported for Zero Data Retention organizations.",
-      "c": "Rate limits and token bucket allowances are enforced at the Anthropic organization and workspace level, not per key; rotating keys does not reset rate limits.",
-      "e": "Publishing an SLA number ahead of measurement converts an unknown into a contractual obligation the team has no evidence it can meet."
+      "a": "Additional workspaces remain subject to the same organization-wide limits rather than gaining independent organization allowances.",
+      "c": "Workspace limits cannot bypass the organization ceiling, and a configured maximum is not reserved minimum throughput.",
+      "e": "A monthly spending ceiling addresses cumulative expenditure, not the per-minute burst that competes with production."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/manage-claude/workspaces",
-    "sourceNote": "Workspaces / API key scoping and spend limits",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://platform.claude.com/docs/en/api/rate-limits",
+    "sourceNote": "Types of limits; Setting lower limits for Workspaces; organization-wide limits remain applicable",
+    "sourceCheckedAt": "2026-09-25"
   },
   {
     "id": "ccar-p-stakeholder-communication-and-lifecycle-management-018",
@@ -692,36 +657,34 @@
     "domain": "stakeholder-communication-and-lifecycle-management",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "An architect oversees a production enterprise knowledge base assistant powered by Claude. Three months post-launch, business stakeholders report that while overall user satisfaction is 92%, users occasionally submit negative feedback via an in-app \"thumbs-down\" button for complex policy questions. How should the architect design the post-launch lifecycle feedback loop to systematically resolve these issues while preventing regressions?",
+    "stem": "An enterprise policy assistant has high aggregate satisfaction, but its negative-feedback queue mixes stale answers, valid answers users dislike, and genuine reasoning failures. Product wants quick fixes; operations wants protection for previously successful queries. Which feedback process should the architect hand off so these reports become useful release evidence?",
     "options": [
       {
         "id": "a",
-        "text": "Add targeted few-shot correction examples directly to the production prompt configuration upon receiving flagged issues, deploying updates immediately to minimize user friction."
+        "text": "Convert each negative rating into a failed evaluation case using the user's preferred answer, then optimize the prompt to improve the complaint-set score."
       },
       {
         "id": "b",
-        "text": "Fine-tune a custom model checkpoint on all historical customer chat sessions weekly to absorb recent enterprise policy documentation changes into weights."
+        "text": "Keep the regression suite unchanged and A/B test prompt edits on live satisfaction, using the aggregate user rating as the acceptance criterion for resolving complaints."
       },
       {
         "id": "c",
-        "text": "Implement an automated runtime retry loop that prompts Claude to self-evaluate and regenerate its response whenever a user submits a negative rating in the session."
+        "text": "Validate complaints with policy experts and assess fixes on those cases, retiring the earlier suite to keep the release signal focused on current feedback."
       },
       {
         "id": "d",
-        "text": "Curate flagged negative interactions into new evaluation test cases with expert-graded golden answers, validating prompt revisions against regression suites."
+        "text": "Triage transcripts with policy experts, turn verified failures into clear evaluation cases, and test revisions against both those cases and retained regressions."
       }
     ],
-    "correct": [
-      "d"
-    ],
-    "explanation": "Anthropic's guidance on evaluation and test-driven development ('Define success criteria and build evaluations') establishes the feedback loop flywheel for production lifecycle management: when users flag poor responses, teams should harvest those failure cases, have domain experts curate expected golden answers and grading rubrics, and incorporate them into the automated evaluation suite. Before deploying prompt or retrieval updates, candidate changes must be evaluated against both the new test cases and the existing regression test suite to ensure fixes do not degrade performance on previously working queries. Editing prompts directly in production without regression benchmarking inevitably causes regressions.",
+    "correct": ["d"],
+    "explanation": "Anthropic recommends converting user-reported failures into realistic evaluation tasks, making tasks and graders unambiguous, reading transcripts to distinguish real failures from grading problems, and maintaining regression coverage. Triage is essential because a negative rating is a signal to investigate, not a reference answer. Production feedback and A/B tests complement rather than replace pre-release evaluations.",
     "distractorNotes": {
-      "a": "Ad-hoc patching of production prompts without updating golden datasets and running comprehensive regression tests frequently introduces regressions on other queries.",
-      "b": "Fine-tuning base models is costly, slow, and risks catastrophic forgetting; adapting to changing knowledge base policies is best handled via in-context prompt and RAG updates.",
-      "c": "Thumbs-down ratings are typically submitted after the response has already been displayed to the user; triggering a conversational retry adds latency, token spend, and user friction without fixing root prompt defects."
+      "a": "A user's preferred answer may contradict policy; accepting it as ground truth can turn dissatisfaction with a correct answer into an incorrect evaluation target.",
+      "b": "Aggregate live satisfaction can hide rare policy failures, while an unchanged suite never acquires the newly verified failure cases.",
+      "c": "Expert validation improves the new cases, but discarding the earlier regression suite removes protection for previously successful behavior."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
-    "sourceNote": "Define success criteria and build evaluations / Build evaluations / Eval design principles",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+    "sourceNote": "Steps 1, 2, 6 and 8; How evals fit with other methods for a holistic understanding of agents",
+    "sourceCheckedAt": "2026-09-25"
   }
 ]
