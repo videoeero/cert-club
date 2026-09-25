@@ -24,21 +24,21 @@
       },
       {
         "id": "d",
-        "text": "In a directory-level .claude/config.json file referencing tokens stored in a plaintext git credential helper."
+        "text": "In the local scope entry for this project — the projects[\"<repo-path>\"].mcpServers block inside ~/.claude.json — using the same environment variable expansion for the token."
       }
     ],
     "correct": [
       "b"
     ],
-    "explanation": "Shared MCP servers should be declared in the project-level .mcp.json file, which is committed to version control so team members share the server definition. Sensitive credentials should be referenced via environment variable expansion (such as ${GITHUB_TOKEN}) so secrets remain out of the repository.",
+    "explanation": "Shared MCP servers should be declared in the project-level .mcp.json file, which is committed to version control so team members share the server definition. Sensitive credentials should be referenced via environment variable expansion (such as ${API_KEY}) so secrets remain out of the repository.",
     "distractorNotes": {
       "a": "The global ~/.claude.json file is user-specific and is not shared across teammates via version control.",
       "c": "CLAUDE.md supplies natural-language project context and is not parsed as a structured MCP server declaration, and hardcoding the token there still commits the secret to version control.",
-      "d": "Claude Code does not recognize .claude/config.json or git credential helpers for configuring MCP servers."
+      "d": "Local scope also lives in ~/.claude.json, keyed under the user's own project-path entry rather than the repository; it stays private to that machine and is never committed through the project's version control, so teammates would not receive the server definition."
     },
     "sourceUrl": "https://code.claude.com/docs/en/mcp.md",
     "sourceNote": "Configure MCP servers in project-scoped .mcp.json with environment variable expansion",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceCheckedAt": "2026-09-24"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-002",
@@ -49,37 +49,37 @@
     "subdomain": "tool-interface-design",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "An agent has access to two tools: get_customer ('Retrieves customer information') and lookup_order ('Retrieves order details'). Production logs show that when users ask 'Check status of order #98721', the agent frequently invokes get_customer instead of lookup_order. What is the most effective first step to resolve this issue?",
+    "stem": "A logistics support agent has two tools: track_shipment (description: 'Returns shipment information.') and get_carrier_account (description: 'Returns carrier information.'). Each takes a single string parameter named id. Logs show that when users paste a tracking number and ask where their parcel is, Claude often calls get_carrier_account. What should the team change first?",
     "options": [
       {
         "id": "a",
-        "text": "Add ten few-shot examples to the system prompt demonstrating correct parameter mapping from query patterns to lookup_order."
+        "text": "Add input_examples to both tools showing typical id values, tracking numbers for one and account numbers for the other, while keeping the one-line descriptions."
       },
       {
         "id": "b",
-        "text": "Implement a regex-based pre-routing middleware in front of Claude to parse customer intent and pre-select the tool deterministically."
+        "text": "Detect tracking-number patterns in application code and set tool_choice to {'type': 'tool', 'name': 'track_shipment'} on those requests."
       },
       {
         "id": "c",
-        "text": "Expand tool descriptions to include expected input formats, example queries, edge cases, and explicit boundaries distinguishing their uses."
+        "text": "Rewrite each description to say what the tool returns, when to use it and when not to, which id formats it accepts, and how it differs from the other."
       },
       {
         "id": "d",
-        "text": "Combine both tools into a single query_database tool that accepts arbitrary SQL strings and handles routing internally in backend code logic."
+        "text": "Rename the tools with a shared service prefix, such as carrier_track_shipment and carrier_get_account, so the names are namespaced by provider."
       }
     ],
     "correct": [
       "c"
     ],
-    "explanation": "Tool descriptions are the primary semantic mechanism models use to select the appropriate tool. Minimal descriptions lack the distinguishing boundaries needed when multiple tools operate on related entities. Expanding the descriptions to specify exact parameter formats, concrete query examples, and explicit instructions on when to choose one tool over another resolves selection ambiguity with minimal overhead.",
+    "explanation": "The tool-definition guidance calls detailed descriptions \"by far the most important factor in tool performance\": a description should explain what the tool does, when it should and shouldn't be used, what each parameter means, and its caveats. Two one-line descriptions over identically named id parameters give Claude nothing that separates a tracking number from an account number, so the descriptions are the first thing to fix.",
     "distractorNotes": {
-      "a": "Few-shot examples inflate prompt token consumption and increase latency without resolving the root cause in the tool definitions.",
-      "b": "Regex pre-routing is fragile, complex to maintain, and bypasses natural language intent understanding.",
-      "d": "Exposing raw SQL tools introduces severe security injection risks and eliminates structured parameter validation."
+      "a": "input_examples are recommended for complex, nested or format-sensitive inputs, but the guidance is to prioritize clear descriptions; example id values alone still do not tell Claude when each tool applies and when it does not.",
+      "b": "Forcing a tool from application-side pattern matching replaces Claude's selection instead of fixing what it selects from, and any request the pattern misses still reaches the same two ambiguous descriptions.",
+      "d": "Service prefixes make selection unambiguous when tools span multiple services or resources; both tools here belong to the same carrier service, so a shared prefix adds nothing that tells them apart."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools.md",
-    "sourceNote": "Expanding tool descriptions with input formats, examples, and boundaries for reliable selection",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceNote": "Best practices for tool definitions - extremely detailed descriptions are the most important factor in tool selection",
+    "sourceCheckedAt": "2026-09-24"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-003",
@@ -153,15 +153,15 @@
     "correct": [
       "a"
     ],
-    "explanation": "Monolithic tools with complex conditional parameters create immense cognitive complexity and schema ambiguity. Splitting the generic tool into distinct, single-purpose tools (e.g. `create_record`, `read_record`, `archive_record`) with focused, strongly typed schemas allows Claude to evaluate exact parameters without confusing irrelevant fields.",
+    "explanation": "The exam guide lists splitting generic tools into purpose-specific tools with defined input/output contracts as a tool-interface design skill. Replacing the twelve-action manage_data tool with focused tools (e.g. `create_record`, `read_record`, `archive_record`), each declaring only its own parameters, removes the irrelevant fields Claude was mixing across operations.",
     "distractorNotes": {
-      "b": "While JSON Schema supports conditional constructs like oneOf, deeply nested schemas significantly increase model cognitive complexity and error rates compared to discrete, focused tools.",
+      "b": "The Claude API doesn't accept oneOf at the schema root; Claude Code flattens such a schema and describes each branch's required parameters in the tool description instead of enforcing them, so the parameter-combination confusion remains.",
       "c": "Few-shot prompting increases prompt token consumption and latency without resolving the underlying schema ambiguity of a 30-parameter monolithic tool.",
       "d": "Client-side error retry loops are reactive, add latency, and waste tokens attempting to recover from failures that proper tool decomposition prevents deterministically."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools.md",
-    "sourceNote": "Splitting monolithic tools into focused, single-purpose tools with tight schemas",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
+    "sourceNote": "Exam guide Task Statement 2.1 - splitting generic tools into purpose-specific tools with defined input/output contracts",
+    "sourceCheckedAt": "2026-09-24"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-005",
@@ -176,7 +176,7 @@
     "options": [
       {
         "id": "a",
-        "text": "Tool selection is resolved purely by lexical similarity between the user's wording and each tool's registered name, so the wording of the system prompt has no bearing on which tool Claude picks."
+        "text": "Because the API places the user system prompt after the tool definitions, Claude reads the directive as lower-priority context and falls back to whichever tool appears last in the tools array."
       },
       {
         "id": "b",
@@ -188,21 +188,21 @@
       },
       {
         "id": "d",
-        "text": "The Messages API prioritizes alphabetically earlier tool names when resolving ambiguous user requests against the tool definitions."
+        "text": "Tool descriptions alone determine selection, with no influence from system prompt wording, so a sufficiently detailed lookup_customer description should already have overridden the generic 'search' phrasing regardless of what the system prompt says."
       }
     ],
     "correct": [
       "b"
     ],
-    "explanation": "Directives in the system prompt strongly influence model behavior. Using generic terms like 'search' when an actual tool named 'web_search' exists creates a semantic bias where Claude prioritizes the literal keyword match over a specialized tool like 'lookup_customer'. System prompts should reference specific tool names or use precise domain terminology.",
+    "explanation": "The exam guide notes that keyword-sensitive instructions in a system prompt can create unintended tool associations that override well-written tool descriptions. 'Always use search to find user details' ties user lookups to the web search tool by keyword, so the fix is to review and reword the system prompt rather than the tool definitions.",
     "distractorNotes": {
-      "a": "Tool selection weighs the combined semantics of the system prompt, the tool descriptions, and the query — it is not name-only lexical matching, and here the system prompt directive is exactly what biased the choice.",
+      "a": "The constructed prompt does place tool definitions before the user system prompt, but that ordering does not demote the system prompt or create a positional fallback; here the system prompt directive is exactly what biased the choice.",
       "c": "Claude does not automatically favor the 'broader' tool; with clear descriptions it selects the specialized one. The regression here comes from the generic 'search' directive in the system prompt, not from capability breadth.",
-      "d": "Tool selection is based on semantic relevance and schema matching, not alphabetical ordering."
+      "d": "Tool descriptions are weighed together with the system prompt and the query, not in isolation; a well-written lookup_customer description does not insulate it from being overridden by a competing, tool-name-matching directive elsewhere in the prompt — which is exactly the failure in this scenario."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools.md",
-    "sourceNote": "Harmonizing system prompt phrasing with tool definitions to avoid unintended keyword bias",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
+    "sourceNote": "Exam guide Task Statement 2.1 - keyword-sensitive system prompt instructions can create unintended tool associations",
+    "sourceCheckedAt": "2026-09-24"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-006",
@@ -235,15 +235,15 @@
     "correct": [
       "c"
     ],
-    "explanation": "In MCP, tool execution failures should be communicated by returning a result object with `isError: true` and descriptive content. Providing structured error context (such as error category, whether the error is transient/retryable, and details) enables Claude to reason about appropriate recovery strategies rather than crashing or guessing.",
+    "explanation": "A database timeout is a transient tool failure, which the MCP isError flag pattern communicates back to the agent as a tool result with `isError: true`. Including structured error metadata, such as an error category (transient/validation/permission), an isRetryable flag and a human-readable description, lets the agent make an appropriate recovery decision instead of guessing.",
     "distractorNotes": {
-      "a": "In the Model Context Protocol, protocol-level JSON-RPC errors are reserved for transport or framing failures (such as invalid JSON or unknown methods); tool execution failures must be returned as a standard CallToolResult with isError: true so the LLM can inspect and handle the error.",
+      "a": "The MCP specification reserves protocol errors (standard JSON-RPC errors) for issues with the request itself, such as an unknown tool, malformed requests or server errors, which models are less likely to fix. A backend API failure such as a database timeout is a tool execution error, reported in the tool result with isError: true.",
       "b": "Masking failures as successful empty responses misleads the agent into believing data does not exist.",
       "d": "Returning error messages with isError: false misinforms the client framework that the tool invocation succeeded, preventing automated error handling and recovery workflows."
     },
-    "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28/server/tools.md",
-    "sourceNote": "Returning structured error responses with isError: true and recovery metadata in MCP tools",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
+    "sourceNote": "Exam guide Task Statement 2.2 - the MCP isError flag pattern with structured error metadata (errorCategory, isRetryable)",
+    "sourceCheckedAt": "2026-09-24"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-007",
@@ -276,15 +276,15 @@
     "correct": [
       "d"
     ],
-    "explanation": "Business rule violations (like expired return windows) are permanent, non-retryable errors. Returning structured error metadata with `isRetryable: false` and an explicit policy explanation informs Claude that further retries will not succeed, allowing it to explain the policy clearly to the customer or offer human escalation.",
+    "explanation": "An expired return window is a business rule violation, not a transient failure, so retrying cannot succeed. The exam guide describes returning structured metadata that marks the error as non-retryable together with a customer-friendly explanation, which prevents wasted retry attempts and lets the agent explain the policy to the customer.",
     "distractorNotes": {
-      "a": "Generic failure messages cause the model to assume a transient glitch and waste tokens on futile retries.",
+      "a": "A uniform 'Request Failed' response hides whether the failure is transient or permanent, so the agent cannot make an appropriate recovery decision and may keep retrying.",
       "b": "Marking a permanent policy violation as retryable makes the agent waste tokens on retries that can never succeed before finally failing without a clear explanation for the customer.",
       "c": "Returning isError: false for a failed business rule violation misinforms the agent that the operation succeeded and forces unreliable probabilistic inference from missing fields."
     },
-    "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28/server/tools.md",
-    "sourceNote": "Using isRetryable: false in tool error payloads to halt futile retry loops",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
+    "sourceNote": "Exam guide Task Statement 2.2 - non-retryable flags and customer-friendly explanations for business rule violations",
+    "sourceCheckedAt": "2026-09-24"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-008",
@@ -317,15 +317,15 @@
     "correct": [
       "a"
     ],
-    "explanation": "Local error recovery handles transient, self-contained issues (like a brief network glitch) within the subagent via localized retries. If recovery fails, propagating structured error context (what failed, attempted queries, partial results) back to the coordinator allows the coordinator to decide high-level recovery (e.g. trying an alternative provider or proceeding with partial results).",
+    "explanation": "Transient failures such as a brief network timeout are handled by local recovery inside the subagent. Only errors that cannot be resolved locally are propagated to the coordinator, together with partial results and what was attempted, so the coordinator can decide the higher-level recovery (e.g. trying an alternative source or proceeding with partial results).",
     "distractorNotes": {
       "b": "Centralizing all retries forces a cross-agent round trip for glitches the subagent could resolve itself, adding latency; transient, self-contained failures should be retried locally before escalating.",
       "c": "Silently returning stale unverified cached data masks operational failures from the coordinator and risks propagating inaccurate or obsolete facts into synthesis.",
       "d": "Re-invoking the whole subagent throws away partial progress and structured failure context and treats every failure as retryable; recovery should begin locally and propagate structured context upward."
     },
-    "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
-    "sourceNote": "Partitioning local subagent error recovery versus coordinator escalation",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
+    "sourceNote": "Exam guide Task Statement 2.2 - local error recovery in subagents, propagating unresolved errors with partial results",
+    "sourceCheckedAt": "2026-09-24"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-009",
@@ -348,7 +348,7 @@
       },
       {
         "id": "c",
-        "text": "Return an empty tool result omitting the content block entirely, allowing the client framework to handle missing data through default null values."
+        "text": "Return isError: false paired with an HTTP-style 204 No Content response and no body, since the query executed successfully with no rows."
       },
       {
         "id": "d",
@@ -358,15 +358,15 @@
     "correct": [
       "b"
     ],
-    "explanation": "A valid search that yields zero matches is a successful query with an empty result set, not an operational failure. Returning `isError: false` with an empty array or clear status allows Claude to recognize that the user does not exist and formulate an appropriate response, rather than treating the result as an infrastructure crash.",
+    "explanation": "A search that runs successfully and matches nothing is a valid empty result, not an access failure. The exam guide separates the two because only access failures need retry decisions; returning `isError: false` with an empty list or clear status lets Claude conclude the user does not exist instead of treating the result as a failure to retry.",
     "distractorNotes": {
-      "a": "A search that successfully finds zero matches is not an error; setting isError: true misleads Claude into treating a valid non-existent user query as an operational failure requiring retry or debugging.",
-      "c": "Omitting the content block violates MCP tool result schemas and causes client deserialization failures instead of cleanly conveying empty results.",
+      "a": "A search that successfully finds zero matches is a valid empty result, not an access failure; setting isError: true pushes Claude into retry or debugging decisions for a query that already succeeded.",
+      "c": "MCP tool results are JSON-RPC responses with structured content blocks, not HTTP responses; there is no analogous '204 No Content' status, and an empty body still leaves the model without a content block stating that the search matched zero rows.",
       "d": "The parameters passed were syntactically and semantically valid; returning an invalid-params protocol error misrepresents a successful database query as a client formatting defect."
     },
-    "sourceUrl": "https://modelcontextprotocol.io/specification/2026-07-28/server/tools.md",
-    "sourceNote": "Distinguishing successful empty query results from operational tool execution errors",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
+    "sourceNote": "Exam guide Task Statement 2.2 - distinguishing access failures from valid empty results",
+    "sourceCheckedAt": "2026-09-24"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-010",
@@ -393,21 +393,21 @@
       },
       {
         "id": "d",
-        "text": "The Messages API evaluates tool schemas in sequential array order, causing tools defined near the end of large registries to be systematically bypassed."
+        "text": "The larger combined schema size triggers Claude Code's context-management auto-compaction mid-session, which discards earlier tool-call examples and drives the accuracy drop."
       }
     ],
     "correct": [
       "c"
     ],
-    "explanation": "Providing an excessive number of tools to a single agent increases cognitive complexity, expands prompt context with tool schemas, and introduces semantic overlap between similar operations. Restricting agents to a focused set of 4-6 tools aligned with their specific role dramatically improves selection accuracy.",
+    "explanation": "Giving an agent too many tools degrades selection reliability by increasing decision complexity and the semantic overlap among similar operations; the cited guidance is that fewer tools reduce selection ambiguity, so restricting each agent to the tools its role needs restores accuracy.",
     "distractorNotes": {
       "a": "The API validates each tool call against that tool's own schema independently; overlapping field names across different tools do not cause rejections. The degradation is selection difficulty, not schema validation failures.",
       "b": "Twenty-five tool schemas do not exhaust the context window; accuracy falls because of decision complexity and semantic overlap among similar tools, not because conversational context was crowded out.",
-      "d": "Tool selection evaluates the entire tool catalog simultaneously using semantic relevance; tool definitions are not evaluated in a sequential or short-circuiting array order."
+      "d": "Auto-compaction discards earlier conversation turns under context pressure over a long session; it is a multi-turn state-management mechanism, not a cause of degraded tool-selection accuracy on individual calls, and the drop comes from selection ambiguity among overlapping tools, not to context truncation."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools.md",
     "sourceNote": "Cognitive complexity and selection degradation from tool over-provisioning",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceCheckedAt": "2026-09-24"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-011",
@@ -459,37 +459,37 @@
     "subdomain": "tool-distribution",
     "difficulty": "hard",
     "status": "reviewed",
-    "stem": "During report drafting, a synthesis agent needs to perform quick verification of isolated facts (e.g. verifying a founding date). Routing every verification back through the coordinator to the search agent adds 2-3 round trips and 40% latency. What is the optimal architecture?",
+    "stem": "In a support system, a reply-drafting subagent often needs an order's current status while writing a response. Each check now goes back to the coordinator, which invokes an investigation subagent that holds the warehouse, carrier and payment tools. Most checks are a single order's status; a few need records correlated across all three systems. What should the architect change?",
     "options": [
       {
         "id": "a",
-        "text": "Give the synthesis agent a narrowly scoped `verify_fact` tool for simple lookups, leaving multi-source work to the coordinator."
+        "text": "Give the drafting subagent the investigation subagent's warehouse, carrier and payment tools, so it can settle each check itself without returning to the coordinator."
       },
       {
         "id": "b",
-        "text": "Give the synthesis agent full access to all external search and browser scraping tools so it can resolve any ambiguity independently."
+        "text": "Let the drafting subagent spawn the investigation subagent directly as a nested subagent for each check, removing the coordinator hop from the path."
       },
       {
         "id": "c",
-        "text": "Have the synthesis agent cache the coordinator's earlier search results and reuse them for verification rather than adding a dedicated tool."
+        "text": "Give the drafting subagent a narrowly scoped, read-only get_order_status tool for single-order checks, and keep routing cross-system cases through the coordinator."
       },
       {
         "id": "d",
-        "text": "Configure the coordinator to run an asynchronous background subagent that issues speculative web searches for every proper noun in the outline."
+        "text": "Have the drafting subagent collect its status checks and return them to the coordinator as one batch after finishing the draft, cutting the trips to one."
       }
     ],
     "correct": [
-      "a"
+      "c"
     ],
-    "explanation": "Providing a scoped, dedicated tool (`verify_fact`) for high-frequency, simple lookups addresses the common case with low latency, while preserving the coordinator pattern for complex, multi-source investigation without over-provisioning the agent with broad exploratory tools.",
+    "explanation": "The exam guide's tool-distribution guidance is to give each agent only the tools its role needs, plus limited cross-role tools for specific high-frequency needs, while complex cases are still routed through the coordinator. A single-order status tool covers the frequent simple check without a round trip, and the rare cross-system investigation keeps its existing path.",
     "distractorNotes": {
-      "b": "Granting full search and browser tools to synthesis violates separation of concerns and leads to role drift.",
-      "c": "Cached prior results are stale and incomplete for the isolated new facts that surface during drafting; a scoped verify_fact tool answers fresh lookups without a coordinator round trip.",
-      "d": "Speculative background queries for every proper noun create massive token waste, rate limit exhaustion, and context bloat without knowing which specific facts need verification."
+      "a": "Handing the drafting subagent the investigator's full toolset over-provisions it; agents given tools outside their specialization tend to misuse them, and the rare cross-system case no longer goes through the coordinator.",
+      "b": "Nesting the investigation subagent removes one hop but still runs a full multi-system investigation for a simple status lookup, and moves orchestration out of the coordinator.",
+      "d": "The draft depends on the statuses it checks, so deferring every check until the draft is finished forces a rewrite once the results return instead of removing the delay."
     },
-    "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
-    "sourceNote": "Providing scoped helper tools for frequent minor verifications without role bloat",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
+    "sourceNote": "Exam guide Task Statement 2.3 - scoped cross-role tools for high-frequency needs, complex cases routed through the coordinator",
+    "sourceCheckedAt": "2026-09-24"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-013",
@@ -504,7 +504,7 @@
     "options": [
       {
         "id": "a",
-        "text": "Set tool_choice: 'auto' and assume the model reads the tool list sequentially from top to bottom in the declared array order."
+        "text": "Add input_examples to the extract_metadata tool definition demonstrating the desired call sequence, since Claude treats those examples as an enforceable execution order across turns."
       },
       {
         "id": "b",
@@ -524,13 +524,13 @@
     ],
     "explanation": "The Messages API supports forced tool selection via `tool_choice: {'type': 'tool', 'name': 'tool_name'}`. This forces Claude to generate a call to the specified tool on that turn, guaranteeing that `extract_metadata` executes before subsequent turns allow other tools.",
     "distractorNotes": {
-      "a": "tool_choice: 'auto' allows the model to choose whether and which tool to call; it does not guarantee execution order.",
+      "a": "input_examples are schema-valid example arguments that help Claude format a single tool's inputs correctly; they carry no cross-tool sequencing semantics and do not constrain which tool is called on which turn — only tool_choice: {'type': 'tool', ...} does that.",
       "c": "System prompt directives are probabilistic; while they guide model reasoning, they do not guarantee deterministic tool selection or execution order like the tool_choice parameter does.",
       "d": "tool_choice: 'any' forces the model to call some tool but lets it pick which one; it does not pin the first call to extract_metadata specifically."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools.md",
     "sourceNote": "Forcing specific tool invocation using tool_choice parameter",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceCheckedAt": "2026-09-24"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-014",
@@ -540,7 +540,7 @@
     "domain": "tool-design-and-mcp-integration",
     "subdomain": "tool-choice-configuration",
     "difficulty": "medium",
-    "status": "reviewed",
+    "status": "draft",
     "stem": "A system provides three specialized extraction tools (extract_invoice, extract_receipt, extract_contract). The input document type is unknown in advance, but the application requires that Claude MUST execute one of the tools rather than returning conversational text. Which setting guarantees this?",
     "options": [
       {
@@ -604,7 +604,7 @@
     "correct": [
       "d"
     ],
-    "explanation": "Claude Code supports a multi-tier MCP configuration hierarchy. Project-scoped servers committed to version control live in `.mcp.json`, while user-scoped personal servers reside in `~/.claude.json`. Claude Code loads and exposes tools from all configured scopes simultaneously at startup.",
+    "explanation": "Claude Code supports a multi-tier MCP configuration hierarchy. Project-scoped servers committed to version control live in `.mcp.json`, while user-scoped personal servers reside in `~/.claude.json`. Claude Code loads servers from all configured scopes together, so the personal server is available alongside the project's .mcp.json servers.",
     "distractorNotes": {
       "a": "Git index manipulation is brittle and easily overwritten by team merges, branch checkouts, or clean clones.",
       "b": "CLAUDE.md provides natural language instructions, not structured JSON MCP server configurations.",
@@ -668,7 +668,7 @@
     "options": [
       {
         "id": "a",
-        "text": "The Jira MCP server is installed in user scope (~/.claude.json), which Claude Code deprioritizes behind system commands unless explicitly invoked."
+        "text": "The Jira tool is withheld from Claude until the user references it with an @ mention, because Claude Code exposes MCP capabilities only when they are attached explicitly, as it does with MCP resources."
       },
       {
         "id": "b",
@@ -688,13 +688,13 @@
     ],
     "explanation": "When an MCP tool has an impoverished or generic description (e.g. 'Jira operations'), the model cannot discern its utility and falls back on built-in tools like Grep and Bash whose capabilities and outputs are well understood. Writing rich, descriptive tool documentation solves this preference bias.",
     "distractorNotes": {
-      "a": "MCP scope precedence governs configuration overrides when server names collide; it does not deprioritize user-scoped tools behind built-in tools.",
+      "a": "@ mentions attach MCP resources; MCP tools are discovered by Claude itself (via tool search by default) without any user reference. The cause here is the impoverished description.",
       "c": "Claude selects tools based on description relevance and capability matching before evaluating parameter schemas; schema complexity does not cause silent fallback to Grep and Bash.",
       "d": "Claude Code does not restrict stdio MCP tools based on query keyword matches against local repository files."
     },
     "sourceUrl": "https://code.claude.com/docs/en/mcp.md",
     "sourceNote": "Crafting rich MCP tool descriptions to prevent fallback to generic built-in tools",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceCheckedAt": "2026-09-24"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-018",
@@ -727,15 +727,15 @@
     "correct": [
       "c"
     ],
-    "explanation": "The Edit tool requires a unique string match to ensure targeted replacements. When the target content occurs multiple times and cannot be uniquely anchored, the documented fallback is to use Read to obtain the full file context, apply the modifications in memory, and use Write to save the updated file safely.",
+    "explanation": "The Edit tool requires a unique string match to ensure targeted replacements. When the target content occurs multiple times and cannot be uniquely anchored, the exam guide's fallback is to use Read to obtain the full file context, apply the modifications in memory, and use Write to save the updated file safely.",
     "distractorNotes": {
-      "a": "Invoking sed via Bash is fragile, platform-dependent, and bypasses Claude Code's safe file editing lifecycle; the documented fallback uses Read and Write.",
-      "b": "Enabling allowMultiple across non-unique chunks will unintentionally alter unrelated sections of code.",
+      "a": "Invoking sed via Bash is fragile, platform-dependent, and bypasses Claude Code's safe file editing lifecycle; the exam guide's fallback uses Read and Write.",
+      "b": "The Edit parameter is replace_all, not allowMultiple, and replacing every occurrence changes all matches rather than the single intended one.",
       "d": "The Edit tool does not support a force: true flag to override uniqueness checks."
     },
-    "sourceUrl": "https://code.claude.com/docs/en/overview.md",
-    "sourceNote": "Fallback to Read and Write when Edit fails on non-unique string matches",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
+    "sourceNote": "Exam guide Task Statement 2.5 - Read + Write as the fallback when Edit cannot find unique anchor text",
+    "sourceCheckedAt": "2026-09-24"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-019",
@@ -773,7 +773,7 @@
       "b",
       "d"
     ],
-    "explanation": "According to the Model Context Protocol (MCP) specification, MCP primitives have distinct control and operational models: Resources are application-controlled, read-only data sources addressed by fixed URIs or URI templates that the client retrieves to attach context to the model turn without model execution. Tools are model-controlled executable interfaces defined by JSON Schema that the LLM autonomously discovers and calls to perform queries or state-changing actions. Prompts are user-controlled, parameterized templates requiring explicit user invocation.",
+    "explanation": "According to the MCP server concepts documentation, MCP primitives have distinct control and operational models: Resources are application-controlled, read-only data sources addressed by fixed URIs or URI templates that the client retrieves to attach context to the model turn without model execution. Tools are model-controlled executable interfaces defined by JSON Schema that the LLM autonomously discovers and calls to perform queries or state-changing actions. Prompts are user-controlled, parameterized templates requiring explicit user invocation.",
     "distractorNotes": {
       "a": "Prompts are user-controlled templates requiring explicit invocation (such as via slash commands or UI palettes); they do not act as background event listeners or automatic triggers.",
       "c": "Resources are passive, read-only data endpoints controlled by the application; active execution and state modifications must be implemented as Tools.",
@@ -812,7 +812,7 @@
       },
       {
         "id": "e",
-        "text": "Project-scoped .mcp.json servers execute with unrestricted automated permissions and bypass interactive approval prompts in untrusted project repositories."
+        "text": "Project-scoped .mcp.json servers connect without an approval prompt when the repository's own committed .claude/settings.json sets enableAllProjectMcpServers, even in a folder the developer has not yet trusted."
       }
     ],
     "correct": [
@@ -823,7 +823,7 @@
     "distractorNotes": {
       "b": "Claude Code selects the entire server definition from the highest-precedence source; configurations and environment variables are never deep-merged across scopes.",
       "d": "The precedence hierarchy is local > project > user, so project-scoped configurations override user-scoped definitions, not the reverse.",
-      "e": "For security against untrusted repositories, Claude Code prompts for interactive user approval before connecting project-scoped servers declared in .mcp.json."
+      "e": "A cloned repository can't approve its own servers: enableAllProjectMcpServers committed to the project's .claude/settings.json is ignored in an untrusted folder, and the server stays at Pending approval."
     },
     "sourceUrl": "https://code.claude.com/docs/en/mcp.md",
     "sourceNote": "Scope hierarchy, precedence, and field isolation across local, project, and user scopes",

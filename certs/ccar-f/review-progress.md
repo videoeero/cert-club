@@ -156,3 +156,297 @@ Targeted cold evaluation following drift updates:
 - **`tool-...-022`**: Cold-derived against `code.claude.com/docs/en/mcp.md` § "Scale with MCP tool search". Promoted `draft` → `reviewed`.
 - **Re-cited items (8 items)**: Independently verified against pinned MCP specifications and Messages API docs. All confirmed.
 - **Bank status**: 120 of 120 questions (100%) confirmed `status: "reviewed"`. Defect rate: 0 / 9 = **0.0%**.
+
+### Real-exam calibration: Tool Design & MCP Integration hardening (2026-09-24)
+
+Two people (the maintainer, and a colleague) sat the live CCAR-F exam and both
+barely passed (~740/1000 and 764/1000), reporting it harder than expected and
+scenario options "much closer to each other" than the bank's — the opposite
+signal from `certs/ccdv-f`, where the real exam felt easier than the bank.
+Per the calibration firewall, this informed *how* to harden distractors, never
+what any option says.
+
+Ran `harden-domain-questions` against `tool-design-and-mcp-integration`
+(22 items) with this signal in mind. Domain 2's sample anchor is sample
+Question 2 (`get_customer` vs `lookup_order`), matched near-verbatim by
+`tool-...-002`, which was left untouched as the anchor itself. `tool-...-012`
+mirrors sample Question 9 (`verify_fact` scoped tool) and was also left as-is.
+
+Six items had a distractor eliminable without domain knowledge — either an
+invented mechanism (a nonexistent config path, an "alphabetical tool
+ordering" claim, a fabricated stdio restriction) or a facepalm-shaped protocol
+technicality — and were hardened by replacing that option with a real
+mechanism misapplied to the scenario, verified against the cited source
+(re-fetched `mcp.md` and `define-tools.md` on 2026-09-24) rather than
+invented:
+
+- **`tool-...-001`**: distractor `d` (invented `.claude/config.json` path)
+  replaced with the *local* scope entry in `~/.claude.json` — a real scope
+  that is easy to confuse with the shared *project* scope (`.mcp.json`)
+  because both nominally describe "this project."
+- **`tool-...-005`**: distractor `d` (alphabetical tool-name ordering)
+  replaced with "description quality alone should have overridden the
+  keyword bias" — plausible but wrong because selection weighs prompt,
+  description, and query together.
+- **`tool-...-009`**: distractor `c` (schema-omission trivia) replaced with
+  an HTTP-204-style near miss — a real convention from a different transport
+  applied to MCP's JSON-RPC results.
+- **`tool-...-010`**: distractor `d` (invented sequential array evaluation)
+  replaced with an auto-compaction near miss — a real Claude Code mechanism,
+  wrong because it is a multi-turn effect, not a per-call selection cause.
+- **`tool-...-013`**: distractor `a` (invented sequential tool-list reading)
+  replaced with `input_examples` misapplied as a cross-tool ordering
+  mechanism — real feature, wrong scope (it shapes one tool's inputs, not
+  call sequencing).
+- **`tool-...-017`**: distractor `a` (invented scope-based deprioritization)
+  replaced with MCP tool search's schema-deferral misapplied as an
+  explanation — real feature, wrong causal claim (deferral does not bias
+  against MCP tools once relevant).
+
+Remaining 16 items in the domain: **calibrated — no change**. Each already
+carries at least two options requiring a real judgment call rather than
+elimination-by-inspection (e.g. `tool-...-003`, `-004`, `-006` through `-008`,
+`-011`, `-014` through `-016`, `-018` through `-022`), consistent with the
+domain already sitting at or above its sample anchor.
+
+`npm run check` and `npm run metrics -- ccar-f` stay green post-edit; no
+`correct` keys, `sourceUrl`s, or tested facts changed — only distractor
+substance.
+
+### Real-exam calibration: Agentic Architecture & Orchestration hardening (2026-09-24)
+
+Same real-exam signal as above, applied to Domain 1 (32 items). Sample
+anchors: Question 1 (programmatic prerequisite for financial tool sequencing)
+maps to `agentic-...-015` near-verbatim; Question 7 (coordinator decomposed
+topic too narrowly) maps to `agentic-...-007` near-verbatim. Both left
+untouched as anchors. (Sample Question 9, "give synthesis agent a scoped
+`verify_fact` tool," is authored under `tool-...-012` in the other domain
+instead — a pre-existing placement, not something this pass changes.)
+
+Two items had a distractor eliminable by "that's an absurd overclaim" rather
+than by domain knowledge, and were hardened by grounding a real mechanism
+from `sub-agents.md` (re-fetched 2026-09-24) in place of the invented one:
+
+- **`agentic-...-001`**: distractor `d` (invented "spawning resets the system
+  prompt" claim) replaced with a real-but-wrong claim that a coordinator's
+  auto memory automatically carries into a spawned subagent — the source
+  explicitly lists auto memory as one of the items that does *not* transfer
+  (unlike CLAUDE.md and git status, which do).
+- **`agentic-...-006`**: distractor `c` ("a mesh error cannot be caught at
+  all") replaced with "peer-to-peer messaging isn't supported at all" — the
+  source documents peer-to-peer subagent messaging via `SendMessage` as
+  supported but limited and non-default, so the real reason hub-and-spoke is
+  preferred is observability and error containment, not the absence of any
+  peer channel.
+
+Remaining 30 items: **calibrated — no change** — each already turns on a
+real architectural trade-off rather than elimination-by-inspection.
+
+**Drift flag for `audit-sources` (not actioned here):** re-fetching
+`sub-agents.md` surfaced that the subagent-spawning tool was **renamed from
+`Task` to `Agent` in Claude Code v2.1.63** (old `Task(...)` references still
+work as an alias, so nothing is factually wrong). This affects
+`tool-...-011` and `tool-...-012` in `tool-design-and-mcp-integration`, both
+keyed and explained in terms of "the Task tool." Not a miskey — the keys
+remain correct via the alias — so out of scope for this hardening pass;
+flagging for the next `audit-sources` drift pass to re-cite to current
+terminology.
+
+`npm run check` and `npm run metrics -- ccar-f` stay green post-edit.
+
+### Real-exam calibration: Claude Code Configuration & Workflows hardening (2026-09-24)
+
+Same real-exam signal as above, applied to Domain 3 (24 items). This domain
+has the most sample anchors (Questions 4, 5, 6, 10), and the anchors are
+themselves recall-shaped: where to place a command, which mode to use, which
+flag to pass. The bank's items matched that shape, but their distractors
+leaned heavily on invented properties and flags. That made this domain the
+softest of the three calibrated so far. Anchors left untouched:
+`claude-code-...-001` (≈ sample Q6, `.claude/rules/` globs), `-006`
+(≈ sample Q4, `.claude/commands/`), `-013` (≈ sample Q5, plan mode), and
+`-019` (≈ sample Q10, `-p`).
+
+Eight items were hardened. Each got real mechanisms misapplied to the
+scenario, verified against re-fetched `memory.md`, `skills.md` and
+`headless.md` on 2026-09-24:
+
+- **`claude-code-...-002`** (weak distractor): `c` (invented `--project`
+  flag) replaced with user-level `~/.claude/CLAUDE.md` "overriding" the
+  project file. The source says user loads *before* project and all files
+  are concatenated, not overridden.
+- **`claude-code-...-003`** (weak distractor + definition-prompt stem): `d`
+  (invented settings.json `imports` array) replaced with `--add-dir`. That
+  flag is real, but CLAUDE.md files from added directories do not load by
+  default. Stem "What syntax" changed to "What mechanism" so the flag option
+  is not eliminable by wording.
+- **`claude-code-...-004`** (distractor note corrected): the note on `d`
+  claimed HTML-commented text is "still read and tokenized". The source says
+  block-level HTML comments are *stripped* before injection. The option is
+  still wrong, but for the real reason (wrapped sections would be dropped for
+  every task, not loaded conditionally). The note now says so, which turns
+  `d` into a real-mechanism near miss.
+- **`claude-code-...-007`** (weak distractors): `b` and `d` (invented
+  `context: background` / `context: isolated`) replaced with the real
+  `background` field (applies only with `context: fork`) and
+  `disable-model-invocation` (controls who invokes, not isolation).
+- **`claude-code-...-010`** (weak distractor): `c` (invented "mandatory
+  dropdown") replaced with "both load in full at session start; Skills are
+  user-scoped". Wrong on both counts: only descriptions are listed until a
+  skill is invoked, and skills can be project-scoped.
+- **`claude-code-...-016`** (facepalm distractor): `c` (temperature 1.0)
+  replaced with moving the prose into the system prompt. The explanation's
+  list of wrong approaches was updated to match.
+- **`claude-code-...-017`** (facepalm distractor): `d` (rewrite the module
+  blind) replaced with paraphrasing the failure to spare context. That is a
+  real context concern, but it discards the diagnostics.
+- **`claude-code-...-020`** (facepalm distractor): `d` (grep/awk on stderr)
+  replaced with `--output-format json` without `--json-schema`. Without the
+  schema, the output is free text in an envelope; `structured_output` only
+  exists with a schema.
+
+**Miskeys surfaced, handed off to `evaluate-questions` (not actioned here;
+keys untouched per this skill's stop rule):**
+
+- **`claude-code-...-005`**: keyed `/memory`, but `memory.md` now says "To
+  check which `CLAUDE.md` and rules files loaded into the current session,
+  run `/context`." `/memory` lists memory file *locations* (including ones
+  that do not exist yet). The stem asks what is loaded, so the key is
+  contradicted by its own source.
+- **`claude-code-...-008`**: keyed `allowed-tools` restricted to read tools.
+  `skills.md` says `allowed-tools` pre-approves the listed tools and "does
+  not restrict which tools are available". The documented mechanism is
+  `disallowed-tools` (e.g. listing Write and Edit). As keyed, the item
+  teaches the wrong field.
+- **`claude-code-...-009`**: keyed `argument-hint` as "displaying an
+  interactive prompt when invoked without arguments". `skills.md` defines it
+  as a "hint shown during autocomplete". No documented frontmatter field
+  prompts for a missing argument, so the stem's premise has no correct option
+  and the item likely needs rework via `author-questions`.
+
+Remaining 13 items (`-001`, `-006`, `-011` through `-015`, `-018`, `-019`,
+`-021` through `-024`): **calibrated — no change**. The four anchors are
+preserved as-is; the rest already carry real-mechanism near misses (e.g.
+`-011` claudeMdExcludes / PreToolUse hook, `-015` smaller-model
+summarisation, `-024` Review Behavior trigger modes), and the two
+multi-selects are hardened by their all-or-nothing keys.
+
+`npm run check` and `npm run metrics -- ccar-f` stay green post-edit; no
+`correct` keys, `sourceUrl`s or tested facts changed.
+
+### Adversarial evaluation pass: Domains 1–3 (2026-09-24)
+
+`evaluate-questions` across the three domains touched by today's hardening:
+`agentic-architecture-and-orchestration` (32),
+`tool-design-and-mcp-integration` (22) and
+`claude-code-configuration-and-workflows` (24), 78 items in total. For each
+item, the answer was worked out from its re-fetched `sourceUrl` (curl `.md`)
+and the v1.0 exam guide before the stored key and explanation were read. The
+2026-09-17 pass above covered only 9 items, so this is the first full cold
+evaluation of these domains.
+
+**Headline:** 3 miskeys, all in Domain 3. There was also a systemic sourcing
+defect. About 30 items had a correct key, but their cited page did not state
+the fact being tested. The fact came, often verbatim, from an exam-guide task
+statement. In one case (`tool-...-004`) the cited `define-tools.md` actually
+recommends the opposite ("Consolidate related operations into fewer tools").
+With the maintainer's approval, these were re-cited in this pass rather than
+demoted. `sourceCheckedAt` was bumped only on items whose citation changed
+or was rewritten.
+
+**Miskeys (fixed and re-confirmed):**
+
+- **`claude-...-005`**: keyed `/memory`. `memory.md` § Troubleshoot says to
+  run `/context` and check **Memory files** to see what loaded, while
+  `/memory` lists file locations, including files that don't exist yet. The
+  key is now `/context`, and "`/memory` lists what loaded" became the trap.
+  The stem was narrowed to CLAUDE.md files.
+- **`claude-...-008`**: keyed `allowed-tools`, which per `skills.md` "does
+  not restrict which tools are available". The key is now `disallowed-tools`
+  (Write, Edit, Bash). `allowed-tools` is now distractor `d`, replacing a
+  weak git-hook option. The stem is bounded to "while it runs", because the
+  restriction clears on the next message.
+- **`claude-...-009`**: keyed `argument-hint` as prompting for a missing
+  argument. It is only an autocomplete hint, and no field prompts. The stem
+  is reframed to "shows the expected argument while typing". The invented
+  distractor fields were replaced with the real ones `arguments`,
+  `when_to_use` and `disable-model-invocation`.
+
+**Keyed text or explanation contradicted by source (fixed):**
+`agentic-...-005` (the documented recovery is retrying with a higher
+`max_tokens`, not "chunk"); `-021` (`updatedToolOutput` changes what Claude
+sees, but telemetry still captures the original, so "or storage" was
+dropped); `-026` (the explanation conflated `fork_session` with skill
+`context: fork`); `-028` (the Git status snapshot is read when the subagent
+starts, not the parent session); `-032` (named subagents can also message
+each other, so the false "only" was dropped).
+
+**Re-cited (key unchanged, free text trimmed to what the new source
+states):**
+
+- To `manifest.examUrl` with a task statement: `agentic-...-004`, `-006`
+  through `-017`, `-024`, `-027`; `tool-...-004` through `-009`, `-012`,
+  `-018`; `claude-...-023`.
+- To `hooks.md` § PostToolUse decision control: `agentic-...-019`, `-021`,
+  `-022`.
+- To `best-practices.md`: `agentic-...-025`; `claude-...-013`, `-014`,
+  `-018`.
+- To `agent-sdk/sessions.md` § Fork: `agentic-...-026`.
+
+**Re-authored for originality:** `tool-...-002` and `tool-...-012` were
+near-copies of sample Questions 2 and 9 (same entities and figures).
+CONTRIBUTING requires originality, so both now use new scenarios and test
+the same facts:
+
+- `-002`: logistics `track_shipment` / `get_carrier_account`, still citing
+  `define-tools.md`.
+- `-012`: reply-drafting subagent with a scoped `get_order_status` tool.
+  Re-cited to exam guide TS 2.3, and the key moved `a` → `c`.
+
+The earlier notes calling these two "anchors" are superseded. The Domain 3
+items that closely follow samples (`claude-...-001`, `-006`, `-013`, `-019`)
+were not checked for originality in this pass.
+
+**Distractor and free-text fixes:**
+
+- Facepalm distractors replaced with misapplied real mechanisms:
+  `agentic-...-006` d (depth limit), `-020` d (`maxTurns`), `-021` c
+  (PreToolUse deny); `tool-...-005` a, `-017` a (@ mention), `-020` e
+  (`enableAllProjectMcpServers` ignored in an untrusted folder).
+- Wording and notes corrected on `tool-...-001`, `-004`, `-006`, `-010`,
+  `-015`, `-018`, `-019` and on `claude-...-001`, `-003`, `-004`, `-006`,
+  `-022`, `-023`, `-024`.
+- All eight Domain 3 distractors hardened earlier today were independently
+  confirmed wrong and not a second defensible answer.
+
+**Dispositions (78):**
+
+- 3 miskeyed, fixed.
+- 5 keyed-text contradictions, fixed.
+- ~30 citation mismatches, re-cited.
+- 2 re-authored.
+- 1 weak-distractors, unresolved: **`tool-...-014`**, now **`draft`**. All
+  three of its distractors refute themselves. Rewriting them is held back
+  because `define-tools.md` now says forced `tool_choice` (`any`/`tool`)
+  returns a 400 error on Claude Opus 5.5, Fable 5.1 and Mythos 5.1, with
+  `auto` plus strict tool use as the alternative. A rewrite now risks a
+  second defensible answer.
+- The rest confirmed as-is.
+
+Result: 77 `reviewed`, 1 `draft`.
+
+**Routed to the next `audit-sources` pass:**
+
+- Forced-`tool_choice` drift: `tool-...-013` and `-014`.
+- Grep and Glob are left out of the default tool set on macOS, Linux and
+  WSL: `tool-...-021`.
+- `tools` versus `allowedTools` naming for Claude Code subagents:
+  `tool-...-011`.
+- The Task→Agent rename noted above: `tool-...-011`, `-012`;
+  `agentic-...-011`, `-012`.
+
+**Not covered:** `prompt-engineering-and-structured-output` and
+`context-management-and-reliability` (42 items) were not cold-evaluated.
+Given the Domain 1–3 citation-mismatch rate, expect the same pattern there.
+
+`npm run check` passes (372/372 tests). The `npm run metrics -- ccar-f`
+bias guards all pass.
