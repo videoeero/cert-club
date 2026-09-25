@@ -49,23 +49,23 @@
     "subdomain": "context-management",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "An agent managing long support conversations uses naive conversational summarization every ten turns. Over time, customers complain that the agent misremembers exact refund amounts, order numbers, and specific dates. What inherent risk of progressive summarization explains this failure?",
+    "stem": "An architect designs an agent to manage extended multi-turn claims disputes where conversations often reach 30 turns. The system performs progressive conversational summarization every ten turns to manage context window consumption. Over time, customers report that the agent drops exact refund amounts, order numbers, and agreed settlement dates. Which architectural risk does this demonstrate, and what trade-off governs conversational compression?",
     "options": [
       {
         "id": "a",
-        "text": "Summarizing every ten turns re-anchors the model on the most recent turns, so it weights recency and forgets facts stated earlier in the conversation."
+        "text": "Summarization creates recency bias that overweights recent conversational turns while dropping facts stated earlier in the conversation."
       },
       {
         "id": "b",
-        "text": "Summarization compresses or drops critical discrete transactional entities like numbers, dates, and IDs into vague narrative prose."
+        "text": "Progressive text summarization naturally preserves narrative flow while dropping or approximating discrete transactional entities like numbers, dates, and IDs."
       },
       {
         "id": "c",
-        "text": "Each summary accumulates on top of the full transcript rather than replacing it, so token usage grows until earlier turns are truncated and lost."
+        "text": "Summaries accumulate alongside prior turns rather than replacing them, causing rapid context exhaustion that forces random turn truncation."
       },
       {
         "id": "d",
-        "text": "Progressive summarization accumulates compounding semantic drift where dialogue context is subtly distorted across multiple compression cycles."
+        "text": "Multi-pass summarization triggers compounding token cost inflation that forces the model to truncate responses early."
       }
     ],
     "correct": [
@@ -75,7 +75,7 @@
     "distractorNotes": {
       "a": "The loss is not simple recency weighting — even recently stated numbers vanish once summarized; linguistic compression drops discrete transactional entities regardless of when they appeared.",
       "c": "Progressive summarization replaces prior turns with the summary rather than accumulating alongside them; the misremembered facts are ones the summary compressed out, not ones truncated by growth.",
-      "d": "Semantic drift distorts narrative nuances across multiple passes, but the specific loss of exact numbers and dates occurs because text compression discards discrete transactional entities."
+      "d": "Multi-pass summarization reduces token consumption rather than inflating it; the failure mode is information loss of discrete entities."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/context-windows.md",
     "sourceNote": "Loss of discrete transactional details during progressive conversational summarization",
@@ -715,33 +715,33 @@
     "subdomain": "error-propagation",
     "difficulty": "hard",
     "status": "reviewed",
-    "stem": "A customer service agent uses a lookup_policy(customer_id) tool to retrieve active warranty coverage before authorizing product replacements. During an outage of the policy database, the tool query times out. The tool integration catches the timeout exception and returns an empty list [] without flagging an error (is_error: false). As a result, the agent incorrectly informs customers that their products have no warranty and refuses replacements. What architectural principle explains why this design is flawed?",
+    "stem": "A customer service agent uses a lookup_policy(customer_id) tool to verify active warranty coverage before approving product replacements. During an outage of the policy database, the tool query times out. The backend catches the timeout exception and returns an empty list [] with isError: false. Consequently, the agent asserts to the customer that they have no warranty coverage and denies the replacement. How should the tool integration be refactored to prevent this false denial while maintaining resilient error handling?",
     "options": [
       {
         "id": "a",
-        "text": "The tool integration should allow the timeout exception to bubble up unhandled to a top-level error handler, terminating the entire conversation session so the user is forced to reconnect later."
+        "text": "Allow the timeout exception to crash the tool execution process, terminating the user session so the customer is forced to reconnect later."
       },
       {
         "id": "b",
-        "text": "The tool integration should return an empty result list alongside a natural-language note instructing the model to probabilistically infer whether zero matches reflect an outage or an uninsured customer."
+        "text": "Return an empty list [] alongside a system prompt note instructing Claude to guess whether empty results indicate an outage or an uninsured customer."
       },
       {
         "id": "c",
-        "text": "The tool integration should return a generic failure string such as 'search unavailable' without setting is_error, relying on the model to deduce from conversation history that a transport failure occurred."
+        "text": "Return a generic text string such as 'search unavailable' with isError: false, relying on prompt reasoning to deduce that an outage occurred."
       },
       {
         "id": "d",
-        "text": "The tool integration should distinguish access failures from valid empty results by returning is_error: true with diagnostic context, reserving empty payloads for queries that completed with zero matches."
+        "text": "Return a tool result with isError: true and diagnostic context indicating a database timeout, so the agent recognizes an access failure rather than zero coverage."
       }
     ],
     "correct": [
       "d"
     ],
-    "explanation": "In agentic tool execution, there is a critical distinction between an access failure (such as an API timeout, rate limit, or network disconnection) and a valid empty result (a successfully executed query that confirmed zero records exist). When an access failure is caught and returned as an empty result payload ([]) without setting is_error: true, the model misinterprets infrastructure unreachability as semantic proof of non-existence, leading it to assert false business claims (such as claiming a customer has no warranty). The integration must return is_error: true along with instructive error details and retry context, allowing the agent or coordinator to initiate retries or inform the customer of a service disruption.",
+    "explanation": "In agentic tool execution, there is a critical distinction between an access failure (such as an API timeout, rate limit, or network disconnection) and a valid empty result (a successfully executed query that confirmed zero records exist). When an access failure is caught and returned as an empty result payload ([]) without setting isError: true, the model misinterprets infrastructure unreachability as semantic proof of non-existence, leading it to assert false business claims (such as claiming a customer has no warranty). The integration must return isError: true along with instructive error details and retry context, allowing the agent or coordinator to initiate retries or inform the customer of a service disruption.",
     "distractorNotes": {
       "a": "Allowing the exception to terminate the entire conversation aborts the session unnecessarily, discarding existing context when transient timeouts can be retried or handled gracefully.",
       "b": "Instructing the model to infer whether an empty list represents an outage relies on guesswork; the model cannot determine transport-layer status unless the tool integration explicitly signals the error.",
-      "c": "Returning a generic error string without setting is_error: true hides the failure from the API tool-call protocol, preventing automated error handling and forcing the model to guess whether the lookup succeeded."
+      "c": "Returning a generic error string without setting isError: true hides the failure from the API tool-call protocol, preventing automated error handling and forcing the model to guess whether the lookup succeeded."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls.md",
     "sourceNote": "Differentiating tool execution errors using is_error from valid empty tool results",

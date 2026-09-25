@@ -638,6 +638,46 @@ All 24 items in Domain 4 are now `reviewed`.
 - **Dispositions (4)**: 4 confirmed, 0 miskeyed, 0 unsupported, 0 weak-distractors, 0 unsourced-claim.
 - **Status**: All 24 items in `prompt-engineering-and-structured-output` are `reviewed`.
 
+### Judgement renovation & adversarial evaluation: Domain 5 (2026-09-25)
+
+Applied the real-exam calibration strategy to `context-management-and-reliability`
+(18 items). Stems testing "Why is this design flawed" or explanation tells were
+renovated into scenario-grounded architectural trade-offs under constraints ("X while
+maintaining Y").
+
+- **Renovated into trade-off decisions (2 items)**:
+  - `-002`: Progressive conversational summarization trade-offs in long-running
+    disputes: loss of discrete transactional entities (amounts, dates, IDs) into
+    vague narrative prose vs context window preservation.
+  - `-018`: Tool outage and timeout handling in policy lookup: returning `isError: true`
+    with diagnostic error context to distinguish transport/access failures from
+    valid zero-match query results, preventing false warranty denial.
+- **Kept (16 items)**:
+  - Anchors: `-006` (sample Q3 counterpart, explicit escalation criteria vs
+    self-reported confidence), `-010` (sample Q8 counterpart, structured error
+    propagation on timeout).
+  - Sound trade-offs & multi-selects: `-001`, `-003`–`-005`, `-007`–`-009`,
+    `-011`–`-015`, `-016`–`-017` (select-2).
+
+Adversarial cold-evaluation (`evaluate-questions`) independently verified both
+modified items against `context-windows.md`, `handle-tool-calls.md`, and exam guide
+Task Statements 5.1–5.6. Both items confirmed. All 18 items in Domain 5 are now
+`reviewed`.
+
+- **Dispositions (2)**: 2 confirmed, 0 miskeyed, 0 unsupported, 0 weak-distractors, 0 unsourced-claim.
+- **Status**: All 18 items in `context-management-and-reliability` are `reviewed`.
+
+### Real-exam bank renovation summary (2026-09-25)
+
+Across all five domains (120 items), the entire CCAR-F question bank has been
+renovated to match the cognitive rigor and trade-off shape of the live exam:
+- **Domain 1**: 22 items renovated into scenario-grounded trade-offs under constraints; all 32 items `reviewed`.
+- **Domain 2**: 11 items renovated into scenario-grounded trade-offs under constraints; all 22 items `reviewed`.
+- **Domain 3**: 7 items renovated into scenario-grounded trade-offs under constraints; all 24 items `reviewed`.
+- **Domain 4**: 4 items renovated into scenario-grounded trade-offs under constraints; all 24 items `reviewed`.
+- **Domain 5**: 2 items renovated into scenario-grounded trade-offs under constraints; all 18 items `reviewed`.
+- **Total bank status**: 120 / 120 items `status: "reviewed"` (0 drafts), all blueprint weights balanced, all bias guards pass.
+
 **Calibration note for future passes.** For ccar-f, the recorded real-exam
 signal outranks the guide's sample questions as the difficulty anchor.
 CONTRIBUTING § Difficulty calibration says real exams "tend to be easier than
