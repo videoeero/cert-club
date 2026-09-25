@@ -70,9 +70,9 @@ Audited against the 120-question bank on 2026-09-14:
 
 - **Distribution and formats**: unchanged — 120 items, 32 / 22 / 24 / 24 / 18, 110 single-select and 10 multi-select, 100% `distractorNotes` coverage.
 - **Difficulty breakdown**: 63 medium (56 single, 7 multi), 57 hard (54 single, 3 multi). The shift from the 78 / 42 recorded above is entirely Domain 1's 15 `medium` → `hard` reclassifications.
-- **Sourcing**: 29 distinct pages (the exam guide PDF joined the three documentation hosts; 24 Domain 1–3 items were re-cited to its task statements in the 2026-09-24 evaluation wave, and the same day's adjudication pass below re-cited 8 more — 29 Domain 1–3 items and 32 bank-wide now cite it).
+- **Sourcing**: 29 distinct pages (the exam guide PDF joined the three documentation hosts; 24 Domain 1–3 items were re-cited to its task statements in the 2026-09-24 evaluation wave, the 2026-09-25 adjudication pass below re-cited 8 more, and the follow-up review pass re-cited 2 Domain 5 items — 29 Domain 1–3 items and 34 bank-wide now cite it).
 - **Single-select position distribution**: 24 A / 29 B / 28 C / 29 D (max 26.4%, ceiling 50%).
-- **Option length delta**: +3.34 characters mean, +1.33 median (limit ±10) — the sign flipped as keys grew richer qualifying clauses.
+- **Option length delta**: +3.36 characters mean, +1.33 median (limit ±10) — the sign flipped as keys grew richer qualifying clauses.
 - **Longest option as key share**: 41 of 110 single-select items (37.3%), up from 17.3% and now the guard with the least headroom. Still inside its 45% ceiling, but the renovation spent most of the margin, and this is the figure to watch on the next batch rather than the length delta.
 - **All three bias guards pass**.
 
@@ -708,7 +708,8 @@ maintaining Y").
 Adversarial cold-evaluation (`evaluate-questions`) independently verified both
 modified items against `context-windows.md`, `handle-tool-calls.md`, and exam guide
 Task Statements 5.1–5.6. Both items confirmed. All 18 items in Domain 5 are now
-`reviewed`.
+`reviewed`. (The follow-up review pass below later re-cited both items from those
+two pages to the exam guide's task statements.)
 
 - **Dispositions (2)**: 2 confirmed, 0 miskeyed, 0 unsupported, 0 weak-distractors, 0 unsourced-claim.
 - **Status**: All 18 items in `context-management-and-reliability` are `reviewed`.
@@ -717,8 +718,8 @@ Task Statements 5.1–5.6. Both items confirmed. All 18 items in Domain 5 are no
 
 Across all five domains (120 items), the entire CCAR-F question bank has been
 renovated to match the cognitive rigor and trade-off shape of the live exam:
-- **Domain 1**: 22 items renovated into scenario-grounded trade-offs under constraints; all 32 items `reviewed`.
-- **Domain 2**: 11 items renovated into scenario-grounded trade-offs under constraints; all 22 items `reviewed`.
+- **Domain 1**: 22 items renovated (17 full trade-off rewrites, 5 options-only) into scenario-grounded trade-offs under constraints; all 32 items `reviewed`.
+- **Domain 2**: 11 items modified (8 trade-off rewrites, 3 options polished) into scenario-grounded trade-offs under constraints; all 22 items `reviewed`.
 - **Domain 3**: 7 items renovated into scenario-grounded trade-offs under constraints; all 24 items `reviewed`.
 - **Domain 4**: 4 items renovated into scenario-grounded trade-offs under constraints; all 24 items `reviewed`.
 - **Domain 5**: 2 items renovated into scenario-grounded trade-offs under constraints; all 18 items `reviewed`.
@@ -780,6 +781,32 @@ evaluation dispositions read "0 unsupported-claim". All five now cite
 applied to the wrong scope — `${VAR}` expansion in project `.mcp.json`,
 `replace_all: true`, and a Glob lookup — per the standing rule that a distractor
 uses a real mechanism wrongly rather than inventing one.
+
+**Divergence recorded, `tool-...-004` (splitting vs consolidating tools):** the
+item keys splitting the monolithic `manage_data` tool into focused,
+purpose-specific tools, per exam guide Task Statement 2.1 ("splitting generic
+tools into purpose-specific tools with defined input/output contracts"). Current
+`define-tools.md` recommends the opposite shape — "Consolidate related
+operations into fewer tools... group them into a single tool with an action
+parameter" — so the item now cites the guide, not that page. Same standing
+decision as the three Domain 3 items above: the guide wins while the exam is
+written from it; an `audit-sources` pass should re-check this item on every
+guide or `define-tools.md` revision.
+
+**Follow-up review pass (same day):** a branch review found two more
+citation-mismatch items of the class fixed above and re-cited both to
+`manifest.examUrl` — `context-...-002` (progressive summarization condensing
+transactional entities; TS 5.1) and `context-...-018` (access failures vs
+valid empty results; TS 5.3, whose item and sourceNote now use the MCP
+`isError` spelling consistently instead of mixing it with the Messages API
+`is_error` field name of the previously cited page). Also in that pass:
+`agentic-...-018`'s sourceNote was trimmed to what `handle-tool-calls.md`
+states; `agentic-...-028`'s and both context items' `sourceCheckedAt` were
+bumped to 2026-09-25 to match their actual re-verification;
+`claude-...-012` distractor `c`'s invented "@include directive" was replaced
+with the real `@path` import mechanism from `memory.md`; and the bank's
+exam-guide `sourceNote`s were standardized to one format (`Exam Guide v1.0 §
+Task Statement N.N —`) so drift audits can be scripted.
 
 `npm run check`, `npm run metrics -- ccar-f` and `npm run check-sources --
 `ccar-f` all pass post-edit (372/372 tests; 29 URLs live, 0 stale). No `status`
