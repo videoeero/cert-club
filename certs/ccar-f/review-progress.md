@@ -450,3 +450,85 @@ Given the Domain 1–3 citation-mismatch rate, expect the same pattern there.
 
 `npm run check` passes (372/372 tests). The `npm run metrics -- ccar-f`
 bias guards all pass.
+
+### Judgement renovation: Agentic Architecture & Orchestration (2026-09-25)
+
+**Why a second pass a day after hardening.** After the 2026-09-24 passes, the
+maintainer reported that the bank still felt "quite a lot easier" than the live
+exam, where most items were about *architectural judgement*. The diagnosis:
+the gap is question shape, not distractor quality. Many Domain 1 items handed
+the decision to the reader in the stem ("Why are hooks superior…", "Why is
+hub-and-spoke preferred…", "How does running sessions in worktrees prevent…")
+and tested only the reason. Others offered one sensible option among three
+strawmen. `harden-domain-questions` cannot fix either: it forbids changing the
+tested fact, and it calibrates to the guide's sample questions, which this
+bank's only empirical signal says undershoot the live exam. This pass
+therefore ran as `author-questions` rewrites, not hardening.
+
+**Target shape.** A scenario, a goal, and a constraint to keep ("…while
+keeping Y"). All four options are real approaches, and each distractor fails
+the stated constraint for a reason the docs establish: over-engineered, solves
+a different problem, probabilistic where a guarantee is needed, or a real
+mechanism at the wrong layer. This is the elimination logic the guide's own
+sample answers use. One deliberate pattern: `-021` and `-022` pose the same
+redaction problem under different constraints and have different keys. In
+`-022`, model context is the only concern, so a PostToolUse hook is the key.
+In `-021`, exported telemetry must also be clean, so the hook is the trap.
+Withholding the deciding fact, which the maintainer saw on the real exam, was
+not used. It would create two defensible answers, which CONTRIBUTING forbids.
+
+**Dispositions (32):**
+
+- **Renovated: stem and options rewritten into a trade-off decision (17):**
+  `-001` (explicit context vs fork mode vs auto memory vs re-retrieval),
+  `-004`, `-006` (peer channel bypassing the coordinator), `-008`, `-010`,
+  `-012` (parallel Task calls vs forks vs merged subagent), `-013`, `-014`,
+  `-018`, `-019` (PostToolUse `updatedToolOutput` vs `decision: block` vs
+  PreToolUse `updatedInput`), `-020` (PreToolUse deny with escalation vs
+  PostToolUse too late vs deny-all), `-021` (see above), `-026` (fork branches
+  history, not the filesystem), `-027` (resume and flag changed files vs start
+  fresh), `-030` (worktrees vs subagents, teams and forks sharing a checkout),
+  `-031` (no mid-run input, so one workflow per stage), `-032` (agent team vs
+  workflow vs subagents).
+- **Options rewritten, stem kept (5):** `-005` (text-continuation pattern as
+  the near miss), `-009` (full search tool set on synthesis as the near miss),
+  `-016`, `-023`, `-025`.
+- **Kept (10):** anchors `-007` and `-015` (sample Questions 7 and 1). Core
+  loop and API mechanics that the guide tests as knowledge: `-002`, `-003`,
+  `-011`. Items already posing a trade-off: `-017`, `-022`, `-024`. The two
+  select-two items: `-028`, `-029`.
+
+**Keys moved:** `-001` a→c, `-004` c→b, `-005` d→a, `-006` a→d, `-008` c→b,
+`-009` d→a, `-010` a→d, `-012` c→b, `-013` d→c, `-014` a→d, `-016` c→a,
+`-018` a→c, `-019` b→d, `-020` c→a, `-021` d→b, `-023` b→d, `-025` d→c,
+`-026` a→b, `-027` b→d, `-030` a→c, `-031` c→a, `-032` d→b. Each move is a
+rewrite of the item, not a miskey fix.
+
+**Sources.** Re-fetched on 2026-09-25: `sub-agents.md`, `hooks.md`,
+`agent-teams.md`, `workflows.md`, `worktrees.md`, `agent-sdk/sessions.md`,
+`handling-stop-reasons.md` and exam guide v1.0 § Domain 1. Re-cited: `-001`
+(exam guide → `sub-agents.md`) and `-020` (`hooks-guide.md` → `hooks.md`).
+
+### Adversarial evaluation pass: Domain 1 rewrites (2026-09-25)
+
+Cold-evaluation pass via `evaluate-questions` covering all 22 renovated items
+in `agentic-architecture-and-orchestration` (`-001`, `-004`, `-005`, `-006`,
+`-008`, `-009`, `-010`, `-012`, `-013`, `-014`, `-016`, `-018`, `-019`,
+`-020`, `-021`, `-023`, `-025`, `-026`, `-027`, `-030`, `-031`, `-032`).
+
+Each item was evaluated independently against its cited source and exam blueprint
+task statements before comparing against stored keys and explanations. All 22
+items independently cold-derived to the stored keys; free-text explanations,
+distractor notes, and constraints match documented vendor behavior and
+architectural principles without contradiction or defect.
+
+- **Dispositions (22)**: 22 confirmed, 0 miskeyed, 0 unsupported, 0 weak-distractors, 0 unsourced-claim.
+- **Status promotion**: All 22 renovated items promoted from `draft` → `reviewed`.
+- **Domain status**: All 32 items in Domain 1 are now `status: "reviewed"`.
+- **Not covered in this pass**: Domains 2–5 (88 items), which sit at their 2026-09-24 review status pending renovation triage.
+
+**Calibration note for future passes.** For ccar-f, the recorded real-exam
+signal outranks the guide's sample questions as the difficulty anchor.
+CONTRIBUTING § Difficulty calibration says real exams "tend to be easier than
+the bank". That holds for ccdv-f but is the opposite of what two candidates
+reported here.
