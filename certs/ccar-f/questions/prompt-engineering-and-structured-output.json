@@ -377,33 +377,33 @@
     "subdomain": "structured-outputs",
     "difficulty": "hard",
     "status": "reviewed",
-    "stem": "A financial extraction pipeline uses strict JSON schemas via tool use. An invoice is processed where the extracted line items sum to $850, but the extracted total_amount field is $1,200. Why did strict JSON schema enforcement fail to prevent this discrepancy?",
+    "stem": "A financial extraction pipeline uses strict JSON schemas via tool use. An invoice is processed where the extracted line items sum to $850, but the extracted total_amount field is $1,200, causing a downstream ledger rejection. How should the architect address this cross-field arithmetic discrepancy while preserving strict schema validation?",
     "options": [
       {
         "id": "a",
-        "text": "The sampling temperature was set above 0.0, which disables constrained decoding and relaxes numeric validation rules in strict mode."
+        "text": "Configure sampling temperature to 0.0, which enforces arithmetic consistency across numerical fields in generated JSON."
       },
       {
         "id": "b",
-        "text": "The line item prices were defined as numbers rather than integers, which disables arithmetic equality checks in JSON Schema engines."
+        "text": "Change the line item price schemas from numbers to string decimals with fixed decimal precision rules."
       },
       {
         "id": "c",
-        "text": "JSON schemas enforce data types and structural syntax, but cannot compute or validate semantic cross-field arithmetic invariants."
+        "text": "Implement programmatic validation in the application layer or an automated retry turn, since JSON schemas enforce syntax and types rather than semantic arithmetic."
       },
       {
         "id": "d",
-        "text": "Strict mode was configured with additionalProperties set to false, which suppresses validation across nested line item array objects."
+        "text": "Enable additionalProperties: false on the object schema to prevent the model from hallucinating extra surcharge fields."
       }
     ],
     "correct": [
       "c"
     ],
-    "explanation": "JSON schemas enforce structural and type constraints (such as requiring total_amount to be a number and items to be an array of objects). They cannot validate semantic cross-field logic (such as ensuring that individual line item prices sum up to total_amount). Validating semantic consistency requires programmatic post-validation or multi-turn reflection.",
+    "explanation": "JSON Schema enforces structural and syntactic constraints (e.g. required keys, data types, string patterns, enum memberships), but cannot enforce mathematical relationships or cross-field semantic invariants (such as line items summing to total_amount). Ensuring semantic validity requires application-side business logic validation or a follow-up retry turn with error feedback.",
     "distractorNotes": {
-      "a": "Temperature influences token sampling variance, but constrained decoding strictly enforces schema constraints regardless of temperature.",
-      "b": "JSON Schema data types (number vs integer) enforce value formats, but standard schemas cannot compute cross-field arithmetic sums.",
-      "d": "The additionalProperties: false parameter restricts undeclared properties, but has no effect on validating cross-field arithmetic."
+      "a": "Temperature 0.0 reduces token sampling variance, but does not grant the decoder mathematical cross-field computation or validation abilities.",
+      "b": "Changing data types from numbers to strings does nothing to ensure the values in different fields sum correctly.",
+      "d": "additionalProperties: false restricts undeclared keys in the JSON object, which is unrelated to arithmetic validation between existing fields."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs.md",
     "sourceNote": "Distinction between schema syntax/type enforcement and semantic cross-field validation",
@@ -623,33 +623,33 @@
     "subdomain": "validation-and-feedback",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "An automated code review bot tags each reported finding with a structured `detected_pattern` identifier (e.g. `comment-contradiction`, `sql-string-interpolation`). Why is this structured metadata valuable for long-term pipeline optimization?",
+    "stem": "An automated code review bot tags each reported finding with a structured detected_pattern identifier (e.g. comment-contradiction, sql-string-interpolation). The team wants to systematically reduce false positives over time without degrading detection of genuine security defects. How should the team use these structured pattern tags?",
     "options": [
       {
         "id": "a",
-        "text": "It enables systematic aggregation of developer dismissal rates per rule to identify and refine prompt criteria for high false-positive patterns."
+        "text": "Aggregate developer dismissal and acceptance rates by pattern tag to identify and retune or disable the specific rules generating excessive noise."
       },
       {
         "id": "b",
-        "text": "It allows the pipeline to dynamically route flagged code snippets to specialized sub-prompts tailored to each defect category during review."
+        "text": "Use the tags to dynamically re-route flagged pull requests to human security specialists based on author tenure."
       },
       {
         "id": "c",
-        "text": "It lets the pipeline automatically suppress any finding whose detected_pattern was ever dismissed before, guaranteeing zero false positives going forward."
+        "text": "Automatically suppress any finding whose pattern tag has appeared more than ten times across the repository in a single week."
       },
       {
         "id": "d",
-        "text": "It guarantees the model returns identical severity scores across runs because each pattern identifier is bound to a fixed numeric severity."
+        "text": "Include all past pattern tags in the review system prompt to guarantee deterministic severity classification."
       }
     ],
     "correct": [
       "a"
     ],
-    "explanation": "Including a structured pattern tag (`detected_pattern`) in review findings allows the engineering team to track developer feedback and dismissal rates across specific rules. Categories with high dismissal rates can be isolated, audited, and improved via targeted prompt criteria, few-shot examples, or temporary suppression.",
+    "explanation": "Structured pattern identifiers allow engineering teams to track developer interaction metrics (e.g., dismissals, thumbs-down, approvals) per rule category. By aggregating rejection rates across specific tags, teams can objectively identify which prompt rules generate false positives and tune their criteria or deprecate noisy categories without weakening effective security checks.",
     "distractorNotes": {
-      "b": "Pattern tags are generated as output metadata on identified findings, not used upfront to route unanalyzed code snippets; the primary long-term pipeline value is telemetry on developer dismissals.",
-      "c": "Blanket-suppressing every previously dismissed pattern would discard valid future findings; the tags enable measuring per-rule dismissal rates and refining criteria, not automatic suppression.",
-      "d": "A pattern identifier labels what was found; it does not pin a severity to the finding or make scoring deterministic across runs."
+      "b": "Routing reviews based on author tenure bypasses the prompt optimization goal and fails to address the underlying noisy review criteria.",
+      "c": "Arbitrary frequency-based suppression blinds the pipeline to high-frequency real bugs without evaluating whether findings were accurate.",
+      "d": "Injecting exhaustive historical tags into prompts consumes context without improving classification consistency."
     },
     "sourceUrl": "https://code.claude.com/docs/en/code-review.md",
     "sourceNote": "Tracking rule dismissal rates via structured pattern tags to drive prompt improvements",
@@ -705,33 +705,33 @@
     "subdomain": "batch-processing",
     "difficulty": "hard",
     "status": "reviewed",
-    "stem": "An architect evaluates migrating an interactive customer support agent to the Message Batches API to take advantage of the 50% discount. Why is the Message Batches API architecturally unsuitable for this use case?",
+    "stem": "An architect evaluates migrating an interactive customer support agent to the Message Batches API to take advantage of the 50% discount on API calls. User sessions require real-time back-and-forth dialogue and interactive tool execution. How should the architect evaluate this proposal against operational constraints?",
     "options": [
       {
         "id": "a",
-        "text": "Message Batches enforce strict FIFO queue processing across the workspace, which causes head-of-line blocking for concurrent users."
+        "text": "Approve the proposal, because Message Batches processes requests in strict FIFO queue order with millisecond turnaround times."
       },
       {
         "id": "b",
-        "text": "Message Batches do not support prompt caching breakpoints, so multi-turn support sessions forfeit prompt caching discounts."
+        "text": "Reject the proposal, because the 50% batch discount applies exclusively to batch jobs with prompts smaller than 1,000 tokens."
       },
       {
         "id": "c",
-        "text": "Message Batches are asynchronous with turnaround times up to 24 hours and do not support interactive multi-turn tool loops."
+        "text": "Reject the proposal, because Message Batches is an asynchronous processing pipeline with turnaround times up to 24 hours, making it incompatible with real-time conversations."
       },
       {
         "id": "d",
-        "text": "The 50% batch discount applies only to prompts under 1,000 tokens, so a support agent's long conversation context would forfeit the savings entirely."
+        "text": "Approve the proposal, but configure client polling to query the batch results endpoint every 500 milliseconds during user turns."
       }
     ],
     "correct": [
       "c"
     ],
-    "explanation": "The Message Batches API is designed for latency-tolerant, offline workloads with turnaround windows up to 24 hours and no real-time latency SLA. Furthermore, it operates on single-request payloads and cannot execute interactive multi-turn agentic loops where tool results are returned mid-conversation to guide subsequent actions.",
+    "explanation": "The Message Batches API provides a 50% discount in exchange for asynchronous processing within a 24-hour turnaround window. It is designed for non-urgent bulk workloads (e.g., nightly evaluations, bulk data extraction, offline audits), making it architecturally incompatible with interactive, low-latency conversational agents where users expect immediate responses.",
     "distractorNotes": {
-      "a": "Requests in the Message Batches API execute concurrently across Anthropic's processing fleet without sequential FIFO head-of-line blocking.",
-      "b": "Prompt caching is fully supported in Message Batches; the architectural blocker is the asynchronous completion window and lack of interactive turnaround.",
-      "d": "The batch discount is not gated on prompt size; the architectural mismatch is the asynchronous, non-interactive turnaround, not a lost discount."
+      "a": "Message Batches is asynchronous with no latency guarantees below hours, completely unsuitable for live chat.",
+      "b": "The 50% discount applies across all standard prompt sizes; the limitation is the asynchronous 24-hour SLA.",
+      "d": "Aggressive polling cannot turn an asynchronous 24-hour SLA pipeline into a real-time conversational service."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/batch-processing.md",
     "sourceNote": "Workload fit and conversational tool-use limitations of the Message Batches API",
@@ -746,33 +746,33 @@
     "subdomain": "multi-pass-review",
     "difficulty": "hard",
     "status": "reviewed",
-    "stem": "A software team generates code using Claude Code and attempts to review it in the same session by prompting: 'Now critique your previous implementation for security vulnerabilities.' The review rarely catches subtle flaws. What explains this failure?",
+    "stem": "A software team generates code using Claude and attempts to review it in the same conversation turn by asking: 'Now critique your previous implementation for security vulnerabilities.' The review consistently misses subtle flaws that human reviewers easily spot. What architectural change best improves vulnerability detection?",
     "options": [
       {
         "id": "a",
-        "text": "The model has a fixed output token budget, so a combined generate-then-review session exhausts its tokens before it can analyze the code deeply."
+        "text": "Increase the output token budget on the self-critique turn so the model has room to generate longer critiques."
       },
       {
         "id": "b",
-        "text": "Asking a model to critique its own output triggers a safety refusal, so it returns a shallow, non-committal review instead of flagging flaws."
+        "text": "Configure temperature to 1.0 during the critique turn to encourage creative adversarial thinking."
       },
       {
         "id": "c",
-        "text": "Reviewing code requires a dedicated review system prompt, and reusing the generation system prompt silently disables the model's analytical evaluation mode."
+        "text": "Prepend a system prompt directive instructing Claude that all generated code is presumed insecure until proven otherwise."
       },
       {
         "id": "d",
-        "text": "The session context contains the generator's own reasoning history, creating confirmation bias that makes it unlikely to question its own design."
+        "text": "Dispatch the code review to a separate, fresh model instance with a dedicated reviewer prompt, eliminating generative confirmation bias."
       }
     ],
     "correct": [
       "d"
     ],
-    "explanation": "When an agent reviews its own code within the same conversation context, the preceding chain-of-thought and rationales remain in the prompt history. The model exhibits strong self-confirmation bias, rationalizing its earlier decisions rather than evaluating the code with a fresh, adversarial perspective. Running an independent review instance without the generative history resolves this.",
+    "explanation": "When asked to review its own generated code in the same session, a model suffers from generative confirmation bias: the generation reasoning, assumptions, and rationales already in context strongly bias the critique to affirm the original solution. Spawning an independent review instance with a fresh context and an adversarial review prompt reliably exposes flaws the authoring instance overlooked.",
     "distractorNotes": {
-      "a": "A review prompt begins a fresh generation with its own token budget; the weakness is confirmation bias from the shared reasoning history, not exhausted tokens.",
-      "b": "Self-critique prompts are not refused; the review is shallow because the session already holds the generator's own justifications, biasing it toward agreement.",
-      "c": "There is no separate 'analytical mode' that a shared system prompt disables; the failure is confirmation bias, because the reviewer sees its own prior reasoning and tends to ratify it."
+      "a": "Increasing token budgets does not remove the cognitive confirmation bias established by the generation history.",
+      "b": "High temperature increases sampling randomness and hallucination risk, rather than rigorous adversarial security analysis.",
+      "c": "Prompting the authoring instance to distrust itself is far less effective than reviewing in a fresh, unbiased context window."
     },
     "sourceUrl": "https://code.claude.com/docs/en/code-review.md",
     "sourceNote": "Overcoming generative confirmation bias by using independent review instances",

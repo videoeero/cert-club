@@ -606,6 +606,38 @@ Domain 3 are now `reviewed`.
 - **Dispositions (7)**: 7 confirmed, 0 miskeyed, 0 unsupported, 0 weak-distractors, 0 unsourced-claim.
 - **Status**: All 24 items in `claude-code-configuration-and-workflows` are `reviewed`.
 
+### Judgement renovation & adversarial evaluation: Domain 4 (2026-09-25)
+
+Applied the real-exam calibration strategy to `prompt-engineering-and-structured-output`
+(24 items). Stems testing "Why did X fail" or "Why is X valuable" explanations were
+renovated into scenario-grounded architectural trade-offs under constraints ("X while
+maintaining Y").
+
+- **Renovated into trade-off decisions (4 items)**:
+  - `-010`: Cross-field arithmetic discrepancies (line items vs total) in strict
+    JSON schema extraction: application-layer business validation or retry loops
+    vs schema-level syntax enforcement limits.
+  - `-016`: Structured pattern tags (`detected_pattern`) in automated code reviews:
+    aggregating dismissal/acceptance rates per tag to optimize prompt rules vs
+    arbitrary frequency-based suppression.
+  - `-018`: Architectural evaluation of Message Batches API: rejected for real-time
+    customer chat due to 24-hour asynchronous SLA vs interactive latency needs.
+  - `-019`: Overcoming generative confirmation bias in code reviews: dispatching to
+    an independent fresh model instance with a dedicated reviewer prompt vs
+    in-session self-critique.
+- **Kept (20 items)**:
+  - Anchors: `-001` (sample Q11), `-020` (sample Q12).
+  - Sound trade-offs & multi-selects: `-002`–`-009`, `-011`–`-015`, `-017`,
+    `-021`–`-022` (select-2), `-023`–`-024`.
+
+Adversarial cold-evaluation (`evaluate-questions`) independently verified all 4
+modified items against `messages.md`, `batch.md`, `structured-outputs.md`,
+`code-review.md`, and exam guide Task Statements 4.1–4.6. All 4 items confirmed.
+All 24 items in Domain 4 are now `reviewed`.
+
+- **Dispositions (4)**: 4 confirmed, 0 miskeyed, 0 unsupported, 0 weak-distractors, 0 unsourced-claim.
+- **Status**: All 24 items in `prompt-engineering-and-structured-output` are `reviewed`.
+
 **Calibration note for future passes.** For ccar-f, the recorded real-exam
 signal outranks the guide's sample questions as the difficulty anchor.
 CONTRIBUTING § Difficulty calibration says real exams "tend to be easier than
