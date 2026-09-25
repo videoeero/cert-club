@@ -527,6 +527,49 @@ architectural principles without contradiction or defect.
 - **Domain status**: All 32 items in Domain 1 are now `status: "reviewed"`.
 - **Not covered in this pass**: Domains 2–5 (88 items), which sit at their 2026-09-24 review status pending renovation triage.
 
+### Judgement renovation & adversarial evaluation: Domain 2 (2026-09-25)
+
+Applied the real-exam calibration strategy to `tool-design-and-mcp-integration`
+(22 items). Stems testing recall, path locations, and explanation tells
+("What explains this failure?") were renovated into scenario-grounded
+architectural trade-offs under constraints ("X while maintaining Y").
+
+- **Renovated into trade-off decisions (8 items)**:
+  - `-001`: Shared team MCP server configuration in `.mcp.json` with env var
+    expansion (`${DB_PASSWORD}`) vs global/user credential drift or `CLAUDE.md`.
+  - `-005`: Prompt keyword bias toward generic `web_search` resolved by
+    aligning prompt instructions with `lookup_customer` vs temperature hacks
+    or brittle query-parsing hooks.
+  - `-006`: MCP runtime execution failure (database connection timeout)
+    pattern: return tool result with `isError: true` and structured metadata
+    to allow model recovery, vs crashing JSON-RPC protocol errors.
+  - `-010`: Monolithic tool over-provisioning (25 tools degrading accuracy to
+    68%) refactored into specialized subagents with 3–5 scoped tools each
+    coordinated by a routing agent, vs mega-tools or prompt explosion.
+  - `-011`: Deterministic tool restriction on synthesis subagent via
+    `allowedTools` vs probabilistic negative prompt warnings.
+  - `-014`: Resolved prior `draft` disposition: unknown document intake on
+    Claude Sonnet requiring guaranteed tool execution without conversational
+    text via `tool_choice: {"type": "any"}` vs `auto` + prompt or `none`.
+  - `-015`: Personal SQLite MCP server isolation via user-scoped
+    `~/.claude.json` merged with project `.mcp.json` vs git index hacks.
+  - `-017`: Overcoming model preference for built-in Grep/Bash by expanding
+    `get_issue` description with specific sources and ID formats vs disabling
+    built-ins.
+- **Options polished (3 items)**: `-007` (business rule policy violation with
+  `isRetryable: false`), `-009` (empty query result vs failure), `-013` (forcing
+  first-turn tool execution with `tool_choice: {"type": "tool", "name": "..."}`).
+- **Kept (11 items)**: `-002` (sample Q2 anchor), `-003`, `-004`, `-008`,
+  `-012` (sample Q9 anchor), `-016`, `-018`, `-019`–`-020` (select-2), `-021`,
+  `-022`.
+
+Adversarial cold-evaluation (`evaluate-questions`) independently verified all 11
+modified items against `define-tools.md`, `mcp.md`, and exam guide Task Statements
+2.1–2.5. All 11 items confirmed. All 22 items in Domain 2 are now `reviewed`.
+
+- **Dispositions (11)**: 11 confirmed, 0 miskeyed, 0 unsupported, 0 weak-distractors, 0 unsourced-claim.
+- **Status**: All 22 items in `tool-design-and-mcp-integration` are `reviewed`.
+
 **Calibration note for future passes.** For ccar-f, the recorded real-exam
 signal outranks the guide's sample questions as the difficulty anchor.
 CONTRIBUTING § Difficulty calibration says real exams "tend to be easier than
