@@ -570,6 +570,42 @@ modified items against `define-tools.md`, `mcp.md`, and exam guide Task Statemen
 - **Dispositions (11)**: 11 confirmed, 0 miskeyed, 0 unsupported, 0 weak-distractors, 0 unsourced-claim.
 - **Status**: All 22 items in `tool-design-and-mcp-integration` are `reviewed`.
 
+### Judgement renovation & adversarial evaluation: Domain 3 (2026-09-25)
+
+Applied the real-exam calibration strategy to `claude-code-configuration-and-workflows`
+(24 items). Stems testing file path recall, stem tells ("Why is X preferred..."),
+and CLI flag lookups were renovated into scenario-grounded architectural trade-offs
+under constraints ("X while maintaining Y").
+
+- **Renovated into trade-off decisions (7 items)**:
+  - `-002`: Team conventions configuration discrepancy between personal
+    `~/.claude/CLAUDE.md` and repository `CLAUDE.md`.
+  - `-005`: Session memory troubleshooting: verifying active memory files via
+    `/context` Memory files section vs `/memory` editing paths.
+  - `-009`: Custom skill parameter discoverability: `argument-hint` autocomplete
+    hints vs invalid frontmatter properties or missing interactive prompts.
+  - `-010`: Ambient always-loaded repository standards in `CLAUDE.md` vs
+    on-demand procedural workflows in custom Skills.
+  - `-012`: Co-located test rules across 60 directories: centrally scoped
+    `.claude/rules/` with glob patterns vs maintaining 60 redundant files.
+  - `-014`: Narrowly scoped single-line bugfix with explicit stack trace: direct
+    execution mode vs unnecessary plan mode / subagent overhead.
+  - `-020`: Machine-readable automated CI PR scanning: `--output-format json`
+    combined with `--json-schema` vs unconstrained text / regex extraction.
+- **Kept (17 items)**:
+  - Anchors: `-001` (sample Q6), `-006` (sample Q4), `-013` (sample Q5),
+    `-019` (sample Q10).
+  - Sound trade-offs & multi-selects: `-003`, `-004`, `-007`, `-008`, `-011`,
+    `-015`, `-016`, `-017`, `-018`, `-021`–`-022` (select-2), `-023`, `-024`.
+
+Adversarial cold-evaluation (`evaluate-questions`) independently verified all 7
+modified items against `memory.md`, `skills.md`, `best-practices.md`, `headless.md`,
+and exam guide Task Statements 3.1–3.6. All 7 items confirmed. All 24 items in
+Domain 3 are now `reviewed`.
+
+- **Dispositions (7)**: 7 confirmed, 0 miskeyed, 0 unsupported, 0 weak-distractors, 0 unsourced-claim.
+- **Status**: All 24 items in `claude-code-configuration-and-workflows` are `reviewed`.
+
 **Calibration note for future passes.** For ccar-f, the recorded real-exam
 signal outranks the guide's sample questions as the difficulty anchor.
 CONTRIBUTING § Difficulty calibration says real exams "tend to be easier than

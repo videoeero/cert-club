@@ -49,33 +49,33 @@
     "subdomain": "claude-md-hierarchy",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "A tech lead configures testing conventions for a repository, but newly onboarded engineers report that Claude Code ignores these conventions on their fresh checkouts. The lead's own environment follows the conventions perfectly. What is the most likely configuration error?",
+    "stem": "A tech lead establishes coding conventions for a microservices repository so that all contributors and automated pipelines adhere to identical linting and style rules. Newly onboarded engineers clone the repository and find that Claude Code ignores the conventions completely, while the lead's own local sessions follow them without issue. Which configuration mistake causes this discrepancy?",
     "options": [
       {
         "id": "a",
-        "text": "The lead placed the conventions in a nested subdirectory's CLAUDE.md that sits below their own working directory, so root-level sessions on fresh checkouts skip it."
+        "text": "The lead placed the conventions in a nested folder, and Claude Code requires every engineer to run claude init to link project memory."
       },
       {
         "id": "b",
-        "text": "The new engineers must run a one-time claude init command to register the repository's CLAUDE.md before it takes effect on their machines."
+        "text": "The new engineers have user-scoped ~/.claude/CLAUDE.md files that take precedence and completely override project-level memory."
       },
       {
         "id": "c",
-        "text": "The engineers' user-level ~/.claude/CLAUDE.md loads after the repository's CLAUDE.md and overrides it, replacing the lead's conventions on their machines."
+        "text": "The lead configured the conventions using path-specific rules in .claude/rules/, which are not shared across git checkouts by default."
       },
       {
         "id": "d",
-        "text": "The conventions were saved in ~/.claude/CLAUDE.md on the lead's machine rather than in the repository's root CLAUDE.md."
+        "text": "The conventions were saved in the lead's user-scoped ~/.claude/CLAUDE.md rather than committed to a project-level CLAUDE.md in version control."
       }
     ],
     "correct": [
       "d"
     ],
-    "explanation": "Claude Code's configuration hierarchy includes user-scoped memory (`~/.claude/CLAUDE.md`) and project-scoped memory (`CLAUDE.md` or `.claude/CLAUDE.md` in the project root). Instructions placed in `~/.claude/` only affect that individual user's machine. To share conventions across all developers, they must be placed in the project repository and committed to version control.",
+    "explanation": "User-scoped memory at ~/.claude/CLAUDE.md applies only to the individual developer's machine and is never shared through git. For repository conventions to apply automatically to all contributors upon checkout, they must be committed to a project-level CLAUDE.md (or .claude/rules/) within the repository root.",
     "distractorNotes": {
-      "a": "A nested CLAUDE.md is still committed and pulled, and Claude Code loads it when working in that subtree; the symptom points to a user-scoped ~/.claude/CLAUDE.md that never leaves the lead's machine.",
-      "b": "Claude Code auto-discovers the repository's CLAUDE.md with no init or registration step; it works for everyone once it lives at the repo root and is committed.",
-      "c": "User-level CLAUDE.md loads before project CLAUDE.md, not after, and discovered files are concatenated rather than overriding each other; a user file cannot replace the project file's conventions wholesale."
+      "a": "Claude Code does not require a manual init command to read project memory; it automatically discovers CLAUDE.md files in the current repository.",
+      "b": "User-scoped memory loads before project-scoped memory and both are concatenated; user-scoped memory does not override or suppress project-level files.",
+      "c": "Files committed under .claude/rules/ in the repository are tracked by git and available to all developers immediately upon checkout."
     },
     "sourceUrl": "https://code.claude.com/docs/en/memory.md",
     "sourceNote": "Distinguishing user-scoped ~/.claude/CLAUDE.md from project-scoped CLAUDE.md",
@@ -172,33 +172,33 @@
     "subdomain": "claude-md-hierarchy",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "An engineer edits a file in a deeply nested subdirectory and observes unexpected model behavior. How can the engineer inspect which CLAUDE.md memory files are currently loaded in the active session?",
+    "stem": "An engineer working in a complex monorepo suspects that conflicting memory instructions from ancestor directories are degrading Claude Code's responses during file edits. The engineer needs to verify exactly which CLAUDE.md and rules files have been loaded into the active session context. What is the proper command?",
     "options": [
       {
         "id": "a",
-        "text": "Run /doctor to validate the installation, which also lists every CLAUDE.md and rule file loaded into the current session."
+        "text": "Run /doctor to inspect system health and verify the list of active memory files and active rule overrides."
       },
       {
         "id": "b",
-        "text": "Run the /rules slash command to display a live evaluation tree of all glob patterns matched against the current working file."
+        "text": "Run /memory, which displays the live contents of all memory files currently injected into the active session context."
       },
       {
         "id": "c",
-        "text": "Run /context and check the Memory files list it shows for the current session's context."
+        "text": "Run /context and inspect the Memory files section, which lists the exact CLAUDE.md and rules files loaded into the current session."
       },
       {
         "id": "d",
-        "text": "Run /memory, which lists the CLAUDE.md files that have loaded into the current session."
+        "text": "Run /rules, which evaluates and displays active frontmatter glob patterns against the current working directory."
       }
     ],
     "correct": [
       "c"
     ],
-    "explanation": "The memory troubleshooting guidance is to run `/context` and check the list under **Memory files** to verify which CLAUDE.md and CLAUDE.local.md files loaded; a file missing from that list is one Claude can't see. `/memory` is for browsing and editing: it lists memory file locations across user and project scopes, including entries for files that don't exist yet, so it doesn't show what actually loaded. To trace when and why nested or path-scoped files load, an `InstructionsLoaded` hook can log each CLAUDE.md and rules file as it loads.",
+    "explanation": "The /context command shows token consumption across session components and explicitly lists which CLAUDE.md and rules files are loaded in the current session under the Memory files section. In contrast, /memory only displays file paths where memory can be edited (including files that do not exist yet), but does not verify active loading.",
     "distractorNotes": {
-      "a": "The memory docs describe /doctor as proposing trims for a checked-in CLAUDE.md, not as listing the memory files loaded into the session; /context's Memory files list shows that.",
-      "b": "Claude Code has no /rules command; /context lists the loaded memory files, and an InstructionsLoaded hook can log which CLAUDE.md and rules files load and why.",
-      "d": "/memory lists memory file locations across user and project scopes, including entries for files that don't exist yet, so it isn't a record of what loaded; the docs point to /context's Memory files list for that."
+      "a": "/doctor diagnoses installation health, CLI binaries, authentication state, and connectivity, not active per-session memory file loading.",
+      "b": "/memory lists locations of memory files to edit rather than verifying which files are currently loaded into the active session context.",
+      "d": "/rules is not a built-in Claude Code slash command."
     },
     "sourceUrl": "https://code.claude.com/docs/en/memory.md",
     "sourceNote": "Troubleshoot memory issues - /context lists loaded CLAUDE.md files under Memory files, while /memory lists file locations for editing",
@@ -336,33 +336,33 @@
     "subdomain": "commands-and-skills",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "A skill takes a ticket number argument when invoked (e.g. /deploy-check PROJ-123). Which frontmatter property shows the developer the expected argument while they type the command?",
+    "stem": "A DevOps team creates a custom slash command /deploy-check in .claude/skills/deploy-check/SKILL.md that accepts an issue key (e.g., /deploy-check JIRA-101). Developers frequently forget the required parameter format when invoking the command. Which frontmatter configuration displays the expected parameter syntax as an autocomplete hint while the developer is typing?",
     "options": [
       {
         "id": "a",
-        "text": "arguments: [ticket], which declares a named positional argument the skill body can reference as $ticket."
+        "text": "arguments: ['[ticket-number]'], which declares typed positional arguments that Claude Code validates before execution."
       },
       {
         "id": "b",
-        "text": "when_to_use: 'needs a ticket number', which adds trigger context Claude reads when deciding to invoke it."
+        "text": "when_to_use: 'invoke with ticket number', which adds a usage tooltip to the slash command autocomplete popup."
       },
       {
         "id": "c",
-        "text": "argument-hint: '[ticket-number]', which shows the expected argument during autocomplete as the command is typed."
+        "text": "argument-hint: '[ticket-number]', which displays the parameter placeholder during autocomplete typing."
       },
       {
         "id": "d",
-        "text": "disable-model-invocation: true, so the skill runs when the developer types /deploy-check with its argument."
+        "text": "disable-model-invocation: false with an interactive prompt directive asking for the missing ticket number."
       }
     ],
     "correct": [
       "c"
     ],
-    "explanation": "In the skill frontmatter reference, `argument-hint` is the hint shown during autocomplete to indicate expected arguments, for example `[issue-number]` or `[filename] [format]`. It is a display hint; it doesn't validate the argument or prompt for a missing one. The other options are real fields with different jobs: `arguments` maps named positional arguments to `$name` placeholders, `when_to_use` adds invocation context to the skill listing, and `disable-model-invocation` controls who can invoke the skill.",
+    "explanation": "The argument-hint frontmatter property specifies the text displayed in the autocomplete menu alongside the skill name, guiding users on expected arguments (e.g. argument-hint: '[ticket-number]'). Claude Code does not provide interactive prompting for missing skill arguments, so the hint is the documented mechanism for parameter discoverability.",
     "distractorNotes": {
-      "a": "arguments maps named positional arguments to $name placeholders in the skill content; it doesn't display anything while typing, and a named placeholder with no matching argument expands to an empty string.",
-      "b": "when_to_use is appended to description in the skill listing to help Claude decide when to invoke the skill; it isn't the autocomplete argument hint.",
-      "d": "disable-model-invocation stops Claude from loading the skill automatically, so only the developer can invoke it; it doesn't show the expected argument."
+      "a": "arguments is not a recognized Skill frontmatter property in Claude Code; parameters are passed to skills via $ARGUMENTS or positional references.",
+      "b": "when_to_use is not a frontmatter field for skills; skills rely on description and argument-hint for discovery and completion.",
+      "d": "disable-model-invocation controls whether Claude processes the skill invocation, not autocomplete presentation or interactive parameter prompting."
     },
     "sourceUrl": "https://code.claude.com/docs/en/skills.md",
     "sourceNote": "Frontmatter reference - argument-hint is the hint shown during autocomplete to indicate expected arguments",
@@ -377,33 +377,33 @@
     "subdomain": "commands-and-skills",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "An architect needs to establish guidelines for when to place instructions in CLAUDE.md versus when to package them as a custom Skill. What is the fundamental distinction?",
+    "stem": "An architect establishes repository standards for Claude Code and must decide whether to document release procedures in the project CLAUDE.md or as a custom Skill in .claude/skills/. What architectural distinction guides this decision?",
     "options": [
       {
         "id": "a",
-        "text": "CLAUDE.md is loaded only in interactive sessions, whereas Skills are the only mechanism that works in non-interactive or CI runs."
+        "text": "CLAUDE.md instructions are only loaded in interactive terminal sessions, whereas Skills execute exclusively in headless CI/CD pipelines."
       },
       {
         "id": "b",
-        "text": "Skills can bundle helper scripts and resources, whereas CLAUDE.md can hold at most a few hundred words before Claude Code truncates it."
+        "text": "Skills load their entire execution transcripts into context at session start, whereas CLAUDE.md instructions are deferred until referenced."
       },
       {
         "id": "c",
-        "text": "Both load in full at session start; the difference is that Skills live in each developer's ~/.claude/skills/ while CLAUDE.md is committed with the project."
+        "text": "CLAUDE.md is reserved for user-specific personal shortcuts, whereas Skills provide version-controlled standards committed to the repository."
       },
       {
         "id": "d",
-        "text": "CLAUDE.md holds universal project conventions loaded continually, while Skills package task-specific workflows invoked on demand."
+        "text": "CLAUDE.md provides ambient project context loaded into every turn, whereas Skills encapsulate on-demand procedural workflows loaded only when invoked."
       }
     ],
     "correct": [
       "d"
     ],
-    "explanation": "CLAUDE.md provides ambient, persistent context (coding standards, architectural invariants, testing commands) loaded into every session. Skills provide specialized, on-demand procedural capabilities (such as code review checklists, database migration audits, or release notes generators) invoked when specific tasks are performed.",
+    "explanation": "CLAUDE.md files provide ambient, universal instructions that load into the context window for every conversation turn (e.g., coding style, architecture invariants, build commands). Skills encapsulate procedural, task-specific workflows that are loaded on demand only when invoked (via slash commands or subagent delegation), preserving session context for routine work.",
     "distractorNotes": {
-      "a": "Both CLAUDE.md and Skills are available in interactive and non-interactive runs; the real distinction is that CLAUDE.md loads continuously while a Skill is invoked on demand.",
-      "b": "CLAUDE.md is not truncated at a few hundred words; while Skills can bundle resources, the fundamental distinction is continuous project conventions versus on-demand task workflows.",
-      "c": "Skills can be project-scoped under .claude/skills/ and committed too, and a Skill's body is not loaded at session start — only its description appears in the skill listing until it is invoked. The distinction is continuous conventions versus on-demand workflows."
+      "a": "CLAUDE.md instructions load in both interactive and headless (-p) sessions; Skills can also be invoked in both environments.",
+      "b": "Skills load only their names and short descriptions at session start; their full instructions load only when explicitly invoked.",
+      "c": "Both CLAUDE.md and Skills can be committed at the project level to establish shared repository standards."
     },
     "sourceUrl": "https://code.claude.com/docs/en/skills.md",
     "sourceNote": "Architectural distinction between ambient CLAUDE.md instructions and on-demand Skills",
@@ -459,33 +459,33 @@
     "subdomain": "path-specific-rules",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "A repository has unit test files co-located next to implementation files across 60 directories (e.g. src/utils/format.test.ts next to format.ts). Why are path-specific rules in .claude/rules/ preferred over directory-level CLAUDE.md files for testing conventions?",
+    "stem": "A repository co-locates unit tests alongside implementation code across 60 separate feature directories (*.test.ts next to *.ts). The team wants strict assertion and mocking conventions enforced whenever Claude Code touches any test file, without maintaining 60 redundant instruction files or polluting context when editing non-test code. What configuration strategy best satisfies this while minimizing maintenance overhead?",
     "options": [
       {
         "id": "a",
-        "text": "Directory-level CLAUDE.md files override the root project configuration, discarding global build commands whenever test files are read."
+        "text": "Create a CLAUDE.md file in each of the 60 feature directories containing the testing rules, relying on directory-level loading to isolate them."
       },
       {
         "id": "b",
-        "text": "A single rule file using a glob pattern matches all test files across the repository, avoiding duplicated maintenance across 60 folders."
+        "text": "Define a single rule file in .claude/rules/ with frontmatter paths matching '**/*.test.ts', so conventions load automatically only when test files are touched."
       },
       {
         "id": "c",
-        "text": "Directory-level CLAUDE.md files require explicit @path import statements in the root CLAUDE.md to be loaded during codebase exploration."
+        "text": "Append the testing conventions to the root CLAUDE.md wrapped in an @include directive pointing to each of the 60 test file paths."
       },
       {
         "id": "d",
-        "text": "Path-specific rules enforce strict sandbox constraints that prevent edits to non-test files, whereas CLAUDE.md files are strictly ignored."
+        "text": "Configure a custom slash command in .claude/commands/ that developers must invoke before asking Claude Code to write or edit unit tests."
       }
     ],
     "correct": [
       "b"
     ],
-    "explanation": "When files sharing conventions (such as test files) are distributed throughout many subdirectories, relying on directory-level CLAUDE.md files requires creating and maintaining duplicate configuration files across every directory. In contrast, a single rule file in `.claude/rules/` with a glob pattern like `paths: ['**/*.test.ts']` automatically applies to all matching files across the entire repository while loading only when relevant files are inspected.",
+    "explanation": "A single rule file in .claude/rules/ with a glob pattern like paths: '**/*.test.ts' centrally enforces conventions across all matching files in the project. Claude Code automatically injects the rule into context only when files matching the glob are read or edited, avoiding context bloat on unrelated edits and eliminating the burden of synchronizing 60 directory-level files.",
     "distractorNotes": {
-      "a": "Claude Code concatenates ancestor CLAUDE.md files down the directory tree from root to leaf; nested files supplement root instructions rather than overriding or discarding them.",
-      "c": "Claude Code automatically discovers and loads nested CLAUDE.md files on demand when reading files in those subdirectories; explicit @ imports in root CLAUDE.md are not required.",
-      "d": "Path-specific rules provide contextual guidance to the model rather than hard sandbox enforcement; blocking tool actions requires settings or hooks."
+      "a": "Maintaining 60 separate directory-level CLAUDE.md files creates massive maintenance overhead and risks configuration drift as testing conventions evolve.",
+      "c": "The @include directive statically inlines content into the root memory file, causing all testing rules to load into every session regardless of which files are edited.",
+      "d": "Requiring developers to invoke a slash command manually turns an automated convention into a manual process with non-zero human omission rate."
     },
     "sourceUrl": "https://code.claude.com/docs/en/memory.md",
     "sourceNote": "Glob-based path matching versus maintaining numerous directory-level memory files",
@@ -541,33 +541,33 @@
     "subdomain": "plan-mode-workflows",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "A CI failure points to a single null pointer exception in src/utils/date.ts with an explicit line number and stack trace. Which interaction mode is most efficient?",
+    "stem": "A developer needs to fix a continuous integration test failure caused by an unhandled null value in src/utils/date.ts. The test report provides the exact line number, stack trace, and failing input. Which interaction mode in Claude Code is most efficient to resolve the issue while conserving context and latency?",
     "options": [
       {
         "id": "a",
-        "text": "Full plan mode with an exhaustive architectural review and comprehensive dependency mapping across all modules."
+        "text": "Enter plan mode to perform an exploratory architectural review of the entire utility module before drafting changes."
       },
       {
         "id": "b",
-        "text": "Launch a general codebase-exploration subagent to map the full dependency graph of date.ts before touching the reported line."
+        "text": "Launch a custom Explore subagent with context: fork to isolate file searching and dependency mapping."
       },
       {
         "id": "c",
-        "text": "Turn on extended thinking with a large reasoning budget to reason exhaustively about every edge case before editing the single line."
+        "text": "Turn on extended thinking with a maximum reasoning budget to perform formal verification across all date callers."
       },
       {
         "id": "d",
-        "text": "Direct execution mode, allowing Claude to inspect the specific file and apply the targeted fix immediately."
+        "text": "Use direct execution mode, providing the file path and stack trace so Claude Code directly inspects the line and applies the targeted fix."
       }
     ],
     "correct": [
       "d"
     ],
-    "explanation": "Plan mode is useful but adds overhead. For tasks where the scope is clear and the fix is small, the guidance is to ask Claude to do it directly: if you could describe the diff in one sentence, skip the plan. A stack trace that pinpoints one line in one file is that case, so direct execution lets Claude inspect the file and apply the targeted fix.",
+    "explanation": "When a bug is narrowly scoped, isolated to a single file, and accompanied by an explicit stack trace and failing input, direct execution mode is fastest and most context-efficient. Plan mode is designed for complex, ambiguous, multi-file changes where exploration must precede implementation.",
     "distractorNotes": {
-      "a": "Plan mode adds overhead, and a one-line null check is a change you could describe in one sentence, which is the documented cue to skip the plan.",
-      "b": "The stack trace already localizes the defect to one line, so mapping the whole dependency graph first adds exploration overhead with no benefit; direct execution fixes it immediately.",
-      "c": "A pinpointed null-pointer fix does not need a large extended-thinking budget; direct inspection and a targeted edit resolve it without the added latency and tokens."
+      "a": "Plan mode introduces exploration overhead, user approval turns, and token consumption that are unnecessary for a known, localized defect with an explicit stack trace.",
+      "b": "An Explore subagent is intended for searching broad, unfamiliar codebases; here the file and line number are already pinpointed.",
+      "c": "Extended thinking increases latency and token spend without providing benefit for a routine null check fix."
     },
     "sourceUrl": "https://code.claude.com/docs/en/best-practices.md",
     "sourceNote": "Explore first, then plan, then code - for small, clearly scoped fixes, ask Claude to do it directly and skip the plan",
@@ -787,33 +787,33 @@
     "subdomain": "ci-cd-integration",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "An automated pipeline runs Claude Code to perform security scanning on PRs and needs to parse the results programmatically to post GitHub inline comments. What CLI flags ensure reliable, structured output?",
+    "stem": "A security engineering team integrates Claude Code into an automated GitHub Actions pipeline to scan pull requests for credential leaks. The downstream CI step parses the scan findings with jq to post inline review comments. Which CLI configuration ensures the scan produces machine-readable, schema-validated JSON without freeform text or conversational envelopes?",
     "options": [
       {
         "id": "a",
-        "text": "Instruct Claude in the prompt to format output as XML and parse stdout using custom regular expressions in bash scripts."
+        "text": "Provide prompt instructions requesting JSON format and run with standard output redirection: claude -p '... format as json' > results.json."
       },
       {
         "id": "b",
-        "text": "Use --output-format json with --json-schema to enforce structured, machine-parseable JSON adhering to the review schema."
+        "text": "Pass --output-format json combined with --json-schema defining the expected issue schema, ensuring strict structured output."
       },
       {
         "id": "c",
-        "text": "Set --output-format text and parse the human-readable summary with a downstream LLM call that converts it into JSON."
+        "text": "Set --output-format json on its own, which guarantees that Claude Code's response is automatically constrained to valid JSON."
       },
       {
         "id": "d",
-        "text": "Use --output-format json on its own, since the JSON envelope's result field already carries the findings in the structure the prompt describes."
+        "text": "Pass --output-format text and pipe the output to a Python post-processing script that extracts JSON codeblocks with regular expressions."
       }
     ],
     "correct": [
       "b"
     ],
-    "explanation": "Running Claude Code in CI with `--output-format json` and `--json-schema` enforces structured outputs matching a defined schema. This guarantees that findings (file paths, line numbers, severity, descriptions) are returned as valid JSON that downstream CI scripts can reliably parse and post as inline comments.",
+    "explanation": "Running Claude Code with --output-format json and --json-schema guarantees that the output adheres strictly to the provided JSON schema without conversational preamble or markdown codeblock wrappers, enabling seamless downstream parsing with tools like jq.",
     "distractorNotes": {
-      "a": "Parsing unstructured text or informal XML with regex is brittle and prone to breakage.",
-      "c": "Converting free-text output to JSON with a second LLM call adds cost and a new failure point; --output-format json with a schema produces machine-parseable results directly.",
-      "d": "Without --json-schema, --output-format json wraps free-text output in metadata; schema-conforming output appears in the structured_output field only when --json-schema is supplied."
+      "a": "Prompting for JSON without CLI schema enforcement often results in markdown codeblocks (```json ... ```) or conversational commentary, breaking strict JSON parsers.",
+      "c": "--output-format json without --json-schema wraps Claude's output in a standard CLI JSON envelope, but the assistant content itself remains unstructured text unless a schema is provided.",
+      "d": "Regex extraction from text output is brittle and prone to breakage whenever model phrasing or error reporting variations occur."
     },
     "sourceUrl": "https://code.claude.com/docs/en/headless.md",
     "sourceNote": "Using --output-format json and --json-schema for machine-readable pipeline integrations",
