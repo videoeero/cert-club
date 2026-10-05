@@ -38,7 +38,7 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/memory.md",
     "sourceNote": "Path-specific rules in .claude/rules/ using YAML frontmatter paths glob patterns",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-claude-code-configuration-and-workflows-002",
@@ -79,7 +79,7 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/memory.md",
     "sourceNote": "Distinguishing user-scoped ~/.claude/CLAUDE.md from project-scoped CLAUDE.md",
-    "sourceCheckedAt": "2026-09-24"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-claude-code-configuration-and-workflows-003",
@@ -120,7 +120,7 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/memory.md",
     "sourceNote": "Import additional files — `@path/to/import` syntax for modular, maintainable CLAUDE.md configurations",
-    "sourceCheckedAt": "2026-09-24"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-claude-code-configuration-and-workflows-004",
@@ -161,7 +161,7 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/memory.md",
     "sourceNote": "Splitting monolithic CLAUDE.md files into topic-specific rule files in .claude/rules/",
-    "sourceCheckedAt": "2026-09-24"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-claude-code-configuration-and-workflows-005",
@@ -202,7 +202,7 @@
     },
     "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
     "sourceNote": "Exam Guide v1.0 § Task Statement 3.1 — /memory verifies which memory files are loaded",
-    "sourceCheckedAt": "2026-09-25"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-claude-code-configuration-and-workflows-006",
@@ -243,7 +243,7 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/skills.md",
     "sourceNote": "Project-scoped custom slash commands in .claude/commands/ for version-controlled team sharing",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-claude-code-configuration-and-workflows-007",
@@ -284,7 +284,7 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/skills.md",
     "sourceNote": "Using context: fork frontmatter to isolate verbose skill execution from main conversation context",
-    "sourceCheckedAt": "2026-09-24"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-claude-code-configuration-and-workflows-008",
@@ -325,7 +325,7 @@
     },
     "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
     "sourceNote": "Exam Guide v1.0 § Task Statement 3.2 — allowed-tools frontmatter restricts tool access during skill execution",
-    "sourceCheckedAt": "2026-09-25"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-claude-code-configuration-and-workflows-009",
@@ -366,7 +366,7 @@
     },
     "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
     "sourceNote": "Exam Guide v1.0 § Task Statement 3.2 — argument-hint prompts developers for required parameters when a skill is invoked without arguments",
-    "sourceCheckedAt": "2026-09-25"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-claude-code-configuration-and-workflows-010",
@@ -407,7 +407,7 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/skills.md",
     "sourceNote": "Architectural distinction between ambient CLAUDE.md instructions and on-demand Skills",
-    "sourceCheckedAt": "2026-09-24"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-claude-code-configuration-and-workflows-011",
@@ -448,7 +448,7 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/memory.md",
     "sourceNote": "Using YAML frontmatter paths in .claude/rules/ to conditionally load path-scoped conventions",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-claude-code-configuration-and-workflows-012",
@@ -484,12 +484,12 @@
     "explanation": "A single rule file in .claude/rules/ with a glob pattern like paths: '**/*.test.ts' centrally enforces conventions across all matching files in the project. Claude Code automatically injects the rule into context only when files matching the glob are read or edited, avoiding context bloat on unrelated edits and eliminating the burden of synchronizing 60 directory-level files.",
     "distractorNotes": {
       "a": "Maintaining 60 separate directory-level CLAUDE.md files creates massive maintenance overhead and risks configuration drift as testing conventions evolve.",
-      "c": "The @include directive statically inlines content into the root memory file, causing all testing rules to load into every session regardless of which files are edited.",
+      "c": "The @path import statically inlines content into the root memory file, and imported files load at launch along with the CLAUDE.md that references them, so all testing rules would load into every session regardless of which files are edited.",
       "d": "Requiring developers to invoke a slash command manually turns an automated convention into a manual process with non-zero human omission rate."
     },
     "sourceUrl": "https://code.claude.com/docs/en/memory.md",
     "sourceNote": "Glob-based path matching versus maintaining numerous directory-level memory files",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-claude-code-configuration-and-workflows-013",
@@ -530,7 +530,7 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/best-practices.md",
     "sourceNote": "Explore first, then plan, then code - plan mode separates exploration from execution and is most useful for uncertain, multi-file changes",
-    "sourceCheckedAt": "2026-09-24"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-claude-code-configuration-and-workflows-014",
@@ -571,7 +571,7 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/best-practices.md",
     "sourceNote": "Explore first, then plan, then code - for small, clearly scoped fixes, ask Claude to do it directly and skip the plan",
-    "sourceCheckedAt": "2026-09-24"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-claude-code-configuration-and-workflows-015",
@@ -612,7 +612,7 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
     "sourceNote": "Isolating verbose codebase exploration in subagents to preserve main session context",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-claude-code-configuration-and-workflows-016",
@@ -653,7 +653,7 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices.md",
     "sourceNote": "Using concrete input/output examples to disambiguate complex transformation requirements",
-    "sourceCheckedAt": "2026-09-24"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-claude-code-configuration-and-workflows-017",
@@ -686,7 +686,7 @@
     "correct": [
       "c"
     ],
-    "explanation": "Test-driven debugging in Claude Code converges fastest when the model is provided with concrete diagnostic feedback, such as terminal test outputs, stack traces, and expected-versus-actual assertion diffs. Claude Code uses these exact error details to trace code execution paths and apply targeted corrections, rather than guessing from abstract descriptions or rewriting entire modules.",
+    "explanation": "Iterating on a failure converges fastest when Claude Code is given the concrete diagnostic rather than a paraphrase: for bugs, paste the error message or failure output, and Claude Code traces the issue through the codebase, identifies the root cause, and implements a fix. The exact error output localizes the failing code path, so corrections target the real cause instead of an abstract description of the symptom.",
     "distractorNotes": {
       "a": "Starting over and re-describing requirements in natural language discards the precise diagnostic symptoms needed to isolate the bug.",
       "b": "Entering plan mode to review the entire test framework adds conversational latency and broad exploration overhead when a concrete stack trace already isolates the bug.",
@@ -694,7 +694,7 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/overview.md",
     "sourceNote": "Feeding test failure traces to guide targeted, test-driven iterative fixes",
-    "sourceCheckedAt": "2026-09-24"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-claude-code-configuration-and-workflows-018",
@@ -735,7 +735,7 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/best-practices.md",
     "sourceNote": "Let Claude interview you - have Claude interview you with AskUserQuestion to surface edge cases and tradeoffs before implementing",
-    "sourceCheckedAt": "2026-09-24"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-claude-code-configuration-and-workflows-019",
@@ -776,7 +776,7 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/headless.md",
     "sourceNote": "Running Claude Code non-interactively in automated pipelines with the -p flag",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-claude-code-configuration-and-workflows-020",
@@ -817,7 +817,7 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/headless.md",
     "sourceNote": "Using --output-format json and --json-schema for machine-readable pipeline integrations",
-    "sourceCheckedAt": "2026-09-24"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-claude-code-configuration-and-workflows-021",
@@ -863,7 +863,7 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/memory.md",
     "sourceNote": "Concatenation hierarchy, subdirectory on-demand loading, and local override ordering",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-claude-code-configuration-and-workflows-022",
@@ -909,7 +909,7 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/headless.md",
     "sourceNote": "Bare mode startup isolation, authentication requirements, and headless lifecycle management",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-claude-code-configuration-and-workflows-023",
@@ -950,7 +950,7 @@
     },
     "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
     "sourceNote": "Exam Guide v1.0 § Task Statement 3.5 — interacting issues go in one detailed message; independent issues are iterated sequentially",
-    "sourceCheckedAt": "2026-09-24"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-claude-code-configuration-and-workflows-024",
@@ -991,6 +991,6 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/code-review.md",
     "sourceNote": "Check run completes neutral and never blocks branch protection; gate merges by parsing its severity output",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceCheckedAt": "2026-10-05"
   }
 ]

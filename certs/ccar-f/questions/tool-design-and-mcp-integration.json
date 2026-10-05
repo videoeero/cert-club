@@ -30,7 +30,7 @@
     "correct": [
       "b"
     ],
-    "explanation": ".mcp.json in the project root is tracked by version control, making the MCP server automatically available to all teammates upon cloning. By using environment variable expansion (e.g. ${DB_PASSWORD}), sensitive credentials remain in each developer's local environment without being committed to git.",
+    "explanation": ".mcp.json in the project root is tracked by version control, so every teammate who clones gets the same server definition, though each still approves the project server the first time Claude Code offers it. By using environment variable expansion (e.g. ${DB_PASSWORD}), sensitive credentials remain in each developer's local environment without being committed to git.",
     "distractorNotes": {
       "a": "CLAUDE.md contains project instructions for the model, not MCP server transport configurations or executable connection manifests.",
       "c": "User-scoped configuration in ~/.claude.json is not tracked by the repository, requiring manual distribution and drifting easily across developers.",
@@ -38,7 +38,7 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/mcp.md",
     "sourceNote": "Configure MCP servers in project-scoped .mcp.json with environment variable expansion",
-    "sourceCheckedAt": "2026-09-24"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-002",
@@ -79,7 +79,7 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools.md",
     "sourceNote": "Best practices for tool definitions - extremely detailed descriptions are the most important factor in tool selection",
-    "sourceCheckedAt": "2026-09-24"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-003",
@@ -112,15 +112,15 @@
     "correct": [
       "d"
     ],
-    "explanation": "Overlapping tool names and vague descriptions create semantic confusion for the model. Renaming tools to clearly indicate their specific operational scope (e.g. distinguishing web scraping from PDF parsing) and eliminating overlapping responsibilities in their descriptions gives Claude unambiguous criteria for tool selection.",
+    "explanation": "Overlapping tool names and vague descriptions create semantic confusion for the model. Renaming tools to clearly indicate their specific operational scope (e.g. distinguishing web scraping from PDF parsing) and eliminating overlapping responsibilities in their descriptions gives Claude unambiguous criteria for tool selection. Note the divergence: define-tools.md now recommends the opposite shape for a related problem — \"Consolidate related operations into fewer tools\" — while the guide's Task Statement 2.1 names renaming plus a purpose-specific description as the fix for functional overlap, and the exam is written from the guide.",
     "distractorNotes": {
       "a": "Zero temperature does not resolve semantic ambiguity between overlapping tools; it simply makes the arbitrary misselection deterministic.",
       "b": "Priority hints do not remove the underlying semantic overlap; Claude still cannot tell which tool fits a given input, so it keeps misselecting or calling both.",
       "c": "Negative prompt instructions do not resolve semantic ambiguity between tools with identical capability descriptions; the model still struggles to determine which tool genuinely applies to a given input."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools.md",
-    "sourceNote": "Eliminating functional overlap in tool naming and descriptions to prevent misselection",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
+    "sourceNote": "Exam Guide v1.0 § Task Statement 2.1 — renaming tools and updating descriptions to eliminate functional overlap",
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-004",
@@ -161,7 +161,7 @@
     },
     "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
     "sourceNote": "Exam Guide v1.0 § Task Statement 2.1 — splitting generic tools into purpose-specific tools with defined input/output contracts",
-    "sourceCheckedAt": "2026-09-24"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-005",
@@ -202,7 +202,7 @@
     },
     "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
     "sourceNote": "Exam Guide v1.0 § Task Statement 2.1 — keyword-sensitive system prompt instructions can create unintended tool associations",
-    "sourceCheckedAt": "2026-09-24"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-006",
@@ -243,7 +243,7 @@
     },
     "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
     "sourceNote": "Exam Guide v1.0 § Task Statement 2.2 — the MCP isError flag pattern with structured error metadata (errorCategory, isRetryable)",
-    "sourceCheckedAt": "2026-09-24"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-007",
@@ -284,7 +284,7 @@
     },
     "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
     "sourceNote": "Exam Guide v1.0 § Task Statement 2.2 — non-retryable flags and customer-friendly explanations for business rule violations",
-    "sourceCheckedAt": "2026-09-24"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-008",
@@ -325,7 +325,7 @@
     },
     "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
     "sourceNote": "Exam Guide v1.0 § Task Statement 2.2 — local error recovery in subagents, propagating unresolved errors with partial results",
-    "sourceCheckedAt": "2026-09-24"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-009",
@@ -366,7 +366,7 @@
     },
     "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
     "sourceNote": "Exam Guide v1.0 § Task Statement 2.2 — distinguishing access failures from valid empty results",
-    "sourceCheckedAt": "2026-09-24"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-010",
@@ -407,7 +407,7 @@
     },
     "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
     "sourceNote": "Exam Guide v1.0 § Task Statement 2.3 — too many tools degrade selection; restrict each agent's tool set to its role",
-    "sourceCheckedAt": "2026-09-25"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-011",
@@ -434,21 +434,21 @@
       },
       {
         "id": "d",
-        "text": "Restrict the synthesis subagent's configuration to only formatting and file-writing tools (using allowedTools), omitting search tools entirely."
+        "text": "Restrict the synthesis subagent's configuration to only formatting and file-writing tools (naming them in the subagent's tools field), omitting search tools entirely."
       }
     ],
     "correct": [
       "d"
     ],
-    "explanation": "The most reliable way to enforce functional boundaries across subagents is programmatic tool scoping via allowedTools (or tool configuration). By withholding search tools from the synthesis subagent, the agent is deterministically prevented from executing searches, forcing it to work strictly with the provided research findings or report missing information back to the coordinator.",
+    "explanation": "The most reliable way to enforce functional boundaries across subagents is programmatic tool scoping: the subagent frontmatter field is tools, an allowlist of the tools that subagent may use (disallowedTools is the denylist; --tools is the equivalent CLI flag and tools the Agent SDK session option — allowedTools/--allowedTools only pre-approves tools for permission, it does not restrict them). By withholding search tools from the synthesis subagent, the agent is deterministically prevented from executing searches, forcing it to work strictly with the provided research findings or report missing information back to the coordinator.",
     "distractorNotes": {
       "a": "Prompt-based negative constraints provide probabilistic guidance and have a non-zero failure rate, especially when the model perceives missing information as critical.",
       "b": "Temperature 0.0 affects sampling variance, not tool permissions; if the search tool is available and the model believes it needs information, it will still call it.",
       "c": "A supervisor agent adds latency, coordination complexity, and token cost to monitor what should be prevented by basic configuration."
     },
     "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
-    "sourceNote": "Restricting subagent tool sets via allowedTools to enforce functional separation of concerns",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceNote": "Subagent frontmatter tools field as an allowlist (disallowedTools as the denylist) to enforce functional separation of concerns",
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-012",
@@ -489,7 +489,7 @@
     },
     "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
     "sourceNote": "Exam Guide v1.0 § Task Statement 2.3 — scoped cross-role tools for high-frequency needs, complex cases routed through the coordinator",
-    "sourceCheckedAt": "2026-09-24"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-013",
@@ -522,15 +522,15 @@
     "correct": [
       "b"
     ],
-    "explanation": "Specifying tool_choice: {'type': 'tool', 'name': 'extract_metadata'} programmatically forces the model to execute that exact tool on the turn, ignoring all other available tools and suppressing conversational text. This guarantees deterministic initial execution for mandatory extraction workflows.",
+    "explanation": "Specifying tool_choice: {'type': 'tool', 'name': 'extract_metadata'} programmatically forces the model to execute that exact tool on the turn, ignoring all other available tools and suppressing conversational text. This guarantees deterministic initial execution for mandatory extraction workflows. Note the divergence: define-tools.md now reports that where forced tool use is unsupported, tool_choice: {\"type\": \"any\"} and {\"type\": \"tool\", ...} return a 400 error (Claude Opus 5.5, Sonnet 5.5, Fable 5.1 and Mythos 5.1, and on any model with manual extended thinking), recommending tool_choice: \"auto\" plus strict tool use instead; the guide's Task Statement 2.3 still names forced tool selection, so the guide's mechanism remains the answer.",
     "distractorNotes": {
       "a": "input_examples demonstrate input parameter shapes for a single tool; they cannot enforce execution ordering across different tools.",
       "c": "System prompt instructions provide probabilistic guidance; they cannot guarantee 100% compliance when multiple tools are available.",
       "d": "Setting tool_choice: 'any' forces the model to call a tool, but allows it to choose among all three tools rather than guaranteeing extract_metadata specifically."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools.md",
-    "sourceNote": "Forcing specific tool invocation using tool_choice parameter",
-    "sourceCheckedAt": "2026-09-24"
+    "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
+    "sourceNote": "Exam Guide v1.0 § Task Statement 2.3 — tool_choice forced selection ensures a specific tool is called first",
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-014",
@@ -563,15 +563,15 @@
     "correct": [
       "c"
     ],
-    "explanation": "tool_choice: {'type': 'any'} forces the model to invoke one of the tools defined in the request rather than responding with natural language text. When the exact tool cannot be predicted ahead of time (e.g. unknown document types), any guarantees an immediate tool call while allowing Claude's reasoning to select the most appropriate tool from the provided set.",
+    "explanation": "tool_choice: {'type': 'any'} forces the model to invoke one of the tools defined in the request rather than responding with natural language text. When the exact tool cannot be predicted ahead of time (e.g. unknown document types), any guarantees an immediate tool call while allowing Claude's reasoning to select the most appropriate tool from the provided set. Note the divergence: define-tools.md now reports that {\"type\": \"any\"} and {\"type\": \"tool\", ...} return a 400 error on Claude Opus 5.5, Sonnet 5.5, Fable 5.1 and Mythos 5.1 and on any model with manual extended thinking, pointing to tool_choice: \"auto\" with strict tool use to guarantee a call instead; the guide's Task Statements 2.3 and 4.3 still test tool_choice: \"any\", so the key follows the guide.",
     "distractorNotes": {
       "a": "tool_choice: 'none' explicitly prevents Claude from calling any tools, forcing it to respond only with text.",
       "b": "tool_choice: 'auto' is the default behavior and permits Claude to emit conversational text or ask clarifying questions without invoking a tool.",
       "d": "Forcing extract_invoice causes receipts and contracts to be processed with the wrong schema, breaking the classification requirement."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools.md",
-    "sourceNote": "Guaranteeing tool calling over conversational text using tool_choice: any",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
+    "sourceNote": "Exam Guide v1.0 § Task Statement 2.3 — tool_choice: \"any\" guarantees a tool call rather than conversational text",
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-015",
@@ -604,7 +604,7 @@
     "correct": [
       "d"
     ],
-    "explanation": "Claude Code merges user-scoped MCP servers configured in ~/.claude.json with project-scoped servers defined in .mcp.json. Configuring personal or experimental tools in ~/.claude.json makes them available across local sessions without modifying project files or risking accidental commits to version control.",
+    "explanation": "Claude Code loads user-scoped MCP servers configured in ~/.claude.json alongside the project-scoped servers defined in .mcp.json, so both are available in the project without touching the tracked file (only a same-named definition competes, and then the highest-precedence entry is used whole, without merging fields). Configuring personal or experimental tools in ~/.claude.json makes them available across local sessions without modifying project files or risking accidental commits to version control.",
     "distractorNotes": {
       "a": "Using git assume-unchanged is a fragile local git index workaround that can still be overwritten by upstream merges or accidentally committed.",
       "b": "CLAUDE.md provides context and instructions to the model; it is not a configuration file for registering executable MCP servers.",
@@ -612,7 +612,7 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/mcp.md",
     "sourceNote": "Configuring personal MCP servers in ~/.claude.json alongside project .mcp.json",
-    "sourceCheckedAt": "2026-09-25"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-016",
@@ -645,15 +645,15 @@
     "correct": [
       "a"
     ],
-    "explanation": "MCP Resources provide a standardized mechanism for servers to expose read-only data, schemas, or catalog hierarchies via URIs. Exposing catalog data as resources allows the client/agent to read the structured taxonomy directly or attach it as context, eliminating repetitive exploratory tool invocations.",
+    "explanation": "MCP Resources provide a standardized mechanism for servers to expose read-only data, schemas, or catalog hierarchies via URIs. Exposing catalog data as resources allows the client/agent to read the structured taxonomy directly or attach it as context, eliminating repetitive exploratory tool invocations. The reduction in exploratory calls is the guide's Task Statement 2.4 claim; the MCP specification itself establishes that Resources are URI-addressed, application-controlled data the client can attach directly.",
     "distractorNotes": {
       "b": "Embedding large taxonomies in tool descriptions inflates prompt token consumption on every turn regardless of whether the tool is invoked.",
       "c": "Prompts are user-controlled, interactive prompt templates requiring explicit invocation; they do not provide standardized application-attached context data.",
       "d": "Server-side caching may speed up backend database queries but does not eliminate the client-agent round trips or token costs of the 4-6 exploratory tool invocations."
     },
-    "sourceUrl": "https://modelcontextprotocol.io/docs/2026-07-28/learn/server-concepts.md",
-    "sourceNote": "Using MCP Resources to expose structured catalogs and schemas without exploratory tool calls",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
+    "sourceNote": "Exam Guide v1.0 § Task Statement 2.4 — exposing content catalogs as MCP resources to avoid exploratory tool calls",
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-017",
@@ -694,7 +694,7 @@
     },
     "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
     "sourceNote": "Exam Guide v1.0 § Task Statement 2.4 — enhancing MCP tool descriptions so the agent does not prefer built-in tools such as Grep",
-    "sourceCheckedAt": "2026-09-25"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-018",
@@ -735,7 +735,7 @@
     },
     "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
     "sourceNote": "Exam Guide v1.0 § Task Statement 2.5 — Read + Write as the fallback when Edit cannot find unique anchor text",
-    "sourceCheckedAt": "2026-09-25"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-019",
@@ -781,7 +781,7 @@
     },
     "sourceUrl": "https://modelcontextprotocol.io/docs/2026-07-28/learn/server-concepts.md",
     "sourceNote": "Core Server Features table and operational control models for Tools, Resources, and Prompts",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-020",
@@ -827,7 +827,7 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/mcp.md",
     "sourceNote": "Scope hierarchy, precedence, and field isolation across local, project, and user scopes",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-021",
@@ -860,15 +860,15 @@
     "correct": [
       "c"
     ],
-    "explanation": "Claude Code is designed to build codebase understanding incrementally. Using Grep allows Claude to search file contents across the repository for specific string literals, function identifiers, or event dispatchers without reading unnecessary files. Once entry points are identified, Claude selectively uses Read on those specific files to trace imports and execution paths, minimizing context window usage and avoiding early compaction.",
+    "explanation": "Claude Code is designed to build codebase understanding incrementally. Using Grep allows Claude to search file contents across the repository for specific string literals, function identifiers, or event dispatchers without reading unnecessary files. Once entry points are identified, Claude selectively uses Read on those specific files to trace imports and execution paths, minimizing context window usage and avoiding early compaction. Note the divergence: tools-reference.md now lists Grep and Glob as absent from the default tool set on macOS, Linux and WSL, where Claude instead searches with embedded ugrep and bfs through the Bash tool unless Grep or Glob is named in --tools or --allowedTools or in a subagent's tools field; the guide's Task Statement 2.5 still tests selecting Grep for content search and the Grep-then-Read sequence, so the guide wins.",
     "distractorNotes": {
       "a": "Glob performs pattern matching on file paths and file names, not file contents. Unless a file happens to be named after the event string, Glob will not locate where InvoicePaymentFailed is defined or handled.",
       "b": "Reading numerous files upfront fills the context window with irrelevant code, burning tokens and triggering auto-compaction that degrades model performance.",
-      "d": "The flaw is volume rather than the shell: streaming every match as raw stdout into the conversation spends far more context than a targeted Grep call followed by selective Read of the files it names, which is the incremental pattern the stem asks for."
+      "d": "The flaw is volume rather than the shell: streaming every match as raw stdout into the conversation spends far more context than a targeted Grep call followed by selective Read of the files it names, which is the incremental pattern the stem asks for. On macOS, Linux and WSL that Bash-routed search is also what happens by default now that Grep is left out of the default tool set, so what rules this option out is the size of the result set Claude has to carry, not the shell."
     },
-    "sourceUrl": "https://code.claude.com/docs/en/tools-reference.md",
-    "sourceNote": "Grep tool behavior for searching file contents and Read for inspecting code",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
+    "sourceNote": "Exam Guide v1.0 § Task Statement 2.5 — Grep to find entry points, then Read to follow imports and trace flows",
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-tool-design-and-mcp-integration-022",
@@ -909,6 +909,6 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/mcp.md",
     "sourceNote": "Scale with MCP tool search by deferring tool schemas until needed",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceCheckedAt": "2026-10-05"
   }
 ]

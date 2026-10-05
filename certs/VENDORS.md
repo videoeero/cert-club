@@ -25,7 +25,7 @@ fabrication problem in a new place.
 
 ## Anthropic
 
-_Checked 2026-09-17 · banks: `ccdv-f`, `ccar-f`, `ccar-p`_
+_Checked 2026-10-05 · banks: `ccdv-f`, `ccar-f`, `ccar-p`_
 
 - **Exam guides** are PDFs on Anthropic's Everpath CDN, all under one
   instructor path, with adjacent numeric IDs per guide:
@@ -46,6 +46,14 @@ _Checked 2026-09-17 · banks: `ccdv-f`, `ccar-f`, `ccar-p`_
   dropped off the pricing table entirely. A bank that names a model in a stem
   acquires an expiry date it does not advertise — grep for model names every
   pass and diff against `platform.claude.com/docs/en/models/overview`.
+  Re-confirmed 2026-10-05: the lineup table now lists **Claude Opus 5.5 and
+  Sonnet 5.5** (with Fable 5.1 and Haiku 4.5 carried over); Claude Opus 5 and
+  Sonnet 5 have moved to the legacy list, and Claude Mythos 5.1 (an invite-only
+  Fable 5.1 variant) appears only in a pricing footnote, not the table. The
+  forced-tool-use and extended-thinking restrictions below now name these
+  models. `ccar-f` names a model in exactly one stem (`tool-...-014`, "running
+  on Claude Sonnet"), deliberately unversioned to avoid manufacturing a trap
+  surface; the rest name none.
 - **API surfaces are superseded in place, with the old shape left documented.**
   Confirmed 2026-09-13: manual extended thinking (`thinking.type: "enabled"`
   with `budget_tokens`) is deprecated on the Claude 4.6 models and returns a
@@ -56,6 +64,34 @@ _Checked 2026-09-17 · banks: `ccdv-f`, `ccar-f`, `ccar-p`_
   page stays live, accurate for old models, and wrong for new ones. Read the
   deprecation banner at the top of a page before trusting a question keyed on
   its API shape.
+  Re-confirmed 2026-10-05 on `define-tools.md`: forced tool use (`any` and
+  `{"type": "tool", ...}`) now also fails on **Claude Opus 5.5 and Sonnet 5.5**
+  and on any model with **manual extended thinking**, where the page recommends
+  `auto` plus strict tool use. The exam guide still names `any` and forced
+  selection as tested content, so `ccar-f` keeps those items keyed to the guide
+  with the divergence stated in the item — but any question that keys on forced
+  `tool_choice` without naming a model now has an unadvertised expiry.
+- **The built-in tool set is not uniform across platforms.** Confirmed
+  2026-10-05 on `tools-reference.md`: `Grep` and `Glob` are **absent from the
+  default tool set on macOS, Linux and WSL** (Windows keeps Glob), and Claude
+  searches with embedded `ugrep`/`bfs` through `Bash` instead. They come back
+  when named in `--tools` or `--allowedTools`, or in a subagent's `tools` field.
+  A question that keys on "Claude uses Grep" is correct on Windows and in the
+  exam guide's own TS 2.5, but describes non-default behaviour on the other
+  platforms; state the platform or cite the guide.
+- **Tools are renamed between releases, with the old name aliased.** Confirmed
+  2026-10-05 on `sub-agents.md`: Claude Code v2.1.63 renamed the **Task tool to
+  Agent**; existing `Task(...)` references in settings and agent definitions
+  still work as aliases. The exam guide still names the Task tool, so a bank can
+  legitimately key on either name — but check which one the cited page uses
+  before treating a name as wrong.
+- **MCP tool search is on by default; the discovery cache is not.** Confirmed
+  2026-10-05 on `mcp.md`: tool search defers MCP tool schemas until needed,
+  loading only tool names and server instructions at session start (off only
+  when `ANTHROPIC_BASE_URL` is a non-first-party host or
+  `CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS` is set). The separate discovery cache
+  is **off by default** and governs connection timing, not schema deferral. Two
+  different mechanisms with similar names, easy to conflate in a distractor.
 - **Citable documentation:**
   - `https://platform.claude.com/docs/en/*` — platform and API
   - `https://code.claude.com/docs/en/*` — Claude Code

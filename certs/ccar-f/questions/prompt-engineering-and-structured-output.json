@@ -38,7 +38,7 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/batch-processing.md",
     "sourceNote": "Message Batches API 50% discount and 24-hour SLA considerations for synchronous vs asynchronous workloads",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-prompt-engineering-and-structured-output-002",
@@ -77,9 +77,9 @@
       "b": "Negative constraints tell the model what to avoid but fail to define positive decision criteria for what constitutes a reportable violation; explicit contradiction criteria establish reliable decision boundaries.",
       "d": "A confidence re-scoring pass still relies on the same undefined notion of 'accurate'; without concrete contradiction criteria it keeps most of the false positives it inherited."
     },
-    "sourceUrl": "https://code.claude.com/docs/en/code-review.md",
-    "sourceNote": "Defining explicit review criteria to increase precision and reduce false positive findings",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
+    "sourceNote": "Exam Guide v1.0 § Task Statement 4.1 — explicit contradiction criteria over vague or confidence-based instructions reduce false positives",
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-prompt-engineering-and-structured-output-003",
@@ -118,9 +118,9 @@
       "b": "Downgrading style issues to nits still floods PRs with inline comments, leaving comment fatigue and distrust unaddressed.",
       "c": "Collapsing low-value style comments still generates notification noise and fails to prevent developers from distrusting the review bot's overall quality; temporarily disabling the noisy category preserves trust."
     },
-    "sourceUrl": "https://code.claude.com/docs/en/code-review.md",
-    "sourceNote": "Managing review rule categories to protect developer trust and tool adoption",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
+    "sourceNote": "Exam Guide v1.0 § Task Statement 4.1 — disabling high false-positive categories restores developer trust",
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-prompt-engineering-and-structured-output-004",
@@ -159,9 +159,9 @@
       "c": "Model confidence does not correlate with defect severity — an agent can be highly confident about a minor stylistic nit; severity requires an objective classification matrix.",
       "d": "Diff size does not track defect severity — a single-line injection can be critical while a large refactor is minor; consistent rating needs a criteria matrix, not a size proxy."
     },
-    "sourceUrl": "https://code.claude.com/docs/en/code-review.md",
-    "sourceNote": "Establishing explicit severity rubrics with examples for consistent defect classification",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
+    "sourceNote": "Exam Guide v1.0 § Task Statement 4.1 — explicit severity criteria with concrete code examples per level",
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-prompt-engineering-and-structured-output-005",
@@ -180,7 +180,7 @@
       },
       {
         "id": "b",
-        "text": "Include 2-3 few-shot examples demonstrating the exact desired output format and structure."
+        "text": "Include 3-5 few-shot examples demonstrating the exact desired output format and structure."
       },
       {
         "id": "c",
@@ -194,7 +194,7 @@
     "correct": [
       "b"
     ],
-    "explanation": "Few-shot examples are the most effective technique for establishing consistent structural and stylistic formatting in LLM outputs. Providing 2-3 complete examples demonstrating the expected fields, tone, and formatting anchors the generation pattern far more reliably than prose instructions alone.",
+    "explanation": "Examples are one of the most reliable ways to steer Claude's output format, tone, and structure. Including 3-5 complete examples demonstrating the expected fields, tone, and formatting anchors the generation pattern far more reliably than prose instructions alone.",
     "distractorNotes": {
       "a": "Adding longer natural-language rules and negative constraints is the approach that already failed to stabilize formatting; concrete few-shot examples anchor layout far more reliably.",
       "c": "XML tags provide structural clarity for instructions, but descriptive bullet points alone do not constrain model token generation to the desired output structure.",
@@ -202,7 +202,7 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices.md",
     "sourceNote": "Using few-shot examples to achieve consistent output formatting and structure",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-prompt-engineering-and-structured-output-006",
@@ -241,9 +241,9 @@
       "b": "Calling both tools wastes latency and tokens, failing to resolve the fundamental tool selection ambiguity.",
       "d": "Negative examples showing what not to do are less effective than positive examples showing the desired reasoning and selection."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices.md",
-    "sourceNote": "Designing targeted few-shot examples demonstrating decision reasoning for ambiguous boundary cases",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
+    "sourceNote": "Exam Guide v1.0 § Task Statement 4.2 — targeted few-shot examples show reasoning for ambiguous tool selection over plausible alternatives",
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-prompt-engineering-and-structured-output-007",
@@ -282,9 +282,9 @@
       "b": "Requesting intermediate footnote normalization in prose does not teach the model how to parse unfamiliar citation formats; few-shot examples anchor pattern recognition across layouts.",
       "c": "Sampling hyperparameters reduce randomness among candidate tokens but cannot provide the model with structural understanding of diverse layout conventions."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices.md",
-    "sourceNote": "Using few-shot examples to demonstrate extraction across diverse structural layouts",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
+    "sourceNote": "Exam Guide v1.0 § Task Statement 4.2 — few-shot examples for extraction across varied document structures",
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-prompt-engineering-and-structured-output-008",
@@ -323,9 +323,9 @@
       "c": "Restricting extraction to explicit keyword labels guarantees null returns when agreements use indirect phrasing or cross-referenced exhibits.",
       "d": "Elevating temperature increases stochastic variance and hallucination risk without teaching the model how to parse indirect contractual clauses."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices.md",
-    "sourceNote": "Few-shot examples demonstrating extraction from indirect and cross-referenced clauses",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
+    "sourceNote": "Exam Guide v1.0 § Task Statement 4.2 — few-shot examples for varied formats address empty/null extraction of required fields",
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-prompt-engineering-and-structured-output-009",
@@ -358,15 +358,15 @@
     "correct": [
       "b"
     ],
-    "explanation": "Structured outputs and strict tool use (`strict: true`) leverage constrained decoding at the model inference layer. This guarantees that generated tokens strictly follow the specified JSON schema and are 100% valid JSON syntax, completely eliminating JSON.parse() syntax errors.",
+    "explanation": "Structured outputs and strict tool use (`strict: true`) leverage constrained decoding at the model inference layer. This guarantees schema-compliant output — always-valid JSON with guaranteed field types and required fields — eliminating `JSON.parse()` syntax errors on schema-conforming responses. The documented exception is safety refusals, where the refusal message takes precedence over schema constraints and may not match the schema.",
     "distractorNotes": {
-      "a": "Self-validation and XML tags improve prompt clarity but remain probabilistic; only constrained decoding (strict: true) mathematically guarantees valid JSON syntax.",
+      "a": "Self-validation and XML tags improve prompt clarity but remain probabilistic; only constrained decoding (strict: true) guarantees always-valid, schema-compliant JSON.",
       "c": "XML tags provide structural organization but do not enforce JSON schema compliance or syntax validity.",
       "d": "Prefilling an opening brace starts JSON formatting but does not constrain subsequent tokens to follow schema rules or prevent syntax errors."
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs.md",
     "sourceNote": "Structured outputs and strict tool use via constrained decoding to guarantee valid JSON syntax",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-prompt-engineering-and-structured-output-010",
@@ -407,7 +407,7 @@
     },
     "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
     "sourceNote": "Exam Guide v1.0 § Task Statement 4.3 — strict schemas do not prevent semantic errors such as lines not summing to the total",
-    "sourceCheckedAt": "2026-09-25"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-prompt-engineering-and-structured-output-011",
@@ -446,9 +446,9 @@
       "b": "Marking a field as required still constrains the model to generate a value for that property during decoding; declaring it nullable or optional lets the model emit null when absent.",
       "c": "Filling a required field with a placeholder like 'N/A' still emits a fabricated non-null value that downstream consumers must special-case; declaring the field nullable lets the model return an explicit null."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs.md",
-    "sourceNote": "Using nullable or optional schema fields to prevent hallucination when source data is missing",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
+    "sourceNote": "Exam Guide v1.0 § Task Statement 4.3 — optional/nullable fields when source documents may lack the information",
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-prompt-engineering-and-structured-output-012",
@@ -487,9 +487,9 @@
       "c": "Allowing additionalProperties lets the model invent new top-level keys instead of recording edge cases in one controlled field, losing the stable categorical index that an 'other' enum value with a detail string keeps.",
       "d": "Discarding the enum eliminates schema-level categorization guarantees and introduces complex, error-prone post-processing regex logic."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs.md",
-    "sourceNote": "Extensible schema design using 'other' enum values paired with detail string fields",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
+    "sourceNote": "Exam Guide v1.0 § Task Statement 4.3 — enum fields with 'other' + detail string patterns for extensible categories",
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-prompt-engineering-and-structured-output-013",
@@ -522,7 +522,7 @@
     "correct": [
       "b"
     ],
-    "explanation": "When multiple extraction tools exist and the document type is unknown in advance, configuring `tool_choice: {'type': 'any'}` ensures that Claude must call one of the provided tools (guaranteeing structured schema output) while allowing Claude to evaluate the document and select which specific tool schema applies.",
+    "explanation": "When multiple extraction tools exist and the document type is unknown in advance, configuring `tool_choice: {'type': 'any'}` ensures that Claude must call one of the provided tools (guaranteeing structured schema output) while allowing Claude to evaluate the document and select which specific tool schema applies. Divergence note: define-tools.md records that {\"type\": \"any\"} and {\"type\": \"tool\", ...} return a 400 forced-tool-use error on Claude Opus 5.5, Sonnet 5.5, Fable 5.1 and Mythos 5.1 and under manual extended thinking, where auto plus strict tool use is the documented alternative; the guide's Task Statement 4.3 still names any for unknown document types, so the key follows the guide.",
     "distractorNotes": {
       "a": "tool_choice: {'type': 'none'} prevents the model from calling any tools, forcing text output.",
       "c": "tool_choice: {'type': 'auto'} allows the model to respond in plain conversational text instead of guaranteeing a structured tool call.",
@@ -530,7 +530,7 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools.md",
     "sourceNote": "Using tool_choice: 'any' to enforce structured tool output across multiple schemas",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-prompt-engineering-and-structured-output-014",
@@ -569,9 +569,9 @@
       "b": "Omitting the assistant's previous tool call and tool_result violates tool use conversation ordering requirements and deprives the model of context needed to inspect and self-correct.",
       "d": "Increasing temperature increases stochastic variance and hallucination risk without explaining what failed in the previous attempt."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/troubleshooting-tool-use.md",
-    "sourceNote": "Implementing retry-with-error-feedback loops for semantic self-correction",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
+    "sourceNote": "Exam Guide v1.0 § Task Statement 4.4 — retry-with-error-feedback: appending specific validation errors on retry guides model self-correction",
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-prompt-engineering-and-structured-output-015",
@@ -610,9 +610,9 @@
       "b": "Date format mismatches are readily corrected when validation feedback specifies the expected ISO 8601 format.",
       "c": "Overlooked information present in context can be recovered when validation feedback prompts the model to re-examine specific document sections."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs.md",
-    "sourceNote": "Understanding the fundamental limits of retry loops when source data is absent",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
+    "sourceNote": "Exam Guide v1.0 § Task Statement 4.4 — retries are ineffective when required information is simply absent from the source document",
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-prompt-engineering-and-structured-output-016",
@@ -653,7 +653,7 @@
     },
     "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
     "sourceNote": "Exam Guide v1.0 § Task Statement 4.4 — detected_pattern fields enable systematic analysis of dismissal patterns",
-    "sourceCheckedAt": "2026-09-25"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-prompt-engineering-and-structured-output-017",
@@ -694,7 +694,7 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/batch-processing.md",
     "sourceNote": "Resubmitting failed batch requests by custom_id after applying document chunking",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-prompt-engineering-and-structured-output-018",
@@ -735,7 +735,7 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/batch-processing.md",
     "sourceNote": "Workload fit and conversational tool-use limitations of the Message Batches API",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-prompt-engineering-and-structured-output-019",
@@ -776,7 +776,7 @@
     },
     "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
     "sourceNote": "Exam Guide v1.0 § Task Statement 4.6 — independent review instances catch subtle issues self-review misses",
-    "sourceCheckedAt": "2026-09-25"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-prompt-engineering-and-structured-output-020",
@@ -815,9 +815,9 @@
       "c": "Arbitrary chunking breaks cross-file interface context, and majority voting discards valid localized findings; structured multi-pass reviews separate local file passes from integration passes.",
       "d": "Reviewing only summaries discards the line-level detail needed to catch real defects; the per-file passes must see actual code, with a later pass for cross-file concerns."
     },
-    "sourceUrl": "https://code.claude.com/docs/en/code-review.md",
-    "sourceNote": "Structuring multi-pass code reviews into localized file passes and cross-file integration passes",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
+    "sourceNote": "Exam Guide v1.0 § Task Statement 4.6 — split per-file local analysis from cross-file integration passes",
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-prompt-engineering-and-structured-output-021",
@@ -863,7 +863,7 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs.md",
     "sourceNote": "Property ordering guarantees and safety refusal precedence under structured outputs",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-prompt-engineering-and-structured-output-022",
@@ -909,7 +909,7 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/batch-processing.md",
     "sourceNote": "Message Batches result types, per-request billing, and cancellation partial results",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-prompt-engineering-and-structured-output-023",
@@ -950,7 +950,7 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/code-review.md",
     "sourceNote": "Re-review convergence guidelines and plain-instruction formatting in REVIEW.md",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-prompt-engineering-and-structured-output-024",
@@ -991,6 +991,6 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs.md",
     "sourceNote": "Strategies for reducing schema complexity and compiled grammar state space",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceCheckedAt": "2026-10-05"
   }
 ]

@@ -36,9 +36,9 @@
       "b": "Retaining raw outputs exacerbates token exhaustion and self-consistency prompts increase token consumption further.",
       "c": "Prompt caching reduces latency and token billing for repeated prefixes, but cached tokens still occupy context window space and cause attention dilution and context rot."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/context-windows.md",
-    "sourceNote": "Curating context window contents and trimming tool output fields to prevent context rot",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
+    "sourceNote": "Exam Guide v1.0 § Task Statement 5.1 — trim verbose tool outputs to only relevant fields before they accumulate in context",
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-context-management-and-reliability-002",
@@ -79,7 +79,7 @@
     },
     "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
     "sourceNote": "Exam Guide v1.0 § Task Statement 5.1 — progressive summarization condenses numerical values, dates, and expectations into vague summaries",
-    "sourceCheckedAt": "2026-09-25"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-context-management-and-reliability-003",
@@ -118,9 +118,9 @@
       "b": "Semantic similarity retrieval over conversation turns frequently misses exact entity lookups when user queries lack keywords matching the earlier transactional turn.",
       "d": "Leaving entity retrieval to the model's autonomous tool calls risks omitted or forgotten lookups; injecting a structured case-facts block guarantees presence."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/context-windows.md",
-    "sourceNote": "Maintaining a persistent structured case facts block outside summarized history",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
+    "sourceNote": "Exam Guide v1.0 § Task Statement 5.1 — extract transactional facts into a persistent 'case facts' block outside summarized history",
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-context-management-and-reliability-004",
@@ -159,9 +159,9 @@
       "b": "Inserting artificial conversational turn markers within reference text disrupts semantic coherence and does not reset the underlying attention decay across the cumulative context.",
       "c": "Content in the system prompt is subject to the same positional attention effects; the mitigation is layout — an executive summary up front, clear headers, and critical instructions repeated at the end."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/context-windows.md",
-    "sourceNote": "Mitigating lost-in-the-middle attention effects with structured front-loaded summaries and clear headers",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
+    "sourceNote": "Exam Guide v1.0 § Task Statement 5.1 — key findings summaries first with explicit section headers mitigate lost-in-the-middle effects",
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-context-management-and-reliability-005",
@@ -200,9 +200,9 @@
       "c": "Prompt caching reduces latency and token billing for repeated prefixes, but cached tokens still occupy context window capacity and do not prevent context window exhaustion.",
       "d": "Making the overloaded coordinator ingest and summarize every raw scrape still spends its context budget on low-value tokens; compaction belongs upstream where each subagent returns structured claims and citations."
     },
-    "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
-    "sourceNote": "Structuring subagent outputs into concise facts and citations to conserve coordinator context",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
+    "sourceNote": "Exam Guide v1.0 § Task Statement 5.1 — upstream agents return structured data instead of verbose content when downstream context is limited",
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-context-management-and-reliability-006",
@@ -241,9 +241,9 @@
       "c": "Prompting for confidence numbers does not change the model's decoding strategy or suppress system prompt guidelines.",
       "d": "Single-model instances can readily output ratings and evaluate situations, but their self-reported confidence numbers remain poorly calibrated."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices.md",
-    "sourceNote": "Unreliability of self-reported LLM confidence versus explicit escalation criteria",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
+    "sourceNote": "Exam Guide v1.0 § Task Statement 5.2 — self-reported confidence is unreliable; explicit escalation criteria with few-shot examples",
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-context-management-and-reliability-007",
@@ -282,9 +282,9 @@
       "b": "Blocking transfer behind mandatory automated questionnaires violates escalation principles and increases friction when a user demands human help.",
       "d": "Deflecting users to self-service documentation when they have explicitly requested a human agent damages customer trust and brand loyalty."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices.md",
-    "sourceNote": "Immediately honoring explicit user requests for human escalation without forced deflection",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
+    "sourceNote": "Exam Guide v1.0 § Task Statement 5.2 — honor explicit customer requests for a human agent immediately without first attempting investigation",
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-context-management-and-reliability-008",
@@ -323,9 +323,9 @@
       "b": "Automatically denying on silence is the mirror error of automatically approving — the policy gap is genuinely unresolved and needs human judgment, not a default 'no' from the agent.",
       "c": "Assuming silence implies full authorization creates severe financial and legal exposure."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices.md",
-    "sourceNote": "Escalating policy gaps and ambiguous business rules to human review",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
+    "sourceNote": "Exam Guide v1.0 § Task Statement 5.2 — escalate when policy is ambiguous or silent on the customer's request (competitor price matching)",
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-context-management-and-reliability-009",
@@ -364,9 +364,9 @@
       "c": "Reciting even masked details of all three accounts discloses other customers' information to the caller; the customer should supply a secondary identifier so only their own record is surfaced.",
       "d": "Selecting by balance is an arbitrary heuristic that exacerbates privacy and financial violations."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/how-tool-use-works.md",
-    "sourceNote": "Resolving entity ambiguity by prompting for secondary identifiers rather than heuristic selection",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
+    "sourceNote": "Exam Guide v1.0 § Task Statement 5.2 — multiple matches require clarification via additional identifiers, not heuristic selection",
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-context-management-and-reliability-010",
@@ -407,7 +407,7 @@
     },
     "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
     "sourceNote": "Propagating structured error context and partial results to enable coordinator recovery",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-context-management-and-reliability-011",
@@ -446,9 +446,9 @@
       "b": "Aborting the entire synthesis discards valid research from other subagents; partial reporting with clear caveats is preferred.",
       "d": "Omitting failed sections without disclosure conceals known coverage limitations and misleads consumers about report scope."
     },
-    "sourceUrl": "https://code.claude.com/docs/en/sub-agents.md",
-    "sourceNote": "Annotating coverage gaps in synthesis reports when upstream data sources fail",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
+    "sourceNote": "Exam Guide v1.0 § Task Statement 5.3 — coverage annotations mark well-supported findings versus gaps from unavailable sources",
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-context-management-and-reliability-012",
@@ -487,9 +487,9 @@
       "b": "Aggressive compaction after every tool call destroys immediate working state, execution details, and recent diagnostics.",
       "c": "Re-reading all visited source files floods the context window with raw tokens, rapidly triggering context window limits."
     },
-    "sourceUrl": "https://code.claude.com/docs/en/large-codebases.md",
-    "sourceNote": "Using scratchpad files to persist key architectural findings against context degradation",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
+    "sourceNote": "Exam Guide v1.0 § Task Statement 5.4 — scratchpad files persist key findings across context boundaries to counter context degradation",
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-context-management-and-reliability-013",
@@ -528,9 +528,9 @@
       "c": "Replaying an unstructured log through the model on every restart is slow, costly, and ambiguous about what actually finished; structured state manifests give the coordinator a precise, machine-readable checkpoint.",
       "d": "An in-memory store with no persistence configured loses the same state on its own restart or eviction; durable crash recovery requires the checkpoints to reach disk."
     },
-    "sourceUrl": "https://code.claude.com/docs/en/large-codebases.md",
-    "sourceNote": "Structured state manifest exports to support crash recovery and checkpoint resumption",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
+    "sourceNote": "Exam Guide v1.0 § Task Statement 5.4 — structured state exports (manifests) that the coordinator loads on resume for crash recovery",
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-context-management-and-reliability-014",
@@ -569,9 +569,9 @@
       "c": "Sampling exclusively from the highest-volume template fails to detect systemic failures and edge-case errors in lower-volume form variants and specialized field segments; sampling must be stratified.",
       "d": "A systematic bias yields the same wrong output on both runs, so run-to-run disagreement never surfaces it; stratified sampling against ground truth is what catches consistent errors."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs.md",
-    "sourceNote": "Using stratified random sampling to audit high-confidence extractions and detect hidden errors",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
+    "sourceNote": "Exam Guide v1.0 § Task Statement 5.5 — stratified random sampling of high-confidence extractions to measure error rates",
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-context-management-and-reliability-015",
@@ -610,9 +610,9 @@
       "b": "Discarding historical data erases longitudinal research progression and conceals the empirical baseline from consumers.",
       "d": "Differences between measurements across years represent normal temporal progress, not fatal logical contradictions."
     },
-    "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/citations.md",
-    "sourceNote": "Preserving provenance and contextualizing conflicting statistics from credible sources",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
+    "sourceNote": "Exam Guide v1.0 § Task Statement 5.6 — annotate conflicting statistics with source attribution and publication dates",
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-context-management-and-reliability-016",
@@ -658,7 +658,7 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching.md",
     "sourceNote": "Cache invalidation hierarchy across tools, system, and messages, and 20-block lookback limits",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-context-management-and-reliability-017",
@@ -704,7 +704,7 @@
     },
     "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/citations.md",
     "sourceNote": "Uniform citation enablement constraint and output token billing exemption for cited_text",
-    "sourceCheckedAt": "2026-09-17"
+    "sourceCheckedAt": "2026-10-05"
   },
   {
     "id": "ccar-f-context-management-and-reliability-018",
@@ -745,6 +745,6 @@
     },
     "sourceUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
     "sourceNote": "Exam Guide v1.0 § Task Statement 5.3 — distinguishing access failures from valid empty results; generic statuses hide recovery context",
-    "sourceCheckedAt": "2026-09-25"
+    "sourceCheckedAt": "2026-10-05"
   }
 ]
