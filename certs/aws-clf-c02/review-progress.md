@@ -112,3 +112,12 @@ Comprehensive drift audit executed across all 114 unique URLs (130 questions) fo
   - `sec-013`: Re-cited to `AmazonS3/.../security.html` (S3 shared responsibility).
   - `sec-014`: Re-cited to `aws.amazon.com/compliance/pci-faqs/` (PCI DSS application certification).
 - **Dispositions**: 27 bump, 8 re-cite, 1 re-cite + rewrite, 2 rewrite, 0 retire across 38 evaluated items.
+
+### Hint text support and pending gloss-stripping migration (2026-10-07)
+
+The repository schema and quiz UI now support the optional `hintText` field on question options, revealed via a per-question toggle button during practice sessions and rendered inline during review.
+
+A planned gloss-stripping migration of the bank's ~534 glossed options across 130 questions is pending (Phase 4). The migration rule:
+- **Service/tool-name options**: Only options naming a service or tool followed by a gloss ("Service, which <gloss>" / "Service, <noun phrase>") get stripped into bare `text` (parenthetical acronym expansion allowed, e.g. "AWS Database Migration Service (AWS DMS)") and `hintText`.
+- **Statement-style options**: Options whose text IS the answer content ("Security groups are stateful firewalls, so…") stay intact in `text` with no hint.
+- **Already-bare options**: Options that already contain only the service/tool name (e.g. `tech-009`, `tech-010`) remain bare with no `hintText`.

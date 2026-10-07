@@ -162,7 +162,7 @@ A minimal single-select example:
     "status": "draft",
     "stem": "A team observes X and wants Y. What explains it?",
     "options": [
-      { "id": "a", "text": "First option" },
+      { "id": "a", "text": "First option", "hintText": "Optional explanatory gloss" },
       { "id": "b", "text": "Second option" },
       { "id": "c", "text": "Third option" },
       { "id": "d", "text": "Fourth option" }
@@ -191,6 +191,7 @@ A minimal single-select example:
 | `subdomain` | Optional, but required if the domain declares `skills` — must match one |
 | `difficulty` | `"easy"`, `"medium"`, or `"hard"` |
 | `status` | `"draft"` or `"reviewed"` |
+| `options[*].hintText` | Optional: explanatory gloss revealed via practice toggle; min length 1; same sourcing rules as option text |
 | `correct` | Exactly one entry for `single`; two or more for `multi` |
 | `sourceUrl` | Public HTTP/HTTPS URL, no paywalled or gated links |
 | `sourceNote` | Section heading or topic that supports the answer; single line, max 140 characters |
@@ -203,6 +204,8 @@ A minimal single-select example:
   reads as identical are one option however they differ in bytes. A repeated
   option is not a distractor: it removes one, and if the repeat is the key the
   item has two correct answers.
+- `options[*].hintText` is optional. Use it for explanatory glosses on
+  service/tool-name options so `text` remains the bare exam-style name.
 - `correct` entries must reference IDs that exist in `options`.
 - For `multi` questions: the correct set must not be exactly the leading
   run of options in listed order (e.g. `["a", "b"]` when options

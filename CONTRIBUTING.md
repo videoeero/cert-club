@@ -34,8 +34,9 @@ README.
   key.** Explanations should show why the correct answer is correct and, when
   useful, why the distractors are wrong. Any claim in `explanation`,
   `distractorNotes` or `sourceNote` presented as documented must be supported by
-  the cited page, and so must the text of options named in `correct` — a
-  distractor may assert a falsehood by design, a keyed option may not.
+  the cited page, and so must the text and any `hintText` of options named in
+  `correct` — a distractor may assert a falsehood by design, a keyed option may
+  not.
   *Supported* includes a direct arithmetical identity of a documented mechanism
   (`0.1x the base input price` restated as `10% of the base input price`); it
   does not extend to inverting, rounding or re-scoping that mechanism —
@@ -92,6 +93,15 @@ breaking them fails CI rather than review.
   ("merge the AI-generated PR without reviewing or testing it"). Real exams do
   ship options like that; they are free eliminations and add nothing here but
   reading load. Every option should cost the candidate a decision.
+- **Bare option text and optional `hintText`.** Option `text` should be the bare
+  service or tool name matching the live exam format (parenthetical acronym
+  expansion allowed, e.g. "AWS Database Migration Service (AWS DMS)").
+  Explanatory glosses ("..., which is a managed ETL service") belong in the
+  optional `hintText` field, revealed by a candidate toggle during practice.
+  Glosses in `hintText` are option claims — they follow the same sourcing rule
+  as `text` and are verified by `check-claims`. Statement-style options whose
+  text IS the answer content ("Security groups are stateful firewalls, so…")
+  stay intact in `text` with no `hintText`.
 - **Do not let the correct answer be the longest option.** Keys tend to grow
   because they carry the source doc's full hedged claim while distractors get
   written as crisp wrong assertions. Fix this by padding distractors with
