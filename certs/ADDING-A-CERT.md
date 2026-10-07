@@ -191,7 +191,7 @@ A minimal single-select example:
 | `subdomain` | Optional, but required if the domain declares `skills` — must match one |
 | `difficulty` | `"easy"`, `"medium"`, or `"hard"` |
 | `status` | `"draft"` or `"reviewed"` |
-| `options[*].hintText` | Optional: explanatory gloss revealed via practice toggle; min length 1; same sourcing rules as option text |
+|`options[*].hintText`|Optional: explanatory gloss revealed via practice toggle; min length 1; same sourcing rules as option text|
 | `correct` | Exactly one entry for `single`; two or more for `multi` |
 | `sourceUrl` | Public HTTP/HTTPS URL, no paywalled or gated links |
 | `sourceNote` | Section heading or topic that supports the answer; single line, max 140 characters |

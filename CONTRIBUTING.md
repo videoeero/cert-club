@@ -99,7 +99,8 @@ breaking them fails CI rather than review.
   Explanatory glosses ("..., which is a managed ETL service") belong in the
   optional `hintText` field, revealed by a candidate toggle during practice.
   Glosses in `hintText` are option claims — they follow the same sourcing rule
-  as `text` and are verified by `check-claims`. Statement-style options whose
+  as `text`, and are verified by `check-claims` when run standalone.
+  Statement-style options whose
   text IS the answer content ("Security groups are stateful firewalls, so…")
   stay intact in `text` with no `hintText`.
 - **Do not let the correct answer be the longest option.** Keys tend to grow
