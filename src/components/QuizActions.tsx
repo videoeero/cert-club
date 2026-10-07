@@ -11,6 +11,7 @@ export interface QuizActionsProps {
   onNext: () => void;
   onCheckAnswer: () => void;
   onFinish: () => void;
+  onPause?: () => void;
 }
 
 export function QuizActions({
@@ -24,17 +25,29 @@ export function QuizActions({
   onNext,
   onCheckAnswer,
   onFinish,
+  onPause,
 }: QuizActionsProps) {
   return (
     <div className={styles.quizActions}>
-      <button
-        className="button button-secondary"
-        type="button"
-        onClick={onPrevious}
-        disabled={isFirstQuestion}
-      >
-        Previous
-      </button>
+      <div className={styles.quizActionsBackward}>
+        <button
+          className="button button-secondary"
+          type="button"
+          onClick={onPrevious}
+          disabled={isFirstQuestion}
+        >
+          Previous
+        </button>
+        {onPause && (
+          <button
+            className="button button-secondary"
+            type="button"
+            onClick={onPause}
+          >
+            Pause
+          </button>
+        )}
+      </div>
       <div className={styles.quizActionsForward}>
         {canCheckAnswer && (
           <button

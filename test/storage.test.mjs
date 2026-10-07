@@ -3,13 +3,17 @@ import test from "node:test";
 
 import {
   clearMissedQuestionIds,
+  clearPausedSession,
   getAttempt,
   getAttempts,
   getBookmarkedQuestionIds,
   getMissedQuestionIds,
+  getPausedSession,
+  getPausedSessions,
   MAX_ATTEMPT_HISTORY,
   recordMissedQuestionIds,
   saveAttempt,
+  savePausedSession,
   setBookmarkedQuestionIds,
   STORAGE_KEYS,
   StorageError,
@@ -159,4 +163,121 @@ test("rejects an attempt carrying an invalid config", () => {
     () => saveAttempt(record, storage),
     /Cannot save an invalid quiz attempt/,
   );
+});
+
+function samplePausedSession(cert = "test-cert") {
+  return {
+    cert,
+    startedAt: "2026-09-03T10:00:00.000Z",
+    pausedAt: "2026-09-03T10:02:30.000Z",
+    elapsedSeconds: 150,
+    config: {
+      mode: "weighted",
+      count: 5,
+      revealMode: "immediate",
+    },
+    questionIds: ["q1", "q2", "q3", "q4", "q5"],
+    questionIndex: 2,
+    answers: { q1: ["a"], q2: ["b", "c"] },
+    strikethroughs: { q2: ["d"] },
+    revealedQuestionIds: ["q1"],
+    hintRevealedQuestionIds: ["q2"],
+  };
+}
+
+test("saves, retrieves, and clears a paused session", () => {
+  const storage = new MemoryStorage();
+  const session = samplePausedSession("test-cert");
+
+  assert.equal(getPausedSession("test-cert", storage), null);
+  savePausedSession("test-cert", session, storage);
+
+  const loaded = getPausedSession("test-cert", storage);
+  assert.deepEqual(loaded, session);
+
+  // Verifies deep cloning so caller mutations do not leak
+  loaded.answers.q1.push("mutated");
+  assert.notDeepEqual(getPausedSession("test-cert", storage), loaded);
+
+  clearPausedSession("test-cert", storage);
+  assert.equal(getPausedSession("test-cert", storage), null);
+});
+
+test("isolates paused sessions across different certifications", () => {
+  const storage = new MemoryStorage();
+  const sessionA = samplePausedSession("cert-a");
+  const sessionB = samplePausedSession("cert-b");
+
+  savePausedSession("cert-a", sessionA, storage);
+  savePausedSession("cert-b", sessionB, storage);
+
+  assert.deepEqual(getPausedSession("cert-a", storage), sessionA);
+  assert.deepEqual(getPausedSession("cert-b", storage), sessionB);
+
+  const all = getPausedSessions(storage);
+  assert.equal(Object.keys(all).length, 2);
+
+  clearPausedSession("cert-a", storage);
+  assert.equal(getPausedSession("cert-a", storage), null);
+  assert.deepEqual(getPausedSession("cert-b", storage), sessionB);
+});
+
+test("rejects saving an invalid paused session", () => {
+  const storage = new MemoryStorage();
+  const badSession = { ...samplePausedSession(), elapsedSeconds: -5 };
+
+  assert.throws(
+    () => savePausedSession("test-cert", badSession, storage),
+    StorageError,
+  );
+
+  const outOfBoundsSession = {
+    ...samplePausedSession(),
+    questionIndex: 5,
+  };
+  assert.throws(
+    () => savePausedSession("test-cert", outOfBoundsSession, storage),
+    StorageError,
+  );
+
+  const mismatchCertSession = samplePausedSession("cert-a");
+  assert.throws(
+    () => savePausedSession("cert-b", mismatchCertSession, storage),
+    StorageError,
+  );
+});
+
+test("discards corrupted paused sessions on read", () => {
+  const storage = new MemoryStorage();
+  storage.setItem(
+    STORAGE_KEYS.pausedSessions,
+    JSON.stringify({ version: 1, data: { "test-cert": { invalid: true } } }),
+  );
+  assert.equal(getPausedSession("test-cert", storage), null);
+  assert.deepEqual(getPausedSessions(storage), {});
+
+  storage.setItem(
+    STORAGE_KEYS.pausedSessions,
+    JSON.stringify({
+      version: 1,
+      data: { "cert-a": samplePausedSession("cert-b") },
+    }),
+  );
+  assert.equal(getPausedSession("cert-a", storage), null);
+  assert.deepEqual(getPausedSessions(storage), {});
+
+  storage.setItem(
+    STORAGE_KEYS.pausedSessions,
+    JSON.stringify({
+      version: 1,
+      data: {
+        "test-cert": {
+          ...samplePausedSession("test-cert"),
+          questionIndex: 10,
+        },
+      },
+    }),
+  );
+  assert.equal(getPausedSession("test-cert", storage), null);
+  assert.deepEqual(getPausedSessions(storage), {});
 });

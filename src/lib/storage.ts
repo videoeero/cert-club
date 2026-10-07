@@ -1,6 +1,7 @@
 import type {
   AttemptRecord,
   DomainBreakdown,
+  PausedSession,
   QuizConfig,
   ReviewScope,
 } from "../types";
@@ -20,6 +21,7 @@ export const STORAGE_KEYS = {
   attempts: "cert-club.attempts",
   bookmarks: "cert-club.bookmarks",
   missed: "cert-club.missed",
+  pausedSessions: "cert-club.paused-sessions",
   theme: "cert-club.theme",
 } as const;
 
@@ -128,6 +130,40 @@ function isAttemptArray(value: unknown): value is AttemptRecord[] {
   return Array.isArray(value) && value.every(isAttemptRecord);
 }
 
+function isPausedSession(value: unknown): value is PausedSession {
+  return (
+    isRecord(value) &&
+    typeof value.cert === "string" &&
+    CERT_SLUG_PATTERN.test(value.cert) &&
+    typeof value.startedAt === "string" &&
+    typeof value.pausedAt === "string" &&
+    isNonNegativeInteger(value.elapsedSeconds) &&
+    isQuizConfig(value.config) &&
+    isStringArray(value.questionIds) &&
+    value.questionIds.length > 0 &&
+    isNonNegativeInteger(value.questionIndex) &&
+    value.questionIndex < value.questionIds.length &&
+    isStringArrayMap(value.answers) &&
+    isStringArrayMap(value.strikethroughs) &&
+    isStringArray(value.revealedQuestionIds) &&
+    isStringArray(value.hintRevealedQuestionIds)
+  );
+}
+
+function isPausedSessionMap(
+  value: unknown,
+): value is Record<string, PausedSession> {
+  return (
+    isRecord(value) &&
+    Object.entries(value).every(
+      ([key, session]) =>
+        CERT_SLUG_PATTERN.test(key) &&
+        isPausedSession(session) &&
+        session.cert === key,
+    )
+  );
+}
+
 function resolveStorage(storage?: StorageAdapter): StorageAdapter {
   if (storage) {
     return storage;
@@ -224,6 +260,39 @@ function readQuestionIdMap(
   storage: StorageAdapter,
 ): Record<string, string[]> {
   return readValue(key, {}, isStringArrayMap, storage);
+}
+
+function clonePausedSession(session: PausedSession): PausedSession {
+  return {
+    ...session,
+    config: { ...session.config },
+    questionIds: [...session.questionIds],
+    answers: Object.fromEntries(
+      Object.entries(session.answers).map(([questionId, selected]) => [
+        questionId,
+        [...selected],
+      ]),
+    ),
+    strikethroughs: Object.fromEntries(
+      Object.entries(session.strikethroughs).map(([questionId, struck]) => [
+        questionId,
+        [...struck],
+      ]),
+    ),
+    revealedQuestionIds: [...session.revealedQuestionIds],
+    hintRevealedQuestionIds: [...session.hintRevealedQuestionIds],
+  };
+}
+
+function readPausedSessions(
+  storage: StorageAdapter,
+): Record<string, PausedSession> {
+  return readValue(
+    STORAGE_KEYS.pausedSessions,
+    {},
+    isPausedSessionMap,
+    storage,
+  );
 }
 
 export function getAttempts(
@@ -340,4 +409,57 @@ export function clearMissedQuestionIds(
     ),
   };
   writeValue(STORAGE_KEYS.missed, next, resolvedStorage);
+}
+
+export function getPausedSession(
+  cert: string,
+  storage?: StorageAdapter,
+): PausedSession | null {
+  const sessions = readPausedSessions(resolveStorage(storage));
+  const session = sessions[cert];
+  return session ? clonePausedSession(session) : null;
+}
+
+export function getPausedSessions(
+  storage?: StorageAdapter,
+): Record<string, PausedSession> {
+  const sessions = readPausedSessions(resolveStorage(storage));
+  return Object.fromEntries(
+    Object.entries(sessions).map(([cert, session]) => [
+      cert,
+      clonePausedSession(session),
+    ]),
+  );
+}
+
+export function savePausedSession(
+  cert: string,
+  session: PausedSession,
+  storage?: StorageAdapter,
+): void {
+  if (!isPausedSession(session) || session.cert !== cert) {
+    throw new StorageError("Cannot save an invalid paused session.");
+  }
+
+  const resolvedStorage = resolveStorage(storage);
+  const sessions = readPausedSessions(resolvedStorage);
+  const next = {
+    ...sessions,
+    [cert]: clonePausedSession(session),
+  };
+  writeValue(STORAGE_KEYS.pausedSessions, next, resolvedStorage);
+}
+
+export function clearPausedSession(
+  cert: string,
+  storage?: StorageAdapter,
+): void {
+  const resolvedStorage = resolveStorage(storage);
+  const sessions = readPausedSessions(resolvedStorage);
+  if (!(cert in sessions)) {
+    return;
+  }
+  const next = { ...sessions };
+  delete next[cert];
+  writeValue(STORAGE_KEYS.pausedSessions, next, resolvedStorage);
 }

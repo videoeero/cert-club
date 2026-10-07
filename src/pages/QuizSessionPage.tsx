@@ -22,14 +22,23 @@ import {
 } from "../lib/quiz";
 import {
   clearMissedQuestionIds,
+  clearPausedSession,
   getAttempt,
   getBookmarkedQuestionIds,
   getMissedQuestionIds,
+  getPausedSession,
   recordMissedQuestionIds,
   saveAttempt,
+  savePausedSession,
   setBookmarkedQuestionIds as persistBookmarkedQuestionIds,
 } from "../lib/storage";
-import type { Question, QuizConfig, RetakeNavigationState } from "../types";
+import { formatCalendarDate, formatRemainingTime } from "../lib/time";
+import type {
+  PausedSession,
+  Question,
+  QuizConfig,
+  RetakeNavigationState,
+} from "../types";
 
 interface ActiveSession {
   questions: Question[];
@@ -69,6 +78,10 @@ export function QuizSessionPage() {
     new Set<string>(),
   );
   const [missedQuestionIds, setMissedQuestionIds] = useState(new Set<string>());
+  const [isPaused, setIsPaused] = useState(false);
+  const [savedPausedSession, setSavedPausedSession] =
+    useState<PausedSession | null>(null);
+  const [resumeError, setResumeError] = useState<string | null>(null);
   const [storageError, setStorageError] = useState<string | null>(null);
   const [retakeError, setRetakeError] = useState<string | null>(null);
   const [finishError, setFinishError] = useState<string | null>(null);
@@ -84,6 +97,8 @@ export function QuizSessionPage() {
   useEffect(() => {
     setQuestionIndex(0);
     setActiveSession(null);
+    setIsPaused(false);
+    setSavedPausedSession(null);
     setAnswers({});
     setStrikethroughs({});
     setRevealedQuestionIds(new Set());
@@ -91,6 +106,7 @@ export function QuizSessionPage() {
     setFinishError(null);
     setStorageError(null);
     setRetakeError(null);
+    setResumeError(null);
     if (!certSlug) {
       setBookmarkedQuestionIds(new Set());
       setMissedQuestionIds(new Set());
@@ -99,17 +115,18 @@ export function QuizSessionPage() {
     try {
       setBookmarkedQuestionIds(new Set(getBookmarkedQuestionIds(certSlug)));
       setMissedQuestionIds(new Set(getMissedQuestionIds(certSlug)));
+      setSavedPausedSession(getPausedSession(certSlug));
     } catch (error) {
       setStorageError(errorMessage(error));
     }
   }, [certSlug, retryKey]);
 
   useEffect(() => {
-    if (!activeSession) return;
+    if (!activeSession || isPaused) return;
     setCurrentTime(Date.now());
     const interval = setInterval(() => setCurrentTime(Date.now()), 1000);
     return () => clearInterval(interval);
-  }, [activeSession]);
+  }, [activeSession, isPaused]);
 
   const certContent = resource.status === "ready" ? resource.data : null;
 
@@ -141,6 +158,13 @@ export function QuizSessionPage() {
         Math.random,
         reviewContext,
       );
+      try {
+        clearPausedSession(certSlug);
+      } catch {
+        // Non-blocking
+      }
+      setSavedPausedSession(null);
+      setIsPaused(false);
       setActiveSession({
         questions: session.questions,
         config: session.config,
@@ -153,6 +177,7 @@ export function QuizSessionPage() {
       setQuestionIndex(0);
       setFinishError(null);
       setRetakeError(null);
+      setResumeError(null);
       void navigate(".", { replace: true, state: null });
     } catch (error) {
       setRetakeError(errorMessage(error));
@@ -231,7 +256,138 @@ export function QuizSessionPage() {
     }
     recordMissedQuestionIds(manifest.cert, missed);
     clearMissedQuestionIds(manifest.cert, correct);
+    try {
+      clearPausedSession(manifest.cert);
+    } catch {
+      // Non-blocking
+    }
+    setSavedPausedSession(null);
     void navigate(`/results/${manifest.cert}?attempt=${id}`);
+  }
+
+  function handlePause(): void {
+    if (!activeSession || !certSlug) return;
+    const elapsedSeconds = Math.max(
+      0,
+      Math.floor(
+        (Date.now() - new Date(activeSession.startedAt).getTime()) / 1000,
+      ),
+    );
+    const sessionToSave: PausedSession = {
+      cert: certSlug,
+      startedAt: activeSession.startedAt,
+      pausedAt: new Date().toISOString(),
+      elapsedSeconds,
+      config: activeSession.config,
+      questionIds: activeSession.questions.map((q) => q.id),
+      questionIndex,
+      answers,
+      strikethroughs,
+      revealedQuestionIds: [...revealedQuestionIds],
+      hintRevealedQuestionIds: [...hintRevealedQuestionIds],
+    };
+    try {
+      savePausedSession(certSlug, sessionToSave);
+      setSavedPausedSession(sessionToSave);
+      setIsPaused(true);
+      setStorageError(null);
+    } catch (error) {
+      setStorageError(errorMessage(error));
+    }
+  }
+
+  function handleResumeActive(): void {
+    if (!activeSession) return;
+    const elapsedSeconds =
+      savedPausedSession?.elapsedSeconds ??
+      Math.max(
+        0,
+        Math.floor(
+          (Date.now() - new Date(activeSession.startedAt).getTime()) / 1000,
+        ),
+      );
+    const adjustedStartedAt = new Date(
+      Date.now() - elapsedSeconds * 1000,
+    ).toISOString();
+    setActiveSession((prev) =>
+      prev ? { ...prev, startedAt: adjustedStartedAt } : null,
+    );
+    setCurrentTime(Date.now());
+    setIsPaused(false);
+  }
+
+  function handleResumeSaved(sessionToResume: PausedSession): void {
+    const questionMap = new Map(questions.map((q) => [q.id, q]));
+    const matchedQuestions = sessionToResume.questionIds
+      .map((id) => questionMap.get(id))
+      .filter((q): q is Question => q !== undefined);
+
+    if (matchedQuestions.length === 0) {
+      setResumeError(
+        "Questions from this paused session are no longer available in the question bank.",
+      );
+      return;
+    }
+
+    const matchedIds = new Set(matchedQuestions.map((q) => q.id));
+    const filteredAnswers = Object.fromEntries(
+      Object.entries(sessionToResume.answers).filter(([qid]) =>
+        matchedIds.has(qid),
+      ),
+    );
+    const filteredStrikethroughs = Object.fromEntries(
+      Object.entries(sessionToResume.strikethroughs).filter(([qid]) =>
+        matchedIds.has(qid),
+      ),
+    );
+    const filteredRevealed = sessionToResume.revealedQuestionIds.filter((qid) =>
+      matchedIds.has(qid),
+    );
+    const filteredHints = sessionToResume.hintRevealedQuestionIds.filter(
+      (qid) => matchedIds.has(qid),
+    );
+
+    const adjustedStartedAt = new Date(
+      Date.now() - sessionToResume.elapsedSeconds * 1000,
+    ).toISOString();
+    setActiveSession({
+      questions: matchedQuestions,
+      config: sessionToResume.config,
+      startedAt: adjustedStartedAt,
+    });
+    setAnswers(filteredAnswers);
+    setStrikethroughs(filteredStrikethroughs);
+    setRevealedQuestionIds(new Set(filteredRevealed));
+    setHintRevealedQuestionIds(new Set(filteredHints));
+    setQuestionIndex(
+      Math.min(sessionToResume.questionIndex, matchedQuestions.length - 1),
+    );
+    setIsPaused(false);
+    setCurrentTime(Date.now());
+    setResumeError(null);
+
+    if (certSlug) {
+      try {
+        clearPausedSession(certSlug);
+      } catch {
+        // Non-blocking
+      }
+    }
+    setSavedPausedSession(null);
+  }
+
+  function handleDiscardPausedSession(): void {
+    if (!certSlug) return;
+    try {
+      clearPausedSession(certSlug);
+      setSavedPausedSession(null);
+      setActiveSession(null);
+      setIsPaused(false);
+      setStorageError(null);
+      setResumeError(null);
+    } catch (error) {
+      setStorageError(errorMessage(error));
+    }
   }
 
   if (!activeSession) {
@@ -268,6 +424,69 @@ export function QuizSessionPage() {
             Failed to start retake session: {retakeError}
           </p>
         )}
+        {savedPausedSession && (
+          <div className={styles.pausedCard}>
+            <div className={styles.pausedHeader}>
+              <span className={styles.pausedChip}>Paused session</span>
+            </div>
+            <h2 className={styles.pausedTitle}>Resume your practice session</h2>
+            <p className={styles.pausedDetails}>
+              You have an in-progress session paused on this device
+              {savedPausedSession.pausedAt
+                ? ` from ${formatCalendarDate(savedPausedSession.pausedAt.slice(0, 10))}`
+                : ""}
+              .
+            </p>
+            <dl className={styles.pausedMetaList}>
+              <div className={styles.pausedMetaItem}>
+                <dt>Progress</dt>
+                <dd>
+                  Question {savedPausedSession.questionIndex + 1} of{" "}
+                  {savedPausedSession.questionIds.length}
+                </dd>
+              </div>
+              <div className={styles.pausedMetaItem}>
+                <dt>Answered</dt>
+                <dd>
+                  {
+                    Object.values(savedPausedSession.answers).filter(
+                      (s) => s.length > 0,
+                    ).length
+                  }{" "}
+                  of {savedPausedSession.questionIds.length}
+                </dd>
+              </div>
+              <div className={styles.pausedMetaItem}>
+                <dt>Active time used</dt>
+                <dd>
+                  {formatRemainingTime(savedPausedSession.elapsedSeconds)}
+                </dd>
+              </div>
+            </dl>
+            {resumeError && (
+              <p className={styles.formError} role="alert">
+                {resumeError}
+              </p>
+            )}
+            <div className={styles.pausedActions}>
+              <button
+                className="button button-primary"
+                type="button"
+                onClick={() => handleResumeSaved(savedPausedSession)}
+              >
+                Resume session
+                <span aria-hidden="true">→</span>
+              </button>
+              <button
+                className="button button-secondary"
+                type="button"
+                onClick={handleDiscardPausedSession}
+              >
+                Discard and start new
+              </button>
+            </div>
+          </div>
+        )}
         <QuizSetupForm
           manifest={manifest}
           questions={questions}
@@ -276,11 +495,20 @@ export function QuizSessionPage() {
           missedQuestionIds={missedQuestionIds}
           storageError={storageError}
           onStartSession={(qs, config) => {
+            if (certSlug) {
+              try {
+                clearPausedSession(certSlug);
+              } catch {
+                // Non-blocking
+              }
+              setSavedPausedSession(null);
+            }
             setActiveSession({
               questions: qs,
               config,
               startedAt: new Date().toISOString(),
             });
+            setIsPaused(false);
             setAnswers({});
             setStrikethroughs({});
             setRevealedQuestionIds(new Set());
@@ -288,11 +516,93 @@ export function QuizSessionPage() {
             setQuestionIndex(0);
             setFinishError(null);
             setRetakeError(null);
+            setResumeError(null);
           }}
           onCompleteAttempt={(config, qs, ans) =>
             completeAttempt(config, qs, ans, new Date().toISOString())
           }
         />
+      </section>
+    );
+  }
+
+  if (activeSession && isPaused) {
+    const answeredCount = Object.values(answers).filter(
+      (selected) => selected.length > 0,
+    ).length;
+    const elapsedSeconds = savedPausedSession?.elapsedSeconds ?? 0;
+    const totalExamSeconds = (manifest.examDurationMinutes ?? 0) * 60;
+    const remainingSeconds = Math.max(0, totalExamSeconds - elapsedSeconds);
+
+    return (
+      <section className="page-section">
+        <div className="page-heading">
+          <div>
+            <p className="eyebrow">{certEyebrow}</p>
+            <h1>Practice paused</h1>
+          </div>
+          <Link className="text-link" to="/">
+            Change certification
+          </Link>
+        </div>
+
+        <div className={styles.pausedCard}>
+          <div className={styles.pausedHeader}>
+            <span className={styles.pausedChip}>Paused</span>
+            {manifest.status === "draft" && <DraftNotice />}
+          </div>
+          <h2 className={styles.pausedTitle}>Practice session paused</h2>
+          <p className={styles.pausedDetails}>
+            Your progress is saved on this device. You can safely close your
+            browser or take a break and resume whenever you are ready.
+          </p>
+
+          <dl className={styles.pausedMetaList}>
+            <div className={styles.pausedMetaItem}>
+              <dt>Current position</dt>
+              <dd>
+                Question {questionIndex + 1} of {activeSession.questions.length}
+              </dd>
+            </div>
+            <div className={styles.pausedMetaItem}>
+              <dt>Answered</dt>
+              <dd>
+                {answeredCount} of {activeSession.questions.length}
+              </dd>
+            </div>
+            <div className={styles.pausedMetaItem}>
+              <dt>Active time</dt>
+              <dd>{formatRemainingTime(elapsedSeconds)}</dd>
+            </div>
+            {manifest.examDurationMinutes ? (
+              <div className={styles.pausedMetaItem}>
+                <dt>Time remaining</dt>
+                <dd>{formatRemainingTime(remainingSeconds)}</dd>
+              </div>
+            ) : null}
+          </dl>
+
+          <div className={styles.pausedActions}>
+            <button
+              className="button button-primary"
+              type="button"
+              onClick={handleResumeActive}
+            >
+              Resume session
+              <span aria-hidden="true">→</span>
+            </button>
+            <button
+              className="button button-secondary"
+              type="button"
+              onClick={handleDiscardPausedSession}
+            >
+              Discard session
+            </button>
+            <Link className="button button-secondary" to="/">
+              Back to certifications
+            </Link>
+          </div>
+        </div>
       </section>
     );
   }
@@ -468,6 +778,7 @@ export function QuizSessionPage() {
           }
         }}
         onFinish={handleFinish}
+        onPause={handlePause}
       />
     </section>
   );

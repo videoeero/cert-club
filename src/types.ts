@@ -143,3 +143,17 @@ export interface AttemptRecord {
   scorePercentage: number;
   domainBreakdown: DomainBreakdown[];
 }
+
+export interface PausedSession {
+  cert: string;
+  startedAt: string;
+  pausedAt: string;
+  elapsedSeconds: number;
+  config: QuizConfig;
+  questionIds: string[];
+  questionIndex: number;
+  answers: AnswerMap;
+  strikethroughs: AnswerMap;
+  revealedQuestionIds: string[];
+  hintRevealedQuestionIds: string[];
+}

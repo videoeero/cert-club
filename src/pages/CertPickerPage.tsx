@@ -1,15 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import logoUrl from "../assets/logo.svg";
 import { ErrorState, LoadingState } from "../components/PageStatus";
 import { useAsyncResource } from "../hooks/use-async-resource";
 import { loadCertCatalog } from "../lib/content";
+import { getPausedSessions } from "../lib/storage";
 import { formatCalendarDate } from "../lib/time";
-import type { Manifest } from "../types";
+import type { Manifest, PausedSession } from "../types";
 import styles from "./CertPickerPage.module.css";
 
-function CertCard({ manifest }: { manifest: Manifest }) {
+function CertCard({
+  manifest,
+  pausedSession,
+}: {
+  manifest: Manifest;
+  pausedSession?: PausedSession;
+}) {
   return (
     <article className={styles.certCard}>
       <div className={styles.cardHeading}>
@@ -18,6 +25,7 @@ function CertCard({ manifest }: { manifest: Manifest }) {
           {manifest.status === "draft" && (
             <span className={styles.draftChip}>Draft</span>
           )}
+          {pausedSession && <span className={styles.pausedChip}>Paused</span>}
           <span className={styles.slugChip}>{manifest.cert}</span>
         </div>
       </div>
@@ -44,7 +52,7 @@ function CertCard({ manifest }: { manifest: Manifest }) {
           </time>
         </p>
         <Link className="button button-primary" to={`/quiz/${manifest.cert}`}>
-          Start practice
+          {pausedSession ? "Resume practice" : "Start practice"}
           <span aria-hidden="true">→</span>
         </Link>
       </div>
@@ -52,7 +60,13 @@ function CertCard({ manifest }: { manifest: Manifest }) {
   );
 }
 
-function CertSections({ certs }: { certs: Manifest[] }) {
+function CertSections({
+  certs,
+  pausedSessions,
+}: {
+  certs: Manifest[];
+  pausedSessions: Record<string, PausedSession>;
+}) {
   const stableCerts = certs.filter((manifest) => manifest.status === "stable");
   const draftCerts = certs.filter((manifest) => manifest.status !== "stable");
 
@@ -79,7 +93,11 @@ function CertSections({ certs }: { certs: Manifest[] }) {
           </div>
           <div className={styles.certGrid}>
             {stableCerts.map((manifest) => (
-              <CertCard key={manifest.cert} manifest={manifest} />
+              <CertCard
+                key={manifest.cert}
+                manifest={manifest}
+                pausedSession={pausedSessions[manifest.cert]}
+              />
             ))}
           </div>
         </section>
@@ -99,7 +117,11 @@ function CertSections({ certs }: { certs: Manifest[] }) {
           </div>
           <div className={styles.certGrid}>
             {draftCerts.map((manifest) => (
-              <CertCard key={manifest.cert} manifest={manifest} />
+              <CertCard
+                key={manifest.cert}
+                manifest={manifest}
+                pausedSession={pausedSessions[manifest.cert]}
+              />
             ))}
           </div>
         </section>
@@ -110,7 +132,18 @@ function CertSections({ certs }: { certs: Manifest[] }) {
 
 export function CertPickerPage() {
   const [retryKey, setRetryKey] = useState(0);
+  const [pausedSessions, setPausedSessions] = useState<
+    Record<string, PausedSession>
+  >({});
   const resource = useAsyncResource(loadCertCatalog, [retryKey]);
+
+  useEffect(() => {
+    try {
+      setPausedSessions(getPausedSessions());
+    } catch {
+      // Non-blocking fallback
+    }
+  }, []);
 
   return (
     <section className="page-section">
@@ -145,7 +178,9 @@ export function CertPickerPage() {
           onRetry={() => setRetryKey((value) => value + 1)}
         />
       )}
-      {resource.status === "ready" && <CertSections certs={resource.data} />}
+      {resource.status === "ready" && (
+        <CertSections certs={resource.data} pausedSessions={pausedSessions} />
+      )}
     </section>
   );
 }
