@@ -121,7 +121,7 @@ function createMockFetcher(handlers = {}) {
   };
 }
 
-test("provenanceSurface includes explanation, sourceNote, distractorNotes, and keyed option text", () => {
+test("provenanceSurface includes explanation, sourceNote, distractorNotes, and keyed option text and hintText", () => {
   const q = mockQuestion({
     explanation: "Explanation text.",
     sourceNote: "Source note text.",
@@ -129,8 +129,16 @@ test("provenanceSurface includes explanation, sourceNote, distractorNotes, and k
       "opt-b": "Distractor note for B.",
     },
     options: [
-      { id: "opt-a", text: "Keyed option text." },
-      { id: "opt-b", text: "Distractor option text." },
+      {
+        id: "opt-a",
+        text: "Keyed option text.",
+        hintText: "Keyed option hint.",
+      },
+      {
+        id: "opt-b",
+        text: "Distractor option text.",
+        hintText: "Distractor option hint.",
+      },
     ],
     correct: ["opt-a"],
   });
@@ -140,6 +148,8 @@ test("provenanceSurface includes explanation, sourceNote, distractorNotes, and k
   assert.match(surface, /Source note text\./);
   assert.match(surface, /Distractor note for B\./);
   assert.match(surface, /Keyed option text\./);
+  assert.match(surface, /Keyed option hint\./);
+  assert.doesNotMatch(surface, /Distractor option hint\./);
 });
 
 test("provenanceSurface deliberately excludes non-keyed option text and stem", () => {
@@ -148,7 +158,11 @@ test("provenanceSurface deliberately excludes non-keyed option text and stem", (
     explanation: "Standard explanation.",
     options: [
       { id: "opt-a", text: "Keyed option without figures." },
-      { id: "opt-b", text: "Distractor asserting 90% discount." },
+      {
+        id: "opt-b",
+        text: "Distractor asserting 90% discount.",
+        hintText: "Distractor hint claiming $50 discount.",
+      },
     ],
     correct: ["opt-a"],
   });
@@ -156,6 +170,7 @@ test("provenanceSurface deliberately excludes non-keyed option text and stem", (
   const surface = provenanceSurface(q);
   assert.doesNotMatch(surface, /100 requests/);
   assert.doesNotMatch(surface, /90%/);
+  assert.doesNotMatch(surface, /\$50/);
 });
 
 test("provenanceSurface handles missing optional fields gracefully", () => {
@@ -248,8 +263,16 @@ test("extractFigures returns matched figures with originating fields", () => {
       "opt-b": "Distractor with 100 GB limit.",
     },
     options: [
-      { id: "opt-a", text: "Keyed answer with 90% savings." },
-      { id: "opt-b", text: "Ignored distractor with 50% savings." },
+      {
+        id: "opt-a",
+        text: "Keyed answer with 90% savings.",
+        hintText: "Requires 10 GB storage.",
+      },
+      {
+        id: "opt-b",
+        text: "Ignored distractor with 50% savings.",
+        hintText: "Ignored distractor hint 20 GB.",
+      },
     ],
     correct: ["opt-a"],
   });
@@ -261,6 +284,7 @@ test("extractFigures returns matched figures with originating fields", () => {
     { field: "sourceNote", figure: "30-day" },
     { field: "distractorNotes.opt-b", figure: "100 GB" },
     { field: "options.opt-a", figure: "90%" },
+    { field: "options.opt-a.hintText", figure: "10 GB" },
   ]);
 });
 

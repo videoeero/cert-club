@@ -192,6 +192,10 @@ test("loadCertContent accepts a question carrying every optional field", async (
   const question = {
     ...validQuestion(),
     subdomain: "alpha-skill",
+    options: [
+      { id: "a", text: "The distractor", hintText: "Distractor hint" },
+      { id: "b", text: "The correct answer", hintText: "Key hint" },
+    ],
     distractorNotes: { a: "Plausible because X, but wrong because Y." },
   };
   assert.equal(questionSchema.safeParse(question).success, true);
@@ -203,9 +207,72 @@ test("loadCertContent accepts a question carrying every optional field", async (
 
   assert.equal(content.questions.length, 1);
   assert.equal(content.questions[0].subdomain, "alpha-skill");
+  assert.equal(content.questions[0].options[0].hintText, "Distractor hint");
+  assert.equal(content.questions[0].options[1].hintText, "Key hint");
   assert.deepEqual(content.questions[0].distractorNotes, {
     a: "Plausible because X, but wrong because Y.",
   });
+});
+
+test("loadCertContent accepts a question with hintText on options", async () => {
+  const question = {
+    ...validQuestion(),
+    options: [
+      { id: "a", text: "The distractor", hintText: "Optional distractor hint" },
+      { id: "b", text: "The correct answer" },
+    ],
+  };
+  assert.equal(questionSchema.safeParse(question).success, true);
+
+  const content = await loadCertContent(
+    "test-cert",
+    fetcherFor(validManifest(), [question]),
+  );
+
+  assert.equal(content.questions.length, 1);
+  assert.equal(
+    content.questions[0].options[0].hintText,
+    "Optional distractor hint",
+  );
+  assert.equal(content.questions[0].options[1].hintText, undefined);
+});
+
+test("loadCertContent and questionSchema reject non-string hintText", async () => {
+  const question = {
+    ...validQuestion(),
+    options: [
+      { id: "a", text: "The distractor", hintText: 123 },
+      { id: "b", text: "The correct answer" },
+    ],
+  };
+  assert.equal(questionSchema.safeParse(question).success, false);
+
+  await assert.rejects(
+    loadCertContent("test-cert", fetcherFor(validManifest(), [question])),
+    {
+      name: "ContentLoadError",
+      message: /question bank does not match the expected schema/,
+    },
+  );
+});
+
+test("loadCertContent and questionSchema reject empty-string hintText", async () => {
+  const question = {
+    ...validQuestion(),
+    options: [
+      { id: "a", text: "The distractor", hintText: "" },
+      { id: "b", text: "The correct answer" },
+    ],
+  };
+  assert.equal(questionSchema.safeParse(question).success, false);
+
+  await assert.rejects(
+    loadCertContent("test-cert", fetcherFor(validManifest(), [question])),
+    {
+      name: "ContentLoadError",
+      message: /question bank does not match the expected schema/,
+    },
+  );
 });
 
 test("questionSchema rejects a question with an unrecognized extra field", () => {

@@ -170,7 +170,7 @@ export function provenanceSurface(q) {
     ...Object.values(q.distractorNotes || {}),
     ...(q.options || [])
       .filter((o) => keyed.has(o.id))
-      .map((o) => o.text || ""),
+      .flatMap((o) => [o.text || "", o.hintText || ""]),
   ].join("\n");
 }
 
@@ -221,6 +221,7 @@ export function extractFigures(q) {
   for (const opt of q.options || []) {
     if (keyed.has(opt.id)) {
       checkField(`options.${opt.id}`, opt.text);
+      checkField(`options.${opt.id}.hintText`, opt.hintText);
     }
   }
 

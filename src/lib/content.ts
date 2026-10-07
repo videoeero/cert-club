@@ -25,7 +25,9 @@ function isOption(value: unknown): value is QuestionOption {
   return (
     isRecord(value) &&
     typeof value.id === "string" &&
-    typeof value.text === "string"
+    typeof value.text === "string" &&
+    (value.hintText === undefined ||
+      (typeof value.hintText === "string" && value.hintText.length > 0))
   );
 }
 

@@ -35,6 +35,7 @@ export interface Manifest {
 export interface QuestionOption {
   id: string;
   text: string;
+  hintText?: string;
 }
 
 export interface Question {

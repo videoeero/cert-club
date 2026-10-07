@@ -164,6 +164,7 @@ export const optionSchema = z
   .object({
     id: slugSchema,
     text: z.string().min(1),
+    hintText: z.string().min(1).optional(),
   })
   .strict();
 
