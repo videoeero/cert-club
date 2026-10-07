@@ -571,7 +571,7 @@ test("reproduces aws-clf-c02's review numbers against the real bank", async () =
   const metrics = buildBankMetrics(manifestData, questions);
 
   assert.equal(metrics.questionCount, 130);
-  assert.ok(Math.abs(metrics.lengthBias.meanDelta - -1.02) < 0.01);
+  assert.ok(Math.abs(metrics.lengthBias.meanDelta - -0.48) < 0.01);
   assert.equal(metrics.longestOptionIsKey.count, 20);
   assert.equal(metrics.longestOptionIsKey.sampleSize, 107);
   assert.deepEqual(

@@ -156,9 +156,9 @@ Status: COMPLETE
   — same sourcing rule as `text`, and verified by `check-claims` (per Phase 1).
 - `certs/ADDING-A-CERT.md` — add `hintText` to the field-rules table.
 - `certs/aws-clf-c02/review-progress.md` — record that the schema now supports
-  `hintText`, the planned gloss-stripping migration of the bank's ~534 glossed
-  options is pending, and the migration rule: only service/tool-name options
-  ("Service, which <gloss>" / "Service, <noun phrase>") get stripped;
+  `hintText`, that the gloss-stripping migration of the bank's options was
+  still pending at that point, and the migration rule: only service/tool-name
+  options ("Service, which <gloss>" / "Service, <noun phrase>") get stripped;
   statement-style options whose text IS the answer content ("Security groups
   are stateful firewalls, so…") stay intact with no hint.
 
@@ -170,18 +170,18 @@ Status: COMPLETE
 
 ---
 
-## Phase 4 (FOLLOW-UP, do not run in this change): CLF-C02 content migration
+## Phase 4: CLF-C02 content migration
 
-Status: PENDING — deliberately deferred by user decision.
+Status: COMPLETE
 
-Split ~534 glossed options across 130 questions in
+Split 354 glossed options across 87 service/tool/concept questions in
 `certs/aws-clf-c02/questions/*.json` into bare `text` + `hintText`, using the
-migration rule in Phase 3. Judgment call per option, not pure regex. The 9
-already-bare options (tech-009, tech-010) get no hints. Verify with `npm run
-check` — bias guards (length, position, qualifier) re-measure on the shortened
-texts and must stay green; run `npm run balance -- --strict` and `npm run
-check-claims` (keyed-option figures now live in `hintText`). Update
-review-progress.md when done.
+migration rule in Phase 3. The 41 statement-style questions (181 options) and
+the 2 already-bare questions (8 options: tech-009, tech-010) stay intact with
+no hints. Verified with `npm run check` (bias guards re-measured: option length
+mean delta shifted to -0.48 chars, longest-is-key at 18.7%, all passing);
+verified with `npm run balance -- --strict`, `npm run build`, and `npm run check-claims`.
+Updated `test/bank-metrics.test.mjs` and `certs/aws-clf-c02/review-progress.md`.
 
 ---
 

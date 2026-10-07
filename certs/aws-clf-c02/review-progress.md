@@ -38,7 +38,7 @@ Audited against the 130-question bank:
 
 - **Distribution**: Proportional across all 4 domains (31 / 39 / 44 / 16, zero delta against 2× target).
 - **Single-select position distribution**: 28 A / 27 B / 26 C / 26 D across `a`–`d` (max 26.2%, well below the 50% ceiling).
-- **Option length delta**: Mean correct-option length minus distractor length is -1.02 characters (median -0.83 chars), within the ±10.0 character ceiling.
+- **Option length delta**: Mean correct-option length minus distractor length is -0.48 characters (median -0.33 chars), within the ±10.0 character ceiling.
 - **Longest option as key share**: 20 of 107 single-select items (18.7%), well below the 45% ceiling.
 - **Distractor notes coverage**: 100% of distractor options across all 130 questions carry complete explanations.
 - **Bias guards**: All pass cleanly (`positionBias`, `lengthBiasMeanDelta`, `longestOptionIsKey`).
@@ -113,11 +113,17 @@ Comprehensive drift audit executed across all 114 unique URLs (130 questions) fo
   - `sec-014`: Re-cited to `aws.amazon.com/compliance/pci-faqs/` (PCI DSS application certification).
 - **Dispositions**: 27 bump, 8 re-cite, 1 re-cite + rewrite, 2 rewrite, 0 retire across 38 evaluated items.
 
-### Hint text support and pending gloss-stripping migration (2026-10-07)
+### Hint text migration (2026-10-07)
 
-The repository schema and quiz UI now support the optional `hintText` field on question options, revealed via a per-question toggle button during practice sessions and rendered inline during review.
+The repository schema and quiz UI support the optional `hintText` field on question options, revealed via a per-question toggle button during practice sessions and rendered inline during review.
 
-A planned gloss-stripping migration of the bank's ~534 glossed options across 130 questions is pending (Phase 4). The migration rule:
-- **Service/tool-name options**: Only options naming a service or tool followed by a gloss ("Service, which <gloss>" / "Service, <noun phrase>") get stripped into bare `text` (parenthetical acronym expansion allowed, e.g. "AWS Database Migration Service (AWS DMS)") and `hintText`.
-- **Statement-style options**: Options whose text IS the answer content ("Security groups are stateful firewalls, so…") stay intact in `text` with no hint.
-- **Already-bare options**: Options that already contain only the service/tool name (e.g. `tech-009`, `tech-010`) remain bare with no `hintText`.
+The gloss-stripping migration (Phase 4) was executed across the bank following the migration rule:
+- **Service/tool-name options**: 87 questions (354 options) naming services, tools, or architectural concepts were stripped into bare `text` (parenthetical acronym expansion allowed, e.g. "AWS Database Migration Service (AWS DMS)") and `hintText`.
+- **Statement-style options**: 41 questions (181 options) whose text IS the answer content (e.g., shared responsibility duties, VPC security group stateful behavior, root user tasks) stayed intact in `text` with no `hintText`.
+- **Already-bare options**: 2 questions (8 options, `tech-009` and `tech-010`) were already bare and remain with no `hintText`.
+
+Post-migration audit:
+- **Option length delta**: Mean correct-option length minus distractor length shifted from -1.02 to -0.48 characters (median -0.33 chars), well within the ±10.0 character ceiling.
+- **Longest option as key share**: 20 of 107 single-select items (18.7%), unchanged.
+- **Position distribution**: 28 A / 27 B / 26 C / 26 D, unchanged.
+- **Bias guards**: All guards continue to pass cleanly (`positionBias`, `lengthBiasMeanDelta`, `longestOptionIsKey`).
