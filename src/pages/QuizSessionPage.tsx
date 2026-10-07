@@ -62,6 +62,9 @@ export function QuizSessionPage() {
   const [revealedQuestionIds, setRevealedQuestionIds] = useState(
     new Set<string>(),
   );
+  const [hintRevealedQuestionIds, setHintRevealedQuestionIds] = useState(
+    new Set<string>(),
+  );
   const [bookmarkedQuestionIds, setBookmarkedQuestionIds] = useState(
     new Set<string>(),
   );
@@ -84,6 +87,7 @@ export function QuizSessionPage() {
     setAnswers({});
     setStrikethroughs({});
     setRevealedQuestionIds(new Set());
+    setHintRevealedQuestionIds(new Set());
     setFinishError(null);
     setStorageError(null);
     setRetakeError(null);
@@ -145,6 +149,7 @@ export function QuizSessionPage() {
       setAnswers({});
       setStrikethroughs({});
       setRevealedQuestionIds(new Set());
+      setHintRevealedQuestionIds(new Set());
       setQuestionIndex(0);
       setFinishError(null);
       setRetakeError(null);
@@ -279,6 +284,7 @@ export function QuizSessionPage() {
             setAnswers({});
             setStrikethroughs({});
             setRevealedQuestionIds(new Set());
+            setHintRevealedQuestionIds(new Set());
             setQuestionIndex(0);
             setFinishError(null);
             setRetakeError(null);
@@ -352,6 +358,18 @@ export function QuizSessionPage() {
     setStrikethroughs((prev) => ({ ...prev, [question.id]: nextStruck }));
   }
 
+  function handleToggleHint(): void {
+    setHintRevealedQuestionIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(question.id)) {
+        next.delete(question.id);
+      } else {
+        next.add(question.id);
+      }
+      return next;
+    });
+  }
+
   function handleFinish(): void {
     if (!certSlug) {
       setFinishError("A certification slug is required to save this session.");
@@ -393,6 +411,7 @@ export function QuizSessionPage() {
         struckOptionIds={questionStrikethroughs}
         isRevealed={isRevealed}
         revealMode={config.revealMode}
+        isHintRevealed={hintRevealedQuestionIds.has(question.id)}
         onToggleBookmark={() => {
           if (!certSlug) return;
           const next = new Set(bookmarkedQuestionIds);
@@ -407,6 +426,7 @@ export function QuizSessionPage() {
         }}
         onOptionChange={handleOptionChange}
         onToggleStrikethrough={handleToggleStrikethrough}
+        onToggleHint={handleToggleHint}
       />
 
       {storageError && (

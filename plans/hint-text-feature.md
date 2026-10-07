@@ -68,7 +68,7 @@ Status: COMPLETE
 
 ## Phase 2: Quiz-session hint toggle UI
 
-Status: PENDING
+Status: COMPLETE
 
 ### Changes
 

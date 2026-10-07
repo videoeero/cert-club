@@ -13,9 +13,11 @@ export interface QuizQuestionProps {
   struckOptionIds?: string[];
   isRevealed: boolean;
   revealMode: RevealMode;
+  isHintRevealed: boolean;
   onToggleBookmark: () => void;
   onOptionChange: (optionId: string) => void;
   onToggleStrikethrough?: (optionId: string) => void;
+  onToggleHint: () => void;
 }
 
 interface QuestionHeaderProps {
@@ -23,8 +25,13 @@ interface QuestionHeaderProps {
   difficulty: string;
   isMulti: boolean;
   isBookmarked: boolean;
+  hasHints: boolean;
+  isHintRevealed: boolean;
+  isRevealed: boolean;
+  optionsListId: string;
   questionIndex: number;
   onToggleBookmark: () => void;
+  onToggleHint: () => void;
 }
 
 function QuestionHeader({
@@ -32,8 +39,13 @@ function QuestionHeader({
   difficulty,
   isMulti,
   isBookmarked,
+  hasHints,
+  isHintRevealed,
+  isRevealed,
+  optionsListId,
   questionIndex,
   onToggleBookmark,
+  onToggleHint,
 }: QuestionHeaderProps) {
   return (
     <div className={styles.questionCardHeader}>
@@ -42,19 +54,32 @@ function QuestionHeader({
         <span>{difficulty}</span>
         <span>{isMulti ? "Multiple response" : "Single response"}</span>
       </div>
-      <button
-        className={`${styles.bookmarkButton} button button-secondary`}
-        type="button"
-        aria-pressed={isBookmarked}
-        aria-label={
-          isBookmarked
-            ? `Remove bookmark from question ${questionIndex + 1}`
-            : `Bookmark question ${questionIndex + 1}`
-        }
-        onClick={onToggleBookmark}
-      >
-        {isBookmarked ? "Bookmarked" : "Bookmark"}
-      </button>
+      <div className={styles.questionActions}>
+        {hasHints && !isRevealed && (
+          <button
+            className={`${styles.hintButton} button button-secondary`}
+            type="button"
+            aria-expanded={isHintRevealed}
+            aria-controls={optionsListId}
+            onClick={onToggleHint}
+          >
+            {isHintRevealed ? "Hide hints" : "Show hints"}
+          </button>
+        )}
+        <button
+          className={`${styles.bookmarkButton} button button-secondary`}
+          type="button"
+          aria-pressed={isBookmarked}
+          aria-label={
+            isBookmarked
+              ? `Remove bookmark from question ${questionIndex + 1}`
+              : `Bookmark question ${questionIndex + 1}`
+          }
+          onClick={onToggleBookmark}
+        >
+          {isBookmarked ? "Bookmarked" : "Bookmark"}
+        </button>
+      </div>
     </div>
   );
 }
@@ -66,6 +91,8 @@ interface AnswerOptionListProps {
   struckOptionIds: string[];
   isRevealed: boolean;
   revealMode: RevealMode;
+  showHints: boolean;
+  optionsListId: string;
   headingId: string;
   instructionId: string;
   onOptionChange: (optionId: string) => void;
@@ -79,6 +106,8 @@ function AnswerOptionList({
   struckOptionIds,
   isRevealed,
   revealMode,
+  showHints,
+  optionsListId,
   headingId,
   instructionId,
   onOptionChange,
@@ -92,6 +121,7 @@ function AnswerOptionList({
   return (
     <fieldset
       ref={fieldsetRef}
+      id={optionsListId}
       tabIndex={-1}
       className={styles.answerOptionList}
       disabled={isRevealed}
@@ -151,11 +181,38 @@ function AnswerOptionList({
               <span className={styles.optionId} aria-hidden="true">
                 {formatOptionLabel(option.id)}
               </span>
-              {isStruck ? (
-                <s className={styles.strikethroughText}>{option.text}</s>
-              ) : (
-                <span>{option.text}</span>
-              )}
+              <span
+                className={[
+                  styles.optionContent,
+                  isStruck ? styles.strikethroughText : "",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+              >
+                {isStruck ? (
+                  <s className={styles.strikethroughText}>{option.text}</s>
+                ) : (
+                  <span>{option.text}</span>
+                )}
+                {showHints && option.hintText && (
+                  <span
+                    className={[
+                      styles.optionHint,
+                      isStruck ? styles.strikethroughText : "",
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
+                  >
+                    {isStruck ? (
+                      <s className={styles.strikethroughText}>
+                        {option.hintText}
+                      </s>
+                    ) : (
+                      option.hintText
+                    )}
+                  </span>
+                )}
+              </span>
             </label>
             <button
               type="button"
@@ -247,15 +304,21 @@ export function QuizQuestion({
   struckOptionIds = [],
   isRevealed,
   revealMode,
+  isHintRevealed,
   onToggleBookmark,
   onOptionChange,
   onToggleStrikethrough = () => {},
+  onToggleHint,
 }: QuizQuestionProps) {
   const questionHeadingId = `question-heading-${question.id}`;
+  const questionOptionsListId = `question-options-${question.id}`;
   const questionInstructionId = `question-instruction-${question.id}`;
   const isCorrect = isRevealed
     ? scoreAnswer(question, selectedOptionIds)
     : false;
+  const hasHints = question.options.some((o) => Boolean(o.hintText));
+  const showHints =
+    isHintRevealed || (revealMode === "immediate" && isRevealed);
 
   const fieldsetRef = useRef<HTMLFieldSetElement>(null);
 
@@ -282,8 +345,13 @@ export function QuizQuestion({
         difficulty={question.difficulty}
         isMulti={question.type === "multi"}
         isBookmarked={isBookmarked}
+        hasHints={hasHints}
+        isHintRevealed={isHintRevealed}
+        isRevealed={isRevealed}
+        optionsListId={questionOptionsListId}
         questionIndex={questionIndex}
         onToggleBookmark={onToggleBookmark}
+        onToggleHint={onToggleHint}
       />
       <AnswerOptionList
         fieldsetRef={fieldsetRef}
@@ -292,6 +360,8 @@ export function QuizQuestion({
         struckOptionIds={struckOptionIds}
         isRevealed={isRevealed}
         revealMode={revealMode}
+        showHints={showHints}
+        optionsListId={questionOptionsListId}
         headingId={questionHeadingId}
         instructionId={questionInstructionId}
         onOptionChange={onOptionChange}

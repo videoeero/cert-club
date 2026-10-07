@@ -66,7 +66,14 @@ function QuestionReview({
               <span className={styles.optionId} aria-hidden="true">
                 {formatOptionLabel(option.id)}
               </span>
-              <span>{option.text}</span>
+              <span className={styles.reviewOptionContent}>
+                {option.text}
+                {option.hintText && (
+                  <span className={styles.reviewOptionHint}>
+                    {option.hintText}
+                  </span>
+                )}
+              </span>
             </li>
           );
         })}
