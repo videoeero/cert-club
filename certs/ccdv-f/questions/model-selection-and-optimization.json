@@ -158,7 +158,7 @@
       "b",
       "c"
     ],
-    "explanation": "Prompt caching optimizes costs by allowing identical text prefixes to be reused across requests. Because cache write tokens cost more than standard input tokens (while cache read tokens cost significantly less), caching is an economic trade-off that only pays off when the cached content is reused multiple times (Option B). To achieve cache hits, the cached content must form an exact, contiguous prefix at the start of the prompt, meaning static content like company policies should be placed at the very beginning (Option C). Placing dynamic content first would break the prefix match. Prompt caching only affects input token costs, not output token costs, and there are minimum token limits and maximum breakpoint limits that make caching every small conversational message impractical.",
+    "explanation": "Prompt caching optimizes costs by allowing identical text prefixes to be reused across requests. Because cache write tokens cost more than standard input tokens while cache read tokens cost significantly less, caching is an economic trade-off that only pays off when the cached content is reused multiple times. To achieve cache hits, cached content must form an exact, contiguous prefix at the start of the prompt, meaning static content like company policies should be placed at the very beginning. Placing dynamic content first breaks the prefix match.",
     "distractorNotes": {
       "a": "Placing dynamic content before static content breaks the prefix match required for prompt caching. Static content must be placed at the beginning of the prompt.",
       "d": "Prompt caching reduces the cost of input tokens when a cache hit occurs. It does not affect the cost of output tokens, which are priced at the standard output rate regardless of caching.",
@@ -424,7 +424,7 @@
     "correct": [
       "b"
     ],
-    "explanation": "Option B is correct: Anthropic documents that even with temperature set to 0 the results are not fully deterministic and identical inputs may produce different outputs across calls, so a cache keyed on exact input cannot assume the response is reproducible byte-for-byte. Option A wrongly treats temperature 0 as a determinism guarantee and blames the prompt. Option C invents a first-token-only rule. Option D invents a top_p condition; neither parameter makes the service fully deterministic.",
+    "explanation": "Anthropic documents that even with temperature set to 0 the results are not fully deterministic and identical inputs may produce different outputs across calls, so a cache keyed on exact input cannot assume the response is reproducible byte-for-byte. Temperature 0 is not a determinism guarantee, there is no first-token-only determinism rule, and top_p does not make sampling fully deterministic.",
     "distractorNotes": {
       "a": "Plausible because temperature 0 does bias toward the most probable tokens, but it is not a determinism guarantee, so unexplained variation is expected, not necessarily a changed prompt.",
       "c": "Plausible-sounding mechanics, but temperature does not act on only the first token, and shrinking max_tokens does not remove non-determinism.",
@@ -465,7 +465,7 @@
     "correct": [
       "c"
     ],
-    "explanation": "Option C is correct: the context window is the model's working memory covering all the text it can reference including the response itself, so the system prompt, every message, tool definitions, and the generated output all share one budget; a large input therefore leaves less room to generate. Options A, B, and D all imagine separate budgets, but input and output are counted against the same window.",
+    "explanation": "The context window is the model working memory covering all the text it can reference including the response itself, so the system prompt, every message, tool definitions, and the generated output all share one budget; a large input therefore leaves less room to generate. Input and output tokens are counted against the same unified window budget.",
     "distractorNotes": {
       "a": "Plausible because input and output are reported as distinct usage fields, but they are billed distinctly, not budgeted separately; both draw on the same window.",
       "b": "Everything in the request counts toward the window, including ordinary user messages and the generated response, not just system prompt and tools.",
@@ -507,7 +507,7 @@
       "b",
       "d"
     ],
-    "explanation": "Options B and D are correct: thinking earns its cost on genuinely hard, multi-step problems, while on simple tasks it mainly adds latency and spend, so match thinking depth to difficulty. Option A is wrong because more thinking is not universally better and wastes budget on easy tasks. Option C is wrong because thinking tokens are billed as output tokens and do count toward the context window, so they are a real cost to weigh.",
+    "explanation": "Thinking earns its cost on genuinely hard, multi-step problems, while on simple tasks it mainly adds latency and spend, so match thinking depth to difficulty. More thinking is not universally better and wastes budget on easy tasks, and thinking tokens count toward the context window as billed output tokens.",
     "distractorNotes": {
       "a": "Plausible because thinking helps on hard problems, but enabling it globally pays cost on tasks that gain nothing from it.",
       "c": "Thinking tokens are billed as output and count toward the context window, so treating them as free misjudges the tradeoff."
@@ -548,7 +548,7 @@
       "a",
       "c"
     ],
-    "explanation": "Options A and C are correct: examples shine when format or structure matters, but a clear zero-shot prompt can be enough for simple, well-handled tasks, and it avoids extra tokens. Option B is false because zero-shot prompts routinely work for straightforward tasks. Option D is false because the guidance recommends a small set (about three to five) rather than piling on dozens.",
+    "explanation": "Examples shine when format or structure matters, but a clear zero-shot prompt can be enough for simple, well-handled tasks, and it avoids extra tokens. Zero-shot prompts routinely succeed for straightforward tasks, and when providing examples, the guidance recommends a concise set (around three to five) rather than dozens.",
     "distractorNotes": {
       "b": "Zero-shot prompts work well for many clear tasks, so examples are not universally required.",
       "d": "Guidance is to include a few strong examples, not dozens; more is not monotonically better."
@@ -588,7 +588,7 @@
     "correct": [
       "d"
     ],
-    "explanation": "Option D is correct: tokens are the model's smallest units and may correspond to words, subwords, characters, or bytes, so a token roughly maps to a few characters and the ratio shifts with the language and content. Options A, B, and C each assume a fixed one-to-one mapping (to words, bytes, or characters), which is why the developer's character-based sizing does not match.",
+    "explanation": "Tokens are the model smallest units and may correspond to words, subwords, characters, or bytes, so a token roughly maps to a few characters and the ratio shifts with the language and content. Assuming a fixed one-to-one mapping to words, bytes, or characters leads to incorrect sizing.",
     "distractorNotes": {
       "a": "Tokens are not whole words; common words may be one token while others split into several.",
       "b": "There is no fixed bytes-per-token constant; tokenization depends on the text.",
@@ -630,7 +630,7 @@
       "b",
       "c"
     ],
-    "explanation": "Options B and C are correct: streaming delivers the response as incremental server-sent events the client renders progressively, and the SDKs recommend streaming for very large max_tokens generations so long responses do not exceed HTTP timeouts. Option A contradicts incremental delivery. Option D is wrong because streaming uses server-sent events over the normal request, not a separately managed websocket.",
+    "explanation": "Streaming delivers the response as incremental server-sent events the client renders progressively, and the SDKs recommend streaming for very large max_tokens generations so long responses do not exceed HTTP timeouts. Streaming uses server-sent events over the standard HTTP connection rather than requiring websockets.",
     "distractorNotes": {
       "a": "Streaming exists precisely so the UI does not wait for the full response; events arrive during generation.",
       "d": "Streaming uses server-sent events on the standard request, not a persistent websocket the team must manage."
@@ -670,7 +670,7 @@
     "correct": [
       "d"
     ],
-    "explanation": "Option D is correct: each request's input must contain all previous conversation history plus the current user message, because the Messages API does not persist state between calls; the client owns the transcript and resends it each turn. Options A, B, and C all assume some server-side memory keyed to a session or API key, which does not exist, so dropping earlier turns is exactly why context is lost.",
+    "explanation": "Each request input must contain all previous conversation history plus the current user message, because the Messages API does not persist state between calls; the client owns the transcript and resends it each turn. The API does not provide automatic server-side conversational memory keyed to an API key or session ID.",
     "distractorNotes": {
       "a": "There is no per-key server session; omitting earlier turns really does drop that context.",
       "b": "The API does not automatically retain recent turns, so no timeout setting brings them back.",
@@ -712,7 +712,7 @@
       "c",
       "d"
     ],
-    "explanation": "Options C and D are correct: rate-limit responses return a retry-after header indicating how long to wait, so transient errors should be retried after backing off, and the official SDKs perform automatic retries so the team need not hand-roll that logic. Option A is wrong because a tight no-delay retry loop worsens rate limiting. Option B overgeneralizes; transient errors are routinely retried rather than forcing the workload to stop.",
+    "explanation": "Rate-limit responses return a retry-after header indicating how long to wait, so transient errors should be retried after backing off, and the official SDKs perform automatic retries so teams need not hand-roll that logic. A tight no-delay retry loop worsens rate limiting, and transient rate limits should be handled with backoff rather than terminating the workload.",
     "distractorNotes": {
       "a": "Immediate no-delay retries hammer the API and prolong rate limiting; backoff is the correct response.",
       "b": "Transient rate-limit and server errors are safely retried; halting the whole workload is not required."
@@ -752,7 +752,7 @@
     "correct": [
       "b"
     ],
-    "explanation": "Option B is correct: Anthropic advises deciding whether to upgrade or change models by creating benchmark tests specific to your use case and testing with your actual prompts and data, because behavior can change across releases and prompts tuned for one model may need adjustment on another. Options A and C wrongly assume model versions are interchangeable for a given prompt. Option D wrongly treats model size as a way to avoid behavior differences instead of evaluating them.",
+    "explanation": "Anthropic advises deciding whether to upgrade or change models by creating benchmark tests specific to your use case and testing with your actual prompts and data, because behavior can change across releases and prompts tuned for one model may need adjustment on another. Model versions are not universally drop-in replacements, and model size alone does not guarantee identical behavior.",
     "distractorNotes": {
       "a": "Newer models are not guaranteed supersets; behavior genuinely shifts across releases, so regressions can be real model differences.",
       "c": "Prompts often interact with model version, so re-evaluating after an upgrade is exactly what is recommended.",

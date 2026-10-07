@@ -77,6 +77,12 @@ export interface QuizSelectionConfig {
   count?: number;
   domain?: string;
   reviewScope?: ReviewScope;
+  /**
+   * Whether to randomize the display order of options for each question.
+   * Defaults to true in user sessions to prevent position memorization;
+   * set to false primarily in deterministic tests.
+   */
+  shuffleOptions?: boolean;
 }
 
 export interface QuizConfig extends QuizSelectionConfig {
@@ -142,6 +148,7 @@ export interface AttemptRecord {
   correctAnswers: number;
   scorePercentage: number;
   domainBreakdown: DomainBreakdown[];
+  optionOrders?: Record<string, string[]>;
 }
 
 export interface PausedSession {
@@ -156,4 +163,5 @@ export interface PausedSession {
   strikethroughs: AnswerMap;
   revealedQuestionIds: string[];
   hintRevealedQuestionIds: string[];
+  optionOrders?: Record<string, string[]>;
 }

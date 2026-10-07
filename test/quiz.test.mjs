@@ -6,9 +6,12 @@ import test from "node:test";
 import { readCertQuestions, readJson } from "../scripts/lib/read-certs.mjs";
 import {
   answerCountLabel,
+  applyOptionOrder,
   calculateQuizResults,
   filterReviewQuestions,
   formatOptionLabel,
+  getOptionLabel,
+  getOptionLabelForId,
   getUnusedQuizQuestions,
   prepareRetakeSession,
   QuizSelectionError,
@@ -16,6 +19,7 @@ import {
   scoreAnswer,
   selectQuestions,
   selectQuizOption,
+  shuffleQuestionOptions,
   simulateQuizAnswers,
   toggleStrikethrough,
   toggleStrikethroughOption,
@@ -1064,4 +1068,123 @@ test("toggleStrikethroughOption: striking selected option deselects it and strik
   const untoggleResult = toggleStrikethroughOption(["b"], ["c"], "c");
   assert.deepEqual(untoggleResult.selectedOptionIds, ["b"]);
   assert.deepEqual(untoggleResult.struckOptionIds, []);
+});
+
+test("getOptionLabel generates sequential letters from index", () => {
+  assert.equal(getOptionLabel(0), "A");
+  assert.equal(getOptionLabel(1), "B");
+  assert.equal(getOptionLabel(2), "C");
+  assert.equal(getOptionLabel(3), "D");
+  assert.equal(getOptionLabel(4), "E");
+  assert.equal(getOptionLabel(5), "F");
+});
+
+test("getOptionLabelForId resolves presented letter based on position in question.options", () => {
+  const q = question("test-q", "alpha", "single", ["b"]);
+  // Default order: a (0), b (1), c (2), d (3)
+  assert.equal(getOptionLabelForId(q, "a"), "A");
+  assert.equal(getOptionLabelForId(q, "b"), "B");
+  assert.equal(getOptionLabelForId(q, "c"), "C");
+
+  // Reordered: b (0), d (1), a (2), c (3)
+  const reordered = applyOptionOrder(q, ["b", "d", "a", "c"]);
+  assert.equal(getOptionLabelForId(reordered, "b"), "A");
+  assert.equal(getOptionLabelForId(reordered, "d"), "B");
+  assert.equal(getOptionLabelForId(reordered, "a"), "C");
+  assert.equal(getOptionLabelForId(reordered, "c"), "D");
+
+  // Unknown ID falls back to formatOptionLabel
+  assert.equal(getOptionLabelForId(q, "unknown"), "UNKNOWN");
+});
+
+test("shuffleQuestionOptions preserves option data while permuting array", () => {
+  const q = question("shuffle-test", "alpha", "single", ["c"]);
+  // Deterministic swap: swap index 3 with 0, 2 with 1...
+  let step = 0;
+  const reversed = shuffleQuestionOptions(q, () =>
+    step++ % 2 === 0 ? 0 : 0.99,
+  );
+  assert.equal(reversed.options.length, q.options.length);
+  assert.deepEqual(
+    new Set(reversed.options.map((o) => o.id)),
+    new Set(q.options.map((o) => o.id)),
+  );
+  assert.equal(reversed.id, q.id);
+  assert.equal(reversed.stem, q.stem);
+  assert.deepEqual(reversed.correct, q.correct);
+});
+
+test("applyOptionOrder reorders options and appends unlisted options defensively", () => {
+  const q = question("apply-order-test", "alpha", "single", ["a"]);
+  const ordered = applyOptionOrder(q, ["c", "a"]);
+  assert.deepEqual(
+    ordered.options.map((o) => o.id),
+    ["c", "a", "b", "d"],
+  );
+});
+
+test("selectQuestions shuffles options by default and respects shuffleOptions: false", () => {
+  const questions = [question("q1", "alpha")];
+  // With shuffleOptions: false, option order is identical
+  const unshuffled = selectQuestions(questions, domains, {
+    mode: "all",
+    shuffleOptions: false,
+  });
+  assert.deepEqual(
+    unshuffled[0].options.map((o) => o.id),
+    ["a", "b", "c", "d"],
+  );
+
+  // With shuffleOptions: true (default) and a random source that reverses
+  const shuffled = selectQuestions(
+    questions,
+    domains,
+    { mode: "all" },
+    () => 0, // always swap with index 0
+  );
+  assert.equal(shuffled[0].options.length, 4);
+});
+
+test("prepareRetakeSession shuffles options in all modes (exact, random, other)", () => {
+  const questions = [
+    question("q1", "alpha"),
+    question("q2", "alpha"),
+    question("q3", "alpha"),
+  ];
+  const attempt = {
+    config: { mode: "random", count: 2, revealMode: "immediate" },
+    questionIds: ["q1", "q2"],
+  };
+
+  // exact mode shuffles options freshly
+  const exact = prepareRetakeSession(
+    questions,
+    domains,
+    attempt,
+    "exact",
+    () => 0,
+  );
+  assert.equal(exact.questions.length, 2);
+  assert.equal(exact.questions[0].id, "q1");
+
+  // random mode shuffles options
+  const rand = prepareRetakeSession(
+    questions,
+    domains,
+    attempt,
+    "random",
+    () => 0,
+  );
+  assert.equal(rand.questions.length, 2);
+
+  // other mode shuffles options
+  const other = prepareRetakeSession(
+    questions,
+    domains,
+    attempt,
+    "other",
+    () => 0,
+  );
+  assert.equal(other.questions.length, 1);
+  assert.equal(other.questions[0].id, "q3");
 });

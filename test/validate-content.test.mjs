@@ -589,3 +589,44 @@ test("leaves subdomains unchecked for domains without a skill breakdown", async 
 
   assert.doesNotThrow(() => validateCertContent("ccdv-f", manifest, questions));
 });
+
+test("rejects questions whose explanation references option letters", async () => {
+  const { manifest, questions } = await validContent();
+  questions[0].explanation = "Option B is correct because this explains it.";
+
+  assert.throws(
+    () => validateCertContent("ccdv-f", manifest, questions),
+    /explanation must not reference options by letter/,
+  );
+});
+
+test("rejects questions whose explanation references multi-select option letters without option prefix", async () => {
+  const { manifest, questions } = await validContent();
+  questions[0].explanation =
+    "B and D are correct because they fulfill the criteria.";
+
+  assert.throws(
+    () => validateCertContent("ccdv-f", manifest, questions),
+    /explanation must not reference options by letter/,
+  );
+});
+
+test("rejects questions whose distractor notes reference option letters", async () => {
+  const { manifest, questions } = await validContent();
+  questions[0].distractorNotes = {
+    a: "Choice A is incorrect because it fails.",
+  };
+
+  assert.throws(
+    () => validateCertContent("ccdv-f", manifest, questions),
+    /distractorNotes must not reference options by letter/,
+  );
+});
+
+test("accepts letter-free explanations containing technical acronyms", async () => {
+  const { manifest, questions } = await validContent();
+  questions[0].explanation =
+    "A/B testing evaluates variant performance, while REST APIs ensure stateless integration.";
+
+  assert.doesNotThrow(() => validateCertContent("ccdv-f", manifest, questions));
+});

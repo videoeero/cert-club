@@ -128,6 +128,12 @@ breaking them fails CI rather than review.
   `a`+`b`+`c`), which is guessable from position alone. *Enforced.*
 - **Write the stem as a situation, not a definition prompt.** "A team observes
   X and wants Y — what explains it?" discriminates better than "What is X?"
+- **Do not reference option letters or positions in explanations.**
+  Explanations and distractor notes must explain the concepts and facts
+  directly without referencing "Option A", "Choice B", "(c)", or ordinals
+  like "the second option", because the app randomizes selectable option
+  order at runtime. Letter references are enforced by the validator;
+  positional phrasing is caught in review.
 - Both bias guards only engage above a 20-question sample, so they will not
   fire on a small new cert bank. They are a bank-level regression check, not a
   per-question rule.

@@ -224,7 +224,7 @@
       "d",
       "e"
     ],
-    "explanation": "For long-horizon tasks Anthropic describes three complementary techniques: compaction (summarise near the limit and continue from the summary), structured note-taking to memory outside the window that is read back later, and sub-agent architectures that isolate focused work in clean contexts. Options b, d, and e are those three. Raising temperature (a) does nothing to recover lost state; keeping all raw history (c) is precisely what causes context rot; and waiting for a bigger window (f) is rejected because windows of every size still suffer context pollution and relevance decay.",
+    "explanation": "For long-horizon tasks Anthropic describes three complementary techniques: compaction (summarise near the limit and continue from the summary), structured note-taking to memory outside the window that is read back later, and sub-agent architectures that isolate focused work in clean contexts. Raising temperature does nothing to recover lost state, keeping all raw history causes context rot, and waiting for larger windows does not solve context pollution and relevance decay.",
     "distractorNotes": {
       "a": "Temperature controls randomness of sampling, not memory. It cannot restore information that has already left the window and only makes behaviour less predictable.",
       "c": "Carrying the full raw history is the failure mode these techniques address; unbounded accumulation degrades recall long before any hard limit is reached.",
@@ -265,7 +265,7 @@
     "correct": [
       "b"
     ],
-    "explanation": "Structured note-taking, or agentic memory, persists critical facts outside the context window and reads them back when needed, giving continuity across sessions and summarisation steps. That is option b. Leaving durable state only in the conversation (a) is unsafe because compaction and window limits can discard it; temperature (c) has nothing to do with memory; and endlessly appending state to the system prompt (d) bloats it and reintroduces the very window pressure you were trying to escape.",
+    "explanation": "Structured note-taking, or agentic memory, persists critical facts outside the context window and reads them back when needed, giving continuity across sessions and summarisation steps. Leaving durable state only in the conversation is unsafe because compaction and window limits can discard it, temperature is unrelated to memory, and appending state to the system prompt bloats the context window.",
     "distractorNotes": {
       "a": "Message history is not permanent: compaction summarises older turns and long conversations fall out of the window, so facts kept only there can silently disappear.",
       "c": "Compaction does carry a condensed history forward, but summarising is lossy and each pass summarises the previous summary, so details that matter only later are progressively dropped. Notes written outside the conversation are not subject to that.",
@@ -311,7 +311,7 @@
       "b",
       "d"
     ],
-    "explanation": "Compaction distils the window into a summary so the agent can continue with a smaller, higher-signal context, but the art lies in choosing what to keep: too-aggressive compaction loses subtle context whose importance appears only later (b). Because summarisation is lossy, durable facts are safer in external notes than in a conversation that can be compacted away (d). The distractors are wrong in principle: long context is not uniformly attended (a), a summary is not a guaranteed complete record (c), and compaction is explicitly not lossless (e).",
+    "explanation": "Compaction distils the window into a summary so the agent can continue with a smaller, higher-signal context, but the art lies in choosing what to keep: too-aggressive compaction loses subtle context whose importance appears only later. Because summarisation is lossy, durable facts are safer in external notes than in a conversation that can be compacted away. Long context is not uniformly attended, summaries are not guaranteed lossless, and compaction inherently sacrifices detail.",
     "distractorNotes": {
       "a": "Attention is not uniform across a long window; recall degrades as tokens accumulate, which is the whole reason to summarise rather than carry everything.",
       "c": "A summary is a lossy distillation, not a guarantee. Critical facts can be dropped, which is why external persistence is recommended alongside compaction.",
@@ -352,7 +352,7 @@
     "correct": [
       "b"
     ],
-    "explanation": "The system prompt is the component meant to hold persistent role and behavioural instructions that apply across the whole conversation, so standing instructions belong there (b). Appending them to every user message (a) mixes durable rules with variable input and duplicates them needlessly; scattering them (c) is inconsistent and hard to maintain; and relying on a single early user turn (d) leaves the rules vulnerable to being summarised or drifting out of focus over a long session.",
+    "explanation": "The system prompt is the component meant to hold persistent role and behavioural instructions that apply across the whole conversation, so standing instructions belong there. Appending them to every user message mixes durable rules with variable input and duplicates them needlessly, scattering them is inconsistent and hard to maintain, and relying on a single early user turn leaves rules vulnerable to drift or summarisation.",
     "distractorNotes": {
       "a": "Repeating standing rules in every user turn conflates persistent behaviour with per-request content and wastes tokens; the system prompt exists precisely so you do not have to.",
       "c": "Randomly splitting instructions across components makes the prompt inconsistent and hard to reason about, without improving adherence.",
@@ -403,7 +403,7 @@
       "d",
       "f"
     ],
-    "explanation": "The recommended levers for output formatting are: state what to do instead of what to avoid (b), use XML tags or format indicators to delineate output (d), and match your prompt's style to the output you want (f). Temperature (a) governs randomness, not format adherence; prefilling (c) is no longer supported on current 4.6-and-later models and returns an error; and refusing to iterate (e) contradicts the core practice of iterative refinement.",
+    "explanation": "The recommended levers for output formatting are stating what to do instead of what to avoid, using XML tags or format indicators to delineate output, and matching prompt style to the desired output. Temperature governs randomness rather than format adherence, prefilling is not supported on current 4.6-and-later models, and refusing to iterate contradicts the core practice of iterative refinement.",
     "distractorNotes": {
       "a": "Temperature affects randomness of sampling, not whether the model follows a format. It is not a formatting control.",
       "c": "Prefilled assistant responses are unsupported on current models and return a 400 error; structured outputs or explicit instructions replace that technique.",

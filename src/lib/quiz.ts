@@ -4,6 +4,7 @@ import type {
   Domain,
   DomainBreakdown,
   Question,
+  QuestionOption,
   QuestionResult,
   QuizConfig,
   QuizResults,
@@ -30,6 +31,58 @@ export function answerCountLabel(count: number): string {
 
 export function formatOptionLabel(optionId: string): string {
   return optionId.replace(/^opt-/, "").toUpperCase();
+}
+
+export function getOptionLabel(index: number): string {
+  return String.fromCharCode(65 + index);
+}
+
+export function getOptionLabelForId(
+  question: Question,
+  optionId: string,
+): string {
+  const index = question.options.findIndex((option) => option.id === optionId);
+  return index >= 0 ? getOptionLabel(index) : formatOptionLabel(optionId);
+}
+
+export function shuffleQuestionOptions(
+  question: Question,
+  random: RandomSource = Math.random,
+): Question {
+  const shuffled = [...question.options];
+  for (let index = shuffled.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(randomValue(random) * (index + 1));
+    [shuffled[index], shuffled[swapIndex]] = [
+      shuffled[swapIndex],
+      shuffled[index],
+    ];
+  }
+  return {
+    ...question,
+    options: shuffled,
+  };
+}
+
+export function applyOptionOrder(
+  question: Question,
+  orderedIds: readonly string[],
+): Question {
+  const optionMap = new Map(
+    question.options.map((option) => [option.id, option]),
+  );
+  const reordered: QuestionOption[] = [];
+  for (const id of orderedIds) {
+    const option = optionMap.get(id);
+    if (option) {
+      reordered.push(option);
+    }
+  }
+  for (const option of question.options) {
+    if (!orderedIds.includes(option.id)) {
+      reordered.push(option);
+    }
+  }
+  return { ...question, options: reordered };
 }
 
 function randomValue(random: RandomSource): number {
@@ -324,11 +377,11 @@ export function selectQuestions(
     throw new QuizSelectionError("The question bank is empty.");
   }
 
-  if (config.mode === "all") {
-    return [...questions];
-  }
+  let selected: Question[];
 
-  if (config.mode === "domain") {
+  if (config.mode === "all") {
+    selected = [...questions];
+  } else if (config.mode === "domain") {
     if (!config.domain) {
       throw new QuizSelectionError(
         "A domain is required for domain selection.",
@@ -343,16 +396,15 @@ export function selectQuestions(
       );
     }
     if (config.count === undefined) {
-      return matchingQuestions;
+      selected = matchingQuestions;
+    } else {
+      selected = randomSample(
+        matchingQuestions,
+        selectionCount(config.count, matchingQuestions.length),
+        random,
+      );
     }
-    return randomSample(
-      matchingQuestions,
-      selectionCount(config.count, matchingQuestions.length),
-      random,
-    );
-  }
-
-  if (config.mode === "review") {
+  } else if (config.mode === "review") {
     const matchingQuestions = config.domain
       ? questions.filter((question) => question.domain === config.domain)
       : [...questions];
@@ -362,27 +414,31 @@ export function selectQuestions(
       );
     }
     if (config.count === undefined) {
-      return matchingQuestions;
+      selected = matchingQuestions;
+    } else {
+      selected = randomSample(
+        matchingQuestions,
+        selectionCount(config.count, matchingQuestions.length),
+        random,
+      );
     }
-    return randomSample(
-      matchingQuestions,
-      selectionCount(config.count, matchingQuestions.length),
-      random,
+  } else if (config.mode === "random") {
+    const count = selectionCount(config.count, questions.length);
+    selected = randomSample(questions, count, random);
+  } else if (config.mode === "weighted") {
+    const count = selectionCount(config.count, questions.length);
+    selected = weightedSample(questions, domains, count, random);
+  } else {
+    throw new QuizSelectionError(
+      `Unsupported question selection mode "${String(config.mode)}".`,
     );
   }
 
-  const count = selectionCount(config.count, questions.length);
-  if (config.mode === "random") {
-    return randomSample(questions, count, random);
-  }
+  const shouldShuffle = config.shuffleOptions !== false;
 
-  if (config.mode === "weighted") {
-    return weightedSample(questions, domains, count, random);
-  }
-
-  throw new QuizSelectionError(
-    `Unsupported question selection mode "${String(config.mode)}".`,
-  );
+  return shouldShuffle
+    ? selected.map((q) => shuffleQuestionOptions(q, random))
+    : selected;
 }
 
 export function scoreAnswer(
@@ -629,8 +685,12 @@ export function prepareRetakeSession(
       );
     }
 
+    const shouldShuffle = attempt.config.shuffleOptions !== false;
+
     return {
-      questions: exactQuestions,
+      questions: shouldShuffle
+        ? exactQuestions.map((q) => shuffleQuestionOptions(q, random))
+        : exactQuestions,
       config: {
         ...attempt.config,
         count: exactQuestions.length,
@@ -698,8 +758,12 @@ export function prepareRetakeSession(
       count: targetCount,
     };
 
+    const shouldShuffle = attempt.config.shuffleOptions !== false;
+
     return {
-      questions: selected,
+      questions: shouldShuffle
+        ? selected.map((q) => shuffleQuestionOptions(q, random))
+        : selected,
       config: newConfig,
     };
   }

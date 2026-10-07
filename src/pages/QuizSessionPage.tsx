@@ -15,6 +15,7 @@ import { useAsyncResource } from "../hooks/use-async-resource";
 import { loadCertContent } from "../lib/content";
 import styles from "./QuizSessionPage.module.css";
 import {
+  applyOptionOrder,
   calculateQuizResults,
   prepareRetakeSession,
   selectQuizOption,
@@ -235,6 +236,9 @@ export function QuizSessionPage() {
   ): void {
     const results = calculateQuizResults(qs, ans, manifest.domains);
     const id = createAttemptId();
+    const optionOrders = Object.fromEntries(
+      qs.map((q) => [q.id, q.options.map((opt) => opt.id)]),
+    );
     saveAttempt({
       id,
       cert: manifest.cert,
@@ -248,6 +252,7 @@ export function QuizSessionPage() {
       correctAnswers: results.correctAnswers,
       scorePercentage: results.scorePercentage,
       domainBreakdown: results.domainBreakdown,
+      optionOrders,
     });
     const missed: string[] = [];
     const correct: string[] = [];
@@ -273,6 +278,12 @@ export function QuizSessionPage() {
         (Date.now() - new Date(activeSession.startedAt).getTime()) / 1000,
       ),
     );
+    const optionOrders = Object.fromEntries(
+      activeSession.questions.map((q) => [
+        q.id,
+        q.options.map((opt) => opt.id),
+      ]),
+    );
     const sessionToSave: PausedSession = {
       cert: certSlug,
       startedAt: activeSession.startedAt,
@@ -285,6 +296,7 @@ export function QuizSessionPage() {
       strikethroughs,
       revealedQuestionIds: [...revealedQuestionIds],
       hintRevealedQuestionIds: [...hintRevealedQuestionIds],
+      optionOrders,
     };
     try {
       savePausedSession(certSlug, sessionToSave);
@@ -319,7 +331,12 @@ export function QuizSessionPage() {
   function handleResumeSaved(sessionToResume: PausedSession): void {
     const questionMap = new Map(questions.map((q) => [q.id, q]));
     const matchedQuestions = sessionToResume.questionIds
-      .map((id) => questionMap.get(id))
+      .map((id) => {
+        const q = questionMap.get(id);
+        if (!q) return undefined;
+        const order = sessionToResume.optionOrders?.[id];
+        return order ? applyOptionOrder(q, order) : q;
+      })
       .filter((q): q is Question => q !== undefined);
 
     if (matchedQuestions.length === 0) {

@@ -194,6 +194,9 @@ export const ABSOLUTE_QUALIFIER_PATTERN = new RegExp(
   "i",
 );
 
+export const OPTION_LETTER_REFERENCE_PATTERN =
+  /\b(?:[Oo]ptions?|[Cc]hoices?)\s+[A-Fa-f]\b|\b[A-F](?:,\s*[A-F])*(?:\s+and\s+[A-F])?\s+(?:is|are)\s+(?:correct|wrong)\b|\([a-fA-F]\)/;
+
 export const questionSchema = z
   .object({
     id: slugSchema,
@@ -342,7 +345,9 @@ export const questionSchema = z
       }
     }
 
-    for (const optionId of Object.keys(question.distractorNotes ?? {})) {
+    for (const [optionId, note] of Object.entries(
+      question.distractorNotes ?? {},
+    )) {
       if (!optionIds.has(optionId)) {
         context.addIssue({
           code: "custom",
@@ -355,7 +360,23 @@ export const questionSchema = z
           path: ["distractorNotes", optionId],
           message: "must reference a distractor, not a correct option",
         });
+      } else if (OPTION_LETTER_REFERENCE_PATTERN.test(note)) {
+        context.addIssue({
+          code: "custom",
+          path: ["distractorNotes", optionId],
+          message:
+            "distractorNotes must not reference options by letter (A, B, C...) because options are presented in randomized order. Describe the concepts directly.",
+        });
       }
+    }
+
+    if (OPTION_LETTER_REFERENCE_PATTERN.test(question.explanation)) {
+      context.addIssue({
+        code: "custom",
+        path: ["explanation"],
+        message:
+          "explanation must not reference options by letter (A, B, C...) because options are presented in randomized order. Describe the concepts directly.",
+      });
     }
   });
 

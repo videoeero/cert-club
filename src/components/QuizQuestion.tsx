@@ -1,7 +1,12 @@
 import { useEffect, useRef } from "react";
 
 import styles from "./QuizQuestion.module.css";
-import { answerCountLabel, formatOptionLabel, scoreAnswer } from "../lib/quiz";
+import {
+  answerCountLabel,
+  getOptionLabel,
+  getOptionLabelForId,
+  scoreAnswer,
+} from "../lib/quiz";
 import type { Question, RevealMode } from "../types";
 
 export interface QuizQuestionProps {
@@ -141,7 +146,7 @@ function AnswerOptionList({
         {revealMode === "end" &&
           " Answers and explanations appear after you finish."}
       </p>
-      {question.options.map((option) => {
+      {question.options.map((option, index) => {
         const selected = selectedOptionIds.includes(option.id);
         const isStruck = struckOptionIds.includes(option.id);
         const correct = isRevealed && question.correct.includes(option.id);
@@ -179,7 +184,7 @@ function AnswerOptionList({
                 onChange={() => onOptionChange(option.id)}
               />
               <span className={styles.optionId} aria-hidden="true">
-                {formatOptionLabel(option.id)}
+                {getOptionLabel(index)}
               </span>
               <span
                 className={[
@@ -224,8 +229,8 @@ function AnswerOptionList({
                 .join(" ")}
               aria-label={
                 isStruck
-                  ? `Remove strike through from option ${formatOptionLabel(option.id)}`
-                  : `Strike through option ${formatOptionLabel(option.id)}`
+                  ? `Remove strike through from option ${getOptionLabel(index)}`
+                  : `Strike through option ${getOptionLabel(index)}`
               }
               aria-pressed={isStruck}
               title={
@@ -282,7 +287,7 @@ function AnswerFeedback({ question, isCorrect }: AnswerFeedbackProps) {
       <p>
         <strong>Correct answer:</strong>{" "}
         {question.correct
-          .map((optionId) => formatOptionLabel(optionId))
+          .map((optionId) => getOptionLabelForId(question, optionId))
           .join(", ")}
       </p>
       <p>{question.explanation}</p>

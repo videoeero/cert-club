@@ -281,7 +281,7 @@
     "correct": [
       "c"
     ],
-    "explanation": "An MCP server exposes reusable tools that multiple Claude applications can share and that can be maintained and versioned independently of any one app, which is exactly the reuse-plus-single-owner requirement here (c). Built-in tools do not automatically reach arbitrary internal APIs (a); duplicating logic across system prompts is neither reusable nor centrally maintainable (b); and pasting data gives no live read/update capability and wastes context (d).",
+    "explanation": "An MCP server exposes reusable tools that multiple Claude applications can share and that can be maintained and versioned independently of any one app, fulfilling the reuse-plus-single-owner requirement. Built-in tools do not automatically reach arbitrary internal APIs, duplicating logic across system prompts is not centrally maintainable, and pasting static data provides no live read or update capability.",
     "distractorNotes": {
       "a": "Built-in tools are a fixed Anthropic-provided set and do not connect to an arbitrary internal REST service, so this misstates what they can do.",
       "b": "Copying the integration into each prompt is the opposite of single-owner reuse; three divergent copies become three maintenance burdens.",
@@ -322,7 +322,7 @@
     "correct": [
       "d"
     ],
-    "explanation": "A Skill is exactly for a repeated procedure or checklist: its body loads only when relevant, so the long reference costs almost nothing until it is needed (d). Standing up an MCP server (a) or a custom tool (b) to serve static text is heavy over-engineering for content that has no external system behind it, and pinning the checklist in the system prompt (c) pays its full token cost on every single turn.",
+    "explanation": "A Skill is specifically designed for a repeated procedure or checklist: its body loads only when relevant, so the long reference costs almost nothing until needed. Standing up an MCP server or custom tool to serve static text is unnecessary overhead when no external system is involved, and pinning the checklist in the system prompt pays full token cost on every turn.",
     "distractorNotes": {
       "a": "MCP is for connecting to external systems and data; wrapping a static checklist in a networked server adds infrastructure with no live integration to justify it.",
       "b": "A custom tool implies real execution against a system. Using one merely to re-emit fixed text is unnecessary machinery for what is just reusable instructions.",
@@ -373,7 +373,7 @@
       "d",
       "f"
     ],
-    "explanation": "The correct pairings follow each approach's purpose: MCP for a capability shared and independently maintained across apps (b), a Skill for a reusable multi-step procedure that loads on demand (d), and a custom tool for an app-specific action against your own system with no built-in equivalent (f). The distractors misstate scope: built-in tools do not reach arbitrary internal APIs (a); MCP is not mandatory for every integration and Skills can drive tools (c); and live per-request database access is a job for a tool or MCP server, not a Skill (e).",
+    "explanation": "The recommended customization approaches match specific use cases: MCP for a capability shared and independently maintained across apps, a Skill for a reusable multi-step procedure that loads on demand, and a custom tool for an app-specific action against your own system with no built-in equivalent. Built-in tools do not reach arbitrary internal APIs, MCP is not mandatory for every integration, and live per-request database querying is handled by tools or MCP servers rather than Skills.",
     "distractorNotes": {
       "a": "Built-in tools are a fixed set and do not automatically connect to arbitrary private endpoints, so they are not a universal default for internal services.",
       "c": "This overstates MCP's necessity and wrongly claims Skills cannot invoke external systems; the choice depends on reuse and ownership, not an absolute rule.",
@@ -414,7 +414,7 @@
     "correct": [
       "a"
     ],
-    "explanation": "Guidance is to choose the simplest approach that fits and add complexity only when needed. A local, single-app action with no external system and no reuse is precisely what a custom tool is for (a). An MCP server (b) adds shared infrastructure for reuse that will never happen; a Skill (c) is for reusable procedures, not a single computation; and there is no built-in tool for arbitrary app-specific logic (d), so relying on one is misplaced.",
+    "explanation": "Guidance advises choosing the simplest approach that fits and adding complexity only when needed. A local, single-app action with no external system and no reuse is precisely what a custom tool is for. An MCP server adds shared infrastructure where no reuse is expected, Skills are for procedures rather than single computations, and built-in tools do not cover arbitrary application-specific logic.",
     "distractorNotes": {
       "b": "MCP earns its overhead when a capability is shared and independently maintained. Building a server for a one-app, no-reuse action is over-engineering.",
       "c": "Skills package multi-step procedures that load when relevant; a single deterministic transformation is not that shape and gains nothing from being a Skill.",
@@ -465,7 +465,7 @@
       "d",
       "f"
     ],
-    "explanation": "The recommended practices are consolidating related operations behind an action parameter (b), namespacing tool names by service so selection stays unambiguous (d), and returning only high-signal fields and stable identifiers (f). The distractors invert each of these: a sprawling one-tool-per-action surface (a) and piling on overlapping tools (c) increase selection ambiguity, and returning every backend field (e) bloats context and buries what matters.",
+    "explanation": "The recommended practices are consolidating related operations behind an action parameter, namespacing tool names by service so selection stays unambiguous, and returning only high-signal fields and stable identifiers. In contrast, sprawling single-action tools and overlapping definitions increase selection ambiguity, and returning full backend payloads bloats the context window.",
     "distractorNotes": {
       "a": "A maximally granular surface of near-identical tools is what causes the mis-selection described; guidance is to consolidate, not proliferate.",
       "c": "If a human cannot say which overlapping tool applies, the model cannot either; more tools do not automatically help and often hurt selection.",

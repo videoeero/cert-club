@@ -168,7 +168,7 @@ A minimal single-select example:
       { "id": "d", "text": "Fourth option" }
     ],
     "correct": ["c"],
-    "explanation": "Option c is correct because … option a is wrong because …",
+    "explanation": "The correct mechanism provides the necessary capability because … while the initial approach is insufficient because …",
     "distractorNotes": {
       "a": "Plausible because …, but wrong because …"
     },
@@ -191,7 +191,7 @@ A minimal single-select example:
 | `subdomain` | Optional, but required if the domain declares `skills` — must match one |
 | `difficulty` | `"easy"`, `"medium"`, or `"hard"` |
 | `status` | `"draft"` or `"reviewed"` |
-|`options[*].hintText`|Optional: explanatory gloss revealed via practice toggle; min length 1; same sourcing rules as option text|
+| `options[*].hintText`|Optional: explanatory gloss revealed via practice toggle; min length 1; same sourcing rules as option text|
 | `correct` | Exactly one entry for `single`; two or more for `multi` |
 | `sourceUrl` | Public HTTP/HTTPS URL, no paywalled or gated links |
 | `sourceNote` | Section heading or topic that supports the answer; single line, max 140 characters |
@@ -211,6 +211,9 @@ A minimal single-select example:
   run of options in listed order (e.g. `["a", "b"]` when options
   are listed a/b/c/d) — this is guessable from position alone.
 - `distractorNotes` keys must reference distractor IDs, not correct ones.
+- `explanation` and `distractorNotes` must not reference options by letter
+  (`"Option A"`, `"(b)"`, etc.) or position because options are presented in
+  randomized order. Describe the concepts, mechanisms, or option texts directly.
 
 **Bank-level bias guards** (enforced once the bank reaches 20 questions):
 

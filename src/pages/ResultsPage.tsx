@@ -7,7 +7,9 @@ import { useAsyncResource } from "../hooks/use-async-resource";
 import { loadCertContent } from "../lib/content";
 import {
   answerCountLabel,
-  formatOptionLabel,
+  applyOptionOrder,
+  getOptionLabel,
+  getOptionLabelForId,
   getUnusedQuizQuestions,
   scoreAnswer,
 } from "../lib/quiz";
@@ -48,7 +50,7 @@ function QuestionReview({
       </div>
       <h3>{question.stem}</h3>
       <ul className={styles.reviewOptionList} role="list">
-        {question.options.map((option) => {
+        {question.options.map((option, index) => {
           const isSelected = selected.has(option.id);
           const isCorrectOption = question.correct.includes(option.id);
           return (
@@ -64,7 +66,7 @@ function QuestionReview({
               key={option.id}
             >
               <span className={styles.optionId} aria-hidden="true">
-                {formatOptionLabel(option.id)}
+                {getOptionLabel(index)}
               </span>
               <span className={styles.reviewOptionContent}>
                 {option.text}
@@ -83,13 +85,13 @@ function QuestionReview({
         {selectedOptionIds.length === 0
           ? " — no answer selected."
           : ` — you selected ${selectedOptionIds
-              .map((optionId) => formatOptionLabel(optionId))
+              .map((optionId) => getOptionLabelForId(question, optionId))
               .join(", ")}.`}
       </p>
       <p>
         <strong>Correct answer:</strong>{" "}
         {question.correct
-          .map((optionId) => formatOptionLabel(optionId))
+          .map((optionId) => getOptionLabelForId(question, optionId))
           .join(", ")}
       </p>
       <p>{question.explanation}</p>
@@ -174,7 +176,12 @@ export function ResultsPage() {
     questions.map((question) => [question.id, question]),
   );
   const reviewQuestions = attempt.questionIds
-    .map((questionId) => questionById.get(questionId))
+    .map((questionId) => {
+      const question = questionById.get(questionId);
+      if (!question) return undefined;
+      const order = attempt.optionOrders?.[questionId];
+      return order ? applyOptionOrder(question, order) : question;
+    })
     .filter((question): question is Question => question !== undefined);
   const missingQuestionCount =
     attempt.questionIds.length - reviewQuestions.length;

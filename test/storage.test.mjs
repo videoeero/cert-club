@@ -281,3 +281,51 @@ test("discards corrupted paused sessions on read", () => {
   assert.equal(getPausedSession("test-cert", storage), null);
   assert.deepEqual(getPausedSessions(storage), {});
 });
+
+test("saves and retrieves an attempt carrying optionOrders", () => {
+  const storage = new MemoryStorage();
+  const att = {
+    ...attempt("with-option-orders"),
+    optionOrders: { q1: ["b", "a"], q2: ["c", "b", "a"] },
+  };
+  saveAttempt(att, storage);
+  const retrieved = getAttempt("test-cert", "with-option-orders", storage);
+  assert.deepEqual(retrieved?.optionOrders, {
+    q1: ["b", "a"],
+    q2: ["c", "b", "a"],
+  });
+});
+
+test("saves and retrieves a paused session carrying optionOrders", () => {
+  const storage = new MemoryStorage();
+  const session = {
+    ...samplePausedSession("test-cert"),
+    optionOrders: { q1: ["b", "a"] },
+  };
+  savePausedSession("test-cert", session, storage);
+  const retrieved = getPausedSession("test-cert", storage);
+  assert.deepEqual(retrieved?.optionOrders, { q1: ["b", "a"] });
+});
+
+test("defensively copies optionOrders in attempts and paused sessions", () => {
+  const storage = new MemoryStorage();
+  const optionOrders = { q1: ["b", "a"] };
+  const att = {
+    ...attempt("defensive-clone"),
+    optionOrders,
+  };
+  saveAttempt(att, storage);
+  optionOrders.q1.push("c");
+  const retrievedAttempt = getAttempt("test-cert", "defensive-clone", storage);
+  assert.deepEqual(retrievedAttempt?.optionOrders, { q1: ["b", "a"] });
+
+  const sessionOptionOrders = { q1: ["b", "a"] };
+  const session = {
+    ...samplePausedSession("test-cert"),
+    optionOrders: sessionOptionOrders,
+  };
+  savePausedSession("test-cert", session, storage);
+  sessionOptionOrders.q1.push("d");
+  const retrievedSession = getPausedSession("test-cert", storage);
+  assert.deepEqual(retrievedSession?.optionOrders, { q1: ["b", "a"] });
+});

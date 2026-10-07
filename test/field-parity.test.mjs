@@ -109,7 +109,7 @@ function validQuestion() {
       { id: "b", text: "The correct answer" },
     ],
     correct: ["b"],
-    explanation: "B is correct because the fixture says so.",
+    explanation: "The correct answer is supported by the fixture.",
     sourceUrl: "https://example.com/source",
     sourceNote: "Fixture source",
     sourceCheckedAt: "2026-09-03",

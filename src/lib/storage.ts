@@ -81,7 +81,9 @@ function isQuizConfig(value: unknown): value is QuizConfig {
         Number.isInteger(value.count) &&
         value.count > 0)) &&
     (value.domain === undefined || typeof value.domain === "string") &&
-    (value.reviewScope === undefined || isReviewScope(value.reviewScope))
+    (value.reviewScope === undefined || isReviewScope(value.reviewScope)) &&
+    (value.shuffleOptions === undefined ||
+      typeof value.shuffleOptions === "boolean")
   );
 }
 
@@ -122,7 +124,8 @@ function isAttemptRecord(value: unknown): value is AttemptRecord {
     value.scorePercentage >= 0 &&
     value.scorePercentage <= 100 &&
     Array.isArray(value.domainBreakdown) &&
-    value.domainBreakdown.every(isDomainBreakdown)
+    value.domainBreakdown.every(isDomainBreakdown) &&
+    (value.optionOrders === undefined || isStringArrayMap(value.optionOrders))
   );
 }
 
@@ -146,7 +149,8 @@ function isPausedSession(value: unknown): value is PausedSession {
     isStringArrayMap(value.answers) &&
     isStringArrayMap(value.strikethroughs) &&
     isStringArray(value.revealedQuestionIds) &&
-    isStringArray(value.hintRevealedQuestionIds)
+    isStringArray(value.hintRevealedQuestionIds) &&
+    (value.optionOrders === undefined || isStringArrayMap(value.optionOrders))
   );
 }
 
@@ -236,6 +240,15 @@ function writeValue(key: string, data: unknown, storage: StorageAdapter): void {
   }
 }
 
+function cloneStringArrayMap(
+  map: Record<string, string[]> | undefined,
+): Record<string, string[]> | undefined {
+  if (!map) return undefined;
+  return Object.fromEntries(
+    Object.entries(map).map(([key, items]) => [key, [...items]]),
+  );
+}
+
 function cloneAttempt(attempt: AttemptRecord): AttemptRecord {
   return {
     ...attempt,
@@ -248,6 +261,9 @@ function cloneAttempt(attempt: AttemptRecord): AttemptRecord {
       ]),
     ),
     domainBreakdown: attempt.domainBreakdown.map((domain) => ({ ...domain })),
+    ...(attempt.optionOrders
+      ? { optionOrders: cloneStringArrayMap(attempt.optionOrders) }
+      : {}),
   };
 }
 
@@ -281,6 +297,9 @@ function clonePausedSession(session: PausedSession): PausedSession {
     ),
     revealedQuestionIds: [...session.revealedQuestionIds],
     hintRevealedQuestionIds: [...session.hintRevealedQuestionIds],
+    ...(session.optionOrders
+      ? { optionOrders: cloneStringArrayMap(session.optionOrders) }
+      : {}),
   };
 }
 
