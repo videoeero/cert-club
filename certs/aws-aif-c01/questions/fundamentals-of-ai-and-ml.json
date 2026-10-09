@@ -1,0 +1,1142 @@
+[
+  {
+    "id": "aws-aif-c01-fundamentals-of-ai-and-ml-001",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "fundamentals-of-ai-and-ml",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "A retail company wants to analyze customer reviews to detect overall sentiment, identify key phrases, and determine the language used in each review without building or training a custom machine learning model. Which AWS managed service meets these requirements?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon Comprehend"
+      },
+      {
+        "id": "b",
+        "text": "Amazon Transcribe"
+      },
+      {
+        "id": "c",
+        "text": "Amazon Textract"
+      },
+      {
+        "id": "d",
+        "text": "Amazon Kendra"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Amazon Comprehend uses natural language processing (NLP) to extract insights such as sentiment, key phrases, entities, and language from documents using pre-trained models without requiring custom ML training.",
+    "distractorNotes": {
+      "b": "Amazon Transcribe converts speech audio into text, rather than analyzing written text for sentiment and key phrases.",
+      "c": "Amazon Textract extracts text, forms, and tables from scanned documents and images, but does not perform natural language sentiment or key phrase analysis.",
+      "d": "Amazon Kendra is an intelligent enterprise search service for indexing and querying repositories, rather than an NLP service for sentiment and key phrase extraction."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/comprehend/latest/dg/what-is.html",
+    "sourceNote": "What is Amazon Comprehend?",
+    "sourceCheckedAt": "2026-10-08"
+  },
+  {
+    "id": "aws-aif-c01-fundamentals-of-ai-and-ml-002",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "fundamentals-of-ai-and-ml",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "An organization is establishing internal guidelines for modern technology adoption. The enterprise architecture team needs to explain the relationship between artificial intelligence (AI), machine learning (ML), deep learning (DL), and generative AI to non-technical stakeholders. Which statement accurately describes the hierarchical relationship among these fields?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Deep learning is a subset of artificial intelligence, and machine learning is a specialized subset of deep learning."
+      },
+      {
+        "id": "b",
+        "text": "Machine learning is a subset of artificial intelligence, and deep learning is a subset of machine learning."
+      },
+      {
+        "id": "c",
+        "text": "Generative AI is a direct subset of machine learning that operates independently of deep neural networks."
+      },
+      {
+        "id": "d",
+        "text": "Artificial intelligence and machine learning are interchangeable terms, while deep learning operates independently."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Artificial intelligence (AI) is the broad field of creating systems capable of performing human-like tasks. Machine learning (ML) is a subset of AI where systems learn from data rather than explicit rules, and deep learning (DL) is a subset of ML based on multi-layered neural networks. Generative AI is a specialized subset of deep learning.",
+    "distractorNotes": {
+      "a": "Deep learning is a subset of machine learning, not its parent category; machine learning is the broader field under artificial intelligence.",
+      "c": "Generative AI relies fundamentally on deep learning architectures such as transformers and diffusion models, making it a specialized subset of deep learning.",
+      "d": "Artificial intelligence is the broad umbrella discipline and machine learning is a subset within it; they are not interchangeable terms."
+    },
+    "sourceUrl": "https://aws.amazon.com/what-is/deep-learning/",
+    "sourceNote": "What is Deep Learning? - AI vs. machine learning vs. deep learning",
+    "sourceCheckedAt": "2026-10-08"
+  },
+  {
+    "id": "aws-aif-c01-fundamentals-of-ai-and-ml-003",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "fundamentals-of-ai-and-ml",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A financial services application requires immediate credit risk scoring when an online customer submits a personal loan application. The client application needs persistent hosting and consistent millisecond-level response times for individual incoming payloads. Which Amazon SageMaker AI inference option best meets these requirements?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Batch transform"
+      },
+      {
+        "id": "b",
+        "text": "Asynchronous inference"
+      },
+      {
+        "id": "c",
+        "text": "Real-time inference"
+      },
+      {
+        "id": "d",
+        "text": "Serverless inference"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Amazon SageMaker AI real-time inference provides persistent, dedicated compute endpoints optimized for low-latency, real-time predictions on individual incoming requests.",
+    "distractorNotes": {
+      "a": "Batch transform is designed for processing offline datasets where immediate millisecond responses are not required.",
+      "b": "Asynchronous inference queues incoming requests and processes large payloads up to 1 GB with longer processing times up to one hour, rather than providing immediate millisecond responses.",
+      "d": "Serverless inference automatically provisions compute for intermittent or unpredictable traffic and can experience cold starts, making persistent real-time endpoints better suited for continuous low-latency workloads."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/realtime-endpoints.html",
+    "sourceNote": "Deploy Models for Real-Time Inference with Amazon SageMaker",
+    "sourceCheckedAt": "2026-10-08"
+  },
+  {
+    "id": "aws-aif-c01-fundamentals-of-ai-and-ml-004",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "fundamentals-of-ai-and-ml",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A medical imaging platform uploads high-resolution 3D scan archives ranging between 100 MB and 800 MB per request. Generating diagnostic predictions takes up to 12 minutes per scan. The architecture requires built-in request queueing without holding client HTTP connections open. Which Amazon SageMaker AI deployment option meets these requirements?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Real-time inference"
+      },
+      {
+        "id": "b",
+        "text": "Serverless inference"
+      },
+      {
+        "id": "c",
+        "text": "Multi-model endpoints"
+      },
+      {
+        "id": "d",
+        "text": "Asynchronous inference"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Amazon SageMaker AI asynchronous inference queues incoming requests via Amazon SQS, supports payload sizes up to 1 GB, and allows processing times up to one hour, making it ideal for large payloads with long processing durations.",
+    "distractorNotes": {
+      "a": "Real-time inference has a 6 MB payload limit and a 60-second response timeout, which cannot accommodate 800 MB scans requiring 12 minutes of processing.",
+      "b": "Serverless inference supports maximum payload sizes of 4 MB and request timeouts up to 60 seconds.",
+      "c": "Multi-model endpoints host multiple models on a single real-time endpoint but inherit real-time payload and timeout limits."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/async-inference.html",
+    "sourceNote": "Asynchronous Inference in Amazon SageMaker",
+    "sourceCheckedAt": "2026-10-08"
+  },
+  {
+    "id": "aws-aif-c01-fundamentals-of-ai-and-ml-005",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "fundamentals-of-ai-and-ml",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A marketing intelligence team has accumulated large volumes of raw customer purchase records and website clickstreams without historical outcome labels. Which business challenges are appropriate use cases for unsupervised learning? (Select TWO)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Predicting the continuous dollar value of next quarter sales for each retail store"
+      },
+      {
+        "id": "b",
+        "text": "Grouping customers into distinct behavioral segments based on purchasing similarities"
+      },
+      {
+        "id": "c",
+        "text": "Classifying incoming customer support emails into predefined sentiment categories"
+      },
+      {
+        "id": "d",
+        "text": "Detecting anomalous purchase patterns that deviate significantly from standard user activity"
+      },
+      {
+        "id": "e",
+        "text": "Forecasting daily electricity consumption based on historical hourly meter readings"
+      }
+    ],
+    "correct": [
+      "b",
+      "d"
+    ],
+    "explanation": "Unsupervised learning discovers hidden patterns, groupings, and structures within unlabeled data. Clustering customers into behavioral segments and detecting anomalous outliers in transaction data without predefined labels are classic unsupervised learning tasks.",
+    "distractorNotes": {
+      "a": "Predicting continuous numeric values requires supervised regression trained on historical target sales figures.",
+      "c": "Classifying emails into predefined categories requires supervised classification trained on labeled examples.",
+      "e": "Forecasting consumption from historical time-series data relies on supervised time-series models with labeled historical observations."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/reinforcement-learning.html",
+    "sourceNote": "Reinforcement Learning Paradigms - Supervised vs. Unsupervised vs. Reinforcement",
+    "sourceCheckedAt": "2026-10-08"
+  },
+  {
+    "id": "aws-aif-c01-fundamentals-of-ai-and-ml-006",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "fundamentals-of-ai-and-ml",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An autonomous robotics developer is programming an automated guided vehicle (AGV) to navigate a dynamic fulfillment center. The vehicle must learn optimal route paths by taking actions in the warehouse environment and receiving numerical rewards for reaching goals and penalties for collisions. Which machine learning paradigm governs this approach?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Reinforcement learning"
+      },
+      {
+        "id": "b",
+        "text": "Supervised classification"
+      },
+      {
+        "id": "c",
+        "text": "Unsupervised clustering"
+      },
+      {
+        "id": "d",
+        "text": "Supervised regression"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Reinforcement learning optimizes decision-making by enabling an agent to interact with an environment through trial and error, taking actions to maximize a cumulative numerical reward signal over time.",
+    "distractorNotes": {
+      "b": "Supervised classification maps inputs to predefined categorical labels using a static labeled dataset rather than environment interactions and reward feedback.",
+      "c": "Unsupervised clustering discovers groupings in unlabeled data without dynamic actions or reward signals.",
+      "d": "Supervised regression predicts continuous numeric values from labeled training pairs rather than learning dynamic decision policies via rewards."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/reinforcement-learning.html",
+    "sourceNote": "Use Reinforcement Learning with Amazon SageMaker AI",
+    "sourceCheckedAt": "2026-10-08"
+  },
+  {
+    "id": "aws-aif-c01-fundamentals-of-ai-and-ml-007",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "fundamentals-of-ai-and-ml",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "A data engineering team is cataloging enterprise data assets before choosing machine learning algorithms. The team needs to identify which data asset represents unstructured data. Which asset qualifies as unstructured data?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A relational database table containing customer billing addresses and zip codes"
+      },
+      {
+        "id": "b",
+        "text": "A collection of customer call center audio recordings stored in an Amazon S3 bucket"
+      },
+      {
+        "id": "c",
+        "text": "A collection of JSON web server log files containing nested key-value tags and attributes"
+      },
+      {
+        "id": "d",
+        "text": "A Parquet table with strict schema definitions for daily financial ledger entries"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Unstructured data lacks a predefined data model or tabular schema. Audio recordings, video files, images, and raw free-form text documents are unstructured. In contrast, relational and Parquet tables are structured, and JSON logs with key-value tags are semi-structured.",
+    "distractorNotes": {
+      "a": "Relational database tables follow strict predefined schemas, representing structured data.",
+      "c": "JSON files containing nested tags and key-value hierarchies are semi-structured data rather than unstructured data.",
+      "d": "Parquet tables maintain explicit columnar schemas and types, representing structured data."
+    },
+    "sourceUrl": "https://aws.amazon.com/what-is/structured-data/",
+    "sourceNote": "What is Structured Data? - Structured vs Unstructured Data",
+    "sourceCheckedAt": "2026-10-08"
+  },
+  {
+    "id": "aws-aif-c01-fundamentals-of-ai-and-ml-008",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "fundamentals-of-ai-and-ml",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A machine learning engineer trains a customer churn prediction model. During evaluation, the model achieves a 99% accuracy score on the historical training set, but accuracy drops to 61% when evaluated on an independent test dataset. Which condition explains this discrepancy?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Underfitting, because the model lacks sufficient complexity to capture underlying data relationships"
+      },
+      {
+        "id": "b",
+        "text": "Data drift, because the statistical distribution of features changed between training epochs"
+      },
+      {
+        "id": "c",
+        "text": "Overfitting, because the model memorized training noise and specific details rather than general patterns"
+      },
+      {
+        "id": "d",
+        "text": "High bias, because the model made overly simplistic assumptions about feature distributions"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Overfitting occurs when a machine learning model fits the training data too closely, learning noise and idiosyncratic details of the training set. This results in high training accuracy but poor generalization to unseen test data.",
+    "distractorNotes": {
+      "a": "Underfitting occurs when a model performs poorly on both the training set and the test set due to insufficient capacity or overly simplistic assumptions.",
+      "b": "Data drift occurs over time in production when real-world distributions shift, whereas an immediate gap between static training and test splits reflects training overfitting.",
+      "d": "High bias causes underfitting and poor training performance, whereas high variance causes overfitting on training data."
+    },
+    "sourceUrl": "https://aws.amazon.com/what-is/overfitting/",
+    "sourceNote": "What is Overfitting? - Definition and Characteristics",
+    "sourceCheckedAt": "2026-10-08"
+  },
+  {
+    "id": "aws-aif-c01-fundamentals-of-ai-and-ml-009",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "fundamentals-of-ai-and-ml",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A travel management company wants to build an AI system that takes a high-level user goal, such as 'Book a flight and hotel for a conference next Tuesday within budget', autonomously breaks the goal down into sequential subtasks, executes API calls across flight and hotel reservation systems, and adapts its plan if a flight is sold out. Which AI architecture best describes this autonomous workflow?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Retrieval-Augmented Generation (RAG) with vector search"
+      },
+      {
+        "id": "b",
+        "text": "Static few-shot prompt completion"
+      },
+      {
+        "id": "c",
+        "text": "Rule-based robotic process automation"
+      },
+      {
+        "id": "d",
+        "text": "Agentic AI with tool invocation"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Agentic AI systems leverage foundation models combined with reasoning frameworks, memory, and tool integration (such as Amazon Bedrock Agents) to autonomously decompose multi-step goals, invoke external APIs, evaluate intermediary results, and adapt execution plans.",
+    "distractorNotes": {
+      "a": "Retrieval-Augmented Generation retrieves reference passages to ground foundation model completions, but lacks autonomous multi-step planning and tool invocation mechanisms.",
+      "b": "Static few-shot prompting provides in-context examples for text generation, but lacks autonomous planning, memory, and dynamic tool orchestration.",
+      "c": "Rule-based RPA follows rigid hardcoded scripts and cannot reason, handle ambiguity, or adapt execution paths when encountering unexpected conditions."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/agents.html",
+    "sourceNote": "How Agents for Amazon Bedrock Work",
+    "sourceCheckedAt": "2026-10-08"
+  },
+  {
+    "id": "aws-aif-c01-fundamentals-of-ai-and-ml-010",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "fundamentals-of-ai-and-ml",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A payroll application must calculate mandatory employee tax withholdings based on statutory municipal tax brackets and deterministic mathematical formulas. Why is training a machine learning model inappropriate for this business requirement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Machine learning models produce probabilistic approximations rather than the 100% exact, deterministic calculations required by tax statutes"
+      },
+      {
+        "id": "b",
+        "text": "Machine learning models require millions of historical employee records before their weights converge on stable bracket calculations"
+      },
+      {
+        "id": "c",
+        "text": "Machine learning models cannot be audited or logged in compliance environments where statutory formula verification is required"
+      },
+      {
+        "id": "d",
+        "text": "Machine learning models require retraining from scratch whenever an employee's annual gross salary changes between pay periods"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Machine learning is designed for problems involving complex patterns, heuristics, and probabilistic estimation. When a problem is governed by fixed, deterministic rules or statutory mathematical formulas requiring 100% exact and reproducible results, traditional rule-based code is required rather than probabilistic ML.",
+    "distractorNotes": {
+      "b": "Machine learning is inappropriate because the statutory formulas are fully deterministic, not because of a lack of training data volume.",
+      "c": "Machine learning models can be comprehensively logged, monitored, and audited in AWS, but rule-based code is required to guarantee exact statutory calculation.",
+      "d": "Input parameter variation is handled naturally during inference; machine learning is inappropriate because tax formulas require exact mathematical certainty rather than probabilistic predictions."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/wellarchitected/latest/machine-learning-lens/mlcost02-bp01.html",
+    "sourceNote": "MLCOST02-BP01 Identify If Machine Learning Is the Right Solution",
+    "sourceCheckedAt": "2026-10-08"
+  },
+  {
+    "id": "aws-aif-c01-fundamentals-of-ai-and-ml-011",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "fundamentals-of-ai-and-ml",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "An online marketplace wants to deploy machine learning models to automate operations. The company needs to pair business objectives with appropriate supervised learning problem types. Which pairings correctly identify the machine learning problem type? (Select TWO)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Predicting whether an order transaction is fraudulent (yes or no) using binary classification"
+      },
+      {
+        "id": "b",
+        "text": "Predicting continuous delivery transit time in hours using multiclass classification"
+      },
+      {
+        "id": "c",
+        "text": "Predicting the final auction sale price in dollars for a vintage watch using regression"
+      },
+      {
+        "id": "d",
+        "text": "Categorizing products into one of fifty predefined catalog departments using binary classification"
+      },
+      {
+        "id": "e",
+        "text": "Predicting customer churn probability between 0 and 1 using linear regression"
+      }
+    ],
+    "correct": [
+      "a",
+      "c"
+    ],
+    "explanation": "Binary classification predicts one of two discrete outcomes (such as fraud vs. legitimate). Regression predicts continuous numerical quantities (such as auction sale price in dollars). Multiclass classification predicts one of three or more discrete classes.",
+    "distractorNotes": {
+      "b": "Predicting a continuous numeric value like delivery hours is a regression problem, not multiclass classification.",
+      "d": "Sorting items into multiple predefined categories requires multiclass classification, not binary classification.",
+      "e": "Predicting categorical churn outcomes requires binary classification (such as logistic regression), not linear regression."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-datasets-problem-types.html",
+    "sourceNote": "Autopilot Problem Types - Regression, Binary, and Multiclass Classification",
+    "sourceCheckedAt": "2026-10-08"
+  },
+  {
+    "id": "aws-aif-c01-fundamentals-of-ai-and-ml-012",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "fundamentals-of-ai-and-ml",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "A mortgage processing firm receives thousands of scanned PDF loan applications and property deeds each week. The firm must automatically extract printed text, tabular data, and form key-value pairs (such as 'Borrower Name: John Doe') without maintaining custom optical character recognition (OCR) models. Which AWS service meets these requirements?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon Comprehend"
+      },
+      {
+        "id": "b",
+        "text": "Amazon Textract"
+      },
+      {
+        "id": "c",
+        "text": "Amazon Kendra"
+      },
+      {
+        "id": "d",
+        "text": "Amazon Augmented AI (Amazon A2I)"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Amazon Textract automatically extracts text, handwriting, tables, and structured form data (key-value pairs) from scanned documents and PDFs using machine learning without requiring custom model training.",
+    "distractorNotes": {
+      "a": "Amazon Comprehend is a natural language processing service that analyzes text for sentiment, entities, and syntax, but does not extract form structures and tables from scanned image documents.",
+      "c": "Amazon Kendra is an intelligent enterprise search service that indexes documents for conversational queries, rather than extracting structured form fields and tables.",
+      "d": "Amazon Augmented AI (Amazon A2I) orchestrates human review workflows for low-confidence ML predictions, rather than extracting text and structured form data directly."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/textract/latest/dg/what-is.html",
+    "sourceNote": "What Is Amazon Textract? - Features and Document Analysis",
+    "sourceCheckedAt": "2026-10-08"
+  },
+  {
+    "id": "aws-aif-c01-fundamentals-of-ai-and-ml-013",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "fundamentals-of-ai-and-ml",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A healthcare provider uses Amazon Transcribe to generate written transcripts from recorded telemedicine consultations. The automated transcripts frequently misspell proprietary pharmaceutical drug names and specialized clinical acronyms. Which Amazon Transcribe feature resolves this issue with the least operational effort?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Channel identification"
+      },
+      {
+        "id": "b",
+        "text": "Vocabulary filtering"
+      },
+      {
+        "id": "c",
+        "text": "Custom vocabulary"
+      },
+      {
+        "id": "d",
+        "text": "Custom language model"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Amazon Transcribe custom vocabularies allow you to specify domain-specific terminology, brand names, and acronyms, improving speech-to-text recognition accuracy for specialized words.",
+    "distractorNotes": {
+      "a": "Channel identification separates audio tracks recorded on distinct audio channels, such as patient and doctor audio, but does not improve domain-specific spelling accuracy.",
+      "b": "Vocabulary filtering masks, removes, or flags unwanted words such as profanity, rather than improving recognition of technical terminology.",
+      "d": "Custom language models train on large text corpora to learn linguistic context, requiring substantial training data and higher operational effort than supplying a custom vocabulary list for specific drug names."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/transcribe/latest/dg/custom-vocabulary.html",
+    "sourceNote": "Improving Transcription Accuracy with Custom Vocabularies",
+    "sourceCheckedAt": "2026-10-08"
+  },
+  {
+    "id": "aws-aif-c01-fundamentals-of-ai-and-ml-014",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "fundamentals-of-ai-and-ml",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An electronics manufacturer wants to automate visual quality inspection on its assembly lines. The company needs to detect micro-soldering defects on proprietary circuit boards using a curated set of 200 labeled reference images, without writing computer vision code or training neural networks from scratch. Which AWS solution meets these requirements?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon Rekognition DetectLabels API"
+      },
+      {
+        "id": "b",
+        "text": "Amazon Rekognition Face Search"
+      },
+      {
+        "id": "c",
+        "text": "Amazon Textract layout analysis"
+      },
+      {
+        "id": "d",
+        "text": "Amazon Rekognition Custom Labels"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Amazon Rekognition Custom Labels allows users to train custom computer vision models to identify domain-specific objects and defects using a small set of labeled training images without requiring deep learning expertise.",
+    "distractorNotes": {
+      "a": "The standard Amazon Rekognition DetectLabels API identifies common everyday objects and scenes from pre-trained taxonomies, but cannot identify proprietary industrial defects without custom training.",
+      "b": "Amazon Rekognition Face Search analyzes facial geometry and matches faces against collections, which is inapplicable to industrial defect inspection.",
+      "c": "Amazon Textract parses text and structured data from documents, not physical defect patterns on manufactured circuit boards."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/rekognition/latest/customlabels-dg/what-is.html",
+    "sourceNote": "What Is Amazon Rekognition Custom Labels?",
+    "sourceCheckedAt": "2026-10-08"
+  },
+  {
+    "id": "aws-aif-c01-fundamentals-of-ai-and-ml-015",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "fundamentals-of-ai-and-ml",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "A global customer support platform receives user inquiries in over 50 languages. The organization wants to translate inbound chat messages into English for support agents in real time, and translate agent replies back into the customer's native language. Which AWS managed service provides this functionality?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon Translate"
+      },
+      {
+        "id": "b",
+        "text": "Amazon Lex"
+      },
+      {
+        "id": "c",
+        "text": "Amazon Transcribe"
+      },
+      {
+        "id": "d",
+        "text": "Amazon Polly"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Amazon Translate is a neural machine translation service that delivers fast, high-quality, and customizable language translation across dozens of languages in real time.",
+    "distractorNotes": {
+      "b": "Amazon Lex builds conversational interfaces (chatbots) using voice and text, rather than translating text between languages.",
+      "c": "Amazon Transcribe converts speech audio into text within a given language.",
+      "d": "Amazon Polly converts text into synthesized speech audio."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/translate/latest/dg/what-is.html",
+    "sourceNote": "What Is Amazon Translate? - Overview and Capabilities",
+    "sourceCheckedAt": "2026-10-08"
+  },
+  {
+    "id": "aws-aif-c01-fundamentals-of-ai-and-ml-016",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "fundamentals-of-ai-and-ml",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "A mobile news application wants to add an audio playback feature so subscribers can listen to published articles and emergency alerts. The solution must convert written text into natural-sounding spoken audio streams in multiple voices and accents without requiring custom ML modeling. Which AWS service meets these requirements?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon Transcribe"
+      },
+      {
+        "id": "b",
+        "text": "Amazon Polly"
+      },
+      {
+        "id": "c",
+        "text": "Amazon Comprehend"
+      },
+      {
+        "id": "d",
+        "text": "Amazon Lex"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Amazon Polly is a Text-to-Speech (TTS) service that uses advanced deep learning technologies to synthesize natural-sounding human speech from written text in dozens of voices and languages.",
+    "distractorNotes": {
+      "a": "Amazon Transcribe converts speech audio into written text (speech-to-text), whereas the application requires converting text into speech (text-to-speech).",
+      "c": "Amazon Comprehend analyzes text to extract sentiment and entities, but does not synthesize spoken audio.",
+      "d": "Amazon Lex builds conversational bots using speech and text understanding, but does not synthesize audio playback for long-form published articles."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/polly/latest/dg/what-is.html",
+    "sourceNote": "What Is Amazon Polly? - Text-to-Speech Service",
+    "sourceCheckedAt": "2026-10-08"
+  },
+  {
+    "id": "aws-aif-c01-fundamentals-of-ai-and-ml-017",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "fundamentals-of-ai-and-ml",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An e-commerce retailer wants to increase customer engagement by delivering individualized product recommendations on its home page and re-ranking search results based on each user's past browsing history. The development team lacks machine learning expertise and wants a managed service with pre-built recommendation algorithms. Which AWS service meets these requirements?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon QuickSight"
+      },
+      {
+        "id": "b",
+        "text": "Amazon Kendra"
+      },
+      {
+        "id": "c",
+        "text": "Amazon Personalize"
+      },
+      {
+        "id": "d",
+        "text": "Amazon Lex"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Amazon Personalize is a managed service that uses machine learning to generate personalized product recommendations, personalized ranking, and customized direct marketing based on user interaction data.",
+    "distractorNotes": {
+      "a": "Amazon QuickSight is a business intelligence and visualization service, not a recommendation engine.",
+      "b": "Amazon Kendra is an intelligent enterprise search service powered by machine learning, but does not provide individualized user-behavior recommendation models.",
+      "d": "Amazon Lex builds conversational AI chatbots, rather than product recommendation engines."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/personalize/latest/dg/what-is-personalize.html",
+    "sourceNote": "What Is Amazon Personalize? - Recommender Systems",
+    "sourceCheckedAt": "2026-10-08"
+  },
+  {
+    "id": "aws-aif-c01-fundamentals-of-ai-and-ml-018",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "fundamentals-of-ai-and-ml",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A retail bank is evaluating whether to implement a traditional tree-based machine learning model (such as XGBoost) or a generative foundation model (FM) for tabular credit card fraud detection. Which factors represent key advantages of using a traditional ML model over a foundation model for this tabular use case? (Select TWO)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Lower inference compute cost and sub-second execution latency on structured tabular data"
+      },
+      {
+        "id": "b",
+        "text": "Ability to generate multi-paragraph creative narrative summaries of customer disputes"
+      },
+      {
+        "id": "c",
+        "text": "Elimination of all training data preparation and feature scaling requirements"
+      },
+      {
+        "id": "d",
+        "text": "Higher model explainability and straightforward regulatory feature attribution reporting"
+      },
+      {
+        "id": "e",
+        "text": "Native zero-shot reasoning capabilities across completely unseen fraud attack vectors"
+      }
+    ],
+    "correct": [
+      "a",
+      "d"
+    ],
+    "explanation": "Traditional ML models (such as XGBoost or logistic regression) offer significant advantages for tabular prediction tasks: they have lower computational latency and inference cost, and they provide clear interpretability (such as SHAP feature attribution) necessary for financial regulatory compliance.",
+    "distractorNotes": {
+      "b": "Generating creative text summaries is a capability of generative foundation models, not a primary advantage of traditional tabular ML.",
+      "c": "Traditional ML models still require structured data preparation, cleaning, and encoding.",
+      "e": "Zero-shot generalization across novel open-ended contexts is a characteristic of foundation models, not traditional tabular models."
+    },
+    "sourceUrl": "https://aws.amazon.com/what-is/generative-ai/",
+    "sourceNote": "AWS What is Generative AI: high compute cost and black-box limits of generative models vs traditional ML",
+    "sourceCheckedAt": "2026-10-08"
+  },
+  {
+    "id": "aws-aif-c01-fundamentals-of-ai-and-ml-019",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "fundamentals-of-ai-and-ml",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A data science team is preparing raw customer transaction records for a churn prediction model. The team creates new input attributes including 'days since last login', 'average purchase amount over 30 days', and one-hot encoded country indicators. Which stage of the machine learning pipeline does this activity represent?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Model evaluation"
+      },
+      {
+        "id": "b",
+        "text": "Feature engineering"
+      },
+      {
+        "id": "c",
+        "text": "Hyperparameter tuning"
+      },
+      {
+        "id": "d",
+        "text": "Model deployment"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Feature engineering involves transforming raw data into meaningful variables (features) that represent problem domain knowledge and improve the predictive performance of machine learning algorithms.",
+    "distractorNotes": {
+      "a": "Model evaluation measures model performance against validation metrics after training has finished.",
+      "c": "Hyperparameter tuning searches for optimal training algorithm parameters (such as learning rate or tree depth) during training.",
+      "d": "Model deployment packages the trained model artifact and hosts it on an inference endpoint."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/data-prep.html",
+    "sourceNote": "Data Preparation and Feature Engineering in SageMaker AI",
+    "sourceCheckedAt": "2026-10-08"
+  },
+  {
+    "id": "aws-aif-c01-fundamentals-of-ai-and-ml-020",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "fundamentals-of-ai-and-ml",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A security operations team is deploying a machine learning model to detect unauthorized network intrusions. Missing an actual intrusion (a false negative) presents an unacceptable catastrophic security risk, whereas investigating occasional benign false alarms is acceptable. Which evaluation metric should the team prioritize to minimize false negatives?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Precision"
+      },
+      {
+        "id": "b",
+        "text": "Accuracy"
+      },
+      {
+        "id": "c",
+        "text": "Recall"
+      },
+      {
+        "id": "d",
+        "text": "Mean absolute error"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Recall (also called sensitivity or true positive rate) measures the proportion of actual positive cases correctly identified by the model. Prioritizing recall minimizes false negatives, which is critical when failing to detect a positive condition carries severe consequences.",
+    "distractorNotes": {
+      "a": "Precision measures the proportion of positive identifications that were actually correct, focusing on minimizing false positives rather than false negatives.",
+      "b": "Accuracy measures overall correct predictions across all classes, which can be highly misleading in imbalanced security datasets where intrusions represent less than 1% of traffic.",
+      "d": "Mean absolute error is an evaluation metric for continuous regression problems, not binary classification."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-metrics-validation.html",
+    "sourceNote": "Autopilot Metrics - Precision and Recall Definitions",
+    "sourceCheckedAt": "2026-10-08"
+  },
+  {
+    "id": "aws-aif-c01-fundamentals-of-ai-and-ml-021",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "fundamentals-of-ai-and-ml",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A healthcare provider evaluates a binary classification model for rare disease detection on an imbalanced dataset where 99.5% of patient records are negative and only 0.5% are positive. Predicting all patients as negative yields 99.5% accuracy while missing every positive case. The team needs a single evaluation metric that balances both false positives and false negatives to measure overall predictive performance on this imbalanced dataset. Which metric best satisfies this requirement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Accuracy"
+      },
+      {
+        "id": "b",
+        "text": "Precision"
+      },
+      {
+        "id": "c",
+        "text": "Recall"
+      },
+      {
+        "id": "d",
+        "text": "F1 score"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "The F1 score is the harmonic mean of precision and recall. On imbalanced classification datasets where raw accuracy is distorted by a dominant majority class, F1 score provides a balanced evaluation metric that accounts for both false positives (via precision) and false negatives (via recall).",
+    "distractorNotes": {
+      "a": "Accuracy is misleading on imbalanced datasets because a trivial model predicting only the majority class achieves 99.5% accuracy while failing to detect positive cases.",
+      "b": "Precision measures the ratio of true positives to all predicted positives, reflecting false positives but ignoring false negatives.",
+      "c": "Recall measures the ratio of true positives to actual positives, reflecting false negatives but ignoring false positives."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-metrics-validation.html",
+    "sourceNote": "Autopilot Metrics - F1 Score Harmonic Mean",
+    "sourceCheckedAt": "2026-10-08"
+  },
+  {
+    "id": "aws-aif-c01-fundamentals-of-ai-and-ml-022",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "fundamentals-of-ai-and-ml",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "A real estate analytics platform trains a machine learning model to estimate the market sales price of residential properties in dollars. Which evaluation metric measures model prediction error for this continuous regression problem?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Root mean squared error (RMSE)"
+      },
+      {
+        "id": "b",
+        "text": "Confusion matrix"
+      },
+      {
+        "id": "c",
+        "text": "Area under the ROC curve (AUC)"
+      },
+      {
+        "id": "d",
+        "text": "F1 score"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Root mean squared error (RMSE) is a standard evaluation metric for regression problems that predicts continuous numeric values. It measures the square root of average squared differences between predicted and actual values in the original target units.",
+    "distractorNotes": {
+      "b": "A confusion matrix tabulates true/false positives and negatives for categorical classification problems.",
+      "c": "AUC measures discriminatory ability across classification probability thresholds.",
+      "d": "F1 score balances precision and recall for categorical classification problems."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-metrics-validation.html",
+    "sourceNote": "Autopilot Metrics - Regression Metrics (MSE, RMSE, MAE)",
+    "sourceCheckedAt": "2026-10-08"
+  },
+  {
+    "id": "aws-aif-c01-fundamentals-of-ai-and-ml-023",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "fundamentals-of-ai-and-ml",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An e-commerce company notices that its product recommendation model, which was highly accurate at deployment, has steadily decreased in recommendation quality over the past eight months as consumer buying habits shifted and seasonal trends changed. Which phenomenon describes this degradation, and what is the appropriate remediation?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Underfitting, which should be resolved by reducing the size of the training feature set"
+      },
+      {
+        "id": "b",
+        "text": "Data drift, which should be resolved by retraining the model on recent production data"
+      },
+      {
+        "id": "c",
+        "text": "High variance, which should be resolved by disabling regularization parameters"
+      },
+      {
+        "id": "d",
+        "text": "Cold starts, which should be resolved by switching to serverless inference endpoints"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Data drift occurs when the statistical properties of production input data change over time relative to the baseline training distribution. Resolving data drift requires monitoring distribution shifts and retraining the model on fresh, representative data.",
+    "distractorNotes": {
+      "a": "Underfitting is a training-time deficiency in model capacity, not a gradual post-deployment decline due to evolving user habits.",
+      "c": "High variance reflects overfitting during training; reducing regularization worsens overfitting.",
+      "d": "Cold starts are invocation latencies on serverless infrastructure, not accuracy degradation from evolving real-world data patterns."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/wellarchitected/latest/machine-learning-lens/mlperf06-bp03.html",
+    "sourceNote": "MLPERF06-BP03 Evaluate Data Drift in Machine Learning Models",
+    "sourceCheckedAt": "2026-10-08"
+  },
+  {
+    "id": "aws-aif-c01-fundamentals-of-ai-and-ml-024",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "fundamentals-of-ai-and-ml",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A financial organization hosts credit underwriting models on Amazon SageMaker AI real-time endpoints. The engineering team must establish automated continuous monitoring to maintain production quality. Which capabilities are provided natively by Amazon SageMaker Model Monitor? (Select TWO)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Automated model retraining orchestration using Amazon SageMaker Pipelines execution triggers"
+      },
+      {
+        "id": "b",
+        "text": "Automated generation and governance tracking of model cards using Amazon SageMaker Model Cards"
+      },
+      {
+        "id": "c",
+        "text": "Data quality monitoring to detect distribution shifts in incoming inference requests"
+      },
+      {
+        "id": "d",
+        "text": "Automated auto-scaling of underlying endpoint compute capacity based on request traffic"
+      },
+      {
+        "id": "e",
+        "text": "Model quality monitoring to track prediction accuracy degradation against ground truth"
+      }
+    ],
+    "correct": [
+      "c",
+      "e"
+    ],
+    "explanation": "Amazon SageMaker Model Monitor automatically monitors production models for data quality (detecting drift in input feature distributions compared to baseline training data) and model quality (tracking performance metrics such as accuracy degradation when ground truth labels become available).",
+    "distractorNotes": {
+      "a": "Automated model retraining workflows are orchestrated by Amazon SageMaker Pipelines, rather than SageMaker Model Monitor.",
+      "b": "Model governance metadata and intended use documentation are managed by Amazon SageMaker Model Cards, not SageMaker Model Monitor.",
+      "d": "Compute auto-scaling is handled by Amazon SageMaker endpoint automatic scaling policies rather than SageMaker Model Monitor."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/model-monitor.html",
+    "sourceNote": "Amazon SageMaker Model Monitor Overview and Capabilities",
+    "sourceCheckedAt": "2026-10-08"
+  },
+  {
+    "id": "aws-aif-c01-fundamentals-of-ai-and-ml-025",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "fundamentals-of-ai-and-ml",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "A business operations analyst wants to build and test a machine learning model to predict customer subscription renewals using historical spreadsheet data stored in Amazon S3. The analyst does not know how to write Python code or configure container environments. Which Amazon SageMaker AI feature provides a visual point-and-click interface to train and evaluate this model?",
+    "options": [
+      {
+        "id": "a",
+        "text": "SageMaker Neo"
+      },
+      {
+        "id": "b",
+        "text": "SageMaker Training Compiler"
+      },
+      {
+        "id": "c",
+        "text": "SageMaker Canvas"
+      },
+      {
+        "id": "d",
+        "text": "SageMaker HyperPod"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Amazon SageMaker Canvas provides a visual, no-code, point-and-click interface that allows business analysts and non-technical users to build machine learning models, generate predictions, and analyze outcomes without writing code.",
+    "distractorNotes": {
+      "a": "SageMaker Neo optimizes and compiles trained models for edge and embedded devices.",
+      "b": "SageMaker Training Compiler accelerates deep learning training jobs by optimizing PyTorch and TensorFlow kernels.",
+      "d": "SageMaker HyperPod provides resilient infrastructure for distributed training of large foundation models across GPU clusters."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/canvas.html",
+    "sourceNote": "Amazon SageMaker Canvas - Visual No-Code Machine Learning",
+    "sourceCheckedAt": "2026-10-08"
+  },
+  {
+    "id": "aws-aif-c01-fundamentals-of-ai-and-ml-026",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "fundamentals-of-ai-and-ml",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "A developer wants to quickly explore, fine-tune, and deploy popular open-source pre-trained foundation models and computer vision algorithms using pre-built templates and one-click deployment within Amazon SageMaker AI. Which SageMaker AI feature directly provides this catalog of pre-trained models and end-to-end solutions?",
+    "options": [
+      {
+        "id": "a",
+        "text": "SageMaker Feature Store"
+      },
+      {
+        "id": "b",
+        "text": "SageMaker Edge Manager"
+      },
+      {
+        "id": "c",
+        "text": "SageMaker Clarify"
+      },
+      {
+        "id": "d",
+        "text": "SageMaker JumpStart"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Amazon SageMaker JumpStart is a machine learning hub that provides access to foundation models, built-in algorithms, and pre-built ML solutions that can be deployed or fine-tuned with a few clicks.",
+    "distractorNotes": {
+      "a": "SageMaker Feature Store is a centralized repository for storing, discovering, and sharing machine learning features.",
+      "b": "SageMaker Edge Manager manages and monitors models deployed to fleets of edge devices.",
+      "c": "SageMaker Clarify detects bias in data and models and provides explainability metrics."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/studio-jumpstart.html",
+    "sourceNote": "Amazon SageMaker JumpStart - Foundation Models and Solutions",
+    "sourceCheckedAt": "2026-10-08"
+  },
+  {
+    "id": "aws-aif-c01-fundamentals-of-ai-and-ml-027",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "fundamentals-of-ai-and-ml",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A research institute uses Amazon Transcribe to convert recorded academic lectures into text. The standard transcription model struggles with specialized technical phrasing and domain-specific word relationships. The institute has assembled a large repository of relevant scientific papers and historical lecture transcripts. Which Amazon Transcribe feature should the institute use to train on this domain text corpus to improve speech recognition accuracy?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Custom language model"
+      },
+      {
+        "id": "b",
+        "text": "Custom vocabulary"
+      },
+      {
+        "id": "c",
+        "text": "Vocabulary filtering"
+      },
+      {
+        "id": "d",
+        "text": "Channel identification"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Amazon Transcribe custom language models allow you to train on domain-specific text data, such as scientific papers and transcripts, to learn the context and relationships between specialized words, improving speech-to-text accuracy for domain-specific speech.",
+    "distractorNotes": {
+      "b": "Custom vocabularies provide a list of specific terms and pronunciation hints to improve word recognition, but they do not train on text corpora to learn linguistic context and word relationships.",
+      "c": "Vocabulary filtering masks, removes, or flags unwanted words such as profanity from transcription results, rather than improving domain accuracy.",
+      "d": "Channel identification separates multi-channel audio recordings into distinct speaker channels, but does not train speech recognition on domain terminology."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/transcribe/latest/dg/custom-language-models.html",
+    "sourceNote": "Custom language models - Amazon Transcribe",
+    "sourceCheckedAt": "2026-10-09"
+  },
+  {
+    "id": "aws-aif-c01-fundamentals-of-ai-and-ml-028",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "fundamentals-of-ai-and-ml",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A retail analytics company processes millions of customer purchase transactions stored in Amazon S3 once each week. The workload runs offline where prediction latency is not a critical factor, and the company wants to generate inferences without provisioning or maintaining a persistent compute endpoint. Which Amazon SageMaker AI inference option best meets these requirements?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Real-time inference"
+      },
+      {
+        "id": "b",
+        "text": "Batch transform"
+      },
+      {
+        "id": "c",
+        "text": "Asynchronous inference"
+      },
+      {
+        "id": "d",
+        "text": "Serverless inference"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Amazon SageMaker AI batch transform is designed to get inferences from large datasets stored in Amazon S3 for offline workloads where latency is not a critical factor and a persistent endpoint is not needed.",
+    "distractorNotes": {
+      "a": "Real-time inference provides persistent endpoints optimized for interactive, low-latency, millisecond-level predictions on individual requests, incurring unnecessary idle compute costs for weekly offline processing.",
+      "c": "Asynchronous inference queues incoming requests for payloads requiring up to an hour of processing on managed endpoints with near real-time requirements, rather than running batch jobs directly against static S3 datasets without persistent endpoints.",
+      "d": "Serverless inference automatically provisions compute for intermittent or unpredictable online traffic on endpoints, but it is not intended for processing large offline datasets across millions of records without an endpoint."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/batch-transform.html",
+    "sourceNote": "Batch transform for inference with Amazon SageMaker AI",
+    "sourceCheckedAt": "2026-10-09"
+  }
+]

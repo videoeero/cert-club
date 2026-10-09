@@ -1,0 +1,765 @@
+[
+  {
+    "id": "aws-aif-c01-security-compliance-and-governance-for-ai-solutions-001",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-compliance-and-governance-for-ai-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "Under the AWS shared responsibility model for Amazon Bedrock, which security responsibility belongs to the customer rather than AWS?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Configuring Identity and Access Management (IAM) policies to regulate which users and applications can invoke foundation models"
+      },
+      {
+        "id": "b",
+        "text": "Maintaining the physical security of the data center facilities where foundation model accelerators operate"
+      },
+      {
+        "id": "c",
+        "text": "Managing and patching the host operating systems running the managed Amazon Bedrock service infrastructure"
+      },
+      {
+        "id": "d",
+        "text": "Isolating model provider inference environments within dedicated AWS service deployment accounts"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Under the AWS shared responsibility model, AWS manages security of the cloud, including physical data center security, hardware maintenance, host OS patching, and service isolation. The customer is responsible for security in the cloud, including configuring IAM policies, controlling access to resources, and securing customer data.",
+    "distractorNotes": {
+      "b": "Physical security of data centers and server facilities is managed entirely by AWS as part of security of the cloud.",
+      "c": "Patching and maintaining the underlying host operating systems and compute infrastructure powering Amazon Bedrock is the responsibility of AWS.",
+      "d": "Isolating model provider software and maintaining secure model deployment accounts is managed by AWS to ensure model providers cannot access customer data or logs."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/data-protection.html",
+    "sourceNote": "Data protection and shared responsibility in Amazon Bedrock",
+    "sourceCheckedAt": "2026-10-08"
+  },
+  {
+    "id": "aws-aif-c01-security-compliance-and-governance-for-ai-solutions-002",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-compliance-and-governance-for-ai-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A financial services company runs containerized applications inside an Amazon VPC private subnet without direct internet access. The company needs to invoke Amazon Bedrock foundation models while ensuring that inference traffic remains entirely within the AWS network and never traverses the public internet. Which solution meets these requirements?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Attach an internet gateway to the VPC and configure public route tables for the container subnets"
+      },
+      {
+        "id": "b",
+        "text": "Create an interface VPC endpoint powered by AWS PrivateLink for the Amazon Bedrock runtime service"
+      },
+      {
+        "id": "c",
+        "text": "Deploy a NAT gateway in each private subnet and assign elastic IP addresses to the worker nodes"
+      },
+      {
+        "id": "d",
+        "text": "Configure an AWS Site-to-Site VPN connection routed through a customer-managed gateway on premises"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "AWS PrivateLink enables private connections between an Amazon VPC and supported AWS services such as Amazon Bedrock. By creating an interface VPC endpoint, API calls to the Bedrock runtime service travel over private AWS network infrastructure rather than traversing the public internet, requiring no internet gateway, NAT gateway, or public IP addresses.",
+    "distractorNotes": {
+      "a": "Internet gateways route VPC subnet traffic directly across the public internet, which violates the requirement for traffic to remain entirely private.",
+      "c": "NAT gateways route outbound private subnet traffic through the public internet, which exposes network requests to the public internet path.",
+      "d": "A Site-to-Site VPN connects an on-premises network to an AWS VPC, rather than providing private connectivity from a VPC to AWS managed services."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/vpc-interface-endpoints.html",
+    "sourceNote": "Interface VPC endpoints (AWS PrivateLink) for Amazon Bedrock",
+    "sourceCheckedAt": "2026-10-09"
+  },
+  {
+    "id": "aws-aif-c01-security-compliance-and-governance-for-ai-solutions-003",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-compliance-and-governance-for-ai-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A healthcare organization is preparing hundreds of gigabytes of unstructured clinical documents stored in Amazon S3 to build a knowledge base for a generative AI application. Before indexing the data, the security team must automatically discover and evaluate sensitive personal data, such as national identification numbers and medical record identifiers, across these S3 buckets. Which AWS service will meet these requirements?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon Inspector",
+        "hintText": "Automated vulnerability management service that scans compute workloads for software flaws"
+      },
+      {
+        "id": "b",
+        "text": "Amazon GuardDuty",
+        "hintText": "Intelligent threat detection service that continuously monitors AWS accounts and network logs"
+      },
+      {
+        "id": "c",
+        "text": "Amazon Macie",
+        "hintText": "Data security service that uses machine learning and pattern matching to discover sensitive data in Amazon S3"
+      },
+      {
+        "id": "d",
+        "text": "Amazon Comprehend",
+        "hintText": "Natural language processing service that extracts key phrases, sentiment, and syntax from text"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Amazon Macie is a fully managed data security service that uses machine learning and pattern matching to automatically discover, classify, and protect sensitive data in Amazon Simple Storage Service (Amazon S3). Macie alerts security teams to sensitive information such as personally identifiable information (PII) and regulatory identifiers stored across S3 buckets.",
+    "distractorNotes": {
+      "a": "Amazon Inspector continuously scans Amazon EC2 instances, container images in ECR, and Lambda functions for software vulnerabilities, but does not discover sensitive data in S3.",
+      "b": "Amazon GuardDuty analyzes VPC Flow Logs, DNS logs, and CloudTrail events to detect malicious activity and compromised accounts, rather than scanning S3 contents for sensitive PII.",
+      "d": "Amazon Comprehend provides natural language processing capabilities including entity extraction and sentiment analysis, but does not provide automated S3 data estate discovery and security posture management."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/macie/latest/user/what-is-macie.html",
+    "sourceNote": "What is Amazon Macie?",
+    "sourceCheckedAt": "2026-10-09"
+  },
+  {
+    "id": "aws-aif-c01-security-compliance-and-governance-for-ai-solutions-004",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-compliance-and-governance-for-ai-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An insurance company uses Amazon Bedrock to fine-tune foundation models on proprietary underwriting history. Corporate compliance policy mandates that the company must control and audit the lifecycle, permissions, and annual rotation of the cryptographic keys used to encrypt the fine-tuned custom models at rest. Which encryption approach satisfies this requirement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Encrypt custom model outputs using default AWS owned keys managed internally by the Amazon Bedrock service without customer key policies"
+      },
+      {
+        "id": "b",
+        "text": "Configure AWS Secrets Manager to store symmetric encryption keys and schedule automatic annual secret rotation for custom models"
+      },
+      {
+        "id": "c",
+        "text": "Rely on server-side encryption with AWS managed keys that rotate on a fixed schedule without customer administrative access control"
+      },
+      {
+        "id": "d",
+        "text": "Configure model customization jobs to encrypt the custom models using customer managed keys in AWS Key Management Service (AWS KMS)"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Amazon Bedrock supports encrypting custom models and customization jobs at rest using customer managed keys in AWS Key Management Service (AWS KMS). Customer managed keys give organizations full control over key policies, access permissions, annual automatic rotation, and audit logs in AWS CloudTrail, satisfying strict governance and regulatory standards.",
+    "distractorNotes": {
+      "a": "AWS owned keys are managed internally by AWS; customers cannot view, configure policies for, track usage of, or control rotation for AWS owned keys.",
+      "b": "AWS Secrets Manager manages operational credentials and secret strings, but does not provide cryptographic keys or native encryption at rest for Amazon Bedrock custom models.",
+      "c": "AWS managed keys are created and rotated by AWS on behalf of the customer, but customers cannot manage their key policies or control their rotation schedule directly."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/data-encryption.html",
+    "sourceNote": "Data encryption and key management in Amazon Bedrock",
+    "sourceCheckedAt": "2026-10-09"
+  },
+  {
+    "id": "aws-aif-c01-security-compliance-and-governance-for-ai-solutions-005",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-compliance-and-governance-for-ai-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A software development company wants to grant a development team permission to invoke only the Amazon Titan Text foundation model in Amazon Bedrock, while preventing the team from invoking third-party models or creating custom fine-tuning jobs. How should the company enforce this access control according to the principle of least privilege?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Attach an IAM identity-based policy granting the bedrock:InvokeModel action scoped strictly to the Amazon Titan Text model ARN"
+      },
+      {
+        "id": "b",
+        "text": "Grant the AdministratorAccess managed policy to the developers and configure an S3 bucket policy to prevent foundation model access"
+      },
+      {
+        "id": "c",
+        "text": "Assign the AmazonBedrockFullAccess policy to the developers and rely on client application code to validate requested model names"
+      },
+      {
+        "id": "d",
+        "text": "Configure an IAM trust relationship allowing the development role to assume the Bedrock service role without policy restrictions"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Following the principle of least privilege, an IAM identity-based policy should grant only the specific action required (bedrock:InvokeModel) scoped directly to the Amazon Resource Name (ARN) of the specific model (such as the Amazon Titan Text model). This restricts access so users cannot invoke other models or perform administrative actions like starting fine-tuning jobs.",
+    "distractorNotes": {
+      "b": "AdministratorAccess grants full administrative control across all AWS resources, violating the principle of least privilege, and S3 bucket policies do not control Bedrock API calls.",
+      "c": "AmazonBedrockFullAccess grants permissions across all Bedrock models and management operations, and client-side validation can be bypassed by callers.",
+      "d": "A service trust policy allows a service to assume a role, but does not define permission boundaries for users or restrict model invocations."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/security_iam_id-based-policy-examples.html",
+    "sourceNote": "Identity-based policy examples for Amazon Bedrock",
+    "sourceCheckedAt": "2026-10-09"
+  },
+  {
+    "id": "aws-aif-c01-security-compliance-and-governance-for-ai-solutions-006",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-compliance-and-governance-for-ai-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A customer support center uses a generative AI assistant powered by Amazon Bedrock to summarize call transcripts. The summaries are shared across multiple internal departments. To comply with privacy regulations, any personally identifiable information (PII) such as customer credit card numbers, email addresses, and phone numbers must be automatically masked with replacement tags in the generated summaries before being shown to staff. Which solution will meet this requirement with the LEAST operational effort?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Write custom regular expression post-processing logic in an AWS Lambda function invoked after every model generation call"
+      },
+      {
+        "id": "b",
+        "text": "Configure sensitive information filters in Amazon Bedrock Guardrails to detect and mask PII entities within model responses"
+      },
+      {
+        "id": "c",
+        "text": "Fine-tune a foundation model on thousands of synthetic examples where sensitive credit card numbers have been deleted"
+      },
+      {
+        "id": "d",
+        "text": "Deploy an Amazon OpenSearch Service cluster with custom token analyzers to search and remove personal records from text files"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Amazon Bedrock Guardrails includes sensitive information filters that automatically detect personally identifiable information (PII) in both user input prompts and model responses. Administrators can configure these filters to mask detected entities (replacing them with an identifier tag like [CREDIT_CARD_NUMBER]) or block the response, providing built-in privacy protection with minimal operational overhead.",
+    "distractorNotes": {
+      "a": "Writing custom regex parsing in Lambda requires substantial ongoing development, regex maintenance, and operational overhead compared to native Bedrock Guardrails.",
+      "c": "Fine-tuning does not guarantee that a model will never generate or repeat PII from the input prompt, and fine-tuning requires significant compute and operational effort.",
+      "d": "Amazon OpenSearch Service is a search and analytics engine, not a real-time conversational filter for masking generated foundation model outputs."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-components.html",
+    "sourceNote": "Sensitive information filters in Amazon Bedrock Guardrails",
+    "sourceCheckedAt": "2026-10-09"
+  },
+  {
+    "id": "aws-aif-c01-security-compliance-and-governance-for-ai-solutions-007",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-compliance-and-governance-for-ai-solutions",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A legal research application uses a retrieval-augmented generation (RAG) architecture with Amazon Bedrock. The application retrieves statutes from a knowledge base and generates answers for attorneys. The engineering team must implement an automated safety check that validates whether the generated answers are factually supported by the retrieved reference passages and directly relevant to the user query, blocking any ungrounded hallucinations. Which feature should the team configure?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Model invocation logging configured with an Amazon S3 bucket destination"
+      },
+      {
+        "id": "b",
+        "text": "Automated reasoning checks based on deterministic formal logic proofs"
+      },
+      {
+        "id": "c",
+        "text": "Contextual grounding checks configured within Amazon Bedrock Guardrails"
+      },
+      {
+        "id": "d",
+        "text": "Pre-training data bias detection metrics computed using Amazon SageMaker Clarify"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Contextual grounding checks in Amazon Bedrock Guardrails evaluate model responses against both the grounding source (the retrieved reference passages in a RAG pipeline) and the user query. The guardrail calculates confidence scores for grounding (factual support from the source) and relevance (answering the user query), and automatically blocks or flags responses that fall below configured thresholds.",
+    "distractorNotes": {
+      "a": "Model invocation logging records input and output payloads to S3 or CloudWatch for auditing, but does not evaluate factual grounding or block hallucinations at runtime.",
+      "b": "Automated reasoning checks validate outputs against explicit rule policies, but contextual grounding checks specifically evaluate grounding against retrieved reference source passages.",
+      "d": "SageMaker Clarify evaluates training data and models for statistical demographic bias and feature attributions, not runtime RAG hallucination blocking in Amazon Bedrock."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-contextual-grounding-check.html",
+    "sourceNote": "Use contextual grounding check to filter hallucinations in responses",
+    "sourceCheckedAt": "2026-10-09"
+  },
+  {
+    "id": "aws-aif-c01-security-compliance-and-governance-for-ai-solutions-008",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "security-compliance-and-governance-for-ai-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A company is building an enterprise AI agent powered by Amazon Bedrock that processes customer inquiries and retrieves data from external web feeds to execute account updates. The security team wants to mitigate the risk of prompt injection attacks, including both direct prompt manipulation and indirect prompt injections from untrusted external data. Which combination of security controls will help mitigate these risks? (Select TWO)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Apply Amazon Bedrock Guardrails with prompt attack filters to detect and block adversarial instructions in user prompts"
+      },
+      {
+        "id": "b",
+        "text": "Increase the temperature parameter on the foundation model to make response generation completely deterministic"
+      },
+      {
+        "id": "c",
+        "text": "Grant full administrative IAM permissions to the agent action group execution role to eliminate authorization errors"
+      },
+      {
+        "id": "d",
+        "text": "Enforce least-privilege IAM permissions and require human confirmation for sensitive or destructive agent action groups"
+      },
+      {
+        "id": "e",
+        "text": "Add instructions to the system prompt directing the model to ignore any adversarial instructions found in retrieved feeds"
+      }
+    ],
+    "correct": [
+      "a",
+      "d"
+    ],
+    "explanation": "Mitigating prompt injection attacks requires defense-in-depth: applying Amazon Bedrock Guardrails with prompt attack filters helps detect and block adversarial inputs designed to override system instructions; enforcing least privilege on agent action group execution roles and requiring human confirmation for sensitive actions ensures that even if a model is manipulated by untrusted retrieved data, unauthorized or destructive actions cannot execute automatically.",
+    "distractorNotes": {
+      "b": "Increasing temperature increases randomness and variability in model outputs rather than making generation deterministic, and temperature does not protect against prompt injection.",
+      "c": "Granting full administrative IAM permissions violates the principle of least privilege and magnifies the blast radius if an agent is hijacked by prompt injection.",
+      "e": "Relying solely on system prompt instructions to ignore attacks is vulnerable to prompt injection and jailbreaking, because adversarial content in retrieved text can manipulate model context and override prompt guidelines."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-components.html",
+    "sourceNote": "Prompt attack filters and safety controls in Amazon Bedrock Guardrails",
+    "sourceCheckedAt": "2026-10-09"
+  },
+  {
+    "id": "aws-aif-c01-security-compliance-and-governance-for-ai-solutions-009",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-compliance-and-governance-for-ai-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A data engineering team collects training datasets from relational databases, object storage, and streaming feeds to prepare data for custom model training. To satisfy corporate governance and audit requirements, the team must maintain a central metadata repository that catalogs dataset schemas, tracks data source origins, and manages access permissions across all datasets. Which AWS service should the team use?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon QuickSight",
+        "hintText": "Business intelligence service for creating interactive dashboards and visualizations"
+      },
+      {
+        "id": "b",
+        "text": "Amazon Kendra",
+        "hintText": "Intelligent enterprise search service powered by machine learning"
+      },
+      {
+        "id": "c",
+        "text": "AWS Secrets Manager",
+        "hintText": "Service for storing, rotating, and managing database credentials and API keys"
+      },
+      {
+        "id": "d",
+        "text": "AWS Glue Data Catalog",
+        "hintText": "Centralized metadata repository for storing schema information, data origins, and table definitions"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "The AWS Glue Data Catalog is a centralized, serverless metadata repository that stores structural and operational metadata for data assets across the enterprise. It catalogs schemas, data types, partitions, and source origins, allowing teams to govern data lineage, maintain data integrity, and control access across analytics and machine learning pipelines.",
+    "distractorNotes": {
+      "a": "Amazon QuickSight provides business intelligence reporting and visual dashboards, not central metadata and schema cataloging for data engineering pipelines.",
+      "b": "Amazon Kendra is an enterprise search service that indexes documents for natural language search queries, rather than a central database and table schema repository.",
+      "c": "AWS Secrets Manager securely stores and rotates operational secrets like database passwords and API tokens, not dataset schemas or data origin metadata."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/glue/latest/dg/what-is-glue.html",
+    "sourceNote": "AWS Glue Data Catalog features and metadata repository",
+    "sourceCheckedAt": "2026-10-09"
+  },
+  {
+    "id": "aws-aif-c01-security-compliance-and-governance-for-ai-solutions-010",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "security-compliance-and-governance-for-ai-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A retail company is preparing customer transaction data from an Amazon S3 data lake to train a personalized recommendation model. To comply with privacy regulations and secure data engineering best practices, the company must safeguard customer privacy and protect data integrity during dataset preparation. Which practices should the company implement? (Select TWO)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Attach Amazon EC2 security groups to the S3 bucket to restrict data lake access to authorized worker subnets"
+      },
+      {
+        "id": "b",
+        "text": "Pseudonymize sensitive customer identifiers by replacing names and account numbers with surrogate tokens"
+      },
+      {
+        "id": "c",
+        "text": "Retain direct customer identifiers in training data and rely exclusively on model output guardrails to prevent data leakage"
+      },
+      {
+        "id": "d",
+        "text": "Disable object versioning and delete all S3 access logs to minimize storage and operational overhead"
+      },
+      {
+        "id": "e",
+        "text": "Enforce least-privilege access controls on the S3 bucket using IAM policies and AWS Lake Formation"
+      }
+    ],
+    "correct": [
+      "b",
+      "e"
+    ],
+    "explanation": "Secure data engineering for AI solutions involves applying privacy-enhancing technologies—such as pseudonymizing or tokenizing direct personal identifiers—to protect customer privacy without compromising analytical utility. Additionally, organizations must enforce the principle of least privilege using IAM policies and governance tools like AWS Lake Formation to restrict data lake access strictly to authorized workloads and users.",
+    "distractorNotes": {
+      "a": "Security groups control inbound and outbound network traffic for Amazon EC2 and VPC resources, but cannot be attached directly to Amazon S3 buckets to control object access.",
+      "c": "Relying solely on runtime output filters leaves unmasked personal data exposed across the training dataset and storage pipelines, violating privacy regulations and secure data preparation standards.",
+      "d": "Disabling logging and versioning eliminates auditability and data recovery capabilities, which violates governance, compliance, and data integrity standards."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/lake-formation/latest/dg/what-is-lake-formation.html",
+    "sourceNote": "Securing data lakes and governing access permissions with AWS Lake Formation",
+    "sourceCheckedAt": "2026-10-09"
+  },
+  {
+    "id": "aws-aif-c01-security-compliance-and-governance-for-ai-solutions-011",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-compliance-and-governance-for-ai-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A financial organization is deploying a fraud detection machine learning model to production. The enterprise governance committee requires a centralized, standardized record documenting the model's intended use cases, risk rating, training dataset provenance, performance metrics, and evaluation observations for regulatory auditing. Which AWS feature meets these requirements?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon SageMaker Model Cards",
+        "hintText": "Governance tool for documenting intended uses, risk ratings, training parameters, and evaluation results"
+      },
+      {
+        "id": "b",
+        "text": "Amazon SageMaker Feature Store",
+        "hintText": "Centralized repository for storing, discovering, and sharing ML features for training and inference"
+      },
+      {
+        "id": "c",
+        "text": "Amazon SageMaker Canvas",
+        "hintText": "Visual, no-code interface that enables business analysts to build ML models without writing code"
+      },
+      {
+        "id": "d",
+        "text": "Amazon SageMaker Pipelines",
+        "hintText": "Purpose-built CI/CD service for orchestrating and automating end-to-end machine learning workflows"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Amazon SageMaker Model Cards provide a centralized, standardized location to document critical information about machine learning models throughout their lifecycle. Model cards capture intended uses, risk ratings, training datasets and hyperparameters, quantitative evaluation metrics, and qualitative observations to streamline governance, transparency, and regulatory compliance audits.",
+    "distractorNotes": {
+      "b": "SageMaker Feature Store is a repository for storing and serving engineered ML features for training and real-time inference, not a governance document for model metadata.",
+      "c": "SageMaker Canvas is a visual no-code tool for building ML models, not an audit and documentation artifact service.",
+      "d": "SageMaker Pipelines is a workflow orchestration tool for automating ML lifecycle steps, not a document repository for model governance records and risk ratings."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/model-cards.html",
+    "sourceNote": "Amazon SageMaker Model Cards for governance and reporting",
+    "sourceCheckedAt": "2026-10-09"
+  },
+  {
+    "id": "aws-aif-c01-security-compliance-and-governance-for-ai-solutions-012",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-compliance-and-governance-for-ai-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A company's internal compliance auditor needs to inspect a comprehensive audit trail of administrative and operational activities performed in Amazon Bedrock over the past 90 days. The auditor needs to verify which IAM identity created each custom model training job, the exact timestamp of each request, and the originating IP address. Which AWS service should the auditor inspect?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon CloudWatch",
+        "hintText": "Monitoring and observability service that collects metrics, alarms, and application log events"
+      },
+      {
+        "id": "b",
+        "text": "AWS CloudTrail",
+        "hintText": "Service that records AWS API calls, user identities, timestamps, and source IP addresses for account auditing"
+      },
+      {
+        "id": "c",
+        "text": "AWS Trusted Advisor",
+        "hintText": "Online tool that provides real-time recommendations to optimize AWS infrastructure against best practices"
+      },
+      {
+        "id": "d",
+        "text": "Amazon Inspector",
+        "hintText": "Automated vulnerability assessment service that scans compute workloads for common security exposures"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "AWS CloudTrail records AWS API activity across an AWS account, capturing detailed information including the caller identity (IAM user or role), API operation name, request parameters, response elements, timestamp, and source IP address, providing an immutable audit trail for compliance and governance reviews.",
+    "distractorNotes": {
+      "a": "Amazon CloudWatch collects system performance metrics, triggers alarms, and aggregates application logs, but does not provide the default record of AWS management API caller identities and source IP addresses.",
+      "c": "AWS Trusted Advisor inspects AWS environments against best practices for cost optimization, security, and fault tolerance, but does not record API audit logs.",
+      "d": "Amazon Inspector scans EC2 instances and ECR container images for software vulnerabilities and CVEs, rather than recording API invocation history."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/logging-using-cloudtrail.html",
+    "sourceNote": "Logging Amazon Bedrock API calls using AWS CloudTrail",
+    "sourceCheckedAt": "2026-10-09"
+  },
+  {
+    "id": "aws-aif-c01-security-compliance-and-governance-for-ai-solutions-013",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-compliance-and-governance-for-ai-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A banking institution requires all user interactions with generative AI applications to be retained for regulatory compliance and security inspection. The security team must capture the full text of user input prompts, foundation model responses, and associated invocation metadata for all calls made through Amazon Bedrock runtime APIs. Which feature will meet these requirements?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Enable Amazon GuardDuty runtime monitoring on worker container instances to detect anomalous network traffic"
+      },
+      {
+        "id": "b",
+        "text": "Configure Amazon CloudWatch synthetic canaries to simulate customer chat requests and measure response latency"
+      },
+      {
+        "id": "c",
+        "text": "Enable model invocation logging in Amazon Bedrock to publish prompt and response payloads to Amazon S3 or CloudWatch Logs"
+      },
+      {
+        "id": "d",
+        "text": "Create an AWS CloudTrail management event trail to capture API call headers and record caller account identity metadata"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Amazon Bedrock provides model invocation logging to collect the full request (input prompt) data, response (model output) data, and metadata for all supported runtime invocations in an AWS account and Region. Logs can be delivered to Amazon CloudWatch Logs and Amazon Simple Storage Service (Amazon S3) for compliance auditing, forensic analysis, and security oversight.",
+    "distractorNotes": {
+      "a": "Amazon GuardDuty runtime monitoring detects compromised container hosts and anomalous operating system processes, but does not capture conversational prompt and completion text.",
+      "b": "CloudWatch synthetic canaries ping endpoints to monitor service uptime and latency, not log real customer conversational payloads.",
+      "d": "CloudTrail captures management API calls and data event metadata (such as the caller identity and timestamp), but does not log the full text contents of foundation model prompts and completions."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-invocation-logging.html",
+    "sourceNote": "Monitor model invocation using CloudWatch Logs and Amazon S3",
+    "sourceCheckedAt": "2026-10-09"
+  },
+  {
+    "id": "aws-aif-c01-security-compliance-and-governance-for-ai-solutions-014",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-compliance-and-governance-for-ai-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An AI company deploys microservices on Amazon Elastic Container Service (Amazon ECS) and Amazon EC2 instances to host custom model inference workers. The security team requires a solution that automatically discovers these compute workloads, continuously scans container images in Amazon Elastic Container Registry (Amazon ECR) and running EC2 instances for software vulnerabilities (CVEs), and provides remediation guidance. Which AWS service provides these capabilities?",
+    "options": [
+      {
+        "id": "a",
+        "text": "AWS Secrets Manager",
+        "hintText": "Centralized service for managing and rotating credentials and API keys"
+      },
+      {
+        "id": "b",
+        "text": "Amazon Macie",
+        "hintText": "Data security service that discovers sensitive data such as PII in Amazon S3"
+      },
+      {
+        "id": "c",
+        "text": "AWS Artifact",
+        "hintText": "Central portal for downloading AWS compliance certifications and SOC reports"
+      },
+      {
+        "id": "d",
+        "text": "Amazon Inspector",
+        "hintText": "Automated vulnerability management service that continuously scans EC2 and container images in ECR"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Amazon Inspector is an automated vulnerability management service that continually scans Amazon EC2 instances, container images stored in Amazon Elastic Container Registry (Amazon ECR), and AWS Lambda functions for software vulnerabilities (Common Vulnerabilities and Exposures - CVEs) and unintended network exposure, providing contextual risk scores and actionable remediation recommendations.",
+    "distractorNotes": {
+      "a": "AWS Secrets Manager securely stores, rotates, and manages credentials and database passwords, rather than scanning compute workloads for software vulnerabilities.",
+      "b": "Amazon Macie discovers and classifies sensitive data (PII) in Amazon S3 buckets, but does not scan container images or EC2 instances for software vulnerabilities.",
+      "c": "AWS Artifact provides on-demand downloads of AWS security and compliance reports (such as SOC and ISO documents), but does not scan customer infrastructure for vulnerabilities."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/inspector/latest/user/what-is-inspector.html",
+    "sourceNote": "What is Amazon Inspector?",
+    "sourceCheckedAt": "2026-10-09"
+  },
+  {
+    "id": "aws-aif-c01-security-compliance-and-governance-for-ai-solutions-015",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-compliance-and-governance-for-ai-solutions",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "A healthcare startup is building a patient intake application using AWS managed AI services. To satisfy HIPAA regulatory audits, the startup must obtain independent third-party audit reports (such as SOC 2 and ISO 27001) demonstrating the security posture of the underlying AWS cloud infrastructure, and accept the AWS Business Associate Addendum (BAA). Where can the startup access these documents and manage this agreement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "AWS Artifact",
+        "hintText": "Self-service portal for on-demand downloads of AWS compliance reports and managing agreements"
+      },
+      {
+        "id": "b",
+        "text": "AWS Trusted Advisor",
+        "hintText": "Service that provides real-time recommendations to improve cost, performance, and security"
+      },
+      {
+        "id": "c",
+        "text": "AWS CloudTrail",
+        "hintText": "Auditing service that records API activity and user actions across AWS accounts"
+      },
+      {
+        "id": "d",
+        "text": "AWS Config",
+        "hintText": "Service that assesses, audits, and evaluates configurations of AWS resources"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "AWS Artifact is a self-service compliance portal providing on-demand access to AWS security and compliance reports (such as SOC reports, ISO certifications, and PCI DSS compliance documents) and enabling customers to review, accept, and track agreements with AWS, including the HIPAA Business Associate Addendum (BAA).",
+    "distractorNotes": {
+      "b": "AWS Trusted Advisor reviews an AWS account against architectural best practices and highlights security optimization opportunities, but does not distribute compliance audit reports or legal agreements.",
+      "c": "AWS CloudTrail records API calls made within an AWS account for auditing purposes, rather than publishing third-party certifications of AWS infrastructure.",
+      "d": "AWS Config assesses, audits, and evaluates resource configuration compliance in customer accounts, but does not supply AWS infrastructure compliance reports."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/artifact/latest/ug/what-is-aws-artifact.html",
+    "sourceNote": "What is AWS Artifact?",
+    "sourceCheckedAt": "2026-10-09"
+  },
+  {
+    "id": "aws-aif-c01-security-compliance-and-governance-for-ai-solutions-016",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-compliance-and-governance-for-ai-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A multinational enterprise must ensure that all Amazon S3 buckets used to store training data, model artifacts, and knowledge base documents maintain server-side encryption enabled and enforce strict block public access settings. The governance team needs an automated solution that continuously evaluates resource configurations against these compliance rules, records configuration history, and flags noncompliant resources. Which AWS service should the team use?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon CloudWatch",
+        "hintText": "Monitoring service that tracks resource performance metrics and triggers automated alarms"
+      },
+      {
+        "id": "b",
+        "text": "AWS Config",
+        "hintText": "Service that records resource configuration changes and evaluates compliance against defined rules"
+      },
+      {
+        "id": "c",
+        "text": "AWS Shield",
+        "hintText": "Managed Distributed Denial of Service (DDoS) protection service for AWS applications"
+      },
+      {
+        "id": "d",
+        "text": "Amazon Inspector",
+        "hintText": "Vulnerability management service that scans EC2 instances and container images for software CVEs"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "AWS Config continuously assesses, audits, and evaluates the configurations of AWS resources. Organizations can deploy AWS Config managed or custom rules (such as checking whether S3 buckets have default encryption enabled and public access blocked). When a resource deviates from a rule, AWS Config records the configuration change, flags the resource as noncompliant, and can trigger automated remediation.",
+    "distractorNotes": {
+      "a": "Amazon CloudWatch monitors operational metrics (such as CPU utilization and API invocation latency) and processes logs, but does not evaluate resource configuration compliance against desired state rules.",
+      "c": "AWS Shield provides DDoS protection against network and transport layer attacks, not configuration compliance monitoring for storage buckets.",
+      "d": "Amazon Inspector scans operating systems, container images, and Lambda functions for software vulnerabilities, but does not evaluate cloud resource configuration settings like S3 bucket encryption policies."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/config/latest/developerguide/WhatIsConfig.html",
+    "sourceNote": "Auditing and compliance tracking with AWS Config",
+    "sourceCheckedAt": "2026-10-09"
+  },
+  {
+    "id": "aws-aif-c01-security-compliance-and-governance-for-ai-solutions-017",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security-compliance-and-governance-for-ai-solutions",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "A European public sector organization is developing an AI-powered document analysis system. Strict national data privacy regulations dictate that all citizen documents, vector embeddings, and model inference operations must remain within European legal boundaries and never leave the European Union. How can the organization satisfy this data residency requirement on AWS?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Store the data in a US-based AWS Region and configure client-side encryption using customer-managed AWS KMS keys"
+      },
+      {
+        "id": "b",
+        "text": "Deploy resources in an international AWS Region and configure AWS CloudTrail to monitor cross-region data transfers"
+      },
+      {
+        "id": "c",
+        "text": "Configure Amazon CloudFront with a global edge distribution to cache document vectors across worldwide edge locations"
+      },
+      {
+        "id": "d",
+        "text": "Select an AWS Region located in the European Union to store all data and execute model inferencing"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Under AWS data privacy and sovereignty commitments, customers retain complete control over where their content is stored and processed. By selecting an AWS Region located within the European Union (such as Europe (Frankfurt) or Europe (Ireland)), organizations ensure that customer content, training datasets, and inference requests remain within that geographic jurisdiction, and AWS will not move or replicate content outside the chosen Region without customer agreement.",
+    "distractorNotes": {
+      "a": "Client-side encryption does not satisfy EU data residency mandates if the underlying data or inference requests reside outside the European Union.",
+      "b": "Auditing cross-region access with CloudTrail does not prevent data from leaving European jurisdiction or satisfy legal data residency requirements.",
+      "c": "Caching citizen data across global edge locations distributes protected records outside European borders, violating data sovereignty rules."
+    },
+    "sourceUrl": "https://aws.amazon.com/compliance/data-privacy-faq/",
+    "sourceNote": "Customer data control and data residency in AWS Regions",
+    "sourceCheckedAt": "2026-10-09"
+  },
+  {
+    "id": "aws-aif-c01-security-compliance-and-governance-for-ai-solutions-018",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "security-compliance-and-governance-for-ai-solutions",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An enterprise is planning multiple generative AI initiatives, ranging from employees using third-party consumer chatbots to data science teams fine-tuning open-weights foundation models on customer records. To structure its risk management strategy, the organization adopts the AWS Generative AI Security Scoping Matrix. Which statements accurately describe security and governance responsibilities across the matrix scopes? (Select TWO)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Consumer applications in Scope 1 provide guaranteed enterprise data isolation under customer-negotiated service agreements"
+      },
+      {
+        "id": "b",
+        "text": "Organizations developing applications in Scope 3 rely entirely on the model provider for threat modeling and application perimeter security"
+      },
+      {
+        "id": "c",
+        "text": "Adopters of Scope 1 and Scope 2 off-the-shelf applications take a buyer perspective focused on data governance and usage policies"
+      },
+      {
+        "id": "d",
+        "text": "Organizations adopting off-the-shelf SaaS solutions in Scope 2 must manage training data pipelines and model checkpoint security"
+      },
+      {
+        "id": "e",
+        "text": "Builders of Scope 3, Scope 4, and Scope 5 custom solutions take a builder perspective requiring threat modeling and data protection"
+      }
+    ],
+    "correct": [
+      "c",
+      "e"
+    ],
+    "explanation": "The AWS Generative AI Security Scoping Matrix classifies AI use cases into five scopes. For Scope 1 and Scope 2 (off-the-shelf and SaaS AI), organizations take a buyer's perspective focused on risk management, reviewing enterprise agreements, and establishing data governance rules on what data may be shared. For Scope 3, Scope 4, and Scope 5 (applications leveraging pre-trained models, fine-tuned models, or self-trained models), organizations take a builder's perspective, assuming greater responsibility for data boundaries, threat modeling, and securing model components.",
+    "distractorNotes": {
+      "a": "Scope 1 consumer applications typically operate under public terms of service without enterprise data isolation or negotiated service agreements, creating potential data exposure risks.",
+      "b": "In Scope 3, organizations take a builder perspective and remain responsible for threat modeling, securing application integrations, and protecting in-scope data, even though the foundation model is managed by a provider.",
+      "d": "In Scope 2, organizations adopt a buyer perspective evaluating vendor agreements and data sharing policies; the vendor manages the underlying model architecture and training pipelines."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/whitepapers/latest/navigating-security-landscape-genai/scoping-generative-ai-use-cases.html",
+    "sourceNote": "Scoping generative AI use cases with the Generative AI Security Scoping Matrix",
+    "sourceCheckedAt": "2026-10-09"
+  }
+]

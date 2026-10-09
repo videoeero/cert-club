@@ -1,0 +1,737 @@
+[
+  {
+    "id": "aws-aif-c01-guidelines-for-responsible-ai-001",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "guidelines-for-responsible-ai",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A financial services firm is deploying a customer-facing conversational agent on Amazon Bedrock. To ensure responsible AI practices, the firm must automatically mask sensitive personally identifiable information (PII) such as bank account numbers and prevent the agent from providing unauthorized financial investment advice outside its designated scope. Which Amazon Bedrock feature should the firm configure?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon Bedrock Guardrails"
+      },
+      {
+        "id": "b",
+        "text": "Amazon SageMaker Model Cards"
+      },
+      {
+        "id": "c",
+        "text": "Amazon Bedrock Model Evaluation"
+      },
+      {
+        "id": "d",
+        "text": "AWS Artifact"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Amazon Bedrock Guardrails allows teams to implement safeguards by defining sensitive information filters to mask or block personally identifiable information (PII) and configuring denied topics to block conversations that stray into restricted domains like investment advice.",
+    "distractorNotes": {
+      "b": "Amazon SageMaker Model Cards provide structured documentation recording model metadata, intended uses, and training details, but they do not enforce real-time inference filtering or topic restrictions.",
+      "c": "Amazon Bedrock Model Evaluation evaluates and benchmarks model output quality against selected metrics, but it does not provide active runtime filtering of sensitive data or denied topics.",
+      "d": "AWS Artifact provides on-demand access to AWS compliance and security reports, rather than real-time application safeguards for generative AI models."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html",
+    "sourceNote": "Detect and filter harmful content by using Amazon Bedrock Guardrails",
+    "sourceCheckedAt": "2026-10-08"
+  },
+  {
+    "id": "aws-aif-c01-guidelines-for-responsible-ai-002",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "guidelines-for-responsible-ai",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "An online health advisory service is evaluating generative foundation models to help medical staff draft patient informational summaries. The clinical leadership team expresses concern that the models might generate plausible-sounding medical assertions that are factually unsupported by clinical evidence. Which core dimension of responsible AI directly addresses mitigating these fabricated, ungrounded outputs?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Explainability"
+      },
+      {
+        "id": "b",
+        "text": "Controllability"
+      },
+      {
+        "id": "c",
+        "text": "Veracity"
+      },
+      {
+        "id": "d",
+        "text": "Transparency"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Veracity is the responsible AI dimension focused on achieving correct system outputs and ensuring facts are truthful and grounded, directly mitigating hallucinations and fabricated assertions in generative AI.",
+    "distractorNotes": {
+      "a": "Explainability focuses on understanding and evaluating how system outputs are arrived at (such as feature attributions or model rationale), rather than verifying the factual truthfulness of generated claims.",
+      "b": "Controllability provides mechanisms to monitor, guide, and steer system behavior during operation, but does not itself define the property of factual accuracy and grounding.",
+      "d": "Transparency enables stakeholders to make informed choices by disclosing system capabilities, AI involvement, and operational boundaries, rather than measuring factual truthfulness."
+    },
+    "sourceUrl": "https://aws.amazon.com/ai/responsible-ai/",
+    "sourceNote": "Core dimensions of responsible AI: Veracity and robustness",
+    "sourceCheckedAt": "2026-10-09"
+  },
+  {
+    "id": "aws-aif-c01-guidelines-for-responsible-ai-003",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A legal research organization deploys a Retrieval Augmented Generation (RAG) application on Amazon Bedrock. Testing reveals that the foundation model occasionally introduces assertions and citations that do not exist in the retrieved case documents. The organization needs to automatically detect and block model responses that contain these ungrounded fabrications. Which Amazon Bedrock Guardrails feature should the organization configure?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Word filters"
+      },
+      {
+        "id": "b",
+        "text": "Sensitive information filters"
+      },
+      {
+        "id": "c",
+        "text": "Content filters for hate speech"
+      },
+      {
+        "id": "d",
+        "text": "Contextual grounding check"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Contextual grounding check in Amazon Bedrock Guardrails evaluates model responses against reference source documents in RAG workflows to verify that generated statements are factually grounded and detect hallucinations.",
+    "distractorNotes": {
+      "a": "Word filters match exact prohibited keywords, phrases, or regular expression patterns, but cannot determine whether generated content is factually grounded in reference passages.",
+      "b": "Sensitive information filters detect and mask personally identifiable information (PII) such as bank account numbers and tax identifiers rather than validating factual grounding.",
+      "c": "Content filters detect harmful language such as hate speech, violence, insults, and sexual content, but do not evaluate whether responses are factually grounded in reference source texts."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-contextual-grounding-check.html",
+    "sourceNote": "Use contextual grounding check to filter hallucinations in responses",
+    "sourceCheckedAt": "2026-10-09",
+    "domain": "guidelines-for-responsible-ai"
+  },
+  {
+    "id": "aws-aif-c01-guidelines-for-responsible-ai-004",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "A retail company is launching a public customer service chatbot powered by Amazon Bedrock. The company must ensure that the chatbot automatically filters out user inputs and model outputs that include demeaning, humiliating, or bullying language directed at customers or support staff. Which content filter category in Amazon Bedrock Guardrails meets this requirement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Prompt attacks"
+      },
+      {
+        "id": "b",
+        "text": "Insults"
+      },
+      {
+        "id": "c",
+        "text": "Misconduct"
+      },
+      {
+        "id": "d",
+        "text": "Sexual"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "The Insults content filter category in Amazon Bedrock Guardrails specifically detects and filters language that demeans, humiliates, mocks, insults, or belittles individuals, including bullying behavior.",
+    "distractorNotes": {
+      "a": "Prompt attacks filter attempts to bypass model safety guardrails or inject unauthorized system instructions, rather than conversational bullying language.",
+      "c": "Misconduct filters detect content seeking or providing information about engaging in illegal or criminal activities, rather than abusive interpersonal language.",
+      "d": "Sexual filters evaluate explicit sexual references, physical traits, or arousal rather than demeaning or bullying customer remarks."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-content-filters.html",
+    "sourceNote": "Block harmful words and conversations with content filters: Insults category",
+    "sourceCheckedAt": "2026-10-09",
+    "domain": "guidelines-for-responsible-ai"
+  },
+  {
+    "id": "aws-aif-c01-guidelines-for-responsible-ai-005",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An organization is defining responsible AI selection criteria in alignment with the AWS Well-Architected Sustainability Pillar. The technical team needs to deploy an AI solution to perform high-volume email classification and intent routing across four predefined customer support categories. Which model selection practice best minimizes environmental impact and energy consumption while satisfying the business requirement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Select a smaller, specialized classification model that meets the required accuracy threshold instead of an oversized general-purpose foundation model."
+      },
+      {
+        "id": "b",
+        "text": "Deploy the largest available multimodal foundation model to ensure sufficient reasoning headroom for simple intent routing tasks."
+      },
+      {
+        "id": "c",
+        "text": "Train a custom deep foundation model from scratch using an unpruned architecture to classify the four incoming email categories."
+      },
+      {
+        "id": "d",
+        "text": "Deploy an unquantized ensemble of multiple large language models behind a provisioned endpoint to maximize predictive redundancy."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Selecting right-sized, energy-efficient models or distilled architectures that meet task requirements minimizes computational energy consumption and carbon footprint, aligning directly with cloud sustainability guidance.",
+    "distractorNotes": {
+      "b": "Deploying an oversized frontier model for simple four-class routing consumes unnecessary computational resources and energy, increasing environmental impact.",
+      "c": "Training a full custom foundation model from scratch consumes enormous compute resources and carbon emissions when a small specialized model fulfills the requirement.",
+      "d": "Hosting redundant ensembles of unquantized large models inflates compute footprint and power utilization unnecessarily without delivering required sustainability benefits."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/wellarchitected/latest/machine-learning-lens/mlsus04-bp02.html",
+    "sourceNote": "MLSUS04-BP02 Select energy-efficient algorithms: model right-sizing",
+    "sourceCheckedAt": "2026-10-09",
+    "domain": "guidelines-for-responsible-ai"
+  },
+  {
+    "id": "aws-aif-c01-guidelines-for-responsible-ai-006",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "multi",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A corporate legal and compliance committee is conducting a risk assessment before approving the enterprise deployment of a commercial generative AI tool that produces marketing materials and automated software code. Which two issues represent significant legal and compliance risks specific to deploying generative AI? (Select TWO)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Potential copyright and intellectual property infringement claims if model outputs reproduce protected works without authorization."
+      },
+      {
+        "id": "b",
+        "text": "Inability to achieve deterministic 100% test pass rates across generative model completions prior to production deployment."
+      },
+      {
+        "id": "c",
+        "text": "Regulatory non-compliance and reputational harm resulting from biased or discriminatory model outputs generated for consumers."
+      },
+      {
+        "id": "d",
+        "text": "Mandatory public open-source licensing disclosure of all proprietary source code analyzed by foundation model API endpoints."
+      },
+      {
+        "id": "e",
+        "text": "Latency variability and token throughput throttling experienced when making concurrent inference requests during peak traffic periods."
+      }
+    ],
+    "correct": [
+      "a",
+      "c"
+    ],
+    "explanation": "Key legal and regulatory risks in generative AI include intellectual property infringement claims from generated content and legal liability or reputational damage from biased, discriminatory, or unlawful model outputs.",
+    "distractorNotes": {
+      "b": "While nondeterministic outputs make automated testing challenging, achieving 100% deterministic test coverage is an engineering quality assurance challenge rather than a statutory legal or regulatory compliance violation.",
+      "d": "Invoking commercial foundation model APIs does not subject proprietary application source code to open-source copyleft licensing terms or mandate public repository disclosure.",
+      "e": "Latency fluctuations and API throttling represent operational performance and capacity planning considerations rather than legal liabilities or regulatory non-compliance risks."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/prescriptive-guidance/latest/strategy-enterprise-ready-gen-ai-platform/security.html",
+    "sourceNote": "Legal, privacy, and regulatory risks of GenAI: IP rights, data protection laws, and biased model outputs",
+    "sourceCheckedAt": "2026-10-09",
+    "domain": "guidelines-for-responsible-ai"
+  },
+  {
+    "id": "aws-aif-c01-guidelines-for-responsible-ai-007",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A data science team is preparing historical training data for a predictive mortgage pre-approval model. An audit of the historical records shows that loan approvals for minority applicants and younger age groups are substantially underrepresented compared to their proportion in the broader population. What characteristic of this dataset must the team address during data preparation to ensure responsible AI practices?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Target label leakage where post-origination loan performance metrics are inadvertently included in applicant feature sets."
+      },
+      {
+        "id": "b",
+        "text": "Feature multicollinearity among correlated numerical attributes such as annual gross income and requested loan principal."
+      },
+      {
+        "id": "c",
+        "text": "Concept drift resulting from macroeconomic interest rate adjustments occurring across distinct historical lending cycles."
+      },
+      {
+        "id": "d",
+        "text": "Class and demographic imbalance that could cause the model to systematically underperform on minority applicant segments."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Imbalanced and unrepresentative historical datasets can cause models to learn skewed decision boundaries that systematically disadvantage underrepresented groups, requiring data curation, re-sampling, or re-weighting.",
+    "distractorNotes": {
+      "a": "Target leakage occurs when data available only after the decision (such as subsequent loan default history) is included in training features, causing artificially inflated accuracy rather than demographic disparity.",
+      "b": "Multicollinearity describes high statistical correlation between independent predictor features, which affects coefficient stability in linear models rather than demographic underrepresentation.",
+      "c": "Concept drift refers to changes in statistical relationships over time due to external shifts like interest rate fluctuations, rather than historical demographic underrepresentation within the sample distribution."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/wellarchitected/latest/machine-learning-lens/mlrel03-bp04.html",
+    "sourceNote": "Establish data bias detection and mitigation: training data imbalance",
+    "sourceCheckedAt": "2026-10-09",
+    "domain": "guidelines-for-responsible-ai"
+  },
+  {
+    "id": "aws-aif-c01-guidelines-for-responsible-ai-008",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A commercial software vendor deploys a facial recognition model for building access security. During operational testing, administrators notice that the model achieves high verification accuracy for middle-aged individuals but exhibits significantly higher false rejection rates for elderly individuals and teenagers. What is the root cause of this performance disparity across demographic groups?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Evaluation bias where validation benchmarks apply stricter acceptance thresholds than production access turnstiles."
+      },
+      {
+        "id": "b",
+        "text": "Measurement bias resulting from optical camera lens distortion that selectively degrades digital image capture clarity."
+      },
+      {
+        "id": "c",
+        "text": "Representation bias resulting from training the model on a dataset lacking sufficient diversity across age demographics."
+      },
+      {
+        "id": "d",
+        "text": "Algorithmic bias where optimization functions prioritize overall loss reduction at the expense of convergence stability."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Representation bias occurs when training data fails to adequately represent certain subgroups, leading to models that generalize poorly and exhibit disproportionate error rates for those underrepresented demographics.",
+    "distractorNotes": {
+      "a": "Evaluation bias occurs when benchmark test datasets do not represent the operational population, whereas here the model fails during live operational testing due to skewed training data.",
+      "b": "Measurement bias occurs when the measurement tool or sensor introduces systematic errors into feature capture, whereas here the root cause is the age composition of the training dataset.",
+      "d": "Algorithmic bias relates to mathematical design choices in the loss function or optimization algorithm itself, rather than demographic gaps in the underlying training data."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/wellarchitected/latest/machine-learning-lens/mlops02-bp06.html",
+    "sourceNote": "Review fairness and explainability: demographic disparity",
+    "sourceCheckedAt": "2026-10-09",
+    "domain": "guidelines-for-responsible-ai"
+  },
+  {
+    "id": "aws-aif-c01-guidelines-for-responsible-ai-009",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "A financial institution is building an automated credit scoring model on AWS. Prior to deploying the model to production, the compliance officer requires the engineering team to generate quantitative fairness metrics to detect potential pre-training data bias and evaluate post-training model disparate impact across protected groups. Which AWS feature or tool provides these built-in bias detection capabilities?",
+    "options": [
+      {
+        "id": "a",
+        "text": "AWS Artifact"
+      },
+      {
+        "id": "b",
+        "text": "Amazon Inspector"
+      },
+      {
+        "id": "c",
+        "text": "Amazon SageMaker Clarify"
+      },
+      {
+        "id": "d",
+        "text": "AWS CloudTrail"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Amazon SageMaker Clarify provides specialized tools to detect bias in data preparation and post-training phases, measuring metrics like disparate impact and demographic parity across demographic facets.",
+    "distractorNotes": {
+      "a": "AWS Artifact provides on-demand access to compliance reports and service agreements rather than ML bias detection tools.",
+      "b": "Amazon Inspector scans compute instances and container repositories for software security vulnerabilities, not machine learning fairness.",
+      "d": "AWS CloudTrail records user activity and API calls for governance and auditing, but does not calculate ML dataset or model bias metrics."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-measure-data-bias.html",
+    "sourceNote": "SageMaker Clarify pre-training data bias metrics and post-training fairness metrics (disparate impact)",
+    "sourceCheckedAt": "2026-10-09",
+    "domain": "guidelines-for-responsible-ai"
+  },
+  {
+    "id": "aws-aif-c01-guidelines-for-responsible-ai-010",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An insurance company uses an automated machine learning model to assess property damage photos submitted with insurance claims. To prevent erroneous claim denials, the company requires human claims adjusters to manually review and verify any assessment where the model confidence score falls below eighty percent. Which AWS service provides built-in workflows to integrate this human-in-the-loop review mechanism?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon Augmented AI (Amazon A2I)"
+      },
+      {
+        "id": "b",
+        "text": "Amazon EventBridge"
+      },
+      {
+        "id": "c",
+        "text": "AWS Step Functions Express Workflows"
+      },
+      {
+        "id": "d",
+        "text": "Amazon Simple Queue Service (Amazon SQS)"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Amazon Augmented AI (Amazon A2I) enables developers to integrate human review loops into ML workflows, routing low-confidence or high-risk predictions to human reviewer work teams.",
+    "distractorNotes": {
+      "b": "Amazon EventBridge is a serverless event bus that routes events between applications, but does not provide human review console interfaces or reviewer task workflows.",
+      "c": "AWS Step Functions Express Workflows orchestrate automated short-duration events without built-in reviewer task assignment or human review UI templates.",
+      "d": "Amazon SQS is a distributed message queuing service for decoupling application components, not a managed human review management tool."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/a2i-use-augmented-ai-a2i-human-review-loops.html",
+    "sourceNote": "Using Amazon Augmented AI for Human Review",
+    "sourceCheckedAt": "2026-10-09",
+    "domain": "guidelines-for-responsible-ai"
+  },
+  {
+    "id": "aws-aif-c01-guidelines-for-responsible-ai-011",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "An enterprise security architect must verify data privacy protections before authorizing business teams to send proprietary corporate documents to foundation models hosted on Amazon Bedrock. How does Amazon Bedrock protect customer data privacy regarding base foundation model training?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon Bedrock retains customer prompts in an unencrypted central repository for thirty days to monitor for acceptable use violations."
+      },
+      {
+        "id": "b",
+        "text": "Amazon Bedrock aggregates customer prompt data across accounts within the same Region to continuously tune regional base model weights."
+      },
+      {
+        "id": "c",
+        "text": "Amazon Bedrock requires customer prompt data to be shared with third-party model vendors for ongoing commercial model optimization."
+      },
+      {
+        "id": "d",
+        "text": "Amazon Bedrock does not use customer prompts or model responses to train base models and does not share customer content with model providers."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Amazon Bedrock does not use customer prompts or model completions to train base foundation models, and customer inputs and outputs are not shared with third-party model providers.",
+    "distractorNotes": {
+      "a": "Amazon Bedrock does not retain prompts in an unencrypted central repository; customer data is encrypted in transit and at rest, and inference requests are not stored unless the customer enables model invocation logging to their own S3 bucket or CloudWatch log group.",
+      "b": "Amazon Bedrock isolates customer data within customer accounts; AWS does not pool or aggregate customer prompts across accounts to tune base foundation models.",
+      "c": "Customer content is not shared with third-party model providers; foundation models are hosted in AWS-managed deployment accounts where third-party providers have no access to customer inputs or outputs."
+    },
+    "sourceUrl": "https://aws.amazon.com/bedrock/security-privacy-responsible-ai/",
+    "sourceNote": "Amazon Bedrock security, privacy, and responsible AI: inputs and outputs are never shared with model providers or used to train base models",
+    "sourceCheckedAt": "2026-10-09",
+    "domain": "guidelines-for-responsible-ai"
+  },
+  {
+    "id": "aws-aif-c01-guidelines-for-responsible-ai-012",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "A commercial banking institution is deploying an ML fraud detection model. Regulatory authorities require the bank to maintain a centralized, auditable governance record documenting the model intended use cases, prohibited applications, risk ratings, training metrics, and evaluation results. Which SageMaker feature should the bank use to create this standardized documentation?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon SageMaker Model Registry"
+      },
+      {
+        "id": "b",
+        "text": "Amazon SageMaker Model Cards"
+      },
+      {
+        "id": "c",
+        "text": "Amazon SageMaker Model Monitor"
+      },
+      {
+        "id": "d",
+        "text": "Amazon SageMaker Clarify"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Amazon SageMaker Model Cards document critical details about machine learning models in a single place, cataloging intended uses, risk ratings, training parameters, and evaluation observations for governance and compliance.",
+    "distractorNotes": {
+      "a": "Amazon SageMaker Model Registry catalogs model versions, manages deployment approval workflows, and tracks lineage, but does not provide the dedicated governance documentation template for intended uses and risk ratings found in Model Cards.",
+      "c": "Amazon SageMaker Model Monitor continuously monitors live production endpoints for data drift, concept drift, and model quality degradation, rather than cataloging static governance and evaluation documentation.",
+      "d": "Amazon SageMaker Clarify computes quantitative pre-training data bias, post-training fairness metrics, and feature attributions (SHAP values), but does not store the overall centralized model governance card."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/model-cards.html",
+    "sourceNote": "Amazon SageMaker Model Cards: overview and intended uses",
+    "sourceCheckedAt": "2026-10-09",
+    "domain": "guidelines-for-responsible-ai"
+  },
+  {
+    "id": "aws-aif-c01-guidelines-for-responsible-ai-013",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A lending organization deploys an automated credit decisioning model. Under banking consumer protection regulations, whenever a credit applicant is declined, the lender must provide an adverse action notice stating the specific financial factors that influenced the adverse decision. Why is an explainable model essential for this regulatory requirement compared to an unexplainable black-box model?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Explainable models guarantee one hundred percent prediction accuracy and eliminate all underwriting default risks."
+      },
+      {
+        "id": "b",
+        "text": "Consumer lending regulations strictly prohibit using non-linear algorithms even when post-hoc explainability tools are applied."
+      },
+      {
+        "id": "c",
+        "text": "Explainable models enable organizations to identify and communicate the exact input feature attributions that led to a specific decision."
+      },
+      {
+        "id": "d",
+        "text": "Explainability obligations under adverse action rules apply only to the model developer, not to the lender deploying the model."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Explainable models provide feature attribution and interpretability, allowing organizations to understand and disclose the key driving factors behind individual decisions to satisfy statutory disclosure rules.",
+    "distractorNotes": {
+      "a": "Explainability provides transparency into how decisions are made, but does not guarantee perfect predictive accuracy or eliminate financial credit risk.",
+      "b": "Regulations require disclosing the reasons for adverse decisions rather than prohibiting complex or non-linear models, provided organizations can extract and explain the decision factors.",
+      "d": "Explainability and adverse action disclosure obligations apply to the lender making the credit decision, not only to the model developer. The deploying organization must be able to provide each declined applicant the specific factors behind their individual adverse decision; it cannot shift this duty back to the model vendor."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/wellarchitected/latest/machine-learning-lens/mlops02-bp06.html",
+    "sourceNote": "Review fairness and explainability: adverse action notices and feature attribution",
+    "sourceCheckedAt": "2026-10-09",
+    "domain": "guidelines-for-responsible-ai"
+  },
+  {
+    "id": "aws-aif-c01-guidelines-for-responsible-ai-014",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A data science team deploys a customer churn prediction model to an Amazon SageMaker real-time endpoint. Customer retention managers want the endpoint to provide real-time feature attributions with each prediction so they can see which factors (such as contract duration, recent service calls, or monthly billing amount) most influenced the churn probability. Which SageMaker feature satisfies this requirement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon SageMaker Canvas visual modeling"
+      },
+      {
+        "id": "b",
+        "text": "Amazon SageMaker Model Monitor continuous drift tracking"
+      },
+      {
+        "id": "c",
+        "text": "Amazon SageMaker JumpStart model hub"
+      },
+      {
+        "id": "d",
+        "text": "SageMaker Clarify online explainability using Shapley values (SHAP)"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "SageMaker Clarify online explainability computes feature attributions using Shapley values (SHAP) in real time during endpoint invocation, returning explanations alongside model predictions.",
+    "distractorNotes": {
+      "a": "SageMaker Canvas provides a visual point-and-click interface for building ML models without code, rather than real-time online endpoint explainability.",
+      "b": "Amazon SageMaker Model Monitor continuously tracks data drift, model quality, and bias drift over time on deployed endpoints, but does not compute real-time per-prediction feature attributions like Clarify online explainability.",
+      "c": "SageMaker JumpStart is a hub for discovering and deploying pre-trained foundation models, rather than an endpoint feature attribution engine."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-online-explainability.html",
+    "sourceNote": "Online explainability with SageMaker Clarify",
+    "sourceCheckedAt": "2026-10-09",
+    "domain": "guidelines-for-responsible-ai"
+  },
+  {
+    "id": "aws-aif-c01-guidelines-for-responsible-ai-015",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "multi",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A marketing team wants to compare two foundation models on Amazon Bedrock to generate customer outreach emails. The team needs to evaluate both objective linguistic metrics using prompt datasets and subjective qualitative aspects such as tone, empathy, and brand style. Which two evaluation approaches are supported by Amazon Bedrock Model Evaluation? (Select TWO)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Unauthenticated crowdsourced public internet surveys without reviewer qualifications or identity verification."
+      },
+      {
+        "id": "b",
+        "text": "Automatic model evaluation jobs using prompt datasets and algorithmic metrics."
+      },
+      {
+        "id": "c",
+        "text": "Continuous production click-through rate monitoring across client application sessions."
+      },
+      {
+        "id": "d",
+        "text": "Offline unit testing of deterministic regex validation patterns against API response schemas."
+      },
+      {
+        "id": "e",
+        "text": "Human-based model evaluation jobs using internal work teams or subject-matter experts to assess qualitative criteria."
+      }
+    ],
+    "correct": [
+      "b",
+      "e"
+    ],
+    "explanation": "Amazon Bedrock Model Evaluation supports automatic evaluation jobs using prompt datasets for algorithmic metrics, as well as human-based evaluation jobs using internal teams or managed work teams to assess subjective qualities like tone and friendliness.",
+    "distractorNotes": {
+      "a": "Human evaluations in Amazon Bedrock use authenticated private work teams or qualified managed workforces (such as Amazon Mechanical Turk or vendor workforces), not unauthenticated public internet surveys.",
+      "c": "Production click-through rate monitoring measures user engagement telemetry in production applications, which is not an evaluation job type in Amazon Bedrock Model Evaluation.",
+      "d": "Deterministic schema unit tests validate API interface syntax, but do not assess linguistic output quality, prompt performance, or qualitative criteria in Amazon Bedrock Model Evaluation."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/evaluation.html",
+    "sourceNote": "Evaluate the performance of Amazon Bedrock resources: automatic and human evaluation",
+    "sourceCheckedAt": "2026-10-09",
+    "domain": "guidelines-for-responsible-ai"
+  },
+  {
+    "id": "aws-aif-c01-guidelines-for-responsible-ai-016",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An analytics team is evaluating whether to implement a simple linear regression model or a deep neural network for an automated property valuation service. What is a key tradeoff between model interpretability and predictive capability that the team must consider?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Simpler linear models provide high intrinsic interpretability but may capture fewer complex non-linear patterns than deep neural networks."
+      },
+      {
+        "id": "b",
+        "text": "Deep neural networks provide complete intrinsic transparency that guarantees zero regulatory compliance risk."
+      },
+      {
+        "id": "c",
+        "text": "Linear models are as opaque as deep neural networks because both represent knowledge as floating-point weight parameters."
+      },
+      {
+        "id": "d",
+        "text": "Deep neural networks eliminate the requirement for validation data splits during the development lifecycle."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Simpler linear models offer intrinsic interpretability because feature weights directly show each input effect on predictions, but they may struggle to capture intricate non-linear relationships that complex neural networks model effectively.",
+    "distractorNotes": {
+      "b": "Deep neural networks are generally black-box models whose internal representations are difficult to interpret directly, increasing rather than eliminating compliance challenges.",
+      "c": "Interpretability comes from model simplicity, not implementation details. A linear model's few coefficients map directly to input features, so their effect on predictions can be read directly, while a deep network's millions of interconnected floating-point weights form non-obvious internal representations that resist direct human interpretation.",
+      "d": "All supervised models, including deep neural networks, require independent validation sets to assess generalization and detect overfitting."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/wellarchitected/latest/machine-learning-lens/mlops02-bp06.html",
+    "sourceNote": "Review fairness and explainability: interpretability vs performance tradeoffs",
+    "sourceCheckedAt": "2026-10-09",
+    "domain": "guidelines-for-responsible-ai"
+  },
+  {
+    "id": "aws-aif-c01-guidelines-for-responsible-ai-017",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "single",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A media company is introducing a generative AI assistant to draft suggested headlines and summaries for human journalists. In accordance with human-centered design and responsible AI principles, which practice should the product design team implement in the user interface?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Automatically publish AI suggestions directly to production feeds without providing human editorial review workflows."
+      },
+      {
+        "id": "b",
+        "text": "Clearly disclose that suggestions are AI-generated, display source attribution, and provide interactive feedback mechanisms like ratings to collect corrections."
+      },
+      {
+        "id": "c",
+        "text": "Present generated suggestions as verified factual statements without indicating confidence levels or citing source references."
+      },
+      {
+        "id": "d",
+        "text": "Defer all feedback collection to annual end-user surveys rather than providing in-line interactive rating controls."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Human-centered design for AI emphasizes transparency (disclosing AI involvement and citing sources), human agency (allowing human review and editing), and feedback mechanisms (allowing users to rate and correct outputs).",
+    "distractorNotes": {
+      "a": "Automated publishing without editorial review bypasses human-in-the-loop oversight and creates severe risk of publishing hallucinations or inaccurate content.",
+      "c": "Presenting generative suggestions as authoritative facts without source citations or confidence transparency violates responsible AI disclosure principles and misleads users.",
+      "d": "Responsible AI and human-centered design emphasize active, in-the-moment feedback mechanisms (such as thumbs up/down ratings and correction inputs) to capture rapid user corrections rather than delayed annual surveys."
+    },
+    "sourceUrl": "https://aws.amazon.com/blogs/enterprise-strategy/responsible-ai-best-practices-promoting-responsible-and-trustworthy-ai-systems/",
+    "sourceNote": "Disclose GenAI use to end users, gather feedback, and set appropriate human involvement in decisions",
+    "sourceCheckedAt": "2026-10-09",
+    "domain": "guidelines-for-responsible-ai"
+  },
+  {
+    "id": "aws-aif-c01-guidelines-for-responsible-ai-018",
+    "cert": "aws-aif-c01",
+    "schemaVersion": 1,
+    "type": "multi",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A chief technology officer (CTO) is creating enterprise operational standards for developing and deploying generative AI applications across an organization. Which two practices directly support responsible AI governance throughout the application lifecycle? (Select TWO)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Assuming foundation model providers bear exclusive operational liability for runtime prompt safety and output alignment."
+      },
+      {
+        "id": "b",
+        "text": "Implementing guardrails and content filters to prevent harmful content generation, topic drift, and sensitive data leakage."
+      },
+      {
+        "id": "c",
+        "text": "Restricting governance oversight exclusively to initial procurement while omitting runtime monitoring across the deployment lifecycle."
+      },
+      {
+        "id": "d",
+        "text": "Establishing continuous monitoring and feedback mechanisms to track model quality, bias drift, and user-reported anomalies in production."
+      },
+      {
+        "id": "e",
+        "text": "Optimizing model deployment exclusively for minimum inference latency and operational cost without pre-deployment safety evaluations."
+      }
+    ],
+    "correct": [
+      "b",
+      "d"
+    ],
+    "explanation": "Responsible AI governance includes implementing runtime guardrails to filter harmful or sensitive content and establishing ongoing monitoring with feedback loops to track bias drift and quality in production.",
+    "distractorNotes": {
+      "a": "Under the shared responsibility model, application deployers remain responsible for runtime input/output safety, guardrails, and acceptable use enforcement rather than relying solely on base model providers.",
+      "c": "Responsible AI governance requires lifecycle-wide management including continuous runtime monitoring, auditing, and feedback collection, rather than a one-time initial procurement gate.",
+      "e": "Focusing exclusively on cost and latency while bypassing safety and accuracy benchmarking creates significant risk of deploying models that generate toxic or ungrounded outputs."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/wellarchitected/latest/machine-learning-lens/mlrel03-bp04.html",
+    "sourceNote": "Establish data bias detection and mitigation: runtime guardrails and continuous monitoring",
+    "sourceCheckedAt": "2026-10-09",
+    "domain": "guidelines-for-responsible-ai"
+  }
+]
