@@ -45,12 +45,12 @@ Audited against the 132-question bank:
 - **Question status**: 132 of 132 questions are `reviewed` (0 draft, 100%).
 - **Item formats**: 113 single-select, 19 multi-select (all select-TWO), matching the blueprint item formats. Multi-select keys use varied non-leading option combinations.
 - **Single-select position distribution**: 28 A / 29 B / 28 C / 28 D across `a`-`d` (max position share 25.7%, well below the 50% ceiling).
-- **Option length delta**: Mean correct-option length minus distractor length is +0.89 characters (median +0.33 chars), well within the ±10.0 character ceiling.
-- **Longest option as key share**: 28 of 113 single-select items (24.8%), well below the 45% ceiling.
+- **Option length delta**: Mean correct-option length minus distractor length is +1.04 characters (median +0.50 chars), well within the ±10.0 character ceiling.
+- **Longest option as key share**: 27 of 113 single-select items (23.9%), well below the 45% ceiling.
 - **Distractor notes coverage**: 100% of distractor options across all 132 questions carry complete, documented explanations.
-- **Sourcing**: 86 distinct authoritative documentation pages across `docs.aws.amazon.com` and `aws.amazon.com`.
+- **Sourcing**: 95 distinct authoritative documentation pages across `docs.aws.amazon.com` and `aws.amazon.com`.
 - **Bias guards**: All pass cleanly (`positionBias`, `lengthBiasMeanDelta`, `longestOptionIsKey`).
-- **Guessing baselines**: "Always pick the longest option" expected score is 27.9%; "Eliminate absolute qualifiers, then guess" uniquely identifies the key in 0 of 113 questions (26.0% expected score).
+- **Guessing baselines**: "Always pick the longest option" expected score is 27.0%; "Eliminate absolute qualifiers, then guess" uniquely identifies the key in 0 of 113 questions (26.1% expected score).
 
 ## Known coverage limits and deliberate boundaries
 
@@ -109,3 +109,10 @@ The evaluate-questions and harden-domain-questions passes established these stan
 - **Distractors name real AWS services at the right level of confusion**: e.g. Bedrock Custom Models vs JumpStart for open-weights hosting (genai `027`); Secrets Manager vs KMS CMKs for key storage (sec `004`); Comprehend PII vs Guardrails PII masking (sec `029`).
 - **Absolute-qualifier elimination solves nothing**: enforced and verified at 0 of 113 single-select items across the whole bank.
 - Borderline items resp-013 `d` and resp-016 `c` were upgraded from cartoons to plausible misconceptions ("explainability obligations apply only to the model developer"; "linear models are as opaque as deep networks").
+
+### Hint text support and option glosses (2026-10-09)
+
+The bank provides optional `hintText` fields across 69 questions (277 options, 52.3% of the bank) matching the convention established in `aws-clf-c02`:
+- **Service/tool/concept options**: Questions testing AWS services, SageMaker/Bedrock features, inference parameters, ML metrics, prompting styles, and adaptation techniques provide concise, factual definitions in `hintText` while keeping option `text` as the bare exam-style name.
+- **Statement-style options**: Questions testing end-to-end scenario decisions or policy statements (~63 items) remain intact with no `hintText`, preserving authentic candidate decision-making.
+- **Bias guards**: Post-migration metrics verify zero adverse impact on bias guards (option length mean delta 1.04 chars, median 0.50 chars, longest-as-key 23.9% — all within ceilings).
