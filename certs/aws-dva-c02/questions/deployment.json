@@ -1,0 +1,42 @@
+[
+  {
+    "id": "aws-dva-c02-deployment-001",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "deployment",
+    "difficulty": "medium",
+    "status": "draft",
+    "stem": "A developer is deploying an updated version of a serverless application using AWS Serverless Application Model (AWS SAM) and AWS CodeDeploy. The application requirements state that initial production traffic to the new AWS Lambda version should be limited to 10% for testing. If no errors occur during a 10-minute evaluation window, the remaining 90% of traffic should immediately route to the new version. Which CodeDeploy deployment configuration should the developer specify in the AWS SAM template?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Linear10PercentEvery10Minutes"
+      },
+      {
+        "id": "b",
+        "text": "AllAtOnce"
+      },
+      {
+        "id": "c",
+        "text": "Canary10Percent10Minutes"
+      },
+      {
+        "id": "d",
+        "text": "Linear10PercentEvery1Minute"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "The Canary10Percent10Minutes configuration shifts 10% of traffic to the updated Lambda function version first, waits 10 minutes, and then shifts the remaining 90% of traffic to the new version if no CloudWatch alarms trigger.",
+    "distractorNotes": {
+      "a": "Linear10PercentEvery10Minutes increments traffic by 10% every 10 minutes across 10 steps (taking 100 minutes total), rather than shifting all remaining 90% after the first 10 minutes.",
+      "b": "AllAtOnce shifts 100% of traffic to the new version immediately with no phased canary testing window.",
+      "d": "Linear10PercentEvery1Minute shifts traffic in equal 10% increments every minute rather than an initial 10% canary followed by a 90% cutover."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/codedeploy/latest/userguide/deployment-configurations.html",
+    "sourceNote": "Deployment configurations in AWS CodeDeploy",
+    "sourceCheckedAt": "2026-10-11"
+  }
+]

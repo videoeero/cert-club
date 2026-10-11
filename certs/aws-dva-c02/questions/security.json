@@ -1,0 +1,42 @@
+[
+  {
+    "id": "aws-dva-c02-security-001",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security",
+    "difficulty": "medium",
+    "status": "draft",
+    "stem": "An application developer needs to encrypt 500 MB video files before uploading them to Amazon S3. The developer wants to use envelope encryption with AWS Key Management Service (AWS KMS) to protect each file with a unique symmetric data key. Which AWS KMS API operation should the developer call to obtain both a plaintext data key for local encryption and an encrypted copy of the data key?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Encrypt"
+      },
+      {
+        "id": "b",
+        "text": "GenerateDataKey"
+      },
+      {
+        "id": "c",
+        "text": "GenerateDataKeyWithoutPlaintext"
+      },
+      {
+        "id": "d",
+        "text": "CreateKey"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "The GenerateDataKey operation returns a unique plaintext data key along with an encrypted copy of that data key under the specified AWS KMS customer master key (KMS key). The developer uses the plaintext key to encrypt the large file locally, removes the plaintext key from memory, and stores the encrypted data key alongside the encrypted file (envelope encryption).",
+    "distractorNotes": {
+      "a": "The Encrypt operation encrypts small plaintext payloads (up to 4 KB) directly using the KMS key, which cannot accommodate 500 MB files directly.",
+      "c": "GenerateDataKeyWithoutPlaintext generates an encrypted data key only, without returning a plaintext key for immediate local encryption.",
+      "d": "CreateKey creates a new KMS key in the AWS account rather than generating a data key for encrypting data."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/kms/latest/APIReference/API_GenerateDataKey.html",
+    "sourceNote": "AWS KMS GenerateDataKey API Reference",
+    "sourceCheckedAt": "2026-10-11"
+  }
+]

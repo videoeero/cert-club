@@ -1,0 +1,42 @@
+[
+  {
+    "id": "aws-dva-c02-troubleshooting-and-optimization-001",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "troubleshooting-and-optimization",
+    "difficulty": "medium",
+    "status": "draft",
+    "stem": "A developer is instrumenting a distributed microservices application using the AWS X-Ray SDK. The developer wants to record custom key-value pairs in traces so that engineers can quickly search and filter traces in the AWS Management Console by specific business identifiers such as orderId and tier. Which feature of AWS X-Ray should the developer use?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Metadata"
+      },
+      {
+        "id": "b",
+        "text": "Sampling rules"
+      },
+      {
+        "id": "c",
+        "text": "Trace groups"
+      },
+      {
+        "id": "d",
+        "text": "Annotations"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "In AWS X-Ray, annotations are simple key-value pairs that are indexed for use with filter expressions. Developers record annotations on segments or subsegments to search and filter traces in the X-Ray console or API by indexed keys and values.",
+    "distractorNotes": {
+      "a": "Metadata consists of key-value pairs that can contain any data type (including objects and lists) but are not indexed, meaning they cannot be searched using filter expressions.",
+      "b": "Sampling rules control how frequently traces are recorded to reduce cost and volume, rather than storing searchable key-value attributes within traces.",
+      "c": "Trace groups aggregate traces based on filter expressions to provide focused service graphs and CloudWatch metrics, but do not record custom key-value attributes on individual traces."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/xray/latest/devguide/xray-concepts.html",
+    "sourceNote": "AWS X-Ray concepts: annotations and metadata",
+    "sourceCheckedAt": "2026-10-11"
+  }
+]

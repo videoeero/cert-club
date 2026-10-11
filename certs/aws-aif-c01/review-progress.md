@@ -7,17 +7,15 @@ this file holds the reasons.
 The bank follows the public AWS Certified AI Practitioner (AIF-C01) exam
 guide (Version 1.1, published April 30, 2026). Recon performed on 2026-10-08.
 
-## Bank status: `draft`
+## Bank status: `stable`
 
-`manifest.status` is `draft`. All 132 questions are `reviewed` (0 draft, 100%).
-With 132 questions against a 65-question live exam, the bank provides 2× exam
-coverage (target 130) proportionally distributed across all five domains to match
-blueprint weights (28 / 31 / 37 / 18 / 18), with a deliberate +2 surplus in
-Domain 1 closing calibration gaps. All quality, balance, and bias guards pass
-cleanly.
-
-Promotion to `stable` is recommended following complete blueprint coverage and
-adversarial evaluation, pending maintainer confirmation.
+`manifest.status` is `stable`. Promoted on 2026-10-11 following complete
+blueprint coverage and explicit human confirmation. All 132 questions are
+`reviewed` (0 draft, 100%). With 132 questions against a 65-question live exam,
+the bank provides 2× exam coverage (target 130) proportionally distributed
+across all five domains to match blueprint weights (28 / 31 / 37 / 18 / 18),
+with a deliberate +2 surplus in Domain 1 closing calibration gaps. All quality,
+balance, and bias guards pass cleanly.
 
 ## Blueprint and weights
 

@@ -67,14 +67,17 @@ should go. Courses teach you to build; these exams test what to choose.
 
 ## Certifications
 
-| Certification                             | Slug          | Bank status | How this bank was built                                 |
-| ----------------------------------------- | ------------- | ----------- | ------------------------------------------------------- |
-| Claude Certified Developer – Foundations  | `ccdv-f`      | stable      | [review record](./certs/ccdv-f/review-progress.md)      |
-| Claude Certified Architect – Foundations  | `ccar-f`      | stable      | [review record](./certs/ccar-f/review-progress.md)      |
-| Claude Certified Architect – Professional | `ccar-p`      | stable      | [review record](./certs/ccar-p/review-progress.md)      |
-| Microsoft Certified: Azure Fundamentals   | `az-900`      | draft       | [review record](./certs/az-900/review-progress.md)      |
-| AWS Certified Cloud Practitioner          | `aws-clf-c02` | stable      | [review record](./certs/aws-clf-c02/review-progress.md) |
-| AWS Certified AI Practitioner             | `aws-aif-c01` | draft       | [review record](./certs/aws-aif-c01/review-progress.md) |
+| Certification                                                        | Slug          | Bank status | How this bank was built                                 |
+| -------------------------------------------------------------------- | ------------- | ----------- | ------------------------------------------------------- |
+| Claude Certified Developer – Foundations                             | `ccdv-f`      | stable      | [review record](./certs/ccdv-f/review-progress.md)      |
+| Claude Certified Architect – Foundations                             | `ccar-f`      | stable      | [review record](./certs/ccar-f/review-progress.md)      |
+| Claude Certified Architect – Professional                            | `ccar-p`      | stable      | [review record](./certs/ccar-p/review-progress.md)      |
+| Microsoft Certified: Azure Fundamentals                              | `az-900`      | draft       | [review record](./certs/az-900/review-progress.md)      |
+| Microsoft Certified: Security, Compliance, and Identity Fundamentals | `sc-900`      | draft       | [review record](./certs/sc-900/review-progress.md)      |
+| Microsoft Certified: Azure AI Apps and Agents Developer Associate    | `ai-103`      | draft       | [review record](./certs/ai-103/review-progress.md)      |
+| AWS Certified Cloud Practitioner                                     | `aws-clf-c02` | stable      | [review record](./certs/aws-clf-c02/review-progress.md) |
+| AWS Certified AI Practitioner                                        | `aws-aif-c01` | stable      | [review record](./certs/aws-aif-c01/review-progress.md) |
+| AWS Certified Developer – Associate                                  | `aws-dva-c02` | draft       | [review record](./certs/aws-dva-c02/review-progress.md) |
 
 Each cert's `manifest.json` holds the authoritative metadata — official exam
 guide URL, question count, duration, and blueprint domain weights — and the app

@@ -664,12 +664,15 @@ test("buildRepositoryMetrics reports every bank when no slug is given", async ()
   const reports = await buildRepositoryMetrics(root);
 
   assert.deepEqual(reports.map((report) => report.cert).sort(), [
+    "ai-103",
     "aws-aif-c01",
     "aws-clf-c02",
+    "aws-dva-c02",
     "az-900",
     "ccar-f",
     "ccar-p",
     "ccdv-f",
+    "sc-900",
   ]);
 });
 

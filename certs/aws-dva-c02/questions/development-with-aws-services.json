@@ -1,0 +1,42 @@
+[
+  {
+    "id": "aws-dva-c02-development-with-aws-services-001",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "development-with-aws-services",
+    "difficulty": "medium",
+    "status": "draft",
+    "stem": "A developer is writing code to query an Amazon DynamoDB table that contains millions of records. A single Query request returns a subset of the matching results along with a LastEvaluatedKey attribute in the response. What should the developer do to retrieve the next page of results?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Send a new Query request and set the ExclusiveStartKey parameter to the LastEvaluatedKey from the previous response."
+      },
+      {
+        "id": "b",
+        "text": "Send a new Query request and set the ScanIndexForward parameter to the primary key from the previous response."
+      },
+      {
+        "id": "c",
+        "text": "Send a Scan request that includes a filter expression pointing to the partition key from the previous response."
+      },
+      {
+        "id": "d",
+        "text": "Send a new Query request and increase the Limit parameter to exceed the remaining item count in the table."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "In Amazon DynamoDB, when a Query or Scan operation returns a LastEvaluatedKey attribute in its response, there are more results available. To retrieve the next page, the application must issue a new Query request with the ExclusiveStartKey parameter set to the LastEvaluatedKey value from the preceding response.",
+    "distractorNotes": {
+      "b": "ScanIndexForward is a boolean parameter that determines the sort order of results by sort key (ascending vs descending), not pagination.",
+      "c": "Switching from Query to Scan would examine items across the table, increasing consumed read capacity and latency rather than continuing pagination.",
+      "d": "The Limit parameter sets the maximum number of items to evaluate before returning results, but a single operation cannot return more than 1 MB of data regardless of the Limit value."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Query.Pagination.html",
+    "sourceNote": "Paginating query results in Amazon DynamoDB",
+    "sourceCheckedAt": "2026-10-11"
+  }
+]
