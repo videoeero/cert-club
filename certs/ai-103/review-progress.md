@@ -145,8 +145,51 @@ Constraints:
 
 | Domain | Question ID | Type | Status | Verified Source |
 | --- | --- | --- | --- | --- |
-| Plan and manage an Azure AI solution | `ai-103-plan-and-manage-an-azure-ai-solution-001` | single | draft | `learn.microsoft.com/.../content-safety/overview` |
-| Implement generative AI and agentic solutions | `ai-103-implement-generative-ai-and-agentic-solutions-001` | single | draft | `learn.microsoft.com/.../agents/overview` |
-| Implement computer vision solutions | `ai-103-implement-computer-vision-solutions-001` | single | draft | `learn.microsoft.com/.../computer-vision/overview` |
-| Implement text analysis solutions | `ai-103-implement-text-analysis-solutions-001` | single | draft | `learn.microsoft.com/.../speech-service/speech-synthesis-markup` |
-| Implement information extraction solutions | `ai-103-implement-information-extraction-solutions-001` | single | draft | `learn.microsoft.com/.../search/vector-search-overview` |
+| Plan and manage an Azure AI solution | `ai-103-plan-and-manage-an-azure-ai-solution-001` | single | reviewed | `learn.microsoft.com/.../content-safety/overview` |
+| Implement generative AI and agentic solutions | `ai-103-implement-generative-ai-and-agentic-solutions-001` | single | reviewed | `learn.microsoft.com/.../agents/overview` |
+| Implement computer vision solutions | `ai-103-implement-computer-vision-solutions-001` | single | reviewed | `learn.microsoft.com/.../computer-vision/overview` |
+| Implement text analysis solutions | `ai-103-implement-text-analysis-solutions-001` | single | reviewed | `learn.microsoft.com/.../speech-service/speech-synthesis-markup` |
+| Implement information extraction solutions | `ai-103-implement-information-extraction-solutions-001` | single | reviewed | `learn.microsoft.com/.../search/vector-search-overview` |
+
+## 2026-10-11: Full bank orchestration to 2x baseline (100 items)
+
+Full multi-domain bank authoring, cold evaluation, and difficulty hardening orchestrated via `skills/orchestrate-bank`.
+
+### Stage A: Authoring (95 new questions authored)
+- **Plan and manage an Azure AI solution**: 27 new items (`002`–`028`), total 28 questions (weight 28%).
+- **Implement generative AI and agentic solutions**: 32 new items (`002`–`033`), total 33 questions (weight 33%).
+- **Implement computer vision solutions**: 12 new items (`002`–`013`), total 13 questions (weight 13%).
+- **Implement text analysis solutions**: 12 new items (`002`–`013`), total 13 questions (weight 13%).
+- **Implement information extraction solutions**: 12 new items (`002`–`013`), total 13 questions (weight 13%).
+- All items cited public, unauthenticated documentation under `learn.microsoft.com/en-us/azure/*`.
+
+### Stage B: Adversarial Cold Evaluation (Fresh subagents)
+- Clean, independent evaluation subagents cold-derived each item against its cited documentation without generative prompt history.
+- **Plan and manage**: 28/28 confirmed; item `022` polished to specify SQL Database view (where high-water mark applies) rather than Blob Storage. All 28 promoted to `status: "reviewed"`.
+- **Generative AI and agentic solutions**: 33/33 confirmed; canonical URLs updated for prompt flow and agent tracing. All 33 promoted to `status: "reviewed"`.
+- **Computer vision**: 13/13 confirmed; all promoted to `status: "reviewed"`.
+- **Text analysis**: 13/13 confirmed; all promoted to `status: "reviewed"`.
+- **Information extraction**: 13/13 confirmed; all promoted to `status: "reviewed"`.
+- Total bank reviewed status: 100/100 questions (100%).
+
+### Stage C: Difficulty Hardening
+Calibrated against Associate-level Azure AI Developer profile:
+- **Plan and manage**: 7 calibrated — no change; 21 hardened (removed giveaway descriptors from model names in `002`, replaced synthetic or out-of-domain distractors with authentic Azure services, deployment tiers, and least-privilege RBAC roles).
+- **Generative AI and agentic solutions**: 28 calibrated — no change; 5 hardened (`012`, `023`, `030`, `032`, `033` tightened distractors; eliminated 033 facepalm option in favor of realistic practitioner misconception on zero temperature).
+- **Computer vision**: 12 calibrated — no change; 1 hardened (`013` replaced out-of-domain translator distractor with plausible vision payload parameter).
+- **Text analysis**: 8 calibrated — no change; 5 hardened (`001`, `010`, `011`, `012`, `013` strengthened with genuine speech technologies like PLS, `<emphasis>`, and Speaker Recognition).
+- **Information extraction**: 10 calibrated — no change; 3 hardened (`001`, `008`, `013` replaced generic text search options with authentic AI Search vector architectures and balanced option lengths).
+
+### Stage D: Final Reconciliation & Bias Guards
+- **Total questions**: 100 (target: 100 [2x exam of 50], delta +0 across all domains).
+- **Format mix**: 100 single-select, 0 multi-select.
+- **Reviewed count**: 100 of 100 (100%).
+- **Distinct source pages**: 69 unique Microsoft Learn pages.
+- **Single-select answer positions**: `25 / 27 / 24 / 24` across `a / b / c / d` (perfect balance).
+- **Option length delta**: mean `0.12` characters (median `0.00`).
+- **Longest option is key**: `29%` (29 of 100 questions).
+- **Always longest baseline**: `31.1%` expected score.
+- **Eliminate absolutes baseline**: `24.8%` expected score (uniquely identifies key in 0/100).
+- **All bias guards**: `positionBias` PASS, `lengthBiasMeanDelta` PASS, `longestOptionIsKey` PASS.
+- **Validation gate**: `npm run check` green (all 413 unit tests pass, ESLint and Prettier clean).
+

@@ -6,12 +6,12 @@
     "type": "single",
     "domain": "implement-information-extraction-solutions",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "stem": "A company implements a retrieval-augmented generation (RAG) pattern using Azure AI Search. The search query must evaluate both keyword relevance and dense vector embeddings in parallel within a single request, merging and re-ranking the results. Which search approach should the application execute?",
     "options": [
       {
         "id": "a",
-        "text": "Fuzzy search"
+        "text": "Semantic search"
       },
       {
         "id": "b",
@@ -19,11 +19,11 @@
       },
       {
         "id": "c",
-        "text": "Wildcard search"
+        "text": "Pure vector search"
       },
       {
         "id": "d",
-        "text": "Filtered faceting"
+        "text": "Filtered vector search"
       }
     ],
     "correct": [
@@ -31,12 +31,492 @@
     ],
     "explanation": "In Azure AI Search, hybrid search executes vector similarity search and keyword (BM25) search in parallel against the same request, merging the results into a single ranked response for enhanced retrieval relevance.",
     "distractorNotes": {
-      "a": "Fuzzy search matches terms with similar spelling or typographical errors in text fields without evaluating vector embeddings.",
-      "c": "Wildcard search matches character patterns using wildcard operators within lexical queries.",
-      "d": "Filtered faceting aggregates search results into categorical bins rather than combining dense vectors with keyword search."
+      "a": "Semantic search applies deep learning models to rerank lexical search results, but it does not execute parallel vector queries unless combined with hybrid search.",
+      "c": "Pure vector search evaluates vector similarity metrics against stored embeddings, but it does not evaluate BM25 keyword relevance in parallel.",
+      "d": "Filtered vector search applies OData filter criteria to constrain vector similarity results, but it does not perform parallel lexical scoring."
     },
     "sourceUrl": "https://learn.microsoft.com/en-us/azure/search/vector-search-overview",
     "sourceNote": "Azure AI Search vector search - hybrid search combining vector and keyword queries",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-information-extraction-solutions-002",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-information-extraction-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A software engineer is building a prototype retrieval service in Azure AI Search for a specialized catalog containing fewer than 5,000 product vector embeddings. The evaluation team requires 100 percent ground-truth recall for search quality benchmarking and wants to avoid the memory overhead and construction time associated with graph-based indexing structures. Which vector algorithm configuration should the engineer specify in the vector profile?",
+    "options": [
+      {
+        "id": "a",
+        "text": "exhaustiveKnn"
+      },
+      {
+        "id": "b",
+        "text": "hnsw"
+      },
+      {
+        "id": "c",
+        "text": "scalarQuantization"
+      },
+      {
+        "id": "d",
+        "text": "binaryQuantization"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "The exhaustiveKnn algorithm executes a brute-force scan across the entire vector space during query execution. Because it computes distance calculations across all stored vectors without building an approximate nearest neighbor graph, it guarantees 100 percent recall and eliminates graph construction time and index memory overhead, making it ideal for small datasets and recall benchmarking.",
+    "distractorNotes": {
+      "b": "The hnsw algorithm builds a Hierarchical Navigable Small World graph during indexing for fast approximate nearest neighbor retrieval, which trades off perfect recall and consumes additional memory for graph links.",
+      "c": "The scalarQuantization configuration is a vector compression technique that compresses 32-bit floating point vector components into 8-bit integers rather than an index search algorithm.",
+      "d": "The binaryQuantization configuration compresses floating point vector values into 1-bit representations to reduce storage rather than specifying a search algorithm."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/search/vector-search-how-to-create-index",
+    "sourceNote": "Azure AI Search vector search algorithms - HNSW approximate nearest neighbors versus exhaustive KNN",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-information-extraction-solutions-003",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-information-extraction-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An engineering team configures an Azure AI Search vector profile for embeddings generated by Azure OpenAI text-embedding-3 models, which produce unit-normalized vectors. The team wants to achieve the lowest query execution latency while preserving identical ranking quality to cosine similarity. Which metric configuration should the team select for the vector search algorithm?",
+    "options": [
+      {
+        "id": "a",
+        "text": "euclidean"
+      },
+      {
+        "id": "b",
+        "text": "hamming"
+      },
+      {
+        "id": "c",
+        "text": "dotProduct"
+      },
+      {
+        "id": "d",
+        "text": "manhattan"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "For vectors normalized to unit length (such as those generated by Azure OpenAI embedding models), the dot product of two vectors is mathematically equivalent to their cosine similarity. Because dotProduct skips the vector magnitude normalization step during runtime distance calculations, it provides lower computational overhead and faster query execution.",
+    "distractorNotes": {
+      "a": "The euclidean metric measures the straight-line distance (L2 norm) between vector coordinates and requires additional arithmetic operations compared to computing dot products on normalized vectors.",
+      "b": "The hamming metric counts differing bit positions across binary vectors and is used with binary quantization or binary embeddings rather than continuous floating-point vectors.",
+      "d": "The manhattan metric (L1 norm) calculates grid distance across coordinate axes and is not a supported similarity metric in Azure AI Search vector algorithms."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/search/vector-search-ranking",
+    "sourceNote": "Azure AI Search vector ranking - distance metrics and performance for normalized embeddings",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-information-extraction-solutions-004",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-information-extraction-solutions",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An application executes a hybrid query in Azure AI Search combining a BM25 lexical text search with a vector similarity search across technical documentation. The search response returns documents merged into a single ranked list via Reciprocal Rank Fusion (RRF). How does the search engine compute the combined score for each document?",
+    "options": [
+      {
+        "id": "a",
+        "text": "By converting BM25 scores into min-max percentiles and adding the cosine distance values directly"
+      },
+      {
+        "id": "b",
+        "text": "By executing an L2 cross-encoder language model over all returned documents from both queries"
+      },
+      {
+        "id": "c",
+        "text": "By multiplying the raw BM25 relevance score by the vector cosine similarity score"
+      },
+      {
+        "id": "d",
+        "text": "By calculating a reciprocal rank score using 1 / (rank + k) for each result set and summing the scores"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Reciprocal Rank Fusion (RRF) merges result sets from parallel query executions by evaluating each document's ordinal position (rank) within each result set. For each list, it calculates 1 / (rank + k), where k is a ranking constant (defaulting to 60), and then sums these reciprocal scores across all lists to produce the unified @search.score without requiring raw score normalization.",
+    "distractorNotes": {
+      "a": "RRF evaluates ordinal position rather than performing min-max normalization on raw BM25 scores and vector distances.",
+      "b": "L2 cross-encoder reranking is performed by the semantic ranker, whereas RRF is a lightweight rank aggregation algorithm that executes before semantic reranking.",
+      "c": "Multiplying raw scores would fail because BM25 scores are unbounded positive numbers while vector similarities operate on distinct scales."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/search/hybrid-search-ranking",
+    "sourceNote": "Azure AI Search hybrid search scoring - Reciprocal Rank Fusion ranking algorithm and constant k",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-information-extraction-solutions-005",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-information-extraction-solutions",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A developer enables the semantic ranker on an Azure AI Search index to improve result relevance for conversational user queries. A hybrid query returns 200 initial matches from lexical and vector retrieval. How does the semantic ranker process these candidate documents and represent their relevance in the query response?",
+    "options": [
+      {
+        "id": "a",
+        "text": "It evaluates only the top 50 candidates using summarized prioritized fields and assigns a reranker score from 0.0 to 4.0"
+      },
+      {
+        "id": "b",
+        "text": "It re-indexes all 200 candidates through an external Azure OpenAI chat model and returns a similarity percentage from 0 to 100"
+      },
+      {
+        "id": "c",
+        "text": "It computes new vector embeddings for all 200 candidates and recalculates cosine distances against the query embedding"
+      },
+      {
+        "id": "d",
+        "text": "It filters the candidates using lexical synonyms and applies a BM25 boost multiplier to the existing search score"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Semantic ranker takes at most the top 50 results produced by initial BM25 or RRF retrieval. It extracts and summarizes text up to token limits based on the fields declared in the semantic configuration (title, keywords, content), runs them through Microsoft machine comprehension models, and outputs @search.rerankerScore values ranging from 0.0 to 4.0 alongside semantic captions and answers.",
+    "distractorNotes": {
+      "b": "Semantic ranking is an internal hosted ranking service in Azure AI Search rather than an external Azure OpenAI chat model re-indexing pipeline, and its score uses a 0.0 to 4.0 scale.",
+      "c": "Semantic ranker uses transformer-based language comprehension models on textual summaries rather than recalculating dense vector cosine distances.",
+      "d": "Semantic ranker performs contextual deep-learning reranking rather than applying lexical synonym filtering or BM25 score multipliers."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/search/semantic-search-overview",
+    "sourceNote": "Azure AI Search semantic ranker - candidate pipeline limits, scoring scale, and prioritized fields",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-information-extraction-solutions-006",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-information-extraction-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A cloud architect configures an Azure AI Search indexer with an enrichment skillset that executes optical character recognition (OCR) and generates vector embeddings. The indexer must populate both raw document metadata (such as file creation dates) and newly generated vector embeddings into the target search index. How should the architect structure the field mappings in the indexer definition?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Specify both raw metadata and vector embeddings under fieldMappings while leaving outputFieldMappings empty"
+      },
+      {
+        "id": "b",
+        "text": "Use fieldMappings for raw document metadata and outputFieldMappings for nodes created by the skillset"
+      },
+      {
+        "id": "c",
+        "text": "Use outputFieldMappings for raw document metadata and define a custom web API skill to push vector embeddings"
+      },
+      {
+        "id": "d",
+        "text": "Map all source and enriched fields directly inside the data source definition using SQL column aliases"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "In an Azure AI Search indexer, fieldMappings routes source fields directly from the data source to the search index without transformation. In contrast, outputFieldMappings is required to route enriched nodes from the skillset's enrichment tree (such as generated vector embeddings or extracted text) into the corresponding target index fields.",
+    "distractorNotes": {
+      "a": "The fieldMappings property only routes raw, unmodified fields from the source data store; it cannot access enriched nodes created in the skillset enrichment tree.",
+      "c": "Raw source metadata belongs in fieldMappings, and built-in skillset nodes do not require custom web API skills to populate search index fields.",
+      "d": "Data source definitions configure connection strings and container queries; they cannot map enriched skillset nodes or target search index schemas."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/search/cognitive-search-output-field-mapping",
+    "sourceNote": "Azure AI Search indexers - fieldMappings for source fields versus outputFieldMappings for enriched nodes",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-information-extraction-solutions-007",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-information-extraction-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A data engineer is designing an Azure AI Search skillset to index multi-page PDF documents for a vector search pipeline. The documents contain long narrative sections that exceed the token limits of the embedding model. Which cognitive skill should the engineer place before the AzureOpenAIEmbeddingSkill to divide the extracted text into manageable chunks?",
+    "options": [
+      {
+        "id": "a",
+        "text": "#Microsoft.Skills.Text.KeyPhraseExtractionSkill"
+      },
+      {
+        "id": "b",
+        "text": "#Microsoft.Skills.Custom.WebApiSkill"
+      },
+      {
+        "id": "c",
+        "text": "#Microsoft.Skills.Text.SplitSkill"
+      },
+      {
+        "id": "d",
+        "text": "#Microsoft.Skills.Text.MergeSkill"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "The #Microsoft.Skills.Text.SplitSkill breaks text into chunks based on specified page or token lengths (using textSplitMode set to pages or tokens, along with maximumPageLength and pageOverlapLength). Downstream skills, such as #Microsoft.Skills.Text.AzureOpenAIEmbeddingSkill, can then iterate over each generated text chunk (/document/pages/*) to compute vector embeddings.",
+    "distractorNotes": {
+      "a": "The KeyPhraseExtractionSkill extracts representative key phrases from text rather than splitting continuous text into sequential overlapping chunks.",
+      "b": "The WebApiSkill calls an external REST API endpoint for custom enrichment rather than providing built-in text token chunking.",
+      "d": "The MergeSkill consolidates text and image-extracted text into a single unified string rather than partitioning text into smaller token chunks."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/search/cognitive-search-skill-textsplit",
+    "sourceNote": "Azure AI Search SplitSkill - chunking text into pages or tokens for downstream embedding skills",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-information-extraction-solutions-008",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-information-extraction-solutions",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A development team wants to ground an enterprise customer support agent using Azure AI Search. Instead of writing custom application code to orchestrate multi-step query expansion, subquery decomposition, and citation collation, the team implements Azure AI Search agentic retrieval. Which architectural components and capabilities are central to this pattern?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A semantic configuration paired with scoring profiles that boosts specific fields and reranks lexical query results"
+      },
+      {
+        "id": "b",
+        "text": "An indexer skillset with index projections that extracts document chunks and maps them to multiple target index schemas"
+      },
+      {
+        "id": "c",
+        "text": "A synonym map linked to analyzer token filters that expands query terms across multiple search index fields at runtime"
+      },
+      {
+        "id": "d",
+        "text": "A knowledge base unifying knowledge sources that decomposes queries into parallel subqueries with grounding citations"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Agentic retrieval in Azure AI Search uses knowledge bases to unify one or more knowledge sources (such as search indexes). When queried, the retrieval engine uses LLM capabilities to analyze conversation context, decompose complex questions into multiple focused subqueries in parallel, apply semantic ranking, and return structured responses containing grounding citations and execution metadata.",
+    "distractorNotes": {
+      "a": "Semantic configuration and scoring profiles improve lexical relevance and apply L2 neural reranking, but they do not perform multi-step query decomposition or agentic retrieval planning.",
+      "b": "Indexer skillsets with index projections partition and enrich content during document ingestion, but they do not manage query-time agentic reasoning or subquery collation.",
+      "c": "Synonym maps expand query terms at query time using predefined rules, but they do not perform dynamic LLM-based query decomposition or provide grounded citations."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/search/retrieval-augmented-generation-overview",
+    "sourceNote": "Azure AI Search agentic retrieval - knowledge bases, subquery planning, and grounding citations",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-information-extraction-solutions-009",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-information-extraction-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A company processes complex financial statements in PDF format that include multi-column text, nested data tables, and interactive selection marks (checkboxes). The engineering team must extract not only the text content but also the tabular grid structure, paragraph roles, and checkbox states. Which prebuilt Document Intelligence model should the team invoke?",
+    "options": [
+      {
+        "id": "a",
+        "text": "prebuilt-layout"
+      },
+      {
+        "id": "b",
+        "text": "prebuilt-read"
+      },
+      {
+        "id": "c",
+        "text": "prebuilt-idDocument"
+      },
+      {
+        "id": "d",
+        "text": "prebuilt-receipt"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "The prebuilt-layout model extracts text lines, words, paragraph roles (such as title, sectionHeading, pageHeader), selection marks, and structured tables with row and column spans. In contrast, prebuilt-read extracts only raw text, print, and handwriting styles without detecting tables, selection marks, or paragraph roles.",
+    "distractorNotes": {
+      "b": "The prebuilt-read model focuses on optical character recognition for raw text lines and words, and does not extract structured tables or selection marks.",
+      "c": "The prebuilt-idDocument model is specialized for identity cards and passports rather than general financial statements with complex tables.",
+      "d": "The prebuilt-receipt model extracts merchant transaction fields from sales receipts rather than multi-column financial statements and custom tables."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/document-intelligence/overview?view=doc-intel-4.0.0",
+    "sourceNote": "Azure AI Document Intelligence prebuilt models - prebuilt-layout for tables and structure versus prebuilt-read",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-information-extraction-solutions-010",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-information-extraction-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer is extracting content from technical whitepapers using Azure AI Document Intelligence prebuilt-layout to ingest into a RAG vector database. The downstream LLM processes Markdown tables and heading hierarchies more effectively than unstructured JSON bounding boxes. How should the developer configure the document analysis request to receive the extracted document directly as Markdown?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Set stringIndexType=\"utf16CodeUnit\" in the query parameters"
+      },
+      {
+        "id": "b",
+        "text": "Set output_content_format=ContentFormat.MARKDOWN in the analysis request"
+      },
+      {
+        "id": "c",
+        "text": "Enable features=[\"ocr.highResolution\"] in the analysis options"
+      },
+      {
+        "id": "d",
+        "text": "Pass pages=\"1-\" with locale=\"en-US\" in the request headers"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Setting output_content_format=ContentFormat.MARKDOWN (or outputContentFormat=markdown in REST requests) instructs the Document Intelligence layout model to represent the extracted content in standard Markdown format. This formats tables as Markdown tables and section headings as Markdown headers, preserving document semantic structure for chunking and LLM comprehension.",
+    "distractorNotes": {
+      "a": "The stringIndexType parameter controls how text offsets and character spans are calculated (such as UTF-16 code units) rather than altering the output format to Markdown.",
+      "c": "The ocr.highResolution feature improves text recognition quality on high-resolution image inputs rather than converting the output representation into Markdown syntax.",
+      "d": "The pages and locale parameters restrict the page range and language recognition rather than controlling the output content format."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/document-intelligence/prebuilt/layout?view=doc-intel-4.0.0",
+    "sourceNote": "Azure AI Document Intelligence prebuilt-layout - output_content_format markdown for LLM context chunking",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-information-extraction-solutions-011",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-information-extraction-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An insurance organization needs to extract policyholder information and coverage limits from commercial insurance contracts. The contracts come from twenty different underwriters, each using completely different page layouts, clause orderings, and formatting styles. Which Document Intelligence custom model type should the development team train?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A custom classification model without extraction labels"
+      },
+      {
+        "id": "b",
+        "text": "A custom template model trained on five sample forms"
+      },
+      {
+        "id": "c",
+        "text": "A custom neural model trained on labeled contract instances"
+      },
+      {
+        "id": "d",
+        "text": "A prebuilt receipt model configured with custom query fields"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Custom neural models use deep learning architectures that generalize across structured, semi-structured, and unstructured documents with variable visual layouts. In contrast, custom template models rely on static, consistent visual layouts (such as identical blank forms) and suffer severe accuracy degradation when document layouts vary across providers.",
+    "distractorNotes": {
+      "a": "A custom classification model organizes documents into categories (such as identifying document types) but does not extract specific key-value fields.",
+      "b": "Custom template models require identical visual templates across instances; variances in layout and structure across underwriters will cause extraction failures.",
+      "d": "The prebuilt-receipt model is specialized for sales receipts and point-of-sale transactions, not commercial insurance contracts with complex policy clauses."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/document-intelligence/train/custom-model?view=doc-intel-4.0.0",
+    "sourceNote": "Azure AI Document Intelligence custom models - custom neural for variable layouts versus custom template",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-information-extraction-solutions-012",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-information-extraction-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An accounts payable system must automate the extraction of invoice numbers, due dates, line item tables, and total amounts from vendor invoices. The solution must return normalized date objects and currency values without requiring the team to label training datasets or maintain custom models. Which solution meets these requirements with the least development effort?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Train a custom template model on five sample invoices per vendor"
+      },
+      {
+        "id": "b",
+        "text": "Use the prebuilt read model and write custom regular expressions for date parsing"
+      },
+      {
+        "id": "c",
+        "text": "Train a custom neural model using fifty labeled sample invoices"
+      },
+      {
+        "id": "d",
+        "text": "Invoke the prebuilt invoice model (prebuilt-invoice)"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "The prebuilt invoice model (prebuilt-invoice) automatically extracts standard invoice fields—including vendor information, invoice date, due date, line items, tax, and total amount—as strongly typed data (such as dates and currency types) without requiring any labeled training datasets or custom model management.",
+    "distractorNotes": {
+      "a": "Training a custom template model requires collecting and labeling samples for every vendor and fails whenever an invoice layout changes.",
+      "b": "The prebuilt read model only extracts raw text lines and words, requiring complex and fragile custom regex parsing for tabular line items and dates.",
+      "c": "Training a custom neural model requires labeling datasets and ongoing model maintenance, whereas the prebuilt invoice model already supports these fields out of the box."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/document-intelligence/overview?view=doc-intel-4.0.0",
+    "sourceNote": "Azure AI Document Intelligence prebuilt-invoice - strongly typed fields, line items, and normalization",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-information-extraction-solutions-013",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-information-extraction-solutions",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An enterprise architecture team is designing an AI agent workflow that ingests multimodal content, including loan application documents, customer call audio recordings, and inspection photographs. The workflow requires a unified service that processes these varied media types through a defined schema and provides source grounding so human reviewers can trace extracted values back to their exact origin. Which Azure AI capability should the team adopt?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Azure Content Understanding using configured analyzers"
+      },
+      {
+        "id": "b",
+        "text": "Azure AI Search using an enrichment skillset with cognitive skills"
+      },
+      {
+        "id": "c",
+        "text": "Azure AI Document Intelligence using prebuilt layout models"
+      },
+      {
+        "id": "d",
+        "text": "Azure AI Foundry Agent Service using multimodal function tools"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Azure Content Understanding is a multimodal AI framework in Foundry Tools designed to process documents, images, video, and audio through configurable analyzers. It transforms unstructured media into structured outputs (Markdown or JSON) with built-in confidence scores and source grounding (estimateFieldSourceAndConfidence), allowing users and agent workflows to verify extracted fields against the source media.",
+    "distractorNotes": {
+      "b": "Azure AI Search enrichment skillsets can combine OCR and speech skills into an index, but they do not provide a unified schema-driven extraction service with native multimodal field-level source grounding.",
+      "c": "Azure AI Document Intelligence extracts structured data and layout from documents, but it cannot directly ingest audio recordings into a unified extraction schema.",
+      "d": "Azure AI Foundry Agent Service orchestrates reasoning and tool calling, but it relies on underlying extraction services rather than providing native multimodal schema analyzers with source grounding."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/content-understanding/overview",
+    "sourceNote": "Azure Content Understanding - analyzers, multimodal extraction, confidence scores, and source grounding",
     "sourceCheckedAt": "2026-10-11"
   }
 ]

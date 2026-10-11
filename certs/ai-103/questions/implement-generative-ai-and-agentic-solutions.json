@@ -6,7 +6,7 @@
     "type": "single",
     "domain": "implement-generative-ai-and-agentic-solutions",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "stem": "A development team wants to deploy an AI agent in Microsoft Foundry using a custom framework and custom business logic packaged in a container, with Foundry managing endpoint scaling and identity. Which agent type in Foundry Agent Service should the team select?",
     "options": [
       {
@@ -37,6 +37,1286 @@
     },
     "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/agents/overview",
     "sourceNote": "Foundry Agent Service agent types - hosted agents for custom containers and frameworks",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-generative-ai-and-agentic-solutions-002",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-generative-ai-and-agentic-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An Azure AI engineer is creating a Python service to interact with an Azure AI Foundry project. The organization mandates keyless authentication using Microsoft Entra ID without embedding secrets or API keys in configuration files. How should the developer initialize the project client in the application?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Instantiate AIProjectClient using the project connection string and DefaultAzureCredential"
+      },
+      {
+        "id": "b",
+        "text": "Instantiate AIProjectClient using the subscription key and AzureKeyCredential"
+      },
+      {
+        "id": "c",
+        "text": "Instantiate ProjectManagerClient using a shared access signature token generated from the portal"
+      },
+      {
+        "id": "d",
+        "text": "Instantiate FoundryClient using the client secret and ClientSecretCredential directly in code"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Initializing AIProjectClient with DefaultAzureCredential from the azure-identity library enables keyless authentication using the local developer identity or managed identities in Azure environments.",
+    "distractorNotes": {
+      "b": "AzureKeyCredential relies on static API keys, which violates the requirement for keyless Microsoft Entra ID authentication.",
+      "c": "Shared access signature tokens are used for Azure Storage account delegation rather than Azure AI Foundry project initialization.",
+      "d": "Embedding client secrets directly in application code introduces credential leakage risks and does not use the recommended DefaultAzureCredential chain."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/agents/overview",
+    "sourceNote": "AIProjectClient initialization with DefaultAzureCredential for keyless Microsoft Entra ID access",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-generative-ai-and-agentic-solutions-003",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-generative-ai-and-agentic-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A development team wants to consume multiple foundational models deployed on Azure AI Foundry serverless endpoints, including models from Meta, Mistral, and Cohere. The team wants a unified client library that avoids changing the API request format when switching between different model providers. Which client should the team implement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "AzureOpenAI client from the openai Python SDK"
+      },
+      {
+        "id": "b",
+        "text": "ChatCompletionsClient from the azure-ai-inference SDK"
+      },
+      {
+        "id": "c",
+        "text": "ModelAdministrationClient from the azure-ai-projects SDK"
+      },
+      {
+        "id": "d",
+        "text": "FoundryInferenceClient from the azure-mgmt-cognitiveservices SDK"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "The azure-ai-inference package provides ChatCompletionsClient, offering a standardized inference protocol across diverse model families deployed via serverless API endpoints in Azure AI Foundry.",
+    "distractorNotes": {
+      "a": "The AzureOpenAI client targets Azure OpenAI endpoints and does not provide native client wrappers for non-OpenAI model serverless endpoints.",
+      "c": "ModelAdministrationClient manages model lifecycle tasks such as deployment creation and quota management rather than model inference.",
+      "d": "The azure-mgmt-cognitiveservices SDK manages control plane resource provisioning rather than runtime chat completions."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models",
+    "sourceNote": "Azure AI Model Inference API provides a model-agnostic chat completions client for multiple model families",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-generative-ai-and-agentic-solutions-004",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-generative-ai-and-agentic-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An AI application processes high volumes of incoming receipts and tickets using GPT-4o on Azure OpenAI. The development team needs to decrease token consumption and latency for visual analysis where high-resolution fine-grained visual inspection is not required. Which configuration change should the team apply to the image input payload?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Convert all images to grayscale and pass image base64 strings into the system prompt message"
+      },
+      {
+        "id": "b",
+        "text": "Set the max_tokens parameter to 85 to restrict total output generation length"
+      },
+      {
+        "id": "c",
+        "text": "Set the detail property to low within the image_url input dictionary"
+      },
+      {
+        "id": "d",
+        "text": "Use the temperature parameter set to 0.0 to instruct the vision encoder to bypass image tiling"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Setting the detail parameter to low directs the vision pipeline to process a fixed 512x512 downsampled version of the image using a fixed 85 tokens, significantly reducing latency and token costs.",
+    "distractorNotes": {
+      "a": "Images must be supplied as image_url content items within message payloads rather than raw base64 strings inserted into system prompts.",
+      "b": "The max_tokens parameter limits completion token generation rather than input image token consumption.",
+      "d": "The temperature parameter controls output sampling randomness and has no influence over visual tiling or image token calculation."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/gpt-with-vision",
+    "sourceNote": "Image detail parameter low reduces image processing cost to a fixed 85 tokens",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-generative-ai-and-agentic-solutions-005",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-generative-ai-and-agentic-solutions",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A developer configures an Azure OpenAI model deployment to output extracted customer metadata into an internal database. The downstream ingestion pipeline crashes if any undefined JSON fields are present or if any required fields are omitted. How should the developer configure the completion request to guarantee structural compliance?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Set response_format to {'type': 'json_object'} and list the fields in the user prompt"
+      },
+      {
+        "id": "b",
+        "text": "Set presence_penalty to 2.0 and provide few-shot examples in the system prompt"
+      },
+      {
+        "id": "c",
+        "text": "Define a stop sequence matching the final JSON closing brace in the completion call"
+      },
+      {
+        "id": "d",
+        "text": "Set response_format with type json_schema, strict enabled, and additionalProperties set to false"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Using response_format with type json_schema and strict set to true enforces that the model generation adheres exactly to the specified JSON Schema, with additionalProperties set to false preventing unexpected fields.",
+    "distractorNotes": {
+      "a": "The json_object mode guarantees that the output parses as valid JSON, but it does not validate field names, types, or absence of extra fields against a formal schema.",
+      "b": "Presence penalty modifies topic repetition penalties and does not constrain JSON structure or enforce required keys.",
+      "c": "Stop sequences halt generation upon encountering a delimiter but cannot enforce field names or schema constraints."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/structured-outputs",
+    "sourceNote": "Structured Outputs with strict json_schema ensures exact schema conformance and prohibits undeclared properties",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-generative-ai-and-agentic-solutions-006",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-generative-ai-and-agentic-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An AI engineer designs a document ingestion pipeline for an enterprise knowledge base containing technical manuals. When using vector retrieval, queries about multi-step procedures spanning across paragraph boundaries frequently return incomplete steps. Which chunking strategy resolves this issue while maintaining retrieval quality?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Implement fixed-size character or token chunking with a sliding window overlap"
+      },
+      {
+        "id": "b",
+        "text": "Split documents strictly at physical PDF page boundary markers"
+      },
+      {
+        "id": "c",
+        "text": "Index the entire document as a single vector without chunking"
+      },
+      {
+        "id": "d",
+        "text": "Segment documents exclusively at individual sentence termination punctuation"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Configuring chunking with token overlap ensures that context spanning chunk boundaries is preserved in adjacent chunks, preventing procedural steps from being truncated during retrieval.",
+    "distractorNotes": {
+      "b": "Page boundaries frequently sever sentences or logical procedures mid-thought, creating fragmented context chunks.",
+      "c": "Indexing full documents without chunking exceeds embedding model token limits and dilutes vector similarity across disparate topics.",
+      "d": "Sentence-level chunking strips surrounding procedural context, preventing the model from retrieving cohesive instructions."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/search/vector-search-how-to-chunk-documents",
+    "sourceNote": "Chunking with sliding window overlap preserves context across segment boundaries in retrieval-augmented generation",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-generative-ai-and-agentic-solutions-007",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-generative-ai-and-agentic-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An organization is deploying an Azure AI Search vector database storing hundreds of millions of document chunks using the text-embedding-3-large model. The infrastructure architect requires reducing vector index memory and storage footprint by 50% without retraining the model or migrating to a different embedding deployment. What should the developer configure?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Apply gzip compression to the embedding vectors before uploading to Azure AI Search"
+      },
+      {
+        "id": "b",
+        "text": "Pass the dimensions parameter in embedding API calls to truncate vector dimensions"
+      },
+      {
+        "id": "c",
+        "text": "Set the temperature parameter to 0.0 during embedding generation to eliminate floating point precision"
+      },
+      {
+        "id": "d",
+        "text": "Reduce the chunk size parameter in the ingestion pipeline to half of its original length"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "The text-embedding-3 family of models supports shortening embeddings using the dimensions parameter while preserving semantic quality via Matryoshka representation learning, reducing storage costs.",
+    "distractorNotes": {
+      "a": "Vector search indexes require uncompressed floating-point vectors for dot product and cosine similarity calculations.",
+      "c": "Embedding endpoints do not accept a temperature parameter; temperature governs generative text sampling.",
+      "d": "Reducing text chunk length produces more chunks overall and does not alter the dimensionality of the generated vector representation."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models",
+    "sourceNote": "text-embedding-3 models support the dimensions parameter for reducing vector size without significant accuracy loss",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-generative-ai-and-agentic-solutions-008",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-generative-ai-and-agentic-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer is writing the system prompt for a customer service chatbot grounded on internal policy documents retrieved via vector search. The model occasionally invents return policy deadlines when a user asks about product categories not mentioned in the retrieved policy text. What prompting strategy best prevents this hallucination?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Increase the model presence_penalty to 2.0 to penalize repetitive answers"
+      },
+      {
+        "id": "b",
+        "text": "Configure top_p to 1.0 to ensure the model samples from all possible tokens"
+      },
+      {
+        "id": "c",
+        "text": "Instruct the model to answer using only the provided context and refuse if unverified"
+      },
+      {
+        "id": "d",
+        "text": "Append ten few-shot customer dialogues directly to the user input message"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Explicit grounding instructions in the system prompt establishing that the model must rely solely on the provided context and clearly decline to answer when the context lacks evidence effectively curb hallucinations.",
+    "distractorNotes": {
+      "a": "Presence penalty discourages repeating already generated words, which does not prevent fabricating unsupported facts.",
+      "b": "Setting top_p to 1.0 expands token candidate sampling, which can increase the likelihood of creative fabrications.",
+      "d": "Adding conversational dialogues does not enforce strict grounding boundaries against the retrieved reference documents."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/system-message",
+    "sourceNote": "System messages provide grounding boundaries and refusal rules when retrieved context lacks sufficient evidence",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-generative-ai-and-agentic-solutions-009",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-generative-ai-and-agentic-solutions",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An AI team runs an automated evaluation pipeline in Azure AI Foundry to evaluate whether a RAG application introduces claims not present in the retrieved source passages. Which built-in evaluator should the team select, and what inputs does it require?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Coherence evaluator, requiring query and response"
+      },
+      {
+        "id": "b",
+        "text": "Relevance evaluator, requiring query and ground_truth"
+      },
+      {
+        "id": "c",
+        "text": "Fluency evaluator, requiring response only"
+      },
+      {
+        "id": "d",
+        "text": "Groundedness evaluator, requiring query, context, and response"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "The Groundedness evaluator in Azure AI Foundry assesses whether the claims made in the model response are supported by the provided context documents, requiring query, context, and response.",
+    "distractorNotes": {
+      "a": "The Coherence evaluator measures how smoothly and logically the generated text reads, not whether it is supported by source documents.",
+      "b": "The Relevance evaluator measures how directly the response addresses the user query rather than factuality against retrieved context.",
+      "c": "The Fluency evaluator measures grammatical and linguistic correctness independently of reference context."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-studio/concepts/evaluation-metrics-built-in",
+    "sourceNote": "Groundedness evaluator checks that model responses are factually supported by retrieved context",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-generative-ai-and-agentic-solutions-010",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-generative-ai-and-agentic-solutions",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A healthcare assistant ingests emails and medical documents from external patients. Security auditors are concerned that malicious actors might embed hidden instructions inside uploaded documents to force the agent into leaking internal guidelines. Which evaluation metric in Azure AI Foundry evaluates resistance against this threat?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Indirect Attack evaluator"
+      },
+      {
+        "id": "b",
+        "text": "Hate and Unfairness evaluator"
+      },
+      {
+        "id": "c",
+        "text": "Self-Harm evaluator"
+      },
+      {
+        "id": "d",
+        "text": "Protected Material evaluator"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "The Indirect Attack evaluator in Azure AI Foundry measures an application's susceptibility to indirect prompt injection attacks embedded within third-party data or untrusted context.",
+    "distractorNotes": {
+      "b": "Hate and Unfairness assesses discriminatory or disparaging language targeting protected groups rather than adversarial instruction injection.",
+      "c": "Self-Harm evaluates statements depicting or encouraging suicide or physical self-injury.",
+      "d": "Protected Material checks whether model completions reproduce copyrighted text, lyrics, or proprietary code."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-studio/concepts/evaluation-metrics-built-in",
+    "sourceNote": "Indirect Attack evaluator measures susceptibility to cross-domain prompt injections in retrieved context",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-generative-ai-and-agentic-solutions-011",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-generative-ai-and-agentic-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer needs to evaluate model outputs in a CI/CD pipeline against a strict set of business rules: every response must contain a tracking ticket number formatted as 'TICK-[0-9]{6}' and cannot exceed 200 characters. The evaluation must run hundreds of times per commit with zero token expenditure. What type of evaluator should the developer write using the azure-ai-evaluation SDK?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A model-based custom evaluator using an Azure OpenAI deployment as the judge"
+      },
+      {
+        "id": "b",
+        "text": "A code-based custom evaluator implementing a Python function with regex validation"
+      },
+      {
+        "id": "c",
+        "text": "A built-in Similarity evaluator configured with a dummy ground truth string"
+      },
+      {
+        "id": "d",
+        "text": "A prompt flow evaluation variant using few-shot prompt scoring"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "The azure-ai-evaluation SDK supports code-based custom evaluators that execute deterministic Python logic locally without calling an LLM, making them ideal for regex validation and cost-free CI testing.",
+    "distractorNotes": {
+      "a": "Model-based evaluators send prompts to an LLM judge, incurring latency, API costs, and token consumption.",
+      "c": "The Similarity evaluator computes cosine similarity between embeddings, which cannot enforce exact regex pattern matching or length limits.",
+      "d": "Prompt flow variants execute LLM completion nodes that incur token usage on each test run."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-studio/how-to/develop/evaluate-sdk",
+    "sourceNote": "Custom code-based evaluators execute Python functions locally without invoking model endpoints",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-generative-ai-and-agentic-solutions-012",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-generative-ai-and-agentic-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An AI developer is structuring a complex customer query pipeline that extracts intent, retrieves catalog entries, generates a draft response, and scores compliance before replying. The developer needs to trace inputs and outputs across intermediate steps, test nodes independently, and version the workflow as code. Which tool in Azure AI Foundry should the developer use?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Azure Machine Learning pipeline component"
+      },
+      {
+        "id": "b",
+        "text": "Azure Logic Apps consumption workflow"
+      },
+      {
+        "id": "c",
+        "text": "Prompt flow Directed Acyclic Graph (DAG) pipeline"
+      },
+      {
+        "id": "d",
+        "text": "Azure Functions durable orchestration workflow"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Prompt flow enables developers to construct DAG pipelines linking LLM nodes, Python code, and search tools with visual debugging, step-by-step tracing, and reproducible evaluation.",
+    "distractorNotes": {
+      "a": "Azure Machine Learning pipelines orchestrate model training and data preprocessing tasks rather than LLM prompt engineering, prompt node testing, and token-level tracing.",
+      "b": "Logic Apps is an enterprise integration workflow service, but lacks specialized LLM prompt evaluation, token tracing, and variant testing capabilities.",
+      "d": "Durable Functions manages long-running stateful workflows in code, but lacks built-in visual prompt debugging, LLM tracing spans, and evaluation tooling."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/machine-learning/prompt-flow/overview-what-is-prompt-flow",
+    "sourceNote": "Prompt flow allows authoring DAG-based reasoning workflows with native tracing and intermediate step evaluation",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-generative-ai-and-agentic-solutions-013",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-generative-ai-and-agentic-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer is building a multi-turn customer support assistant using the Azure AI Foundry Agent Service. The application must store ongoing conversation history across user interactions and trigger the agent to generate replies based on newly appended user text. Which architecture pattern reflects the Agent Service resource model?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Messages contain Threads, and an Agent executes inside a single Message container"
+      },
+      {
+        "id": "b",
+        "text": "Runs store conversation history permanently, while Agents create temporary Threads per turn"
+      },
+      {
+        "id": "c",
+        "text": "The application re-uploads complete conversation history arrays in each Agent request"
+      },
+      {
+        "id": "d",
+        "text": "Messages are appended to a persistent Thread, and a Run executes the Agent against the Thread"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "In Azure AI Foundry Agent Service, messages are appended to a persistent thread representing the conversation session, and initiating a run commands the agent to process the thread context.",
+    "distractorNotes": {
+      "a": "Threads contain messages, not the other way around, and an Agent is an independent entity configured with model instructions and tools.",
+      "b": "Runs are execution jobs that process a thread; they do not serve as permanent message storage containers.",
+      "c": "The Agent Service manages stateful conversation storage inside threads, eliminating the need for client applications to pass raw chat history manually on each turn."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/foundry/agents/overview",
+    "sourceNote": "Agent Service uses persistent Threads for conversation history and Runs for asynchronous execution",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-generative-ai-and-agentic-solutions-014",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-generative-ai-and-agentic-solutions",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "While polling the status of an active agent run in Azure AI Foundry Agent Service, the application receives a run status of requires_action with required_action.type set to submit_tool_outputs. What sequence of operations must the client application perform to complete the turn?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Execute local tool functions using the supplied arguments and call submit_tool_outputs on the run"
+      },
+      {
+        "id": "b",
+        "text": "Send a cancellation request for the run and append a new user message containing tool results"
+      },
+      {
+        "id": "c",
+        "text": "Update the agent system instructions with the function results and create a new run on the thread"
+      },
+      {
+        "id": "d",
+        "text": "Invoke the model directly through the ChatCompletions endpoint bypassing the existing agent run"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "When an agent run reaches requires_action, client code must parse the tool call arguments, execute the requested local functions, and invoke submit_tool_outputs to provide results back to the agent.",
+    "distractorNotes": {
+      "b": "Cancelling the run discards the execution state and prevents the agent from continuing its reasoning loop with the tool outputs.",
+      "c": "System instructions define static agent behavior; modifying them per tool invocation corrupts agent definition and creates race conditions.",
+      "d": "Calling the model independently abandons the managed thread state and run execution managed by Agent Service."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/function-calling",
+    "sourceNote": "submit_tool_outputs resumes an agent run paused in the requires_action state",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-generative-ai-and-agentic-solutions-015",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-generative-ai-and-agentic-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A financial analytics firm wants an AI agent that can accept uploaded quarterly revenue CSV files, perform statistical trend analysis, and generate downloadable chart image files. Which built-in tool in Azure AI Foundry Agent Service provides this functionality without requiring the team to manage custom execution infrastructure?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Azure AI Search tool"
+      },
+      {
+        "id": "b",
+        "text": "Code Interpreter tool"
+      },
+      {
+        "id": "c",
+        "text": "File Search tool"
+      },
+      {
+        "id": "d",
+        "text": "Bing Grounding tool"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "The Code Interpreter tool executes Python code in a sandboxed, isolated container managed by Azure, allowing agents to process data files, execute calculations, and output visual graphs.",
+    "distractorNotes": {
+      "a": "Azure AI Search performs document indexing and semantic retrieval; it cannot execute statistical code or generate image charts.",
+      "c": "File Search parses and vectorizes text documents for search retrieval, but cannot execute Python code or generate chart files.",
+      "d": "Bing Grounding fetches live web search results and does not provide an isolated compute environment."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/code-interpreter",
+    "sourceNote": "Code Interpreter tool provides sandboxed Python execution for data analysis and file generation",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-generative-ai-and-agentic-solutions-016",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-generative-ai-and-agentic-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An enterprise has an existing Azure AI Search service featuring complex custom index analyzers, semantic rankers, and hybrid vector-keyword retrieval across corporate databases. The team wants an agent in Azure AI Foundry Agent Service to query this knowledge base. Which tool configuration should the team attach to the agent?",
+    "options": [
+      {
+        "id": "a",
+        "text": "File Search tool configured with automatic vector store creation"
+      },
+      {
+        "id": "b",
+        "text": "Code Interpreter tool configured with Python search scripts"
+      },
+      {
+        "id": "c",
+        "text": "Azure AI Search tool referencing the existing search index and connection"
+      },
+      {
+        "id": "d",
+        "text": "OpenAPI tool configured with custom vector generation endpoints"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "The Azure AI Search tool connects agents directly to enterprise Azure AI Search indexes, taking advantage of existing indexes, semantic re-ranking, and security filters.",
+    "distractorNotes": {
+      "a": "File Search manages internal vector stores for ad-hoc uploaded files, and does not connect to external, pre-configured Azure AI Search indices.",
+      "b": "Using Code Interpreter to query search services adds unnecessary Python container overhead and requires exposing search credentials in code.",
+      "d": "While an OpenAPI tool could wrap custom APIs, the native Azure AI Search tool provides direct, optimized integration with existing Azure AI Search resources."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/ai-search",
+    "sourceNote": "Azure AI Search tool connects Foundry agents directly to existing Azure AI Search indexes",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-generative-ai-and-agentic-solutions-017",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-generative-ai-and-agentic-solutions",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A developer is configuring an OpenAPI tool for an Azure AI Foundry agent to interact with an internal inventory REST API hosted on Azure App Service. The enterprise requires secure, passwordless authentication without managing API keys or static credentials. How should the developer configure authentication for the OpenAPI tool connection?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Anonymous access with client IP allowlisting"
+      },
+      {
+        "id": "b",
+        "text": "HTTP Basic authentication using username and password"
+      },
+      {
+        "id": "c",
+        "text": "Static API key configured in request query parameters"
+      },
+      {
+        "id": "d",
+        "text": "Microsoft Entra ID authentication using Managed Identity"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Azure AI Foundry Agent Service supports Microsoft Entra ID managed identity for OpenAPI tool connections, enabling secure, credential-free communication with protected Azure services.",
+    "distractorNotes": {
+      "a": "Anonymous access provides no identity verification and does not satisfy enterprise authentication requirements.",
+      "b": "Basic authentication relies on static credentials, which violates the requirement for keyless, passwordless security.",
+      "c": "Static API keys require secrets management and do not use Microsoft Entra ID managed identity."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/openapi",
+    "sourceNote": "OpenAPI tools in Foundry Agent Service support Microsoft Entra ID managed identity for keyless authentication",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-generative-ai-and-agentic-solutions-018",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-generative-ai-and-agentic-solutions",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An AI agent is configured at the agent level with the File Search tool. For a specific administrative transaction, the application needs to temporarily grant the agent access to the Code Interpreter tool for a single execution, without altering the agent definition or affecting other concurrent users. At which level should the application provide the tool definition?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Run level when initiating the run on the thread"
+      },
+      {
+        "id": "b",
+        "text": "Thread level when creating the persistent thread"
+      },
+      {
+        "id": "c",
+        "text": "Project level in the Azure AI Foundry project settings"
+      },
+      {
+        "id": "d",
+        "text": "Subscription level via Azure Resource Manager policies"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "In Azure AI Foundry Agent Service, tools passed at the run level override or supplement tools configured at broader levels for the duration of that specific run only.",
+    "distractorNotes": {
+      "b": "Thread-level settings persist across all subsequent runs on that thread rather than scoping to a single isolated turn.",
+      "c": "Project-level settings define shared connections and quotas, not per-turn tool availability for individual agents.",
+      "d": "Subscription policies enforce governance guardrails and do not control runtime agent tool lists."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/foundry/agents/overview",
+    "sourceNote": "Run-level tool definitions override broader agent and thread configurations for that specific execution",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-generative-ai-and-agentic-solutions-019",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-generative-ai-and-agentic-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An enterprise customer service platform must handle billing inquiries, technical troubleshooting, and warranty claims. Rather than maintaining a single monolithic agent with hundreds of tools, the team wants an architecture where an intake agent classifies user requests and routes conversations to dedicated agents with domain-specific tools. Which architecture pattern should the team implement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Single prompt agent with round-robin load balancing"
+      },
+      {
+        "id": "b",
+        "text": "Supervisor orchestrator pattern with specialized worker agents"
+      },
+      {
+        "id": "c",
+        "text": "Chain-of-thought prompt with sequential broadcast to all models"
+      },
+      {
+        "id": "d",
+        "text": "Model reflection loop running on a single stateless endpoint"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "The supervisor or orchestrator multi-agent pattern uses a central coordinator agent to analyze user intent and delegate tasks to specialized sub-agents, preventing prompt clutter and tool confusion.",
+    "distractorNotes": {
+      "a": "Round-robin balancing randomly distributes traffic rather than routing queries based on domain classification and tool relevance.",
+      "c": "Broadcasting every user message to all models simultaneously wastes tokens and creates conflicting responses across domains.",
+      "d": "A reflection loop refines an individual agent's output and does not partition tools across specialized domain experts."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/foundry/agents/overview",
+    "sourceNote": "Multi-agent supervisor pattern delegates domain tasks to specialized agents with distinct instructions and tools",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-generative-ai-and-agentic-solutions-020",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-generative-ai-and-agentic-solutions",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An autonomous agent is equipped with a tool that initiates fund transfers between bank accounts. Compliance regulations require that no transfer executes without explicit human supervisor authorization. How should the application implement this safeguard within the Agent Service execution lifecycle?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Set model temperature to 0.0 and configure a negative presence penalty"
+      },
+      {
+        "id": "b",
+        "text": "Embed supervisor approval keywords inside the agent system instructions"
+      },
+      {
+        "id": "c",
+        "text": "Pause when requires_action is raised, await human sign-off, then submit tool output"
+      },
+      {
+        "id": "d",
+        "text": "Configure an Azure Content Safety prompt shield to intercept outgoing transfers"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "In function calling, the client application controls tool execution. When requires_action is triggered, the application can pause execution, present the transaction to a human for approval, and only submit tool outputs once confirmed.",
+    "distractorNotes": {
+      "a": "Sampling parameters govern token probability distributions and cannot enforce administrative approval workflows.",
+      "b": "System instructions guide language generation, but cannot prevent the agent from autonomously calling an available tool.",
+      "d": "Prompt shields detect adversarial jailbreaks and content violations; they do not manage business transaction approval logic."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/function-calling",
+    "sourceNote": "Human-in-the-loop workflows intercept requires_action to verify high-risk actions before submitting tool outputs",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-generative-ai-and-agentic-solutions-021",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-generative-ai-and-agentic-solutions",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A customer support agent maintains long-running conversations with users that often span dozens of messages. As the thread grows, the accumulated message tokens risk exceeding the underlying model's context window. How does Azure AI Foundry Agent Service handle thread context management to avoid context limit errors?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The service throws an unrecoverable exception requiring thread deletion"
+      },
+      {
+        "id": "b",
+        "text": "The client must manually download all messages and delete early items"
+      },
+      {
+        "id": "c",
+        "text": "The service switches the deployment to a model with a larger context window"
+      },
+      {
+        "id": "d",
+        "text": "The service applies automatic truncation strategies to drop older messages"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Azure AI Foundry Agent Service employs automatic truncation strategies (such as max_prompt_tokens and truncation_strategy settings) to trim older message history while retaining essential context and instructions.",
+    "distractorNotes": {
+      "a": "The service does not throw unrecoverable errors; it manages message truncation automatically to keep runs within limits.",
+      "b": "Clients do not need to manually delete message objects, as the server-side runtime manages context window truncation.",
+      "c": "The service does not dynamically rebind the agent to a different model deployment."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/foundry/agents/overview",
+    "sourceNote": "Agent Service manages thread context through automatic truncation strategies when history grows large",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-generative-ai-and-agentic-solutions-022",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-generative-ai-and-agentic-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer is troubleshooting an agent that failed to produce an expected answer. The developer needs to inspect the exact sequence of actions taken by the agent during the run, including which tools were invoked, the arguments passed to them, and intermediate model calls. Which API operation provides these diagnostics?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Listing run steps for the specified thread and run ID"
+      },
+      {
+        "id": "b",
+        "text": "Retrieving the agent definition object from the project"
+      },
+      {
+        "id": "c",
+        "text": "Listing all messages currently stored in the thread"
+      },
+      {
+        "id": "d",
+        "text": "Calling the model evaluation endpoint with the thread ID"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Calling list_run_steps on a run returns run step objects detailing each tool call, arguments, execution status, and message creations generated during that run.",
+    "distractorNotes": {
+      "b": "The agent definition object contains configuration metadata (model, instructions, tool list) but no runtime execution telemetry.",
+      "c": "Listing messages returns visible conversational text, but does not reveal tool call arguments, execution step ordering, or intermediate tool states.",
+      "d": "Evaluation endpoints assess output quality against test datasets rather than surfacing run execution steps."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/foundry/agents/overview",
+    "sourceNote": "Run steps list provides detailed inspection of tool invocations, arguments, and execution sequence",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-generative-ai-and-agentic-solutions-023",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-generative-ai-and-agentic-solutions",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An application orchestrates an agent run that enters the requires_action state waiting for local database query results. Due to a network partition, the application takes 15 minutes before attempting to submit the tool outputs, and the API returns an error indicating that the run has expired. What is the operational state of the expired run?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The run can be resumed by calling resume_run with the original run ID"
+      },
+      {
+        "id": "b",
+        "text": "The run is terminal and cannot be resumed, requiring a new run on the thread"
+      },
+      {
+        "id": "c",
+        "text": "The run reverts to queued status and retries tool execution automatically"
+      },
+      {
+        "id": "d",
+        "text": "The run remains in requires_action indefinitely until cancelled by the client"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "In Azure AI Foundry Agent Service, if tool outputs are not submitted before the timeout window expires, the run moves to an expired terminal status and a new run must be initiated on the thread.",
+    "distractorNotes": {
+      "a": "Expired runs cannot be resumed or un-expired; the Agent Service provides no resume_run operation.",
+      "c": "The Agent Service does not automatically requeue or retry runs whose tool output submission window has elapsed.",
+      "d": "Runs in requires_action do not wait indefinitely; if tool outputs are not submitted before the timeout window, the run transitions to expired."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/foundry/agents/overview",
+    "sourceNote": "Expired runs in Agent Service are terminal; tool outputs cannot be submitted and a new run is required",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-generative-ai-and-agentic-solutions-024",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-generative-ai-and-agentic-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer builds an Azure AI application that generates strict SQL queries from natural language questions. In initial tests, the model occasionally produces invalid SQL syntax and unexpected table aliases. The developer wants to configure generation parameters to produce highly deterministic, consistent SQL outputs. What parameter adjustment is recommended?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Set temperature to 1.8 and top_p to 0.95"
+      },
+      {
+        "id": "b",
+        "text": "Set frequency_penalty to 2.0 and presence_penalty to 2.0"
+      },
+      {
+        "id": "c",
+        "text": "Set temperature to 0.0 or low values and keep top_p at default"
+      },
+      {
+        "id": "d",
+        "text": "Set max_tokens to 10 and top_p to 0.1"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "For deterministic tasks like code and SQL generation, setting temperature to 0.0 (or very low) minimizes output variance and encourages greedy decoding, and Microsoft recommends altering temperature or top_p, not both.",
+    "distractorNotes": {
+      "a": "High temperature values increase output entropy and randomness, which worsens syntax hallucination in SQL generation.",
+      "b": "Setting high penalties distorts SQL generation by penalizing standard SQL keywords like SELECT and WHERE that must repeat.",
+      "d": "Setting max_tokens to 10 abruptly cuts off SQL queries before completion."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/chatgpt",
+    "sourceNote": "Lowering temperature to zero optimizes deterministic outputs like SQL generation without altering top_p",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-generative-ai-and-agentic-solutions-025",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-generative-ai-and-agentic-solutions",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An AI copywriting tool creates product descriptions using Azure OpenAI. The generated drafts frequently repeat the exact same brand slogan phrases verbatim throughout the text. The team wants to reduce verbatim phrase repetition without discouraging the introduction of diverse new topics. Which parameter should the team increase?",
+    "options": [
+      {
+        "id": "a",
+        "text": "temperature"
+      },
+      {
+        "id": "b",
+        "text": "top_p"
+      },
+      {
+        "id": "c",
+        "text": "presence_penalty"
+      },
+      {
+        "id": "d",
+        "text": "frequency_penalty"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "frequency_penalty penalizes tokens proportionally to how many times they have already appeared in the text, directly suppressing verbatim phrase repetition.",
+    "distractorNotes": {
+      "a": "Increasing temperature adds randomness across all vocabulary but does not specifically target words based on their repetition count.",
+      "b": "Adjusting top_p changes the cumulative probability pool without penalizing words based on existing occurrence frequency.",
+      "c": "Presence penalty applies a constant penalty to any word that has appeared at least once, penalizing new topic keywords equally to repetitive phrases."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/chatgpt",
+    "sourceNote": "frequency_penalty reduces exact token repetition proportionally to prior occurrences in the output",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-generative-ai-and-agentic-solutions-026",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-generative-ai-and-agentic-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer builds an Azure OpenAI pipeline that performs few-shot sentiment analysis. Each example in the prompt is formatted as 'Review: ... | Sentiment: Positive\\n---'. During inference, the model generates the sentiment label correctly but continues generating invented new reviews and ratings. What configuration should the developer set to halt generation immediately after the label?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Configure delimiter characters as a stop sequence"
+      },
+      {
+        "id": "b",
+        "text": "Set max_tokens to 1 to restrict generation length"
+      },
+      {
+        "id": "c",
+        "text": "Increase presence_penalty to maximum value"
+      },
+      {
+        "id": "d",
+        "text": "Set the response_format property to text_only"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Specifying stop sequences instructs the model to cease token generation immediately when encountering the specified delimiter sequence, preventing continuation spillover in few-shot prompts.",
+    "distractorNotes": {
+      "b": "Limiting max_tokens to 1 may cut off multi-token sentiment words like 'Negative' before completion.",
+      "c": "Presence penalty discourages token reuse but does not establish a hard generation stopping boundary.",
+      "d": "There is no text_only response format type, and response formats govern JSON schema validation rather than stopping triggers."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/chatgpt",
+    "sourceNote": "Stop sequences halt model generation immediately upon emitting specified delimiter strings",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-generative-ai-and-agentic-solutions-027",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-generative-ai-and-agentic-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A development team wants an Azure OpenAI model to classify customer support tickets into specialized internal taxonomy categories. When given only category definitions in the system prompt (zero-shot), the model frequently uses generic synonyms instead of the exact taxonomy labels. How can the team improve adherence to taxonomy labels without fine-tuning the model?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Set temperature to 2.0 to expand vocabulary coverage"
+      },
+      {
+        "id": "b",
+        "text": "Include representative input and output demonstration pairs in the prompt"
+      },
+      {
+        "id": "c",
+        "text": "Increase the max_tokens parameter to allow longer reasoning outputs"
+      },
+      {
+        "id": "d",
+        "text": "Switch the API call from ChatCompletions to an Embeddings endpoint"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Few-shot prompting provides concrete demonstration pairs illustrating input tickets and their exact expected category labels, teaching the model desired formatting and classification boundaries in-context.",
+    "distractorNotes": {
+      "a": "Higher temperature increases randomness, which leads to greater label inconsistency.",
+      "c": "Increasing max_tokens provides more output capacity, but does not teach label alignment.",
+      "d": "Embeddings endpoints return vector arrays, not text category classifications."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/advanced-prompt-engineering",
+    "sourceNote": "Few-shot prompting provides explicit demonstration examples to improve classification and formatting fidelity",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-generative-ai-and-agentic-solutions-028",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-generative-ai-and-agentic-solutions",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An AI system drafts complex legal contract summaries. To maximize accuracy and adherence to compliance checklists, the engineering team designs a multistep pipeline where the initial summary draft is reviewed by an evaluation node against a strict set of rubrics, and feedback is fed back to the generator to revise the output before delivery. Which prompt engineering pattern does this pipeline implement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Retrieval-augmented generation"
+      },
+      {
+        "id": "b",
+        "text": "Zero-shot direct generation"
+      },
+      {
+        "id": "c",
+        "text": "Reflection and self-critique loop"
+      },
+      {
+        "id": "d",
+        "text": "Parameter-efficient fine-tuning"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Reflection and critique patterns use intermediate evaluation steps where a model assesses a draft output against specific criteria and refines it iteratively before delivering the final response.",
+    "distractorNotes": {
+      "a": "Retrieval-augmented generation focuses on fetching external context from knowledge bases, not iterative critique and revision cycles.",
+      "b": "Zero-shot direct generation produces an answer in a single forward pass without critique or revision.",
+      "d": "Parameter-efficient fine-tuning updates model adapter weights, whereas reflection is an inference-time prompting workflow."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/machine-learning/prompt-flow/overview-what-is-prompt-flow",
+    "sourceNote": "Reflection and critique loops evaluate draft generations against rubrics to refine final outputs",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-generative-ai-and-agentic-solutions-029",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-generative-ai-and-agentic-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An AI application solves multi-step mathematical word problems and logistics scheduling tasks. When asked to provide direct numerical answers immediately, the model frequently makes calculation errors. Which prompt engineering technique instructs the model to output intermediate reasoning steps to improve problem-solving accuracy?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Restricting response_format to json_object mode"
+      },
+      {
+        "id": "b",
+        "text": "Setting temperature to 0.0 with top_p at 0.0"
+      },
+      {
+        "id": "c",
+        "text": "Applying a high presence_penalty to suppress repeated tokens"
+      },
+      {
+        "id": "d",
+        "text": "Using chain-of-thought prompting to reason step by step"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Chain-of-thought prompting prompts the model to break down complex problems and articulate intermediate reasoning steps before arriving at the final answer, significantly improving logical accuracy.",
+    "distractorNotes": {
+      "a": "json_object enforces JSON formatting but does not stimulate multistep problem solving or intermediate logic derivation.",
+      "b": "Setting top_p to 0.0 is an invalid parameter configuration in Azure OpenAI APIs.",
+      "c": "Presence penalty adjusts topic diversity and does not encourage arithmetic derivation."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/advanced-prompt-engineering",
+    "sourceNote": "Chain-of-thought prompting encourages step-by-step intermediate reasoning before emitting final answers",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-generative-ai-and-agentic-solutions-030",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-generative-ai-and-agentic-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A cloud architect needs to monitor generative AI applications running in production across multiple microservices. The solution must capture distributed traces, latency breakdowns, and standard generative AI attributes (such as model deployment name, prompt tokens, and completion tokens) exported to Azure Application Insights. Which standard should the development team implement using the Azure AI Foundry SDK?",
+    "options": [
+      {
+        "id": "a",
+        "text": "OpenTelemetry tracing instrumentation"
+      },
+      {
+        "id": "b",
+        "text": "Azure Monitor classic Application Insights SDK"
+      },
+      {
+        "id": "c",
+        "text": "Azure Diagnostic Settings resource log export"
+      },
+      {
+        "id": "d",
+        "text": "Log Analytics HTTP Data Collector ingestion"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Azure AI Foundry SDK supports OpenTelemetry instrumentation, enabling developers to capture distributed traces with gen_ai semantic conventions and stream them to Application Insights.",
+    "distractorNotes": {
+      "b": "The classic Application Insights SDK does not support standardized GenAI semantic conventions or distributed tracing spans for Foundry agent calls.",
+      "c": "Azure Diagnostic Settings export platform resource logs and metrics rather than application-level distributed traces with GenAI span attributes.",
+      "d": "The Log Analytics Data Collector API ingests raw log records via REST but does not provide end-to-end distributed tracing or GenAI semantic conventions."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/foundry/observability/how-to/trace-agent-setup",
+    "sourceNote": "OpenTelemetry instrumentation in Azure AI Foundry captures distributed traces and GenAI semantic attributes",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-generative-ai-and-agentic-solutions-031",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-generative-ai-and-agentic-solutions",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "Users of an interactive chat application report that the assistant feels sluggish when processing lengthy user inputs with large retrieved contexts, even though streaming output characters appear rapidly once generation begins. Which latency metric specifically reflects the initial delay before the first token is received, and how can the team improve user-perceived responsiveness?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Time Per Output Token (TPOT); improve by setting temperature to 0.0"
+      },
+      {
+        "id": "b",
+        "text": "Time to First Token (TTFT); improve by streaming responses to the client"
+      },
+      {
+        "id": "c",
+        "text": "End-to-End Latency; improve by disabling chat completion stop sequences"
+      },
+      {
+        "id": "d",
+        "text": "Queue Wait Time; improve by increasing the client request timeout limit"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Time to First Token (TTFT) measures the time elapsed from request dispatch until the arrival of the initial token (prompt processing time). Enabling streaming allows users to read output as it arrives, dramatically improving perceived responsiveness.",
+    "distractorNotes": {
+      "a": "TPOT measures the rate at which subsequent tokens are generated after generation has already started, not the initial prompt processing delay.",
+      "c": "Disabling stop sequences does not reduce prompt processing time and may cause runaway generation.",
+      "d": "Increasing timeout limits tolerates slow requests but does not improve user perceived latency."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/monitoring",
+    "sourceNote": "Time to First Token (TTFT) captures prompt processing latency, and streaming improves perceived responsiveness",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-generative-ai-and-agentic-solutions-032",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-generative-ai-and-agentic-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An enterprise is launching a mission-critical AI customer service agent that experiences unpredictable spikes in traffic. Under standard pay-as-you-go deployments, occasional 429 (Too Many Requests) rate limit errors occur during peak hours due to shared multi-tenant capacity limits. Which Azure OpenAI deployment model provides dedicated, reserved model throughput with predictable latency SLAs?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Global Batch inference deployment"
+      },
+      {
+        "id": "b",
+        "text": "Serverless pay-as-you-go deployment"
+      },
+      {
+        "id": "c",
+        "text": "Provisioned Throughput Unit (PTU) deployment"
+      },
+      {
+        "id": "d",
+        "text": "Global Standard deployment with cross-region routing"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Provisioned Throughput Unit (PTU) deployments allocate dedicated model processing capacity for an Azure OpenAI deployment, offering predictable performance and high throughput without shared multi-tenant rate limiting.",
+    "distractorNotes": {
+      "a": "Batch inference is designed for asynchronous offline workloads with a 24-hour turnaround, not real-time customer service agents.",
+      "b": "Serverless pay-as-you-go shares multi-tenant infrastructure and enforces regional rate limits subject to 429 throttling during traffic spikes.",
+      "d": "Global Standard uses global infrastructure to offer higher default quotas, but operates on multi-tenant capacity and does not offer dedicated throughput or latency SLAs."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/provisioned-throughput-onboarding",
+    "sourceNote": "Provisioned Throughput Units (PTUs) provide dedicated capacity and consistent latency for production workloads",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-generative-ai-and-agentic-solutions-033",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-generative-ai-and-agentic-solutions",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An AI system generates billing invoices and tax calculations for an e-commerce platform. While generative models excel at conversational customer interaction, tax calculations must strictly comply with legal percentage formulas without probabilistic variance. What architectural design best guarantees compliance for this solution?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Provide fifty few-shot calculation examples in the system prompt"
+      },
+      {
+        "id": "b",
+        "text": "Set model temperature to 0.0 to enforce deterministic arithmetic decoding"
+      },
+      {
+        "id": "c",
+        "text": "Prompt the model to verify its own calculations in a multi-turn thread"
+      },
+      {
+        "id": "d",
+        "text": "Use a deterministic rules engine for calculations and the model for dialogue"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "A hybrid architecture combines the natural language strengths of LLMs with deterministic rules engines or code functions for tax and math calculations, guaranteeing arithmetic correctness and regulatory compliance.",
+    "distractorNotes": {
+      "a": "Few-shot prompting improves formatting fidelity but cannot mathematically guarantee zero arithmetic error across all numeric inputs.",
+      "b": "Setting temperature to 0.0 reduces sampling variance but cannot guarantee arithmetic correctness or eliminate hallucinations in multi-step calculations.",
+      "c": "Self-verification prompts remain probabilistic and cannot guarantee strict legal compliance for tax computations."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/system-message",
+    "sourceNote": "Hybrid solutions combine deterministic business rules engines with LLMs to guarantee regulatory and mathematical accuracy",
     "sourceCheckedAt": "2026-10-11"
   }
 ]

@@ -6,8 +6,8 @@
     "type": "single",
     "domain": "plan-and-manage-an-azure-ai-solution",
     "difficulty": "medium",
-    "status": "draft",
-    "stem": "A developer is configuring safety filters for a large language model deployed in Microsoft Foundry. Which Azure AI Content Safety capability specifically analyzes incoming user prompts for jailbreak attempts that attempt to override system instructions?",
+    "status": "reviewed",
+    "stem": "A developer is configuring safety filters for a large language model deployed in Azure AI Foundry. Which Azure AI Content Safety capability specifically analyzes incoming user prompts for jailbreak attempts that attempt to override system instructions?",
     "options": [
       {
         "id": "a",
@@ -37,6 +37,1086 @@
     },
     "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/content-safety/overview",
     "sourceNote": "Azure AI Content Safety features - Prompt Shields for user prompt attacks and jailbreak risk",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-plan-and-manage-an-azure-ai-solution-002",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "plan-and-manage-an-azure-ai-solution",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An organization wants to deploy an on-device text summarization and classification feature inside a mobile application with intermittent internet connectivity and tight memory constraints. Which model family available in Azure AI Foundry should the team select to run inference locally with minimal memory footprint while retaining competitive reasoning performance?",
+    "options": [
+      {
+        "id": "a",
+        "text": "text-embedding-3-small"
+      },
+      {
+        "id": "b",
+        "text": "Phi-3-mini"
+      },
+      {
+        "id": "c",
+        "text": "GPT-4o"
+      },
+      {
+        "id": "d",
+        "text": "Cohere Command R"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Phi-3-mini is a 3.8-billion parameter small language model (SLM) optimized for constrained environments, low latency, and on-device or local deployment through ONNX Runtime, offering strong reasoning capabilities with minimal memory and compute requirements.",
+    "distractorNotes": {
+      "a": "text-embedding-3-small generates vector representations for semantic search and retrieval rather than performing generative summarization or conversational reasoning.",
+      "c": "GPT-4o is a large frontier multimodal model designed for cloud inference with significant compute and memory requirements, making it unsuitable for local mobile execution.",
+      "d": "Cohere Command R is a large language model optimized for scalable cloud-based enterprise retrieval-augmented generation workloads rather than on-device execution."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models",
+    "sourceNote": "Azure AI and OpenAI models overview - Phi-3 small language models for on-device and efficient deployment",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-plan-and-manage-an-azure-ai-solution-003",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "plan-and-manage-an-azure-ai-solution",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An insurance company needs an AI solution that processes submitted claims containing damage photos alongside scanned repair estimates. The system must inspect image content to verify damage descriptions and extract tabulated cost lines. Which model type in Azure AI Foundry should the team deploy to fulfill these requirements in a single unified architecture?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Text-only embedding model paired with vector similarity search"
+      },
+      {
+        "id": "b",
+        "text": "Text generation model paired with a separate Document Intelligence pipeline"
+      },
+      {
+        "id": "c",
+        "text": "Multimodal generative model supporting combined text and image inputs"
+      },
+      {
+        "id": "d",
+        "text": "Computer vision classification model paired with custom tabular regressors"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Multimodal generative models such as GPT-4o accept both natural language text and high-resolution images as simultaneous inputs, enabling unified visual inspection and contextual text analysis without needing separate pipeline components.",
+    "distractorNotes": {
+      "a": "Embedding models produce numerical vector representations for similarity search and cannot parse visual details or generate descriptive textual analyses.",
+      "b": "Pairing a text-only model with Document Intelligence creates a multi-service pipeline rather than a single unified model architecture.",
+      "d": "Computer vision classification models classify visual objects or tags but cannot parse unstructured damage descriptions or extract formatted tabular cost items."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models",
+    "sourceNote": "Azure AI model catalog and OpenAI models - multimodal models supporting vision and text",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-plan-and-manage-an-azure-ai-solution-004",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "plan-and-manage-an-azure-ai-solution",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A development team is designing an enterprise retrieval-augmented generation (RAG) system in Azure AI Foundry. The architecture requires converting millions of technical support documents into dense numerical vectors to power similarity search in Azure AI Search. Which model class should be deployed to generate these vector representations?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Conversational chat completion model"
+      },
+      {
+        "id": "b",
+        "text": "Cross-encoder semantic reranking model"
+      },
+      {
+        "id": "c",
+        "text": "Generative text summarization model"
+      },
+      {
+        "id": "d",
+        "text": "Dense text embeddings model"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Text embeddings models, such as text-embedding-3-large and text-embedding-3-small, translate text strings into dense vector representations that capture semantic meaning for high-accuracy similarity search.",
+    "distractorNotes": {
+      "a": "Conversational chat completion models generate sequential text responses rather than producing dense vector embeddings for vector database indexing.",
+      "b": "Cross-encoder semantic reranking models score document relevance against a query but do not produce standalone vector embeddings for initial similarity search.",
+      "c": "Generative text summarization models condense source text into brief summaries rather than computing dense multidimensional vector embeddings for vector search."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models",
+    "sourceNote": "Azure OpenAI embeddings models - converting text into dense numerical vectors for vector search",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-plan-and-manage-an-azure-ai-solution-005",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "plan-and-manage-an-azure-ai-solution",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An enterprise cloud architect is organizing Azure AI Foundry resources across multiple engineering teams. The governance team mandates centralized control over virtual network isolation, customer-managed encryption keys, and shared data connections, while individual development teams need isolated workspaces to experiment with prompts and model deployments. How should the architect structure the Azure AI Foundry environment?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Deploy a single Azure AI hub and create separate Azure AI projects for each team"
+      },
+      {
+        "id": "b",
+        "text": "Deploy separate Azure AI hubs for each team and connect them through peering links"
+      },
+      {
+        "id": "c",
+        "text": "Deploy one Azure AI project and configure distinct prompt flow folders per team"
+      },
+      {
+        "id": "d",
+        "text": "Deploy independent Azure OpenAI standalone resources without creating an AI hub"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "In Azure AI Foundry, an Azure AI hub acts as the central top-level resource that governs enterprise security boundaries, virtual network configuration, customer-managed keys, and shared connections. Development teams then work within individual Azure AI projects child to the hub, inheriting security settings while keeping their experiments and deployments organized independently.",
+    "distractorNotes": {
+      "b": "Creating multiple separate hubs for each team duplicates administrative overhead, fractures shared connection management, and complicates centralized network governance.",
+      "c": "Using a single project with shared folders fails to provide project-level isolation for deployments, access control, and dedicated experimentation boundaries across different teams.",
+      "d": "Standalone Azure OpenAI resources lack the unified collaboration, prompt flow integration, model catalog access, and project workspace organization provided by Azure AI Foundry hubs."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-studio/concepts/architecture",
+    "sourceNote": "Azure AI Studio architecture - Hubs provide centralized governance while Projects provide team workspaces",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-plan-and-manage-an-azure-ai-solution-006",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "plan-and-manage-an-azure-ai-solution",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer needs to access an Azure AI Search service index from an Azure AI Foundry project. The organization requires that the connection credentials be maintained securely once and made automatically available to all current and future projects created under the same corporate workspace. At which level in Azure AI Foundry should this connection be established?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Inside an Azure Key Vault secret referenced individually by each project"
+      },
+      {
+        "id": "b",
+        "text": "At the Azure AI hub level to share the connection across all projects"
+      },
+      {
+        "id": "c",
+        "text": "At the individual Azure AI project level marked as a local resource"
+      },
+      {
+        "id": "d",
+        "text": "At the Azure subscription level as an Azure Resource Manager shared variable"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Connections configured at the Azure AI hub level are shared resources that automatically become accessible to all projects under that hub, allowing administrators to manage authentication and endpoints in a single centralized location.",
+    "distractorNotes": {
+      "a": "Storing connection credentials in Azure Key Vault requires each project to individually configure access policies and connection definitions rather than inheriting shared connections automatically.",
+      "c": "Configuring connections at the project level restricts their availability exclusively to that specific project, requiring redundant recreation in other projects.",
+      "d": "Azure Resource Manager variables manage infrastructure templates and do not configure shared data plane connections inside Azure AI Foundry."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-studio/how-to/connections-add",
+    "sourceNote": "Azure AI Studio connections - Hub level connections share resources across projects",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-plan-and-manage-an-azure-ai-solution-007",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "plan-and-manage-an-azure-ai-solution",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A team lead wants to optimize compute costs for developers authoring and testing prompt flows in Azure AI Foundry. Developers currently spin up dedicated virtual machine environments that remain active during non-working hours, causing unnecessary billing. How should the administrator configure developer compute resources in Azure AI Foundry to minimize idle spend and foster resource sharing?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Deploy dedicated GPU compute instances with permanent auto-scale triggers"
+      },
+      {
+        "id": "b",
+        "text": "Attach an external Azure Kubernetes Service cluster with fixed node pools"
+      },
+      {
+        "id": "c",
+        "text": "Configure compute instances with idle shutdown rules or use shared compute"
+      },
+      {
+        "id": "d",
+        "text": "Provision serverless container endpoints configured with persistent standby capacity"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Azure AI Foundry supports compute instances with automated idle shutdown policies to eliminate compute costs when developers are not actively working, as well as shared compute resources configured at the hub level to serve multiple developers efficiently.",
+    "distractorNotes": {
+      "a": "Dedicated GPU instances with permanent auto-scale triggers continue accruing baseline compute costs even when developers are not actively working.",
+      "b": "Attached Kubernetes clusters with fixed node pools introduce significant ongoing management overhead and infrastructure spend regardless of usage.",
+      "d": "Serverless container endpoints with persistent standby capacity are designed for production model hosting rather than interactive prompt flow authoring."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-studio/concepts/architecture",
+    "sourceNote": "Azure AI Studio architecture - Compute instances and compute options for development and authoring",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-plan-and-manage-an-azure-ai-solution-008",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "plan-and-manage-an-azure-ai-solution",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A company wants to evaluate an open-weight foundation model from the Azure AI Foundry model catalog. The team does not want to manage underlying virtual machine infrastructure, allocate dedicated GPU quotas, or pay for compute capacity when no requests are being processed. Which deployment option should they choose?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Azure Kubernetes Service cluster deployment"
+      },
+      {
+        "id": "b",
+        "text": "Azure Batch dedicated high-performance nodes"
+      },
+      {
+        "id": "c",
+        "text": "Managed online endpoint with dedicated VMs"
+      },
+      {
+        "id": "d",
+        "text": "Serverless API with pay-as-you-go billing"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Serverless API deployment (Models-as-a-Service / MaaS) provides access to catalog models through a hosted API billed per token without requiring subscription GPU quota or provisioning and managing dedicated virtual machine infrastructure.",
+    "distractorNotes": {
+      "a": "Azure Kubernetes Service requires provisioning, managing, and paying for persistent cluster nodes and container orchestration infrastructure.",
+      "b": "Azure Batch requires defining batch pools, managing virtual machine schedules, and configuring custom container runtimes for inference jobs.",
+      "c": "Managed online endpoints provision dedicated virtual machines with specific GPU SKUs that accrue hourly infrastructure charges even when traffic is idle."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-studio/how-to/deploy-models-serverless",
+    "sourceNote": "Azure AI Studio serverless API deployments - Pay-as-you-go model deployment without managing VMs",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-plan-and-manage-an-azure-ai-solution-009",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "plan-and-manage-an-azure-ai-solution",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A financial services firm is deploying a mission-critical generative AI application on Azure OpenAI. The application requires predictable latency, guaranteed throughput capacity during peak trading hours, and protection against rate-limit throttling (HTTP 429) caused by shared cloud concurrency. Which deployment model should the firm select?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Provisioned Throughput deployment"
+      },
+      {
+        "id": "b",
+        "text": "Standard deployment"
+      },
+      {
+        "id": "c",
+        "text": "Global Standard deployment"
+      },
+      {
+        "id": "d",
+        "text": "Global Batch deployment"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Provisioned Throughput (PTU) allocations reserve dedicated model processing capacity for a tenant, delivering consistent inference latency and guaranteed throughput without being subject to the dynamic noisy-neighbor throttling of standard shared deployments.",
+    "distractorNotes": {
+      "b": "Standard deployments share regional capacity across tenants, where peak traffic can trigger HTTP 429 rate limiting and variable inference latency.",
+      "c": "Global Standard deployments dynamically distribute traffic across regions to absorb traffic spikes, but still rely on shared multi-tenant capacity without latency guarantees.",
+      "d": "Global Batch deployments process asynchronous requests within a 24-hour target turnaround at reduced cost, making them unsuitable for real-time low-latency trading applications."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/provisioned-throughput",
+    "sourceNote": "Azure OpenAI Provisioned Throughput - Guaranteed capacity and predictable latency with PTUs",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-plan-and-manage-an-azure-ai-solution-010",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "plan-and-manage-an-azure-ai-solution",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A research team has fine-tuned a custom open-source model with proprietary weights and custom inference dependencies. The model is not supported as a serverless pay-as-you-go API in Azure AI Foundry. Which deployment approach in Azure AI Foundry must the team use to host this model with custom container images and dedicated GPU instances?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Serverless API endpoint using consumption token billing"
+      },
+      {
+        "id": "b",
+        "text": "Managed compute deployment using dedicated GPU instances"
+      },
+      {
+        "id": "c",
+        "text": "Azure Container Apps deployment with consumption CPU profiles"
+      },
+      {
+        "id": "d",
+        "text": "Azure Function App hosting with serverless Python consumption plans"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Managed compute deployments in Azure AI Foundry allow teams to deploy models to dedicated virtual machines with customizable environments, container definitions, and dedicated GPU SKUs, which is required for custom model artifacts and proprietary runtimes not offered as serverless APIs.",
+    "distractorNotes": {
+      "a": "Serverless API endpoints only support selected catalog models offered under the Models-as-a-Service model and cannot host custom arbitrary container images or weights.",
+      "c": "Azure Container Apps consumption profiles lack dedicated GPU acceleration required for hosting large proprietary machine learning model weights.",
+      "d": "Azure Function Apps on serverless consumption plans are constrained by execution timeouts and lack GPU hardware necessary for large model inference runtimes."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-studio/how-to/deploy-models-managed",
+    "sourceNote": "Azure AI Studio managed compute deployments - Deploying custom models to dedicated virtual machines",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-plan-and-manage-an-azure-ai-solution-011",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "plan-and-manage-an-azure-ai-solution",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A software engineering team wants to implement continuous integration (CI) for a generative AI application built using prompt flow in Azure AI Foundry. Every pull request must automatically run quality evaluators (such as groundedness and relevance) against a golden test dataset before changes can be merged to main. How should the team implement this automation in their CI pipeline?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Configure Azure Monitor action groups to evaluate chat playground session metrics"
+      },
+      {
+        "id": "b",
+        "text": "Schedule nightly Azure Automation runbooks that inspect Application Insights traces"
+      },
+      {
+        "id": "c",
+        "text": "Execute Prompt flow CLI or SDK evaluation commands in the CI runner"
+      },
+      {
+        "id": "d",
+        "text": "Trigger an Azure Logic App workflow that evaluates post-deployment user ratings"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Prompt flow provides CLI and Python SDK commands (such as `pf run create` and evaluation flows) that can be executed directly within automated CI/CD runners (like GitHub Actions or Azure Pipelines) to evaluate flows against datasets and fail the build if quality thresholds are not met.",
+    "distractorNotes": {
+      "a": "Azure Monitor action groups fire alert notifications based on metric thresholds, but cannot execute automated prompt flow evaluation suites against golden datasets.",
+      "b": "Nightly runbooks run asynchronously on a schedule after code is merged rather than gating pull requests prior to merging.",
+      "d": "Evaluating post-deployment user ratings assesses production feedback after release, failing to validate prompt flow quality before merging pull requests."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-studio/how-to/develop/evaluate-sdk",
+    "sourceNote": "Azure AI Studio evaluation SDK - Running automated evaluations in developer and CI workflows",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-plan-and-manage-an-azure-ai-solution-012",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "plan-and-manage-an-azure-ai-solution",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer is building an automated test suite for an agentic RAG system using the Azure AI Evaluation SDK (`azure-ai-evaluation`). The test must quantify whether the model response accurately reflects only the facts present in the retrieved context documents, without introducing hallucinated claims. Which built-in evaluator should the developer execute?",
+    "options": [
+      {
+        "id": "a",
+        "text": "FluencyEvaluator"
+      },
+      {
+        "id": "b",
+        "text": "CoherenceEvaluator"
+      },
+      {
+        "id": "c",
+        "text": "SimilarityEvaluator"
+      },
+      {
+        "id": "d",
+        "text": "GroundednessEvaluator"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "The GroundednessEvaluator measures how well the model response is substantiated by the retrieved context documents, assigning a score that penalizes ungrounded or fabricated claims (hallucinations).",
+    "distractorNotes": {
+      "a": "FluencyEvaluator assesses grammatical correctness, flow, and structural clarity of generated text without checking factual alignment with context documents.",
+      "b": "CoherenceEvaluator measures the logical consistency and smoothness of ideas within the generated response without evaluating factual grounding against retrieved sources.",
+      "c": "SimilarityEvaluator measures semantic alignment between generated responses and ground-truth reference answers rather than verifying grounding against retrieved context."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-studio/how-to/develop/evaluate-sdk",
+    "sourceNote": "Azure AI Evaluation SDK - Built-in evaluators including GroundednessEvaluator for RAG accuracy",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-plan-and-manage-an-azure-ai-solution-013",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "plan-and-manage-an-azure-ai-solution",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "In an Azure DevOps pipeline, an engineer runs an automated evaluation batch against a revised prompt flow version. The pipeline must compare the aggregate evaluation scores of the new run against a production baseline and automatically halt deployment if the average groundedness score drops below 4.0 out of 5.0. How should the pipeline verify this condition?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Parse the evaluation summary metrics output and assert the threshold value in a pipeline step"
+      },
+      {
+        "id": "b",
+        "text": "Configure an Azure Policy rule to validate groundedness scores during ARM resource deployment"
+      },
+      {
+        "id": "c",
+        "text": "Attach an Azure Monitor metric alert to the parent Azure AI hub that triggers a pipeline webhook"
+      },
+      {
+        "id": "d",
+        "text": "Configure an Azure AI Content Safety rejection filter threshold on the model deployment"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Automated evaluations output summary metrics (including mean scores across test samples). CI/CD pipelines script an assertion step that parses these metrics and fails the build or stops the release stage if any score fails to satisfy minimum threshold criteria.",
+    "distractorNotes": {
+      "b": "Azure Policy enforces resource configuration compliance at the Azure Resource Manager control plane, not algorithmic evaluation scores in software test runs.",
+      "c": "Azure Monitor metric alerts monitor platform infrastructure metrics (like request counts or latency) rather than prompt flow SDK batch evaluation summary scores.",
+      "d": "Azure AI Content Safety filters block harmful or ungrounded content at inference runtime, but do not compare aggregate evaluation metrics to gate CI/CD deployment pipelines."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-studio/concepts/evaluation-approach-gen-ai",
+    "sourceNote": "Evaluation approaches for generative AI apps - Analyzing metrics and establishing quality gates",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-plan-and-manage-an-azure-ai-solution-014",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "plan-and-manage-an-azure-ai-solution",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An application calling an Azure OpenAI model deployment in Azure AI Foundry starts receiving HTTP 429 errors during busy hours. The response headers include `Retry-After: 12`. Analysis confirms the service is reaching its limit on the volume of text processed per minute rather than total concurrent network connections. Which metric and configuration must the team increase in the Azure portal to resolve this error?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Requests Per Minute quota allocated to the deployment"
+      },
+      {
+        "id": "b",
+        "text": "Tokens Per Minute quota allocated to the deployment"
+      },
+      {
+        "id": "c",
+        "text": "Maximum concurrent client request connections on the endpoint"
+      },
+      {
+        "id": "d",
+        "text": "Virtual machine instance count on the compute cluster"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Azure OpenAI rate limits are enforced primarily via Tokens Per Minute (TPM) and Requests Per Minute (RPM). When text volume exceeds allocated capacity, HTTP 429 (Too Many Requests) is returned with a `Retry-After` header. Increasing the Tokens Per Minute quota allocated to the deployment resolves token-based throttling.",
+    "distractorNotes": {
+      "a": "Requests Per Minute (RPM) limits the total number of API requests regardless of text length, whereas token volume throttling is governed by Tokens Per Minute (TPM).",
+      "c": "Client connection limits govern concurrent network connections, whereas text processing rate limits with Retry-After headers in Azure OpenAI are driven by token quotas.",
+      "d": "Azure OpenAI model endpoints are serverless managed services whose quotas are defined in TPM and RPM rather than compute virtual machine instance counts."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota",
+    "sourceNote": "Azure OpenAI quota management - Tokens Per Minute (TPM) and Requests Per Minute (RPM) limits",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-plan-and-manage-an-azure-ai-solution-015",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "plan-and-manage-an-azure-ai-solution",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A global enterprise has multiple regional applications calling Azure OpenAI models. During peak regional business hours, traffic spikes exceed local regional quotas, while quotas in other geographic regions remain largely idle. Which Azure OpenAI deployment feature should the team adopt to automatically distribute traffic across multiple Azure regions to maximize throughput without manually managing regional failover endpoints?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Dedicated provisioned throughput units pinned to a single datacenter"
+      },
+      {
+        "id": "b",
+        "text": "Standard regional deployments load-balanced via Azure API Management"
+      },
+      {
+        "id": "c",
+        "text": "Global Standard deployment with dynamically routed regional capacity"
+      },
+      {
+        "id": "d",
+        "text": "Data Zone Standard deployment restricted to local geographic clusters"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Global Standard deployments in Azure OpenAI route incoming requests dynamically across global Azure infrastructure, leveraging available capacity across multiple regions to deliver higher default quotas and greater resistance to regional traffic spikes.",
+    "distractorNotes": {
+      "a": "Dedicated provisioned throughput units pinned to a single datacenter do not dynamically route traffic across global regions to absorb multi-region spikes.",
+      "b": "Load-balancing standard regional deployments with Azure API Management requires deploying and maintaining API Management instances and manual routing rules across separate regional endpoints.",
+      "d": "Data Zone Standard deployments route traffic strictly within a designated geographic boundary for data sovereignty, rather than maximizing global throughput across all available regions."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota",
+    "sourceNote": "Azure OpenAI quota management - Global Standard deployments for dynamic multi-region capacity",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-plan-and-manage-an-azure-ai-solution-016",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "plan-and-manage-an-azure-ai-solution",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A cloud operations manager needs to track and allocate Azure AI Foundry expenses across four independent business departments. Each department deploys distinct models and prompt flows within a shared subscription. What is the recommended strategy to accurately isolate and report the monthly cloud costs incurred by each department?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Configure separate Azure Cost Management budget alerts per user email alias"
+      },
+      {
+        "id": "b",
+        "text": "Deploy independent Log Analytics workspaces for each department's telemetry"
+      },
+      {
+        "id": "c",
+        "text": "Export monthly Azure Advisor cost optimization recommendations to CSV reports"
+      },
+      {
+        "id": "d",
+        "text": "Apply cost-tracking metadata tags to Azure AI hubs and project resources"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Applying resource tags (such as Department or CostCenter) to Azure AI hubs, projects, and connected resources allows Azure Cost Management and Billing to categorize, filter, and report spending accurately by department.",
+    "distractorNotes": {
+      "a": "Budget alerts notify stakeholders when spending thresholds are breached, but do not categorize and allocate line-item resource costs across departments.",
+      "b": "Independent Log Analytics workspaces collect operational telemetry, but do not break down Azure resource consumption billing by department.",
+      "c": "Azure Advisor recommendations suggest cost optimizations like resizing or idle resources, but do not attribute monthly incurred costs across departments."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/manage-costs",
+    "sourceNote": "Azure OpenAI cost management - Using Azure Cost Management and resource tags to monitor spending",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-plan-and-manage-an-azure-ai-solution-017",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "plan-and-manage-an-azure-ai-solution",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An operations engineer needs to configure real-time alerting whenever an Azure AI service resource experiences a sudden surge in client errors (HTTP 4xx) or server errors (HTTP 5xx). Where should the engineer configure log and metric forwarding from the Azure AI resource to enable alerts and long-term analytics in Azure Log Analytics?",
+    "options": [
+      {
+        "id": "a",
+        "text": "In Diagnostic settings on the Azure AI resource"
+      },
+      {
+        "id": "b",
+        "text": "In Azure Activity log export settings on the parent resource group"
+      },
+      {
+        "id": "c",
+        "text": "In Application Insights continuous export stream configurations"
+      },
+      {
+        "id": "d",
+        "text": "In Azure Monitor action group notification templates"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Diagnostic settings on an Azure AI resource allow administrators to configure the export of platform metrics and resource logs (such as RequestResponse and Audit logs) to destinations like Azure Log Analytics, an Event Hub, or a Storage Account for querying and alert creation.",
+    "distractorNotes": {
+      "b": "Azure Activity logs record control-plane administrative management events on resources, not data-plane HTTP request/response metrics or 4xx/5xx status logs.",
+      "c": "Application Insights continuous export is a legacy telemetry export mechanism for App Insights rather than forwarding resource-level logs directly from an Azure AI resource.",
+      "d": "Action groups define notification recipients and automated actions when alerts fire, but do not collect or forward diagnostic logs from Azure AI resources."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/azure-monitor/essentials/diagnostic-settings",
+    "sourceNote": "Azure Monitor diagnostic settings - Forwarding platform metrics and resource logs to Log Analytics",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-plan-and-manage-an-azure-ai-solution-018",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "plan-and-manage-an-azure-ai-solution",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A developer is debugging an agentic AI solution in Azure AI Foundry. The agent invokes multiple tools and sub-prompts sequentially, and the team needs end-to-end visibility into each LLM invocation, including exact prompt tokens, response tokens, latency per tool call, and call hierarchies. Which standard framework does Azure AI Foundry integrate with to collect and export these distributed traces to Application Insights?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Prometheus pull-based telemetry scraper"
+      },
+      {
+        "id": "b",
+        "text": "OpenTelemetry distributed tracing system"
+      },
+      {
+        "id": "c",
+        "text": "OpenCensus legacy application metrics standard"
+      },
+      {
+        "id": "d",
+        "text": "Zipkin distributed tracing REST collector"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Azure AI Foundry and prompt flow leverage OpenTelemetry for distributed tracing. Instrumenting code with the Azure AI inference or prompt flow OpenTelemetry exporters automatically captures spans for LLM calls, token usage, tool invocations, and parent-child execution hierarchies in Application Insights.",
+    "distractorNotes": {
+      "a": "Prometheus scrapes numeric time-series metrics over HTTP, but does not capture hierarchical distributed trace spans or LLM call graphs.",
+      "c": "OpenCensus is the superseded precursor to OpenTelemetry and is not natively supported by modern Azure AI Foundry and prompt flow tracing exporters.",
+      "d": "Zipkin is a dedicated tracing collector that does not provide native integration with Azure AI Foundry SDK instrumentation and Application Insights exporters."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-studio/how-to/develop/trace-local-sdk",
+    "sourceNote": "Azure AI Studio tracing - Using OpenTelemetry and Application Insights for LLM tracing",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-plan-and-manage-an-azure-ai-solution-019",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "plan-and-manage-an-azure-ai-solution",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A company has deployed a customer support generative AI application in production. Over time, customer inquiries shift toward newly released product lines, leading to potential degradation in answer relevance and accuracy. Which Azure AI Foundry capability should the team configure to continuously evaluate production inference requests against pre-configured metrics like groundedness and coherence without manual inspection?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Prompt flow automated batch evaluation runs on scheduled timers"
+      },
+      {
+        "id": "b",
+        "text": "Azure AI Content Safety asynchronous harm category audits"
+      },
+      {
+        "id": "c",
+        "text": "Production model monitoring for quality and drift"
+      },
+      {
+        "id": "d",
+        "text": "Azure Monitor Application Insights smart detection failure alerts"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Azure AI Foundry production model monitoring continuously samples and evaluates live inference data from deployed models, computing quality metrics (such as groundedness, relevance, and coherence) to detect data drift and quality degradation over time.",
+    "distractorNotes": {
+      "a": "Prompt flow scheduled batch runs evaluate fixed golden datasets, rather than continuously sampling and evaluating live streaming production inference requests.",
+      "b": "Content Safety harm audits scan for content safety violations like hate and violence, rather than evaluating generative quality metrics like groundedness and coherence.",
+      "d": "Smart detection in Application Insights identifies performance anomalies like failure rate increases, not semantic generation quality or prompt drift."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-studio/how-to/monitor-quality-safety",
+    "sourceNote": "Azure AI Studio model monitoring - Continuously monitor generation quality and safety in production",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-plan-and-manage-an-azure-ai-solution-020",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "plan-and-manage-an-azure-ai-solution",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "In an Azure AI Foundry RAG application, documents uploaded to Azure Blob Storage fail to appear in search query results. The administrator investigates the Azure AI Search indexer and discovers the status indicates completed with warnings. Detailed logs show several scanned PDF documents failed during execution with a `Document cracking` error. What is the root cause of this error?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The search service reached its limit for total concurrent search queries"
+      },
+      {
+        "id": "b",
+        "text": "The client application provided an invalid vector search query embedding"
+      },
+      {
+        "id": "c",
+        "text": "The index schema definition omitted the mandatory unique key attribute"
+      },
+      {
+        "id": "d",
+        "text": "The indexer failed to open or extract text from corrupted or locked files"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "In Azure AI Search, `Document cracking` is the phase where the indexer opens source data files (such as PDFs or Office documents) and extracts raw text and metadata. Corrupted files, password-protected documents, or unsupported binary encodings trigger document cracking failures during this stage.",
+    "distractorNotes": {
+      "a": "Search query throttling occurs during search query execution and returns HTTP 503 or 429 rather than an indexer document cracking warning during ingestion.",
+      "b": "Invalid query embeddings cause vector search query execution errors at search time, not indexer data ingestion errors in Azure Blob Storage.",
+      "c": "Omitting a document key prevents the index schema from being created or updated; it does not manifest as an individual document cracking warning during an indexing run."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/search/search-indexer-troubleshooting",
+    "sourceNote": "Azure AI Search indexer troubleshooting - Document cracking errors during data ingestion",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-plan-and-manage-an-azure-ai-solution-021",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "plan-and-manage-an-azure-ai-solution",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An enterprise search solution powered by Azure AI Search experiences intermittent latency spikes and HTTP 503 (Service Unavailable) responses during peak user search hours. The architecture team needs to inspect detailed diagnostic metrics to determine whether the issue is caused by insufficient search replicas or saturated search partitions. Which metric set in Azure Monitor should the team evaluate?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Search Latency and Throttled Search Queries Percentage"
+      },
+      {
+        "id": "b",
+        "text": "Queries Per Second and Search Index Document Count"
+      },
+      {
+        "id": "c",
+        "text": "Skill Execution Time and Indexer Document Count"
+      },
+      {
+        "id": "d",
+        "text": "Search Units Consumed and Storage Quota Percentage"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Azure AI Search emits `Search Latency` and `Throttled Search Queries Percentage` metrics to Azure Monitor. High throttled query percentages indicate search capacity exhaustion; adding replicas scales concurrent query capacity, while adding partitions scales document storage and indexing capacity.",
+    "distractorNotes": {
+      "b": "Queries Per Second tracks request arrival rates and index document count measures volume, but neither metric directly indicates query throttling or replica capacity exhaustion.",
+      "c": "Skill execution time and indexer document count monitor enrichment pipeline and indexing performance, not live query latency spikes or 503 HTTP throttling.",
+      "d": "Search units and storage quota track provisioned capacity scale and partition storage limits, but do not provide query-level latency or throttling metrics."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/search/search-monitor-logs",
+    "sourceNote": "Azure AI Search monitoring - Search latency and throttled queries percentage metrics",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-plan-and-manage-an-azure-ai-solution-022",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "plan-and-manage-an-azure-ai-solution",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A team configures an Azure AI Search indexer to ingest records from an Azure SQL Database view on an hourly schedule. Over time, the indexer reprocesses all rows on every scheduled run instead of indexing only new or modified data, causing unnecessary compute expense and query execution delays. How should the team configure the data source to ensure only changed records are processed?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Enable soft delete policies on the Azure AI Search index schema"
+      },
+      {
+        "id": "b",
+        "text": "Configure a high-water mark change detection policy on the source"
+      },
+      {
+        "id": "c",
+        "text": "Enable the SQL Server integrated change tracking policy on the data source"
+      },
+      {
+        "id": "d",
+        "text": "Configure an incremental indexer schedule with a reset schedule trigger"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "For Azure SQL Database views, Azure AI Search requires configuring a high-water mark change detection policy (`HighWaterMarkChangeDetectionPolicy`) on the data source, specifying a column that updates whenever a row changes (such as a timestamp or rowversion). Without a change detection policy, the indexer reprocesses all rows on every scheduled run.",
+    "distractorNotes": {
+      "a": "Soft delete policies detect deleted records to remove them from the index, but do not govern incremental change detection for modified rows.",
+      "c": "SQL Server integrated change tracking only works on underlying database tables, not database views; views require high-water mark change detection.",
+      "d": "Resetting the indexer schedule forces a full re-index of the entire view from scratch, exacerbating processing time and compute costs."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/search/search-how-to-index-sql-database",
+    "sourceNote": "Azure AI Search SQL indexing - High water mark change detection policy for incremental indexing",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-plan-and-manage-an-azure-ai-solution-023",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "plan-and-manage-an-azure-ai-solution",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A security officer needs to grant a developer permissions to interact with deployed Azure OpenAI models (submitting chat completions and embeddings requests via the REST API) from an application. In accordance with the principle of least privilege, the developer must NOT be permitted to modify resource configurations, alter quotas, or create new model deployments. Which built-in Azure RBAC role should be assigned?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Cognitive Services Contributor role"
+      },
+      {
+        "id": "b",
+        "text": "Azure AI Project Administrator role"
+      },
+      {
+        "id": "c",
+        "text": "Cognitive Services OpenAI User role"
+      },
+      {
+        "id": "d",
+        "text": "Cognitive Services OpenAI Contributor role"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "The `Cognitive Services OpenAI User` role grants read and execute data plane access to call Azure OpenAI endpoints (generating completions and embeddings) without granting permissions to create, modify, or delete deployments or service configurations.",
+    "distractorNotes": {
+      "a": "Cognitive Services Contributor grants broad control plane permissions to manage resources, keys, and deployments, violating the principle of least privilege.",
+      "b": "Azure AI Administrator grants extensive administrative rights across hubs and projects, including managing security and access permissions.",
+      "d": "Cognitive Services OpenAI Contributor allows managing model deployments and fine-tuning operations in addition to inference, exceeding least privilege requirements."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/role-based-access-control",
+    "sourceNote": "Azure OpenAI RBAC roles - Cognitive Services OpenAI User role for inference access without control plane permissions",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-plan-and-manage-an-azure-ai-solution-024",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "plan-and-manage-an-azure-ai-solution",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A team member is assigned to create prompt flows, submit batch evaluation runs, and deploy models within a designated Azure AI Foundry project. However, the organization's security policy prohibits this user from modifying virtual network isolation, managing subscription-level billing, or altering shared customer-managed encryption keys on the parent Azure AI hub. Which built-in role scoped to the project provides the required permissions?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Azure AI Administrator role"
+      },
+      {
+        "id": "b",
+        "text": "Azure AI Inference Deployment Operator role"
+      },
+      {
+        "id": "c",
+        "text": "Cognitive Services Contributor role"
+      },
+      {
+        "id": "d",
+        "text": "Azure AI Developer role"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "The `Azure AI Developer` role grants developers permissions to perform project-level actions in Azure AI Foundry—such as building prompt flows, executing evaluations, and deploying models—without providing administrative permissions to alter hub network boundaries or security infrastructure.",
+    "distractorNotes": {
+      "a": "The Azure AI Administrator role grants full administrative permissions to manage hub-level networking, security configurations, and shared connections, exceeding least privilege.",
+      "b": "The Azure AI Inference Deployment Operator role is limited to deploying and managing model inference endpoints, lacking permissions to author prompt flows or run evaluations.",
+      "c": "The Cognitive Services Contributor role provides control plane resource management across cognitive accounts, not development authoring permissions scoped inside an AI Foundry project."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-studio/concepts/rbac-ai-studio",
+    "sourceNote": "Azure AI Studio RBAC roles - Azure AI Developer role for project authoring and deployment",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-plan-and-manage-an-azure-ai-solution-025",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "plan-and-manage-an-azure-ai-solution",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A cloud developer is deploying an Azure Container App that queries an Azure AI Foundry project endpoint and an Azure AI Search index. Company security compliance strictly forbids storing API keys or connection strings in application configuration settings or container environment variables. How should the developer configure authentication between the container application and the Azure AI services?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Enable a Managed Identity on the container app and use DefaultAzureCredential in code"
+      },
+      {
+        "id": "b",
+        "text": "Retrieve API keys dynamically at runtime from Azure Key Vault using secret references"
+      },
+      {
+        "id": "c",
+        "text": "Configure a Microsoft Entra service principal with client secret credentials in code"
+      },
+      {
+        "id": "d",
+        "text": "Generate short-lived Shared Access Signatures signed by a storage account master key"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Enabling a Managed Identity (system-assigned or user-assigned) on the Azure Container App and using `DefaultAzureCredential` from the Azure Identity SDK enables keyless Microsoft Entra ID authentication, eliminating secret storage and credential rotation concerns.",
+    "distractorNotes": {
+      "b": "Using Azure Key Vault secret references still relies on secret management and credential synchronization rather than keyless Microsoft Entra identity.",
+      "c": "Configuring a service principal with a client secret still requires storing, securing, and rotating a secret credential in the application.",
+      "d": "Shared Access Signatures are designed for Azure Storage delegated access, not authenticating requests to Azure AI Foundry model endpoints or Azure AI Search."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/authentication",
+    "sourceNote": "Azure AI services authentication - Keyless authentication using Managed Identities and Microsoft Entra ID",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-plan-and-manage-an-azure-ai-solution-026",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "plan-and-manage-an-azure-ai-solution",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An administrator is configuring Azure AI Content Safety filters for a public-facing educational platform. Content Safety categorizes harmful content across four categories (Hate, Sexual, Violence, Self-harm) using four severity scores: 0 (Safe), 2 (Low), 4 (Medium), and 6 (High). The company policy states that any content displaying low, medium, or high severity must be blocked immediately. At which severity threshold level should the filter be set to enforce this blocking policy?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Severity threshold level 0"
+      },
+      {
+        "id": "b",
+        "text": "Severity threshold level 2"
+      },
+      {
+        "id": "c",
+        "text": "Severity threshold level 4"
+      },
+      {
+        "id": "d",
+        "text": "Severity threshold level 6"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Azure AI Content Safety uses severity levels 0, 2, 4, and 6. Setting the rejection threshold to level 2 blocks all requests evaluated at severity 2 (Low), 4 (Medium), and 6 (High), while permitting only level 0 (Safe) content.",
+    "distractorNotes": {
+      "a": "Setting the threshold to 0 is invalid as a blocking threshold because 0 represents completely safe, benign content.",
+      "c": "Setting the threshold to 4 blocks content evaluated at medium (4) and high (6) severity, but allows low severity (2) content to pass through.",
+      "d": "Setting the threshold to 6 blocks only high severity (6) content, permitting both low (2) and medium (4) harmful content to pass through."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/content-safety/concepts/harm-categories",
+    "sourceNote": "Azure AI Content Safety harm categories and severity levels - Thresholds 0, 2, 4, and 6 for content filtering",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-plan-and-manage-an-azure-ai-solution-027",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "plan-and-manage-an-azure-ai-solution",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A digital media publishing company is deploying a generative writing assistant in Azure AI Foundry. Legal counsel requires automated safeguards to prevent the model from outputting verbatim copies of copyrighted published literature, commercial song lyrics, or proprietary open-source code repositories. Which Azure AI Content Safety feature should the team enable to identify and flag these verbatim reproductions in generated responses?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Prompt Shields for indirect attacks"
+      },
+      {
+        "id": "b",
+        "text": "Text analysis custom blocklists"
+      },
+      {
+        "id": "c",
+        "text": "Protected material detection"
+      },
+      {
+        "id": "d",
+        "text": "Groundedness correction filters"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Protected material detection in Azure AI Content Safety checks AI-generated text and code against known copyrighted material, including song lyrics, commercial books, news articles, and public source code, flagging or blocking unauthorized reproductions.",
+    "distractorNotes": {
+      "a": "Prompt Shields detects adversarial prompt injection attacks from users or data sources, not output copyright infringement or protected text.",
+      "b": "Custom blocklists match specific user-defined terms or phrases provided by administrators, rather than detecting broad public copyrighted text or code.",
+      "d": "Groundedness detection checks whether responses are derived from user-provided grounding documents, rather than cross-checking global copyrighted publications."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/content-safety/concepts/protected-material",
+    "sourceNote": "Azure AI Content Safety protected material detection - Detecting copyrighted text and code in model output",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-plan-and-manage-an-azure-ai-solution-028",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "plan-and-manage-an-azure-ai-solution",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A developer builds an autonomous AI customer support agent that reads incoming customer emails and summarizes attached PDF documents. A security audit identifies a vulnerability where an external attacker embeds hidden malicious instructions inside an uploaded PDF invoice designed to hijack the agent's instructions and exfiltrate user data. Which threat classification describes this attack, and which Azure AI feature mitigates it?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Direct jailbreak prompt attack mitigated by Content Safety text moderation filters"
+      },
+      {
+        "id": "b",
+        "text": "Model extraction attack mitigated by Azure AI Foundry customer-managed keys"
+      },
+      {
+        "id": "c",
+        "text": "Data poisoning attack mitigated by Azure AI Search document access controls"
+      },
+      {
+        "id": "d",
+        "text": "Indirect prompt injection attack mitigated by Prompt Shields"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Indirect prompt injection (also known as cross-domain prompt injection) occurs when adversarial instructions are placed within third-party data sources (such as emails or documents) processed by an LLM. Azure AI Content Safety Prompt Shields specifically inspects both user prompts (direct jailbreaks) and external data documents (indirect prompt injections) to block these attacks.",
+    "distractorNotes": {
+      "a": "Direct jailbreak prompt attacks originate directly from user prompt submissions, whereas malicious instructions hidden in external data sources represent indirect prompt injection.",
+      "b": "Model extraction involves stealing model weights or distillation through repeated queries, which customer-managed keys in storage do not prevent.",
+      "c": "Data poisoning manipulates training or fine-tuning datasets prior to model training, rather than injecting runtime adversarial instructions into processed documents."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/content-safety/concepts/jailbreak-detection",
+    "sourceNote": "Azure AI Content Safety Prompt Shields - Detecting direct jailbreak attacks and indirect prompt injection attacks",
     "sourceCheckedAt": "2026-10-11"
   }
 ]

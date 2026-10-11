@@ -6,7 +6,7 @@
     "type": "single",
     "domain": "implement-text-analysis-solutions",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "stem": "A developer is configuring an application that converts text to speech using Azure AI Speech. The application must dynamically adjust speaking pitch, rate, and insert custom pauses between sentences. Which format should the developer use to control these output attributes?",
     "options": [
       {
@@ -19,11 +19,11 @@
       },
       {
         "id": "c",
-        "text": "YAML pipeline configuration schemas"
+        "text": "Pronunciation Lexicon Specification (PLS)"
       },
       {
         "id": "d",
-        "text": "Azure Resource Manager (ARM) templates"
+        "text": "Speech synthesis audio output headers"
       }
     ],
     "correct": [
@@ -32,11 +32,491 @@
     "explanation": "Speech Synthesis Markup Language (SSML) is an XML-based markup language used with Azure AI Speech to fine-tune text-to-speech attributes including pitch, volume, speaking rate, pronunciation, and insertion of pauses or audio markers.",
     "distractorNotes": {
       "b": "Query string parameters configure basic HTTP connection and service options, but do not provide fine-grained in-text prosody and pause control.",
-      "c": "YAML schemas define deployment and pipeline configurations, not synthesized speech markup.",
-      "d": "ARM templates define Azure cloud infrastructure deployments rather than runtime text-to-speech rendering attributes."
+      "c": "Pronunciation Lexicon Specification (PLS) is an XML format used in Azure AI Speech to customize phonemes and word pronunciations, not runtime prosody, pitch, rate, or pause intervals.",
+      "d": "Audio output headers (such as X-Microsoft-OutputFormat) specify audio container encoding and bitrates, rather than in-text prosody, pitch, rate, or pause markers."
     },
     "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/speech-service/speech-synthesis-markup",
     "sourceNote": "Speech Synthesis Markup Language (SSML) for fine-tuning text-to-speech output",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-text-analysis-solutions-002",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-text-analysis-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer is implementing a data preprocessing pipeline for a customer service agent. Customer chat transcripts must be sanitized before being indexed or forwarded to downstream tools. The pipeline must detect sensitive personal information, including government identification numbers, financial account details, and email addresses, and replace the detected text with redaction markers. Which Azure AI Language feature should the developer implement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Custom Named Entity Recognition (NER) trained on annotated customer chat samples"
+      },
+      {
+        "id": "b",
+        "text": "Personally Identifiable Information (PII) detection with the redaction policy enabled"
+      },
+      {
+        "id": "c",
+        "text": "Key Phrase Extraction configured with customer demographic blocklists"
+      },
+      {
+        "id": "d",
+        "text": "Content Safety text moderation configured with severe personal harm filters"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Personally Identifiable Information (PII) detection is a prebuilt Azure AI Language feature that identifies and categorizes sensitive personal entities such as social security numbers, credit card details, phone numbers, and email addresses. It supports automated redaction by masking detected entities with character substitutions or semantic entity tags in the returned text.",
+    "distractorNotes": {
+      "a": "Custom Named Entity Recognition requires labeling training datasets and training custom machine learning models, whereas standard PII detection offers prebuilt recognition and automated redaction out of the box.",
+      "c": "Key Phrase Extraction identifies main talking points and salient concepts in unstructured text, but does not identify sensitive personal data categories or perform automated redaction masking.",
+      "d": "Azure AI Content Safety evaluates text for harm categories such as hate speech, violence, and self-harm, rather than identifying and redacting personal contact and financial identifiers."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/language-service/personally-identifiable-information/overview",
+    "sourceNote": "PII detection and redaction capabilities in Azure AI Language",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-text-analysis-solutions-003",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-text-analysis-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An organization is processing customer feedback for electronic devices. The processing pipeline must evaluate each review to identify specific product attributes, such as battery longevity or audio quality, and determine the exact positive or negative sentiment associated with each individual attribute. Which Azure AI Language capability satisfies these requirements?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Conversational language understanding (CLU) intent classification"
+      },
+      {
+        "id": "b",
+        "text": "Document-level sentiment analysis with confidence score aggregation"
+      },
+      {
+        "id": "c",
+        "text": "Sentiment analysis with the opinion mining feature enabled"
+      },
+      {
+        "id": "d",
+        "text": "Extractive summarization configured with positive keyword extraction"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Opinion mining (aspect-based sentiment analysis) is a feature of Azure AI Language Sentiment Analysis. It extracts granular targets (aspects or attributes, such as battery longevity) and their related assessments (evaluative words, such as long-lasting or poor) within sentences, establishing the semantic link and sentiment polarity between each target and assessment.",
+    "distractorNotes": {
+      "a": "Conversational language understanding identifies top-level user intents and extractable entities from conversational utterances, rather than performing aspect-based sentiment assessment across feedback text.",
+      "b": "Document-level sentiment analysis evaluates the general sentiment polarity of entire documents and sentences, but does not associate specific sentiment assessments with individual product aspects.",
+      "d": "Extractive summarization selects salient verbatim sentences from a document to summarize content, without determining sentiment polarity or target-assessment relationships."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/language-service/sentiment-opinion-mining/overview",
+    "sourceNote": "Sentiment analysis and opinion mining in Azure AI Language",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-text-analysis-solutions-004",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-text-analysis-solutions",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A developer is implementing an agent workflow that extracts vendor names, agreement dates, and monetary amounts from legal contracts using an Azure OpenAI chat completions deployment. Downstream programmatic components require that the model output always conforms strictly to a supplied JSON schema without omitting required fields or hallucinating unexpected keys. Which configuration should the developer specify in the API request?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A system prompt containing sample JSON input-output few-shot exemplars"
+      },
+      {
+        "id": "b",
+        "text": "The response_format parameter configured with type set to json_object"
+      },
+      {
+        "id": "c",
+        "text": "A stop sequence configured to terminate the generation at closing brackets"
+      },
+      {
+        "id": "d",
+        "text": "The response_format parameter configured with type json_schema and strict mode"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "The Structured Outputs feature in Azure OpenAI enables developers to pass a JSON schema within the response_format parameter using the type json_schema with strict set to true. This forces the model to adhere deterministically to the supplied JSON schema, guaranteeing that every required property is present and preventing the generation of undeclared properties or malformed JSON.",
+    "distractorNotes": {
+      "a": "Few-shot prompting encourages the model to generate JSON, but cannot enforce strict structural adherence or prevent missing keys or syntactic deviation.",
+      "b": "Setting response_format to json_object guarantees that the response is valid syntactic JSON, but does not validate or constrain the output against a specific schema or enforce required keys.",
+      "c": "Stop sequences halt token generation when a specific delimiter is encountered, which cuts off generation early rather than enforcing schema conformance."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/structured-outputs",
+    "sourceNote": "Structured outputs with JSON schema in Azure OpenAI",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-text-analysis-solutions-005",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-text-analysis-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An organization is designing an automated summarization workflow for internal regulatory compliance documents. The corporate legal team requires that generated document summaries must contain only unaltered, verbatim sentences selected directly from the source text to prevent synthesized rephrasing or altered legal obligations. Which summarization approach in Azure AI Language should the developer use?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Abstractive summarization using conversational document templates"
+      },
+      {
+        "id": "b",
+        "text": "Extractive summarization configured to return key source sentences"
+      },
+      {
+        "id": "c",
+        "text": "Key Phrase Extraction combined with text clustering similarity"
+      },
+      {
+        "id": "d",
+        "text": "Custom text classification using multi-label document categorization"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Extractive summarization in Azure AI Language analyzes source documents and selects prominent, verbatim sentences that together convey the most critical information, without altering or paraphrasing the original sentence wording. This is ideal for legal and regulatory compliance scenarios where exact quotes and unaltered phrasing are mandatory.",
+    "distractorNotes": {
+      "a": "Abstractive summarization generates novel, condensed sentences that synthesize meaning rather than extracting verbatim source sentences, introducing reworded phrasing that violates strict compliance requirements.",
+      "c": "Key Phrase Extraction returns individual salient terms and noun phrases rather than coherent, verbatim complete sentences from the document.",
+      "d": "Custom text classification assigns categorical labels to documents, but does not produce text summaries or extract sentences."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/language-service/summarization/overview",
+    "sourceNote": "Extractive and abstractive summarization in Azure AI Language",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-text-analysis-solutions-006",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-text-analysis-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An enterprise needs to translate thousands of technical manuals stored in an Azure Blob storage container from English into Spanish, Japanese, and German. The manuals contain complex tables, embedded diagrams, font formatting, and headers. The translated files must maintain their original layout and file types in a destination storage container. Which Azure AI Translator capability should the developer deploy?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Text Translation API invoked iteratively over extracted paragraph blocks"
+      },
+      {
+        "id": "b",
+        "text": "Azure AI Language document translation pipeline with custom NER"
+      },
+      {
+        "id": "c",
+        "text": "Batch Document Translation service targeting Azure Blob storage"
+      },
+      {
+        "id": "d",
+        "text": "Custom Translator model deployed to a real-time web endpoint"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Batch Document Translation is an asynchronous Azure AI Translator service designed to translate complex documents (such as PDF, DOCX, and XLSX) stored in Azure Blob storage. It translates entire files into multiple target languages simultaneously while preserving original visual layout, tables, formatting, and file structures.",
+    "distractorNotes": {
+      "a": "The Text Translation API operates on raw text strings and HTML fragments; using it requires manually extracting text, which destroys document formatting, tables, and binary layout.",
+      "b": "Azure AI Language focuses on natural language processing tasks like sentiment and entity extraction, rather than batch translating formatted document files in Blob storage.",
+      "d": "Custom Translator builds customized translation models for domain-specific vocabulary, but still requires the Document Translation feature to handle batch file formats and preserve document layout."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/translator/document-translation/overview",
+    "sourceNote": "Document Translation service overview in Azure AI Translator",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-text-analysis-solutions-007",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-text-analysis-solutions",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A company translates user interface strings and release announcements using the Azure AI Translator Text API. Certain proprietary product brand names and technical acronyms are being mistranslated into literal foreign vocabulary words. The engineering team needs to enforce exact translations for these specific phrases across real-time translation calls without collecting parallel training corpora or training a custom machine translation model. What should the engineering team implement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A post-processing regular expression replacement engine on client responses"
+      },
+      {
+        "id": "b",
+        "text": "A Custom Translator neural model trained with monolingual phrase dictionaries"
+      },
+      {
+        "id": "c",
+        "text": "A system prompt prefix instructing the translation engine to ignore brand names"
+      },
+      {
+        "id": "d",
+        "text": "The dynamic dictionary feature passing phrase mappings within translation requests"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "The dynamic dictionary feature in Azure AI Translator allows developers to supply custom phrase translations or instruct the service not to translate specific terms (such as brand names and proprietary trademarks) directly within the translation request. This enforces exact terminology without needing to train and deploy a Custom Translator model.",
+    "distractorNotes": {
+      "a": "Client-side regex replacement is error-prone because literal post-replacement can violate grammatical agreements, sentence flow, and casing in target languages.",
+      "b": "Custom Translator models require building, training, and deploying custom neural translation systems with substantial parallel corpora, which introduces unnecessary overhead when only specific terms need consistent mapping.",
+      "c": "Azure AI Translator is a dedicated translation API, not a generative language model that accepts conversational system prompts."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/translator/dynamic-dictionary",
+    "sourceNote": "Dynamic dictionary in Azure AI Translator for phrase customization",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-text-analysis-solutions-008",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-text-analysis-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A healthcare informatics developer is building an intake service that processes clinical consultation notes. The service must extract healthcare entities such as symptoms, medications, dosages, and frequencies, link related attributes (such as associating a specific dosage with its medication), and map extracted concepts to standardized medical vocabularies like UMLS and SNOMED CT. Which prebuilt Azure AI Language feature should the developer use?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Text Analytics for health prebuilt processing"
+      },
+      {
+        "id": "b",
+        "text": "Custom Named Entity Recognition (NER) models"
+      },
+      {
+        "id": "c",
+        "text": "Conversational language understanding (CLU)"
+      },
+      {
+        "id": "d",
+        "text": "Key Phrase Extraction with entity resolution"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Text Analytics for health is a prebuilt Azure AI Language feature that extracts biomedical and clinical entities from unstructured medical text, detects entity relations (such as linking Dosage of Medication to the Medication entity), and links extracted concepts to standard biomedical ontologies including UMLS, SNOMED CT, and ICD-10.",
+    "distractorNotes": {
+      "b": "Custom Named Entity Recognition extracts custom-defined entity labels, but does not provide prebuilt clinical ontology resolution (UMLS/SNOMED CT) or complex healthcare relation extraction out of the box.",
+      "c": "Conversational language understanding is intended for dialogue intent parsing and user utterance entity extraction, not deep clinical entity and relation analysis.",
+      "d": "General entity linking resolves entities to general knowledge bases like Wikipedia, but lacks specialized biomedical ontology mapping and medical relation extraction."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/language-service/text-analytics-for-health/overview",
+    "sourceNote": "Text Analytics for health overview in Azure AI Language",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-text-analysis-solutions-009",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-text-analysis-solutions",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A developer is creating a verification service that processes short recorded audio files submitted by mobile users. The service requires synchronous transcription results delivered significantly faster than real-time with predictable latency, avoiding asynchronous job polling, webhook infrastructure, and persistent blob storage staging. Which Azure AI Speech capability should the developer implement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Batch Transcription API with webhook notification callbacks"
+      },
+      {
+        "id": "b",
+        "text": "Fast Transcription API invoked synchronously over audio payloads"
+      },
+      {
+        "id": "c",
+        "text": "Real-time speech recognition using continuous microphone streaming"
+      },
+      {
+        "id": "d",
+        "text": "Custom Speech model adaptation deployed to a dedicated container"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "The Fast Transcription API in Azure AI Speech transcribes audio files synchronously and significantly faster than real-time. It accepts audio data directly within the HTTP request payload and immediately returns the transcript, making it ideal for scenarios requiring predictable, low-latency turnaround on recorded audio without the operational overhead of batch job polling or webhook registration.",
+    "distractorNotes": {
+      "a": "The Batch Transcription API is an asynchronous service designed for processing large volumes of audio files hosted in Azure Blob storage, requiring polling or webhook notifications rather than synchronous responses.",
+      "c": "Real-time speech recognition is designed for streaming audio as it is captured live, transcribing at real-time speed rather than processing recorded audio files faster than real-time in a single synchronous call.",
+      "d": "Custom Speech adapts acoustic or language models for specialized vocabulary and acoustic environments, but does not by itself define a synchronous low-latency file transcription REST API."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/speech-service/fast-transcription-create",
+    "sourceNote": "Fast transcription API for synchronous audio file processing",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-text-analysis-solutions-010",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-text-analysis-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer is implementing a conversational voice agent for customer support using Azure AI Speech text-to-speech. When communicating apologies or resolving escalated customer complaints, the synthesized neural voice must modulate its delivery to express an empathetic, customer-service tone. Which SSML element should the developer wrap around the spoken text?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The <prosody> element specifying volume and rate attributes"
+      },
+      {
+        "id": "b",
+        "text": "The <phoneme> element specifying alphabet and ph attributes"
+      },
+      {
+        "id": "c",
+        "text": "The <express-as> element specifying style and styledegree"
+      },
+      {
+        "id": "d",
+        "text": "The <emphasis> element specifying level and stress attributes"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "The SSML <express-as> element modifies the speaking style of supported Azure AI Speech neural voices. By setting the style attribute (such as customerservice or empathetic) and optionally adjusting styledegree, developers can control emotional nuance and role delivery in synthesized speech.",
+    "distractorNotes": {
+      "a": "The <prosody> element controls pitch, contour, volume, and speaking rate, but does not apply high-level emotional speaking styles such as customer service or empathy.",
+      "b": "The <phoneme> element specifies phonetic pronunciation for customized word articulation, not conversational emotional tone.",
+      "d": "The <emphasis> element modifies acoustic stress and prominence (such as strong or moderate), but does not apply emotional speaking styles like empathetic or customer service."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/speech-service/speech-synthesis-markup-voice",
+    "sourceNote": "SSML voice customization with express-as and speaking styles",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-text-analysis-solutions-011",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-text-analysis-solutions",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An architect is designing a real-time conversational voice agent that assists callers during high-stakes negotiations. The agent must perceive vocal inflections, user pauses, and emotional nuances directly from raw audio streams, responding with natural conversational cadence and minimal latency. Why should the architect choose direct multimodal audio models like GPT-4o Realtime over a cascaded pipeline of Speech-to-Text, text LLM, and Text-to-Speech?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Direct multimodal models eliminate cloud token usage and reduce compute costs"
+      },
+      {
+        "id": "b",
+        "text": "Cascaded pipelines cannot support custom vocabulary or technical terminology"
+      },
+      {
+        "id": "c",
+        "text": "Cascaded pipelines require storing audio files in persistent cloud storage"
+      },
+      {
+        "id": "d",
+        "text": "End-to-end audio processing preserves non-verbal cues and reduces latency"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Direct multimodal audio processing (such as the GPT-4o Realtime API) ingests audio natively into a single model, eliminating the multi-hop latency of cascading separate Speech-to-Text, text reasoning, and Text-to-Speech stages. Crucially, end-to-end audio reasoning captures non-verbal acoustic signals such as tone of voice, pacing, hesitation, and emotional inflection that are inevitably lost when transcribing speech to plain text.",
+    "distractorNotes": {
+      "a": "Multimodal audio models consume audio tokens and incur specialized pricing, rather than eliminating token billing or computational overhead.",
+      "b": "Cascaded speech-to-text systems like Azure AI Speech or Whisper support extensive phrase lists and custom vocabulary adaptation.",
+      "c": "Cascaded pipelines can stream audio directly into the Speech SDK without staging files in cloud storage; their limitation is the latency and semantic loss of converting audio to intermediate text."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/openai/realtime-audio-quickstart",
+    "sourceNote": "Realtime audio conversation with Azure OpenAI multimodal models",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-text-analysis-solutions-012",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-text-analysis-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An engineering team is building an automated conference room assistant that transcribes multi-party meetings in real time using a microphone array. The system must continuously transcribe conversation, separate overlapping speakers, and accurately identify who said what throughout the session. Which Azure AI Speech feature should the team integrate?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Conversation Transcription with speaker diarization"
+      },
+      {
+        "id": "b",
+        "text": "Speaker Recognition with automated voice identification"
+      },
+      {
+        "id": "c",
+        "text": "Fast Transcription API with multichannel splitting"
+      },
+      {
+        "id": "d",
+        "text": "Single-channel continuous recognition with intent parsing"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Conversation Transcription is an Azure AI Speech feature that integrates multi-microphone array audio processing with speech-to-text and speaker diarization. It tracks distinct speakers in real time, determines who spoke which phrase, and generates attributed transcripts of multi-party discussions.",
+    "distractorNotes": {
+      "b": "Speaker Recognition verifies or identifies individual speakers against enrolled voice profiles, but does not provide continuous real-time multi-microphone speech transcription or meeting diarization.",
+      "c": "The Fast Transcription API processes pre-recorded audio files rather than streaming live multi-microphone array audio in real-time meetings.",
+      "d": "Single-channel continuous recognition transcribes a single audio feed without separating multiple physical speakers or performing multi-microphone beamforming diarization."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/speech-service/conversation-transcription",
+    "sourceNote": "Conversation Transcription and speaker diarization in Azure Speech",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "ai-103-implement-text-analysis-solutions-013",
+    "cert": "ai-103",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "implement-text-analysis-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer is implementing a live voice-to-voice translation feature for a real-time international contact center application. The application must stream captured audio from callers and output translated speech in target languages with the lowest possible latency. How should the developer architect this capability using Azure AI services?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Chain real-time Speech SDK recognition into the Text Translation REST API"
+      },
+      {
+        "id": "b",
+        "text": "Use Azure AI Speech Translation with streaming multi-target translation"
+      },
+      {
+        "id": "c",
+        "text": "Use Azure OpenAI Whisper to transcribe and translate audio in short chunks"
+      },
+      {
+        "id": "d",
+        "text": "Stream audio to the Azure AI Speech REST API using translation headers"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Azure AI Speech Translation (utilizing TranslationRecognizer in the Speech SDK) provides single-hop, streaming speech-to-text and speech-to-language translation over WebSockets. It delivers interim and final translated results directly as audio streams in real time, minimizing latency compared to chaining separate Speech-to-Text and Text Translation API requests.",
+    "distractorNotes": {
+      "a": "Chaining a Speech SDK recognizer with separate Text Translation REST requests introduces network hop overhead, serialization latency, and complex buffering logic.",
+      "c": "Azure OpenAI Whisper processes discrete audio segments rather than streaming real-time bidirectional translation with synthesized voice output, incurring chunking latency.",
+      "d": "The Azure AI Speech REST API does not support real-time streaming speech translation or multi-target streaming audio output; live streaming translation requires the Speech SDK TranslationRecognizer over WebSockets."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ai-services/speech-service/speech-translation",
+    "sourceNote": "Real-time speech translation service in Azure AI Speech",
     "sourceCheckedAt": "2026-10-11"
   }
 ]
