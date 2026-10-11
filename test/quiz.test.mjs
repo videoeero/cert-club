@@ -10,6 +10,7 @@ import {
   calculateQuizResults,
   filterReviewQuestions,
   formatOptionLabel,
+  getFailedQuizQuestions,
   getOptionLabel,
   getOptionLabelForId,
   getUnusedQuizQuestions,
@@ -890,6 +891,133 @@ test("prepareRetakeSession: other retake selects from unseen questions", () => {
   assert.throws(
     () => prepareRetakeSession(bank, domains, fullAttempt, "other"),
     /No unused questions are available from this certification/,
+  );
+});
+
+test("getFailedQuizQuestions identifies incorrect and skipped questions in order", () => {
+  const bank = [
+    question("q1", "alpha", "single", ["a"]),
+    question("q2", "alpha", "multi", ["b", "c"]),
+    question("q3", "beta", "single", ["d"]),
+    question("q4", "beta", "single", ["a"]),
+  ];
+  const attempt = {
+    questionIds: ["q1", "q2", "q3", "q4", "missing-q"],
+    answers: {
+      q1: ["a"], // correct
+      q2: ["b"], // partially correct -> failed
+      q3: ["c"], // incorrect -> failed
+      // q4 omitted -> skipped -> failed
+    },
+  };
+
+  const failed = getFailedQuizQuestions(bank, attempt);
+  assert.deepEqual(
+    failed.map((q) => q.id),
+    ["q2", "q3", "q4"],
+  );
+});
+
+test("prepareRetakeSession: failed retake reproduces failed questions in order", () => {
+  const bank = [
+    question("q1", "alpha", "single", ["a"]),
+    question("q2", "alpha", "single", ["b"]),
+    question("q3", "beta", "single", ["c"]),
+  ];
+  const attempt = {
+    config: {
+      mode: "random",
+      count: 3,
+      revealMode: "immediate",
+      shuffleOptions: false,
+    },
+    questionIds: ["q3", "q1", "q2"],
+    answers: {
+      q3: ["c"], // correct
+      q1: ["b"], // incorrect
+      q2: [], // skipped
+    },
+  };
+
+  const retake = prepareRetakeSession(bank, domains, attempt, "failed");
+  assert.deepEqual(
+    retake.questions.map((q) => q.id),
+    ["q1", "q2"],
+  );
+  assert.equal(retake.config.count, 2);
+  assert.equal(retake.config.revealMode, "immediate");
+  // Options order preserved when shuffleOptions is false
+  assert.deepEqual(
+    retake.questions[0].options.map((opt) => opt.id),
+    ["a", "b", "c", "d"],
+  );
+
+  // Throws if no failed questions exist in attempt
+  const perfectAttempt = {
+    config: {
+      mode: "random",
+      count: 1,
+      revealMode: "immediate",
+    },
+    questionIds: ["q1"],
+    answers: {
+      q1: ["a"],
+    },
+  };
+  assert.throws(
+    () => prepareRetakeSession(bank, domains, perfectAttempt, "failed"),
+    /No failed questions are available from the previous attempt/,
+  );
+});
+
+test("prepareRetakeSession: failed retake shuffles options by default", () => {
+  const bank = [
+    question("q1", "alpha", "single", ["a"]),
+    question("q2", "alpha", "single", ["b"]),
+  ];
+  const attempt = {
+    config: {
+      mode: "random",
+      count: 2,
+      revealMode: "immediate",
+    },
+    questionIds: ["q1", "q2"],
+    answers: {
+      q1: ["b"], // incorrect
+      q2: ["a"], // incorrect
+    },
+  };
+
+  const retake = prepareRetakeSession(
+    bank,
+    domains,
+    attempt,
+    "failed",
+    () => 0.5,
+  );
+  assert.deepEqual(
+    retake.questions.map((q) => q.id),
+    ["q1", "q2"],
+  );
+  // Constant 0.5 random source: idx3<->2, idx2<->1, idx1 no-op
+  // maps [a,b,c,d] to [a,d,b,c] for every question.
+  for (const q of retake.questions) {
+    assert.deepEqual(
+      q.options.map((opt) => opt.id),
+      ["a", "d", "b", "c"],
+    );
+  }
+});
+
+test("getFailedQuizQuestions treats missing answers as failed", () => {
+  const bank = [
+    question("q1", "alpha", "single", ["a"]),
+    question("q2", "alpha", "single", ["b"]),
+  ];
+  const failed = getFailedQuizQuestions(bank, { questionIds: ["q1", "q2"] });
+  assert.deepEqual(
+    failed.map((q) => q.id),
+    ["q1", "q2"],
   );
 });
 

@@ -8,6 +8,7 @@ import { loadCertContent } from "../lib/content";
 import {
   answerCountLabel,
   applyOptionOrder,
+  getFailedQuizQuestions,
   getOptionLabel,
   getOptionLabelForId,
   getUnusedQuizQuestions,
@@ -194,6 +195,14 @@ export function ResultsPage() {
     reviewContext,
   );
   const unusedCount = unusedQuestions.length;
+  const failedQuestions = getFailedQuizQuestions(questions, attempt);
+  const failedCount = failedQuestions.length;
+  const failedRetakeLabel = `Retake failed ${failedCount} question${failedCount === 1 ? "" : "s"}`;
+  const failedRetakeDisabledHint = "0 questions failed in this quiz.";
+  const failedRetakeHint =
+    failedCount === 0
+      ? failedRetakeDisabledHint
+      : `Only the ${failedCount} question${failedCount === 1 ? "" : "s"} answered incorrectly or skipped in this quiz.`;
 
   function handleRetake(mode: RetakeMode): void {
     const navigationState: RetakeNavigationState = {
@@ -332,6 +341,18 @@ export function ResultsPage() {
             <button
               type="button"
               className="button button-secondary"
+              disabled={failedCount === 0}
+              onClick={() => handleRetake("failed")}
+            >
+              {failedRetakeLabel}
+            </button>
+            <p className={styles.retakeHint}>{failedRetakeHint}</p>
+          </div>
+
+          <div className={styles.retakeItem}>
+            <button
+              type="button"
+              className="button button-secondary"
               onClick={() => handleRetake("random")}
             >
               Retake with random questions
@@ -393,6 +414,15 @@ export function ResultsPage() {
           }
         >
           Retake this exact quiz
+        </button>
+        <button
+          type="button"
+          className="button button-secondary"
+          disabled={failedCount === 0}
+          onClick={() => handleRetake("failed")}
+          title={failedCount === 0 ? failedRetakeDisabledHint : undefined}
+        >
+          {failedRetakeLabel}
         </button>
         <button
           type="button"

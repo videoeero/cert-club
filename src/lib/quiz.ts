@@ -661,16 +661,57 @@ export function getUnusedQuizQuestions(
   return eligible.filter((question) => !used.has(question.id));
 }
 
+export function getFailedQuizQuestions(
+  questions: readonly Question[],
+  attempt: Pick<AttemptRecord, "questionIds"> & { answers?: AnswerMap },
+): Question[] {
+  const questionMap = new Map(questions.map((q) => [q.id, q]));
+  const failed: Question[] = [];
+  for (const questionId of attempt.questionIds) {
+    const question = questionMap.get(questionId);
+    if (!question) continue;
+    const selected = attempt.answers?.[questionId] ?? [];
+    if (!scoreAnswer(question, selected)) {
+      failed.push(question);
+    }
+  }
+  return failed;
+}
+
 export function prepareRetakeSession(
   questions: readonly Question[],
   domains: readonly Domain[],
-  attempt: Pick<AttemptRecord, "config" | "questionIds">,
+  attempt: Pick<AttemptRecord, "config" | "questionIds"> & {
+    answers?: AnswerMap;
+  },
   mode: RetakeMode,
   random: RandomSource = Math.random,
   reviewContext?: RetakeReviewContext,
 ): { questions: Question[]; config: QuizConfig } {
   if (questions.length === 0) {
     throw new QuizSelectionError("The question bank is empty.");
+  }
+
+  if (mode === "failed") {
+    const failedQuestions = getFailedQuizQuestions(questions, attempt);
+
+    if (failedQuestions.length === 0) {
+      throw new QuizSelectionError(
+        "No failed questions are available from the previous attempt.",
+      );
+    }
+
+    const shouldShuffle = attempt.config.shuffleOptions !== false;
+
+    return {
+      questions: shouldShuffle
+        ? failedQuestions.map((q) => shuffleQuestionOptions(q, random))
+        : failedQuestions,
+      config: {
+        ...attempt.config,
+        count: failedQuestions.length,
+      },
+    };
   }
 
   if (mode === "exact") {

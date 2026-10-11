@@ -89,7 +89,7 @@ export interface QuizConfig extends QuizSelectionConfig {
   revealMode: RevealMode;
 }
 
-export type RetakeMode = "exact" | "random" | "other";
+export type RetakeMode = "exact" | "random" | "other" | "failed";
 
 export interface RetakeReviewContext {
   missedQuestionIds?: readonly string[];
