@@ -190,7 +190,9 @@ The rule is one domain per *invocation*, not one domain at a time. Per
 [`skills/author-questions`](../skills/author-questions/SKILL.md), an
 orchestrating session may fan the domains out across parallel `Agent` or
 `Workflow` invocations, each still scoped to a single domain or skill. What is
-forbidden is one session drafting several.
+forbidden is one session drafting several. To drive the Phase 2 fan-out
+automatically via subagents, invoke
+[`skills/orchestrate-bank`](../skills/orchestrate-bank/SKILL.md).
 
 ### The Authoring & Verification Loop
 For each domain (or skill when declared):
@@ -380,6 +382,7 @@ The agent audits the review record against permanent invariants (sample question
 | **2. Author** | [`author-questions`](../skills/author-questions/SKILL.md) | Domain/skill slug; `npm run balance -- --2x` | `evaluate-questions` (Domain/Skill N) |
 | **2. Verify** | [`evaluate-questions`](../skills/evaluate-questions/SKILL.md) | Domain/skill slug; cold source fetch | `harden-domain-questions` (Domain/Skill N) |
 | **2. Calibrate** | [`harden-domain-questions`](../skills/harden-domain-questions/SKILL.md) | Domain slug; sample inventory | Next domain/skill (or Phase 3 sweep) |
+| **2. Orchestrate (alt)** | [`orchestrate-bank`](../skills/orchestrate-bank/SKILL.md) | Cert slug; subagent tool environment | Phase 3 sweep (then `audit-coverage`) |
 | **3. Sweep** | [`evaluate-questions`](../skills/evaluate-questions/SKILL.md) | `--diff` or full slug; `npm run metrics`; `npm run check-sources` / `check-claims` | `audit-coverage` |
 | **4. Promote** | [`audit-coverage`](../skills/audit-coverage/SKILL.md) | `npm run metrics`; balance check | **Human developer** |
 | **5. Maintain** | [`audit-sources`](../skills/audit-sources/SKILL.md) | Full bank or host | `condense-review-progress` (or ongoing) |
