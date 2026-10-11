@@ -663,14 +663,14 @@ export function getUnusedQuizQuestions(
 
 export function getFailedQuizQuestions(
   questions: readonly Question[],
-  attempt: Pick<AttemptRecord, "questionIds"> & { answers?: AnswerMap },
+  attempt: Pick<AttemptRecord, "questionIds" | "answers">,
 ): Question[] {
   const questionMap = new Map(questions.map((q) => [q.id, q]));
   const failed: Question[] = [];
   for (const questionId of attempt.questionIds) {
     const question = questionMap.get(questionId);
     if (!question) continue;
-    const selected = attempt.answers?.[questionId] ?? [];
+    const selected = attempt.answers[questionId] ?? [];
     if (!scoreAnswer(question, selected)) {
       failed.push(question);
     }
@@ -681,9 +681,7 @@ export function getFailedQuizQuestions(
 export function prepareRetakeSession(
   questions: readonly Question[],
   domains: readonly Domain[],
-  attempt: Pick<AttemptRecord, "config" | "questionIds"> & {
-    answers?: AnswerMap;
-  },
+  attempt: Pick<AttemptRecord, "config" | "questionIds" | "answers">,
   mode: RetakeMode,
   random: RandomSource = Math.random,
   reviewContext?: RetakeReviewContext,

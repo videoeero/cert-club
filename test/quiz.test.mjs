@@ -1009,15 +1009,23 @@ test("prepareRetakeSession: failed retake shuffles options by default", () => {
   }
 });
 
-test("getFailedQuizQuestions treats missing answers as failed", () => {
+test("getFailedQuizQuestions treats questions absent from answers as failed", () => {
   const bank = [
     question("q1", "alpha", "single", ["a"]),
     question("q2", "alpha", "single", ["b"]),
+    question("q3", "alpha", "single", ["c"]),
   ];
-  const failed = getFailedQuizQuestions(bank, { questionIds: ["q1", "q2"] });
+  const failed = getFailedQuizQuestions(bank, {
+    questionIds: ["q1", "q2", "q3"],
+    // q1 correct; q2 answered incorrectly; q3 never answered (no entry)
+    answers: {
+      q1: ["a"],
+      q2: ["a"],
+    },
+  });
   assert.deepEqual(
     failed.map((q) => q.id),
-    ["q1", "q2"],
+    ["q2", "q3"],
   );
 });
 

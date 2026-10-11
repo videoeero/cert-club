@@ -48,16 +48,16 @@ For the end-to-end operator runbook showing how to chain these skills together
 to build a complete cert bank from scratch, see
 [`certs/AUTHORING-A-CERT-WITH-SKILLS.md`](../certs/AUTHORING-A-CERT-WITH-SKILLS.md).
 
-| Workflow                                                        | Use it when                                                                        |
-| --------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [`assess-new-cert`](assess-new-cert/SKILL.md)                   | Deciding whether a proposed cert can be banked from public sources                 |
-| [`classify-sources`](classify-sources/SKILL.md)                 | Phase one of `assess-new-cert`: locating and labeling candidate sources            |
-| [`extract-blueprint`](extract-blueprint/SKILL.md)               | Phase two of `assess-new-cert`: deriving weights, samples and format               |
-| [`author-questions`](author-questions/SKILL.md)                 | Writing or revising a batch of questions                                           |
-| [`evaluate-questions`](evaluate-questions/SKILL.md)             | Checking a batch's answer keys and distractors are actually correct                |
-| [`harden-domain-questions`](harden-domain-questions/SKILL.md)   | Calibrating one domain's difficulty up to the guide's sample questions             |
-| [`orchestrate-bank`](orchestrate-bank/SKILL.md)                 | Running Phase 2 authoring, evaluation, hardening, and reconciliation via subagents |
-| [`audit-coverage`](audit-coverage/SKILL.md)                     | Checking coverage against the blueprint, or judging `draft` → `stable`             |
-| [`audit-sources`](audit-sources/SKILL.md)                       | Re-checking citations for staleness, dead links or doc drift                       |
-| [`condense-review-progress`](condense-review-progress/SKILL.md) | Distilling a review record down to its essential decisions and anchors             |
-| [`add-question-type`](add-question-type/SKILL.md)               | Considering an answer shape beyond single and multi select                         |
+| Workflow                                                        | Use it when                                                             |
+| --------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| [`assess-new-cert`](assess-new-cert/SKILL.md)                   | Deciding whether a proposed cert can be banked from public sources      |
+| [`classify-sources`](classify-sources/SKILL.md)                 | Phase one of `assess-new-cert`: locating and labeling candidate sources |
+| [`extract-blueprint`](extract-blueprint/SKILL.md)               | Phase two of `assess-new-cert`: deriving weights, samples and format    |
+| [`author-questions`](author-questions/SKILL.md)                 | Writing or revising a batch of questions                                |
+| [`evaluate-questions`](evaluate-questions/SKILL.md)             | Checking a batch's answer keys and distractors are actually correct     |
+| [`harden-domain-questions`](harden-domain-questions/SKILL.md)   | Calibrating one domain's difficulty up to the guide's sample questions  |
+| [`orchestrate-bank`](orchestrate-bank/SKILL.md)                 | Running Phase 2 authoring, evaluation, and hardening via subagents      |
+| [`audit-coverage`](audit-coverage/SKILL.md)                     | Checking coverage against the blueprint, or judging `draft` → `stable`  |
+| [`audit-sources`](audit-sources/SKILL.md)                       | Re-checking citations for staleness, dead links or doc drift            |
+| [`condense-review-progress`](condense-review-progress/SKILL.md) | Distilling a review record down to its essential decisions and anchors  |
+| [`add-question-type`](add-question-type/SKILL.md)               | Considering an answer shape beyond single and multi select              |
