@@ -2423,7 +2423,7 @@
       },
       {
         "id": "d",
-        "text": "A summary element nested directly inside a standalone section container element without heading tags."
+        "text": "An HTML heading element declaring role='button' directly to serve as its own toggle."
       }
     ],
     "correct": [
@@ -2433,7 +2433,7 @@
     "distractorNotes": {
       "b": "Nesting a heading inside a button is invalid HTML and prevents assistive technologies from exposing the heading in document outlines.",
       "c": "Combining conflicting ARIA roles on a single div violates ARIA authoring rules and creates an ambiguous accessibility node.",
-      "d": "The native details and summary pattern does not wrap summary elements inside generic section wrappers for headers."
+      "d": "Applying role='button' directly to a heading element overrides native heading semantics, removing the heading from screen reader outline navigation."
     },
     "sourceUrl": "https://www.w3.org/WAI/ARIA/apg/patterns/accordion/",
     "sourceNote": "W3C WAI ARIA APG Accordion pattern specifies wrapping interactive header buttons within appropriate heading elements.",
@@ -2491,11 +2491,11 @@
     "options": [
       {
         "id": "a",
-        "text": "The combobox supports simultaneous input from keyboard navigation and speech recognition software."
+        "text": "The input suggests completions inline within the text field without displaying a popup list."
       },
       {
         "id": "b",
-        "text": "Suggestions appear in a popup listbox while alternate categories display in a companion tabpanel."
+        "text": "The combobox displays a popup list of suggestions without inline completion in the input field."
       },
       {
         "id": "c",
@@ -2503,7 +2503,7 @@
       },
       {
         "id": "d",
-        "text": "The input field filters results across local client memory and remote asynchronous server endpoints."
+        "text": "The combobox accepts free-form text input while suppressing all automated predictive suggestions."
       }
     ],
     "correct": [
@@ -2511,9 +2511,9 @@
     ],
     "explanation": "The aria-autocomplete property indicates whether user input triggers automatic display of predictions. The value 'both' indicates that matching suggestions are presented in a separate popup list and the most likely completion is inline-autocompleted directly within the input field.",
     "distractorNotes": {
-      "a": "aria-autocomplete governs text completion behavior in the input control, not multi-modal assistive technology input methods.",
-      "b": "Combobox autocomplete values do not manage secondary navigation widgets or companion tabpanels.",
-      "d": "Combobox autocomplete semantics describe user interface presentation behavior, not technical data fetching origins."
+      "a": "Inline text completion without a suggestion popup corresponds to aria-autocomplete='inline' rather than 'both'.",
+      "b": "Displaying popup suggestions without inline completion corresponds to aria-autocomplete='list' rather than 'both'.",
+      "d": "Suppressing all suggestions and autocompletion corresponds to aria-autocomplete='none' rather than 'both'."
     },
     "sourceUrl": "https://www.w3.org/TR/wai-aria-1.2/#aria-autocomplete",
     "sourceNote": "W3C WAI-ARIA 1.2 §6.6 aria-autocomplete defines 'both' as providing both popup suggestion lists and inline text completion.",
@@ -2531,15 +2531,15 @@
     "options": [
       {
         "id": "a",
-        "text": "aria-owns referencing the class name of the container holding selectable options."
+        "text": "aria-owns referencing the ID attribute of the popup listbox element."
       },
       {
         "id": "b",
-        "text": "aria-haspopup set to the string 'dialog' on the combobox input element."
+        "text": "aria-haspopup specifying the value 'listbox' on the combobox input."
       },
       {
         "id": "c",
-        "text": "aria-describedby referencing the ID attribute of the first selectable list option."
+        "text": "aria-activedescendant referencing the ID of the active popup option."
       },
       {
         "id": "d",
@@ -2551,9 +2551,9 @@
     ],
     "explanation": "In WAI-ARIA 1.2, the combobox input element must declare role='combobox', aria-expanded to reflect open/closed state, and aria-controls pointing to the unique ID of the popup element (such as role='listbox') that it manages.",
     "distractorNotes": {
-      "a": "aria-owns defines parent-child relationships in the accessibility tree and requires element IDs rather than class names.",
-      "b": "When the combobox popup is a listbox, aria-haspopup defaults to or should specify 'listbox', not 'dialog'.",
-      "c": "aria-describedby associates descriptive supplementary text, not the controlled interactive popup container."
+      "a": "While aria-owns was used in the legacy WAI-ARIA 1.0 combobox pattern, WAI-ARIA 1.2 requires aria-controls to identify the controlled popup.",
+      "b": "aria-haspopup communicates the type of popup (such as listbox), but does not identify the specific popup DOM element container by ID.",
+      "c": "aria-activedescendant identifies the currently highlighted or selected option item within the listbox, not the listbox container itself."
     },
     "sourceUrl": "https://www.w3.org/WAI/ARIA/apg/patterns/combobox/",
     "sourceNote": "W3C WAI ARIA APG Combobox pattern requires aria-controls on the combobox input pointing to the popup listbox ID.",
@@ -2579,11 +2579,11 @@
       },
       {
         "id": "c",
-        "text": "In automatic selection, tab panels rotate automatically on a timed carousel interval without user input."
+        "text": "In automatic selection, arrow keys move focus among tabs while pressing Space or Enter activates the panel."
       },
       {
         "id": "d",
-        "text": "In automatic selection, screen readers automatically announce all tab panels sequentially upon page load."
+        "text": "In automatic selection, selecting a tab immediately shifts keyboard focus into the tabpanel content area."
       }
     ],
     "correct": [
@@ -2591,9 +2591,9 @@
     ],
     "explanation": "In automatic tab selection (selection follows focus), pressing the Right or Left Arrow keys moves focus to the adjacent tab and immediately sets aria-selected='true', revealing the corresponding tabpanel. In manual tab selection, moving focus with Arrow keys does not change the active panel until the user presses Space or Enter.",
     "distractorNotes": {
-      "b": "The Tab key moves focus into the active tabpanel or past the tablist; Arrow keys navigate between individual tabs.",
-      "c": "Automatic tab selection refers to keyboard focus behavior, not automated timed carousel cycling.",
-      "d": "Screen readers do not read all hidden tab panels automatically on page load in standard tablist widgets."
+      "b": "In accessible tablists, the Tab key moves into or out of the tabpanel, whereas Left and Right Arrow keys navigate between individual tabs.",
+      "c": "Requiring Space or Enter to activate the focused tab describes manual tab selection rather than automatic tab selection.",
+      "d": "Automatic tab selection activates the tabpanel upon receiving focus, but leaves keyboard focus on the tab rather than jumping into the panel."
     },
     "sourceUrl": "https://www.w3.org/WAI/ARIA/apg/patterns/tabs/",
     "sourceNote": "W3C WAI ARIA APG Tabs pattern defines automatic activation as selection following keyboard focus.",
@@ -2619,11 +2619,11 @@
       },
       {
         "id": "c",
-        "text": "role='button' on each tab, with tabindex='1' on the active tab and tabindex='0' on inactive tabs."
+        "text": "role='tab' on each tab, with tabindex='-1' on every tab and tabindex='0' on the tabpanel container."
       },
       {
         "id": "d",
-        "text": "role='tab' on each tab, with tabindex='-1' on every tab and focus managed via aria-owns."
+        "text": "role='button' on each tab, with tabindex='1' on the active tab and tabindex='0' on inactive tabs."
       }
     ],
     "correct": [
@@ -2632,8 +2632,8 @@
     "explanation": "The APG Tabs pattern implements a roving tabindex. Only the currently selected tab has tabindex='0', making it the single tab stop when tabbing into the tablist. All inactive tabs have tabindex='-1', allowing users to cycle through tabs using Left and Right Arrow keys without cluttering the page Tab sequence.",
     "distractorNotes": {
       "a": "Setting tabindex='0' on every tab forces users to Tab through all tabs, violating the APG roving tabindex pattern.",
-      "c": "Tabs require role='tab' rather than role='button', and positive tabindex values disrupt natural document tab order.",
-      "d": "An active tab must have tabindex='0' so keyboard users can reach the widget via standard Tab navigation."
+      "c": "In roving tabindex, the active tab must carry tabindex='0' so keyboard users can navigate into the tablist via Tab.",
+      "d": "Tabs require role='tab' rather than role='button', and positive tabindex values disrupt natural document tab order."
     },
     "sourceUrl": "https://www.w3.org/WAI/ARIA/apg/patterns/tabs/",
     "sourceNote": "W3C WAI ARIA APG Tabs pattern specifies roving tabindex with tabindex 0 on active tab and -1 on inactive tabs.",
@@ -2691,15 +2691,15 @@
     "options": [
       {
         "id": "a",
-        "text": "Focus moves up to the very first treeitem located at the root of the tree view widget."
+        "text": "Focus moves up to the parent node of the treeitem without modifying the node expansion state."
       },
       {
         "id": "b",
-        "text": "The parent treeitem closes and keyboard focus is restored to the page navigation landmark."
+        "text": "Focus shifts immediately into the first child item inside the open group without collapsing it."
       },
       {
         "id": "c",
-        "text": "Focus moves into the last child item inside the open group without altering the expanded state."
+        "text": "Focus moves to the previous sibling treeitem while leaving the current parent treeitem expanded."
       },
       {
         "id": "d",
@@ -2711,9 +2711,9 @@
     ],
     "explanation": "In the APG Treeview pattern, when focus is on an open parent treeitem, pressing the Left Arrow collapses the branch while leaving focus on that item. Pressing Left Arrow when the node is already closed (or on an end child) moves focus to its parent node.",
     "distractorNotes": {
-      "a": "Pressing Left Arrow does not jump focus to the root node; Home jumps to the first node in the tree.",
-      "b": "Left Arrow operates within widget context and never ejects keyboard focus to an exterior landmark.",
-      "c": "Pressing Left Arrow collapses the open node rather than moving focus down into its child items."
+      "a": "Moving to the parent node occurs when pressing Left Arrow on an already collapsed node or child item, not on an expanded node.",
+      "b": "Moving to the first child item occurs when pressing Right Arrow on an expanded node, whereas Left Arrow collapses the node.",
+      "c": "Up Arrow navigates to the previous sibling or visible node, while Left Arrow collapses the currently expanded branch."
     },
     "sourceUrl": "https://www.w3.org/WAI/ARIA/apg/patterns/treeview/",
     "sourceNote": "W3C WAI ARIA APG Treeview pattern defines Left Arrow behavior to collapse open nodes and keep focus on the node.",
@@ -2735,15 +2735,15 @@
       },
       {
         "id": "b",
-        "text": "A grid is rendered natively by the web browser using CSS Grid, whereas a table requires CSS display block."
+        "text": "A grid enables sortable and filterable column headers, whereas a table cannot include interactive controls."
       },
       {
         "id": "c",
-        "text": "A grid allows screen readers to announce row and column counts, whereas a table suppresses native tabular structure metadata."
+        "text": "A grid allows screen readers to announce row and column counts, whereas a table suppresses tabular metadata."
       },
       {
         "id": "d",
-        "text": "A grid must display numerical financial data, whereas a table is intended for general textual information."
+        "text": "A grid is rendered natively by the web browser using CSS Grid, whereas a table requires CSS display table."
       }
     ],
     "correct": [
@@ -2751,9 +2751,9 @@
     ],
     "explanation": "In ARIA, role='grid' designates an interactive widget containing cells that users navigate using directional arrow keys (2D navigation). In contrast, role='table' (and native HTML table) represents static tabular data intended for assistive technology reading and browse modes.",
     "distractorNotes": {
-      "b": "ARIA roles define accessibility semantics and keyboard behavior, completely independent of CSS layout engines.",
-      "c": "Both tables and grids expose row and column counts to assistive technology users.",
-      "d": "ARIA roles define interaction and semantic structures, not content data types or business domains."
+      "b": "Standard tables can include interactive sorting and filtering buttons; role='grid' is specifically for composite 2D keyboard navigation.",
+      "c": "Screen readers announce row and column counts for both tables and grids, making structural announcements identical.",
+      "d": "ARIA roles define accessibility semantics and keyboard behavior, completely independent of CSS layout engines."
     },
     "sourceUrl": "https://www.w3.org/WAI/ARIA/apg/patterns/grid/",
     "sourceNote": "W3C WAI ARIA APG Grid pattern defines grids as interactive widgets with 2D cell navigation via arrow keys.",
@@ -2783,7 +2783,7 @@
       },
       {
         "id": "d",
-        "text": "When the slider control is bound to a native HTML form element that submits via HTTP GET requests."
+        "text": "When the slider uses decimal or fractional step increments rather than whole positive integer values."
       }
     ],
     "correct": [
@@ -2793,7 +2793,7 @@
     "distractorNotes": {
       "a": "Custom minimum and maximum values are conveyed using numeric aria-valuemin and aria-valuemax attributes.",
       "c": "Slider orientation is communicated using aria-orientation='vertical', not aria-valuetext.",
-      "d": "Form submission protocols have no bearing on ARIA accessibility text attributes."
+      "d": "Decimal step increments are conveyed directly by numeric aria-valuenow and aria-valuestep without requiring valuetext."
     },
     "sourceUrl": "https://www.w3.org/TR/wai-aria-1.2/#aria-valuetext",
     "sourceNote": "W3C WAI-ARIA 1.2 §6.6 aria-valuetext defines presenting human-readable text when numeric valuenow is inadequate.",
@@ -2899,11 +2899,11 @@
       },
       {
         "id": "c",
-        "text": "It prevents search engine crawlers from indexing website hyperlinks contained inside the menu container."
+        "text": "It causes screen readers to suppress link announcements until the user presses an explicit disclosure button."
       },
       {
         "id": "d",
-        "text": "It triggers browser security warnings regarding unauthenticated cross-origin navigation scripts."
+        "text": "It restricts navigation items to executing local JavaScript commands rather than navigating to external URLs."
       }
     ],
     "correct": [
@@ -2912,8 +2912,8 @@
     "explanation": "ARIA menus (role='menu' / 'menubar') are designed to emulate desktop application menus (like desktop File/Edit menus). Applying them to website navigation strips link semantics from screen reader users and requires custom arrow key trapping that breaks standard webpage reading and link discovery behaviors.",
     "distractorNotes": {
       "b": "ARIA roles alter accessibility tree properties and have no effect on CSS styling or browser rendering engines.",
-      "c": "Search engines evaluate HTML anchor tags for crawling regardless of ARIA widget role attributes.",
-      "d": "ARIA attributes do not trigger web browser security sandboxing or cross-origin policy alerts."
+      "c": "Screen readers can still announce menu items, but they treat them as application commands rather than web hyperlinks.",
+      "d": "While ARIA menus emulate desktop application command bars, there is no technical restriction against embedding navigation URLs."
     },
     "sourceUrl": "https://www.w3.org/WAI/ARIA/apg/patterns/menubar/",
     "sourceNote": "W3C WAI ARIA APG Menubar pattern cautions that menus emulate desktop application menus, not website site navigation.",
@@ -2931,7 +2931,7 @@
     "options": [
       {
         "id": "a",
-        "text": "It automatically translates all dialog text into the user default operating system language."
+        "text": "It renders a non-modal popup that leaves background elements interactive while moving focus to the dialog."
       },
       {
         "id": "b",
@@ -2939,11 +2939,11 @@
       },
       {
         "id": "c",
-        "text": "It automatically synthesizes spoken audio descriptions of visual media graphics nested within the dialog."
+        "text": "It automatically traps keyboard focus while requiring developers to set aria-hidden on background elements."
       },
       {
         "id": "d",
-        "text": "It submits surrounding form inputs to the server via background AJAX requests upon appearance."
+        "text": "It keeps keyboard focus on the opening trigger element until the user explicitly clicks inside the dialog."
       }
     ],
     "correct": [
@@ -2951,9 +2951,9 @@
     ],
     "explanation": "The HTML `<dialog>` element opened via `.showModal()` natively renders in the browser top layer, generates a `::backdrop` pseudo-element, blocks interaction with background elements, and automatically traps keyboard focus within the dialog without custom JavaScript focus traps.",
     "distractorNotes": {
-      "a": "The dialog element does not perform automated language translation.",
-      "c": "The dialog element has no automated text-to-speech or audio description synthesis capabilities.",
-      "d": "showModal() displays the dialog; form submission depends on explicit user interaction and form attributes."
+      "a": "Rendering a non-modal dialog that leaves background content interactive describes dialog.show(), whereas showModal() creates a modal.",
+      "c": "showModal() automatically makes background elements inert to assistive technology, removing the need to manually set aria-hidden on siblings.",
+      "d": "showModal() automatically moves initial focus into the dialog rather than leaving it on the opening trigger."
     },
     "sourceUrl": "https://www.w3.org/TR/html52/interactive-elements.html#the-dialog-element",
     "sourceNote": "HTML specification defines dialog showModal method providing native modal behavior and focus confinement.",
@@ -3015,11 +3015,11 @@
       },
       {
         "id": "b",
-        "text": "Spacebar scrolls through article paragraphs, while Enter expands full article text content."
+        "text": "Down Arrow moves focus to the next article, while Up Arrow moves focus to the previous article in feed."
       },
       {
         "id": "c",
-        "text": "Escape dismisses the active article, while Backspace navigates to the parent feed container."
+        "text": "Spacebar scrolls through article paragraphs, while Enter expands full article text content on the page."
       },
       {
         "id": "d",
@@ -3032,8 +3032,8 @@
     "explanation": "In the APG Feed pattern, feeds can contain infinite scrolling streams. To allow users to move between articles without tabbing through every link or button inside each article, Page Down moves focus to the start of the next article, and Page Up moves focus to the previous article.",
     "distractorNotes": {
       "a": "Tab moves between interactive elements inside an article or exits the feed; it does not jump between articles.",
-      "b": "Spacebar triggers native page scroll or button activation rather than structured feed navigation.",
-      "c": "Escape and Backspace are not feed navigation keys defined in the APG Feed pattern."
+      "b": "Up and Down Arrow keys navigate within the content of an article, whereas Page Up and Page Down navigate between articles.",
+      "c": "Spacebar triggers native page scroll or button activation rather than structured feed navigation."
     },
     "sourceUrl": "https://www.w3.org/WAI/ARIA/apg/patterns/feed/",
     "sourceNote": "W3C WAI ARIA APG Feed pattern specifies Page Down and Page Up for navigating between articles.",
@@ -3055,15 +3055,15 @@
       },
       {
         "id": "b",
-        "text": "A toggletip requires an HTML5 audio element to speak text, whereas a tooltip relies on desktop notifications."
+        "text": "A toggletip moves keyboard focus into the popup container, whereas a tooltip keeps focus on the trigger."
       },
       {
         "id": "c",
-        "text": "A toggletip displays interactive hyperlink elements, whereas a tooltip renders static graphical images."
+        "text": "A toggletip uses role='tooltip' referenced by aria-describedby, whereas a tooltip uses role='status'."
       },
       {
         "id": "d",
-        "text": "A toggletip is restricted to touch screen mobile browsers, whereas a tooltip functions only on desktop keyboards."
+        "text": "A toggletip appears automatically upon page load, whereas a tooltip requires explicit user interaction."
       }
     ],
     "correct": [
@@ -3071,9 +3071,9 @@
     ],
     "explanation": "A tooltip appears on pointer hover or keyboard focus of an interactive control, presenting supplementary information referenced via aria-describedby. A toggletip is an interactive button (disclosure) that the user clicks/presses, outputting its content into a live region or expanded container so assistive technologies announce it without moving focus away.",
     "distractorNotes": {
-      "b": "Neither tooltips nor toggletips require audio elements or OS desktop notifications.",
-      "c": "Tooltips generally cannot contain interactive links because moving the mouse to click them can dismiss the tooltip; toggletips can contain links.",
-      "d": "Both patterns are cross-platform design techniques supported across mobile and desktop interfaces."
+      "b": "A toggletip keeps focus on the trigger button and announces content via a live region rather than stealing keyboard focus like a dialog.",
+      "c": "Tooltips use role='tooltip' linked via aria-describedby, whereas toggletips typically use disclosure buttons and live regions.",
+      "d": "Both tooltips and toggletips require user interaction; neither displays automatically upon initial page load."
     },
     "sourceUrl": "https://www.w3.org/WAI/ARIA/apg/patterns/tooltip/",
     "sourceNote": "W3C WAI ARIA APG Tooltip pattern defines hover/focus tooltips vs interactive click-activated toggletips.",
@@ -3091,7 +3091,7 @@
     "options": [
       {
         "id": "a",
-        "text": "It prevents search engine indexing robots from accessing hidden content until user authentication."
+        "text": "It automatically exposes native heading semantics in the document outline without requiring heading tags."
       },
       {
         "id": "b",
@@ -3099,11 +3099,11 @@
       },
       {
         "id": "c",
-        "text": "It forces web browsers to display animated transition effects across mobile device viewports."
+        "text": "It automatically meets WCAG Level AAA requirements while custom ARIA disclosures are limited to Level AA."
       },
       {
         "id": "d",
-        "text": "It removes the contained text from the accessibility tree until the user opens browser developer tools."
+        "text": "It announces disclosure content updates via an assertive live region without requiring screen reader focus."
       }
     ],
     "correct": [
@@ -3111,9 +3111,9 @@
     ],
     "explanation": "Native `<details>` and `<summary>` elements provide accessible disclosure functionality out of the box: the browser manages keyboard activation (Enter and Space), toggles the open state, and exposes appropriate roles and states to assistive technologies without requiring custom ARIA or JavaScript handlers.",
     "distractorNotes": {
-      "a": "Details elements do not restrict search crawler indexing or mandate user authentication.",
-      "c": "Native details elements provide functional state toggling; visual animations require explicit CSS rules.",
-      "d": "Content within details is available in the DOM and accessible tree when open; developer tools are not required."
+      "a": "The summary element provides disclosure trigger semantics but does not map to a heading role unless an explicit heading tag is included.",
+      "c": "WCAG conformance levels depend on complete accessibility behavior rather than whether native or custom elements are used.",
+      "d": "Native details elements do not inject assertive live regions; they expose standard expanded and collapsed states to assistive technology."
     },
     "sourceUrl": "https://www.w3.org/TR/html52/interactive-elements.html#the-details-element",
     "sourceNote": "HTML specification defines details and summary elements providing native disclosure semantics and interaction.",
@@ -3135,7 +3135,7 @@
       },
       {
         "id": "b",
-        "text": "They cause the accessible name computation algorithm to abort and return an empty string value."
+        "text": "They require visibility: hidden instead of display: none to be included in the calculation."
       },
       {
         "id": "c",
@@ -3143,7 +3143,7 @@
       },
       {
         "id": "d",
-        "text": "They are included only if the referencing element also contains an explicit aria-owns attribute."
+        "text": "They are included only if the referenced element is an interactive form control or anchor link."
       }
     ],
     "correct": [
@@ -3152,8 +3152,8 @@
     "explanation": "Under AccName 1.2 Step 2B, if an element is referenced by aria-labelledby (or aria-describedby), the computation algorithm includes the text content of the referenced element even if that referenced element has display: none, visibility: hidden, or aria-hidden='true'.",
     "distractorNotes": {
       "a": "Hidden elements are included in the name calculation when explicitly referenced by ID in aria-labelledby.",
-      "b": "Referencing hidden text nodes is standard practice and does not cause calculation termination or failure.",
-      "d": "aria-owns is unrelated to name computation and has no effect on whether hidden referenced text is included."
+      "b": "AccName 1.2 Step 2B traverses referenced elements regardless of whether display: none or visibility: hidden is applied.",
+      "d": "AccName 1.2 traverses referenced elements regardless of whether they are interactive controls or static text nodes."
     },
     "sourceUrl": "https://www.w3.org/TR/accname-1.2/#mapping_additional_nd_te",
     "sourceNote": "W3C AccName 1.2 §4.3 Step 2B specifies including hidden elements when referenced by aria-labelledby.",
@@ -3175,11 +3175,11 @@
       },
       {
         "id": "b",
-        "text": "Both values are concatenated together separated by an underscore delimiter character."
+        "text": "Both attributes are concatenated together with a space to form a combined name."
       },
       {
         "id": "c",
-        "text": "The browser ignores both attributes and falls back directly to the title attribute."
+        "text": "The native label element takes precedence, causing both ARIA strings to be dropped."
       },
       {
         "id": "d",
@@ -3193,7 +3193,7 @@
     "distractorNotes": {
       "a": "aria-label has lower precedence than aria-labelledby and is overridden when aria-labelledby is present.",
       "b": "The calculation chooses the higher-precedence attribute rather than concatenating both strings.",
-      "c": "Fallback attributes like title are only evaluated if all higher-priority ARIA attributes are absent."
+      "c": "In AccName 1.2, ARIA labeling attributes take precedence over native host language label elements."
     },
     "sourceUrl": "https://www.w3.org/TR/accname-1.2/#mapping_additional_nd_te",
     "sourceNote": "W3C AccName 1.2 §4.3 establishes aria-labelledby precedence over aria-label in accessible name computation.",
@@ -3335,11 +3335,11 @@
       },
       {
         "id": "b",
-        "text": "Using aria-owns on each data row referencing the class name of the associated column header elements."
+        "text": "Using scope='col' and scope='row' on header cells with nested thead containers for each table level."
       },
       {
         "id": "c",
-        "text": "Placing aria-describedby on the table element referencing a JSON string defining header matrix relationships."
+        "text": "Applying aria-labelledby on each data cell referencing the ordered ID list of the related header cells."
       },
       {
         "id": "d",
@@ -3352,8 +3352,8 @@
     "explanation": "For complex tables with multi-level or irregular headers, the scope attribute is often insufficient. HTML specifies using unique id attributes on each th and referencing them in the headers attribute of each td using an ordered, space-separated list of IDs.",
     "distractorNotes": {
       "a": "scope='auto' is not a valid HTML scope value, and thead cannot be nested inside individual data cells.",
-      "b": "aria-owns does not manage table header associations, and ARIA relationship attributes require element IDs rather than class names.",
-      "c": "Tables associate headers via native table markup (id and headers), not through JSON strings on aria-describedby."
+      "b": "Standard scope attributes cannot associate data cells across complex multi-level, non-contiguous header structures.",
+      "c": "HTML provides the native headers attribute for complex cell associations; aria-labelledby is not standard on data cells."
     },
     "sourceUrl": "https://www.w3.org/TR/html52/tabular-data.html#header-and-data-cell-associations",
     "sourceNote": "HTML specification §4.9.11 defines header and data cell associations using id and headers attributes.",
@@ -3419,11 +3419,11 @@
       },
       {
         "id": "c",
-        "text": "Native buttons automatically open browser contextual menus upon pressing Up and Down Arrow keys."
+        "text": "Native buttons automatically map Arrow keys to navigate between sibling button controls in a container."
       },
       {
         "id": "d",
-        "text": "Native buttons automatically announce their visual background color contrast to screen readers on focus."
+        "text": "Native buttons trigger click events on Enter, but require custom JavaScript listeners for Spacebar."
       }
     ],
     "correct": [
@@ -3432,8 +3432,8 @@
     "explanation": "Native HTML button elements trigger their click action when activated via either the Enter key or the Spacebar, and prevent page scrolling on Spacebar. A div with role='button' requires custom JavaScript event listeners for both key codes, plus event.preventDefault() for Spacebar.",
     "distractorNotes": {
       "a": "The Tab key moves focus and Escape dismisses overlays; neither triggers button click actions.",
-      "c": "Arrow keys do not trigger button context menus unless custom widget scripts are explicitly implemented.",
-      "d": "HTML buttons do not compute or announce CSS color contrast properties to screen readers."
+      "c": "Arrow keys do not trigger button navigation unless custom widget scripts (like toolbar or roving tabindex) are added.",
+      "d": "Native HTML buttons inherently support both Enter and Space activation without custom event listeners."
     },
     "sourceUrl": "https://www.w3.org/TR/using-aria/#rule1",
     "sourceNote": "W3C Using ARIA §2.1 details native button keyboard behaviors including Enter and Space key activation.",
@@ -3451,11 +3451,11 @@
     "options": [
       {
         "id": "a",
-        "text": "The element is completely removed from the active DOM tree and cannot be rendered visually by the browser engine."
+        "text": "The element receives focus during reverse Tab key navigation, but is skipped during forward Tab navigation."
       },
       {
         "id": "b",
-        "text": "The element is inserted at the beginning of the keyboard Tab sequence ahead of all native controls."
+        "text": "The element is placed at the end of the sequential Tab order after all elements with tabindex='0'."
       },
       {
         "id": "c",
@@ -3463,7 +3463,7 @@
       },
       {
         "id": "d",
-        "text": "The element disables pointer click events and treats nested hyperlinks as unselectable static text."
+        "text": "The element can be focused via the Tab key, but cannot receive programmatic focus through JavaScript .focus()."
       }
     ],
     "correct": [
@@ -3471,9 +3471,9 @@
     ],
     "explanation": "Setting tabindex='-1' removes an element from the sequential keyboard navigation order (Tab key navigation) while allowing it to receive focus programmatically using the JavaScript .focus() method. This is essential for routing focus in SPAs or skip link destinations.",
     "distractorNotes": {
-      "a": "tabindex affects keyboard focus eligibility and has no effect on DOM presence or visual rendering.",
-      "b": "Positive tabindex values alter sequence order, whereas negative values remove elements from sequential tabbing.",
-      "d": "tabindex='-1' does not disable pointer events or prevent clicking child links."
+      "a": "tabindex='-1' removes an element from sequential keyboard navigation in both forward and reverse directions.",
+      "b": "Elements with tabindex='-1' are excluded entirely from the sequential tab order rather than placed at the end.",
+      "d": "tabindex='-1' specifically enables programmatic focus via .focus() while excluding the element from the Tab key sequence."
     },
     "sourceUrl": "https://www.w3.org/TR/html52/editing.html#the-tabindex-attribute",
     "sourceNote": "HTML specification §5.3.3 defines tabindex -1 as programmatically focusable while excluded from sequential tab order.",
@@ -3491,15 +3491,15 @@
     "options": [
       {
         "id": "a",
-        "text": "It causes web browsers to automatically strip CSS styling classes from the target HTML element."
+        "text": "It restricts keyboard access exclusively to screen readers while disabling standard hardware keyboards."
       },
       {
         "id": "b",
-        "text": "It invalidates the SSL/TLS encryption certificate of the webpage containing the affected markup."
+        "text": "It causes screen reader virtual cursor navigation to skip the element entirely during reading mode."
       },
       {
         "id": "c",
-        "text": "It prevents screen readers from announcing the accessible name and accessible role of the focused control."
+        "text": "It locks keyboard focus on that element and prevents users from tabbing to subsequent interactive controls."
       },
       {
         "id": "d",
@@ -3511,9 +3511,9 @@
     ],
     "explanation": "Positive tabindex values force the browser to navigate elements in order of increasing tabindex value before visiting standard elements in the natural DOM order. This disrupts logical reading and tab order, creating severe disorientation for sighted keyboard users.",
     "distractorNotes": {
-      "a": "tabindex has no effect on CSS stylesheets or visual class rendering rules.",
-      "b": "HTML attributes cannot invalidate web server TLS/SSL encryption certificates.",
-      "c": "Screen readers still announce the accessible name and role of focusable controls regardless of tabindex value."
+      "a": "Positive tabindex values do not disable hardware keyboards; they alter the order in which focusable elements are visited.",
+      "b": "Screen readers can still access elements with positive tabindex values during virtual cursor reading mode.",
+      "c": "Positive tabindex alters navigation order but does not create an inescapable focus trap."
     },
     "sourceUrl": "https://www.w3.org/TR/WCAG22/#focus-order",
     "sourceNote": "WCAG 2.2 SC 2.4.3 Focus Order guidance explains how positive tabindex disrupts logical navigation order.",
@@ -3615,7 +3615,7 @@
       },
       {
         "id": "b",
-        "text": "Embedding a metadata JSON-LD schema inside the document head defining form field entity mappings."
+        "text": "Ensuring the visible label text and input id attribute use standardized strings like 'email' or 'name'."
       },
       {
         "id": "c",
@@ -3623,7 +3623,7 @@
       },
       {
         "id": "d",
-        "text": "Using placeholder text that displays the user personal name in translucent gray lettering."
+        "text": "Adding placeholder text and title attributes that describe the personal information field to users."
       }
     ],
     "correct": [
@@ -3632,8 +3632,8 @@
     "explanation": "WCAG SC 1.3.5 requires that inputs collecting information about the user can be programmatically identified using the HTML autocomplete attribute with specified tokens (such as autocomplete='name', autocomplete='email', or autocomplete='postal-code').",
     "distractorNotes": {
       "a": "aria-description provides supplementary text but does not enable automated browser autofill or icon identification.",
-      "b": "JSON-LD document metadata does not map individual form input fields to browser autofill mechanisms.",
-      "d": "Placeholder text disappears on entry and does not programmatically identify input purpose according to SC 1.3.5."
+      "b": "Visible label strings and element IDs do not satisfy the SC 1.3.5 requirement for machine-readable purpose tokens.",
+      "d": "Placeholder and title text do not programmatically identify input purpose according to the SC 1.3.5 specification."
     },
     "sourceUrl": "https://www.w3.org/TR/WCAG22/#identify-input-purpose",
     "sourceNote": "WCAG 2.2 SC 1.3.5 Identify Input Purpose requires appropriate HTML autocomplete attribute values.",
@@ -3695,15 +3695,15 @@
       },
       {
         "id": "b",
-        "text": "The user must re-type their full address to verify data entry accuracy and prevent shipping fraud."
+        "text": "The user must re-enter the address manually if the application provides a visible progress bar for steps."
       },
       {
         "id": "c",
-        "text": "The billing address must be transmitted to external credit bureaus for automated identity verification workflows."
+        "text": "The application may require manual re-entry if the user takes longer than five minutes to complete steps."
       },
       {
         "id": "d",
-        "text": "The web application must display the address solely as a non-editable static graphic image file."
+        "text": "The user must re-type their full address manually to verify data entry accuracy and confirm address details."
       }
     ],
     "correct": [
@@ -3711,9 +3711,9 @@
     ],
     "explanation": "SC 3.3.7 requires that information previously entered by or provided to the user in the same multi-step process is either auto-populated or available for the user to select, reducing cognitive effort and physical fatigue, unless re-entry is essential (e.g. password verification).",
     "distractorNotes": {
-      "b": "Forcing users to re-enter redundant data without auto-population or selection violates SC 3.3.7.",
-      "c": "Credit bureau verification is an internal business process, not a WCAG UI input requirement.",
-      "d": "Presenting data as non-editable images prevents verification, editing, and screen reader access."
+      "b": "A visible progress indicator does not exempt an application from the redundant entry requirement under SC 3.3.7.",
+      "c": "Session timeouts do not exempt multi-step processes from auto-populating or providing selection for previously entered data.",
+      "d": "General data accuracy verification is not an allowable exception under SC 3.3.7; information must be auto-populated or selectable."
     },
     "sourceUrl": "https://www.w3.org/TR/WCAG22/#redundant-entry",
     "sourceNote": "WCAG 2.2 SC 3.3.7 Redundant Entry requires auto-populating or offering previously entered data.",
@@ -3731,7 +3731,7 @@
     "options": [
       {
         "id": "a",
-        "text": "Restrict dragging interactions to high-precision hardware mice while disabling touch screen interfaces."
+        "text": "Support keyboard navigation as the sole alternative, without requiring single-pointer drag alternatives."
       },
       {
         "id": "b",
@@ -3739,11 +3739,11 @@
       },
       {
         "id": "c",
-        "text": "Accelerate drag-and-drop animation speed so the physical movement takes less than one second to finish."
+        "text": "Display a visible tooltip showing target coordinate drop zones whenever the user begins a dragging gesture."
       },
       {
         "id": "d",
-        "text": "Require keyboard users to hold down three simultaneous modifier keys while dragging with the trackpad."
+        "text": "Allow users to cancel the drag by pressing the Escape key before releasing the pointer over a drop target."
       }
     ],
     "correct": [
@@ -3751,9 +3751,9 @@
     ],
     "explanation": "SC 2.5.7 requires that all functionality requiring a dragging movement (such as drag-and-drop sorting or slider dragging) can also be operated by a single pointer without dragging (e.g., clickable move buttons, tapping an item then tapping a destination), unless dragging is essential.",
     "distractorNotes": {
-      "a": "Disabling touch screens or forcing mouse hardware creates additional physical accessibility barriers.",
-      "c": "Modifying animation duration does not eliminate the physical dexterity barrier of dragging gestures.",
-      "d": "Requiring complex multi-key combinations creates severe motor accessibility hurdles."
+      "a": "Sighted users with motor impairments who use mice or eye tracking cannot drag; SC 2.5.7 specifically mandates single-pointer alternatives.",
+      "c": "Visual drop zone indicators do not eliminate the physical dexterity barrier of performing dragging gestures.",
+      "d": "Escape cancellation relates to SC 2.5.2 Pointer Cancellation, but does not provide a single-pointer non-dragging operational alternative."
     },
     "sourceUrl": "https://www.w3.org/TR/WCAG22/#dragging-movements",
     "sourceNote": "WCAG 2.2 SC 2.5.7 Dragging Movements mandates single-pointer non-dragging alternatives.",
@@ -3771,11 +3771,11 @@
     "options": [
       {
         "id": "a",
-        "text": "Leave focus on the link that was clicked and reload the browser window via window.location.reload()."
+        "text": "Leave keyboard focus on the activated link and rely on visual route animations to show the new view."
       },
       {
         "id": "b",
-        "text": "Move keyboard focus directly to the first interactive link located inside the website footer navigation bar."
+        "text": "Move keyboard focus immediately to the browser URL address bar to reflect the updated route parameter."
       },
       {
         "id": "c",
@@ -3783,7 +3783,7 @@
       },
       {
         "id": "d",
-        "text": "Suppress screen reader announcements until the user manually triggers a full page refresh command."
+        "text": "Move keyboard focus directly to the first interactive link located inside the website footer navigation."
       }
     ],
     "correct": [
@@ -3791,9 +3791,9 @@
     ],
     "explanation": "When an SPA navigates to a new route without a full page reload, it must update document.title, move keyboard focus to a logical start point (such as the main landmark or the new view heading equipped with tabindex='-1'), and announce the route change via a polite live region.",
     "distractorNotes": {
-      "a": "Leaving focus on an unmounted link leaves focus in limbo, and reloading the window destroys SPA benefits.",
-      "b": "Jumping focus to the footer skips all newly loaded main page content and disorients the user.",
-      "d": "Suppressing announcements leaves screen reader users unaware that a navigation transition occurred."
+      "a": "Leaving focus on the activated navigation link leaves screen reader and keyboard users without context on the newly rendered view.",
+      "b": "Client-side JavaScript cannot programmatically shift DOM focus into browser chrome UI such as the URL address bar.",
+      "d": "Jumping focus to the footer skips all newly loaded main page content and disorients the user."
     },
     "sourceUrl": "https://www.w3.org/WAI/ARIA/apg/practices/structural-roles/",
     "sourceNote": "WAI APG and WCAG guidance on SPAs recommend updating document title and focusing primary page heading.",
@@ -3815,11 +3815,11 @@
       },
       {
         "id": "b",
-        "text": "The browser locks the DOM container to prevent further JavaScript modifications or event listener triggers."
+        "text": "Assistive technologies announce updates immediately by interrupting any ongoing speech announcements."
       },
       {
         "id": "c",
-        "text": "Content updates inside the region are delayed until the user presses the Enter key on the keyboard."
+        "text": "Assistive technologies announce updates only when keyboard focus moves into the live region container."
       },
       {
         "id": "d",
@@ -3832,8 +3832,8 @@
     "explanation": "By default (aria-atomic='false'), assistive technologies only announce the specific node or text fragment that changed within a live region. When aria-atomic='true' is declared, assistive technologies present the entire contents of the live region container as a unified whole.",
     "distractorNotes": {
       "a": "Announcing only the changed node is the default behavior when aria-atomic is set to false.",
-      "b": "ARIA attributes do not lock the DOM or prevent JavaScript execution.",
-      "c": "aria-atomic controls presentation verbosity, not event execution timing or keyboard delays."
+      "b": "Interrupting ongoing speech immediately describes aria-live='assertive' rather than aria-atomic='true'.",
+      "c": "Live regions announce updates without requiring keyboard focus; aria-atomic controls presentation completeness."
     },
     "sourceUrl": "https://www.w3.org/TR/wai-aria-1.2/#aria-atomic",
     "sourceNote": "W3C WAI-ARIA 1.2 §6.6 aria-atomic defines announcing the entire region when changes occur.",
@@ -3855,15 +3855,15 @@
       },
       {
         "id": "b",
-        "text": "Announce only changes to CSS text styling attributes while ignoring structural DOM node insertions."
+        "text": "Announce node additions, but suppress announcements when existing text nodes are modified in place."
       },
       {
         "id": "c",
-        "text": "Prohibit third-party browser extensions from removing or adding child elements to the target container."
+        "text": "Announce changes only when elements are simultaneously added and removed in the same DOM mutation."
       },
       {
         "id": "d",
-        "text": "Suppress screen reader announcements unless the user explicitly navigates to the container via keyboard."
+        "text": "Announce node removals only if the user has keyboard focus directly inside the live region wrapper."
       }
     ],
     "correct": [
@@ -3871,9 +3871,9 @@
     ],
     "explanation": "The aria-relevant attribute indicates what types of changes in a live region are relevant and should trigger announcements. The value 'additions removals' specifies that both newly added nodes and deleted nodes should be announced (default is 'additions text').",
     "distractorNotes": {
-      "b": "aria-relevant tracks DOM mutations (additions, removals, text), not CSS visual style modifications.",
-      "c": "aria-relevant informs assistive technology speech queues; it does not enforce DOM security sandboxing.",
-      "d": "aria-relevant does not suppress live region announcements or restrict them to keyboard focus."
+      "b": "In-place text modifications are governed by the 'text' token of aria-relevant, not by excluding 'removals'.",
+      "c": "aria-relevant triggers announcements whenever any declared mutation type occurs, not only simultaneous compound operations.",
+      "d": "aria-relevant informs assistive technology speech queues regardless of whether the user has focused the container."
     },
     "sourceUrl": "https://www.w3.org/TR/wai-aria-1.2/#aria-relevant",
     "sourceNote": "W3C WAI-ARIA 1.2 §6.6 aria-relevant specifies which DOM node additions or removals trigger announcements.",
@@ -3891,7 +3891,7 @@
     "options": [
       {
         "id": "a",
-        "text": "Letter spacing (tracking) to at least 0.50 times the font size."
+        "text": "Letter spacing (tracking) to at least 0.16 times the font size."
       },
       {
         "id": "b",
@@ -3911,9 +3911,9 @@
     ],
     "explanation": "WCAG SC 1.4.12 specifies four text spacing metrics that content must support without clipping or overlap: line height to at least 1.5x font size, spacing following paragraphs to at least 2x font size, letter spacing (tracking) to at least 0.12x font size, and word spacing to at least 0.16x font size.",
     "distractorNotes": {
-      "a": "0.50x font size exceeds the letter spacing requirement of 0.12x.",
-      "c": "1.50x font size corresponds to the line-height requirement, not letter spacing.",
-      "d": "2.00x font size corresponds to paragraph spacing, not letter spacing."
+      "a": "0.16 times the font size corresponds to the word spacing requirement under SC 1.4.12, not letter spacing.",
+      "c": "1.50 times the font size corresponds to the line-height requirement under SC 1.4.12, not letter spacing.",
+      "d": "2.00 times the font size corresponds to the paragraph spacing requirement under SC 1.4.12, not letter spacing."
     },
     "sourceUrl": "https://www.w3.org/TR/WCAG22/#text-spacing",
     "sourceNote": "WCAG 2.2 SC 1.4.12 Text Spacing defines letter spacing override test threshold of at least 0.12 times font size.",
@@ -3931,19 +3931,19 @@
     "options": [
       {
         "id": "a",
-        "text": "The content must automatically close after precisely 3.0 seconds to prevent visual screen clutter."
+        "text": "The content may disappear immediately when the pointer leaves the trigger, even if moving toward it."
       },
       {
         "id": "b",
-        "text": "The content must immediately reposition itself to the top-left corner of the browser viewport."
+        "text": "The content must remain visible for at least 5.0 seconds regardless of subsequent user mouse movements."
       },
       {
         "id": "c",
-        "text": "The user must be able to move the pointer over the new content without the content disappearing."
+        "text": "The user must be able to move the pointer directly over the new content without it disappearing."
       },
       {
         "id": "d",
-        "text": "The content must convert all enclosed text into a pre-recorded audio stream for immediate playback."
+        "text": "The content must be dismissible solely through the Tab key without providing pointer or Escape options."
       }
     ],
     "correct": [
@@ -3951,9 +3951,9 @@
     ],
     "explanation": "SC 1.4.13 specifies three rules for content that appears on hover or focus: Dismissible (can be dismissed without moving pointer, e.g. via Escape), Hoverable (the pointer can be moved over the additional content without it vanishing), and Persistent (remains visible until dismissed or trigger removed).",
     "distractorNotes": {
-      "a": "Setting an automated timer violates the 'Persistent' requirement, which mandates content remains visible until dismissed.",
-      "b": "Arbitrarily repositioning content to the viewport corner creates visual disorientation and violates hoverable proximity.",
-      "d": "SC 1.4.13 regulates visual interaction and dismissibility, not automated audio track synthesis."
+      "a": "Allowing content to disappear when moving toward it violates the 'Hoverable' requirement of SC 1.4.13.",
+      "b": "Setting an arbitrary timer does not satisfy SC 1.4.13; content must be persistent until hover is removed or dismissed.",
+      "d": "SC 1.4.13 requires content to be dismissible without moving pointer or keyboard focus, such as via the Escape key."
     },
     "sourceUrl": "https://www.w3.org/TR/WCAG22/#content-on-hover-or-focus",
     "sourceNote": "WCAG 2.2 SC 1.4.13 Content on Hover or Focus requires additional content to be dismissible, hoverable, and persistent.",
@@ -3971,15 +3971,15 @@
     "options": [
       {
         "id": "a",
-        "text": "Interactive elements must display an orange animated pulse ring at all times regardless of focus."
+        "text": "Every focused control must display an author-customized focus indicator rather than user agent defaults."
       },
       {
         "id": "b",
-        "text": "The web browser must audibly speak the pixel coordinates of the currently active DOM element."
+        "text": "The focus indicator must have a contrast ratio of at least 3:1 against all adjacent background colors."
       },
       {
         "id": "c",
-        "text": "Every focused element must automatically zoom to two hundred percent of its native size."
+        "text": "The keyboard focus indicator must have an area at least as large as a 2 CSS pixel perimeter rectangle."
       },
       {
         "id": "d",
@@ -3991,9 +3991,9 @@
     ],
     "explanation": "SC 2.4.7 requires that whenever an interactive element receives keyboard focus, a visible focus indicator must be present so that sighted keyboard users can determine which element currently has focus. Completely removing focus rings (e.g. outline: none without replacement) fails this criterion.",
     "distractorNotes": {
-      "a": "Focus indicators are only required when an element has focus, and WCAG does not mandate specific colors or animations.",
-      "b": "SC 2.4.7 is a visual indicator criterion and does not mandate speech synthesis of coordinate positions.",
-      "c": "Automatic element magnification is not required by SC 2.4.7."
+      "a": "Unstyled default browser focus indicators satisfy SC 2.4.7 provided they are visible when controls receive focus.",
+      "b": "3:1 contrast against adjacent colors is a requirement of Level AAA SC 2.4.13 (Focus Appearance), not Level A SC 2.4.7.",
+      "c": "Minimum indicator area is a requirement of Level AAA SC 2.4.13 and Level AA SC 2.4.11, not Level A SC 2.4.7."
     },
     "sourceUrl": "https://www.w3.org/TR/WCAG22/#focus-visible",
     "sourceNote": "WCAG 2.2 SC 2.4.7 Focus Visible requires a visible keyboard focus indicator on all operable controls.",
@@ -4023,7 +4023,7 @@
       },
       {
         "id": "d",
-        "text": "At least 10:1 against foreground graphics across both dark mode and light mode themes."
+        "text": "At least 4.5:1 between focused and unfocused states, and at least 4.5:1 against adjacent colors."
       }
     ],
     "correct": [
@@ -4033,7 +4033,7 @@
     "distractorNotes": {
       "b": "4.5:1 and 7:1 are text contrast thresholds from SC 1.4.3 and SC 1.4.6, not focus indicator contrast metrics.",
       "c": "1.5:1 and 2:1 fall below the required 3:1 threshold for non-text focus visibility.",
-      "d": "10:1 is an arbitrary number not defined in any WCAG success criterion."
+      "d": "4.5:1 is the Level AA threshold for normal body text under SC 1.4.3, whereas SC 2.4.13 specifies a 3:1 contrast ratio."
     },
     "sourceUrl": "https://www.w3.org/TR/WCAG22/#focus-appearance",
     "sourceNote": "WCAG 2.2 SC 2.4.13 Focus Appearance requires at least 3:1 contrast against unfocused states and adjacent colors.",
@@ -4051,7 +4051,7 @@
     "options": [
       {
         "id": "a",
-        "text": "Captions are rendered exclusively for deaf-blind refreshable braille displays, while subtitles display on screen."
+        "text": "Captions are burned directly into video pixels, while subtitles are delivered via external text files."
       },
       {
         "id": "b",
@@ -4059,11 +4059,11 @@
       },
       {
         "id": "c",
-        "text": "Captions can only be embedded inside MP4 files, while subtitles are limited to external text files."
+        "text": "Captions provide translated dialogue for foreign audiences, while subtitles transcribe audio effects."
       },
       {
         "id": "d",
-        "text": "Captions require a paid license to stream, whereas subtitles are placed in the public domain."
+        "text": "Captions are spoken aloud by screen readers, whereas subtitles are displayed visually on the screen."
       }
     ],
     "correct": [
@@ -4071,9 +4071,9 @@
     ],
     "explanation": "WebVTT track with kind='captions' is intended for users who are deaf or hard of hearing; it provides transcription of speech along with important non-speech audio information (music, laughter, door slamming) in the audio language. Track with kind='subtitles' provides translated dialogue for viewers who can hear but do not understand the spoken language.",
     "distractorNotes": {
-      "a": "Both captions and subtitles are rendered visually on screen for media viewers.",
-      "c": "Both captions and subtitles can be provided using external WebVTT (.vtt) files via the HTML track element.",
-      "d": "Track kinds define semantic audience and accessibility purposes, not licensing or payment terms."
+      "a": "Both captions and subtitles can be provided as external timed text files using the HTML5 track element.",
+      "c": "This inverts the definitions: captions transcribe the native language audio and effects, while subtitles translate dialogue.",
+      "d": "Both captions and subtitles are visual on-screen text displays; spoken caption synthesis is not standard browser behavior."
     },
     "sourceUrl": "https://www.w3.org/TR/html52/semantics-embedded-content.html#the-track-element",
     "sourceNote": "HTML specification §4.8.11 defines track kinds: captions for dialogue and sound effects vs subtitles for translation.",
@@ -4095,7 +4095,7 @@
       },
       {
         "id": "b",
-        "text": "To provide continuous background musical accompaniment during silent instructional demonstrations."
+        "text": "To read the full verbatim text of captions aloud simultaneously with on-screen dialogue."
       },
       {
         "id": "c",
@@ -4103,7 +4103,7 @@
       },
       {
         "id": "d",
-        "text": "To display real-time scrolling closed transcript text at the bottom edge of the presentation video slide."
+        "text": "To display real-time scrolling closed transcript text at the bottom edge of the presentation slide."
       }
     ],
     "correct": [
@@ -4112,7 +4112,7 @@
     "explanation": "Audio Description (WCAG SC 1.2.3 and 1.2.5) provides verbal narration of key visual details that cannot be understood from the main audio track alone—such as character movements, facial expressions, on-screen text, and scene transitions—spoken during natural pauses in dialogue.",
     "distractorNotes": {
       "a": "Audio description supplements existing dialogue rather than replacing it with translations.",
-      "b": "Background music is entertainment and does not convey visual information to people who are blind.",
+      "b": "Audio description narrates visual information, rather than reading closed caption dialogue that is already spoken.",
       "d": "Scrolling text represents captions or subtitles, not an audio description narration track."
     },
     "sourceUrl": "https://www.w3.org/TR/WCAG22/#audio-description-prerecorded",
@@ -4131,15 +4131,15 @@
     "options": [
       {
         "id": "a",
-        "text": "Part A applies exclusively to desktop operating systems, while Part B applies to cloud web applications."
+        "text": "Part A mandates automated accessibility repair algorithms, while Part B specifies manual author checklists."
       },
       {
         "id": "b",
-        "text": "Part A regulates open source software tools, while Part B regulates commercial software platforms."
+        "text": "Part A governs accessible content generation, while Part B governs accessibility of authoring tool UI."
       },
       {
         "id": "c",
-        "text": "Part A focuses on video multimedia production, while Part B focuses on plain text document typography."
+        "text": "Part A applies to authoring tools for web pages, while Part B applies to non-web document authoring tools."
       },
       {
         "id": "d",
@@ -4151,9 +4151,9 @@
     ],
     "explanation": "ATAG 2.0 is divided into two primary parts: Part A ensures that the authoring tool user interface itself is accessible to authors with disabilities (following WCAG principles). Part B ensures that the tool supports and guides authors in generating accessible web content and preserves accessibility information during transformations.",
     "distractorNotes": {
-      "a": "Both parts apply to any authoring tool regardless of hosting environment (desktop, mobile, or cloud web).",
-      "b": "ATAG applies equally to commercial and open-source authoring tools.",
-      "c": "ATAG addresses all web content production across text, media, graphics, and interactive elements."
+      "a": "ATAG 2.0 Part A and Part B address tool UI accessibility and content creation support respectively, not automated vs manual checks.",
+      "b": "This inverts the structure: Part A governs tool user interface accessibility, while Part B governs supporting accessible output.",
+      "c": "Both Part A and Part B apply to authoring tools across web content, non-web documents, and software applications."
     },
     "sourceUrl": "https://www.w3.org/TR/ATAG20/",
     "sourceNote": "W3C ATAG 2.0 §1.2 defines Part A (accessible authoring tool UI) and Part B (supporting production of accessible content).",
@@ -4175,15 +4175,15 @@
       },
       {
         "id": "b",
-        "text": "Automatically delete user-created templates that contain external hyperlink references."
+        "text": "Convert all author-supplied custom templates into plain-text formats before publishing to the web."
       },
       {
         "id": "c",
-        "text": "Prevent authors from inserting customized CSS stylesheets into provided web templates."
+        "text": "Ensure that all provided templates conform to WCAG Level AAA regardless of author configuration options."
       },
       {
         "id": "d",
-        "text": "Require authors to pass an online accessibility exam before selecting a pre-authored template."
+        "text": "Require authors to manually remediate template accessibility barriers before creating a new page document."
       }
     ],
     "correct": [
@@ -4191,9 +4191,9 @@
     ],
     "explanation": "ATAG 2.0 Guideline B.1 requires that authoring tools support the production of accessible content. Success Criterion B.1.1.1 mandates that where authoring tools provide pre-authored templates, accessible templates are provided and prominently identified.",
     "distractorNotes": {
-      "b": "ATAG promotes accessible design and does not arbitrarily delete templates containing external links.",
-      "c": "Authoring tools must permit authors to customize markup and styling while promoting accessible output.",
-      "d": "ATAG sets software requirements for authoring tools, not examination requirements for end authors."
+      "b": "ATAG promotes accessible rich media and semantic HTML templates, rather than stripping content down to plain text.",
+      "c": "ATAG 2.0 Guideline B.1 targets accessible content aligned with Level AA baseline requirements rather than mandatory Level AAA.",
+      "d": "The authoring tool itself must supply accessible templates rather than placing the remediation burden on the end author."
     },
     "sourceUrl": "https://www.w3.org/TR/ATAG20/#gl_b1",
     "sourceNote": "W3C ATAG 2.0 Guideline B.1 specifies authoring tools must provide accessible templates to authors.",
@@ -4255,7 +4255,7 @@
       },
       {
         "id": "b",
-        "text": "It encrypts user input submitted within the dialog using end-to-end HTTPS cryptography."
+        "text": "It automatically traps keyboard Tab focus within the dialog without requiring JavaScript focus listeners."
       },
       {
         "id": "c",
@@ -4263,7 +4263,7 @@
       },
       {
         "id": "d",
-        "text": "It plays an audible notification chime whenever the modal dialog is toggled open by the user."
+        "text": "It automatically applies CSS display none to all background sibling DOM containers on the webpage."
       }
     ],
     "correct": [
@@ -4272,8 +4272,8 @@
     "explanation": "Declaring aria-modal='true' communicates to assistive technologies that the element is a modal window, directing them to treat content outside the dialog as inert and suppress navigation to elements in the background DOM.",
     "distractorNotes": {
       "a": "CSS styling rules handle visual centering; ARIA attributes have no visual layout styling effect.",
-      "b": "ARIA attributes convey accessibility semantics and do not configure HTTPS network encryption.",
-      "d": "aria-modal does not synthesize sound effects or play audio alerts upon opening."
+      "b": "aria-modal tells assistive technology that background content is inert, but it does not trap native keyboard Tab focus.",
+      "d": "ARIA attributes modify accessibility tree properties and do not manipulate CSS display styles on sibling DOM elements."
     },
     "sourceUrl": "https://www.w3.org/TR/wai-aria-1.2/#aria-modal",
     "sourceNote": "W3C WAI-ARIA 1.2 §6.6 aria-modal tells assistive technology background content is inert.",
@@ -4291,11 +4291,11 @@
     "options": [
       {
         "id": "a",
-        "text": "The modal minimizes into the browser taskbar while focus remains in the background overlay."
+        "text": "Keyboard focus must be left on the body element to allow users to navigate from the start of the page."
       },
       {
         "id": "b",
-        "text": "The modal reloads the parent document from the server and resets focus to the browser address bar."
+        "text": "Keyboard focus must be moved to the primary skip-navigation link located at the top of the document."
       },
       {
         "id": "c",
@@ -4303,7 +4303,7 @@
       },
       {
         "id": "d",
-        "text": "The modal closes and keyboard focus is restored to the element that triggered the dialog."
+        "text": "The modal closes and keyboard focus is restored to the interactive control that opened the dialog."
       }
     ],
     "correct": [
@@ -4311,8 +4311,8 @@
     ],
     "explanation": "In the APG Modal Dialog pattern, pressing Escape closes the modal, and keyboard focus must be deliberately restored to the interactive control that opened the dialog (the trigger element). Failing to restore focus drops keyboard users back to the start of the page.",
     "distractorNotes": {
-      "a": "Escape must dismiss the modal and release the focus trap, not leave focus trapped in an overlay.",
-      "b": "Dismissing a modal should not reload the page or navigate away from the current user context.",
+      "a": "Leaving focus on the body disorients keyboard users by dropping them at the page root rather than where they were working.",
+      "b": "Moving focus to a skip link resets page navigation instead of returning the user to their prior task context.",
       "c": "Jumping focus to the footer skips the context where the user was working before opening the modal."
     },
     "sourceUrl": "https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/",
@@ -4343,7 +4343,7 @@
       },
       {
         "id": "d",
-        "text": "The browser evaluates both elements and selects only the one with the highest calculated CSS font-weight value."
+        "text": "The browser concatenates the text of both elements directly without inserting space delimiters."
       }
     ],
     "correct": [
@@ -4353,7 +4353,7 @@
     "distractorNotes": {
       "b": "Space-separated ID lists are standard valid ARIA syntax and fully supported by AccName 1.2.",
       "c": "All referenced elements in the list are processed and combined in order.",
-      "d": "CSS styling properties such as font-weight have no influence on the order or inclusion of referenced IDs."
+      "d": "AccName 1.2 Step 2B explicitly specifies inserting a single space separator when concatenating multiple referenced elements."
     },
     "sourceUrl": "https://www.w3.org/TR/accname-1.2/#mapping_additional_nd_te",
     "sourceNote": "W3C AccName 1.2 §4.3 Step 2B defines concatenating multiple referenced IDs separated by spaces.",
@@ -4571,11 +4571,11 @@
     "options": [
       {
         "id": "a",
-        "text": "It causes the web browser rendering engine to crash when processing CSS hardware acceleration."
+        "text": "It causes web browsers to automatically remove the target element from the sequential keyboard Tab order."
       },
       {
         "id": "b",
-        "text": "It triggers an unhandled JavaScript exception in the browser WebAssembly compiler engine."
+        "text": "It causes the element to become visually hidden like CSS display: none across all desktop web browsers."
       },
       {
         "id": "c",
@@ -4583,7 +4583,7 @@
       },
       {
         "id": "d",
-        "text": "It unbinds JavaScript pointer event listeners attached to parent window event target containers."
+        "text": "It converts focusable interactive controls into unselectable static text nodes in the accessibility tree."
       }
     ],
     "correct": [
@@ -4591,9 +4591,9 @@
     ],
     "explanation": "Applying aria-hidden='true' to a focusable element or a container with focusable children creates an 'accessibility black hole'. A sighted keyboard user or screen reader user tabbing through the page lands on the control, but the screen reader announces nothing because it is hidden in the accessibility tree.",
     "distractorNotes": {
-      "a": "aria-hidden affects the accessibility tree and does not crash the visual graphics rendering engine.",
-      "b": "ARIA markup attributes do not interact with or trigger exceptions in WebAssembly compilers.",
-      "d": "aria-hidden does not modify or detach JavaScript DOM event listeners."
+      "a": "aria-hidden does not alter keyboard focusability; focusable elements still receive Tab focus despite being hidden from screen readers.",
+      "b": "aria-hidden affects only the accessibility tree and has no effect on visual rendering or CSS visibility.",
+      "d": "aria-hidden removes elements from the accessibility tree entirely rather than converting them into static text."
     },
     "sourceUrl": "https://www.w3.org/TR/wai-aria-1.2/#aria-hidden",
     "sourceNote": "W3C WAI-ARIA 1.2 §6.6 aria-hidden specifies focusable elements must never have aria-hidden true.",
@@ -4611,19 +4611,19 @@
     "options": [
       {
         "id": "a",
-        "text": "The article element."
+        "text": "The article element representing self-contained composition content."
       },
       {
         "id": "b",
-        "text": "The section element without an accessible name."
+        "text": "The section element rendered without an accessible name attribute."
       },
       {
         "id": "c",
-        "text": "The div element with class='main-content'."
+        "text": "The div container styled with an identifier like class='main-content'."
       },
       {
         "id": "d",
-        "text": "The main element."
+        "text": "The main element representing dominant primary document content."
       }
     ],
     "correct": [
@@ -4659,11 +4659,11 @@
       },
       {
         "id": "c",
-        "text": "Both strings joined together with an underscore character."
+        "text": "Both strings concatenated together separated by a space."
       },
       {
         "id": "d",
-        "text": "Neither string; the browser defaults to an empty accessible name."
+        "text": "The title attribute as a tooltip, overriding the label."
       }
     ],
     "correct": [
@@ -4672,8 +4672,8 @@
     "explanation": "Under the Accessible Name and Description Computation (AccName 1.2), native host language markup (such as `<label for=\"...\">`) has higher precedence than fallback attributes like title or placeholder. The title attribute is only used as an accessible name if no label or ARIA labeling attribute exists.",
     "distractorNotes": {
       "b": "The title attribute is a fallback attribute evaluated only if no higher-precedence labeling mechanism is present.",
-      "c": "The algorithm selects the higher-priority name source rather than combining them with underscores.",
-      "d": "The label element successfully provides the accessible name."
+      "c": "The algorithm selects the higher-priority name source rather than combining them into a compound string.",
+      "d": "In AccName 1.2, native label elements have higher precedence than title attributes, which serve only as fallbacks."
     },
     "sourceUrl": "https://www.w3.org/TR/accname-1.2/#mapping_additional_nd_te",
     "sourceNote": "W3C AccName 1.2 §4.3 Step 2D defines native label element precedence over title attribute fallback.",
@@ -4691,7 +4691,7 @@
     "options": [
       {
         "id": "a",
-        "text": "role='status' displays text in a modal popup window, while role='alert' writes notifications to console logs."
+        "text": "role='status' requires aria-atomic='true' declared manually, while role='alert' defaults to polite live."
       },
       {
         "id": "b",
@@ -4699,7 +4699,7 @@
       },
       {
         "id": "c",
-        "text": "role='status' is limited to numeric counters, while role='alert' is restricted to alphanumeric text strings."
+        "text": "role='status' announces updates only when focused, while role='alert' speaks updates when unfocused."
       },
       {
         "id": "d",
@@ -4711,8 +4711,8 @@
     ],
     "explanation": "The role status has implicit aria-live='polite' and aria-atomic='true', meaning updates are spoken at the next available pause without interrupting the user. The role alert has implicit aria-live='assertive' and aria-atomic='true', causing screen readers to interrupt ongoing speech immediately.",
     "distractorNotes": {
-      "a": "ARIA live roles govern speech priority queues in assistive technologies, not browser console logs or modals.",
-      "c": "Both live roles accept any textual or structured content and are not restricted by data types.",
+      "a": "Both role='status' and role='alert' have implicit aria-atomic='true' by default under the WAI-ARIA specification.",
+      "c": "Both live roles announce dynamic updates without requiring keyboard focus to be placed on the container.",
       "d": "Neither role requires explicit user keypresses or mouse hovers to trigger announcements; they announce on DOM updates."
     },
     "sourceUrl": "https://www.w3.org/TR/wai-aria-1.2/#status",
@@ -4771,7 +4771,7 @@
     "options": [
       {
         "id": "a",
-        "text": "It must be added to every semantic HTML5 element to provide multi-language localization strings."
+        "text": "It can be applied to any generic div or span without specifying an underlying concrete ARIA role."
       },
       {
         "id": "b",
@@ -4779,7 +4779,7 @@
       },
       {
         "id": "c",
-        "text": "It automatically translates custom widget role descriptions into operating system desktop keyboard shortcuts."
+        "text": "It automatically creates custom operating system keyboard shortcuts matching the description text."
       },
       {
         "id": "d",
@@ -4791,7 +4791,7 @@
     ],
     "explanation": "aria-roledescription defines a human-readable, localized description of an element's role. It must only be applied to elements that already have a defined ARIA role. Using it arbitrarily or overriding standard roles (like 'button' or 'link') confuses users by replacing familiar assistive technology role announcements.",
     "distractorNotes": {
-      "a": "aria-roledescription is discouraged for standard semantic elements where default roles are well understood.",
+      "a": "aria-roledescription must only be used on elements that already possess an implicit or explicit ARIA role.",
       "b": "Applying aria-roledescription to role='presentation' is an antipattern because presentation suppresses semantic roles.",
       "c": "aria-roledescription is a text label for assistive technology announcements and does not create keyboard shortcuts."
     },

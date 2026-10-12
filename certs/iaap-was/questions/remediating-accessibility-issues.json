@@ -1251,15 +1251,15 @@
     "options": [
       {
         "id": "a",
-        "text": "Archived news releases and historical marketing blog entries published more than five years ago."
+        "text": "High-traffic top-of-funnel marketing landing pages that contain static promotional content."
       },
       {
         "id": "b",
-        "text": "Secondary utility pages such as corporate investor disclaimers and legal licensing terms."
+        "text": "The backlog of low-effort cosmetic styling defects across secondary informational pages."
       },
       {
         "id": "c",
-        "text": "Internal staff directory search filters used exclusively by human resources administrators."
+        "text": "Administrative configuration screens that exhibit the highest raw count of scanner flags."
       },
       {
         "id": "d",
@@ -1271,9 +1271,9 @@
     ],
     "explanation": "Remediation efforts should prioritize high-traffic entry points and core functional paths where users conduct essential transactions, such as registration, authentication, search, and checkout. Removing barriers in these critical paths delivers the greatest immediate reduction in discrimination and user harm.",
     "distractorNotes": {
-      "a": "Archived blog posts have minimal user traffic and represent informational rather than core transactional workflows.",
-      "b": "Secondary legal pages, while requiring compliance, do not represent high-frequency user transaction funnels.",
-      "c": "Administrative internal directories serve a narrow internal audience compared to broad public-facing user journeys."
+      "a": "While marketing pages attract high visitor numbers, static informational content does not prevent essential user transactions like registration and checkout.",
+      "b": "Prioritizing low-effort cosmetic defects to artificially burn down bug volume leaves critical functional barriers intact in core workflows.",
+      "c": "Prioritizing pages purely by raw automated defect counts diverts resources to low-impact administrative screens away from high-impact user journeys."
     },
     "sourceUrl": "https://www.w3.org/WAI/planning/remediating/",
     "sourceNote": "W3C WAI remediation planning prioritizes high-traffic pages and key conversion paths such as login and checkout.",
@@ -1331,7 +1331,7 @@
     "options": [
       {
         "id": "a",
-        "text": "Missing landmark regions violate Level AAA, whereas unlabelled form inputs violate Level AA."
+        "text": "Missing landmark regions violate Level AA requirements, whereas unlabelled form inputs violate Level A."
       },
       {
         "id": "b",
@@ -1339,11 +1339,11 @@
       },
       {
         "id": "c",
-        "text": "Missing landmark regions trigger browser crash warnings, whereas unlabelled inputs render normally."
+        "text": "An unlabelled input prevents keyboard tab focus, whereas missing landmarks disrupt DOM tree parsing."
       },
       {
         "id": "d",
-        "text": "An unlabelled input fails automated linter suites, whereas landmarks are ignored by screen readers."
+        "text": "Missing landmark regions break screen reader modes, whereas unlabelled inputs announce fallback text."
       }
     ],
     "correct": [
@@ -1351,9 +1351,9 @@
     ],
     "explanation": "An unlabelled form input severely impedes or blocks data entry because screen reader users cannot determine what information is requested without arduous investigation or guessing. In contrast, missing landmark regions slow down page navigation but leave content and interactive form fields accessible through standard linear reading and tab navigation.",
     "distractorNotes": {
-      "a": "Both form labels (under 1.3.1 and 4.1.2) and info structure relate to Level A criteria, not AAA.",
-      "c": "Neither defect causes browser crashes; both represent semantic and programmatic accessibility barriers.",
-      "d": "Screen readers actively support landmark navigation, and linters can flag both types of structural defects."
+      "a": "While form labels fall under Level A (1.3.1/4.1.2) and landmarks relate to 1.3.1/2.4.1, severity triage is driven by task impact rather than WCAG level alone.",
+      "c": "Form inputs remain focusable via Tab even when unlabelled; the failure is the absence of an accessible name conveying purpose.",
+      "d": "Missing landmarks reduce navigation efficiency but do not break screen reader modes, whereas an unlabelled input directly obscures what information to enter."
     },
     "sourceUrl": "https://www.w3.org/WAI/planning/remediating/",
     "sourceNote": "W3C WAI triage rubrics prioritize form input barriers over secondary navigational convenience landmarks.",
@@ -1371,11 +1371,11 @@
     "options": [
       {
         "id": "a",
-        "text": "As a Critical Blocker, because skipping heading numbers halts screen reader speech output completely."
+        "text": "As a Critical Blocker, because skipping a heading level breaks screen reader heading navigation."
       },
       {
         "id": "b",
-        "text": "As a High Severity defect, because browsers fail to render headings when intermediate levels are omitted."
+        "text": "As a High Severity normative failure, because WCAG SC 1.3.1 strictly prohibits non-consecutive tags."
       },
       {
         "id": "c",
@@ -1383,7 +1383,7 @@
       },
       {
         "id": "d",
-        "text": "As a Security Vulnerability, because skipped heading tags expose DOM tree injection vulnerabilities."
+        "text": "As a Medium Severity defect, because browsers omit skipped headings from the accessibility tree."
       }
     ],
     "correct": [
@@ -1391,9 +1391,9 @@
     ],
     "explanation": "Skipping a heading level (e.g., from <h2> to <h4>) is a structural imperfection and best-practice advisory finding. While maintaining a sequential hierarchy is recommended, it does not prevent screen reader users from accessing content or navigating headings, making it a low-severity remediation item.",
     "distractorNotes": {
-      "a": "Screen readers announce headings regardless of level; skipping a level does not stop speech synthesizer output.",
-      "b": "Web browsers render HTML heading elements according to CSS styles regardless of numerical nesting sequence.",
-      "d": "Skipped heading levels in static markup do not create web application security or injection vulnerabilities."
+      "a": "Screen readers announce headings and their levels regardless of sequence; skipping a level does not break heading navigation keys.",
+      "b": "WCAG 2.2 SC 1.3.1 requires programmatic heading semantics, but sequential heading progression is an advisory technique rather than a normative failure.",
+      "d": "Browsers correctly expose <h4> elements in the accessibility tree with role heading and level 4 regardless of whether <h3> was present."
     },
     "sourceUrl": "https://www.w3.org/WAI/planning/remediating/",
     "sourceNote": "W3C WAI guidance notes that non-sequential heading structures are minor advisory issues that do not block access.",
@@ -1411,15 +1411,15 @@
     "options": [
       {
         "id": "a",
-        "text": "Because cognitive puzzles violate CSS visual formatting specifications across high-dpi display devices."
+        "text": "Because cognitive puzzles violate Level AAA criteria rather than baseline Level AA conformance standards."
       },
       {
         "id": "b",
-        "text": "Because cognitive puzzles require third-party browser plugins that are prohibited under Web Content rules."
+        "text": "Because cognitive puzzles cannot be evaluated by automated accessibility scanners during nightly builds."
       },
       {
         "id": "c",
-        "text": "Because cognitive puzzles increase network bandwidth consumption on constrained mobile data connections."
+        "text": "Because cognitive puzzles are categorized as usability preferences rather than functional access barriers."
       },
       {
         "id": "d",
@@ -1431,9 +1431,9 @@
     ],
     "explanation": "Under WCAG 2.2 Success Criterion 3.3.8 (Accessible Authentication), authentication processes must not rely solely on a cognitive function test (such as solving a puzzle or memorizing characters) unless an alternative method or cognitive assistance is provided. Completely preventing users from authenticating to their accounts constitutes a Critical Blocker.",
     "distractorNotes": {
-      "a": "Accessibility severity focuses on functional exclusion of users rather than CSS formatting model compliance.",
-      "b": "Plugin requirements are not the defining barrier; the barrier is imposing an insurmountable cognitive obstacle.",
-      "c": "Network bandwidth usage is a performance metric, not an accessibility functional barrier determination."
+      "a": "Under WCAG 2.2, Accessible Authentication (Minimum) SC 3.3.8 is a normative Level AA requirement, not Level AAA.",
+      "b": "Severity classification is based on the functional barrier experienced by users, not whether automated testing tools can detect it.",
+      "c": "Preventing users from authenticating into essential services is an absolute functional barrier, not a subjective usability preference."
     },
     "sourceUrl": "https://www.w3.org/TR/WCAG22/#accessible-authentication-minimum",
     "sourceNote": "WCAG 2.2 SC 3.3.8 requires accessible authentication alternatives to cognitive function tests during login.",
@@ -1455,15 +1455,15 @@
       },
       {
         "id": "b",
-        "text": "Inject unverified JavaScript code into the third-party iframe domain using cross-origin workarounds."
+        "text": "Add an aria-label attribute to the parent iframe container to programmatically name nested controls."
       },
       {
         "id": "c",
-        "text": "Delete the booking feature from the application until the vendor delivers their scheduled code update."
+        "text": "Deploy an automated accessibility overlay script designed to inject labels into the iframe DOM."
       },
       {
         "id": "d",
-        "text": "Exempt third-party widgets from accessibility obligations by declaring them external sponsor content."
+        "text": "Publish an Accessibility Statement claiming a third-party exemption without offering an alternative."
       }
     ],
     "correct": [
@@ -1471,9 +1471,9 @@
     ],
     "explanation": "Under W3C WAI guidance for interim repairs, when a critical third-party dependency cannot be immediately repaired in code, organizations should implement an interim accessible alternative pathway (such as a native accessible fallback form or dedicated phone/email support) while actively holding the vendor accountable through contract SLAs.",
     "distractorNotes": {
-      "b": "Cross-origin browser security restrictions block DOM injection into external iframes, making script injection unviable and unsafe.",
-      "c": "Completely removing a critical business capability harms all users and is unnecessary when accessible alternatives can be offered.",
-      "d": "WCAG conformance requires full-page conformance; third-party components essential to a page cannot be unilaterally exempted."
+      "b": "Adding an aria-label to an iframe names the iframe frame itself for screen reader landmark lists; it does not name or repair unlabelled input fields inside the document.",
+      "c": "Automated overlays cannot modify cross-origin iframes due to browser security boundaries and fail to provide robust, reliable semantic labels.",
+      "d": "WCAG conformance requires full-page conformance; merely publishing an exemption disclaimer without providing an accessible alternative leaves users blocked."
     },
     "sourceUrl": "https://www.w3.org/WAI/planning/interim-repairs/",
     "sourceNote": "W3C WAI interim repairs guidance advises providing accessible alternative pathways while third-party fixes are underway.",
@@ -1491,7 +1491,7 @@
     "options": [
       {
         "id": "a",
-        "text": "Because browsers refuse to register pointer clicks on button elements that omit visible child text nodes."
+        "text": "Because browsers derive the accessible name from the CSS class name, announcing 'btn-arrow' to users."
       },
       {
         "id": "b",
@@ -1499,11 +1499,11 @@
       },
       {
         "id": "c",
-        "text": "Because search engine crawlers penalize page ranking when interactive buttons contain inline SVG graphics."
+        "text": "Because screen readers skip unlabelled native button elements entirely during keyboard tab navigation."
       },
       {
         "id": "d",
-        "text": "Because keyboard focus cannot be placed on HTML button elements unless an explicit tabindex is declared."
+        "text": "Because native HTML buttons require an explicit role=\"button\" attribute to be exposed to screen readers."
       }
     ],
     "correct": [
@@ -1511,9 +1511,9 @@
     ],
     "explanation": "When an interactive <button> contains only an <svg> with no accessible name (e.g., text content, aria-label, or <title> element), screen readers announce it merely as \"button\" or read the graphic filename. Users cannot determine that activating it submits the registration form.",
     "distractorNotes": {
-      "a": "Web browsers trigger standard click events on button elements regardless of whether accessible text is present.",
-      "c": "Search engine optimization considerations are separate from assistive technology interaction and accessibility barriers.",
-      "d": "Native HTML <button> elements are natively focusable by default and do not require an explicit tabindex attribute."
+      "a": "The Accessible Name and Description Computation specification does not use CSS class names as accessible names for elements.",
+      "c": "Screen readers do not skip the button; they focus it and announce 'button', but users cannot discern what activating it will do.",
+      "d": "Native HTML <button> elements provide implicit button semantics; adding role='button' is redundant and does not supply the missing accessible name."
     },
     "sourceUrl": "https://www.w3.org/TR/WCAG22/#name-role-value",
     "sourceNote": "WCAG 2.2 SC 4.1.2 mandates an accessible name so users understand the functional purpose of interactive controls.",
@@ -1531,11 +1531,11 @@
     "options": [
       {
         "id": "a",
-        "text": "Focus cycles repeatedly through step 1 until optional user feedback fields are completed."
+        "text": "Focus is intentionally trapped within the current step until all required fields pass validation."
       },
       {
         "id": "b",
-        "text": "Focus moves directly to the browser URL address bar whenever a user presses the Tab key forward."
+        "text": "Focus advances automatically to the next wizard step whenever the user presses Enter in any field."
       },
       {
         "id": "c",
@@ -1543,7 +1543,7 @@
       },
       {
         "id": "d",
-        "text": "Focus moves immediately to page footer links before primary form controls receive keyboard focus."
+        "text": "Focus requires custom modifier keystrokes to exit the step rather than standard keyboard navigation."
       }
     ],
     "correct": [
@@ -1551,9 +1551,9 @@
     ],
     "explanation": "Under WCAG 2.2 Success Criterion 2.1.2 (No Keyboard Trap), keyboard focus must never become trapped in any subcomponent. Users must be able to navigate into, within, and out of wizard steps using standard keyboard keys (such as Tab and Shift+Tab) or standard documented exit keys.",
     "distractorNotes": {
-      "a": "Indefinitely trapping focus within incomplete optional fields directly violates the prohibition against keyboard traps.",
-      "b": "Moving focus outside the page viewport to browser chrome disrupts task flow and violates expected web interaction.",
-      "d": "Forcing focus to the footer before allowing form field interaction contradicts logical reading and tab order."
+      "a": "Trapping keyboard focus inside a non-modal form step violates SC 2.1.2, even if required fields remain incomplete.",
+      "b": "Auto-advancing wizard steps on Enter unexpected changes the context (SC 3.2.2) and disorients keyboard users.",
+      "d": "SC 2.1.2 mandates that standard keyboard keys (Tab/Shift+Tab) allow exiting unless standard exit methods are clearly documented."
     },
     "sourceUrl": "https://www.w3.org/TR/WCAG22/#no-keyboard-trap",
     "sourceNote": "WCAG 2.2 SC 2.1.2 requires that keyboard focus can be moved away from any component using standard keyboard keys.",
@@ -1571,15 +1571,15 @@
     "options": [
       {
         "id": "a",
-        "text": "Because Level AA criteria are merely advisory guidelines that never carry legal compliance requirements."
+        "text": "Because Level AA criteria are informative recommendations that are excluded from procurement audits."
       },
       {
         "id": "b",
-        "text": "Because Level A issues can be fixed automatically using compiler flags without front-end code edits."
+        "text": "Because Level A issues can be fully resolved by running automated linters without code modifications."
       },
       {
         "id": "c",
-        "text": "Because Level AA issues only impact desktop users who possess specialized high-contrast monitors."
+        "text": "Because conformance to Level AA is legally recognized even if underlying Level A criteria are violated."
       },
       {
         "id": "d",
@@ -1591,9 +1591,9 @@
     ],
     "explanation": "Level A success criteria represent minimum baseline accessibility requirements. Violations of Level A typically cause severe, absolute barriers that make content impossible to perceive, operate, or understand for broad groups of users with disabilities. Therefore, Level A defects take immediate priority over Level AA enhancements.",
     "distractorNotes": {
-      "a": "Level AA criteria are normative and form the foundation of worldwide accessibility laws and standards.",
-      "b": "Accessibility defects cannot be resolved through compiler flags; they require deliberate code and design remediation.",
-      "c": "Level AA encompasses crucial criteria affecting screen reader users, keyboard users, and low-vision users on all devices."
+      "a": "Level AA criteria are normative requirements, not informative recommendations, and form the core of procurement standards.",
+      "b": "Automated linters detect only a subset of issues and cannot automatically remediate functional Level A barriers.",
+      "c": "WCAG conformance is strictly cumulative under Section 5.2.1; Level AA conformance cannot be achieved without meeting all Level A criteria."
     },
     "sourceUrl": "https://www.w3.org/WAI/planning/remediating/",
     "sourceNote": "W3C WAI guidance prioritizes Level A foundational barriers over Level AA enhancements when scheduling remediation.",
@@ -1615,15 +1615,15 @@
       },
       {
         "id": "b",
-        "text": "Wrap the button inside an anchor tag pointing to a generic JavaScript void statement href attribute."
+        "text": "Place an aria-label=\"Print invoice\" attribute on the child italic element rather than the button."
       },
       {
         "id": "c",
-        "text": "Attach an empty title=\"\" attribute to the italic element so screen readers suppress all speech output."
+        "text": "Add an alt=\"Print invoice\" attribute directly to the native button element to provide fallback text."
       },
       {
         "id": "d",
-        "text": "Insert a hidden CSS background image containing rasterized text letters spelling the word print."
+        "text": "Assign role=\"button\" and tabindex=\"0\" to the internal italic icon element to expose button semantics."
       }
     ],
     "correct": [
@@ -1631,9 +1631,9 @@
     ],
     "explanation": "Providing an accessible name via visible text or an explicit aria-label=\"Print invoice\" directly on the native <button> element gives screen readers a clear programmatic name while preserving the native button built-in keyboard activation and focus handling.",
     "distractorNotes": {
-      "b": "Nesting a button inside an anchor with a void href creates confusing nested interactive roles and invalid HTML.",
-      "c": "An empty title attribute on an icon does not provide an accessible name for the enclosing button control.",
-      "d": "CSS background images with rasterized text do not expose an accessible programmatic name to the accessibility tree."
+      "b": "Placing aria-label on an internal presentational or generic element (like <i>) is often ignored by assistive technologies; the accessible name belongs on the interactive <button>.",
+      "c": "The alt attribute is only valid on <img>, <input type='image'>, and <area> elements; it is ignored by browsers on <button>.",
+      "d": "Adding interactive roles and tabindex to an element inside a native button creates nested focusable controls, which violates HTML and accessibility standards."
     },
     "sourceUrl": "https://www.w3.org/WAI/ARIA/apg/practices/names-and-descriptions/",
     "sourceNote": "W3C WAI APG recommends providing accessible names for icon buttons via visible text or aria-label attributes.",
@@ -1651,7 +1651,7 @@
     "options": [
       {
         "id": "a",
-        "text": "Only when the dataset contains more than one hundred thousand records rendered on a single view."
+        "text": "Only when automated audit scanners fail to parse ARIA table roles on non-semantic div containers."
       },
       {
         "id": "b",
@@ -1659,11 +1659,11 @@
       },
       {
         "id": "c",
-        "text": "Whenever the web page is viewed on older operating systems that do not support modern CSS styles."
+        "text": "Only when the dataset includes sortable column headers that trigger client-side data mutations."
       },
       {
         "id": "d",
-        "text": "Only if the client application is translated into right-to-left writing systems such as Arabic."
+        "text": "Whenever tabular data is displayed on mobile viewports that lack physical keyboard input devices."
       }
     ],
     "correct": [
@@ -1671,9 +1671,9 @@
     ],
     "explanation": "According to the First Rule of ARIA, if an existing native HTML element (such as <table>, <tr>, <th>, <td>) satisfies the semantics, using native HTML is strongly preferred. While ARIA roles (role=\"table\", role=\"row\", role=\"cell\") can patch divs, maintaining complex ARIA grid structures across dynamic content updates is fragile and high-maintenance compared to native markup.",
     "distractorNotes": {
-      "a": "The decision to use semantic markup is based on semantic fidelity and maintainability, not dataset row count.",
-      "c": "Native HTML table semantics are supported universally across all browsers and do not depend on CSS capability.",
-      "d": "HTML table semantics function equivalently in left-to-right and right-to-left language presentations."
+      "a": "Scanners recognize ARIA table roles; the decision to use native HTML rests on semantic resilience, screen reader table navigation support, and First Rule of ARIA principles.",
+      "c": "Sortable headers can be implemented accessibly in native HTML tables using buttons within <th> elements; sorting does not mandate simulated div structures.",
+      "d": "Native HTML table semantics benefit screen reader users across all devices and platforms, regardless of whether a physical keyboard is attached."
     },
     "sourceUrl": "https://www.w3.org/TR/WCAG22/#info-and-relationships",
     "sourceNote": "W3C guidance emphasizes using native HTML table elements rather than retrofitting complex ARIA roles onto divs.",
@@ -1691,11 +1691,11 @@
     "options": [
       {
         "id": "a",
-        "text": "A legally binding waiver releasing the university from all accessibility obligations during refactoring."
+        "text": "A formal declaration claiming full conformance based on planned future architectural code updates."
       },
       {
         "id": "b",
-        "text": "A complete machine-readable dump of all source code git commits associated with the legacy portal."
+        "text": "An internal technical inventory of engineering Jira ticket identifiers and developer pull requests."
       },
       {
         "id": "c",
@@ -1703,7 +1703,7 @@
       },
       {
         "id": "d",
-        "text": "An automated disclaimer recommending that users with disabilities avoid using the student portal."
+        "text": "A vendor endorsement asserting that third-party overlay scripts guarantee immediate legal compliance."
       }
     ],
     "correct": [
@@ -1711,9 +1711,9 @@
     ],
     "explanation": "W3C WAI guidance on interim repairs and accessibility statements advises transparently disclosing known barriers, outlining the remediation roadmap and milestones, and providing responsive contact information so users encountering difficulties can request immediate assistance or alternate formats.",
     "distractorNotes": {
-      "a": "Accessibility statements cannot legally waive statutory civil rights protections or anti-discrimination obligations.",
-      "b": "Publishing developer git commit logs provides no practical utility for end users seeking accessible assistance.",
-      "d": "Advising users with disabilities to avoid using an essential service constitutes unlawful exclusion rather than an interim repair."
+      "a": "Accessibility statements must reflect the current state of the application; organizations cannot claim conformance based on unreleased future plans.",
+      "b": "Internal issue tracking IDs are meaningless to end users; statements must describe functional barriers in plain language and provide actionable contact options.",
+      "d": "Overlays do not achieve full conformance or provide legal protection, and advertising them does not fulfill W3C guidance on interim barrier disclosure."
     },
     "sourceUrl": "https://www.w3.org/WAI/planning/interim-repairs/",
     "sourceNote": "W3C WAI interim repairs guidance specifies documenting known barriers, target dates, and accessible assistance options.",
@@ -1731,19 +1731,19 @@
     "options": [
       {
         "id": "a",
-        "text": "Posting a link to a non-conforming scanned PDF brochure detailing utility tariff rate schedules."
+        "text": "Posting a downloadable fillable PDF payment form that has not undergone document accessibility tagging."
       },
       {
         "id": "b",
-        "text": "Configuring a web pop-up banner asking users with disabilities to check back in several months."
+        "text": "Deploying a client-side automated overlay widget promising to repair broken form transaction scripts."
       },
       {
         "id": "c",
-        "text": "Deploying a third-party automated AI overlay that restyles font sizes on the broken payment form."
+        "text": "Directing citizens to an unmonitored municipal email inbox without defined payment processing SLAs."
       },
       {
         "id": "d",
-        "text": "Providing an accessible telephone payment hotline and staff-assisted in-person service counter."
+        "text": "Providing an accessible telephone payment hotline and staff-assisted in-person counter service options."
       }
     ],
     "correct": [
@@ -1751,9 +1751,9 @@
     ],
     "explanation": "Under W3C WAI guidance on interim repairs, when a digital task is temporarily blocked, organizations should provide equivalent human-assisted alternatives (such as dedicated telephone assistance, accessible email support, or counter service) to ensure equal access to essential services while engineering fixes are implemented.",
     "distractorNotes": {
-      "a": "Providing an inaccessible scanned PDF fails to provide a mechanism for paying bills and introduces additional barriers.",
-      "b": "Telling users to return months later denies essential utility services and fails to provide an interim solution.",
-      "c": "Third-party automated overlays cannot fix broken backend form submission logic or underlying script barriers."
+      "a": "Untagged PDF forms are inaccessible to screen reader users and fail to provide an accessible alternative under W3C WAI guidance.",
+      "b": "Third-party automated overlays cannot fix broken server-side or client-side form submission logic or repair complex form controls.",
+      "c": "Unmonitored email accounts without operational turnaround guarantees do not provide an effective, timely alternative for essential utility payments."
     },
     "sourceUrl": "https://www.w3.org/WAI/planning/interim-repairs/",
     "sourceNote": "W3C WAI interim repairs highlight staffed alternative channels (phone, email) as viable short-term workarounds.",
@@ -1775,15 +1775,15 @@
       },
       {
         "id": "b",
-        "text": "Rely exclusively on mouse cursor pointer shape transformations without modifying border or outline styles."
+        "text": "Rely on existing :hover pseudo-classes to double as focus states without testing keyboard navigation."
       },
       {
         "id": "c",
-        "text": "Apply a light grey 1px dashed outline that matches the background hue to maintain visual minimalism."
+        "text": "Apply a subtle 1px dotted outline that blends with component borders to minimize visual disruption."
       },
       {
         "id": "d",
-        "text": "Add subtle CSS text shadow filters that render exclusively when screen reader software is running."
+        "text": "Change font weight to bold on focus without establishing a 3:1 contrast ratio against the background."
       }
     ],
     "correct": [
@@ -1791,9 +1791,9 @@
     ],
     "explanation": "To satisfy WCAG 2.2 SC 2.4.7 (Focus Visible) and SC 2.4.13 (Focus Appearance - Level AAA) or general Level AA contrast standards, focus indicators must be clearly visible, having an area with at least a 3:1 contrast ratio against the unfocused state and adjacent colors, and sufficient perimeter thickness.",
     "distractorNotes": {
-      "b": "Mouse pointer transformations do not help keyboard-only users who navigate through tab key presses without a mouse.",
-      "c": "A low-contrast 1px dashed line blending into the background fails both visibility and contrast requirements.",
-      "d": "CSS cannot detect whether screen reader software is active, and focus indicators primarily serve sighted keyboard users."
+      "b": "Styling :hover does not assist keyboard users navigating with Tab keys unless :focus or :focus-visible is explicitly defined.",
+      "c": "Subtle 1px outlines that blend with borders fail the 3:1 contrast ratio and minimum area requirements of SC 2.4.13 and SC 1.4.11.",
+      "d": "Font weight changes alone do not provide a visible perimeter indicator and fail to meet the contrast and area metrics mandated by SC 2.4.13."
     },
     "sourceUrl": "https://www.w3.org/TR/WCAG22/#focus-appearance",
     "sourceNote": "WCAG 2.2 SC 2.4.13 defines focus appearance metrics including minimum contrast ratio and indicator thickness.",
@@ -1811,7 +1811,7 @@
     "options": [
       {
         "id": "a",
-        "text": "Because native input date types automatically translate dates into five different international time zones."
+        "text": "Because adding tabindex=\"0\" to existing table cells satisfies WCAG keyboard criteria without redesign."
       },
       {
         "id": "b",
@@ -1819,11 +1819,11 @@
       },
       {
         "id": "c",
-        "text": "Because custom JavaScript table elements are deprecated by the W3C and blocked by modern web browsers."
+        "text": "Because assigning role=\"datepicker\" to the parent table container automatically injects calendar semantics."
       },
       {
         "id": "d",
-        "text": "Because APG datepicker patterns prevent users from manually entering past calendar dates via keyboard."
+        "text": "Because APG datepicker widgets eliminate the requirement to provide an associated visible label element."
       }
     ],
     "correct": [
@@ -1831,9 +1831,9 @@
     ],
     "explanation": "Replacing an inaccessible custom datepicker with native HTML5 <input type=\"date\"> or an APG-compliant datepicker widget ensures complete keyboard operability (such as arrow key grid navigation, Esc to dismiss, and Enter to select) and programmatic announcements, avoiding error-prone custom ARIA hacks.",
     "distractorNotes": {
-      "a": "Native date inputs capture calendar dates; they do not perform automated international time zone conversions.",
-      "c": "HTML table elements are valid HTML; their misuse for interactive custom datepickers without keyboard semantics is the issue.",
-      "d": "APG patterns define accessible interaction structures rather than enforcing specific business validation rules on past dates."
+      "a": "Adding tabindex='0' to every table cell creates dozens of redundant tab stops and fails to implement required arrow-key grid navigation.",
+      "c": "There is no role='datepicker' in the WAI-ARIA specification; calendar widgets require dialog, grid, and gridcell composite roles.",
+      "d": "APG datepicker patterns still require explicit accessible names and programmatic associations under SC 1.3.1 and 4.1.2."
     },
     "sourceUrl": "https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/examples/datepicker-dialog/",
     "sourceNote": "W3C WAI APG provides conforming datepicker design patterns with full keyboard navigation and ARIA role mappings.",
@@ -1851,11 +1851,11 @@
     "options": [
       {
         "id": "a",
-        "text": "It guarantees one hundred percent compliance with all WCAG Level AAA success criteria across releases."
+        "text": "It evaluates computed color contrast ratios and text reflow at 400% zoom during source code compilation."
       },
       {
         "id": "b",
-        "text": "It completely eliminates the need for manual testing with screen readers and keyboard navigation."
+        "text": "It validates dynamic live region announcements and screen reader speech output across mobile platforms."
       },
       {
         "id": "c",
@@ -1863,7 +1863,7 @@
       },
       {
         "id": "d",
-        "text": "It automatically generates legally certified Accessibility Conformance Reports for external buyers."
+        "text": "It automatically verifies whether alternative text accurately reflects the context of complex images."
       }
     ],
     "correct": [
@@ -1871,9 +1871,9 @@
     ],
     "explanation": "Shifting accessibility left using static analysis linters (like eslint-plugin-jsx-a11y) detects common markup defects (such as missing alt attributes, invalid ARIA roles, or non-interactive elements with click handlers) directly in the developer IDE before pull requests are created, reducing remediation costs.",
     "distractorNotes": {
-      "a": "Linters check basic code syntax and attributes; they cannot verify complex criteria or evaluate Level AAA conformance.",
-      "b": "Linters only catch a fraction of issues; manual keyboard and assistive technology evaluations remain indispensable.",
-      "d": "Linters produce code error logs, not formal procurement Accessibility Conformance Reports (ACRs)."
+      "a": "Static linters evaluate AST markup syntax; they cannot compute rendered CSS cascades, layout dimensions, or color contrast.",
+      "b": "Linters do not execute in browser runtimes and cannot test assistive technology interactions or dynamic live region updates.",
+      "d": "Linters verify the presence of alt attributes on <img> tags but cannot evaluate whether the text accurately describes image context."
     },
     "sourceUrl": "https://www.w3.org/WAI/planning/remediating/",
     "sourceNote": "W3C WAI remediation planning emphasizes shift-left testing tools to catch semantic errors early during coding.",
@@ -1935,15 +1935,15 @@
       },
       {
         "id": "b",
-        "text": "Schedule an annual external accessibility audit six months after releasing code changes to production."
+        "text": "Defer all accessibility acceptance criteria to a dedicated stabilization sprint before major releases."
       },
       {
         "id": "c",
-        "text": "Mandate that developers memorise the entire WCAG 2.2 specification before writing any front-end code."
+        "text": "Conduct a full five-step WCAG-EM enterprise audit on every individual pull request prior to code merge."
       },
       {
         "id": "d",
-        "text": "Delegate all accessibility responsibility exclusively to customer support staff handling user complaints."
+        "text": "Rely solely on standard unit test suites without defining explicit accessibility acceptance criteria."
       }
     ],
     "correct": [
@@ -1951,9 +1951,9 @@
     ],
     "explanation": "Embedding accessibility into the team Definition of Done ensures every user story is evaluated before being accepted. A strong DoD includes passing automated accessibility test suites, verifying full keyboard operability without traps, and testing core interactions with a screen reader.",
     "distractorNotes": {
-      "b": "Annual post-release audits occur too late to prevent regressions and result in expensive accumulated technical debt.",
-      "c": "Memorization of specifications is impractical; actionable acceptance criteria and automated tooling drive consistent quality.",
-      "d": "Relying on customer support to catch defects reactively shifts the burden onto users with disabilities rather than engineering."
+      "b": "Deferring accessibility to late hardening sprints creates large technical debt backlogs and violates agile shift-left principles.",
+      "c": "Full WCAG-EM audits evaluate entire web properties; running them on every PR is operationally infeasible and halts team velocity.",
+      "d": "Standard unit tests evaluate software logic and state, failing to detect semantic markup, keyboard, and screen reader barriers."
     },
     "sourceUrl": "https://www.w3.org/WAI/planning/remediating/",
     "sourceNote": "W3C WAI remediation guidance emphasizes embedding accessibility criteria into agile user stories and Definition of Done.",
@@ -1971,19 +1971,19 @@
     "options": [
       {
         "id": "a",
-        "text": "Because design system code edits automatically bypass all browser rendering security sandboxes."
+        "text": "Because fixing shared UI components eliminates the need for page-level structural and contextual testing."
       },
       {
         "id": "b",
-        "text": "Because fixes in core components propagate automatically across all applications consuming the library."
+        "text": "Because fixes in core components propagate systematically across all applications consuming the library."
       },
       {
         "id": "c",
-        "text": "Because design systems are legally exempt from European Standard EN 301 549 conformance audits."
+        "text": "Because design system tokens automatically override third-party iframe content and external web plugins."
       },
       {
         "id": "d",
-        "text": "Because design system components only execute server-side code without generating HTML client DOMs."
+        "text": "Because component libraries are evaluated solely by automated tools rather than manual user verification."
       }
     ],
     "correct": [
@@ -1991,9 +1991,9 @@
     ],
     "explanation": "Fixing accessibility defects at the design system level creates high leverage: when a component (such as a modal dialog, button, or input field) is made accessible in the shared library, all downstream consumer applications inherit the fix upon updating their dependency, eliminating redundant remediation.",
     "distractorNotes": {
-      "a": "Design system components execute within standard browser environments and do not bypass browser security sandboxes.",
-      "c": "Design system components and products built with them are fully subject to relevant accessibility standards and laws.",
-      "d": "Design systems provide UI component markup, CSS, and client-side behavior rendered directly in user web browsers."
+      "a": "While design systems ensure accessible component primitives, page-level headings, reading order, and form flows still require testing.",
+      "c": "Design system tokens cannot reach into or style cross-origin iframes or external third-party embedded plugins.",
+      "d": "Design system components require rigorous manual keyboard and screen reader testing in addition to automated checks."
     },
     "sourceUrl": "https://www.w3.org/WAI/planning/remediating/",
     "sourceNote": "W3C WAI emphasizes building accessibility into shared component libraries to scale fixes across multiple products.",
@@ -2011,11 +2011,11 @@
     "options": [
       {
         "id": "a",
-        "text": "VPAT Section 508, because US federal standards automatically supersede all international regulations."
+        "text": "VPAT Section 508, because US federal standards are accepted worldwide for public sector procurement."
       },
       {
         "id": "b",
-        "text": "VPAT WCAG, because it is the only edition that evaluates web applications and mobile operating systems."
+        "text": "VPAT WCAG, because it is the only edition that covers web applications and mobile software solutions."
       },
       {
         "id": "c",
@@ -2023,7 +2023,7 @@
       },
       {
         "id": "d",
-        "text": "VPAT EU-Lite, because it removes technical requirements for non-web documents and software interfaces."
+        "text": "VPAT EN 301 549, because European procurement standards automatically satisfy US Section 508 rules."
       }
     ],
     "correct": [
@@ -2031,9 +2031,9 @@
     ],
     "explanation": "The Information Technology Industry Council (ITI) produces four editions of the VPAT: VPAT 508 (US Section 508), VPAT WCAG (W3C WCAG criteria), VPAT EN 301 549 (European standard), and VPAT INT (International). VPAT INT combines Section 508, EN 301 549, and WCAG, making it suitable for vendors selling to both US and European markets.",
     "distractorNotes": {
-      "a": "US Section 508 does not supersede European directives; European bodies require conformance to EN 301 549.",
-      "b": "All VPAT editions evaluate web applications, but VPAT WCAG omits the broader non-WCAG requirements of 508 and EN 301 549.",
-      "d": "There is no VPAT EU-Lite edition; EN 301 549 explicitly covers non-web documents (Chapter 10) and software (Chapter 11)."
+      "a": "VPAT 508 covers US Section 508 requirements but lacks the specific European EN 301 549 criteria required by European bodies.",
+      "b": "All VPAT editions cover web content; VPAT WCAG evaluates WCAG criteria only and omits non-WCAG 508 and EN 301 549 requirements.",
+      "d": "VPAT EN 301 549 evaluates European requirements only and does not map to US Section 508 specific reporting standards."
     },
     "sourceUrl": "https://www.itic.org/policy/accessibility/vpat",
     "sourceNote": "ITI publishes VPAT INT to combine US Section 508, European EN 301 549, and WCAG into a single international report.",
@@ -2051,15 +2051,15 @@
     "options": [
       {
         "id": "a",
-        "text": "Supports, because satisfying more than fifty percent of components meets standard compliance thresholds."
+        "text": "Supports, because satisfying the majority of primary user paths meets standard compliance thresholds."
       },
       {
         "id": "b",
-        "text": "Not Applicable, because incomplete criteria cannot be evaluated until full remediation is completed."
+        "text": "Not Applicable, because criteria with mixed results cannot be assessed until testing is finalized."
       },
       {
         "id": "c",
-        "text": "Exempted, because partial compliance protects vendors from contractual liability during beta rollout."
+        "text": "Does Not Support, because any partial failure automatically invalidates the entire criterion claim."
       },
       {
         "id": "d",
@@ -2071,9 +2071,9 @@
     ],
     "explanation": "Under official VPAT reporting instructions, vendors must declare \"Partially Supports\" when some product functionality meets the criterion while other functionality does not. Crucially, the vendor must provide detailed remarks and explanations describing where and how the product fails to fully conform.",
     "distractorNotes": {
-      "a": "\"Supports\" requires that all product functionality meet the criterion without exception.",
-      "b": "\"Not Applicable\" is reserved solely for criteria that do not apply to the product (e.g., audio criteria for silent apps).",
-      "c": "\"Exempted\" is not a recognized VPAT conformance level term and has no standing in standard ACR reporting."
+      "a": "Under VPAT instructions, 'Supports' requires that all product functionality meet the criterion without known defects.",
+      "b": "'Not Applicable' is reserved exclusively for criteria that do not apply to the product (such as audio criteria for text-only apps).",
+      "c": "'Does Not Support' is reserved for when the majority of functionality fails; when some functionality meets the criterion, 'Partially Supports' is the correct term."
     },
     "sourceUrl": "https://www.itic.org/policy/accessibility/vpat",
     "sourceNote": "VPAT instructions define Partially Supports for products where some functionality meets the criterion and explain exceptions.",
@@ -2103,7 +2103,7 @@
       },
       {
         "id": "d",
-        "text": "The report specifies the exact software version number and product build evaluation date."
+        "text": "The report specifies the exact software version number, testing environment, and evaluation date."
       }
     ],
     "correct": [
@@ -2131,7 +2131,7 @@
     "options": [
       {
         "id": "a",
-        "text": "A non-disclosure agreement prohibiting customer staff from reporting bugs outside the vendor portal."
+        "text": "A standard 'as-is' warranty disclaimer that limits vendor liability for digital accessibility defects."
       },
       {
         "id": "b",
@@ -2139,11 +2139,11 @@
       },
       {
         "id": "c",
-        "text": "An informal verbal handshake agreement to discuss web accessibility improvements in future releases."
+        "text": "A voluntary product roadmap commitment that promises best-effort reviews during major version updates."
       },
       {
         "id": "d",
-        "text": "A perpetual software licensing fee discount if the vendor fails to meet international color standards."
+        "text": "A mutual indemnification clause that shifts third-party compliance claims entirely to the customer."
       }
     ],
     "correct": [
@@ -2151,9 +2151,9 @@
     ],
     "explanation": "A legally binding Service Level Agreement (SLA) establishing strict remediation timelines (e.g., critical blocker fixes within 15–30 days, high severity within 60 days) holds the vendor accountable for accessibility defects discovered during the contract term, with defined financial penalties or termination rights for non-compliance.",
     "distractorNotes": {
-      "a": "Non-disclosure agreements restrict communication and do not create any obligation for the vendor to remediate defects.",
-      "c": "Verbal informal agreements are legally unenforceable and provide no assurance of timely remediation.",
-      "d": "Fee discounts without mandatory remediation terms leave barriers unresolved for users with disabilities."
+      "a": "'As-is' warranty disclaimers relieve the vendor of remediation duties and leave the buyer responsible for fixing or enduring defects.",
+      "c": "Voluntary roadmap commitments lack legal enforceability and do not bind the vendor to specific remediation deadlines.",
+      "d": "Indemnification clauses protect against third-party lawsuits but do not compel the vendor to fix underlying technical accessibility barriers."
     },
     "sourceUrl": "https://www.w3.org/WAI/planning/procurement/",
     "sourceNote": "W3C WAI procurement guidance recommends formal contract terms with SLAs defining remediation timeframes by severity.",
@@ -2171,11 +2171,11 @@
     "options": [
       {
         "id": "a",
-        "text": "To permit the customer to inspect proprietary backend source code repositories for security backdoors."
+        "text": "To allow the customer to perform automated code scans on the vendor's internal development pipelines."
       },
       {
         "id": "b",
-        "text": "To allow the customer to install unlicensed copies of the vendor software across all employee laptops."
+        "text": "To mandate that the vendor purchase and configure customer-specified assistive technology hardware."
       },
       {
         "id": "c",
@@ -2183,7 +2183,7 @@
       },
       {
         "id": "d",
-        "text": "To require the vendor to reimburse all hardware upgrade costs incurred by the customer IT department."
+        "text": "To transfer legal liability for undiscovered accessibility defects to third-party testing auditors."
       }
     ],
     "correct": [
@@ -2191,9 +2191,9 @@
     ],
     "explanation": "A \"Right to Audit\" clause gives the procuring organization the legal right to conduct independent accessibility verification (or hire a third-party auditor) on the vendor deliverables before accepting the software or releasing milestone payments, verifying that the vendor ACR claims match actual software performance.",
     "distractorNotes": {
-      "a": "Software security auditing clauses are distinct from accessibility conformance verification rights.",
-      "b": "Right to audit does not grant unauthorized software licensing privileges or duplicate distribution rights.",
-      "d": "Hardware depreciation and IT infrastructure costs are separate from software accessibility compliance verification."
+      "a": "Right to audit clauses in software procurement verify product conformance, not vendor internal proprietary build infrastructure.",
+      "b": "Procurement audit clauses do not govern internal vendor hardware purchasing or workplace accommodation arrangements.",
+      "d": "Conducting an independent audit does not transfer statutory legal liability to third-party auditors; the procuring entity remains accountable."
     },
     "sourceUrl": "https://www.w3.org/WAI/planning/procurement/",
     "sourceNote": "W3C WAI procurement guidelines advise incorporating independent audit rights prior to software acceptance.",
@@ -2211,19 +2211,19 @@
     "options": [
       {
         "id": "a",
-        "text": "Chapter 4 (Functional performance statements for biometric identification systems)."
+        "text": "Chapter 5 (Generic requirements covering user preferences and closed functionality systems)."
       },
       {
         "id": "b",
-        "text": "Chapter 6 (Two-way voice communication and real-time text frequency requirements)."
+        "text": "Chapter 7 (ICT with video capabilities covering captioning and audio description controls)."
       },
       {
         "id": "c",
-        "text": "Chapter 9 (Web content and internet-hosted browser-rendered applications)."
+        "text": "Chapter 9 (Web content covering internet-hosted websites and browser-rendered applications)."
       },
       {
         "id": "d",
-        "text": "Chapter 10 (Non-web documents including downloadable electronic office files)."
+        "text": "Chapter 10 (Non-web documents covering downloadable electronic office and document files)."
       }
     ],
     "correct": [
@@ -2231,9 +2231,9 @@
     ],
     "explanation": "EN 301 549 Chapter 10 applies WCAG Success Criteria (Level A and AA) to non-web documents, including downloadable document formats like PDF, Microsoft Word, and spreadsheets. Chapter 9 applies to Web content, Chapter 11 applies to Software, and Chapter 12 applies to Documentation and Support Services.",
     "distractorNotes": {
-      "a": "Chapter 4 defines overarching functional performance statements across ICT rather than document requirements.",
-      "b": "Chapter 6 covers two-way voice communication and real-time text (RTT), not electronic documents.",
-      "c": "Chapter 9 applies specifically to web pages and browser-based web applications, not non-web documents."
+      "a": "Chapter 5 covers generic ICT requirements such as user preferences, closed functionality, and biometrics.",
+      "b": "Chapter 7 covers ICT with video capabilities, including captioning and audio description synchronization.",
+      "c": "Chapter 9 applies WCAG success criteria to web pages and web applications, whereas Chapter 10 applies to non-web documents."
     },
     "sourceUrl": "https://www.etsi.org/deliver/etsi_en/301500_301599/301549/",
     "sourceNote": "EN 301 549 Chapter 10 defines accessibility requirements for non-web documents including PDF and office files.",
@@ -2255,15 +2255,15 @@
       },
       {
         "id": "b",
-        "text": "All WCAG criteria are replaced by proprietary operating system accessibility guidelines and patents."
+        "text": "Software is evaluated strictly under ISO 9241-171, replacing WCAG criteria with ergonomic standards."
       },
       {
         "id": "c",
-        "text": "Software is evaluated exclusively against contrast rules while keyboard access requirements are waived."
+        "text": "Criteria apply only to native operating system shells while third-party installed software is exempt."
       },
       {
         "id": "d",
-        "text": "Native software applications are automatically exempt if distributed through certified digital app stores."
+        "text": "Level A criteria apply to software, but all Level AA criteria are waived for non-browser applications."
       }
     ],
     "correct": [
@@ -2271,9 +2271,9 @@
     ],
     "explanation": "Chapter 11 of EN 301 549 adapts WCAG 2.1 success criteria for software applications (both open and closed). It maps web concepts to software equivalents (e.g., replacing \"web page\" with \"software program\" or \"unit of software\") and adds requirements for interoperability with platform accessibility services (such as accessibility APIs).",
     "distractorNotes": {
-      "b": "EN 301 549 is an open European standard that harmonizes directly with WCAG rather than relying on proprietary vendor patents.",
-      "c": "Chapter 11 includes comprehensive requirements for keyboard operability, focus, and assistive technology API integration.",
-      "d": "App store distribution does not grant exemption from EN 301 549 statutory procurement compliance requirements."
+      "b": "EN 301 549 harmonizes directly with WCAG success criteria for software rather than replacing them with ISO standards.",
+      "c": "Chapter 11 applies to all software programs (including desktop, mobile, and third-party packages), not just OS shells.",
+      "d": "Both Level A and Level AA criteria are adapted and applied to software programs under EN 301 549 Chapter 11."
     },
     "sourceUrl": "https://www.etsi.org/deliver/etsi_en/301500_301599/301549/",
     "sourceNote": "EN 301 549 Chapter 11 adapts WCAG success criteria for software programs and platform accessibility services.",
@@ -2291,19 +2291,19 @@
     "options": [
       {
         "id": "a",
-        "text": "Requirements governing physical wheelchair ramp dimensions at vendor corporate headquarters."
+        "text": "Requirements governing physical hardware reach ranges, operable controls, and speech output mechanics."
       },
       {
         "id": "b",
-        "text": "Requirements ensuring product documentation and technical support services are fully accessible."
+        "text": "Requirements ensuring product documentation and technical support services are accessible to all users."
       },
       {
         "id": "c",
-        "text": "Requirements mandating that all software engineering source code be released under copyleft terms."
+        "text": "Requirements mandating interoperability with platform accessibility APIs and authoring tool features."
       },
       {
         "id": "d",
-        "text": "Requirements setting maximum hardware processor temperatures and cooling fan acoustic decibels."
+        "text": "Requirements governing two-way voice communication and real-time text frequency synchronization rules."
       }
     ],
     "correct": [
@@ -2311,9 +2311,9 @@
     ],
     "explanation": "EN 301 549 Chapter 12 specifies requirements for \"Documentation and support services\". Clause 12.1 covers product documentation (user guides, manuals, and online help must be provided in accessible formats), and Clause 12.2 covers support services (help desks, chat, phone support must accommodate the communication needs of individuals with disabilities).",
     "distractorNotes": {
-      "a": "Physical building architecture and wheelchair ramps fall under building codes, not EN 301 549 ICT standards.",
-      "c": "Software licensing models (such as copyleft or open source) are not governed by accessibility technical standards.",
-      "d": "Hardware thermal and acoustic engineering parameters are not part of Chapter 12 documentation and support requirements."
+      "a": "Hardware reach ranges, operable controls, and tactile keys are governed by Chapter 8 (Hardware), not Chapter 12.",
+      "c": "Platform accessibility API interoperability and authoring tool rules are specified in Chapter 11 (Software).",
+      "d": "Two-way voice communication and real-time text (RTT) are governed by Chapter 6, not Chapter 12."
     },
     "sourceUrl": "https://www.etsi.org/deliver/etsi_en/301500_301599/301549/",
     "sourceNote": "EN 301 549 Chapter 12 mandates accessible product documentation and accessible technical support services.",
@@ -2331,19 +2331,19 @@
     "options": [
       {
         "id": "a",
-        "text": "Because VPAT Version 1.0 requires payment of international patent licensing royalties to the US government."
+        "text": "Because VPAT reports must be certified directly by the US Access Board rather than published by vendors."
       },
       {
         "id": "b",
-        "text": "Because Version 1.0 reports can only be processed using deprecated 16-bit mainframe computer operating systems."
+        "text": "Because Version 1.0 applies strictly to hardware appliances and excludes browser-based web applications."
       },
       {
         "id": "c",
-        "text": "Because it evaluates obsolete 2000 Section 508 standards rather than the Revised Section 508 based on WCAG."
+        "text": "Because it evaluates obsolete 2000 Section 508 standards rather than Revised Section 508 based on WCAG."
       },
       {
         "id": "d",
-        "text": "Because all procurement reports submitted after 2020 must be written exclusively in the German language."
+        "text": "Because Section 508 now mandates WCAG 2.2 Level AAA conformance evaluation for all commercial software."
       }
     ],
     "correct": [
@@ -2351,9 +2351,9 @@
     ],
     "explanation": "VPAT 1.0 evaluated the legacy US Section 508 standards from 2000. In 2017/2018, the US Access Board refreshed Section 508 to incorporate WCAG 2.0 Level AA. ITI subsequently released VPAT 2.x. Submitting a VPAT 1.0 in 2026 means the vendor evaluated against obsolete standards and failed to evaluate modern WCAG criteria.",
     "distractorNotes": {
-      "a": "VPAT templates are freely provided by ITI and do not involve patent licensing royalties or government fees.",
-      "b": "VPATs are standard text or PDF documents and have no technical dependency on legacy 16-bit computer systems.",
-      "d": "Language requirements depend on the procuring entity and jurisdiction; international English VPATs are standard."
+      "a": "The US Access Board establishes the standards, but VPAT templates are produced by ITI and completed by vendors without government certification.",
+      "b": "VPAT 1.0 included provisions for web applications (§ 1194.22); the reason for rejection is that those standards were superseded by the 2017 refresh.",
+      "d": "Revised Section 508 incorporates WCAG 2.0 Level A and AA; it does not mandate WCAG 2.2 Level AAA."
     },
     "sourceUrl": "https://www.section508.gov/sell/vpat/",
     "sourceNote": "Section508.gov warns against using outdated VPAT 1.0 templates that do not reflect the Revised 508 WCAG standards.",
@@ -2371,19 +2371,19 @@
     "options": [
       {
         "id": "a",
-        "text": "The vendor advertises an automated one-line JavaScript overlay widget that modifies client web stylesheets."
+        "text": "The vendor bundles an automated client-side overlay widget promising instant automated WCAG compliance."
       },
       {
         "id": "b",
-        "text": "The vendor offers a substantial marketing discount if the customer agrees to waive all accessibility testing."
+        "text": "The vendor commissions an external third-party audit once every two years without internal QA testing."
       },
       {
         "id": "c",
-        "text": "The vendor promises that an external contractor will fix all reported accessibility bugs within five years."
+        "text": "The vendor relies on end-user defect reports sent to customer support to prioritize remediation fixes."
       },
       {
         "id": "d",
-        "text": "The vendor has an internal accessibility team, automated CI/CD checks, and publishes transparent ACR updates."
+        "text": "The vendor has dedicated accessibility staff, automated CI/CD checks, and maintains transparent ACRs."
       }
     ],
     "correct": [
@@ -2391,9 +2391,9 @@
     ],
     "explanation": "High accessibility maturity in a vendor organization is evidenced by institutionalized processes: dedicated accessibility subject-matter experts, automated regression testing integrated into CI/CD pipelines, accessible design system components, regular employee training, and transparent, regularly updated Accessibility Conformance Reports.",
     "distractorNotes": {
-      "a": "One-line overlay widgets are superficial band-aids that do not remediate underlying code or indicate vendor maturity.",
-      "b": "Offering discounts to waive accessibility testing represents low maturity and high risk of non-compliance.",
-      "c": "Relying on external contractors with a five-year turnaround indicates an ad-hoc, reactive, and immature capability."
+      "a": "Marketing overlay widgets indicates low maturity and an attempt to avoid addressing fundamental underlying code barriers.",
+      "b": "Relying solely on periodic external audits without internal engineering competence represents low-to-medium reactive maturity.",
+      "c": "Relying on end-user complaints shifts the testing burden to users with disabilities, demonstrating a reactive, low-maturity culture."
     },
     "sourceUrl": "https://www.w3.org/WAI/planning/procurement/",
     "sourceNote": "W3C WAI procurement maturity emphasizes institutionalized vendor processes, internal expertise, and transparent ACRs.",
