@@ -6,7 +6,7 @@
     "type": "single",
     "domain": "troubleshooting-and-optimization",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "stem": "A developer is instrumenting a distributed microservices application using the AWS X-Ray SDK. The developer wants to record custom key-value pairs in traces so that engineers can quickly search and filter traces in the AWS Management Console by specific business identifiers such as orderId and tier. Which feature of AWS X-Ray should the developer use?",
     "options": [
       {
@@ -38,5 +38,905 @@
     "sourceUrl": "https://docs.aws.amazon.com/xray/latest/devguide/xray-concepts.html",
     "sourceNote": "AWS X-Ray concepts: annotations and metadata",
     "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "aws-dva-c02-troubleshooting-and-optimization-002",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "troubleshooting-and-optimization",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer is instrumenting a financial transaction service that publishes custom processing metrics to Amazon CloudWatch by using the PutMetricData API. The operations team requires high-resolution monitoring with 1-second metric intervals and immediate alerting during critical batch payment processing windows. Which configuration should the developer specify in the metric data payload?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Set the Period parameter to 1 second and the EvaluationPeriods parameter to 1 in the PutMetricData API call."
+      },
+      {
+        "id": "b",
+        "text": "Set the StorageResolution parameter to 1 on the MetricDatum objects when calling PutMetricData."
+      },
+      {
+        "id": "c",
+        "text": "Set the Resolution parameter to high and configure a CloudWatch Logs subscription filter to ingest metrics."
+      },
+      {
+        "id": "d",
+        "text": "Set the MetricResolution parameter to 1 on the CloudWatch metric alarm configuration rather than in the API call."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "When publishing custom metrics to Amazon CloudWatch using the PutMetricData API, setting StorageResolution to 1 creates a high-resolution metric capable of storing data at 1-second granularity. Standard-resolution metrics default to a StorageResolution of 60 (1-minute intervals).",
+    "distractorNotes": {
+      "a": "Period and EvaluationPeriods are parameters used when defining CloudWatch metric alarms, not parameters of the PutMetricData API request structure.",
+      "c": "There is no Resolution parameter in PutMetricData, and CloudWatch Logs subscription filters stream log events rather than defining PutMetricData resolution.",
+      "d": "Metric resolution must be defined at metric ingestion time on the MetricDatum using StorageResolution, not via a MetricResolution parameter on alarms."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/publishingMetrics.html",
+    "sourceNote": "Publishing custom metrics: high-resolution metrics",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-troubleshooting-and-optimization-003",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "troubleshooting-and-optimization",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A serverless application built on AWS Lambda processes thousands of e-commerce checkout events per minute. The development team needs to extract and publish granular business performance metrics from execution logs. Making synchronous PutMetricData API calls from within function handlers causes unacceptable execution latency and risks CloudWatch API throttling. Which solution meets these requirements with the lowest operational overhead and invocation latency?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Print structured JSON log events conforming to the CloudWatch Embedded Metric Format (EMF) directly to standard output."
+      },
+      {
+        "id": "b",
+        "text": "Buffer custom metric payloads in local Lambda /tmp storage and trigger an asynchronous background thread before handler completion."
+      },
+      {
+        "id": "c",
+        "text": "Write raw metric logs to an Amazon S3 bucket using multipart uploads and invoke an AWS Glue ETL job to populate CloudWatch metrics."
+      },
+      {
+        "id": "d",
+        "text": "Stream standard print logs to an Amazon Kinesis Data Stream and invoke a separate Lambda consumer that calls PutMetricData in batches."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "The CloudWatch Embedded Metric Format (EMF) allows applications to generate custom metrics asynchronously by outputting structured JSON log events to stdout. CloudWatch Logs automatically ingests the log stream, parses the EMF payload, and extracts the defined custom metrics without requiring synchronous PutMetricData API calls from the Lambda execution environment.",
+    "distractorNotes": {
+      "b": "Writing to /tmp storage and attempting background thread dispatch adds disk I/O overhead and risks incomplete writes when the Lambda execution environment is frozen immediately after handler completion.",
+      "c": "Direct S3 multipart uploads and scheduled AWS Glue jobs introduce high latency, unnecessary S3 request costs, and complex orchestration compared to native CloudWatch EMF log ingestion.",
+      "d": "Streaming logs through Kinesis Data Streams to a downstream consumer adds infrastructure maintenance, shard management overhead, and potential PutMetricData API throttling at scale."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Embedded_Metric_Format_Generation.html",
+    "sourceNote": "CloudWatch Embedded Metric Format generation",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-troubleshooting-and-optimization-004",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "troubleshooting-and-optimization",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An operations team experiences excessive alarm notifications during routine deployments and transient network blips. A developer must configure CloudWatch alerting so an incident notification is sent only when the API error rate alarm AND the average latency alarm are both in the ALARM state. Furthermore, notifications must be suppressed whenever an existing scheduled maintenance alarm is active. Which approach should the developer use?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Configure an Amazon EventBridge event rule that checks the state of all three metric alarms using an AWS Lambda target."
+      },
+      {
+        "id": "b",
+        "text": "Create a CloudWatch metric math expression that multiplies the alarm states and triggers an Amazon SNS notification topic."
+      },
+      {
+        "id": "c",
+        "text": "Create a CloudWatch composite alarm with an alarm rule expression combining the individual metric alarms with logical operators."
+      },
+      {
+        "id": "d",
+        "text": "Configure multiple alarm actions on the latency metric alarm to evaluate the status of the error rate and maintenance alarms."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "A CloudWatch composite alarm monitors the states of other metric alarms and triggers actions based on a rule expression using logical operators such as AND, OR, and NOT. This enables alerting only when multiple conditions are met simultaneously (such as error rate AND latency) while suppressing alerts when a maintenance alarm is active.",
+    "distractorNotes": {
+      "a": "Using EventBridge rules and a custom Lambda function introduces custom code maintenance and event-routing latency when CloudWatch natively supports composite alarms for evaluating multi-alarm logic.",
+      "b": "Metric math expressions operate on underlying metric data time series, not on the discrete state transitions of provisioned CloudWatch alarms.",
+      "d": "Metric alarms evaluate time series data for a single metric or math query; an individual metric alarm cannot inspect or evaluate the operational state of other alarms."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Create_Composite_Alarm.html",
+    "sourceNote": "Creating composite alarms in Amazon CloudWatch",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-troubleshooting-and-optimization-005",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "troubleshooting-and-optimization",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer needs to monitor an Apache web server application running on Amazon EC2. The application logs access records to a CloudWatch Logs log group in the format: [ip, user, username, timestamp, request, status_code, size]. The developer must track the number of HTTP 5xx responses that occur every 5 minutes and publish this count to a custom metric for alerting. What is the most operationally efficient method to achieve this?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Write an AWS Lambda function subscribed to the log group that parses each JSON record and invokes PutMetricData."
+      },
+      {
+        "id": "b",
+        "text": "Execute a scheduled CloudWatch Logs Insights query every 5 minutes and export the aggregated query results to Amazon S3."
+      },
+      {
+        "id": "c",
+        "text": "Install the Amazon Kinesis Agent on the instance to stream access logs to OpenSearch Service and configure index alerts."
+      },
+      {
+        "id": "d",
+        "text": "Create a metric filter on the CloudWatch log group with a filter pattern matching the 5xx status code token in the log events."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "A CloudWatch metric filter extracts numerical data or counts occurrences of terms and patterns from incoming log events in a log group and transforms them into a custom CloudWatch metric. Setting a filter pattern matching 5xx HTTP status codes in space-delimited access logs automatically generates the metric in real time without custom code or additional infrastructure.",
+    "distractorNotes": {
+      "a": "Subscribing a Lambda function to the log stream to invoke PutMetricData requires writing and maintaining custom parsing code and incurs Lambda invocation costs for every incoming log batch.",
+      "b": "Scheduled Logs Insights queries with S3 export are intended for ad-hoc analytical queries and historical audits, not for generating continuous real-time CloudWatch metrics for alerting.",
+      "c": "Streaming logs to Amazon OpenSearch Service introduces significant cluster provisioning, operational complexity, and infrastructure cost for a simple count of HTTP 5xx status codes."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/FilterAndPatternSyntax.html",
+    "sourceNote": "Filter and pattern syntax for CloudWatch Logs",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-troubleshooting-and-optimization-006",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "troubleshooting-and-optimization",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer is preparing a fleet of Amazon EC2 Linux instances for production. The operations policy requires collecting system-level memory utilization metrics and local log files from /var/log/application.log into Amazon CloudWatch. Which TWO actions must the developer take to accomplish this requirement? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Enable detailed monitoring for the EC2 instances in the Amazon EC2 console or instance launch template."
+      },
+      {
+        "id": "b",
+        "text": "Install and configure the unified Amazon CloudWatch agent on each EC2 instance using the agent configuration wizard or JSON file."
+      },
+      {
+        "id": "c",
+        "text": "Call the PutMetricData API from a local cron job every minute with the instance ID as a dimension."
+      },
+      {
+        "id": "d",
+        "text": "Attach an IAM role containing the CloudWatchAgentServerPolicy managed policy to the EC2 instances."
+      },
+      {
+        "id": "e",
+        "text": "Configure the AWS Systems Manager Run Command to stream log files directly into an Amazon S3 access point."
+      }
+    ],
+    "correct": [
+      "b",
+      "d"
+    ],
+    "explanation": "The unified Amazon CloudWatch agent runs as an in-guest daemon on operating systems to collect in-guest system metrics (such as memory utilization, swap usage, and disk space) and local log files that the hypervisor cannot inspect. For the agent to publish these metrics and log streams to CloudWatch, the EC2 instance profile must have appropriate IAM permissions, which are provided by the AWS managed policy CloudWatchAgentServerPolicy.",
+    "distractorNotes": {
+      "a": "Detailed monitoring on EC2 provides standard hypervisor-level metrics (such as CPU, disk I/O, and network) at 1-minute intervals, but the hypervisor cannot inspect OS-level memory utilization or local file paths.",
+      "c": "Creating custom cron scripts calling PutMetricData requires custom script development, custom credential management, and lacks native log file streaming capabilities provided by the CloudWatch agent.",
+      "e": "Systems Manager Run Command is an operational execution tool for running scripts across managed nodes, not a continuous daemon for streaming application log files into CloudWatch."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Install-CloudWatch-Agent.html",
+    "sourceNote": "Installing the CloudWatch agent on EC2 instances",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-troubleshooting-and-optimization-007",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "troubleshooting-and-optimization",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer is investigating latency outliers in an AWS Lambda function using Amazon CloudWatch Logs Insights. The developer needs to identify the 10 longest function executions across the past 24 hours, displaying only the request identifier and the duration in milliseconds. Which CloudWatch Logs Insights query syntax achieves this result?",
+    "options": [
+      {
+        "id": "a",
+        "text": "SELECT @requestId, @duration FROM logs WHERE @type = \"REPORT\" ORDER BY @duration ASC LIMIT 10"
+      },
+      {
+        "id": "b",
+        "text": "fields @requestId, @duration | filter @type = \"REPORT\" | sort @duration desc | limit 10"
+      },
+      {
+        "id": "c",
+        "text": "GET @requestId, @duration | search \"REPORT\" | order by @duration desc | top 10"
+      },
+      {
+        "id": "d",
+        "text": "filter @type = \"REPORT\" | project @requestId, @duration | arrange desc(@duration) | take 10"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "CloudWatch Logs Insights uses a pipeline syntax where commands are separated by pipe characters (|). The query uses fields to select attributes, filter to narrow records to Lambda REPORT lines where execution statistics are captured, sort @duration desc to order from longest to shortest duration, and limit 10 to restrict output to the top 10 rows.",
+    "distractorNotes": {
+      "a": "Standard SQL syntax with SELECT, FROM, and WHERE is not the command format used by CloudWatch Logs Insights, and ascending order would return the shortest invocations rather than the longest.",
+      "c": "The keywords GET, search, order by, and top are not valid CloudWatch Logs Insights command syntax.",
+      "d": "The keywords project, arrange, and take belong to Kusto Query Language (KQL), not the CloudWatch Logs Insights query language."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_AnalyzeLogData-discoverable-fields.html",
+    "sourceNote": "Discoverable fields in CloudWatch Logs Insights",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-troubleshooting-and-optimization-008",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "troubleshooting-and-optimization",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A developer is troubleshooting a distributed microservices system where frontend requests pass through multiple backend HTTP services instrumented with the AWS X-Ray SDK. In the AWS X-Ray service map, downstream services appear as isolated individual traces rather than connected downstream nodes of the original client request. What must the developer configure to maintain continuous trace context across service boundaries?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Enable active tracing on the downstream services and configure identical AWS IAM service execution roles."
+      },
+      {
+        "id": "b",
+        "text": "Deploy an Amazon API Gateway HTTP API proxy between each microservice with stage-level X-Ray tracing enabled."
+      },
+      {
+        "id": "c",
+        "text": "Propagate the X-Amzn-Trace-Id HTTP header from upstream incoming requests into outgoing downstream client requests."
+      },
+      {
+        "id": "d",
+        "text": "Configure the AWS X-Ray daemon on each host to listen on a shared TCP port across the local VPC private subnets."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "AWS X-Ray relies on the X-Amzn-Trace-Id HTTP header to propagate trace context (including the root trace ID and parent segment ID) between distributed services. When a service makes outgoing downstream HTTP calls, the SDK or developer must inject the tracing header into the downstream request so downstream services attach their segments to the same root trace.",
+    "distractorNotes": {
+      "a": "Active tracing enables generation of trace segments within a service, but without passing the trace context header downstream, the downstream service creates a new disconnected root trace.",
+      "b": "Adding an API Gateway proxy between every microservice adds latency, cost, and architectural overhead, and does not solve missing header propagation between services if client headers are omitted.",
+      "d": "The X-Ray daemon communicates via UDP on port 2000 on the local host or container network; it does not correlate distributed traces across VPC subnets over shared TCP connections."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/xray/latest/devguide/xray-concepts.html",
+    "sourceNote": "AWS X-Ray concepts: tracing header and propagation",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-troubleshooting-and-optimization-009",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "troubleshooting-and-optimization",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A high-traffic e-commerce API processes more than 50,000 requests per second. The developer wants to trace application performance with AWS X-Ray while strictly controlling service costs. The developer must ensure that X-Ray captures at least 1 request per second for each API endpoint, along with 5% of any additional requests processed each second. Which feature should the developer configure?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Custom X-Ray sampling rules specifying a reservoir size of 1 and a fixed rate of 0.05."
+      },
+      {
+        "id": "b",
+        "text": "An X-Ray trace group filter expression matching requests where latency exceeds 1 second."
+      },
+      {
+        "id": "c",
+        "text": "A CloudWatch metric filter that drops 95% of incoming segment documents before daemon submission."
+      },
+      {
+        "id": "d",
+        "text": "Environment variable AWS_XRAY_CONTEXT_MISSING set to LOG_ERROR on the host operating system."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "AWS X-Ray sampling rules allow developers to customize how requests are sampled. The reservoir size defines the target number of requests to record each second before applying the fixed rate, ensuring a minimum baseline of traces (1 request/second). The fixed rate (0.05 for 5%) determines the percentage of additional requests sampled once the reservoir is exhausted.",
+    "distractorNotes": {
+      "b": "Trace groups organize recorded traces using filter expressions for service graphs and CloudWatch metrics, but do not dictate the upstream sampling decision made by the SDK.",
+      "c": "Metric filters operate on CloudWatch log groups to extract metrics from log text, and cannot govern the internal sampling decisions of the AWS X-Ray SDK.",
+      "d": "The AWS_XRAY_CONTEXT_MISSING environment variable defines SDK behavior when code attempts to record data without an active trace context, rather than configuring sampling rates."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/xray/latest/devguide/xray-console-sampling.html",
+    "sourceNote": "Configuring sampling rules in the AWS X-Ray console",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-troubleshooting-and-optimization-010",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "troubleshooting-and-optimization",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer is configuring a containerized web application running on Amazon ECS with the AWS Fargate launch type. The application is instrumented with the AWS X-Ray SDK, and an X-Ray daemon sidecar container runs inside the same ECS task definition. How does the application container communicate trace data to the X-Ray daemon sidecar?",
+    "options": [
+      {
+        "id": "a",
+        "text": "By writing JSON trace segments to a shared Amazon Elastic File System (Amazon EFS) persistent volume."
+      },
+      {
+        "id": "b",
+        "text": "By establishing a persistent gRPC stream over TCP port 443 directly to the AWS X-Ray regional endpoint."
+      },
+      {
+        "id": "c",
+        "text": "By issuing synchronous HTTP POST requests containing serialized segments to localhost over TCP port 8080."
+      },
+      {
+        "id": "d",
+        "text": "By sending UDP packets containing serialized trace segment documents to localhost on UDP port 2000."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "The AWS X-Ray SDK serializes trace segment documents and dispatches them as UDP packets to the X-Ray daemon on UDP port 2000 (accessible on localhost within the same ECS task container network namespace). The daemon buffers the segments and uploads them in batches to the X-Ray API via HTTPS.",
+    "distractorNotes": {
+      "a": "Trace segments are not passed via file systems or shared EFS volumes; the SDK communicates directly with the local daemon process over UDP networking.",
+      "b": "The application SDK transmits segments to the local daemon over UDP rather than opening direct gRPC streams over TCP port 443 to the regional X-Ray service.",
+      "c": "The X-Ray daemon listens for trace segments over UDP port 2000, not synchronous HTTP POST requests on TCP port 8080."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/xray/latest/devguide/xray-daemon.html",
+    "sourceNote": "The AWS X-Ray daemon",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-troubleshooting-and-optimization-011",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "troubleshooting-and-optimization",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A developer is optimizing a latency-sensitive payment processing AWS Lambda function that queries an Amazon RDS database. The application experiences sporadic latency spikes (cold starts) during sudden surges in customer traffic. Which TWO optimization techniques reduce invocation latency and execution environment initialization overhead? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Configure provisioned concurrency on a published function version or alias to keep execution environments pre-warmed."
+      },
+      {
+        "id": "b",
+        "text": "Increase the function execution timeout to 15 minutes to allow extra time for cold start completion."
+      },
+      {
+        "id": "c",
+        "text": "Initialize database connection pools and AWS SDK clients in global initialization code outside the event handler."
+      },
+      {
+        "id": "d",
+        "text": "Re-instantiate database connections inside the event handler method on every invocation and close them in a finally block."
+      },
+      {
+        "id": "e",
+        "text": "Move the Lambda function from a multi-AZ VPC subnet into a single public subnet without an internet gateway."
+      }
+    ],
+    "correct": [
+      "a",
+      "c"
+    ],
+    "explanation": "Configuring provisioned concurrency keeps a specified number of execution environments initialized and ready to respond immediately, eliminating cold start delays. Initializing database connections and SDK clients outside the event handler takes advantage of execution environment reuse across warm invocations, avoiding the overhead of re-establishing connections on every invocation.",
+    "distractorNotes": {
+      "b": "Increasing the function timeout allows long-running requests to run before timing out, but does not decrease cold start duration or execution latency.",
+      "d": "Re-establishing database connections inside the handler on every invocation creates connection setup latency on every request and can exhaust database connection pools.",
+      "e": "Placing a function in a public subnet without an internet gateway prevents the function from accessing the internet or AWS service endpoints, causing connection timeouts rather than performance improvements."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/lambda/latest/dg/best-practices.html",
+    "sourceNote": "Best practices for working with AWS Lambda functions",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-troubleshooting-and-optimization-012",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "troubleshooting-and-optimization",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer maintains an AWS Lambda function that performs CPU-intensive image compression algorithms. The function currently runs with 512 MB of allocated memory and takes 35 seconds to finish processing each batch. The developer wants to decrease the function execution duration without modifying the image compression code. How should the developer configure the function?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Enable Lambda SnapStart on the function configuration to accelerate runtime execution speed."
+      },
+      {
+        "id": "b",
+        "text": "Increase the memory allocation of the function to allocate greater proportional CPU capacity."
+      },
+      {
+        "id": "c",
+        "text": "Increase the ephemeral /tmp storage allocation from 512 MB to 10,240 MB in the function settings."
+      },
+      {
+        "id": "d",
+        "text": "Switch the Lambda function invocation type from synchronous RequestResponse to asynchronous Event."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "In AWS Lambda, CPU power is allocated proportionally to the configured memory setting. Increasing the memory allocation provides a linearly greater amount of vCPU capacity and network bandwidth, which directly reduces the execution duration of CPU-bound computations.",
+    "distractorNotes": {
+      "a": "Lambda SnapStart reduces cold start initialization latency for supported runtimes (such as Java), but does not increase computational execution speed during the handler invocation.",
+      "c": "Increasing ephemeral /tmp storage expands available local scratch disk space, but does not allocate additional vCPU capacity or accelerate CPU-bound processing.",
+      "d": "Changing to asynchronous invocation returns an immediate HTTP 202 response to the caller, but does not reduce the internal processing duration or CPU bottlenecks of the function execution."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/lambda/latest/dg/configuration-memory.html",
+    "sourceNote": "Configuring Lambda function memory",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-troubleshooting-and-optimization-013",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "troubleshooting-and-optimization",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A batch worker application written with a custom HTTP client periodically encounters ProvisionedThroughputExceededException errors when writing large bursts of items to an Amazon DynamoDB table. The developer observes that when multiple worker threads encounter errors simultaneously, immediate retries overwhelm the table further. What strategy should the developer implement in the worker client retry logic?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Implement exponential backoff with full jitter across retry attempts to decorrelate concurrent worker requests."
+      },
+      {
+        "id": "b",
+        "text": "Retry the failed write requests immediately in an unthrottled loop until a successful HTTP 200 status is returned."
+      },
+      {
+        "id": "c",
+        "text": "Increase the HTTP request timeout on the client to allow throttled requests to remain queued inside DynamoDB."
+      },
+      {
+        "id": "d",
+        "text": "Catch the exception and redirect the failed batch write requests directly to a DynamoDB local secondary index."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "When handling ProvisionedThroughputExceededException in DynamoDB, clients should implement exponential backoff with full jitter. Progressively increasing wait times combined with randomized jitter breaks synchronization between concurrent worker threads, smoothing out request bursts and allowing the table to recover.",
+    "distractorNotes": {
+      "b": "Immediate unthrottled retries exacerbate write congestion on throttled partitions and cause sustained ProvisionedThroughputExceededException failures.",
+      "c": "DynamoDB does not queue throttled requests on the server; it immediately rejects them with an HTTP 400 error, so increasing client HTTP timeouts will not resolve throttling.",
+      "d": "Local secondary indexes cannot be written to directly; index updates are managed automatically by DynamoDB when items are written to the base table."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Programming.Errors.html",
+    "sourceNote": "Error handling in Amazon DynamoDB: exponential backoff",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-troubleshooting-and-optimization-014",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "troubleshooting-and-optimization",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An IoT application writes telemetry data to an Amazon DynamoDB table using device_type as the partition key and timestamp as the sort key. Although there are only four distinct device types, millions of devices write events continuously every second. The table experiences persistent ProvisionedThroughputExceededException errors even though total provisioned write capacity is well above the overall write rate. What should the developer do to eliminate write throttling?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Convert the table partition key to use timestamp and change the sort key to device_type."
+      },
+      {
+        "id": "b",
+        "text": "Enable DynamoDB auto scaling on the table with a target utilization setting of 20 percent."
+      },
+      {
+        "id": "c",
+        "text": "Implement write sharding by appending a randomized or calculated suffix to the partition key value."
+      },
+      {
+        "id": "d",
+        "text": "Create a global secondary index with device_type as the partition key to absorb write traffic."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "With only four distinct partition key values, writes are concentrated on just four physical partitions, creating hot partitions that exceed partition-level throughput limits (1,000 WCU per partition). Adding write sharding (appending a random suffix such as .1 to .N or a deterministic hash) distributes writes across many distinct partition keys and underlying storage partitions.",
+    "distractorNotes": {
+      "a": "Using timestamp as the partition key creates extreme write hot spots on the current second's partition as all devices write to the current timestamp simultaneously.",
+      "b": "Auto scaling increases total provisioned capacity across the table, but individual physical partitions remain limited to 1,000 WCU, leaving hot partitions throttled.",
+      "d": "Global secondary indexes receive replicated writes from the base table and cannot be written to directly; creating a GSI does not alter base table partition distribution."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-partition-key-sharding.html",
+    "sourceNote": "Using write sharding to distribute DynamoDB workloads",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-troubleshooting-and-optimization-015",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "troubleshooting-and-optimization",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A developer observes that write operations to an Amazon DynamoDB base table in provisioned capacity mode are failing with ProvisionedThroughputExceededException errors. CloudWatch metrics indicate that the base table consumed write capacity is well below the provisioned write capacity units (WCUs). What is the most likely cause of this throttling?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The base table has a local secondary index that was provisioned with lower write capacity than the table."
+      },
+      {
+        "id": "b",
+        "text": "The DynamoDB table is operating in on-demand capacity mode and has exceeded the maximum account limit."
+      },
+      {
+        "id": "c",
+        "text": "The AWS SDK client is attempting strong consistent reads on the base table partition key."
+      },
+      {
+        "id": "d",
+        "text": "A global secondary index on the table is throttled, which restricts write throughput on the base table."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "In Amazon DynamoDB, when an item is added or modified in a base table with a Global Secondary Index (GSI), the write must also be applied to the GSI. If the GSI does not have sufficient write capacity units (WCU) to accommodate the writes, DynamoDB throttles writes on the base table to prevent the index from falling indefinitely behind.",
+    "distractorNotes": {
+      "a": "Local secondary indexes (LSIs) do not have independent provisioned capacity; they consume write capacity units directly from the base table allocation.",
+      "b": "The scenario states that the base table is configured in provisioned capacity mode, not on-demand mode.",
+      "c": "Strongly consistent reads consume read capacity units (RCUs) and affect read operations, not write capacity or base table write throttling."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GSI.html",
+    "sourceNote": "Global secondary index write capacity and throttling",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-troubleshooting-and-optimization-016",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "troubleshooting-and-optimization",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A high-performance gaming application requires microsecond read response times for millions of repetitive player profile queries stored in an Amazon DynamoDB table. Standard DynamoDB reads provide single-digit millisecond latency, which is insufficient for real-time game state rendering. Which caching solution provides in-memory microsecond read latency with minimal code changes?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Provision an Amazon DynamoDB Accelerator (DAX) cluster and point the application SDK to the DAX endpoint."
+      },
+      {
+        "id": "b",
+        "text": "Deploy an Amazon ElastiCache for Memcached cluster and configure write-through caching in application code."
+      },
+      {
+        "id": "c",
+        "text": "Attach an Amazon CloudFront distribution in front of DynamoDB with a customized cache-control TTL header."
+      },
+      {
+        "id": "d",
+        "text": "Store frequently accessed player profiles in Amazon S3 Express One Zone and query them via Amazon Athena."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Amazon DynamoDB Accelerator (DAX) is a fully managed, highly available in-memory cache purpose-built for DynamoDB that delivers microsecond response times for read-heavy workloads. DAX is API-compatible with DynamoDB, requiring developers to simply re-point the AWS SDK client to the DAX cluster endpoint without rewriting application query logic.",
+    "distractorNotes": {
+      "b": "ElastiCache for Memcached requires writing custom cache-aside or write-through application logic to populate, invalidate, and manage cached data alongside DynamoDB.",
+      "c": "Amazon CloudFront is a content delivery network for HTTP/HTTPS web assets and REST APIs, and cannot be attached directly in front of DynamoDB tables.",
+      "d": "Amazon S3 Express One Zone with Athena adds query planning latency and high computational overhead compared to direct in-memory DynamoDB caching."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DAX.html",
+    "sourceNote": "Amazon DynamoDB Accelerator (DAX) in-memory cache",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-troubleshooting-and-optimization-017",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "troubleshooting-and-optimization",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A developer is designing an application caching layer using Amazon ElastiCache to optimize database performance for a product catalog. The design must ensure that only actively requested items occupy cache memory, while also preventing users from viewing outdated pricing information when database updates occur. Which TWO design patterns should the developer implement? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Preload the entire product database into the cache during application startup using a scheduled batch job."
+      },
+      {
+        "id": "b",
+        "text": "Query the cache first on read requests, fetch from the database upon a cache miss, and write the record into the cache."
+      },
+      {
+        "id": "c",
+        "text": "Configure the cache eviction policy to noeviction so items remain stored indefinitely without expiration."
+      },
+      {
+        "id": "d",
+        "text": "Write all incoming read queries directly to Amazon DynamoDB Streams before checking the ElastiCache cluster."
+      },
+      {
+        "id": "e",
+        "text": "Invalidate or update the corresponding cached product record whenever a pricing update is committed to the database."
+      }
+    ],
+    "correct": [
+      "b",
+      "e"
+    ],
+    "explanation": "Implementing the Cache-Aside (Lazy Loading) pattern ensures that only actively requested data is stored in the cache, avoiding filling memory with rarely accessed catalog items. Pairing Cache-Aside with write invalidation or updates on database mutation guarantees that stale pricing data is purged or refreshed immediately upon product updates.",
+    "distractorNotes": {
+      "a": "Preloading the entire database caches massive volumes of inactive data that may never be read, wasting cache capacity and exhausting memory.",
+      "c": "Setting an eviction policy to noeviction causes cache writes to fail with out-of-memory errors once the cache memory fills up, preventing new items from being cached.",
+      "d": "DynamoDB Streams capture item modifications for downstream processing, and are not an intermediary queue for routing read queries to ElastiCache."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/Strategies.html",
+    "sourceNote": "Caching strategies in Amazon ElastiCache",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-troubleshooting-and-optimization-018",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "troubleshooting-and-optimization",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer is selecting an Amazon ElastiCache engine for a web application. The application requires caching sorted real-time gaming leaderboards, atomic counter increments for player scores, and Multi-AZ replication with automatic failover to support high availability. Which ElastiCache engine meets these requirements?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon ElastiCache for Memcached, because it provides multi-threaded processing and horizontal shard scaling."
+      },
+      {
+        "id": "b",
+        "text": "Amazon ElastiCache for Redis, because it natively supports advanced data structures and Multi-AZ replication."
+      },
+      {
+        "id": "c",
+        "text": "Amazon ElastiCache for Memcached, because it provides persistent point-in-time snapshots to Amazon S3."
+      },
+      {
+        "id": "d",
+        "text": "Amazon MemoryDB, because it is the only AWS caching service that supports in-memory atomic increments."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Amazon ElastiCache for Redis supports complex data structures (including sorted sets for leaderboards and hashes), atomic operations (such as INCR and ZADD), and Multi-AZ replication with automatic failover. Memcached supports only simple key-value strings and lacks native replication or Multi-AZ failover.",
+    "distractorNotes": {
+      "a": "Memcached is multi-threaded, but it lacks support for sorted sets, atomic leaderboard operations, and Multi-AZ replication with automatic failover.",
+      "c": "Memcached does not support persistent snapshots or backups to Amazon S3; backup and restore capabilities are exclusive to Redis.",
+      "d": "ElastiCache for Redis fully supports atomic operations and in-memory increments, making MemoryDB unnecessary for meeting these requirements."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/SelectEngine.html",
+    "sourceNote": "Choosing between Redis and Memcached in ElastiCache",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-troubleshooting-and-optimization-019",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "troubleshooting-and-optimization",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A fleet of worker processes continuously polls an Amazon SQS queue for incoming tasks. During off-peak hours, the queue is often empty, leading to millions of empty ReceiveMessage responses, unnecessary network traffic, and elevated AWS billing costs. What configuration change should the developer make to optimize polling efficiency and reduce costs?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Increase the message visibility timeout from 30 seconds to 12 hours on the queue configuration."
+      },
+      {
+        "id": "b",
+        "text": "Configure a dead-letter queue with a maxReceiveCount value of 1 to capture empty polling requests."
+      },
+      {
+        "id": "c",
+        "text": "Enable long polling by setting ReceiveMessageWaitTimeSeconds to 20 seconds on the queue."
+      },
+      {
+        "id": "d",
+        "text": "Switch the queue type from an SQS standard queue to an SQS FIFO (First-In-First-Out) queue."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Enabling long polling by setting ReceiveMessageWaitTimeSeconds to a non-zero value (up to 20 seconds) causes SQS to wait until messages arrive before sending a response. This substantially reduces the number of empty responses returned, lowers network traffic, and decreases SQS API request costs.",
+    "distractorNotes": {
+      "a": "Visibility timeout controls how long a received message remains invisible to other workers while processing, and has no effect on polling behavior when the queue is empty.",
+      "b": "Dead-letter queues collect messages that fail processing after maxReceiveCount attempts; they do not intercept or modify empty ReceiveMessage API calls.",
+      "d": "FIFO queues guarantee message ordering and exactly-once processing, but do not eliminate empty polling responses or reduce polling costs."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-short-and-long-polling.html",
+    "sourceNote": "Amazon SQS short and long polling",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-troubleshooting-and-optimization-020",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "troubleshooting-and-optimization",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A backend worker retrieves a complex video transcoding task from an Amazon SQS queue. The queue has a default visibility timeout of 30 seconds, but transcoding large media files takes up to 75 seconds. Currently, other worker instances receive and process the same message before the initial worker completes the task. How should the developer prevent duplicate processing while the message is still being handled?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Delete the message immediately upon receipt and re-enqueue it if the transcoding job fails."
+      },
+      {
+        "id": "b",
+        "text": "Decrease the queue DelaySeconds attribute to 0 so that workers process incoming messages faster."
+      },
+      {
+        "id": "c",
+        "text": "Move the message to an Amazon SQS dead-letter queue at the start of video processing."
+      },
+      {
+        "id": "d",
+        "text": "Call the ChangeMessageVisibility API to extend the message visibility timeout during processing."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "When message processing takes longer than the queue's default visibility timeout, the worker can call the ChangeMessageVisibility API action to extend the visibility timeout for that specific message. This keeps the message invisible to other consumer workers while processing continues.",
+    "distractorNotes": {
+      "a": "Deleting the message upon receipt risks permanent data loss if the worker crashes before completing transcoding, as the message cannot be recovered.",
+      "b": "DelaySeconds delays the initial availability of newly sent messages in the queue, and does not alter the visibility timeout of messages already being processed.",
+      "c": "Moving the message to a dead-letter queue isolates it from active workers and is intended for failed messages, not for actively running tasks."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-visibility-timeout.html",
+    "sourceNote": "Amazon SQS visibility timeout",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-troubleshooting-and-optimization-021",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "troubleshooting-and-optimization",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer is optimizing an order ingestion system that writes and deletes thousands of messages per second in Amazon SQS. The architecture incurs high SQS API request costs because workers send and delete messages individually. Which TWO actions should the developer take to optimize throughput and reduce API request costs? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Call the ReceiveMessage API with MaxNumberOfMessages set to 100 in each poll request."
+      },
+      {
+        "id": "b",
+        "text": "Enable server-side encryption with AWS KMS customer managed keys to compress message payloads."
+      },
+      {
+        "id": "c",
+        "text": "Use the SendMessageBatch API action to send batches of up to 10 messages in a single request."
+      },
+      {
+        "id": "d",
+        "text": "Increase the message retention period on the SQS queue from 4 days to the maximum of 14 days."
+      },
+      {
+        "id": "e",
+        "text": "Use the DeleteMessageBatch API action to acknowledge and delete up to 10 processed messages together."
+      }
+    ],
+    "correct": [
+      "c",
+      "e"
+    ],
+    "explanation": "Amazon SQS supports batch API actions (SendMessageBatch and DeleteMessageBatch) that allow up to 10 messages per action. Using batch operations groups messages into fewer API requests, significantly increasing throughput while reducing API transaction costs.",
+    "distractorNotes": {
+      "a": "The maximum value for MaxNumberOfMessages in a single ReceiveMessage request is 10, not 100.",
+      "b": "Server-side encryption protects message bodies at rest using cryptographic keys, but does not compress payloads or reduce API call volume.",
+      "d": "The message retention period determines how long unread messages remain in the queue before deletion, and has no impact on API request volume or throughput."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-batch-api-actions.html",
+    "sourceNote": "Amazon SQS batch API actions",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-troubleshooting-and-optimization-022",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "troubleshooting-and-optimization",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An Amazon API Gateway REST API has stage caching enabled to reduce load on a backend AWS Lambda function. While testing a new release, a developer needs to bypass the stage cache and retrieve a fresh response directly from the backend without disabling or flushing the stage cache for other consumers. Which action allows the developer to bypass the cache?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Send the API request with the Cache-Control: max-age=0 header while possessing the appropriate IAM permissions."
+      },
+      {
+        "id": "b",
+        "text": "Add a query string parameter named skip_cache=true to the request URI on the integration request."
+      },
+      {
+        "id": "c",
+        "text": "Send the request using the HTTP OPTIONS method to trigger a preflight cache bypass across the stage."
+      },
+      {
+        "id": "d",
+        "text": "Append the X-Amzn-Bypass-Cache custom HTTP header to the request without any client authorization."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "A client can invalidate or bypass an API Gateway stage cache entry by sending an HTTP request with the Cache-Control: max-age=0 header. To prevent unauthorized cache invalidation, API Gateway requires the caller to have the execute-api:InvalidateCache IAM permission or be authorized if cache authorization is configured.",
+    "distractorNotes": {
+      "b": "Adding arbitrary query parameters does not bypass the cache unless the parameter is explicitly configured as a cache key parameter in the method execution settings.",
+      "c": "HTTP OPTIONS requests are used for CORS preflight handshakes and do not invalidate or bypass API Gateway stage caching for subsequent GET or POST requests.",
+      "d": "API Gateway does not recognize an X-Amzn-Bypass-Cache header; standard cache invalidation requires Cache-Control: max-age=0 and proper authorization."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-caching.html",
+    "sourceNote": "Bypassing API Gateway stage cache with Cache-Control",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-troubleshooting-and-optimization-023",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "troubleshooting-and-optimization",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A developer resolves a software bug that caused consumer workers to fail and moved 10,000 messages into an Amazon SQS dead-letter queue (DLQ). The developer now needs to reprocess these messages through the original source queue. What is the most operationally efficient method to move the messages from the DLQ back to the source queue?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Write and deploy an AWS Lambda function that reads from the DLQ and re-publishes each message individually."
+      },
+      {
+        "id": "b",
+        "text": "Start a dead-letter queue redrive task from the SQS console or by invoking the StartMessageMoveTask API."
+      },
+      {
+        "id": "c",
+        "text": "Configure an Amazon EventBridge pipe that polls the dead-letter queue and targets the source queue endpoint."
+      },
+      {
+        "id": "d",
+        "text": "Set the maxReceiveCount on the dead-letter queue redrive policy to 0 to trigger automatic message return."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Amazon SQS provides native dead-letter queue (DLQ) redrive capabilities. Developers can initiate a redrive task directly from the SQS console or by calling the StartMessageMoveTask API to move messages from the DLQ back to the source queue (or a custom destination) without writing custom polling and re-queuing code.",
+    "distractorNotes": {
+      "a": "Writing a custom Lambda function or script to drain and republish messages introduces unnecessary development, execution costs, and error-handling complexity when SQS provides native DLQ redrive.",
+      "c": "Configuring EventBridge Pipes requires creating additional event infrastructure, mapping rules, and IAM roles rather than using the built-in SQS DLQ redrive task.",
+      "d": "The maxReceiveCount attribute defines how many times a message can be received from the source queue before moving to the DLQ; setting it to 0 does not automatically redrive DLQ messages."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html",
+    "sourceNote": "Redriving dead-letter queue messages in Amazon SQS",
+    "sourceCheckedAt": "2026-10-12"
   }
 ]

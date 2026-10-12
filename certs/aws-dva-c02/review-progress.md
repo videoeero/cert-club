@@ -9,10 +9,10 @@ guide (Version 2.1, published December 12, 2024). Recon performed on 2026-10-11.
 
 ## Bank status: `draft`
 
-`manifest.status` is `draft`. 4 seed questions authored (1 draft per domain, 100% draft).
-With a 65-question live exam, the full bank authoring target is 2× exam coverage
-(130 questions) proportionally distributed across all four domains to match blueprint
-weights (42 / 34 / 31 / 23).
+`manifest.status` is `draft`. 130 questions authored across all four domains (100% reviewed, 0% draft).
+With a 65-question live exam, the 2× exam baseline (130 questions) is fully satisfied, proportionally
+distributed across all four domains matching blueprint weights (42 / 34 / 31 / 23). Promotion to
+`stable` is gated on human review in Phase 4.
 
 ## Blueprint and weights
 
@@ -20,11 +20,11 @@ The official DVA-C02 exam guide assigns exact integer weights to its four domain
 
 | Domain | Slug | Weight | Target (1x: 65) | Target (2x: 130) | Bank Questions (2x) |
 | --- | --- | ---: | ---: | ---: | ---: |
-| Development with AWS Services | `development-with-aws-services` | 32% | 21 | 42 | 1 |
-| Security | `security` | 26% | 17 | 34 | 1 |
-| Deployment | `deployment` | 24% | 15 | 31 | 1 |
-| Troubleshooting and Optimization | `troubleshooting-and-optimization` | 18% | 12 | 23 | 1 |
-| **Total** | | **100%** | **65** | **130** | **4** |
+| Development with AWS Services | `development-with-aws-services` | 32% | 21 | 42 | 42 |
+| Security | `security` | 26% | 17 | 34 | 34 |
+| Deployment | `deployment` | 24% | 15 | 31 | 31 |
+| Troubleshooting and Optimization | `troubleshooting-and-optimization` | 18% | 12 | 23 | 23 |
+| **Total** | | **100%** | **65** | **130** | **130** |
 
 Exam specifications from the official blueprint:
 - Total items: 65 questions (50 scored, 15 unscored)
@@ -99,3 +99,40 @@ Recon verdict: **GO** (approved 2026-10-11).
 - **Excluded sources:**
   - `explore.skillbuilder.aws` / AWS Skill Builder: Gated behind account registration (fails gate test).
   - Third-party dumps or unverified mirrors: Fails authority and content rules.
+
+## 2026-10-12: Full bank expansion to 2× baseline (`orchestrate-bank`)
+
+Chained `author-questions`, `evaluate-questions`, and `harden-domain-questions` across all four domains using parallel subagents.
+
+### Batch Sizing and Coverage
+Bank expanded from 4 seed questions to the full 2× live exam baseline (130 questions):
+- `development-with-aws-services`: +41 questions authored (total 42; 32.3% share vs 32% blueprint weight).
+- `security`: +33 questions authored (total 34; 26.2% share vs 26% blueprint weight).
+- `deployment`: +30 questions authored (total 31; 23.8% share vs 24% blueprint weight).
+- `troubleshooting-and-optimization`: +22 questions authored (total 23; 17.7% share vs 18% blueprint weight).
+- Format mix: 108 single-select (83.1%), 22 multi-select (16.9%; 21 select-2, 1 select-3).
+- Sourcing: 120 distinct documentation pages across `docs.aws.amazon.com`.
+
+### Stage B: Adversarial Cold Evaluation Pass
+Four clean, independent subagents evaluated all 130 questions cold against cited documentation:
+- **Domain 1**: 42 items evaluated cold. 42 confirmed. 0 miskeys. All 42 promoted to `reviewed`.
+- **Domain 2**: 34 items evaluated cold. 34 confirmed. 0 miskeys. All 34 promoted to `reviewed`.
+- **Domain 3**: 31 items evaluated cold. 29 confirmed, 2 repaired in place (`-005` fixed bracket syntax error in option `b`, `-017` trimmed trailing space). 0 miskeys. All 31 promoted to `reviewed`.
+- **Domain 4**: 23 items evaluated cold. 22 confirmed, 1 repaired in place (`-021` removed outdated 256 KB payload reference from explanation to match current AWS SQS documentation). 0 miskeys. All 23 promoted to `reviewed`.
+- Total: 127 confirmed, 3 repaired in place, 0 demoted. 130 of 130 items (100%) promoted to `reviewed`.
+
+### Stage C: Difficulty Hardening Pass
+All domains assessed against the 10 official DVA-C02 sample questions inventoried above:
+- **Domain 1**: 31 items `calibrated — no change`, 11 items hardened (`-009`, `-016`, `-017`, `-018`, `-020`, `-021`, `-029`, `-030`, `-031`, `-037`, `-042`) by replacing weak/throwaway distractors with technical misconceptions and authentic AWS near-misses.
+- **Domain 2**: 30 items `calibrated — no change`, 4 items hardened (`-013`, `-030`, `-033`, `-034`) lifting distractors from obvious eliminations to realistic near-misses (e.g., ElastiCache caching complexity vs client library, explicit deny policies vs data protection).
+- **Domain 3**: 29 items `calibrated — no change`, 2 items hardened (`-001` replaced throwaway `AllAtOnce` with `Canary10Percent5Minutes`, `-005` replaced synthetic distractor with authentic `!Ref` in `${}` syntax pitfall).
+- **Domain 4**: All 23 items `calibrated — no change` (cleared Stage 0 gate untouched; cognitive level already sits firmly at or above official samples 7 and 9).
+- Total: 113 items `calibrated — no change`, 17 items hardened. 0 miskeys detected during hardening.
+
+### Bank Metrics & Quality Guards
+- Single-select answer key distribution across 4 positions: `a`: 27 (25.0%), `b`: 28 (25.9%), `c`: 27 (25.0%), `d`: 26 (24.1%) — `positionBias`: **PASS**.
+- Mean key length minus distractor length: +1.48 characters (median +1.50) — `lengthBiasMeanDelta`: **PASS**.
+- Correct answer is longest option in 15 of 108 single-select items (13.9%, well under 45% ceiling) — `longestOptionIsKey`: **PASS**.
+- Distractor notes coverage: 100% of distractors noted across all 130 items; zero option letter references in explanations or distractor notes.
+- "Eliminate absolute qualifiers then guess" uniquely identifies key in 0 of 108 single-select items.
+- Repository test suite: 416/416 tests green.

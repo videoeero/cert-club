@@ -6,7 +6,7 @@
     "type": "single",
     "domain": "deployment",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "stem": "A developer is deploying an updated version of a serverless application using AWS Serverless Application Model (AWS SAM) and AWS CodeDeploy. The application requirements state that initial production traffic to the new AWS Lambda version should be limited to 10% for testing. If no errors occur during a 10-minute evaluation window, the remaining 90% of traffic should immediately route to the new version. Which CodeDeploy deployment configuration should the developer specify in the AWS SAM template?",
     "options": [
       {
@@ -15,7 +15,7 @@
       },
       {
         "id": "b",
-        "text": "AllAtOnce"
+        "text": "Canary10Percent5Minutes"
       },
       {
         "id": "c",
@@ -32,11 +32,1246 @@
     "explanation": "The Canary10Percent10Minutes configuration shifts 10% of traffic to the updated Lambda function version first, waits 10 minutes, and then shifts the remaining 90% of traffic to the new version if no CloudWatch alarms trigger.",
     "distractorNotes": {
       "a": "Linear10PercentEvery10Minutes increments traffic by 10% every 10 minutes across 10 steps (taking 100 minutes total), rather than shifting all remaining 90% after the first 10 minutes.",
-      "b": "AllAtOnce shifts 100% of traffic to the new version immediately with no phased canary testing window.",
+      "b": "Canary10Percent5Minutes shifts 10% of traffic for a 5-minute evaluation period before routing the remaining 90%, whereas the requirements specify a 10-minute evaluation window.",
       "d": "Linear10PercentEvery1Minute shifts traffic in equal 10% increments every minute rather than an initial 10% canary followed by a 90% cutover."
     },
     "sourceUrl": "https://docs.aws.amazon.com/codedeploy/latest/userguide/deployment-configurations.html",
     "sourceNote": "Deployment configurations in AWS CodeDeploy",
     "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "aws-dva-c02-deployment-002",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "deployment",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer is maintaining an AWS Serverless Application Model (AWS SAM) template that defines eight AWS::Serverless::Function resources. All eight functions share identical runtime, memory size, and architecture configuration, but one function requires a 60-second timeout while the remaining seven functions require a 15-second timeout. The developer wants to minimize configuration repetition across the template while applying the custom timeout to the single function. How should the developer structure the AWS SAM template?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Declare the common runtime, architecture, and a 15-second timeout in the Globals section, and explicitly set the timeout to 60 seconds on the specific function resource."
+      },
+      {
+        "id": "b",
+        "text": "Define the common runtime, architecture, and timeout under CloudFormation Mappings, and reference them on all function resources using the intrinsic FindInMap function."
+      },
+      {
+        "id": "c",
+        "text": "Specify the common runtime, architecture, and a 60-second timeout in the Parameters section, and use conditional statements to override values for individual functions."
+      },
+      {
+        "id": "d",
+        "text": "Configure the common runtime and timeout in an external configuration file, and import the properties into each function definition using the CloudFormation Include macro."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "The AWS SAM Globals section allows developers to define common configuration properties—such as Runtime, Timeout, and MemorySize—that are inherited by all AWS::Serverless::Function resources in the template. Individual functions can override any inherited global property by explicitly defining that property directly within the function's resource properties.",
+    "distractorNotes": {
+      "b": "Mappings provide static lookup tables keyed by environment or region; using Mappings does not reduce resource definition repetition compared to native AWS SAM Globals.",
+      "c": "Parameters accept inputs at stack creation time and do not provide an inheritance mechanism across multiple serverless function definitions in AWS SAM.",
+      "d": "CloudFormation Include macros are intended for embedding template snippets from Amazon S3 rather than managing inherited configuration defaults across serverless resources."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy-globals.html",
+    "sourceNote": "AWS SAM template anatomy Globals section",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-deployment-003",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "deployment",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer is creating an AWS Lambda function with AWS SAM to process Amazon S3 object creation notifications. Before deploying changes to the AWS cloud, the developer needs to generate a realistic mock Amazon S3 event locally and execute the Lambda function with that event in a local Docker container environment. Which AWS SAM CLI workflow should the developer use?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Execute `sam local start-lambda` to launch a local service endpoint, and use the AWS CLI to send a simulated PutObject request directly to the local emulator."
+      },
+      {
+        "id": "b",
+        "text": "Run `sam local generate-event s3 put` to produce the mock event payload, and pass the generated JSON payload to `sam local invoke` using the `--event` parameter."
+      },
+      {
+        "id": "c",
+        "text": "Execute `sam validate --lint` with a mock event parameter to generate sample input data and verify function execution against the local template definition."
+      },
+      {
+        "id": "d",
+        "text": "Run `sam local start-api` with an event generation parameter, and send an HTTP POST request containing sample S3 metadata directly to the local API endpoint."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "The AWS SAM CLI command `sam local generate-event s3 put` produces a sample Amazon S3 event payload matching the structure sent by Amazon S3 on object creation. Passing this payload to `sam local invoke -e event.json` allows developers to invoke the function locally in a Docker container simulating the Lambda execution environment.",
+    "distractorNotes": {
+      "a": "The `sam local start-lambda` command runs a local service endpoint that responds to AWS CLI invoke calls, but it does not generate mock S3 event payloads.",
+      "c": "The `sam validate` command verifies that the AWS SAM template complies with the specification schema; it does not generate event payloads or execute function code.",
+      "d": "The `sam local start-api` command simulates an Amazon API Gateway HTTP or REST API locally, which is designed for HTTP requests rather than Amazon S3 event notifications."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-local-generate-event.html",
+    "sourceNote": "SAM CLI sam local generate-event command reference",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-deployment-004",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "deployment",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A developer is implementing safe deployments for an AWS Lambda function defined in an AWS SAM template using AWS CodeDeploy traffic shifting. The deployment requirements specify that an automated integration test suite must run against the newly published Lambda version before any live production traffic is routed to it. If the integration test fails, the deployment must stop and roll back immediately. How should the developer configure this requirement in the AWS SAM template?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Attach an Amazon CloudWatch alarm to the function and configure the DeploymentPreference Alarms property to monitor the function error metric during deployment."
+      },
+      {
+        "id": "b",
+        "text": "Configure an Amazon EventBridge rule that intercepts CodeDeploy deployment state change events and triggers a test Lambda function asynchronously upon creation."
+      },
+      {
+        "id": "c",
+        "text": "Define a ValidateService script inside a local appspec.yaml file bundled with the deployment package to invoke the full integration test suite before traffic shifting."
+      },
+      {
+        "id": "d",
+        "text": "Specify a test Lambda function in the PreTraffic hook under the DeploymentPreference Hooks property, and have the test function report lifecycle status to CodeDeploy."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "In AWS SAM templates, the DeploymentPreference section supports Hooks, allowing developers to specify PreTraffic and PostTraffic test Lambda functions. A PreTraffic hook executes before CodeDeploy shifts any production traffic to the new Lambda version. The test function validates the newly deployed version and calls the CodeDeploy PutLifecycleEventHookExecutionStatus API with Succeeded or Failed to allow the deployment to proceed or trigger an immediate rollback.",
+    "distractorNotes": {
+      "a": "CloudWatch alarms monitor runtime operational metrics during and after traffic shifting, but they do not run active integration test suites prior to initial traffic shifting.",
+      "b": "An EventBridge rule operates asynchronously outside of CodeDeploy lifecycle hook controls and cannot block traffic shifting while test results are evaluated.",
+      "c": "AWS SAM automatically generates the CodeDeploy application specification; defining a manual appspec.yaml file with ValidateService is standard for EC2/on-premises deployments rather than SAM serverless functions."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/automating-updates-to-serverless-apps.html",
+    "sourceNote": "Automating safe deployments for serverless applications",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-deployment-005",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "deployment",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer is authoring an AWS CloudFormation template in YAML. The template requires the dynamic generation of an Amazon SQS queue ARN using the current AWS Region, the current AWS Account ID, and a template parameter named QueueName. The developer wants to use the most concise and readable intrinsic function syntax without defining explicit string delimiters or arrays. Which expression satisfies these requirements?",
+    "options": [
+      {
+        "id": "a",
+        "text": "`!Join [':', ['arn:aws:sqs', !Ref 'AWS::Region', !Ref 'AWS::AccountId', !Ref QueueName]]`"
+      },
+      {
+        "id": "b",
+        "text": "`!Sub 'arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:${!Ref QueueName}'`"
+      },
+      {
+        "id": "c",
+        "text": "`!Sub 'arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:${QueueName}'`"
+      },
+      {
+        "id": "d",
+        "text": "`!FindInMap ['ArnMap', !Ref 'AWS::Region', !Ref QueueName]`"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "The intrinsic function `!Sub` (Fn::Sub) substitutes variables in an input string with values specified at runtime. Pseudo parameters such as `${AWS::Region}` and `${AWS::AccountId}`, as well as template parameters like `${QueueName}`, are resolved directly inside the string without requiring arrays or explicit delimiters.",
+    "distractorNotes": {
+      "a": "While `!Join` can concatenate strings, it requires a list of items and a delimiter argument, making it more verbose and harder to maintain than `!Sub`.",
+      "b": "`!Sub` resolves variable names directly inside `${}` without nesting intrinsic functions; specifying `${!Ref QueueName}` causes a CloudFormation template syntax error.",
+      "d": "The `!FindInMap` function searches for values stored in a static two-level Mappings dictionary rather than substituting dynamic runtime account and parameter values."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/intrinsic-function-reference-sub.html",
+    "sourceNote": "Fn::Sub intrinsic function reference in CloudFormation",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-deployment-006",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "deployment",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer manages two AWS CloudFormation templates: a core networking stack that provisions an Amazon VPC with private subnets, and an application stack that deploys compute resources. The application stack needs to reference the private subnet IDs provisioned by the networking stack. The two stacks have independent release cycles and deployment pipelines. How should the developer pass the subnet IDs from the networking stack to the application stack?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Export the subnet IDs using the Outputs section of the networking template, and import them in the application template using the `!ImportValue` intrinsic function."
+      },
+      {
+        "id": "b",
+        "text": "Store the subnet IDs as static configuration mappings in the Mappings section of the application template, and retrieve them using the `!FindInMap` intrinsic function."
+      },
+      {
+        "id": "c",
+        "text": "Nest the application stack inside the networking stack by declaring an AWS::CloudFormation::Stack resource, and pass the subnet IDs through stack Parameters."
+      },
+      {
+        "id": "d",
+        "text": "Configure an external script in the CI/CD pipeline to query the networking stack resources and inject the subnet IDs as environment variables during build time."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "AWS CloudFormation cross-stack references enable stacks with independent lifecycles to share resources. The providing stack defines an Export with a globally unique name in its Outputs section, and consumer stacks reference that exported value using the `!ImportValue` intrinsic function within the same AWS Region and account.",
+    "distractorNotes": {
+      "b": "The Mappings section provides static key-value pairs defined at authoring time and cannot dynamically resolve resource identifiers created by another stack.",
+      "c": "Creating nested stacks tightly couples the parent and child stack lifecycles, violating the requirement for independent deployment pipelines and release cycles.",
+      "d": "Injecting subnet IDs via external pipeline scripts bypasses CloudFormation dependency tracking, preventing CloudFormation from enforcing export protections against accidental deletion."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-stack-exports.html",
+    "sourceNote": "Exporting stack output values in CloudFormation",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-deployment-007",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "deployment",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer needs to update a production AWS CloudFormation stack that manages several Amazon DynamoDB tables and an Amazon RDS database instance. Before executing the update, the engineering team requires a formal preview of all proposed infrastructure modifications to identify whether any stateful resources will experience disruptive replacement or downtime. Which CloudFormation feature should the developer use?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Perform CloudFormation drift detection across all stack resources to identify configuration differences between the current template and live AWS resources."
+      },
+      {
+        "id": "b",
+        "text": "Create a CloudFormation change set against the production stack, inspect the proposed resource changes and replacement actions, and then execute it."
+      },
+      {
+        "id": "c",
+        "text": "Deploy the updated template to a new parallel test stack, run automated validation scripts, and delete the temporary test stack upon review."
+      },
+      {
+        "id": "d",
+        "text": "Validate the updated template using the `aws cloudformation validate-template` CLI command, and inspect the JSON schema validation output."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "CloudFormation Change Sets allow developers to preview proposed changes to an existing stack before applying them. A change set details whether resources will be added, modified, or replaced (which can cause data loss or downtime on stateful resources like databases). Once the team reviews and approves the change set, the developer executes it to apply the updates.",
+    "distractorNotes": {
+      "a": "Drift detection identifies out-of-band configuration changes made directly to resources outside of CloudFormation management, rather than previewing changes from a new template.",
+      "c": "Deploying a parallel stack creates duplicate infrastructure and does not evaluate how modifying the existing production stack will affect its specific stateful resources.",
+      "d": "The `validate-template` command checks template syntax and structural correctness; it cannot determine whether an update to an existing stack will cause resource replacement."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-changesets.html",
+    "sourceNote": "Updating stacks using change sets in CloudFormation",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-deployment-008",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "deployment",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A developer is updating a critical microservice stack using AWS CloudFormation. The team requires that if operational metrics—such as API latency or error rates—degrade during the stack update or during a specified monitoring window after stack creation completes, CloudFormation must automatically abort the update and roll back all modified resources to their previous state. How can the developer implement this automated rollback behavior natively in CloudFormation?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Attach a dynamic CloudFormation UpdatePolicy with an AutoScalingRollingUpdate configuration to all compute resources in the template."
+      },
+      {
+        "id": "b",
+        "text": "Create an Amazon EventBridge rule that detects CloudWatch alarm state changes and invokes an AWS Lambda function to issue a cancel update command."
+      },
+      {
+        "id": "c",
+        "text": "Specify rollback triggers in the stack update configuration by referencing Amazon CloudWatch alarms and defining a monitoring time window."
+      },
+      {
+        "id": "d",
+        "text": "Configure a custom CloudFormation macro that inspects Amazon CloudWatch metrics and returns a failure response during stack resource provisioning."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "AWS CloudFormation rollback triggers allow developers to associate Amazon CloudWatch alarms with stack creation and update operations. If any specified alarm breaches during the stack operation or during the post-deployment monitoring time (the bake period), CloudFormation rolls back the entire stack to its previous known-stable configuration.",
+    "distractorNotes": {
+      "a": "The `UpdatePolicy` attribute governs how Auto Scaling groups replace EC2 instances during rolling updates; it does not monitor application-wide CloudWatch alarms across heterogeneous stack resources.",
+      "b": "Using EventBridge and custom Lambda functions requires custom operational orchestration that is error-prone, whereas CloudFormation rollback triggers provide built-in native support.",
+      "d": "CloudFormation macros execute template transformation logic before stack creation starts; macros cannot monitor operational runtime metrics during deployment."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-rollback-triggers.html",
+    "sourceNote": "Rolling back CloudFormation stack operations with triggers",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-deployment-009",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "deployment",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer is authoring a `buildspec.yml` file for an AWS CodeBuild project that builds and tests a web application. During the build phase, the application requires a sensitive database password that is stored as a SecureString parameter in AWS Systems Manager Parameter Store. The password must be decrypted and made available to the build commands as an environment variable without storing secret values in source control. How should the developer configure `buildspec.yml`?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Define the parameter under `env.variables` and use the `!Ref` intrinsic function to retrieve the secret value from Parameter Store."
+      },
+      {
+        "id": "b",
+        "text": "Declare the parameter in the `phases.pre_build` commands block using an `aws ssm get-parameter --with-decryption` CLI invocation."
+      },
+      {
+        "id": "c",
+        "text": "Specify the parameter under `env.secrets-manager` by prefixing the Parameter Store key with the `ssm:` protocol namespace identifier."
+      },
+      {
+        "id": "d",
+        "text": "List the environment variable name and the Parameter Store parameter key under the `env.parameter-store` mapping in `buildspec.yml`."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "In an AWS CodeBuild `buildspec.yml` file, the `env.parameter-store` section maps environment variable names directly to Parameter Store parameter keys. When the build runs, CodeBuild automatically retrieves the parameter value—including decrypting SecureString parameters—and sets it as an environment variable in the build environment.",
+    "distractorNotes": {
+      "a": "The `env.variables` section is intended for plain text environment variables; CloudFormation intrinsic functions like `!Ref` are not evaluated inside `buildspec.yml`.",
+      "b": "Calling `aws ssm get-parameter` in pre_build commands is redundant and risks exposing secret values in plaintext build logs if commands echo parameters.",
+      "c": "The `env.secrets-manager` section is specifically for AWS Secrets Manager secret identifiers, not Systems Manager Parameter Store parameters."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html",
+    "sourceNote": "Buildspec reference for CodeBuild",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-deployment-010",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "deployment",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A development team uses AWS CodeBuild to compile a Java application and run unit tests. Build times have increased to over 20 minutes because every build execution downloads external Gradle dependencies from public repositories from scratch. The developer wants to reduce build duration by persisting downloaded dependencies between consecutive build runs. Which combination of actions should the developer take?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Configure the CodeBuild project cache mode to use Amazon S3 or a local cache, and add the Gradle cache directory path to the `cache.paths` block in `buildspec.yml`."
+      },
+      {
+        "id": "b",
+        "text": "Pre-install all Gradle dependencies inside a custom Amazon Machine Image (AMI) and configure CodeBuild to launch compute worker instances using that custom image."
+      },
+      {
+        "id": "c",
+        "text": "Store all external dependencies in an Amazon Elastic File System (Amazon EFS) file system and mount the shared directory during the `install` phase of the build."
+      },
+      {
+        "id": "d",
+        "text": "Declare the dependency directory under the `artifacts.files` section in `buildspec.yml` and enable secondary artifact caching across the CodeBuild build project."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "AWS CodeBuild supports build caching to store dependencies and intermediate build artifacts across builds. Developers can configure a project cache using Amazon S3 or local caching (source, Docker layer, or custom directories). In `buildspec.yml`, the developer specifies the directories containing cached dependencies (e.g. `~/.gradle/caches/**/*`) under `cache.paths`.",
+    "distractorNotes": {
+      "b": "CodeBuild runs builds inside Docker container environments, not arbitrary custom AMIs.",
+      "c": "While CodeBuild can mount EFS filesystems, using CodeBuild native caching configured via `cache.paths` in `buildspec.yml` is the standard managed solution.",
+      "d": "The `artifacts` block specifies output files produced by the build for downstream deployment stages, not input dependency caches reused across builds."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/codebuild/latest/userguide/build-caching.html",
+    "sourceNote": "Build caching in AWS CodeBuild",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-deployment-011",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "deployment",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A developer is configuring an AWS CodeBuild project that produces two distinct outputs: a compiled web application archive for production deployment and a set of raw test execution and code coverage reports for compliance archiving. The downstream AWS CodePipeline pipeline must consume the application archive in a deploy stage and the coverage reports in a separate reporting stage. How should the developer configure `buildspec.yml` to support this?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Configure multiple `artifacts` sections under each individual phase in `buildspec.yml` and assign distinct file extensions to each output."
+      },
+      {
+        "id": "b",
+        "text": "Define multiple artifact entries with unique identifiers under the `artifacts.secondary-artifacts` section in the `buildspec.yml` file."
+      },
+      {
+        "id": "c",
+        "text": "Compress both outputs into a single zip archive and use an AWS Lambda invocation stage in CodePipeline to split the archive contents."
+      },
+      {
+        "id": "d",
+        "text": "Write a script in the `post_build` phase that uses the AWS CLI to copy the test reports to an external S3 bucket before build completion."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "AWS CodeBuild allows projects to output multiple artifacts by defining secondary artifacts in `buildspec.yml`. Under `artifacts.secondary-artifacts`, each artifact is identified by a unique artifact identifier with its own `files` and `base-directory` properties. In CodePipeline, these identifiers map to distinct output artifacts for different downstream stages.",
+    "distractorNotes": {
+      "a": "In `buildspec.yml`, `artifacts` is a top-level block, not a property configured inside individual build phases.",
+      "c": "Bundling everything into a single archive and unzipping with Lambda adds unnecessary architectural complexity and bypasses native CodePipeline artifact routing.",
+      "d": "Directly uploading files to S3 via CLI in `post_build` bypasses CodePipeline artifact management and does not produce a managed CodePipeline output artifact."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html",
+    "sourceNote": "Buildspec reference for CodeBuild secondary artifacts",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-deployment-012",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "deployment",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer is creating an `appspec.yml` file for deploying an in-place web application revision to Amazon EC2 instances using AWS CodeDeploy. The deployment workflow requires running an automated smoke test script against the local web server endpoint immediately after the application service starts. If the smoke test fails, CodeDeploy must mark the deployment as failed and trigger a rollback. Which lifecycle hook in `appspec.yml` is executed immediately following `ApplicationStart` for this health check?",
+    "options": [
+      {
+        "id": "a",
+        "text": "`AfterInstall`"
+      },
+      {
+        "id": "b",
+        "text": "`BeforeInstall`"
+      },
+      {
+        "id": "c",
+        "text": "`ApplicationStop`"
+      },
+      {
+        "id": "d",
+        "text": "`ValidateService`"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "In AWS CodeDeploy for EC2/on-premises deployments, the lifecycle event hooks execute in a strict sequence: ApplicationStop, DownloadBundle, BeforeInstall, Install, AfterInstall, ApplicationStart, and finally ValidateService. The ValidateService hook is specifically designed to run health checks and verification scripts after the application process has started.",
+    "distractorNotes": {
+      "a": "The `AfterInstall` hook runs immediately after files are copied to the instance but before the application process is started via ApplicationStart.",
+      "b": "The `BeforeInstall` hook executes before CodeDeploy extracts new files to the instance, typically used for pre-installation configuration or backup tasks.",
+      "c": "The `ApplicationStop` hook runs at the beginning of the deployment to gracefully terminate the existing version of the application."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/codedeploy/latest/userguide/reference-appspec-file-structure-hooks.html",
+    "sourceNote": "AppSpec hooks section for EC2/on-premises deployments",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-deployment-013",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "deployment",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A developer is implementing a blue/green deployment for an Amazon ECS service using AWS CodeDeploy and an Application Load Balancer with production and test listeners. The developer wants to execute an automated integration test suite against the replacement task set while it is receiving traffic from the test listener, but before production user traffic starts shifting to the replacement task set. Which lifecycle hook in `appspec.yaml` should the developer use to run the validation Lambda function?",
+    "options": [
+      {
+        "id": "a",
+        "text": "`BeforeInstall`"
+      },
+      {
+        "id": "b",
+        "text": "`AfterInstall`"
+      },
+      {
+        "id": "c",
+        "text": "`AfterAllowTestTraffic`"
+      },
+      {
+        "id": "d",
+        "text": "`BeforeAllowTraffic`"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "For Amazon ECS blue/green deployments in AWS CodeDeploy, the lifecycle hooks execute in the following order: BeforeInstall, Install, AfterInstall, AfterAllowTestTraffic, BeforeAllowTraffic, and AfterAllowTraffic. The AfterAllowTestTraffic hook runs after CodeDeploy directs test traffic (via the test listener) to the replacement task set, providing the exact window needed to run validation tests before production traffic shifting begins.",
+    "distractorNotes": {
+      "a": "The `BeforeInstall` hook executes before the replacement task set is created or registered with target groups.",
+      "b": "The `AfterInstall` hook executes after the replacement task set is created but before test traffic is routed to the new container tasks.",
+      "d": "The `BeforeAllowTraffic` hook executes immediately before production traffic shifts to the replacement task set, after test traffic has already been verified."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/codedeploy/latest/userguide/reference-appspec-file-structure-hooks.html",
+    "sourceNote": "AppSpec hooks section for Amazon ECS deployments",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-deployment-014",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "deployment",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer is setting up an AWS CodeDeploy deployment group for an application running on Amazon EC2 instances. The company requires high availability and minimal blast radius: if an individual instance fails deployment execution or if an Amazon CloudWatch alarm monitoring 5XX HTTP responses breaches during the rollout, CodeDeploy must automatically stop the deployment and redeploy the last known successful application revision. How should the developer configure the deployment group?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Enable automatic rollback for deployment failure events and configure CloudWatch rollback alarms in the CodeDeploy deployment group settings."
+      },
+      {
+        "id": "b",
+        "text": "Configure an Amazon EventBridge rule to detect failed deployment states and execute a custom AWS Lambda function that triggers an EC2 reboot."
+      },
+      {
+        "id": "c",
+        "text": "Define a ValidateService hook script that queries the CloudWatch API directly and executes an operating system package rollback command."
+      },
+      {
+        "id": "d",
+        "text": "Configure the deployment group with an AllAtOnce deployment configuration and attach an IAM service role with CloudWatch administrator access."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "AWS CodeDeploy deployment groups support built-in automatic rollbacks. In the deployment group configuration, developers can enable rollback when a deployment fails and configure rollback when specified CloudWatch alarms breach. When triggered, CodeDeploy automatically deploys the last previously successful revision without requiring manual intervention.",
+    "distractorNotes": {
+      "b": "Rebooting EC2 instances with Lambda does not restore the previous application revision code or update CodeDeploy deployment tracking.",
+      "c": "Managing rollbacks inside custom hook scripts is complex and does not coordinate fleet-wide rollback state managed by CodeDeploy.",
+      "d": "The `AllAtOnce` configuration deploys to all instances simultaneously, increasing downtime risk, and assigning an IAM role does not enable automated rollback behavior."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/codedeploy/latest/userguide/deployments-rollback-and-redeploy.html",
+    "sourceNote": "Rollback and redeploy in AWS CodeDeploy",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-deployment-015",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "deployment",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A development team uses AWS CodePipeline to automate their delivery process across development, staging, and production environments. Before releasing code changes to the production environment, the team lead must review the results of staging integration tests and explicitly grant authorization. If authorization is not granted within seven days, the pipeline execution should not proceed to production. How should the developer implement this requirement in AWS CodePipeline?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Add a custom AWS Lambda invoke action between staging and production that repeatedly polls an external ticketing system for release authorization."
+      },
+      {
+        "id": "b",
+        "text": "Add a Manual approval action with an Amazon SNS notification topic between the staging deploy stage and the production deploy stage in the pipeline."
+      },
+      {
+        "id": "c",
+        "text": "Configure a transition disable rule on the production stage and create an Amazon EventBridge rule to enable the transition when approval is granted."
+      },
+      {
+        "id": "d",
+        "text": "Create an Amazon API Gateway webhook endpoint that updates AWS Systems Manager Parameter Store when an authorized team member sends an approval."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "AWS CodePipeline includes a native Approval action type with provider Manual. Inserting a manual approval action before the production stage pauses pipeline execution until an authorized user approves or rejects the action in the console or via the AWS CLI/SDK. The action can optionally send an Amazon SNS notification with a review URL and comments.",
+    "distractorNotes": {
+      "a": "Lambda functions in CodePipeline have a maximum execution timeout of 15 minutes and cannot pause pipeline execution for up to seven days.",
+      "c": "Disabling stage transitions prevents all executions from entering a stage, but it does not provide an approval interface or execution-specific tracking.",
+      "d": "Setting up custom API Gateway webhooks and SSM parameters adds unnecessary architectural overhead when CodePipeline provides native manual approval actions."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/codepipeline/latest/userguide/approvals.html",
+    "sourceNote": "Manage manual approvals in AWS CodePipeline",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-deployment-016",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "deployment",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer is configuring a three-stage AWS CodePipeline: a Source stage using AWS CodeCommit, a Build stage using AWS CodeBuild, and a Deploy stage using AWS CodeDeploy. The Deploy stage fails during execution because the CodeDeploy action cannot find the application archive generated during the Build stage. What must the developer configure to pass the build output successfully to the deploy action?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Configure the CodeBuild project to upload the zip file directly to an Amazon S3 bucket and specify the S3 object location in the CodeDeploy deployment."
+      },
+      {
+        "id": "b",
+        "text": "Set the pipeline execution mode to Queued and enable secondary artifact synchronization across all participating deployment stages in the pipeline."
+      },
+      {
+        "id": "c",
+        "text": "Specify an output artifact name in the CodeBuild action and reference that identical artifact name in the input artifacts list of the CodeDeploy action."
+      },
+      {
+        "id": "d",
+        "text": "Define an environment variable in CodeBuild that stores the artifact checksum and pass it to CodeDeploy through pipeline runtime execution variables."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "In AWS CodePipeline, data moves between actions and stages through input and output artifacts. The action that generates files (CodeBuild) must declare an outputArtifacts entry with a specific name (e.g. BuildOutput). Downstream actions (CodeDeploy) that need to consume those files must specify that exact artifact name in their inputArtifacts list.",
+    "distractorNotes": {
+      "a": "Bypassing CodePipeline artifact plumbing by hardcoding external S3 bucket paths breaks pipeline execution traceability and artifact versioning.",
+      "b": "Pipeline execution modes govern concurrent executions; they do not configure artifact routing between stages.",
+      "d": "Passing an artifact checksum via environment variables does not transmit the actual zipped bundle files to the CodeDeploy agent."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/codepipeline/latest/userguide/reference-pipeline-structure.html",
+    "sourceNote": "AWS CodePipeline pipeline structure reference",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-deployment-017",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "deployment",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A company runs a high-traffic web application on an AWS Elastic Beanstalk environment with an Auto Scaling group maintaining a minimum of 4 Amazon EC2 instances. During application updates, the application must maintain 100% capacity (at least 4 healthy instances serving user requests) at all times to prevent performance degradation, without provisioning a completely new duplicate environment. Which Elastic Beanstalk deployment policy should the developer select?",
+    "options": [
+      {
+        "id": "a",
+        "text": "All at once"
+      },
+      {
+        "id": "b",
+        "text": "Rolling"
+      },
+      {
+        "id": "c",
+        "text": "Immutable"
+      },
+      {
+        "id": "d",
+        "text": "Rolling with additional batch"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "The 'Rolling with additional batch' deployment policy in Elastic Beanstalk launches an extra batch of EC2 instances with the new application version before taking any existing instances out of service. This ensures that the environment maintains 100% capacity throughout the deployment process, unlike standard Rolling deployments which reduce capacity by taking batches offline.",
+    "distractorNotes": {
+      "a": "The 'All at once' policy deploys the new version to all instances simultaneously, resulting in application downtime.",
+      "b": "The 'Rolling' policy takes batches of existing instances out of service to deploy the update, temporarily reducing total serving capacity below 100%.",
+      "c": "The 'Immutable' policy deploys a full parallel Auto Scaling group rather than deploying in rolling batches of instances, which incurs higher resource costs and longer deployment cycles."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.rolling-version-deploy.html",
+    "sourceNote": "Rolling deployment policies in AWS Elastic Beanstalk",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-deployment-018",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "deployment",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer has deployed a new major version of an application to a separate, new AWS Elastic Beanstalk environment. The existing production Elastic Beanstalk environment continues to process customer traffic. The developer has tested the new environment and wants to redirect all production traffic from the old environment to the new environment with zero downtime, while maintaining the ability to revert traffic immediately if defects are discovered. How should the developer accomplish this?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Perform an Elastic Beanstalk Swap Environment URLs action between the old environment and the new environment."
+      },
+      {
+        "id": "b",
+        "text": "Update the Amazon Route 53 alias record to point to the new environment load balancer and terminate the old environment."
+      },
+      {
+        "id": "c",
+        "text": "Configure a rolling deployment policy on the original environment and deploy the new source bundle directly over the old instances."
+      },
+      {
+        "id": "d",
+        "text": "Attach the new EC2 instances directly to the original Elastic Beanstalk load balancer and deregister the old instances manually."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "AWS Elastic Beanstalk provides the 'Swap Environment URLs' feature, which swaps the CNAME records of two environments. This redirects DNS routing from the old environment to the new environment without downtime. If an issue occurs, the developer can immediately swap the URLs back to restore traffic to the original environment.",
+    "distractorNotes": {
+      "b": "Terminating the old environment eliminates the ability to instantly roll back if unanticipated issues emerge in the new version.",
+      "c": "Performing a rolling deployment in-place risks configuration drift and does not leverage the clean, pre-tested isolated environment already provisioned.",
+      "d": "Manually attaching instances across Elastic Beanstalk environments is unsupported and causes synchronization conflicts with Beanstalk environment health reporting."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.CNAMESwap.html",
+    "sourceNote": "Blue/Green deployments with CNAME swap in Elastic Beanstalk",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-deployment-019",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "deployment",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer is packaging a Node.js web application for deployment to AWS Elastic Beanstalk. The application requires custom Linux packages to be installed and specific environment configuration files to be written to `/etc/nginx/conf.d/` during instance provisioning. Where should the developer place the configuration files inside the source code bundle to ensure Elastic Beanstalk applies them automatically?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Inside a directory named `.aws/` at the root of the source bundle, using JSON formatted files named `config.json`."
+      },
+      {
+        "id": "b",
+        "text": "Inside a hidden directory named `.ebextensions/` at the root of the source bundle, using YAML or JSON files with a `.config` extension."
+      },
+      {
+        "id": "c",
+        "text": "Inside a directory named `.platform/hooks/` within the application root directory, using executable bash scripts named after deployment events."
+      },
+      {
+        "id": "d",
+        "text": "Inside a directory named `.elasticbeanstalk/` at the root of the source bundle, using a single file named `environment.yaml`."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Elastic Beanstalk configuration files (known as `.ebextensions`) must be placed in a top-level hidden directory named `.ebextensions/` in the application source bundle. These files must have a `.config` file extension and can be formatted in either YAML or JSON to define packages, files, commands, and AWS resource configurations.",
+    "distractorNotes": {
+      "a": "The `.aws/` directory is conventionally used for local AWS CLI credentials, not Elastic Beanstalk deployment configuration.",
+      "c": "While platform hooks can use `.platform/hooks/`, general configuration defining packages, system users, and files requires `.ebextensions/*.config`.",
+      "d": "The `.elasticbeanstalk/` directory is created locally by the EB CLI to store local CLI settings; it is not processed on the EC2 instances for instance configuration."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/ebextensions.html",
+    "sourceNote": "Customizing software on EC2 instances with .ebextensions",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-deployment-020",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "deployment",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer is setting up an AWS Elastic Beanstalk worker tier environment to handle asynchronous background tasks. The worker application needs to run a scheduled batch cleanup job every Sunday at 02:00 UTC. The Elastic Beanstalk worker daemon should deliver an HTTP POST request to the local application endpoint `/cleanup` according to this schedule. Which file must the developer include in the root of the application source bundle?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A file named `worker.json` defining scheduled tasks under the `Environment` key."
+      },
+      {
+        "id": "b",
+        "text": "A file named `appspec.yml` with a recurring scheduled task hook definition."
+      },
+      {
+        "id": "c",
+        "text": "A file named `cron.yaml` defining the job name, schedule, and URL path."
+      },
+      {
+        "id": "d",
+        "text": "A file named `schedule.config` placed inside the `.ebextensions` directory."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "In an AWS Elastic Beanstalk worker tier environment, scheduled background tasks are configured using a file named `cron.yaml` (or `cron.json`) placed at the root of the application source bundle. Elastic Beanstalk uses this file to configure Amazon EventBridge and SQS to automatically post HTTP requests to the worker application's specified URL on the declared cron schedule.",
+    "distractorNotes": {
+      "a": "There is no standard `worker.json` file for scheduling periodic tasks in Elastic Beanstalk.",
+      "b": "The `appspec.yml` file is used by AWS CodeDeploy for instance deployment lifecycle hooks, not for Elastic Beanstalk scheduled worker jobs.",
+      "d": "While `.ebextensions` can configure AWS resources, periodic worker jobs must be defined in `cron.yaml` at the source bundle root."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features-managing-env-tiers.html",
+    "sourceNote": "Periodic tasks in Elastic Beanstalk worker environments",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-deployment-021",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "deployment",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A developer needs to configure an Amazon API Gateway REST API backed by an AWS Lambda function across three environments: `dev`, `test`, and `prod`. The developer wants to use a single API Gateway definition and route incoming requests dynamically to the corresponding Lambda function alias based on the API Gateway deployment stage, without hardcoding function ARNs or creating separate API resources. How should the developer configure the API Gateway integration?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Create three separate API Gateway resource paths and attach an AWS WAF rule that rewrites the request path according to the deployed stage."
+      },
+      {
+        "id": "b",
+        "text": "Use an API Gateway HTTP proxy integration that forwards requests to an Application Load Balancer with path-based routing rules."
+      },
+      {
+        "id": "c",
+        "text": "Define a mapping template in API Gateway that transforms the JSON payload and injects the stage name into the Lambda event context."
+      },
+      {
+        "id": "d",
+        "text": "Define a stage variable on each stage and reference it in the Lambda function ARN integration using `${stageVariables.<variableName>}`."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "API Gateway stage variables act as dynamic key-value pairs associated with individual deployment stages. A developer can define a stage variable (for example, `lambdaAlias`) on each stage and reference it in the Lambda integration ARN as `arn:aws:apigateway:...:function:my-function:${stageVariables.lambdaAlias}/invocations`. When requests arrive at that stage, API Gateway invokes the corresponding Lambda alias.",
+    "distractorNotes": {
+      "a": "AWS WAF inspects and filters web requests; it does not rewrite API Gateway internal resource paths or manage Lambda aliases.",
+      "b": "Using an Application Load Balancer adds unnecessary cost and infrastructure when API Gateway natively supports Lambda stage variable routing.",
+      "c": "Mapping templates modify request payloads before invoking Lambda; they cannot dynamically alter the destination Lambda function ARN or alias."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-set-stage-variables-aws-console.html",
+    "sourceNote": "Setting up stage variables in API Gateway",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-deployment-022",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "deployment",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer is releasing a new version of an Amazon API Gateway REST API in production. To minimize the blast radius of potential software defects, the developer wants to route 10% of production traffic to the new API deployment while 90% remains on the current deployment. The developer also needs to monitor CloudWatch execution metrics and logs separately for the canary deployment before promoting it to receive 100% of traffic. Which API Gateway feature should the developer configure?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Enable a canary on the production stage, specify 10% traffic distribution, and promote the canary after validating the metrics."
+      },
+      {
+        "id": "b",
+        "text": "Create a separate deployment stage named `canary` and configure Amazon Route 53 weighted routing records between the two stage endpoint URLs."
+      },
+      {
+        "id": "c",
+        "text": "Configure an AWS WAF rate-based rule on the production stage to divert 10% of matching client requests to a second stage."
+      },
+      {
+        "id": "d",
+        "text": "Implement an Amazon CloudFront distribution in front of API Gateway with a custom origin request policy that splits traffic."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Amazon API Gateway supports canary releases on REST API deployment stages. Enabling a canary allows developers to specify the percentage of incoming traffic (such as 10%) routed to the updated deployment. API Gateway generates distinct CloudWatch metrics and access logs for canary traffic, allowing developers to monitor stability before promoting the canary to become the base stage.",
+    "distractorNotes": {
+      "b": "Route 53 weighted routing balances traffic across distinct domain names or endpoints, but does not provide API Gateway native canary metrics or one-click stage promotion.",
+      "c": "AWS WAF rate-based rules block or challenge requests exceeding thresholds; they cannot perform percentage-based traffic splitting across API stages.",
+      "d": "While CloudFront can use continuous deployment policies, API Gateway native canary release operates directly at the stage level without requiring CloudFront distribution overhead."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/apigateway/latest/developerguide/canary-release.html",
+    "sourceNote": "Setting up canary releases in API Gateway",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-deployment-023",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "deployment",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A developer uses AWS AppConfig to deploy runtime configuration changes to a fleet of microservices. The organization's safety standards require that configuration deployments must roll out linearly to targets over a 15-minute window. Furthermore, after reaching 100% distribution, AppConfig must wait an additional 10 minutes to monitor Amazon CloudWatch alarms before concluding the deployment and marking it as complete. Which AWS AppConfig deployment strategy configuration meets these criteria?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Configure a Deployment duration of 25 minutes, Growth type of Exponential, and Bake time of 0 minutes."
+      },
+      {
+        "id": "b",
+        "text": "Configure a Deployment duration of 15 minutes, Growth type of Linear, and Bake time of 10 minutes."
+      },
+      {
+        "id": "c",
+        "text": "Configure a Deployment duration of 10 minutes, Growth type of Linear, and Bake time of 15 minutes."
+      },
+      {
+        "id": "d",
+        "text": "Configure a Deployment duration of 15 minutes, Growth type of AllAtOnce, and Bake time of 10 minutes."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "An AWS AppConfig deployment strategy defines: (1) Deployment duration—the total time over which configuration is deployed to all targets (15 minutes); (2) Growth type—the distribution algorithm, where Linear rolls out changes in equal increments over time; and (3) Bake time—the duration AppConfig monitors attached CloudWatch alarms after 100% rollout before considering the deployment successful (10 minutes).",
+    "distractorNotes": {
+      "a": "Setting Bake time to 0 provides no post-rollout monitoring window, and Exponential growth alters the rollout pace exponentially rather than linearly.",
+      "c": "This reverses the required parameters, deploying over 10 minutes instead of the required 15-minute rollout window.",
+      "d": "An AllAtOnce growth type deploys to all targets immediately rather than rolling out gradually over the 15-minute window."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-creating-deployment-strategy.html",
+    "sourceNote": "Creating a deployment strategy in AWS AppConfig",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-deployment-024",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "deployment",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer uses AWS AppConfig to store application feature flags and configuration profiles. To prevent faulty configuration data from causing production application crashes, the developer needs an automated mechanism that verifies configuration syntax and schema structure before any new configuration version can be saved and deployed. Which capability in AWS AppConfig provides this validation?",
+    "options": [
+      {
+        "id": "a",
+        "text": "AWS Systems Manager State Manager associations attached to the target compute instances."
+      },
+      {
+        "id": "b",
+        "text": "AWS Config rules that evaluate resource compliance against configuration management baselines."
+      },
+      {
+        "id": "c",
+        "text": "Validators configured on the AppConfig configuration profile using JSON Schema or AWS Lambda."
+      },
+      {
+        "id": "d",
+        "text": "Amazon CloudWatch syntactic metric filters configured on the AppConfig deployment event log stream."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "AWS AppConfig supports validators configured directly on configuration profiles. Developers can use either a JSON Schema validator (which checks configuration content against a declared schema) or an AWS Lambda function validator (which executes custom code to validate complex business logic). If validation fails, AppConfig prevents the configuration from being deployed.",
+    "distractorNotes": {
+      "a": "SSM State Manager enforces OS-level configuration state on managed nodes, not pre-deployment validation of application configuration data.",
+      "b": "AWS Config evaluates the compliance of deployed AWS cloud resources, not application-level configuration profiles in AppConfig.",
+      "d": "CloudWatch metric filters extract numeric metrics from existing log streams after events occur and cannot intercept or block configuration deployment."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-creating-configuration-and-profile-validators.html",
+    "sourceNote": "Creating configuration validators in AWS AppConfig",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-deployment-025",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "deployment",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A developer is packaging a Python application as an AWS Lambda container image using a custom base Docker image (such as an Alpine Linux image from Docker Hub) rather than an AWS-provided Lambda base image. When testing the image locally and in AWS, the Lambda service returns an error indicating that the container does not implement the Lambda Runtime API. What must the developer include in the Docker container to make the custom base image compatible with AWS Lambda?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Install the AWS CLI inside the container and invoke the `aws lambda execute-handler` command in the Dockerfile ENTRYPOINT."
+      },
+      {
+        "id": "b",
+        "text": "Expose port 8080 using the EXPOSE instruction and configure an HTTP web server daemon inside the container image."
+      },
+      {
+        "id": "c",
+        "text": "Install the AWS X-Ray daemon binary and configure it as the main container process running in the background."
+      },
+      {
+        "id": "d",
+        "text": "Install the AWS Lambda Runtime Interface Client (RIC) and set it as the container ENTRYPOINT with the handler as CMD."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "When building container images for AWS Lambda using base images not provided by AWS, the developer must package the AWS Lambda Runtime Interface Client (RIC). The RIC provides the runtime interface between the Lambda service Runtime API and the application code. In the Dockerfile, the RIC is configured as the ENTRYPOINT, which invokes the function handler specified in CMD.",
+    "distractorNotes": {
+      "a": "The AWS CLI is a command-line tool for AWS service APIs; it does not implement the low-level Lambda Runtime HTTP API interface.",
+      "b": "AWS Lambda communicates with container functions through the Lambda Runtime API rather than incoming HTTP requests to exposed container ports.",
+      "c": "The X-Ray daemon collects tracing segments, but does not provide the Lambda runtime execution engine or handler interface."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/lambda/latest/dg/images-create.html",
+    "sourceNote": "Creating Lambda container images",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-deployment-026",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "deployment",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer has authored an AWS Serverless Application Model (AWS SAM) application and wants to automate the build and deployment process inside an unattended CI/CD pipeline. The pipeline must package local Lambda function artifacts, upload them to Amazon S3, and deploy the resulting CloudFormation stack without prompting for interactive confirmation. Which TWO SAM CLI commands or configurations should the developer use? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Run `sam local start-api` to validate API endpoints before staging."
+      },
+      {
+        "id": "b",
+        "text": "Run `sam package` specifying an Amazon S3 bucket to upload the packaged artifacts."
+      },
+      {
+        "id": "c",
+        "text": "Execute `sam publish` to publish the application to the AWS Serverless Application Repository."
+      },
+      {
+        "id": "d",
+        "text": "Run `sam deploy` specifying the stack name and the `--no-confirm-changeset` flag."
+      },
+      {
+        "id": "e",
+        "text": "Execute `sam validate --lint` with an explicit `--interactive` override flag."
+      }
+    ],
+    "correct": [
+      "b",
+      "d"
+    ],
+    "explanation": "The `sam package` command uploads local application artifacts (such as Lambda deployment packages) to a specified Amazon S3 bucket and generates an updated template file containing S3 object locations. In an unattended CI/CD pipeline, `sam deploy` executes non-interactively when passed parameters such as the stack name, capabilities, and the `--no-confirm-changeset` flag (which prevents the CLI from pausing for manual confirmation before executing the change set).",
+    "distractorNotes": {
+      "a": "The `sam local start-api` command starts a local emulation server for manual testing and is not part of an automated deployment pipeline.",
+      "c": "The `sam publish` command publishes applications to the public or private AWS Serverless Application Repository, not to a specific CloudFormation deployment stack.",
+      "e": "The `sam validate` command checks template syntax against the SAM schema and does not package or deploy artifacts."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-deploy.html",
+    "sourceNote": "SAM CLI sam deploy command reference",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-deployment-027",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "deployment",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A software engineering team uses AWS CodeCommit for version control. The team wants to enforce a rule requiring at least one peer review approval before any pull request can be merged into the `main` branch. In addition, the team needs automated email notifications dispatched to engineers whenever a pull request is created or updated. Which TWO configurations in AWS CodeCommit satisfy these requirements? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Create an approval rule template requiring at least one approval and associate it with the repository."
+      },
+      {
+        "id": "b",
+        "text": "Configure an IAM role trust policy that restricts git merge commands to repository administrators."
+      },
+      {
+        "id": "c",
+        "text": "Create an AWS CodeCommit notification rule for pull request events targeting an Amazon SNS topic."
+      },
+      {
+        "id": "d",
+        "text": "Configure an Amazon SQS dead-letter queue directly on the repository settings in CodeCommit."
+      },
+      {
+        "id": "e",
+        "text": "Deploy an AWS CloudTrail trail to block git pull requests that lack associated commit signatures."
+      }
+    ],
+    "correct": [
+      "a",
+      "c"
+    ],
+    "explanation": "In AWS CodeCommit, teams can enforce review gates by creating an approval rule template that specifies approval pool requirements (such as requiring at least 1 approval) and associating that template with repository branches. To send alerts for pull request activity, developers configure AWS CodeCommit notification rules (or EventBridge rules) that capture pull request events and publish notifications to an Amazon SNS topic.",
+    "distractorNotes": {
+      "b": "IAM policies govern user permissions to push or merge, but IAM cannot count pull request review approvals or enforce dynamic review workflows.",
+      "d": "Amazon SQS dead-letter queues capture failed message deliveries from queues, not CodeCommit pull request events.",
+      "e": "AWS CloudTrail logs management API calls for governance and audit, but does not enforce pull request approval gates or block merges."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/codecommit/latest/userguide/approval-rule-templates.html",
+    "sourceNote": "Managing approval rule templates in AWS CodeCommit",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-deployment-028",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "deployment",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer is optimizing an AWS CodePipeline that uses AWS CodeCommit as its source provider. Currently, the pipeline periodically polls the repository for changes, which introduces latency and increases API request volume. The developer wants to switch to an event-driven architecture so the pipeline starts immediately when commits are pushed to the `main` branch. Which TWO actions should the developer take? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Configure an Amazon CloudWatch metric alarm on repository commit activity to start the pipeline."
+      },
+      {
+        "id": "b",
+        "text": "Set the `PollForSourceChanges` parameter to `false` on the CodeCommit source action in CodePipeline."
+      },
+      {
+        "id": "c",
+        "text": "Create an AWS Lambda function triggered by Amazon S3 event notifications that starts the pipeline."
+      },
+      {
+        "id": "d",
+        "text": "Configure an Amazon Kinesis Data Stream to ingest repository commit events and trigger CodePipeline."
+      },
+      {
+        "id": "e",
+        "text": "Create an Amazon EventBridge rule that detects CodeCommit repository state changes and targets CodePipeline."
+      }
+    ],
+    "correct": [
+      "b",
+      "e"
+    ],
+    "explanation": "AWS best practice for CodePipeline with CodeCommit is to use event-driven execution via Amazon EventBridge rather than periodic polling. The developer sets `PollForSourceChanges` to `false` in the CodeCommit source action configuration and creates an Amazon EventBridge rule with an event pattern matching CodeCommit reference changes (e.g. commits to `refs/heads/main`), setting the target to the AWS CodePipeline pipeline.",
+    "distractorNotes": {
+      "a": "CloudWatch metric alarms detect threshold breaches over time windows and do not provide real-time git commit event routing.",
+      "c": "The source repository is hosted in AWS CodeCommit, not Amazon S3, so S3 event notifications are irrelevant.",
+      "d": "Amazon Kinesis Data Streams is built for high-throughput streaming data ingestion, not discrete git commit event triggering."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-CodeCommit.html",
+    "sourceNote": "CodeCommit source action reference in CodePipeline",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-deployment-029",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "deployment",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer is creating an AWS CloudFormation template that deploys an application across multiple AWS Regions and environments (development and production). The template must meet two specific requirements: it must look up the correct Amazon EC2 AMI ID based on the current region and processor architecture, and it must conditionally provision an Amazon CloudWatch alarm resource only when the template's `EnvironmentType` parameter is set to `production`. Which TWO CloudFormation sections and intrinsic functions should the developer use? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Use the `Metadata` section to evaluate conditional resource creation based on the environment."
+      },
+      {
+        "id": "b",
+        "text": "Use the `Transforms` section to define regional lookup tables for AMI identifiers."
+      },
+      {
+        "id": "c",
+        "text": "Use the `Mappings` section with the `!FindInMap` intrinsic function to match AMI IDs by region and architecture."
+      },
+      {
+        "id": "d",
+        "text": "Use the `Conditions` section with the `!If` intrinsic function to determine whether to create the production alarm."
+      },
+      {
+        "id": "e",
+        "text": "Use the `Rules` section to automatically swap AMI identifiers during CloudFormation stack rollback."
+      }
+    ],
+    "correct": [
+      "c",
+      "d"
+    ],
+    "explanation": "The `Mappings` section in AWS CloudFormation defines static key-value lookup tables (such as mapping Region and architecture to specific AMI IDs), which are queried using the `!FindInMap` intrinsic function. The `Conditions` section evaluates statements (such as `!Equals [!Ref EnvironmentType, 'production']`), and resources reference the condition or use the `!If` intrinsic function to control conditional provisioning.",
+    "distractorNotes": {
+      "a": "The `Metadata` section provides arbitrary structured information or configuration details for tools like cfn-init, but cannot conditionally create resources.",
+      "b": "The `Transforms` section specifies macros for template processing (like AWS SAM or custom macros), not static AMI lookup tables.",
+      "e": "The `Rules` section validates template parameter values before stack creation, rather than managing resource attributes during stack rollbacks."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/mappings-section-structure.html",
+    "sourceNote": "Mappings section structure in AWS CloudFormation",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-deployment-030",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "deployment",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A developer is authoring an `appspec.yml` file for an in-place deployment of an Apache web application to Amazon EC2 instances using AWS CodeDeploy. The deployment process must execute bash scripts to: (1) gracefully shut down the running Apache service before any new application files are copied, (2) install software dependencies and set directory permissions after the new application files have been extracted, and (3) verify that the web service is healthy and responding to HTTP requests after it has started. Which THREE lifecycle event hooks should the developer define in the `hooks` section of `appspec.yml`? (Select THREE.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "`ApplicationStop` to gracefully terminate the existing web service before new files are downloaded."
+      },
+      {
+        "id": "b",
+        "text": "`BeforeInstall` to restart the web server process before file copying begins."
+      },
+      {
+        "id": "c",
+        "text": "`Install` to write custom deployment scripts directly to disk."
+      },
+      {
+        "id": "d",
+        "text": "`AfterInstall` to configure directory permissions and install dependencies after file copying."
+      },
+      {
+        "id": "e",
+        "text": "`ValidateService` to run health checks verifying that the web server responds to requests."
+      },
+      {
+        "id": "f",
+        "text": "`DownloadBundle` to execute custom network download commands on the target instances."
+      }
+    ],
+    "correct": [
+      "a",
+      "d",
+      "e"
+    ],
+    "explanation": "In an AWS CodeDeploy in-place deployment on EC2/on-premises instances: (1) ApplicationStop runs before new files are copied to gracefully stop the existing application; (2) AfterInstall runs after files are copied to the target directory, making it the appropriate place for tasks like setting file permissions and installing dependencies; and (3) ValidateService runs after ApplicationStart to verify that the application has started and is healthy.",
+    "distractorNotes": {
+      "b": "Restarting the web server during `BeforeInstall` makes no sense because new application files have not yet been copied.",
+      "c": "The `Install` lifecycle event is reserved for the CodeDeploy agent to copy files; user scripts cannot be run in `Install`.",
+      "f": "The `DownloadBundle` lifecycle event is reserved for the CodeDeploy agent to download the revision bundle; user scripts cannot be run in `DownloadBundle`."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/codedeploy/latest/userguide/reference-appspec-file-structure-hooks.html",
+    "sourceNote": "AppSpec hooks reference for AWS CodeDeploy",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-deployment-031",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "deployment",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A developer wants to configure automated safe deployments for an AWS::Serverless::Function resource using AWS SAM and AWS CodeDeploy. The deployment requirements state that when a new function code version is published, 10% of traffic should shift to the new version for 5 minutes, followed by 100% traffic cutover if no errors occur. Furthermore, if a specified Amazon CloudWatch alarm monitoring function errors triggers, CodeDeploy must automatically roll back to the previous version. Which TWO configurations must the developer include under the function resource in the AWS SAM template? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Configure an Amazon API Gateway stage canary with a 10% traffic split directly in the AWS SAM template."
+      },
+      {
+        "id": "b",
+        "text": "Configure the `AutoPublishAlias` property on the `AWS::Serverless::Function` resource."
+      },
+      {
+        "id": "c",
+        "text": "Specify the `DeploymentPreference` `Type` as `Linear10PercentEvery10Minutes` without alarm definitions."
+      },
+      {
+        "id": "d",
+        "text": "Configure the `DeploymentPreference` property specifying `Type: Canary10Percent5Minutes` and `Alarms`."
+      },
+      {
+        "id": "e",
+        "text": "Add an `AWS::CodeDeploy::Application` resource and define custom in-place EC2 deployment group settings."
+      }
+    ],
+    "correct": [
+      "b",
+      "d"
+    ],
+    "explanation": "To implement automated traffic shifting for Lambda functions in AWS SAM: (1) `AutoPublishAlias` (e.g. `AutoPublishAlias: live`) must be defined on the AWS::Serverless::Function resource so that SAM automatically creates a new Lambda version and alias on each code update; and (2) `DeploymentPreference` must be defined, specifying `Type: Canary10Percent5Minutes` (which shifts 10% of traffic for 5 minutes before shifting the remaining 90%) and an `Alarms` list containing CloudWatch alarms to trigger automated rollbacks if errors spike.",
+    "distractorNotes": {
+      "a": "API Gateway stage canaries operate at the API layer, but do not configure AWS SAM and CodeDeploy Lambda function version traffic shifting.",
+      "c": "The `Linear10PercentEvery10Minutes` setting shifts 10% every 10 minutes over 100 minutes (not a 5-minute canary), and omitting alarms removes the ability to trigger automated rollbacks.",
+      "e": "AWS SAM automatically generates the required CodeDeploy application and deployment group resources under the hood; declaring explicit EC2 deployment groups is incorrect for serverless Lambda deployments."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/automating-updates-to-serverless-apps.html",
+    "sourceNote": "Automating safe deployments for serverless applications",
+    "sourceCheckedAt": "2026-10-12"
   }
 ]

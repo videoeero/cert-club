@@ -6,7 +6,7 @@
     "type": "single",
     "domain": "development-with-aws-services",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "stem": "A developer is writing code to query an Amazon DynamoDB table that contains millions of records. A single Query request returns a subset of the matching results along with a LastEvaluatedKey attribute in the response. What should the developer do to retrieve the next page of results?",
     "options": [
       {
@@ -38,5 +38,1675 @@
     "sourceUrl": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Query.Pagination.html",
     "sourceNote": "Paginating query results in Amazon DynamoDB",
     "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "aws-dva-c02-development-with-aws-services-002",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "development-with-aws-services",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An application needs to query an existing Amazon DynamoDB table using an alternate sort key attribute. The table was created months ago in production without secondary indexes, and the queries need to return items partitioned by the same partition key attribute as the base table. What should the developer do to support these queries?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Create a Local Secondary Index (LSI) on the existing table using the alternate sort key."
+      },
+      {
+        "id": "b",
+        "text": "Create a Global Secondary Index (GSI) with the base table partition key and alternate sort key."
+      },
+      {
+        "id": "c",
+        "text": "Re-create the production table with an updated primary key schema and migrate the existing data."
+      },
+      {
+        "id": "d",
+        "text": "Enable DynamoDB Streams and configure a filter to route queries by the alternate sort key."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "A Local Secondary Index (LSI) can only be defined when a table is created and cannot be added, modified, or deleted on an existing table. In contrast, a Global Secondary Index (GSI) can be created at any time on an existing table, even when it uses the same partition key as the base table alongside an alternate sort key.",
+    "distractorNotes": {
+      "a": "Local secondary indexes cannot be added to an existing table after table creation time.",
+      "c": "Creating a new table and migrating data introduces operational downtime and overhead when a global secondary index can be added directly to the existing table.",
+      "d": "DynamoDB Streams captures item-level modification events for asynchronous processing and does not serve real-time query requests."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/SecondaryIndexes.html",
+    "sourceNote": "Secondary indexes in Amazon DynamoDB",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-development-with-aws-services-003",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "development-with-aws-services",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An e-commerce service reads order status from an Amazon DynamoDB table. The application requires immediate consistency to ensure the latest status is returned immediately after an update. The average item size is 6 KB. How many Read Capacity Units (RCUs) are consumed when retrieving a single item?",
+    "options": [
+      {
+        "id": "a",
+        "text": "1 RCU for an eventually consistent read request."
+      },
+      {
+        "id": "b",
+        "text": "1 RCU for a strongly consistent read request."
+      },
+      {
+        "id": "c",
+        "text": "2 RCUs for a strongly consistent read request."
+      },
+      {
+        "id": "d",
+        "text": "3 RCUs for a transactional read request."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "A strongly consistent read request consumes 1 Read Capacity Unit (RCU) for each 4 KB chunk of data returned, rounded up. For a 6 KB item, the read operation rounds up to 8 KB, consuming 2 RCUs (8 KB / 4 KB = 2 RCUs). An eventually consistent read for the same item would consume 1 RCU.",
+    "distractorNotes": {
+      "a": "An eventually consistent read would consume 1 RCU, but the requirement specifies immediate consistency, which requires a strongly consistent read.",
+      "b": "One RCU supports strongly consistent reads up to 4 KB, but an item size of 6 KB rounds up to 8 KB, requiring 2 RCUs.",
+      "d": "Transactional reads consume 2 RCUs per 4 KB chunk (4 RCUs for an 8 KB item), but standard strongly consistent reads satisfy the immediate consistency requirement."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadConsistency.html",
+    "sourceNote": "Read consistency in Amazon DynamoDB",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-development-with-aws-services-004",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "development-with-aws-services",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "Multiple application instances concurrently update inventory counts for products stored in an Amazon DynamoDB table. The developer must prevent race conditions and ensure that an update fails if another process has modified the item since it was read. What should the developer implement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Enable pessimistic write locking on the table items by calling the LockItem API prior to executing the update."
+      },
+      {
+        "id": "b",
+        "text": "Wrap the write operation in an Amazon SQS FIFO queue with deduplication IDs to serialize concurrent requests."
+      },
+      {
+        "id": "c",
+        "text": "Perform the write by calling PutItem with the ReturnConsumedCapacity parameter set to TOTAL."
+      },
+      {
+        "id": "d",
+        "text": "Include a version number attribute in the item and use a ConditionExpression in the UpdateItem call."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Optimistic locking in Amazon DynamoDB is implemented by maintaining a version number attribute on items. When updating an item, the application includes a ConditionExpression verifying that the version attribute matches the value read initially. If another process modified the item in the interim, the condition check fails with a ConditionalCheckFailedException.",
+    "distractorNotes": {
+      "a": "Amazon DynamoDB does not provide a LockItem API or native pessimistic table locking mechanisms.",
+      "b": "Buffering writes in a FIFO queue serializes requests across workers but does not provide optimistic concurrency checks for items read across distributed clients.",
+      "c": "The ReturnConsumedCapacity parameter only returns diagnostic telemetry on provisioned throughput consumption and does not enforce concurrency checks."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/WorkingWithItems.html",
+    "sourceNote": "Working with items and conditional updates in DynamoDB",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-development-with-aws-services-005",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "development-with-aws-services",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A banking application requires that a fund transfer between two customer accounts either succeeds completely across both accounts or makes no changes if any condition fails. The accounts are stored in separate items within an Amazon DynamoDB table. Which TWO actions should the developer take to implement this requirement? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Issue two consecutive BatchWriteItem requests to ensure synchronized writes across items."
+      },
+      {
+        "id": "b",
+        "text": "Use the TransactWriteItems API operation to bundle the debit and credit actions atomically."
+      },
+      {
+        "id": "c",
+        "text": "Enable DynamoDB Streams on the table to reverse partial changes asynchronously."
+      },
+      {
+        "id": "d",
+        "text": "Provide a ClientRequestToken parameter to guarantee idempotency if requests are retried."
+      },
+      {
+        "id": "e",
+        "text": "Configure a Global Secondary Index with strong consistency across participating items."
+      }
+    ],
+    "correct": [
+      "b",
+      "d"
+    ],
+    "explanation": "Amazon DynamoDB Transactions provide ACID guarantees across multiple items and tables. The TransactWriteItems API executes an all-or-nothing batch of write operations containing conditional checks. Supplying a ClientRequestToken ensures idempotency, preventing accidental duplicate transactions if network timeouts cause client retries.",
+    "distractorNotes": {
+      "a": "BatchWriteItem does not provide atomicity; if one write fails, other writes in the batch can still succeed, and it does not support conditional checks.",
+      "c": "DynamoDB Streams processes changes asynchronously after they are committed and cannot guarantee synchronous atomic rollback.",
+      "e": "Global secondary indexes do not support strongly consistent reads or transactional guarantees."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/transaction-apis.html",
+    "sourceNote": "Amazon DynamoDB transactions",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-development-with-aws-services-006",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "development-with-aws-services",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer needs to automatically expire and delete session records from an Amazon DynamoDB table after 7 days without incurring additional write capacity unit (WCU) costs. How should the developer configure the table?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Enable Time to Live (TTL) on an attribute storing an expiration timestamp formatted as Unix epoch time in seconds."
+      },
+      {
+        "id": "b",
+        "text": "Enable Time to Live (TTL) on an attribute storing an expiration timestamp formatted as an ISO 8601 string."
+      },
+      {
+        "id": "c",
+        "text": "Deploy a scheduled AWS Lambda function that scans the table and executes BatchWriteItem to remove expired sessions."
+      },
+      {
+        "id": "d",
+        "text": "Configure an Amazon CloudWatch alarm to trigger a Step Functions workflow that deletes sessions older than 7 days."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Amazon DynamoDB Time to Live (TTL) automatically deletes expired items from tables in the background at no additional cost without consuming provisioned write capacity units. The TTL attribute must be stored as a Number data type containing a Unix epoch timestamp in seconds.",
+    "distractorNotes": {
+      "b": "DynamoDB TTL requires the expiration timestamp to be stored as a Number data type in Unix epoch seconds, not as an ISO 8601 string.",
+      "c": "A scheduled Lambda function executing Scan and BatchWriteItem consumes substantial read and write capacity units and adds operational overhead.",
+      "d": "Scheduled Step Functions workflows consume read and write capacity units and require ongoing maintenance compared to native TTL."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/TTL.html",
+    "sourceNote": "Time to Live in Amazon DynamoDB",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-development-with-aws-services-007",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "development-with-aws-services",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A microservice must detect updates to user profiles in Amazon DynamoDB and send an audit record containing both the previous attribute values and the updated attribute values to an external logging system. Which StreamViewType setting must the developer select when enabling DynamoDB Streams?",
+    "options": [
+      {
+        "id": "a",
+        "text": "KEYS_ONLY"
+      },
+      {
+        "id": "b",
+        "text": "NEW_AND_OLD_IMAGES"
+      },
+      {
+        "id": "c",
+        "text": "NEW_IMAGE"
+      },
+      {
+        "id": "d",
+        "text": "OLD_IMAGE"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "The NEW_AND_OLD_IMAGES stream view type writes both the entire item as it appeared before being modified and the entire item as it appears after being modified to the stream record. This allows downstream consumers, such as AWS Lambda, to compare the prior state with the updated state.",
+    "distractorNotes": {
+      "a": "KEYS_ONLY only writes the primary key attributes of the modified item to the stream record.",
+      "c": "NEW_IMAGE only writes the post-modification item representation to the stream record, omitting the previous values.",
+      "d": "OLD_IMAGE only writes the pre-modification item representation to the stream record, omitting the new values."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Streams.html",
+    "sourceNote": "Capturing table activity with DynamoDB Streams",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-development-with-aws-services-008",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "development-with-aws-services",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A read-heavy web application experiences high latency during traffic spikes when querying an Amazon DynamoDB table. The developer must achieve sub-millisecond response times for read operations without rewriting the application's data access logic. Which solution meets these requirements?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Deploy an Amazon ElastiCache for Redis cluster and implement cache-aside logic in the application."
+      },
+      {
+        "id": "b",
+        "text": "Increase the provisioned Read Capacity Units (RCUs) on the base table to absorb peak traffic."
+      },
+      {
+        "id": "c",
+        "text": "Deploy an Amazon DynamoDB Accelerator (DAX) cluster and point the application to the DAX endpoint."
+      },
+      {
+        "id": "d",
+        "text": "Enable global tables with replica regions located closer to the application servers."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Amazon DynamoDB Accelerator (DAX) is a fully managed, in-memory cache for DynamoDB that delivers up to a 10x performance improvement from milliseconds to microseconds. DAX is API-compatible with DynamoDB, meaning developers only need to point their existing DynamoDB client code to the DAX endpoint without restructuring data models or writing cache-aside synchronization code.",
+    "distractorNotes": {
+      "a": "ElastiCache for Redis requires writing and maintaining custom application logic for cache population, cache misses, and cache invalidation.",
+      "b": "Increasing provisioned RCUs scales read throughput but does not reduce single-digit millisecond network and storage latency to sub-millisecond speeds.",
+      "d": "Global tables provide multi-region active-active replication for disaster recovery and geo-locality, but do not provide in-memory microsecond read caching."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DAX.html",
+    "sourceNote": "In-memory acceleration with DynamoDB Accelerator (DAX)",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-development-with-aws-services-009",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "development-with-aws-services",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer is building a search endpoint for a DynamoDB table. The table stores order items partitioned by CustomerId with an OrderDate sort key. The developer notices that applying a FilterExpression on an unindexed attribute does not reduce the read capacity units (RCUs) consumed by the operation. Why does this occur?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Filter expressions are executed before the primary key lookup, forcing a complete index evaluation."
+      },
+      {
+        "id": "b",
+        "text": "Filter expressions consume additional read capacity units to evaluate non-key attributes during processing."
+      },
+      {
+        "id": "c",
+        "text": "Filter expressions require provisioned on-demand bursting capacity before results are returned."
+      },
+      {
+        "id": "d",
+        "text": "Filter expressions are applied only after DynamoDB reads the items matching the key condition."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "In Amazon DynamoDB, a FilterExpression is evaluated after the items are read from the storage partition based on the KeyConditionExpression (or full table scan). Because DynamoDB consumes read capacity based on the total size of all items read from disk before filtering, a FilterExpression discards non-matching items from the response without reducing the consumed Read Capacity Units.",
+    "distractorNotes": {
+      "a": "DynamoDB does not evaluate filter expressions prior to reading items; filtering is performed in memory after the physical storage read.",
+      "b": "Filter expressions do not consume extra capacity units beyond reading the items identified by the key condition, but filtering occurs after reading so it cannot reduce consumed capacity.",
+      "c": "Filter expressions do not trigger on-demand capacity adjustments or require specialized bursting allocations."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-query-scan.html",
+    "sourceNote": "Best practices for querying and scanning data in DynamoDB",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-development-with-aws-services-010",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "development-with-aws-services",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An AWS Lambda function processes incoming events and queries an Amazon RDS database. During traffic spikes, the database experiences connection pool exhaustion because the function establishes a new database connection on every invocation. What should the developer do to optimize database connection management?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Initialize the database connection pool in the global scope outside the function handler method."
+      },
+      {
+        "id": "b",
+        "text": "Increase the function timeout setting to allow stale database connections to terminate cleanly in the pool."
+      },
+      {
+        "id": "c",
+        "text": "Store database credentials and connection string parameters directly in Lambda environment variables."
+      },
+      {
+        "id": "d",
+        "text": "Configure provisioned concurrency to shut down idle execution environments immediately."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "AWS Lambda reuses execution environments across warm invocations. Objects declared and initialized in the global scope outside the handler method (such as database connection pools and SDK clients) remain in memory and are reused across subsequent invocations handled by the same execution container, minimizing connection overhead.",
+    "distractorNotes": {
+      "b": "Increasing function timeout keeps execution environments active longer, exacerbating connection exhaustion rather than mitigating it.",
+      "c": "Storing credentials in environment variables simplifies configuration but does not change how connections are created or pooled across handler executions.",
+      "d": "Provisioned concurrency pre-initializes and retains execution environments to reduce cold start latency, rather than terminating environments."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/lambda/latest/dg/best-practices.html",
+    "sourceNote": "Best practices for working with AWS Lambda functions",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-development-with-aws-services-011",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "development-with-aws-services",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A compute-intensive AWS Lambda function performs image processing tasks. The execution time is currently near the 15-minute maximum limit, and the developer needs to reduce execution duration by increasing CPU performance. How should the developer allocate more CPU power to the function?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Adjust the dedicated vCPU count parameter in the function configuration console."
+      },
+      {
+        "id": "b",
+        "text": "Increase the memory allocated to the function configuration."
+      },
+      {
+        "id": "c",
+        "text": "Enable multi-threading in the AWS Lambda runtime settings."
+      },
+      {
+        "id": "d",
+        "text": "Configure provisioned concurrency to allocate multiple execution threads."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "AWS Lambda allocates CPU power linearly in proportion to the amount of memory configured for the function. Adding memory increases the CPU share allocated to the execution environment. At 1,769 MB of memory, a function is allocated the equivalent of one full vCPU.",
+    "distractorNotes": {
+      "a": "Lambda does not offer an independent vCPU setting; CPU power is tied directly to the configured memory allocation.",
+      "c": "There is no runtime setting in Lambda to enable multi-threading; runtime threads depend on underlying hardware cores determined by memory size.",
+      "d": "Provisioned concurrency maintains initialized execution environments to prevent cold starts, but does not alter the CPU-to-memory ratio."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/lambda/latest/dg/configuration-function-common.html",
+    "sourceNote": "Configuring AWS Lambda function memory and compute resources",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-development-with-aws-services-012",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "development-with-aws-services",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A latency-sensitive API backed by AWS Lambda experiences unacceptable cold start delays during intermittent morning bursts. The developer must ensure that initialization latency is eliminated so that requests begin executing immediately without cold starts. Which configuration should the developer apply?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Configure reserved concurrency on the function to throttle unneeded requests."
+      },
+      {
+        "id": "b",
+        "text": "Set up an Amazon EventBridge rule that invokes the function every 5 minutes."
+      },
+      {
+        "id": "c",
+        "text": "Configure provisioned concurrency on a published version or alias of the function."
+      },
+      {
+        "id": "d",
+        "text": "Increase the function ephemeral storage (/tmp) limit to pre-cache initialization assets."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Provisioned concurrency initializes a requested number of execution environments and keeps them warm and ready to respond immediately to incoming requests. This eliminates cold start latency for latency-sensitive applications. Provisioned concurrency can be configured on published versions or aliases of a Lambda function.",
+    "distractorNotes": {
+      "a": "Reserved concurrency caps the maximum number of concurrent executions allocated to a function, preventing it from overwhelming downstream resources, but does not keep environments pre-warmed.",
+      "b": "A recurring scheduled invocation pings only a single execution environment and cannot reliably prevent cold starts across concurrent bursts.",
+      "d": "Increasing ephemeral storage expands disk space in /tmp but does not affect container initialization or eliminate cold start latency."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/lambda/latest/dg/configuration-concurrency.html",
+    "sourceNote": "Managing AWS Lambda reserved and provisioned concurrency",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-development-with-aws-services-013",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "development-with-aws-services",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An AWS Lambda function is configured to connect to an Amazon RDS database inside a private subnet of an Amazon VPC. The function also needs to call an external third-party payment gateway API over the public internet. Which TWO networking components are required to allow the function to reach the external API? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "A NAT gateway deployed in a public subnet of the VPC."
+      },
+      {
+        "id": "b",
+        "text": "An internet gateway attached directly to the private subnet where the function operates."
+      },
+      {
+        "id": "c",
+        "text": "A route table associated with the Lambda private subnets routing 0.0.0.0/0 to the NAT gateway."
+      },
+      {
+        "id": "d",
+        "text": "A public IP address assigned directly to the Lambda Elastic Network Interface (ENI)."
+      },
+      {
+        "id": "e",
+        "text": "A VPC endpoint for the third-party payment gateway domain."
+      }
+    ],
+    "correct": [
+      "a",
+      "c"
+    ],
+    "explanation": "When an AWS Lambda function is configured for VPC access, it uses an Elastic Network Interface (ENI) located within the designated private subnets. Subnets hosting Lambda ENIs cannot route outbound internet traffic through an Internet Gateway even if assigned public IPs. Instead, outbound traffic must traverse a NAT gateway deployed in a public subnet, configured via route tables pointing 0.0.0.0/0 to the NAT gateway.",
+    "distractorNotes": {
+      "b": "Internet gateways cannot be attached directly to individual subnets; they attach to the VPC, and subnets routing directly to them cannot serve Lambda functions requiring internet access.",
+      "d": "AWS Lambda does not assign public IP addresses to its managed ENIs; outbound internet traffic must use network address translation.",
+      "e": "VPC endpoints connect to supported AWS services and AWS PrivateLink partner services, not arbitrary third-party public endpoints."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/lambda/latest/dg/foundation-networking.html",
+    "sourceNote": "Configuring VPC networking for AWS Lambda functions",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-development-with-aws-services-014",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "development-with-aws-services",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A development team maintains twenty AWS Lambda functions written in Python. Each function deployment package currently bundles the same large data processing library, resulting in slow deployment uploads and redundant storage. How should the developer share this library across all functions efficiently?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Store the library files in an Amazon S3 bucket and download them to /tmp on every invocation."
+      },
+      {
+        "id": "b",
+        "text": "Upload the library to AWS CodeArtifact and install it at runtime using pip."
+      },
+      {
+        "id": "c",
+        "text": "Package the library inside a container image and deploy each function as an EC2 instance."
+      },
+      {
+        "id": "d",
+        "text": "Create a Lambda layer containing the library and attach it to each Lambda function."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "AWS Lambda layers allow developers to package common libraries, custom runtimes, or other dependencies into a shared ZIP archive. When a function executes, the contents of the layer are extracted to the /opt directory, making dependencies accessible to the function code while reducing deployment package sizes and build times.",
+    "distractorNotes": {
+      "a": "Downloading libraries from S3 into /tmp on every invocation increases function cold start times and incurs unnecessary S3 GET request costs.",
+      "b": "Installing dependencies at runtime via pip on every cold start causes severe execution latency and can fail if outbound network connectivity is interrupted.",
+      "c": "Migrating serverless functions to Amazon EC2 instances adds infrastructure management, scaling, and maintenance overhead contrary to serverless architecture."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/lambda/latest/dg/chapter-layers.html",
+    "sourceNote": "Working with AWS Lambda layers",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-development-with-aws-services-015",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "development-with-aws-services",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An application invokes an AWS Lambda function asynchronously using Amazon EventBridge. The developer needs to route invocation records to an Amazon SQS queue when the function succeeds, and to an Amazon SNS topic when the function exhausts its retry attempts, without writing custom routing logic in the function handler. Which feature provides this functionality?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Lambda destinations configured for On-success and On-failure conditions."
+      },
+      {
+        "id": "b",
+        "text": "A Dead-Letter Queue (DLQ) configured on the Lambda function execution role."
+      },
+      {
+        "id": "c",
+        "text": "CloudWatch Logs subscription filters streaming log records to Amazon Kinesis."
+      },
+      {
+        "id": "d",
+        "text": "AWS Step Functions state machine with a Parallel task branching on status."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "AWS Lambda destinations allow developers to route execution results for asynchronous invocations to downstream services (such as Amazon SQS, Amazon SNS, Amazon EventBridge, or another Lambda function) based on whether the invocation succeeded or failed, without adding custom SDK routing code inside the function.",
+    "distractorNotes": {
+      "b": "A Dead-Letter Queue only supports failure routing (not success routing) and targets only SQS or SNS, lacking the richer metadata provided by destinations.",
+      "c": "CloudWatch Logs subscription filters stream raw log events, requiring custom parsing logic to detect invocation status rather than structured execution records.",
+      "d": "Building a Step Functions workflow adds orchestration complexity when native Lambda asynchronous destinations fulfill the requirement directly."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/lambda/latest/dg/invocation-async-destinations.html",
+    "sourceNote": "Configuring destinations for asynchronous invocation in AWS Lambda",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-development-with-aws-services-016",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "development-with-aws-services",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An AWS Lambda function processes records from an Amazon Kinesis Data Stream through an event source mapping. A single malformed record in a batch causes the function to throw an unhandled exception, causing the entire batch to retry repeatedly and blocking shard processing. What configuration should the developer enable to isolate the poison pill record while maintaining stream throughput?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Increase the batch size and batch window settings on the event source mapping."
+      },
+      {
+        "id": "b",
+        "text": "Enable the BisectBatchOnFunctionError option on the event source mapping."
+      },
+      {
+        "id": "c",
+        "text": "Set the function reserved concurrency to zero to reset shard iterators across shards."
+      },
+      {
+        "id": "d",
+        "text": "Set MaximumRetryAttempts to 0 on the event source mapping to skip retry processing."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "When BisectBatchOnFunctionError is set to true on an event source mapping for Amazon Kinesis or DynamoDB Streams, Lambda breaks the impacted batch into two halves and retries each half separately when the function returns an error. This process recurses until the specific malformed record is isolated and sent to an on-failure destination or discarded upon reaching maximum retry limits.",
+    "distractorNotes": {
+      "a": "Increasing the batch size processes more records per invocation, which exacerbates processing bottlenecks when malformed records occur.",
+      "c": "Setting reserved concurrency to zero throttles all invocations of the function, halting stream processing across all shards.",
+      "d": "Setting MaximumRetryAttempts to 0 drops the entire batch upon the first failure rather than isolating the individual malformed record, causing data loss for valid records in the batch."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventsourcemapping.html",
+    "sourceNote": "Error handling for Lambda event source mappings",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-development-with-aws-services-017",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "development-with-aws-services",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An asynchronous Lambda function processes orders uploaded to Amazon S3. If the function experiences runtime errors, Lambda retries the invocation twice by default. The developer needs to retain failed invocation payloads for subsequent inspection after retries are exhausted. Which solution requires the least operational effort?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Write custom catch blocks in the function handler that write unhandled error payloads directly to DynamoDB."
+      },
+      {
+        "id": "b",
+        "text": "Create an Amazon CloudWatch Logs subscription filter to extract failed payloads and write them to Amazon S3."
+      },
+      {
+        "id": "c",
+        "text": "Configure an Amazon SQS dead-letter queue (DLQ) or an On-failure destination on the Lambda function."
+      },
+      {
+        "id": "d",
+        "text": "Create an Amazon EventBridge rule that monitors CloudWatch invocation error metrics exceeding two retries."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "For asynchronous invocations, Lambda automatically retries failed executions up to two times by default. If all retries fail, Lambda can route the event payload and failure metadata directly to a configured Dead-Letter Queue (DLQ) or an On-failure Destination (Amazon SQS or Amazon SNS) without requiring custom exception-handling code.",
+    "distractorNotes": {
+      "a": "Custom catch blocks inside the handler cannot intercept invocation failures caused by runtime crashes, container timeouts, or out-of-memory errors.",
+      "b": "CloudWatch Logs subscription filters capture stdout and stderr log lines rather than the original asynchronous invocation event payload, and require configuring extra forwarding resources.",
+      "d": "CloudWatch metrics trigger alarms based on aggregated counts and do not contain the raw invocation payload or event details."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/lambda/latest/dg/invocation-async.html",
+    "sourceNote": "Asynchronous invocation in AWS Lambda",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-development-with-aws-services-018",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "development-with-aws-services",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An AWS Lambda function requires a sensitive database password stored in an environment variable. Security policy requires that the password be encrypted at rest using a customer managed KMS key, and decrypted only within the function handler code. How should the developer configure this?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Configure standard environment variable encryption using a customer managed KMS key without enabling encryption helpers."
+      },
+      {
+        "id": "b",
+        "text": "Store the encrypted password in an Amazon S3 bucket encrypted with SSE-KMS and retrieve the file to /tmp at runtime."
+      },
+      {
+        "id": "c",
+        "text": "Use the default AWS managed key for Lambda environment variables without configuring client-side decryption."
+      },
+      {
+        "id": "d",
+        "text": "Use Lambda encryption helpers to encrypt the variable with a customer KMS key and decrypt it using the AWS KMS SDK."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "While Lambda encrypts environment variables at rest by default using an AWS managed KMS key, protecting sensitive values with client-side encryption helpers allows the developer to encrypt values with a customer managed KMS key before storage. Within the function code, the developer uses the AWS KMS Decrypt API to decrypt the value at runtime.",
+    "distractorNotes": {
+      "a": "Standard encryption at rest with a customer managed KMS key automatically decrypts environment variables when the execution container initializes, exposing the secret in plaintext in the runtime environment rather than requiring in-code decryption.",
+      "b": "Storing credentials in an S3 bucket with SSE-KMS does not use environment variables as specified by the application architecture and introduces S3 GET latency during cold starts.",
+      "c": "The default AWS managed key decrypts environment variables automatically in the execution environment, failing the requirement for a customer managed key and in-code decryption control."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html",
+    "sourceNote": "Securing AWS Lambda environment variables with encryption",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-development-with-aws-services-019",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "development-with-aws-services",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A backend consumer application polls an Amazon SQS standard queue for document conversion tasks. The queue visibility timeout is configured to 60 seconds. A worker process encounters a complex document that will require approximately 150 seconds to complete. How can the worker prevent other consumers from receiving and processing this message while work continues?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Call the ChangeMessageVisibility API to extend the visibility timeout before the initial 60 seconds expire."
+      },
+      {
+        "id": "b",
+        "text": "Delete the message immediately upon receipt and re-enqueue a fresh copy into the queue if processing fails."
+      },
+      {
+        "id": "c",
+        "text": "Set the ReceiveMessageWaitTimeSeconds parameter to 150 seconds on the queue."
+      },
+      {
+        "id": "d",
+        "text": "Increase the default queue visibility timeout attribute to 12 hours by calling the SetQueueAttributes API."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "The visibility timeout prevents other consumers from receiving a message while it is being processed. If processing takes longer than the configured visibility timeout, the consumer can call the ChangeMessageVisibility action to extend the visibility timeout period, preventing the message from reappearing on the queue.",
+    "distractorNotes": {
+      "b": "Deleting the message immediately means work cannot be recovered if the worker crashes before completing processing.",
+      "c": "ReceiveMessageWaitTimeSeconds configures long polling duration when checking for new messages, not processing visibility timeout.",
+      "d": "Changing the queue-level visibility timeout affects all messages and increases message recovery latency across the entire system."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-visibility-timeout.html",
+    "sourceNote": "Amazon SQS visibility timeout",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-development-with-aws-services-020",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "development-with-aws-services",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A distributed application polls an Amazon SQS queue for incoming tasks. When the queue is empty, the consumer application issues frequent ReceiveMessage calls, resulting in a large number of empty responses and elevated API costs. What change should the developer make to eliminate empty responses and reduce cost?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Enable message deduplication on the Amazon SQS queue to consolidate repeated empty polls."
+      },
+      {
+        "id": "b",
+        "text": "Enable long polling by setting ReceiveMessageWaitTimeSeconds to a value greater than zero."
+      },
+      {
+        "id": "c",
+        "text": "Increase the queue VisibilityTimeout parameter to 300 seconds to delay subsequent polling."
+      },
+      {
+        "id": "d",
+        "text": "Set the MaxNumberOfMessages parameter to 10 on ReceiveMessage calls to wait for a full batch."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Long polling reduces the cost of using Amazon SQS by eliminating empty responses. When ReceiveMessageWaitTimeSeconds is set to a value greater than zero (up to 20 seconds), Amazon SQS waits until a message is available before sending a response, drastically reducing empty API calls and request costs.",
+    "distractorNotes": {
+      "a": "Message deduplication prevents duplicate messages in FIFO queues but has no effect on polling behavior or empty response counts.",
+      "c": "Visibility timeout governs how long a message remains hidden after receipt, having no bearing on polling frequency for empty queues.",
+      "d": "MaxNumberOfMessages controls the maximum number of messages to return per call, but does not cause SQS to wait for messages to accumulate; calls still return immediately with empty responses when the queue is empty."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-short-and-long-polling.html",
+    "sourceNote": "Amazon SQS short and long polling",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-development-with-aws-services-021",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "development-with-aws-services",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An ordering service publishes transaction messages to an Amazon SQS FIFO queue. Due to intermittent network timeouts, the publisher occasionally retries sending a message that was already received by the queue. How does Amazon SQS ensure that duplicate messages are not created within the deduplication interval?",
+    "options": [
+      {
+        "id": "a",
+        "text": "By rejecting all incoming messages that share identical MessageGroupId attributes within a 5-minute window."
+      },
+      {
+        "id": "b",
+        "text": "By tracking the ReceiptHandle assigned to sent messages and rejecting new messages matching an active handle."
+      },
+      {
+        "id": "c",
+        "text": "By using the MessageDeduplicationId attribute or content-based deduplication with a SHA-256 hash."
+      },
+      {
+        "id": "d",
+        "text": "By requiring the producer to specify unique SequenceNumber values in SendMessage to reject duplicate submissions."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Amazon SQS FIFO queues prevent duplicate messages within a 5-minute deduplication interval using the MessageDeduplicationId parameter. If content-based deduplication is enabled, SQS automatically computes a SHA-256 hash of the message body as the deduplication token.",
+    "distractorNotes": {
+      "a": "MessageGroupId dictates message ordering and grouping, not deduplication; multiple messages typically share the same group ID.",
+      "b": "ReceiptHandle is generated by SQS when a consumer receives a message, not when a producer sends a message, so it cannot be used for producer deduplication.",
+      "d": "SequenceNumber is a large, non-consecutive number assigned by SQS to each message within a message group, not a parameter supplied by publishers to prevent duplicate insertions."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/using-messagededuplicationid-property.html",
+    "sourceNote": "Using the Amazon SQS message deduplication ID",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-development-with-aws-services-022",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "development-with-aws-services",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A banking platform uses an Amazon SQS FIFO queue to process financial transactions. The system requires that transactions for any single user account are processed strictly in chronological order, while transactions for different user accounts can be processed concurrently by multiple consumer threads. Which TWO steps should the developer implement? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Assign a unique random UUID to the MessageGroupId attribute for every message."
+      },
+      {
+        "id": "b",
+        "text": "Set the MessageGroupId attribute of each message to the customer's account identifier."
+      },
+      {
+        "id": "c",
+        "text": "Set the ReceiveMessageWaitTimeSeconds parameter to 0 to bypass message grouping."
+      },
+      {
+        "id": "d",
+        "text": "Configure the queue visibility timeout to match the total processing time of the entire queue."
+      },
+      {
+        "id": "e",
+        "text": "Deploy multiple concurrent consumer threads that poll the FIFO queue simultaneously."
+      }
+    ],
+    "correct": [
+      "b",
+      "e"
+    ],
+    "explanation": "In SQS FIFO queues, the MessageGroupId tag defines an ordered group of messages. Messages sharing the same MessageGroupId are delivered and processed strictly in FIFO order. Different message groups can be delivered to separate consumer threads concurrently, allowing the application to scale processing while maintaining per-account ordering.",
+    "distractorNotes": {
+      "a": "Setting MessageGroupId to a random UUID destroys account-level ordering, as each message would form an independent group.",
+      "c": "Setting ReceiveMessageWaitTimeSeconds to 0 reverts to short polling and does not alter message group ordering semantics.",
+      "d": "Visibility timeout is per-message, not queue-wide, and setting it to match total queue processing time would block message redelivery unnecessarily."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/using-messagegroupid-property.html",
+    "sourceNote": "Using the Amazon SQS message group ID",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-development-with-aws-services-023",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "development-with-aws-services",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An Amazon SQS consumer encounters a poison-pill message that causes an unhandled exception every time it is processed. The message keeps returning to the queue after the visibility timeout expires, consuming processing cycles. How should the developer configure the queue to isolate this message after five failed attempts?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Configure a message timer of five minutes on the source queue to throttle incoming messages."
+      },
+      {
+        "id": "b",
+        "text": "Set the DelaySeconds attribute to 5 on the consumer receive call."
+      },
+      {
+        "id": "c",
+        "text": "Create a CloudWatch event rule that intercepts and deletes the poison message when retry count equals 5."
+      },
+      {
+        "id": "d",
+        "text": "Configure a redrive policy with a dead-letter queue (DLQ) and set maxReceiveCount to 5."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "An Amazon SQS redrive policy specifies the dead-letter queue (DLQ) and the maxReceiveCount threshold. When a message has been received from the source queue maxReceiveCount times without being deleted, SQS automatically moves the message to the DLQ, isolating the poison pill from normal processing.",
+    "distractorNotes": {
+      "a": "Message timers delay the initial delivery of a new message and do not handle failed message reprocessing thresholds.",
+      "b": "The DelaySeconds attribute postpones message delivery when sent and does not monitor consumer failure counts.",
+      "c": "CloudWatch cannot directly inspect individual message receive counts or delete specific messages from queues."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html",
+    "sourceNote": "Amazon SQS dead-letter queues",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-development-with-aws-services-024",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "development-with-aws-services",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An application publishes order events to an Amazon SNS topic. Multiple microservices subscribe to the topic, but the fraud detection service only needs to receive events where the order amount exceeds 1,000 USD or the order type is flagged as international. How should the developer implement this without modifying the subscriber code?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Attach a subscription filter policy to the fraud subscription with matching criteria for message attributes."
+      },
+      {
+        "id": "b",
+        "text": "Create separate Amazon SNS topics for each order category and have the publisher application evaluate routing criteria."
+      },
+      {
+        "id": "c",
+        "text": "Configure an Amazon SQS FIFO queue with message deduplication IDs matching order monetary amounts."
+      },
+      {
+        "id": "d",
+        "text": "Deploy an intermediate Lambda function to inspect message body payloads and forward matching records."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Amazon SNS subscription filter policies allow subscribers to filter messages based on message attributes or message body properties. When an event is published, SNS evaluates the filter policy and delivers the message to the subscription only if the attributes match the criteria, offloading filtering from subscriber applications.",
+    "distractorNotes": {
+      "b": "Creating multiple topics requires modifying the publisher logic to route events, increasing architectural coupling and complexity.",
+      "c": "SQS deduplication IDs eliminate duplicate messages, rather than evaluating attribute-based routing logic.",
+      "d": "Deploying a Lambda function adds execution cost, latency, and management overhead when native SNS subscription filter policies provide built-in filtering."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/sns/latest/dg/sns-subscription-filter-policies.html",
+    "sourceNote": "Amazon SNS subscription filter policies",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-development-with-aws-services-025",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "development-with-aws-services",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An image processing platform receives uploaded media notifications and must execute three distinct tasks in parallel: thumbnail generation, optical character recognition (OCR), and metadata indexing. Each task runs independently and at different speeds. Which architecture supports this requirement with loose coupling?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Publish notifications to a single SQS queue and configure consumers to read without deleting processed messages."
+      },
+      {
+        "id": "b",
+        "text": "Publish notifications to an SNS topic that fans out to three separate SQS queues subscribed to the topic."
+      },
+      {
+        "id": "c",
+        "text": "Write notifications directly to an Amazon Kinesis Data Stream with three partition keys."
+      },
+      {
+        "id": "d",
+        "text": "Trigger three synchronous Lambda functions sequentially from an API Gateway REST API."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "The SNS fanout pattern publishes a single message to an Amazon SNS topic, which then replicates and pushes the message to multiple Amazon SQS queues subscribed to that topic. Each consumer service reads asynchronously from its own queue at its own processing rate without impacting the others.",
+    "distractorNotes": {
+      "a": "Reading messages from an SQS queue without deleting them results in message duplication, race conditions, and visibility timeout re-deliveries across consumers.",
+      "c": "Partition keys in Kinesis determine shard distribution, not distinct subscriber queues for independent consumer workloads.",
+      "d": "Sequential synchronous Lambda invocations couple task execution, accumulate latency, and fail entirely if an early invocation throws an error."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/sns/latest/dg/sns-common-scenarios.html",
+    "sourceNote": "Common Amazon SNS scenarios and fanout architectures",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-development-with-aws-services-026",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "development-with-aws-services",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An application needs to delay the availability of messages in an Amazon SQS queue. Some messages must be delayed for a standard default period across the entire queue, while specific individual messages require a custom delay interval. Which TWO configurations accomplish this? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Set the DelaySeconds attribute on the queue to establish a default delay for all incoming messages."
+      },
+      {
+        "id": "b",
+        "text": "Configure the ReceiveMessageWaitTimeSeconds attribute to postpone message processing."
+      },
+      {
+        "id": "c",
+        "text": "Update the VisibilityTimeout parameter to prevent messages from being delivered immediately upon creation."
+      },
+      {
+        "id": "d",
+        "text": "Include the DelaySeconds parameter when calling the SendMessage API for individual messages."
+      },
+      {
+        "id": "e",
+        "text": "Configure a dead-letter queue with a redrive allow policy to pause delivery."
+      }
+    ],
+    "correct": [
+      "a",
+      "d"
+    ],
+    "explanation": "Amazon SQS supports delay queues via the DelaySeconds queue attribute, which delays the initial visibility of any message added to the queue (between 0 seconds and 15 minutes). For individual messages requiring a specific delay, the producer can specify the DelaySeconds parameter in the SendMessage API call, which overrides any queue-level DelaySeconds setting for standard queues.",
+    "distractorNotes": {
+      "b": "ReceiveMessageWaitTimeSeconds sets the long polling wait time for consumers retrieving messages, not an initial delivery delay.",
+      "c": "Visibility timeout governs the period a message remains hidden after being received by a consumer, not before its first delivery.",
+      "e": "Dead-letter queues collect messages that have failed processing multiple times, not for delaying initial delivery."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-delay-queues.html",
+    "sourceNote": "Amazon SQS delay queues and message timers",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-development-with-aws-services-027",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "development-with-aws-services",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A central security account needs to ingest custom application events emitted by applications running in multiple separate AWS accounts. How should the developer configure Amazon EventBridge to enable cross-account event routing into the central account?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Configure VPC peering between each source account and the central account."
+      },
+      {
+        "id": "b",
+        "text": "Create an Amazon SQS FIFO queue in each source account and configure cross-region replication to the central account."
+      },
+      {
+        "id": "c",
+        "text": "Create a custom event bus in the central account with a resource policy granting PutEvents to the source accounts."
+      },
+      {
+        "id": "d",
+        "text": "Deploy an Amazon API Gateway REST API with AWS IAM authorization and custom authorizers in every source account."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Amazon EventBridge custom event buses can receive events from other AWS accounts. To enable cross-account publishing, the central account creates an event bus and attaches a resource-based policy granting the source accounts permission to call PutEvents. The source accounts then configure EventBridge rules that target the central account's event bus ARN.",
+    "distractorNotes": {
+      "a": "EventBridge is a public regional AWS service and does not require VPC peering connections to route events across AWS accounts.",
+      "b": "Amazon SQS queues do not offer cross-region or cross-account replication features.",
+      "d": "Deploying API Gateway REST APIs across accounts introduces unneeded operational overhead when EventBridge natively supports cross-account event routing."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-event-bus.html",
+    "sourceNote": "Amazon EventBridge event buses and permissions",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-development-with-aws-services-028",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "development-with-aws-services",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer needs to create an Amazon EventBridge rule that triggers an AWS Lambda function only when an Amazon EC2 instance transitions to the running state. Which event pattern JSON structure should the developer define for the rule?",
+    "options": [
+      {
+        "id": "a",
+        "text": "{\n  \"source\": [\"aws.lambda\"],\n  \"detail-type\": [\"EC2 Instance State-change Notification\"],\n  \"detail\": { \"state\": [\"running\"] }\n}"
+      },
+      {
+        "id": "b",
+        "text": "{\n  \"source\": [\"aws.ec2\"],\n  \"detail\": { \"action\": [\"StartInstances\"] }\n}"
+      },
+      {
+        "id": "c",
+        "text": "{\n  \"source\": [\"aws.ec2\"],\n  \"detail-type\": [\"AWS API Call via CloudTrail\"],\n  \"detail\": { \"eventName\": [\"RunInstances\"] }\n}"
+      },
+      {
+        "id": "d",
+        "text": "{\n  \"source\": [\"aws.ec2\"],\n  \"detail-type\": [\"EC2 Instance State-change Notification\"],\n  \"detail\": { \"state\": [\"running\"] }\n}"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "EventBridge matches incoming events using JSON event patterns. The EC2 state change event emitted by AWS has source 'aws.ec2' and detail-type 'EC2 Instance State-change Notification'. The detail object contains the 'state' field set to ['running'].",
+    "distractorNotes": {
+      "a": "The source for EC2 instance state changes is 'aws.ec2', not 'aws.lambda'.",
+      "b": "The event emitted natively by EC2 is a state-change notification, not an action property.",
+      "c": "Matching CloudTrail RunInstances detects API calls rather than the actual transition of an instance to the running state, which can take several seconds to complete."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-event-patterns.html",
+    "sourceNote": "Amazon EventBridge event patterns",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-development-with-aws-services-029",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "development-with-aws-services",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A team is building an event-driven application where multiple teams publish events to Amazon EventBridge. Developers spend substantial time manually writing and validating data transfer objects (DTOs) for incoming event structures. What EventBridge feature generates typed code bindings directly from event schemas?",
+    "options": [
+      {
+        "id": "a",
+        "text": "EventBridge Schema Registry and schema discovery."
+      },
+      {
+        "id": "b",
+        "text": "EventBridge API Destinations with connection schemas."
+      },
+      {
+        "id": "c",
+        "text": "EventBridge Pipes with JSON Schema payload validation."
+      },
+      {
+        "id": "d",
+        "text": "EventBridge archive and replay with state verification."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Amazon EventBridge schema registry stores event schemas and allows developers to download code bindings for programming languages such as Java, Python, and TypeScript. Schema discovery can automatically detect and record event schemas from events sent to an event bus, enabling developers to generate strongly typed classes directly.",
+    "distractorNotes": {
+      "b": "EventBridge API Destinations sends events to external HTTP endpoints with authentication management, but does not manage event schemas or generate code bindings.",
+      "c": "EventBridge Pipes provides point-to-point event routing with optional filtering and enrichment, but does not provide schema repositories or generate client code bindings.",
+      "d": "EventBridge archive and replay captures and replays historical events on an event bus, but does not parse schemas or generate typed language classes."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-schema.html",
+    "sourceNote": "Amazon EventBridge schema registry",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-development-with-aws-services-030",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "development-with-aws-services",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An application captures change records from an Amazon DynamoDB stream and needs to filter specific record types, enrich the payload using an AWS Lambda function, and send the result to an Amazon Step Functions state machine. The developer wants to avoid writing and maintaining boilerplate polling and error-handling code. Which service feature should the developer use?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Amazon SNS topic with subscription filter policies."
+      },
+      {
+        "id": "b",
+        "text": "Amazon EventBridge Pipes with filtering and enrichment."
+      },
+      {
+        "id": "c",
+        "text": "Amazon Kinesis Data Firehose delivery stream with an Amazon S3 target."
+      },
+      {
+        "id": "d",
+        "text": "AWS Lambda event source mapping with On-success destinations."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Amazon EventBridge Pipes provides point-to-point integrations between event producers and consumers. It manages polling from sources like DynamoDB Streams or Amazon Kinesis, provides built-in event filtering, supports enrichment steps (such as Lambda or API Destinations), and routes events directly to targets like Step Functions without requiring custom polling glue code.",
+    "distractorNotes": {
+      "a": "Amazon SNS does not poll DynamoDB Streams directly as an event source.",
+      "c": "Kinesis Data Firehose loads streaming data into data lakes and data stores like S3 or Redshift, rather than orchestrating Step Functions workflows.",
+      "d": "Configuring a Lambda event source mapping requires writing and maintaining custom code for stream polling, record filtering, and downstream state machine execution, whereas EventBridge Pipes handles filtering, enrichment, and destination routing natively without glue code."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-pipes.html",
+    "sourceNote": "Amazon EventBridge Pipes",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-development-with-aws-services-031",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "development-with-aws-services",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer is designing a public-facing API on Amazon API Gateway. The application requires API key validation, client usage plans with request throttling per subscriber, and request payload transformations using Velocity Template Language (VTL). Which API Gateway type should the developer choose?",
+    "options": [
+      {
+        "id": "a",
+        "text": "HTTP API"
+      },
+      {
+        "id": "b",
+        "text": "WebSocket API"
+      },
+      {
+        "id": "c",
+        "text": "REST API"
+      },
+      {
+        "id": "d",
+        "text": "REST API (Private)"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Amazon API Gateway REST APIs support advanced enterprise features including API keys, usage plans for tiered client throttling, request and response mapping templates using Velocity Template Language (VTL), and request validation. HTTP APIs are faster and lower cost, but do not support usage plans, API keys, or VTL mapping templates.",
+    "distractorNotes": {
+      "a": "HTTP APIs do not support usage plans, API keys, or VTL request/response mapping templates.",
+      "b": "WebSocket APIs maintain persistent, bidirectional connections and are not designed for standard REST request/response patterns with usage plans.",
+      "d": "Private REST APIs are accessible only from within a Virtual Private Cloud (VPC) through VPC interface endpoints and cannot serve public internet clients directly."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-vs-rest.html",
+    "sourceNote": "Choosing between REST APIs and HTTP APIs in Amazon API Gateway",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-development-with-aws-services-032",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "development-with-aws-services",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A development team maintains dev, test, and prod deployment stages for an Amazon API Gateway REST API. Each stage must route requests to a corresponding alias of an AWS Lambda backend function (for example, dev routes to the dev alias). How should the developer configure the integration URI to avoid duplicating API definitions?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Deploy three separate Amazon API Gateway REST API instances and hardcode the target Lambda version ARN in each."
+      },
+      {
+        "id": "b",
+        "text": "Use path parameters in the method request URL to capture the environment name."
+      },
+      {
+        "id": "c",
+        "text": "Pass the environment name in an HTTP request header and read it inside the Lambda function handler on every request."
+      },
+      {
+        "id": "d",
+        "text": "Define a stage variable on each stage and reference it in the Lambda integration ARN using ${stageVariables.<variableName>}."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Stage variables are name-value pairs defined on API Gateway deployment stages that function like environment variables. By referencing a stage variable in the Lambda function integration ARN (for example, arn:aws:apigateway:...:function:myFunction:${stageVariables.env}/invocations), a single API definition can dynamically route traffic to different Lambda aliases depending on the deployed stage.",
+    "distractorNotes": {
+      "a": "Deploying three separate API Gateway instances causes maintenance drift and violates DRY (don't repeat yourself) configuration principles.",
+      "b": "Using path parameters exposes internal deployment environments in client URLs and requires custom client routing.",
+      "c": "Passing the environment in an HTTP request header requires custom routing logic inside the function and risks unauthorized clients spoofing target environments."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/apigateway/latest/developerguide/amazon-api-gateway-using-stage-variables.html",
+    "sourceNote": "Using Amazon API Gateway stage variables",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-development-with-aws-services-033",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "development-with-aws-services",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A legacy client application sends XML payloads to an Amazon API Gateway REST API endpoint. The downstream microservice runs as an AWS Lambda function that accepts only JSON payloads. What is the most efficient way to transform the incoming XML into JSON before passing it to the Lambda function?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Configure a mapping template using Velocity Template Language (VTL) on the integration request."
+      },
+      {
+        "id": "b",
+        "text": "Deploy an intermediate Lambda function to parse the incoming XML and re-invoke the backend function with JSON."
+      },
+      {
+        "id": "c",
+        "text": "Configure an Amazon CloudFront viewer request function on the distribution to convert XML payloads to JSON."
+      },
+      {
+        "id": "d",
+        "text": "Enable an API Gateway request validator with a JSON schema model."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Amazon API Gateway REST APIs support mapping templates using Velocity Template Language (VTL) on integration requests. Mapping templates can transform request payloads from XML to JSON (or modify parameters and headers) before the request reaches the backend integration, eliminating the need for intermediate transformation compute services.",
+    "distractorNotes": {
+      "b": "Deploying an intermediate Lambda function adds invocation latency, double execution cost, and unnecessary infrastructure.",
+      "c": "CloudFront functions are designed for lightweight header rewrites and URL redirects, and do not provide payload transformation libraries for XML-to-JSON parsing.",
+      "d": "Request validators check whether incoming payloads conform to a schema model; they reject non-conforming requests rather than transforming payload formats."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/apigateway/latest/developerguide/models-mappings.html",
+    "sourceNote": "API Gateway mapping templates and data transformations",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-development-with-aws-services-034",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "development-with-aws-services",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A developer wants Amazon API Gateway to validate incoming HTTP requests before invoking a downstream AWS Lambda function. Requests missing required query string parameters or submitting malformed request bodies must be rejected at the API Gateway level with an HTTP 400 Bad Request. Which TWO configurations are required? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Attach an AWS WAF web ACL with SQL injection and cross-site scripting rule sets."
+      },
+      {
+        "id": "b",
+        "text": "Create a model using JSON Schema draft 4 and assign it to the method request body."
+      },
+      {
+        "id": "c",
+        "text": "Configure a custom authorizer to parse and validate request query parameters."
+      },
+      {
+        "id": "d",
+        "text": "Enable a request validator on the API method that validates request body and request parameters."
+      },
+      {
+        "id": "e",
+        "text": "Configure an Amazon CloudWatch metric alarm on method-level 4XXError count metrics."
+      }
+    ],
+    "correct": [
+      "b",
+      "d"
+    ],
+    "explanation": "To enable basic request validation in API Gateway REST APIs, the developer must: (1) create a model defining the payload structure using JSON Schema and map it to the method request content type, and (2) configure a Request Validator on the method that enables validation of the request body, query string parameters, and headers. API Gateway will then intercept and return an HTTP 400 response for invalid requests before invoking the backend Lambda function.",
+    "distractorNotes": {
+      "a": "AWS WAF filters web traffic against common web exploits, but does not validate structured JSON application schemas.",
+      "c": "Custom authorizers are designed for user identity verification and access token inspection, not general query parameter schema validation.",
+      "e": "CloudWatch metric alarms monitor error rates for alerting, but do not perform synchronous request interception or schema validation."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-method-request-validation.html",
+    "sourceNote": "Enabling request validation in Amazon API Gateway",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-development-with-aws-services-035",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "development-with-aws-services",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "Frontend developers need to test their web application against an API endpoint that has not yet been implemented on the backend. The developer must configure an Amazon API Gateway REST API method to return static mock responses and HTTP 200 status codes without invoking any backend integration or running any compute code. What integration type should the developer select?",
+    "options": [
+      {
+        "id": "a",
+        "text": "HTTP integration with a placeholder web server."
+      },
+      {
+        "id": "b",
+        "text": "Mock integration."
+      },
+      {
+        "id": "c",
+        "text": "AWS integration pointing to a dummy SNS topic."
+      },
+      {
+        "id": "d",
+        "text": "VPC Link integration."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Amazon API Gateway Mock integrations allow developers to generate API responses directly from API Gateway without invoking a backend integration. Developers can define response status codes, headers, and mapping templates returning static JSON data, which is ideal for frontend testing and CORS preflight OPTIONS responses.",
+    "distractorNotes": {
+      "a": "HTTP integrations require a live web server backend, incurring compute costs and maintenance.",
+      "c": "Using an SNS topic integration adds unnecessary AWS resource provisioning and complexity for returning static responses.",
+      "d": "VPC Link connects API Gateway to private VPC resources such as Network Load Balancers, rather than generating static mock responses."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-mock-integration.html",
+    "sourceNote": "Setting up mock integrations in Amazon API Gateway",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-development-with-aws-services-036",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "development-with-aws-services",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An Amazon API Gateway REST API rejects unauthorized requests with a standard HTTP 403 Forbidden status code. The client application requires all error responses to follow a standardized JSON format that includes a custom error code and a CORS header (Access-Control-Allow-Origin: *). How can the developer customize these error responses generated directly by API Gateway?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Modify the downstream Lambda function error handler to append CORS headers."
+      },
+      {
+        "id": "b",
+        "text": "Create an Amazon CloudFront response headers policy attached to an S3 origin."
+      },
+      {
+        "id": "c",
+        "text": "Configure Gateway Responses in API Gateway for the 4xx response types."
+      },
+      {
+        "id": "d",
+        "text": "Attach an AWS WAF custom response action to the distribution."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Gateway Responses in Amazon API Gateway allow developers to customize error responses generated directly by API Gateway (such as 403 Forbidden, 401 Unauthorized, 504 Gateway Timeout, and 429 Too Many Requests) before the request ever reaches the integration backend. Developers can modify response status codes, customize JSON response templates, and add custom headers including CORS headers.",
+    "distractorNotes": {
+      "a": "When API Gateway rejects an unauthorized request, the backend Lambda function is never invoked, so Lambda code cannot modify the error response.",
+      "b": "CloudFront response headers policies modify edge responses, but configuring Gateway Responses in API Gateway natively solves the issue at the API layer for all consumers.",
+      "d": "AWS WAF custom responses apply only to requests blocked by WAF rules, not native API Gateway authentication or authorization failures."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/apigateway/latest/developerguide/customize-gateway-responses.html",
+    "sourceNote": "Customizing gateway responses in Amazon API Gateway",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-development-with-aws-services-037",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "development-with-aws-services",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A mobile application built with AWS AppSync requires real-time chat updates. When a user posts a message, all active chat participants should receive the message instantly over an active WebSocket connection. Which GraphQL operation type should the clients implement to receive these real-time push updates?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Query operation executed with aggressive client polling intervals."
+      },
+      {
+        "id": "b",
+        "text": "Mutation operation executed with optimistic client response headers."
+      },
+      {
+        "id": "c",
+        "text": "Live Query operation configured with reactive client cache directives."
+      },
+      {
+        "id": "d",
+        "text": "Subscription linked to the message creation mutation."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "In GraphQL and AWS AppSync, Subscriptions allow clients to listen for real-time data updates. Subscriptions establish persistent WebSocket connections, and AppSync automatically pushes updates to subscribed clients whenever a corresponding Mutation (such as createMessage) executes.",
+    "distractorNotes": {
+      "a": "Polling via queries consumes battery, increases API request counts, and introduces update latency compared to real-time WebSockets.",
+      "b": "Mutations perform write operations to modify server-side data, but do not push updates to other connected clients.",
+      "c": "Live queries are not a native AWS AppSync operation type; AppSync implements real-time push delivery through GraphQL subscriptions over WebSockets."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/appsync/latest/devguide/real-time-data.html",
+    "sourceNote": "Real-time data with AWS AppSync GraphQL subscriptions",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-development-with-aws-services-038",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "development-with-aws-services",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A developer is designing an AWS AppSync GraphQL API. A specific mutation requires first validating user authorization against an Amazon DynamoDB table, and then executing a payment transaction via an AWS Lambda function only if the authorization check succeeds. Which TWO components of AWS AppSync resolvers should the developer use to orchestrate this sequence? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "A single unit resolver configured to query multiple simultaneous relational data sources."
+      },
+      {
+        "id": "b",
+        "text": "An Amazon EventBridge pipe embedded inside the GraphQL schema definition."
+      },
+      {
+        "id": "c",
+        "text": "A pipeline resolver composed of multiple sequential functions."
+      },
+      {
+        "id": "d",
+        "text": "An AWS Step Functions state machine invoked asynchronously via a mock integration."
+      },
+      {
+        "id": "e",
+        "text": "AppSync functions attached to the pipeline resolver targeting the DynamoDB and Lambda data sources."
+      }
+    ],
+    "correct": [
+      "c",
+      "e"
+    ],
+    "explanation": "AWS AppSync pipeline resolvers allow developers to compose multiple operations into a sequence. A pipeline resolver executes a series of AppSync functions in order. Each AppSync function performs an operation against a designated data source (such as checking authorization in DynamoDB in function one, then invoking Lambda for payment processing in function two), passing context data through the stash.",
+    "distractorNotes": {
+      "a": "A unit resolver can only communicate with a single data source; it cannot connect to multiple data sources sequentially.",
+      "b": "EventBridge pipes cannot be embedded directly inside GraphQL schemas as resolver components.",
+      "d": "Step Functions can orchestrate workflows, but native AppSync pipeline resolvers handle sequential data source executions directly within AppSync."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/appsync/latest/devguide/pipeline-resolvers.html",
+    "sourceNote": "Pipeline resolvers in AWS AppSync",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-development-with-aws-services-039",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "development-with-aws-services",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An e-commerce system requires an order fulfillment workflow that coordinates human approvals, inventory reservations, and payment settlements. The workflow can run for up to several days and requires visual execution history and auditability with exactly-once task execution. Which Step Functions workflow type should the developer use?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Standard Workflow"
+      },
+      {
+        "id": "b",
+        "text": "Express Workflow"
+      },
+      {
+        "id": "c",
+        "text": "Synchronous Express Workflow"
+      },
+      {
+        "id": "d",
+        "text": "Asynchronous EventBridge Rule"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "AWS Step Functions Standard Workflows support long-running processes (up to 1 year duration), provide exactly-once execution semantics, and maintain complete visual execution history in the console. Express Workflows run for a maximum of 5 minutes, use at-least-once execution semantics, and are meant for high-volume streaming and IoT event workloads.",
+    "distractorNotes": {
+      "b": "Express Workflows have a maximum execution duration of 5 minutes and do not support long-running human approval tasks spanning multiple days.",
+      "c": "Synchronous Express Workflows also have a 5-minute maximum runtime limit and at-least-once execution.",
+      "d": "EventBridge rules route events to targets, but do not provide stateful workflow orchestration or visual execution history across multi-day lifecycles."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/step-functions/latest/dg/concepts-standard-vs-express.html",
+    "sourceNote": "Standard vs Express workflows in AWS Step Functions",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-development-with-aws-services-040",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "development-with-aws-services",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "In an AWS Step Functions workflow, a Task state invokes an external microservice that occasionally fails with transient network timeouts. The developer wants the state machine to retry the task up to three times with exponentially increasing intervals before falling back to a designated recovery state. Which state definition construct should the developer configure?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A Pass state with an InputPath filter."
+      },
+      {
+        "id": "b",
+        "text": "A Retry field with ErrorEquals, IntervalSeconds, BackoffRate, and MaxAttempts, followed by a Catch field."
+      },
+      {
+        "id": "c",
+        "text": "A Choice state evaluating the error response payload using boolean variable comparisons and state transitions."
+      },
+      {
+        "id": "d",
+        "text": "A Wait state configured with a TimestampPath parameter that retries the task after a calculated delay."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "In AWS Step Functions, task states support native error handling using Retry and Catch fields. The Retry field specifies transient error names in ErrorEquals, the initial wait duration in IntervalSeconds, the multiplier in BackoffRate, and the maximum retry count in MaxAttempts. If retries are exhausted, the Catch field routes execution to a designated fallback state.",
+    "distractorNotes": {
+      "a": "A Pass state simply passes data from input to output without executing external tasks or handling transient errors.",
+      "c": "Choice states branch based on data values in the state input, but cannot automatically intercept runtime task failures or handle exponential retries.",
+      "d": "A Wait state pauses execution for a fixed time or until a timestamp, but does not provide retry logic or failure catch routing."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/step-functions/latest/dg/concepts-error-handling.html",
+    "sourceNote": "Error handling in AWS Step Functions with Retry and Catch",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-development-with-aws-services-041",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "development-with-aws-services",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A fleet of worker applications queries Amazon DynamoDB using the AWS SDK. During periodic batch processing jobs, multiple workers encounter ProvisionedThroughputExceededException errors simultaneously. Even after implementing standard exponential backoff retries, the workers continue to collide in synchronized waves of retries. What technique should the developer implement in the retry strategy to distribute the requests?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Switch to linear retry intervals of fixed duration across all worker instances."
+      },
+      {
+        "id": "b",
+        "text": "Increase the maximum number of retry attempts to 20."
+      },
+      {
+        "id": "c",
+        "text": "Introduce jitter (random variation) into the exponential backoff calculation."
+      },
+      {
+        "id": "d",
+        "text": "Disable client-side retries and buffer failed write requests in local instance memory."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "When multiple clients experience errors simultaneously and retry using pure exponential backoff, their retry intervals align, causing repeated colliding spikes of traffic known as the 'thundering herd' problem. Adding jitter (randomized variation) to the backoff interval spreads the retry traffic across time, allowing the service to recover and successfully process requests.",
+    "distractorNotes": {
+      "a": "Linear retries with fixed intervals cause workers to synchronize even more closely, worsening retry collisions.",
+      "b": "Increasing retry attempts without jitter compounds traffic storms and delays failure detection without solving synchronization.",
+      "d": "Disabling retries causes immediate application failures and lost updates rather than resolving transient throughput limits."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/general/latest/gr/api-retries.html",
+    "sourceNote": "Error retries and exponential backoff in AWS",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-development-with-aws-services-042",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "development-with-aws-services",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A software developer is implementing a complex mathematical algorithm in an IDE. To accelerate development and maintain coding standards, the developer writes a descriptive code comment explaining the required function inputs, outputs, and edge cases. What Amazon Q Developer feature assists the developer by generating the full function implementation directly under the comment?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The Amazon Q Developer software development agent (/dev) in the chat panel."
+      },
+      {
+        "id": "b",
+        "text": "The Amazon Q Developer code transformation feature (/transform) in the IDE."
+      },
+      {
+        "id": "c",
+        "text": "The Amazon Q Developer security scan feature for project vulnerabilities."
+      },
+      {
+        "id": "d",
+        "text": "Inline code completions generated from natural language comments."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Amazon Q Developer provides an AI-powered coding companion directly within integrated development environments (IDEs). When a developer writes comments in natural language describing desired behavior, Amazon Q Developer suggests inline code completions in real time that can be accepted with a single keystroke.",
+    "distractorNotes": {
+      "a": "The /dev agent in Amazon Q Developer operates through conversational chat to generate multi-file feature plans and pull request implementations, rather than generating immediate inline code directly under editor comments.",
+      "b": "The /transform feature automates language and runtime version upgrades (such as migrating Java versions), rather than generating new function implementations from comments.",
+      "c": "The security scan feature scans project code for security vulnerabilities and code quality issues, rather than generating new implementations from comments."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/software-dev.html",
+    "sourceNote": "Generating code suggestions with Amazon Q Developer",
+    "sourceCheckedAt": "2026-10-12"
   }
 ]

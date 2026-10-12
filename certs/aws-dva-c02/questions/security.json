@@ -6,7 +6,7 @@
     "type": "single",
     "domain": "security",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "stem": "An application developer needs to encrypt 500 MB video files before uploading them to Amazon S3. The developer wants to use envelope encryption with AWS Key Management Service (AWS KMS) to protect each file with a unique symmetric data key. Which AWS KMS API operation should the developer call to obtain both a plaintext data key for local encryption and an encrypted copy of the data key?",
     "options": [
       {
@@ -38,5 +38,1355 @@
     "sourceUrl": "https://docs.aws.amazon.com/kms/latest/APIReference/API_GenerateDataKey.html",
     "sourceNote": "AWS KMS GenerateDataKey API Reference",
     "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "aws-dva-c02-security-002",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer is building a mobile application that needs a user directory for user registration and password recovery. After sign-in, the mobile application must also obtain temporary AWS credentials to upload profile photos directly to a private Amazon S3 bucket. Which architectural combination of Amazon Cognito features satisfies these requirements with the least operational overhead?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Configure an Amazon Cognito identity pool with external social identity providers to manage user credentials directly, and call the AWS Security Token Service (AWS STS) GetSessionToken API operation from the mobile client."
+      },
+      {
+        "id": "b",
+        "text": "Configure an Amazon Cognito user pool as the user directory, and implement a custom AWS Lambda function with administrative IAM privileges to generate long-term IAM user access keys for each authenticated customer account."
+      },
+      {
+        "id": "c",
+        "text": "Configure an Amazon Cognito user pool as the user directory, and integrate an Amazon Cognito identity pool to exchange the user pool tokens for temporary AWS credentials with permissions to Amazon S3."
+      },
+      {
+        "id": "d",
+        "text": "Configure an Amazon Cognito identity pool to manage user passwords and multi-factor authentication policies, and route all image uploads through Amazon API Gateway endpoints using AWS_IAM authorization."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Amazon Cognito user pools provide user directory services, handling registration, sign-in, self-service password recovery, and multi-factor authentication. Amazon Cognito identity pools (federated identities) exchange tokens from identity providers—such as a user pool—for temporary, scoped AWS credentials through AWS STS to access AWS services such as Amazon S3 directly.",
+    "distractorNotes": {
+      "a": "Identity pools provide temporary AWS credentials for federated identities rather than serving as a standalone directory that manages user passwords and sign-up flows natively.",
+      "b": "Generating long-term IAM user access keys for mobile users introduces severe security risks and operational overhead compared to using identity pools for temporary credentials.",
+      "d": "User pools manage passwords and multi-factor authentication, not identity pools; routing large uploads through API Gateway introduces unnecessary latency, cost, and payload size limitations."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools.html",
+    "sourceNote": "Amazon Cognito user pools overview and identity pool integration",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-security-003",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A web application authenticates users with an Amazon Cognito user pool. The developer needs to authorize API requests in a microservices backend based on custom OAuth 2.0 scopes granted to the user, while separately extracting the user's verified email address in the frontend client. Which combination of JSON Web Tokens (JWTs) provided by Amazon Cognito should the developer use for these purposes?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Use the access token for authorizing backend API requests by inspecting OAuth scopes, and use the ID token in the frontend client to extract user profile attributes such as the verified email address."
+      },
+      {
+        "id": "b",
+        "text": "Use the ID token for authorizing backend API requests by inspecting OAuth scopes, and use the refresh token in the frontend client to extract user profile attributes such as the verified email address."
+      },
+      {
+        "id": "c",
+        "text": "Use the refresh token for authorizing backend API requests by inspecting OAuth scopes, and use the access token in the frontend client to extract user profile attributes such as the verified email address."
+      },
+      {
+        "id": "d",
+        "text": "Use the access token for authorizing backend API requests by inspecting OAuth scopes, and use the same access token in the frontend client to extract user profile attributes such as the verified email address."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "An Amazon Cognito user pool issues three tokens upon authentication. The access token contains OAuth 2.0 scopes and groups designed for authorization checks against resource servers and backend APIs. The ID token contains identity claims representing user profile attributes (such as email, email_verified, and cognito:username) for client-side consumption. The refresh token contains no user claims and is submitted to retrieve fresh ID and access tokens.",
+    "distractorNotes": {
+      "b": "ID tokens contain user identity claims rather than OAuth scopes, and refresh tokens do not contain user profile attributes like email.",
+      "c": "Refresh tokens cannot be used to authorize individual API requests directly and carry no OAuth scopes, and access tokens do not contain standard user identity claims like verified email addresses.",
+      "d": "Standard access tokens generated by user pools do not contain profile attributes such as email addresses unless custom claims are explicitly injected via triggers."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-using-tokens-with-identity-providers.html",
+    "sourceNote": "Amazon Cognito user pools token concepts and usage",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-security-004",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An organization uses an Amazon Cognito user pool for user authentication. The backend microservices require an external tenant identifier and an internal authorization role to be present as claims in the issued JSON Web Token (JWT) before the client calls the backend API. These tenant and role values are stored in an external Amazon DynamoDB database. Which solution allows the developer to inject these claims into the token during the authentication flow?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Configure a Post confirmation AWS Lambda trigger that queries Amazon DynamoDB and updates user attributes in the user pool using the AdminUpdateUserAttributes API operation during initial account confirmation."
+      },
+      {
+        "id": "b",
+        "text": "Configure a Pre sign-up AWS Lambda trigger that reads from Amazon DynamoDB and overrides the user pool schema definition dynamically to inject custom tenant and role attributes into the user directory."
+      },
+      {
+        "id": "c",
+        "text": "Configure a Post authentication AWS Lambda trigger that calls the UpdateUserPoolClient API operation to dynamically update the token expiration and claims configuration for the client application."
+      },
+      {
+        "id": "d",
+        "text": "Configure a Pre token generation AWS Lambda trigger that queries Amazon DynamoDB and adds the tenant identifier and internal authorization role as custom claims in the claimsToAdd event response."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Amazon Cognito invokes the Pre token generation Lambda trigger just before creating identity and access tokens. The Lambda function can look up metadata in external databases (such as Amazon DynamoDB) and modify token claims by returning claimsToAddOrOverride or claimsToAdd in the response object, inserting custom claims into the JWT without modifying the user directory schema.",
+    "distractorNotes": {
+      "a": "The Post confirmation trigger executes after email or phone verification, not during token generation, and updating user attributes does not dynamically inject claims into tokens for existing sessions.",
+      "b": "The Pre sign-up trigger runs before a user is registered to validate or auto-confirm users, and cannot modify token claims or change the user pool schema dynamically.",
+      "c": "The Post authentication trigger executes after successful authentication for logging or analytics, but Amazon Cognito does not permit modifying issued tokens from this trigger."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-lambda-pre-token-generation.html",
+    "sourceNote": "Amazon Cognito Pre token generation Lambda trigger",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-security-005",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer is configuring an Amazon Cognito user pool for an internal enterprise portal. Self-registration must be restricted so that user accounts can be created only if the user's email address belongs to the corporate domain \"example.com\". If a user attempts to sign up with any other email domain, the registration must be rejected automatically with an informative error message. How should the developer implement this requirement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Configure an Amazon Cognito user pool risk configuration with custom adaptive authentication rules that evaluate incoming client IP addresses and reject self-registrations from external email domains."
+      },
+      {
+        "id": "b",
+        "text": "Create a Pre sign-up AWS Lambda trigger on the user pool that inspects the request email attribute, validates the corporate domain, and raises an exception if the domain does not match."
+      },
+      {
+        "id": "c",
+        "text": "Create a Post confirmation AWS Lambda trigger on the user pool that verifies the user email address domain and invokes the AdminDeleteUser API operation to remove non-corporate accounts from the pool."
+      },
+      {
+        "id": "d",
+        "text": "Configure an Amazon Cognito user pool client secret and require the web client to compute a custom secret hash containing the corporate email domain during the InitiateAuth API registration call."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Amazon Cognito invokes the Pre sign-up Lambda trigger when a user submits a registration request. The Lambda function inspects event.request.userAttributes, verifies whether the email address ends with \"@example.com\", and throws an error if it does not match, preventing the user record from being created and returning the error message to the client.",
+    "distractorNotes": {
+      "a": "Cognito risk configuration and adaptive authentication are designed for detecting compromised credentials and malicious sign-in behavior, not for filtering email domains at registration.",
+      "c": "The Post confirmation trigger executes only after the user has already registered and confirmed their account, allowing unauthorized accounts to be created in the pool before cleanup.",
+      "d": "Client secrets are used for symmetric HMAC validation to authenticate confidential application clients, not for validating user email domains."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-lambda-pre-sign-up.html",
+    "sourceNote": "Amazon Cognito Pre sign-up Lambda trigger",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-security-006",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An e-commerce mobile application allows prospective customers to browse a catalog stored in Amazon DynamoDB before signing in. Once a customer signs in with their Amazon Cognito user pool account, the application must allow them to submit purchase orders to an Amazon SQS queue. Which configuration on Amazon Cognito identity pools provides the most secure and appropriate access model for both user states?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Enable unauthenticated identities on the identity pool, assign an unauthenticated IAM role granting full Amazon DynamoDB and Amazon SQS permissions to guest users, and disable authenticated roles."
+      },
+      {
+        "id": "b",
+        "text": "Disable unauthenticated identities on the identity pool, and embed read-only AWS IAM access keys directly in the mobile application binary for unauthenticated catalog browsing sessions."
+      },
+      {
+        "id": "c",
+        "text": "Enable unauthenticated identities on the identity pool, assign an unauthenticated IAM role with read-only DynamoDB permissions, and assign an authenticated IAM role with SQS write permissions."
+      },
+      {
+        "id": "d",
+        "text": "Configure a single authenticated IAM role on the identity pool, and use an AWS Lambda authorizer in the mobile application to elevate permissions dynamically upon successful user sign-in."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Amazon Cognito identity pools support both unauthenticated (guest) and authenticated identities. Enabling unauthenticated identities allows prospective users to receive temporary STS credentials tied to an unauthenticated IAM role, which can be restricted to read-only DynamoDB access for catalog browsing. Once the user signs in via the user pool, the identity pool assigns the authenticated IAM role, providing the required SQS permissions.",
+    "distractorNotes": {
+      "a": "Granting SQS write permissions to unauthenticated guest roles allows unauthenticated visitors to publish orders, violating least privilege and access control requirements.",
+      "b": "Embedding long-term IAM credentials in client binaries violates core AWS security best practices because the credentials can be extracted and abused by attackers.",
+      "d": "Identity pools natively distinguish between authenticated and unauthenticated roles; Lambda authorizers are used with API Gateway, not directly within mobile application binaries to elevate IAM credentials."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/cognito/latest/developerguide/role-based-access-control.html",
+    "sourceNote": "Role-based access control in Amazon Cognito identity pools",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-security-007",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A company provides a software-as-a-service platform where users belong to different departments (such as \"Finance\", \"HR\", and \"Engineering\"). The users authenticate using an Amazon Cognito user pool and receive temporary AWS credentials from an Amazon Cognito identity pool. The developer needs to restrict access so that users can access only Amazon S3 folder prefixes matching their own department name (for example, s3://company-docs/${aws:PrincipalTag/department}/*), without creating separate IAM roles for each department. Which feature should the developer configure?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Configure Attributes for access control in the Amazon Cognito identity pool to map the user pool department attribute to the principal tag, and reference the tag in the IAM role trust and permissions policies."
+      },
+      {
+        "id": "b",
+        "text": "Configure Amazon Cognito user pool groups for each department, create dedicated IAM roles for each group, and attach an IAM managed policy directly to each group within the Amazon Cognito user pool console."
+      },
+      {
+        "id": "c",
+        "text": "Configure an Amazon Cognito Pre token generation Lambda trigger to execute an AWS STS AssumeRole API operation with an inline session policy tailored to the specific department folder path."
+      },
+      {
+        "id": "d",
+        "text": "Configure an Amazon Cognito user pool resource server with custom OAuth 2.0 scopes matching each department, and evaluate those scopes directly within the Amazon S3 bucket policy condition statement."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Attributes for access control (ABAC) in Amazon Cognito identity pools allows developers to map user pool claims (such as department) to AWS STS session tags (PrincipalTag). The single IAM role assumed by authenticated users can then use policy condition keys like ${aws:PrincipalTag/department} in resource ARNs, eliminating the need to maintain distinct IAM roles for each department.",
+    "distractorNotes": {
+      "b": "User pool groups can be mapped to IAM roles, but doing so requires creating and managing separate IAM roles for every department, which contradicts the requirement to avoid separate IAM roles.",
+      "c": "Pre token generation triggers customize JWT token claims during user pool authentication, but they cannot execute STS AssumeRole operations to return AWS credentials to the client.",
+      "d": "OAuth scopes issued by user pool resource servers are validated by API Gateway or application resource servers, not natively evaluated by Amazon S3 bucket policies."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/cognito/latest/developerguide/attributes-for-access-control.html",
+    "sourceNote": "Attributes for access control in Amazon Cognito identity pools",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-security-008",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer has built a REST API in Amazon API Gateway protected by an Amazon Cognito user pool authorizer. The API has two endpoints: GET /reports and POST /reports. The developer wants to ensure that client applications must present a token with the custom OAuth scope reports/read to invoke GET /reports, and the scope reports/write to invoke POST /reports. Which token type must the client send in the Authorization header to satisfy this scope requirement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The ID token, because Amazon API Gateway validates custom OAuth scopes against the user identity attributes and claims contained in the OpenID Connect token payload."
+      },
+      {
+        "id": "b",
+        "text": "The refresh token, because Amazon API Gateway communicates with Amazon Cognito endpoints to exchange the refresh token and dynamically verify user scope permissions."
+      },
+      {
+        "id": "c",
+        "text": "A SigV4 signed request payload, because Amazon API Gateway requires AWS IAM cryptographic signature calculations whenever custom OAuth scopes are attached to methods."
+      },
+      {
+        "id": "d",
+        "text": "The access token, because Amazon API Gateway validates custom OAuth scopes exclusively against the scope claim present within the user pool access token payload."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "When an Amazon API Gateway method is configured with an Amazon Cognito user pool authorizer and specifies OAuth scopes (such as reports/read), the client must pass the Cognito access token. API Gateway validates that the access token was issued by the user pool and verifies that the scope claim contains the required OAuth scopes. If the client passes an ID token instead, API Gateway rejects the call with an authorization error because ID tokens do not contain the scope claim.",
+    "distractorNotes": {
+      "a": "The ID token contains identity claims such as username and email, but it does not contain the scope claim required by API Gateway for scope validation.",
+      "b": "Refresh tokens cannot be sent directly in API request Authorization headers to invoke API Gateway endpoints, as they are not evaluated for route authorization.",
+      "c": "SigV4 signing is used for IAM authorization (AWS_IAM), whereas Amazon Cognito user pool authorizers validate Bearer JWT tokens without requiring SigV4 signatures."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-integrate-with-cognito.html",
+    "sourceNote": "Amazon API Gateway integration with Amazon Cognito user pools",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-security-009",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "security",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A developer is building a client application that interacts with an Amazon Cognito user pool. The application needs to handle session management securely when short-lived ID and access tokens expire, and must support immediate sign-out across all devices when a user changes their password. Which TWO actions must the developer take to implement these capabilities? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Use the refresh token with the InitiateAuth API operation (specifying the REFRESH_TOKEN_AUTH or REFRESH_TOKEN flow) to obtain new ID and access tokens without requiring the user to re-enter their credentials."
+      },
+      {
+        "id": "b",
+        "text": "Call the AdminResetUserPassword API operation from the client application to automatically invalidate and delete all active access tokens currently stored in the client application runtime memory."
+      },
+      {
+        "id": "c",
+        "text": "Call the GlobalSignOut or AdminUserGlobalSignOut API operation to revoke all active refresh tokens for the user and invalidate cached credentials across all active user application sessions."
+      },
+      {
+        "id": "d",
+        "text": "Pass the expired access token along with the application client secret to the RevokeToken API operation to trigger an automatic token renewal sequence within the target user pool directory."
+      },
+      {
+        "id": "e",
+        "text": "Store user credentials in persistent client storage so the application can automatically re-authenticate using the USER_PASSWORD_AUTH flow whenever an API endpoint returns a 401 Unauthorized status."
+      }
+    ],
+    "correct": [
+      "a",
+      "c"
+    ],
+    "explanation": "To renew expired access and ID tokens without prompting the user for credentials, the client calls InitiateAuth using the REFRESH_TOKEN_AUTH flow with the refresh token. To revoke sessions across all devices (such as after a security event or password change), calling GlobalSignOut (or AdminUserGlobalSignOut) revokes all issued refresh tokens for that user, ensuring that when existing short-lived access and ID tokens expire (within an hour), new tokens cannot be generated.",
+    "distractorNotes": {
+      "b": "AdminResetUserPassword flags the user account for password reset on subsequent login, but it does not immediately invalidate or delete active tokens cached in client memory.",
+      "d": "The RevokeToken API revokes a refresh token rather than renewing expired access tokens, and access tokens cannot be renewed by passing expired tokens to it.",
+      "e": "Storing cleartext passwords in local client storage violates security standards and exposes user credentials to compromise."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-using-the-refresh-token.html",
+    "sourceNote": "Using the refresh token in Amazon Cognito user pools",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-security-010",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An AWS Lambda function has an execution role with an attached IAM policy that grants s3:GetObject on arn:aws:s3:::company-bucket/*. The developer attaches an AWS Organizations Service Control Policy (SCP) to the AWS account that includes an Effect: Allow for s3:* on all resources. However, the S3 bucket has a bucket policy containing a statement with Effect: Deny for s3:GetObject on arn:aws:s3:::company-bucket/* unless the request originates from a specific VPC endpoint. The Lambda function runs outside the VPC. How does AWS evaluate the access request when the function attempts to call s3:GetObject?",
+    "options": [
+      {
+        "id": "a",
+        "text": "AWS allows the request because identity-based permissions granted on the Lambda function execution role override bucket resource policy restrictions."
+      },
+      {
+        "id": "b",
+        "text": "AWS denies the request because the bucket policy contains an explicit deny that overrides any allow statements in identity-based policies or SCPs."
+      },
+      {
+        "id": "c",
+        "text": "AWS allows the request because the Service Control Policy attached at the organization root level takes precedence over resource policies."
+      },
+      {
+        "id": "d",
+        "text": "AWS allows the request because the Lambda execution role grants an explicit allow and the request meets the default evaluation allow criteria."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Under AWS IAM policy evaluation logic, an explicit deny in any applicable policy (SCP, resource-based policy, identity-based policy, or permissions boundary) always overrides any allows. Because the Lambda function is outside the VPC, the condition for the exception in the bucket policy is not met, resulting in an explicit deny that immediately terminates policy evaluation with an access denied result.",
+    "distractorNotes": {
+      "a": "Identity-based policies do not override resource-based policies; all applicable policies are evaluated together, and an explicit deny in any policy results in denial.",
+      "c": "SCPs act as guardrails that specify the maximum permissions for an account; an allow in an SCP does not override an explicit deny defined on a resource policy.",
+      "d": "In AWS policy evaluation, an explicit deny always trumps an explicit allow, regardless of which policy type contains the deny."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html",
+    "sourceNote": "AWS IAM policy evaluation logic",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-security-011",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A developer in Account A (111122223333) writes an application running on an Amazon EC2 instance that needs to read objects from an Amazon S3 bucket located in Account B (444455556666). The developer wants to configure direct access without requiring the EC2 instance to assume an IAM role in Account B. Which combination of policies must be configured to allow this direct cross-account access?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Configure only the S3 bucket policy in Account B to grant s3:GetObject to Account A's root ARN; no additional permissions are required in Account A's IAM instance profile or execution role."
+      },
+      {
+        "id": "b",
+        "text": "Configure only an IAM policy on the EC2 instance role in Account A granting s3:GetObject on the bucket ARN in Account B; no resource-based bucket policy needs to be configured in target Account B."
+      },
+      {
+        "id": "c",
+        "text": "Configure an IAM policy on the EC2 instance role in Account A granting s3:GetObject on the bucket ARN, AND configure the S3 bucket policy in Account B granting s3:GetObject to the EC2 instance role ARN in Account A."
+      },
+      {
+        "id": "d",
+        "text": "Configure an Amazon S3 Access Point in Account B with public network access enabled, and attach an IAM policy to the EC2 instance profile role in Account A pointing directly to the Amazon S3 Access Point resource ARN."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "For cross-account access to a resource when not assuming a role, access must be explicitly granted on both sides. The resource-based policy in the target account (Account B's S3 bucket policy) must grant permission to the principal in Account A, AND the identity-based policy in the source account (Account A's EC2 instance role) must delegate permission to access the resource in Account B. If either side is missing, the request is denied.",
+    "distractorNotes": {
+      "a": "Even if the bucket policy allows the principal or account, the identity in Account A still requires an identity-based policy allowing the action on the external resource.",
+      "b": "An identity-based policy in Account A cannot unilaterally grant permissions to resources in Account B without Account B's resource-based policy explicitly trusting the principal.",
+      "d": "Enabling public network access on an S3 Access Point introduces severe security vulnerabilities and does not eliminate the requirement for proper cross-account identity and resource policies."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_identity-vs-resource.html",
+    "sourceNote": "Identity-based policies and resource-based policies",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-security-012",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A security team requires that developers can perform administrative actions on Amazon DynamoDB tables only when connecting from the corporate network CIDR block 203.0.113.0/24. Which element and condition block should the developer include in the IAM policy attached to the developers' IAM role to enforce this restriction?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Add a Condition block using StringEquals matching aws:ClientVpc against 203.0.113.0/24 under an Effect: Allow statement for dynamodb:*."
+      },
+      {
+        "id": "b",
+        "text": "Add a Principal block specifying {\"IP\": \"203.0.113.0/24\"} combined with an Action of dynamodb:* under an Effect: Allow policy statement."
+      },
+      {
+        "id": "c",
+        "text": "Add a Condition block using IpAddress with key aws:VpcEndpoint set to 203.0.113.0/24 under an Effect: Deny statement for dynamodb:*."
+      },
+      {
+        "id": "d",
+        "text": "Add a Condition block using NotIpAddress with key aws:SourceIp set to 203.0.113.0/24 under an Effect: Deny statement for dynamodb:*."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "To enforce that requests must originate from a specific IP range, AWS recommends an explicit Deny statement paired with the NotIpAddress condition operator and the aws:SourceIp global condition key. If the request IP is not within 203.0.113.0/24, the policy produces an explicit deny, blocking all DynamoDB actions regardless of other allows.",
+    "distractorNotes": {
+      "a": "aws:ClientVpc is not a valid global condition key for filtering public client IP addresses, and StringEquals is not used for IP CIDR matching.",
+      "b": "The Principal element specifies IAM users, roles, or AWS services; IP addresses cannot be declared inside the Principal block.",
+      "c": "aws:VpcEndpoint expects a VPC endpoint ID (such as vpce-12345678), not an IP CIDR block, and does not evaluate corporate client IP ranges."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_condition-keys.html",
+    "sourceNote": "AWS global condition context keys",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-security-013",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An application running on an on-premises server needs temporary access to an Amazon SQS queue in an AWS account. The server has an automated process that authenticates with AWS STS and assumes an IAM role named AppQueueProcessorRole. Which set of temporary security credentials does the AssumeRole API call return to the application for authenticating subsequent AWS SDK calls?",
+    "options": [
+      {
+        "id": "a",
+        "text": "An Access Key ID, a Secret Access Key, and a Session Token, accompanied by an expiration timestamp."
+      },
+      {
+        "id": "b",
+        "text": "An Access Key ID and a Secret Access Key only, without a Session Token, accompanied by an expiration timestamp."
+      },
+      {
+        "id": "c",
+        "text": "An IAM role ARN and a temporary signed SAML assertion token, accompanied by an expiration timestamp."
+      },
+      {
+        "id": "d",
+        "text": "A JSON Web Token (JWT) bearer access token and a refresh token, accompanied by an expiration timestamp."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "When an application calls sts:AssumeRole, AWS STS generates and returns a set of temporary security credentials consisting of three components: AccessKeyId, SecretAccessKey, and SessionToken, along with the Expiration datetime. All three components must be provided in subsequent requests or configured in the AWS SDK client.",
+    "distractorNotes": {
+      "b": "Temporary security credentials issued by AWS STS always require a Session Token in addition to the Access Key ID and Secret Access Key to authenticate requests.",
+      "c": "SAML assertion tokens are passed to the AssumeRoleWithSAML API operation to request credentials, rather than being the credential payload returned by AssumeRole.",
+      "d": "AWS STS AssumeRole returns temporary SigV4 session credentials for AWS SDK signing, not OAuth 2.0 or OIDC JWT access and refresh tokens."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html",
+    "sourceNote": "AWS STS AssumeRole API Reference",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-security-014",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A developer is setting up a continuous integration and continuous delivery (CI/CD) pipeline on an external platform that supports OpenID Connect (OIDC). The pipeline needs to deploy application artifacts to an Amazon S3 bucket in AWS. The security team mandates that no long-term IAM user access keys may be stored in the CI/CD platform. How should the developer configure AWS to allow the pipeline to deploy artifacts securely?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Create an IAM user with Amazon S3 permissions, generate a session token using the AWS STS GetSessionToken API operation, and store the resulting access key, secret key, and session token permanently in the CI/CD platform repository secrets configuration."
+      },
+      {
+        "id": "b",
+        "text": "Create an IAM OIDC identity provider for the CI/CD platform, create an IAM role with a trust policy that allows sts:AssumeRoleWithWebIdentity conditioned on the repository subject claim, and exchange the platform's OIDC token for temporary AWS credentials."
+      },
+      {
+        "id": "c",
+        "text": "Create an Amazon Cognito user pool with a custom domain, register the CI/CD platform as an OAuth 2.0 client, and configure the deployment workflow to authenticate via the InitiateAuth API using the ADMIN_NO_SRP_AUTH flow."
+      },
+      {
+        "id": "d",
+        "text": "Deploy an Amazon EC2 instance in a public subnet to act as a dedicated bastion runner, and configure the CI/CD platform to execute remote deployment commands over SSH authenticated by an attached IAM instance profile."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "AWS IAM supports federating external OIDC identity providers. By registering the CI/CD provider in IAM and creating an IAM role whose trust policy allows sts:AssumeRoleWithWebIdentity—with conditions checking the audience (aud) and subject (sub) claims—the pipeline can trade its short-lived OIDC web identity token directly for temporary AWS credentials via AWS STS, eliminating static credentials.",
+    "distractorNotes": {
+      "a": "Storing long-term credentials or relying on GetSessionToken requires long-term IAM user access keys as the baseline, which violates the security mandate.",
+      "c": "Cognito user pools are designed for application end-user directories, not for establishing direct machine-to-machine OIDC federation for CI/CD runners assuming IAM roles.",
+      "d": "Provisioning an always-on EC2 bastion host introduces unnecessary infrastructure overhead, maintenance costs, and a broader attack surface compared to direct OIDC role assumption."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html",
+    "sourceNote": "AWS STS AssumeRoleWithWebIdentity API Reference",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-security-015",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer is deploying a containerized application to Amazon ECS on AWS Fargate. The container needs to retrieve database credentials from AWS Secrets Manager at container startup, pull container images from a private Amazon ECR repository, and read/write customer files in an Amazon S3 bucket during application execution. How should the developer assign IAM roles in the ECS task definition to follow the principle of least privilege?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Attach an IAM role to the underlying ECS cluster that grants Amazon ECR image pulling, AWS Secrets Manager reading, and Amazon S3 object read/write permissions across all tasks running on the cluster infrastructure."
+      },
+      {
+        "id": "b",
+        "text": "Configure the ECS Task Role with permissions for Amazon ECR image pulling and AWS Secrets Manager, and configure the ECS Task Execution Role with permissions to read and write to the Amazon S3 storage bucket."
+      },
+      {
+        "id": "c",
+        "text": "Configure the ECS Task Execution Role with permissions to pull images from Amazon ECR and retrieve secrets from AWS Secrets Manager, and configure the ECS Task Role with permissions to access the Amazon S3 bucket."
+      },
+      {
+        "id": "d",
+        "text": "Attach an IAM instance profile to the AWS Fargate cluster infrastructure, and grant all container startup and runtime Amazon S3 data access permissions through a single shared execution IAM role."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Amazon ECS distinguishes between two task-level IAM roles: 1. The Task Execution Role (executionRoleArn) is used by the ECS container agent and Fargate infrastructure to manage infrastructure tasks before and during container startup, such as pulling container images from Amazon ECR, sending logs to CloudWatch Logs, and fetching secrets/parameters from AWS Secrets Manager or Parameter Store. 2. The Task Role (taskRoleArn) is assumed by the application code running inside the container itself to interact with AWS services like Amazon S3 or DynamoDB.",
+    "distractorNotes": {
+      "a": "AWS Fargate does not allow assigning IAM roles at the cluster level, and sharing broad permissions across all tasks violates least privilege.",
+      "b": "The roles are inverted: the application running inside the container needs S3 permissions (Task Role), while the ECS agent needs ECR and Secrets Manager permissions (Task Execution Role).",
+      "d": "AWS Fargate is serverless and does not utilize EC2 instance profiles; IAM permissions must be assigned via the task definition."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_execution_IAM_role.html",
+    "sourceNote": "Amazon ECS task execution IAM role",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-security-016",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "security",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer is creating an AWS Lambda function that processes changes from an Amazon DynamoDB stream and logs execution details. The developer is configuring an IAM execution role for the Lambda function. Which TWO IAM policy permission sets must be granted to the execution role so the function can read the stream and write logs successfully? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "dynamodb:Scan and dynamodb:Query permissions on the target DynamoDB table ARN to enable worker threads to query records."
+      },
+      {
+        "id": "b",
+        "text": "logs:CreateLogGroup, logs:CreateLogStream, and logs:PutLogEvents permissions on CloudWatch Logs resource ARNs."
+      },
+      {
+        "id": "c",
+        "text": "cloudwatch:PutMetricData and cloudwatch:GetMetricStatistics permissions on all resources across the AWS account."
+      },
+      {
+        "id": "d",
+        "text": "dynamodb:DescribeStream, dynamodb:GetRecords, dynamodb:GetShardIterator, and dynamodb:ListStreams permissions on the DynamoDB stream ARN."
+      },
+      {
+        "id": "e",
+        "text": "dynamodb:PutItem and dynamodb:UpdateItem permissions on the target DynamoDB table ARN to record processing status."
+      }
+    ],
+    "correct": [
+      "b",
+      "d"
+    ],
+    "explanation": "To execute and record output, a Lambda function requires CloudWatch Logs permissions (logs:CreateLogGroup, logs:CreateLogStream, and logs:PutLogEvents). To consume records from an Amazon DynamoDB stream using an event source mapping, the Lambda execution role must be granted stream read permissions: dynamodb:DescribeStream, dynamodb:GetRecords, dynamodb:GetShardIterator, and dynamodb:ListStreams (as encapsulated in the AWSLambdaDynamoDBExecutionRole managed policy).",
+    "distractorNotes": {
+      "a": "dynamodb:Scan and Query are table read operations, not the stream operations required by the Lambda event source mapping polling mechanism.",
+      "c": "cloudwatch:PutMetricData is used for emitting custom CloudWatch metrics, not for standard Lambda execution log writing.",
+      "e": "dynamodb:PutItem and UpdateItem are write operations on tables, which are not required to consume and process stream records."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/lambda/latest/dg/lambda-intro-execution-role.html",
+    "sourceNote": "AWS Lambda execution role permissions",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-security-017",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A software vendor provides a multi-tenant monitoring application that accesses AWS resources in customers' AWS accounts by assuming an IAM role in each customer's account. To prevent the confused deputy problem—where another customer tricks the vendor's application into accessing resources in an arbitrary customer's account—what should the customer include in the IAM role's trust policy?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A Condition block that requires the aws:MultiFactorAuthPresent context key to be set to true whenever the vendor initiates the role assumption request."
+      },
+      {
+        "id": "b",
+        "text": "A Condition block that requires a unique, vendor-assigned sts:ExternalId string in the trust policy when the vendor's role assumes the target role."
+      },
+      {
+        "id": "c",
+        "text": "An Effect: Allow statement specifying Principal: {\"AWS\": \"*\"} combined with an IP address condition matching the vendor's corporate network CIDR."
+      },
+      {
+        "id": "d",
+        "text": "A resource-based policy attached to customer resources that grants permissions to the vendor's AWS account root ARN without naming an IAM role."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "The confused deputy problem occurs when a third-party service is tricked into performing actions on behalf of one customer against another customer's resources. AWS recommends using an External ID (sts:ExternalId) condition in the role trust policy. The third party provides each customer with a unique External ID, which the customer adds to the role trust policy. When the third party calls AssumeRole, it supplies that specific customer's External ID, ensuring the third party assumes the role only on behalf of the intended customer.",
+    "distractorNotes": {
+      "a": "Requiring MFA (aws:MultiFactorAuthPresent) is for human operator logins, not automated programmatic cross-account service-to-service role assumptions.",
+      "c": "Setting Principal: {\"AWS\": \"*\"} opens the role to any AWS account, introducing massive security vulnerabilities rather than preventing the confused deputy issue.",
+      "d": "Granting access to the vendor root ARN on resource policies does not address the confused deputy problem for cross-account service role delegation."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_common-scenarios_third-party.html",
+    "sourceNote": "Using an External ID when granting access to third parties",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-security-018",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer is building a REST API in Amazon API Gateway. Clients authenticate by passing an API key in a custom header named X-Client-Id, an OAuth Bearer token in the Authorization header, and a query string parameter named scope. The authorization logic requires inspecting all three values before granting access. Which type of API Gateway authorizer should the developer implement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "An Amazon Cognito user pool authorizer configured with custom attribute mapping for query strings."
+      },
+      {
+        "id": "b",
+        "text": "A Lambda TOKEN authorizer configured with the incoming Authorization header designated as the sole identity source."
+      },
+      {
+        "id": "c",
+        "text": "A Lambda REQUEST authorizer configured with identity sources for the headers and query string parameter."
+      },
+      {
+        "id": "d",
+        "text": "A standard API Gateway Usage Plan configured with an AWS WAF Web ACL rule group inspecting headers."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Amazon API Gateway supports two types of Lambda authorizers: 1. TOKEN authorizers accept authorization data from a single header (typically Authorization). 2. REQUEST authorizers accept multiple identity sources including headers, query string parameters, path parameters, and stage variables. Because the authorization logic requires evaluating multiple headers (X-Client-Id, Authorization) and a query parameter (scope), a REQUEST authorizer is required.",
+    "distractorNotes": {
+      "a": "Cognito authorizers validate standard JWT tokens passed in a single header and cannot inspect custom query string parameters or non-standard headers.",
+      "b": "A Lambda TOKEN authorizer receives only a single token string from one header, so it cannot access the additional custom header or query string parameters.",
+      "d": "Usage plans and AWS WAF manage throttling, quotas, and network traffic filtering, but cannot execute custom programmatic authorization logic evaluating token scopes and headers together."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-use-lambda-authorizer.html",
+    "sourceNote": "Use API Gateway Lambda authorizers",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-security-019",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A developer writes an AWS Lambda REQUEST authorizer function for Amazon API Gateway. Upon successfully verifying incoming credentials, the function must allow the request to proceed to the backend integration and pass the authenticated user's tenant identifier and subscription tier to the backend Lambda function. What must the authorizer function return to API Gateway to achieve this?",
+    "options": [
+      {
+        "id": "a",
+        "text": "An output object containing a principalId, an IAM policy document with Effect: Allow specifying the API method ARN in Resource, and a context map containing string, number, or boolean key-value pairs."
+      },
+      {
+        "id": "b",
+        "text": "An HTTP 200 response with a JSON payload containing isAuthorized: true, an encrypted session cookie in the Set-Cookie header, and a custom user profile object embedded within the response body."
+      },
+      {
+        "id": "c",
+        "text": "An AWS STS temporary credential set containing an Access Key ID, Secret Access Key, and session token attached to the response header, alongside a custom claims map passed to the backend integration."
+      },
+      {
+        "id": "d",
+        "text": "An IAM policy document with Effect: Allow on the API method ARN, where custom user metadata properties are embedded directly inside the condition block for downstream extraction by backend integrations."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "In Amazon API Gateway REST APIs, a Lambda authorizer must return a dictionary containing principalId, an IAM policy document (policyDocument) with Statement granting Effect: Allow on the method ARN (Resource), and an optional context map. The context map allows the authorizer to pass key-value pairs (strings, numbers, or booleans) to the backend integration, where they can be accessed via $context.authorizer.key.",
+    "distractorNotes": {
+      "b": "Returning isAuthorized: true in a JSON payload is the simple response format for HTTP API Lambda authorizers, not the IAM policy document response required for REST APIs passing context.",
+      "c": "API Gateway Lambda authorizers return authorization policy documents, not temporary STS credentials for client session management.",
+      "d": "Backend integrations retrieve custom context parameters via the authorizer context map, not by parsing conditions out of the generated IAM policy document."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-lambda-authorizer-output.html",
+    "sourceNote": "Output from an API Gateway Lambda authorizer",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-security-020",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer implements an Amazon API Gateway REST API with a Lambda TOKEN authorizer. During testing, when a client calls the API multiple times within 5 minutes using the same bearer token for different endpoints, the developer notices that the Lambda authorizer is invoked only on the initial request. Why does API Gateway avoid re-invoking the Lambda authorizer on subsequent requests?",
+    "options": [
+      {
+        "id": "a",
+        "text": "API Gateway automatically maintains an active WebSocket connection to the Lambda function to stream authorization states continuously."
+      },
+      {
+        "id": "b",
+        "text": "AWS Lambda keeps the execution environment warm in memory and processes incoming requests without registering invocations in CloudWatch."
+      },
+      {
+        "id": "c",
+        "text": "API Gateway automatically deploys an Amazon ElastiCache Redis cluster to store authenticated session tokens across all client endpoints."
+      },
+      {
+        "id": "d",
+        "text": "API Gateway enables authorization caching by default with a time-to-live (TTL) of 300 seconds, using the token value as the cache key."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "When authorization caching is enabled on an API Gateway Lambda authorizer (the default TTL is 300 seconds, configurable via authorizerResultTtlInSeconds), API Gateway caches the generated IAM policy document using the identity source (the token value for TOKEN authorizers). Subsequent requests presenting the same token within the TTL window are evaluated against the cached policy without re-invoking the Lambda function.",
+    "distractorNotes": {
+      "a": "REST APIs in API Gateway use stateless HTTP request-response cycles, not persistent WebSocket connections, to evaluate Lambda authorizers.",
+      "b": "A warm Lambda container still registers invocations and billing when called; if the authorizer is not invoked, API Gateway handled authorization from its cache.",
+      "c": "API Gateway uses its own internal managed authorization cache rather than provisioning external Amazon ElastiCache Redis instances."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/apigateway/latest/developerguide/configure-api-gateway-lambda-authorization.html",
+    "sourceNote": "Configure authorization caching for API Gateway Lambda authorizer",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-security-021",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer has created a private REST API in Amazon API Gateway. The API must be accessible only from applications running within a specific Amazon VPC through an interface VPC endpoint (vpce-0123456789abcdef0). Requests from any other VPC or endpoint must be blocked. Which mechanism should the developer use to enforce this restriction?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Attach an AWS WAF Web ACL to the API stage with a rule matching the VPC identifier in the HTTP Host header across all incoming requests."
+      },
+      {
+        "id": "b",
+        "text": "Attach an API Gateway resource policy to the REST API with an explicit Deny statement conditioned on aws:sourceVpce not matching vpce-0123456789abcdef0."
+      },
+      {
+        "id": "c",
+        "text": "Configure security group inbound rules on the Amazon API Gateway stage to allow traffic exclusively from the designated VPC CIDR block range."
+      },
+      {
+        "id": "d",
+        "text": "Create an IAM execution role on the private API and attach an identity-based policy allowing access exclusively through the interface VPC endpoint network interface."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "API Gateway resource policies are JSON policy documents attached to REST APIs to control access. For private REST APIs, an API Gateway resource policy is used with the aws:sourceVpce condition key. An explicit Deny with StringNotEquals: {\"aws:sourceVpce\": \"vpce-0123456789abcdef0\"} ensures that only traffic routed through the designated interface VPC endpoint is permitted.",
+    "distractorNotes": {
+      "a": "AWS WAF cannot evaluate underlying interface VPC endpoint IDs natively, and HTTP Host headers can be spoofed or altered by intermediate proxies.",
+      "c": "Security groups cannot be attached directly to Amazon API Gateway REST API stages; they are attached to the interface VPC endpoint network interfaces (ENIs).",
+      "d": "API Gateway stages do not assume IAM execution roles to restrict caller network origin; resource policies govern API caller access."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-resource-policies.html",
+    "sourceNote": "Amazon API Gateway resource policies",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-security-022",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "security",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A developer is implementing custom HTTP client software that calls an Amazon API Gateway REST API configured with AWS_IAM authorization without using an AWS SDK. To authenticate the HTTP requests, the client must generate an AWS Signature Version 4 (SigV4) signature. Which TWO steps must the client perform during the SigV4 signing process? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Generate an RSA 2048-bit key pair on the client machine and upload the public key certificate to AWS Certificate Manager."
+      },
+      {
+        "id": "b",
+        "text": "Base64-encode the raw AWS secret access key and append it directly as a Bearer token in the HTTP Authorization request header."
+      },
+      {
+        "id": "c",
+        "text": "Create a canonical request by standardizing the HTTP method, URI, query string, canonical headers, and hashed payload."
+      },
+      {
+        "id": "d",
+        "text": "Send the plaintext request to the AWS STS GetSignature API operation to receive a cryptographically signed ticket before each call."
+      },
+      {
+        "id": "e",
+        "text": "Derive a signing key using a succession of HMAC-SHA256 calculations based on the secret access key, date, AWS Region, and service name."
+      }
+    ],
+    "correct": [
+      "c",
+      "e"
+    ],
+    "explanation": "The AWS Signature Version 4 (SigV4) process involves four core tasks: 1. Create a canonical request by standardizing the HTTP request method, URI, query string, canonical headers, signed headers, and the SHA256 hash of the request body. 2. Create a string to sign combining the algorithm, date, credential scope, and hash of the canonical request. 3. Derive a signing key using iterative HMAC-SHA256 calculations based on the secret access key, date, region, and service name, and use it to sign the string to sign. 4. Add the signature to the Authorization header or query string.",
+    "distractorNotes": {
+      "a": "SigV4 is a symmetric HMAC-SHA256 signing protocol using AWS access keys, not an asymmetric RSA public key infrastructure managed through ACM.",
+      "b": "Secret access keys must never be transmitted over the wire or embedded directly into request headers; they are used strictly as HMAC keys locally.",
+      "d": "There is no STS GetSignature API; the client computes the cryptographic HMAC signature locally using its AWS credentials."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv.html",
+    "sourceNote": "Signature Version 4 signing process",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-security-023",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An application running on an Amazon EC2 instance needs to encrypt 100 KB document files before storing them in an Amazon DynamoDB table. The developer attempts to call the AWS KMS Encrypt API operation directly with the document payload as the Plaintext parameter, but the API call fails with a validation error. What is the cause of this failure, and how should the developer resolve it?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The Encrypt API operation accepts a maximum plaintext payload size of 4 KB; the developer must implement envelope encryption by calling GenerateDataKey to obtain a data key for local encryption."
+      },
+      {
+        "id": "b",
+        "text": "The AWS KMS key is configured as asymmetric; the developer must call the Sign API operation instead of Encrypt to process payloads larger than 64 KB before storing the resulting ciphertext."
+      },
+      {
+        "id": "c",
+        "text": "Amazon DynamoDB requires client-side encryption through AWS Secrets Manager; the developer must store the 100 KB payload directly in Secrets Manager and reference its secret ARN in DynamoDB."
+      },
+      {
+        "id": "d",
+        "text": "The Encrypt API operation requires the payload to be passed via Amazon S3 pre-signed URLs; the developer must upload the file to Amazon S3 before invoking AWS KMS to complete the encryption process."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "The AWS KMS Encrypt API operation has a hard maximum plaintext payload limit of 4,096 bytes (4 KB). For data larger than 4 KB, AWS KMS requires the envelope encryption pattern: the application calls GenerateDataKey to receive a plaintext data key and an encrypted ciphertext data key, encrypts the document locally using the plaintext key, destroys the plaintext key from memory, and stores the encrypted data key alongside the ciphertext in DynamoDB.",
+    "distractorNotes": {
+      "b": "Asymmetric KMS keys have even smaller payload limits depending on key size and padding, and Sign produces a cryptographic signature rather than encryption.",
+      "c": "AWS Secrets Manager is meant for storing database credentials and secrets (up to 64 KB), not as a general-purpose encryption mechanism for application documents.",
+      "d": "The KMS Encrypt API takes raw binary bytes directly in memory; it does not take Amazon S3 pre-signed URLs as input."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/kms/latest/APIReference/API_Encrypt.html",
+    "sourceNote": "AWS KMS Encrypt API Reference",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-security-024",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A developer creates a new customer managed key in AWS Key Management Service (AWS KMS) using the AWS CLI. The developer attaches an IAM policy granting kms:Decrypt to an application IAM role. However, when the application attempts to decrypt data, it receives an AccessDeniedException. Upon inspecting the KMS key, the developer discovers the key policy is empty. What statement must be added to the KMS key policy to allow IAM policies in the account to grant access to the key?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A statement granting kms:Decrypt with Principal: {\"Service\": \"iam.amazonaws.com\"} for Resource: \"*\"."
+      },
+      {
+        "id": "b",
+        "text": "A statement granting kms:* with Principal: \"*\" and a condition requiring the aws:PrincipalType context key to equal IAMRole."
+      },
+      {
+        "id": "c",
+        "text": "A statement granting kms:* to the AWS account root principal (arn:aws:iam::111122223333:root) for Resource: \"*\"."
+      },
+      {
+        "id": "d",
+        "text": "A statement granting kms:CreateGrant with Principal: {\"AWS\": \"arn:aws:iam::111122223333:role/Admin\"} for Resource: \"*\"."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "In AWS KMS, key policies are the primary access control mechanism. Unlike other AWS resources where identity-based policies alone can grant access to account-owned resources, an IAM policy has no effect on a KMS key unless the key policy explicitly delegates permission to the account. The default key policy statement grants kms:* to the root principal (arn:aws:iam::<account-id>:root), which enables the account administrators to use IAM policies to grant access to users and roles.",
+    "distractorNotes": {
+      "a": "iam.amazonaws.com is the service principal for the IAM service itself, not the mechanism for delegating KMS key permissions to account IAM policies.",
+      "b": "Specifying Principal: \"*\" without explicit condition controls opens the key to any entity across AWS and does not implement the standard delegation model.",
+      "d": "Granting CreateGrant to an admin role does not enable IAM policies generally across the account to control access to the KMS key."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/kms/latest/developerguide/key-policy-default.html",
+    "sourceNote": "Default key policy in AWS KMS",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-security-025",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An application running in AWS Account B (222222222222) needs to decrypt data encrypted with an AWS KMS customer managed key located in AWS Account A (111111111111). Which combination of access controls must be in place for the application in Account B to use the key successfully?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The KMS key policy in Account A must grant kms:Decrypt permissions to Account B, but no permissions need to be declared in Account B's IAM policies because resource policies take full precedence."
+      },
+      {
+        "id": "b",
+        "text": "The KMS key policy in Account A must grant kms:Decrypt permissions to Account B, AND an IAM policy attached to the application role in Account B must grant kms:Decrypt on the key ARN."
+      },
+      {
+        "id": "c",
+        "text": "Account B must create an AWS KMS grant in Account B that points to Account A's KMS key ARN using an IAM trust relationship between the two accounts to delegate decryption authority."
+      },
+      {
+        "id": "d",
+        "text": "Account A must enable automatic cross-account key replication in the AWS KMS console and replicate the customer managed key into Account B before Account B can decrypt ciphertexts."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Cross-account access to an AWS KMS key requires dual authorization: 1. The key policy in Account A must explicitly allow Account B (or the specific IAM role in Account B) to perform kms:Decrypt. 2. The IAM policy attached to the role in Account B must grant permission to perform kms:Decrypt on Account A's KMS key ARN. If either permission is missing, access is denied.",
+    "distractorNotes": {
+      "a": "Unlike some resource policies within the same account, cross-account access requires explicit permissions in both the resource policy and the caller's IAM policy.",
+      "c": "Grants must be created in the account that owns the KMS key (Account A), not created arbitrarily in external calling accounts.",
+      "d": "Cross-account decryption does not require multi-Region key replication; keys can be used cross-account directly over the network via AWS KMS APIs."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/kms/latest/developerguide/key-policy-modifying-external-accounts.html",
+    "sourceNote": "Allowing external AWS accounts to access a KMS key",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-security-026",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An application dynamically spins up short-lived worker processes that need temporary permissions to decrypt sensitive files using an AWS KMS customer managed key. The security team wants to grant these permissions programmatically for a specific duration without modifying the KMS key policy or creating new IAM roles for every worker instance. Which AWS KMS feature should the application use?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Create a temporary IAM user for each worker process using sts:GetFederationToken with an inline policy granting kms:Decrypt, and delete the temporary user when processing completes."
+      },
+      {
+        "id": "b",
+        "text": "Configure AWS KMS key aliases that rotate automatically when worker processes complete execution, pointing each alias to a dedicated short-lived key version in the KMS key schedule."
+      },
+      {
+        "id": "c",
+        "text": "Generate an asymmetric key pair in AWS KMS, export the private key to worker instance storage, and configure the worker processes to decrypt files locally without calling KMS APIs."
+      },
+      {
+        "id": "d",
+        "text": "Create an AWS KMS grant (CreateGrant) that delegates temporary decryption permissions to the worker's IAM role, and retire the grant (RetireGrant) when processing completes."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "AWS KMS grants provide a flexible and programmatic mechanism to delegate temporary permissions to a principal on a customer managed key without modifying the key policy or IAM policies. Applications can call kms:CreateGrant specifying grantee principal, allowed operations (such as Decrypt), and constraints, and call kms:RetireGrant or kms:RevokeGrant when the task finishes.",
+    "distractorNotes": {
+      "a": "Creating temporary users via federation introduces high operational overhead and does not leverage native KMS access delegation.",
+      "b": "KMS key aliases are friendly display names for KMS keys and do not control access permissions or lifecycle durations.",
+      "c": "Private keys in AWS KMS cannot be exported or distributed to worker instances; KMS performs cryptographic operations within hardware security modules (HSMs)."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/kms/latest/developerguide/grants.html",
+    "sourceNote": "Grants in AWS KMS",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-security-027",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer enables automatic key rotation on a customer managed symmetric encryption KMS key. Twelve months later, AWS KMS rotates the key. How does this automatic key rotation affect the application and existing encrypted data?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The KMS key ARN and Key ID change, requiring the developer to update application configuration files and re-encrypt existing ciphertexts."
+      },
+      {
+        "id": "b",
+        "text": "Existing ciphertexts become unreadable unless the developer manually re-encrypts stored application data with the new key version within a 30-day grace period."
+      },
+      {
+        "id": "c",
+        "text": "The KMS key ARN and Key ID remain unchanged; new encryption calls use the new key material, while AWS KMS retains previous key versions to decrypt existing data."
+      },
+      {
+        "id": "d",
+        "text": "AWS KMS automatically schedules a background maintenance task to decrypt and re-encrypt stored Amazon S3 objects and database tables using the newly generated key version."
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "When automatic key rotation is enabled for a customer managed symmetric encryption key, AWS KMS generates new cryptographic backing material every year (or configured period). The key ID, key ARN, key policy, and aliases do not change. New encryption operations automatically use the new key material, while AWS KMS retains prior backing key versions indefinitely so that data previously encrypted with older material can still be decrypted transparently without requiring re-encryption.",
+    "distractorNotes": {
+      "a": "The key ID and ARN remain identical throughout key rotations, requiring zero configuration updates in applications.",
+      "b": "Previous backing key material is retained by AWS KMS permanently; existing data remains decryptable without any manual re-encryption window.",
+      "d": "AWS KMS does not re-encrypt existing stored data in S3 or databases during rotation; it maintains historical key versions to decrypt existing data on demand."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/kms/latest/developerguide/rotate-keys.html",
+    "sourceNote": "Rotating customer managed keys in AWS KMS",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-security-028",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "security",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A company has a compliance requirement that sensitive customer records must be encrypted before leaving the client application network and before being transmitted over the wire to Amazon S3. The company also wants to protect against unauthorized decryption even if an attacker gains access to S3 storage bucket credentials. Which TWO steps should the developer take to implement this architecture? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Enable Amazon S3 server-side encryption with AWS KMS keys (SSE-KMS) on the destination storage bucket to encrypt objects upon arrival."
+      },
+      {
+        "id": "b",
+        "text": "Use the AWS Encryption SDK in the client application to encrypt the records client-side before calling the Amazon S3 PutObject API."
+      },
+      {
+        "id": "c",
+        "text": "Configure an Amazon S3 Bucket Policy with a condition enforcing s3:x-amz-server-side-encryption: \"AES256\" across all object uploads."
+      },
+      {
+        "id": "d",
+        "text": "Enable Amazon S3 default encryption using SSE-S3 with Amazon S3 managed encryption keys across the destination storage bucket."
+      },
+      {
+        "id": "e",
+        "text": "Configure a Cryptographic Materials Manager (CMM) or KMS keyring in the AWS Encryption SDK to manage data keys used for local encryption."
+      }
+    ],
+    "correct": [
+      "b",
+      "e"
+    ],
+    "explanation": "To satisfy the requirement that data must be encrypted prior to transmission (client-side encryption), the developer should use the AWS Encryption SDK. The client application configures a keyring (such as an AWS KMS keyring) and Cryptographic Materials Manager (CMM) in the SDK, which generates local data keys, encrypts the data client-side before sending it to S3, and ensures that plaintext data is never transmitted across the network or stored unencrypted on S3.",
+    "distractorNotes": {
+      "a": "SSE-KMS is server-side encryption: the client sends plaintext over HTTPS to S3, and S3 encrypts the data upon receipt, which fails the requirement to encrypt data before leaving the client network.",
+      "c": "Enforcing SSE-S3 via bucket policy condition mandates server-side encryption, which does not encrypt data on the client prior to transmission.",
+      "d": "SSE-S3 is server-side encryption performed by Amazon S3, failing the requirement for client-side encryption."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/encryption-sdk/latest/developer-guide/introduction.html",
+    "sourceNote": "AWS Encryption SDK concepts and client-side encryption",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-security-029",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "security",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer is configuring AWS Secrets Manager to store and automatically rotate credentials for an Amazon RDS PostgreSQL database instance. Which TWO architectural components are required to enable automatic rotation in Secrets Manager? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "An AWS Lambda rotation function that defines the rotation logic and handles the four rotation steps (createSecret, setSecret, testSecret, finishSecret)."
+      },
+      {
+        "id": "b",
+        "text": "An Amazon CloudWatch alarm configured to invoke an Amazon SNS topic that sends credential update notification emails to system administrators."
+      },
+      {
+        "id": "c",
+        "text": "An AWS Systems Manager Parameter Store parameter referencing the database connection string with a high-priority event notification tag."
+      },
+      {
+        "id": "d",
+        "text": "Network connectivity allowing the Lambda rotation function to access both the AWS Secrets Manager service endpoint and the Amazon RDS database instance."
+      },
+      {
+        "id": "e",
+        "text": "An Amazon S3 bucket configured with object versioning to store historical encrypted JSON backup snapshots of rotated database credentials."
+      }
+    ],
+    "correct": [
+      "a",
+      "d"
+    ],
+    "explanation": "Automatic rotation in AWS Secrets Manager requires: 1. An AWS Lambda rotation function that executes the four lifecycle steps: createSecret (generates new password), setSecret (updates database credentials), testSecret (validates new credentials against database), and finishSecret (moves new secret to AWSCURRENT). 2. Network connectivity: The Lambda function must be able to reach both the database (often inside a VPC private subnet) and the Secrets Manager API endpoint (either via an internet gateway/NAT gateway or through an interface VPC endpoint).",
+    "distractorNotes": {
+      "b": "CloudWatch alarms and SNS topics are for monitoring and alerting, not for executing the credential rotation workflow.",
+      "c": "Systems Manager Parameter Store is not required for Secrets Manager's native automatic rotation workflow.",
+      "e": "Secrets Manager tracks version stages (AWSCURRENT, AWSPREVIOUS, AWSPENDING) natively within the service without requiring external S3 versioned buckets."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/secretsmanager/latest/userguide/rotating-secrets.html",
+    "sourceNote": "Rotating AWS Secrets Manager secrets",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-security-030",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A high-throughput web application running on Amazon ECS handles thousands of requests per second. The application code calls the AWS Secrets Manager GetSecretValue API operation on every incoming HTTP request to retrieve a database connection password. Under heavy load, the application begins experiencing ThrottlingException errors and increased response latency. Which solution resolves the throttling and improves performance with the least architectural complexity?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Use an AWS Secrets Manager caching client library in the application code to cache the secret in memory and refresh it periodically."
+      },
+      {
+        "id": "b",
+        "text": "Request an immediate AWS service quota increase for GetSecretValue to 50,000 requests per second across the target AWS Region infrastructure."
+      },
+      {
+        "id": "c",
+        "text": "Deploy an Amazon ElastiCache cluster to store the retrieved secret, and update the application code to query the cache cluster on each request."
+      },
+      {
+        "id": "d",
+        "text": "Export the secret into the Amazon ECS task definition as cleartext environment variables during application container startup."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "AWS provides client-side caching libraries for AWS Secrets Manager (e.g., in Java, Python, Go, and .NET). Caching secrets in memory dramatically reduces latency and avoids hitting Secrets Manager API request quotas and ThrottlingException errors. The cache automatically refreshes the secret when it expires or after a configurable TTL, ensuring rotated secrets are picked up without calling GetSecretValue on every request.",
+    "distractorNotes": {
+      "b": "Increasing service quotas treats the symptom rather than the architectural flaw and leads to higher AWS API costs and latency per request.",
+      "c": "Deploying an external ElastiCache cluster introduces substantial infrastructure management overhead, network latency, and cost compared to in-process client-side caching.",
+      "d": "Storing secrets as static cleartext environment variables exposes credentials in task definitions and prevents the application from picking up rotated secrets without restarting tasks."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/secretsmanager/latest/userguide/retrieving-secrets.html",
+    "sourceNote": "Retrieve secrets from AWS Secrets Manager",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-security-031",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer is storing API tokens and configuration settings in AWS Systems Manager Parameter Store. The configuration includes non-sensitive server hostnames and sensitive third-party API payment keys. The developer wants to ensure that the payment keys are encrypted at rest using an AWS KMS customer managed key and that users without decrypt permissions cannot view the plaintext values. Which parameter type should the developer choose for the payment keys?",
+    "options": [
+      {
+        "id": "a",
+        "text": "String parameter type with a customer managed AWS KMS key ID specified in the parameter description field."
+      },
+      {
+        "id": "b",
+        "text": "SecureString parameter type with a customer managed AWS KMS key specified during parameter creation."
+      },
+      {
+        "id": "c",
+        "text": "StringList parameter type with client-side Base64 encoding applied to each token element in the list."
+      },
+      {
+        "id": "d",
+        "text": "AdvancedString parameter type with an attached AWS Secrets Manager cross-service encryption policy."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "AWS Systems Manager Parameter Store supports three parameter types: String, StringList, and SecureString. A SecureString is plaintext data that is encrypted when stored and decrypted when retrieved using an AWS KMS key (either the default AWS managed key or a customer managed key). Callers require both ssm:GetParameter and kms:Decrypt permissions on the KMS key to retrieve the plaintext value via --with-decryption.",
+    "distractorNotes": {
+      "a": "String parameters are stored unencrypted in plaintext; specifying a KMS key ID in the description has no cryptographic effect.",
+      "c": "StringList parameters are comma-separated plaintext strings; Base64 encoding is an encoding scheme, not encryption, and offers no data protection.",
+      "d": "AdvancedString is not a valid parameter type in Parameter Store; tiers are Standard or Advanced, but the encryption type is SecureString."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-parameter-store.html",
+    "sourceNote": "AWS Systems Manager Parameter Store concepts",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-security-032",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A developer needs to store an SSL certificate chain of 6 KB as a SecureString parameter in AWS Systems Manager Parameter Store. When attempting to create the parameter as a standard tier parameter, Parameter Store returns a ParameterMaxVersionLimitExceeded or size validation error. Additionally, the developer wants to configure an expiration policy to receive notifications before the certificate expires. Which tier of Parameter Store parameters should the developer use, and why?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Standard tier, because standard parameters support payloads up to 10 KB and provide automated lifecycle expiration policies without incurring additional charges."
+      },
+      {
+        "id": "b",
+        "text": "Intelligent tier, because it automatically offloads parameters exceeding 4 KB into Amazon DynamoDB tables with automated item time-to-live attributes."
+      },
+      {
+        "id": "c",
+        "text": "Standard tier, because the developer can compress the certificate chain using gzip to reduce the payload size below the standard 2 KB storage limit."
+      },
+      {
+        "id": "d",
+        "text": "Advanced tier, because advanced parameters support parameter sizes up to 8 KB and support parameter policies such as expiration and expiration notifications."
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "AWS Systems Manager Parameter Store offers Standard and Advanced parameter tiers: Standard parameters have a maximum size of 4 KB, up to 10,000 parameters per account/region, free of charge, and do not support parameter policies. Advanced parameters have a maximum size of 8 KB, up to 100,000 parameters, apply charges per parameter-month and API call, and support Parameter Policies (such as Expiration and ExpirationNotification to track lifecycle events through Amazon EventBridge). Because the certificate chain is 6 KB and requires an expiration policy, the Advanced tier is required.",
+    "distractorNotes": {
+      "a": "Standard parameters have a strict 4 KB limit and do not support parameter policies such as expiration notifications.",
+      "b": "Intelligent tier does not exist in Parameter Store; this conflates Parameter Store with Amazon S3 storage classes.",
+      "c": "Standard parameters have a 4 KB limit (not 2 KB), and manual compression does not provide native Parameter Store expiration policies."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-advanced-parameters.html",
+    "sourceNote": "Standard and advanced parameter tiers in Parameter Store",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-security-033",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "security",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An AWS Lambda function contains sensitive API tokens in its environment variables. By default, AWS Lambda encrypts environment variables at rest using an AWS managed KMS key (aws/lambda). A corporate security policy mandates that environment variables must be encrypted using a customer managed KMS key and that the plaintext values must not be visible in the AWS Lambda console. How should the developer configure the Lambda function to meet these compliance requirements?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Configure the Lambda function to use a customer managed KMS key for encryption at rest, and enable encryption helpers in the console to encrypt the variable values in transit before storing them."
+      },
+      {
+        "id": "b",
+        "text": "Store the API tokens in a configuration file inside the Lambda deployment zip package, and sign the zip archive using AWS Signer with an asymmetric key pair prior to uploading the code to AWS Lambda."
+      },
+      {
+        "id": "c",
+        "text": "Encrypt the environment variables using an SSL certificate imported into AWS Certificate Manager (ACM), and reference the certificate ARN in the Lambda execution role policy statement."
+      },
+      {
+        "id": "d",
+        "text": "Configure the Lambda function to use a customer managed KMS key for encryption at rest, and attach an IAM policy to console users that denies the lambda:GetFunctionConfiguration API action."
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "AWS Lambda encrypts environment variables at rest using KMS. To meet compliance, the developer selects a customer managed key instead of the default AWS managed key. Furthermore, to prevent environment variables from being viewed in plaintext in the AWS Lambda console, Lambda provides encryption helpers that use client-side encryption with KMS to encrypt the values before sending them to Lambda. The Lambda function code then decrypts them programmatically during execution using the AWS KMS SDK (kms:Decrypt).",
+    "distractorNotes": {
+      "b": "Storing tokens in deployment zip archives leaves secrets in files accessible to anyone with code download permissions, and code signing verifies integrity rather than confidentiality.",
+      "c": "ACM manages TLS/SSL certificates for HTTPS transport on endpoints like CloudFront and ALBs, not for encrypting Lambda environment variables.",
+      "d": "Denying lambda:GetFunctionConfiguration blocks console users from loading the function configuration view entirely, rather than using Lambda's native encryption helpers to mask environment variable values while permitting normal console administration."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars-encryption.html",
+    "sourceNote": "Securing AWS Lambda environment variables with AWS KMS",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "aws-dva-c02-security-034",
+    "cert": "aws-dva-c02",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "security",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An application running on AWS generates application logs that inadvertently contain sensitive personally identifiable information (PII), such as credit card numbers and email addresses. The developer must prevent these sensitive data elements from being displayed in plaintext to developers viewing logs in Amazon CloudWatch Logs, while still allowing authorized audit personnel to view the unmasked data when investigating incidents. Which TWO actions should the developer take to implement this solution? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Configure a CloudWatch Logs metric filter to permanently delete any log event that matches regular expressions for credit card numbers and email patterns."
+      },
+      {
+        "id": "b",
+        "text": "Configure a CloudWatch Logs data protection policy on the log group specifying data identifiers for credit card numbers and email addresses with a de-identification masking operation."
+      },
+      {
+        "id": "c",
+        "text": "Attach an IAM policy with an explicit Deny for the logs:FilterLogEvents and logs:GetLogEvents API actions to all developer IAM roles across the account."
+      },
+      {
+        "id": "d",
+        "text": "Grant the logs:GetDataProtectionPolicy and logs:Unmask IAM permissions exclusively to the authorized audit personnel IAM role to permit unmasked data review."
+      },
+      {
+        "id": "e",
+        "text": "Set the log retention period on the CloudWatch log group to 24 hours to automatically truncate sensitive log events before developers can review them."
+      }
+    ],
+    "correct": [
+      "b",
+      "d"
+    ],
+    "explanation": "Amazon CloudWatch Logs data protection policies allow users to define data masking rules on log groups using managed data identifiers (such as credit card numbers and email addresses). When configured, CloudWatch Logs masks matching sensitive data patterns in log events when viewed in the console or retrieved via API. To allow specific authorized audit personnel to unmask and review the underlying data, their IAM identity must be granted the logs:Unmask permission.",
+    "distractorNotes": {
+      "a": "Metric filters extract numeric metrics from log events; they cannot intercept or permanently delete specific events from log streams.",
+      "c": "Denying FilterLogEvents and GetLogEvents completely prevents developers from viewing any log events for operational debugging, whereas data protection policies mask sensitive identifiers while keeping logs readable.",
+      "e": "Lowering the retention period causes premature data loss for all logs and does not mask or protect sensitive data during the active retention window."
+    },
+    "sourceUrl": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/mask-sensitive-log-data.html",
+    "sourceNote": "Masking sensitive log data in Amazon CloudWatch Logs",
+    "sourceCheckedAt": "2026-10-12"
   }
 ]
