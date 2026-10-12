@@ -284,3 +284,18 @@ against elimination tells, definition-prompt stems, and distractor credibility:
   is calibrated to require technical understanding of Purview solutions rather than superficial keyword
   or eliminative cues.
 - `manifest.status` remains `"draft"` pending human-gated Phase 4 promotion.
+
+## 2026-10-12: Option hints implementation
+
+Implemented option-level `hintText` across the SC-900 question bank in accordance with [`CONTRIBUTING.md` § Bare option text and optional `hintText`](../../CONTRIBUTING.md):
+
+- **Coverage**: 66 of 80 questions (82.5%) now feature `hintText` across all of their options (264 options with glosses).
+- **Domain breakdown**:
+  - `describe-the-concepts-of-security-compliance-and-identity`: 8 of 10 questions (32 option hints).
+  - `describe-the-capabilities-of-microsoft-entra`: 20 of 22 questions (80 option hints).
+  - `describe-the-capabilities-of-microsoft-security-solutions`: 26 of 30 questions (104 option hints).
+  - `describe-the-capabilities-of-microsoft-compliance-solutions`: 12 of 18 questions (48 option hints).
+- **Design & Pedagogical alignment**:
+  - Questions with bare service, tool, feature, and principle names matching official exam item format present concise technical glosses when the candidate toggles "Show hints" during practice.
+  - The 14 remaining questions feature statement-style options whose text *is* the answer content and remain intact without `hintText`, strictly observing the repository standard.
+  - Every hint was neutrally phrased to define the option's specific technical role based on authoritative Microsoft Learn documentation without telegraphing answer keys.
