@@ -28,10 +28,10 @@ sum to exactly 100%:
 
 | Domain | Slug | Weight | Target (1×: 75) | Floor (2×: 150) | Target (4×: 300) | Questions |
 | --- | --- | ---: | ---: | ---: | ---: | ---: |
-| Creating Accessible Web Solutions | `creating-accessible-web-solutions` | 40% | 30 | 60 | 120 | 60 |
+| Creating Accessible Web Solutions | `creating-accessible-web-solutions` | 40% | 30 | 60 | 120 | 120 |
 | Identifying Accessibility Issues in Web Solutions | `identifying-accessibility-issues` | 40% | 30 | 60 | 120 | 60 |
 | Remediating Issues in Web Solutions | `remediating-accessibility-issues` | 20% | 15 | 30 | 60 | 30 |
-| **Total** | | **100%** | **75** | **150** | **300** | **150** |
+| **Total** | | **100%** | **75** | **150** | **300** | **210** |
 
 Exam specifications from blueprint:
 
@@ -145,3 +145,21 @@ Full orchestration pass across all 3 domains executed via `skills/orchestrate-ba
   - Absolute qualifier giveaway: 0%.
   - All whole-bank guards PASS (`positionBias`, `lengthBiasMeanDelta`, `longestOptionIsKey`).
   - `npm run check` green across all 10 manifests and 1,092 repository questions.
+ 
+## 4× Expansion: Domain 1 Pass (`creating-accessible-web-solutions`) — 2026-10-12
+ 
+Domain 1 expanded from 60 to 120 questions (`iaap-was-cws-061` through `iaap-was-cws-120`) to reach full 4× blueprint target:
+ 
+- **Stage A (Authoring)**: 60 new items authored by dedicated domain subagent. Sourced exclusively against primary W3C Recommendations (WCAG 2.2, WAI-ARIA 1.2/1.3, APG, AccName 1.2, ATAG 2.0, HTML 5.2) and ETSI EN 301 549.
+  - Topics covered: ARIA APG Widget patterns (Accordion, Combobox 1.2, Tabs, Treeview, Grid vs. Table, Slider/Spinbutton, Feed, Breadcrumb, Menu vs. Navigation, Dialog & Alertdialog, Tooltip vs. Toggletip); Accessible Name & Description Computation 1.2 (traversal of hidden elements in 2B, `aria-labelledby` vs. `aria-label` vs. native label vs. `title` fallback); Semantic HTML controls (`<dialog>` `showModal()` vs. `show()`, `<details>`/`<summary>`, native buttons vs. `role="button"`); Complex data tables (`headers`/`id` associations, `scope="colgroup"`); SVG accessibility (`role="img"`, `<title>`, `<desc>`, decorative SVGs); Single Page Applications (route focus management, document title updates, `aria-atomic`/`aria-relevant` live regions); WCAG 2.2 criteria (SC 1.4.10, 1.4.12, 1.4.13, 2.4.7, 2.4.13, 2.5.7, 2.5.8, 3.3.7, 3.3.8); Multimedia (WebVTT caption/subtitle tracks, audio description); ATAG 2.0 Part A vs. Part B; EN 301 549 Chapter 9.
+- **Stage B (Adversarial Cold Evaluation)**: All 60 items cold-evaluated against cited specifications. All 60 keys confirmed correct (0 miskeys). Explanations and distractor notes verified to be free of option letter references. All 60 items promoted to `status: "reviewed"`.
+- **Stage C (Difficulty Hardening)**: Calibrated against official sample questions 1–3. All distractors verified to test authentic practitioner misconceptions without overshooting into out-of-scope ambiguity. All 60 items *calibrated — no change*.
+- **Metrics & Quality Guards**:
+  - Key distribution in batch: exactly 15 `a`, 15 `b`, 15 `c`, 15 `d` (25.0% each).
+  - Domain total key distribution (120 items): exactly 30 `a`, 30 `b`, 30 `c`, 30 `d` (25.0% each).
+  - Whole-bank position balance: 53 `a` / 53 `b` / 52 `c` / 52 `d` (max 25.2%, well below 50% ceiling).
+  - Mean option length delta: +2.16 characters (median 0.67), well within ±10 char limit.
+  - Longest option as key: 59 of 210 (28.1%, well below 45% ceiling).
+  - Absolute qualifier giveaway: 0%.
+  - Distractor notes coverage: 100% across all 210 bank items.
+
