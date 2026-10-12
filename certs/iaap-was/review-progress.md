@@ -29,9 +29,9 @@ sum to exactly 100%:
 | Domain | Slug | Weight | Target (1×: 75) | Floor (2×: 150) | Target (4×: 300) | Questions |
 | --- | --- | ---: | ---: | ---: | ---: | ---: |
 | Creating Accessible Web Solutions | `creating-accessible-web-solutions` | 40% | 30 | 60 | 120 | 120 |
-| Identifying Accessibility Issues in Web Solutions | `identifying-accessibility-issues` | 40% | 30 | 60 | 120 | 60 |
+| Identifying Accessibility Issues in Web Solutions | `identifying-accessibility-issues` | 40% | 30 | 60 | 120 | 120 |
 | Remediating Issues in Web Solutions | `remediating-accessibility-issues` | 20% | 15 | 30 | 60 | 30 |
-| **Total** | | **100%** | **75** | **150** | **300** | **210** |
+| **Total** | | **100%** | **75** | **150** | **300** | **270** |
 
 Exam specifications from blueprint:
 
@@ -162,4 +162,22 @@ Domain 1 expanded from 60 to 120 questions (`iaap-was-cws-061` through `iaap-was
   - Longest option as key: 59 of 210 (28.1%, well below 45% ceiling).
   - Absolute qualifier giveaway: 0%.
   - Distractor notes coverage: 100% across all 210 bank items.
+
+## 4× Expansion: Domain 2 Pass (`identifying-accessibility-issues`) — 2026-10-12
+
+Domain 2 expanded from 60 to 120 questions (`iaap-was-iai-061` through `iaap-was-iai-120`) to reach full 4× blueprint target:
+
+- **Stage A (Authoring)**: 60 new items authored by dedicated domain subagent. Sourced exclusively against primary W3C Recommendations (WCAG 2.2, WCAG-EM 1.0, ACT Rules, AccName 1.2), Freedom Scientific JAWS documentation, NV Access NVDA documentation, and Apple VoiceOver documentation.
+  - Topics covered: Screen reader navigation and keystroke operations (NVDA Browse vs. Focus mode, Speech Viewer, review cursor, quick keys; JAWS Speech History `Insert+Space, H`, Touch Cursor, table coordinates `Ctrl+Alt+Numpad 5`, Auto Forms Mode, Virtual PC Cursor toggle `Insert+Z`, Landmarks dialog `Insert+Ctrl+R`; VoiceOver macOS Caption Panel, verbosity settings, Web Rotor customization, hierarchical interaction `VO+Shift+Down/Up`; VoiceOver iOS Screen Curtain triple tap, Actions rotor; TalkBack reading controls); Low vision & Zoom testing (SC 1.4.3 normal vs. large text thresholds, SC 1.4.11 UI component and graphical object contrast, SC 1.4.10 400% / 320px reflow exceptions, SC 1.4.4 text-only zoom truncation, SC 1.4.12 text spacing multipliers, Forced Colors Mode background image stripping, SC 1.4.13 hoverable/dismissible/persistent tooltip rules); Motor & Input testing (SC 2.1.1 keyboard navigation, SC 2.1.2 keyboard trap loops vs. Escape, SC 2.4.3 focus order, SC 2.4.7 focus visible, SC 2.4.11 / 2.4.12 focus not obscured minimum vs. enhanced, SC 2.5.1 pointer gestures, SC 2.5.2 pointer cancellation down vs. up events, SC 2.5.3 label in name speech recognition barriers, SC 2.5.4 motion actuation toggles, switch access dependency on focusable nodes); Conformance methodology & Auditing (WCAG-EM Steps 1–5 scope/sample/audit/report, automated scanner ~30–40% limit, false positives on gradients, DevTools Accessibility Tree computed properties, DOM vs. accessibility tree stripping with `aria-hidden="true"`, WCAG 2.2 Section 5.2 conformance requirements 5.2.1 Level AA cumulative, 5.2.3 Complete processes, Conforming alternate versions, W3C ACT Rules harmonization).
+- **Stage B (Adversarial Cold Evaluation)**: All 60 items cold-evaluated against cited specifications. All 60 keys confirmed correct (0 miskeys). Explanations and distractor notes verified to be free of option letter references. All 60 items promoted to `status: "reviewed"`.
+- **Stage C (Difficulty Hardening)**: Calibrated against official sample questions 4–6. Screen reader shortcuts and WCAG 2.2 criteria thresholds benchmarked against authentic practitioner testing tasks. All 60 items *calibrated — no change*.
+- **Metrics & Quality Guards**:
+  - Key distribution in batch: exactly 15 `a`, 15 `b`, 15 `c`, 15 `d` (25.0% each).
+  - Domain total key distribution (120 items): exactly 30 `a`, 30 `b`, 30 `c`, 30 `d` (25.0% each).
+  - Whole-bank position balance: 68 `a` / 68 `b` / 67 `c` / 67 `d` (max 25.2%, well below 50% ceiling).
+  - Mean option length delta: +0.96 characters (median 0.17), well within ±10 char limit.
+  - Longest option as key: 65 of 270 (24.1%, well below 45% ceiling).
+  - Absolute qualifier giveaway: 0%.
+  - Distractor notes coverage: 100% across all 270 bank items.
+
 

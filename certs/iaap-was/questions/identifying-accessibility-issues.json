@@ -2398,5 +2398,2405 @@
     "sourceUrl": "https://www.w3.org/TR/WCAG22/#cc5",
     "sourceNote": "WCAG 2.2 Conformance Requirement 5.2.5 defines the non-interference criteria: 1.4.2, 2.1.1, 2.1.2, 2.2.2, and 2.3.1.",
     "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-061",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "When testing an interactive custom ARIA widget such as a tree view (role=\"tree\") or slider (role=\"slider\") with NVDA, why must an auditor ensure NVDA switches to Focus Mode (or toggle with NVDA+Space)?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Browse Mode mutes synthesizer speech output during user interactions with ARIA roles"
+      },
+      {
+        "id": "b",
+        "text": "In Browse Mode, NVDA intercepts arrow keys for virtual navigation instead of passing them to the widget"
+      },
+      {
+        "id": "c",
+        "text": "Focus Mode is required because modern browsers block keyboard focus on ARIA elements in Browse Mode"
+      },
+      {
+        "id": "d",
+        "text": "Browse Mode forces all composite ARIA widgets to render as static layout graphics in the DOM tree"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "In Browse Mode, NVDA intercepts standard navigation keys like arrow keys to move its virtual cursor across content. To operate custom ARIA widgets requiring arrow keys, NVDA must enter Focus Mode so keystrokes pass directly to the browser and widget event handlers.",
+    "distractorNotes": {
+      "a": "Browse Mode does not mute speech output; it verbalizes text at the virtual cursor position.",
+      "c": "Browsers manage keyboard focus through tabindex and the DOM regardless of the active NVDA mode.",
+      "d": "Browse Mode does not alter ARIA widget roles or convert them into static graphic representations."
+    },
+    "sourceUrl": "https://www.nvaccess.org/files/nvda/documentation/userGuide.html#BrowseMode",
+    "sourceNote": "NVDA User Guide §5.5 explains Focus Mode passes keys to the app while Browse Mode intercepts keys.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-062",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "During an accessibility audit using NVDA, which tool within NVDA can an evaluator enable to display a floating visual window showing all text spoken by the speech synthesizer in real time?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The NVDA Python Developer Console window"
+      },
+      {
+        "id": "b",
+        "text": "The Windows Narrator Live Transcript panel"
+      },
+      {
+        "id": "c",
+        "text": "The NVDA Speech Viewer utility window"
+      },
+      {
+        "id": "d",
+        "text": "The Review Cursor Object Inspector dialog"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "The NVDA Speech Viewer displays a floating window showing the exact text currently being spoken by NVDA. This utility enables sighted or hard of hearing auditors to verify speech output, confirm pronunciation, and copy announcements for defect reports.",
+    "distractorNotes": {
+      "a": "The Python Console is a development tool used for inspecting internal objects and debugging scripts.",
+      "b": "Windows Narrator is a separate screen reader built into Windows rather than an NVDA feature.",
+      "d": "The Review Cursor is a navigation mechanism for reading screen content, not a speech transcript tool."
+    },
+    "sourceUrl": "https://www.nvaccess.org/files/nvda/documentation/userGuide.html#SpeechViewer",
+    "sourceNote": "NVDA User Guide §11.1 describes the Speech Viewer floating window for displaying spoken synthesizer text.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-063",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An accessibility evaluator needs to inspect dynamic status text that does not receive keyboard focus and is skipped by Browse Mode. Which NVDA feature allows navigating screen objects independently of system keyboard focus?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Review Cursor and Object Navigation using numeric keypad commands"
+      },
+      {
+        "id": "b",
+        "text": "Virtual PC Cursor quick navigation using the Tab and Shift+Tab keys"
+      },
+      {
+        "id": "c",
+        "text": "Touch Cursor mode using the Windows modifier key with arrow keys"
+      },
+      {
+        "id": "d",
+        "text": "Browse Mode document searching using the Control+F find keystroke"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "NVDA Review Cursor and Object Navigation allow auditors to inspect content, off-screen text, and accessible properties of objects without shifting system focus, typically operated via numeric keypad commands in desktop keyboard layout.",
+    "distractorNotes": {
+      "b": "Tab and Shift+Tab move system keyboard focus directly rather than reviewing objects independently.",
+      "c": "Touch Cursor is a JAWS feature rather than an NVDA navigation mode.",
+      "d": "Document search finds matching text strings in Browse Mode but does not navigate arbitrary screen objects."
+    },
+    "sourceUrl": "https://www.nvaccess.org/files/nvda/documentation/userGuide.html#ReviewingText",
+    "sourceNote": "NVDA User Guide §5.2 outlines Reviewing Text and Object Navigation using the review cursor.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-064",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "When using NVDA in Browse Mode to audit a complex online application form, which single-letter quick navigation key moves the virtual cursor specifically to the next checkbox on the web page?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Key C"
+      },
+      {
+        "id": "b",
+        "text": "Key F"
+      },
+      {
+        "id": "c",
+        "text": "Key K"
+      },
+      {
+        "id": "d",
+        "text": "Key X"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "In NVDA Browse Mode, single-letter navigation key X jumps to the next checkbox (and Shift+X to previous). Key F jumps to any form field, Key C jumps to comboboxes, and Key K jumps to links.",
+    "distractorNotes": {
+      "a": "Key C jumps to the next combobox in NVDA Browse Mode.",
+      "b": "Key F moves to the next form field of any type rather than checkboxes specifically.",
+      "c": "Key K jumps to the next hyperlink on the page."
+    },
+    "sourceUrl": "https://www.nvaccess.org/files/nvda/documentation/userGuide.html#BrowseModeQuickNav",
+    "sourceNote": "NVDA User Guide §5.5.1 lists quick navigation keys: X moves to the next checkbox.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-065",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "While auditing an older web page with NVDA, an evaluator observes that an HTML <table> element used purely for visual formatting is announced as a 4-column data table. How should the evaluator verify whether NVDA is treating the table as presentation?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Ensure NVDA Document Formatting settings have table announcements silenced"
+      },
+      {
+        "id": "b",
+        "text": "Verify whether Speech Viewer prints an error message indicating invalid HTML"
+      },
+      {
+        "id": "c",
+        "text": "Check if pressing F5 refreshes the DOM to strip layout tables automatically"
+      },
+      {
+        "id": "d",
+        "text": "Check if NVDA reports dimensions or if role='presentation' removes table semantics"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "NVDA uses heuristics to distinguish layout tables from data tables. When an author adds role='presentation' or role='none' to a table element, screen readers strip row, column, and grid semantics, treating child cells as generic text containers.",
+    "distractorNotes": {
+      "a": "Silencing table announcements in preferences suppresses feedback on legitimate data tables.",
+      "b": "Speech Viewer outputs spoken speech and does not validate HTML syntax errors.",
+      "c": "Pressing F5 reloads the web page but does not alter semantic markup or table heuristics."
+    },
+    "sourceUrl": "https://www.w3.org/WAI/tutorials/tables/",
+    "sourceNote": "WAI Tutorials on Tables note presentation tables must use role='presentation' to strip table semantics.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-066",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "During an audit in JAWS, an alert notification is spoken quickly and disappears before the evaluator can document its exact wording. Which JAWS command opens the Speech History window to review recently spoken synthesizer output?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Pressing Insert + Spacebar followed by H"
+      },
+      {
+        "id": "b",
+        "text": "Pressing Insert + F7 followed by Enter"
+      },
+      {
+        "id": "c",
+        "text": "Pressing Ctrl + Shift + V in the browser"
+      },
+      {
+        "id": "d",
+        "text": "Pressing Insert + Escape to refresh screen"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "In JAWS, pressing the layered keystroke Insert + Spacebar followed by H opens the JAWS Speech History window, allowing the auditor to review, select, and copy the most recent strings spoken by the synthesizer.",
+    "distractorNotes": {
+      "b": "Insert + F7 opens the Links List dialog in JAWS.",
+      "c": "Ctrl + Shift + V pastes unformatted clipboard text in browsers.",
+      "d": "Insert + Escape refreshes the current screen without displaying speech history."
+    },
+    "sourceUrl": "https://www.freedomscientific.com/training/jaws/basics/",
+    "sourceNote": "Freedom Scientific JAWS commands cite Insert+Spacebar, H to display speech history.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-067",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "When testing web content that cannot receive keyboard focus in JAWS, what mode enables navigating visual screen regions and inspecting layout structures using arrow keys without moving the system mouse?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Virtual PC Forms Mode"
+      },
+      {
+        "id": "b",
+        "text": "Screen Review Document Mode"
+      },
+      {
+        "id": "c",
+        "text": "JAWS Touch Cursor"
+      },
+      {
+        "id": "d",
+        "text": "Braille Line Tracking Mode"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "The JAWS Touch Cursor (activated with Shift + Numpad Plus) enables users and auditors to navigate screen elements and touch-friendly controls using arrow keys as if touching the screen, even if elements are not standard focusable HTML controls.",
+    "distractorNotes": {
+      "a": "Virtual PC Forms Mode routes keystrokes directly to form fields for text entry.",
+      "b": "Screen Review Document Mode is not a recognized JAWS navigation mode.",
+      "d": "Braille Line Tracking Mode controls refreshable braille displays rather than screen inspection."
+    },
+    "sourceUrl": "https://www.freedomscientific.com/training/jaws/basics/",
+    "sourceNote": "Freedom Scientific JAWS documentation explains Touch Cursor mode for navigating on-screen elements.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-068",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "While auditing a complex data table in JAWS, an evaluator wants to hear the current cell's column and row header information along with its coordinates. Which keystroke combination accomplishes this in JAWS?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Ctrl + Alt + Left Arrow"
+      },
+      {
+        "id": "b",
+        "text": "Ctrl + Alt + Numpad 5"
+      },
+      {
+        "id": "c",
+        "text": "Insert + Shift + T"
+      },
+      {
+        "id": "d",
+        "text": "Alt + Delete + Space"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "In JAWS, pressing Ctrl + Alt + Numpad 5 (or Insert + Shift + Numpad 5 in laptop layout) announces the current table cell contents, its associated row and column headers, and its grid coordinates.",
+    "distractorNotes": {
+      "a": "Ctrl + Alt + Left Arrow moves focus to the previous cell in the current row.",
+      "c": "Insert + Shift + T is not the standard JAWS table cell identification shortcut.",
+      "d": "Alt + Delete announces the cursor position relative to the active window margins."
+    },
+    "sourceUrl": "https://www.freedomscientific.com/training/jaws/basics/",
+    "sourceNote": "Freedom Scientific JAWS table commands cite Ctrl+Alt+Numpad 5 to read current cell and headers.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-069",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "In JAWS, how does Auto Forms Mode typically behave when an evaluator tabs from static paragraph text into an HTML <input type='text'> edit field?",
+    "options": [
+      {
+        "id": "a",
+        "text": "JAWS plays a sound and enters Forms Mode, routing typing directly to the input"
+      },
+      {
+        "id": "b",
+        "text": "JAWS prompts the user with a confirmation dialog before allowing text entry"
+      },
+      {
+        "id": "c",
+        "text": "JAWS remains in Virtual PC Cursor mode until the user presses Enter three times"
+      },
+      {
+        "id": "d",
+        "text": "JAWS mutes all speech synthesis until the user tabs away from the form field"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "By default, JAWS operates in Auto Forms Mode. When focus lands on an edit field via Tab, JAWS plays a distinctive sound (pop) and switches from the Virtual PC Cursor to Forms Mode so keystrokes type directly into the field.",
+    "distractorNotes": {
+      "b": "JAWS does not display confirmation dialogs when navigating into standard form controls.",
+      "c": "Entering Forms Mode manually requires a single Enter keypress; Auto mode switches automatically.",
+      "d": "Speech synthesis continues to read the field label and value rather than muting."
+    },
+    "sourceUrl": "https://www.freedomscientific.com/training/jaws/basics/",
+    "sourceNote": "Freedom Scientific documentation explains Auto Forms Mode activating upon navigating into form controls.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-070",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An evaluator is testing a web-based spreadsheet application that relies on single-letter keyboard shortcuts. In JAWS, which shortcut temporarily toggles Virtual PC Cursor Quick Keys off so letter keys are passed directly to the web app?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Insert + F4"
+      },
+      {
+        "id": "b",
+        "text": "Insert + Tab"
+      },
+      {
+        "id": "c",
+        "text": "Insert + F2"
+      },
+      {
+        "id": "d",
+        "text": "Insert + Z"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "In JAWS, pressing Insert + Z toggles the Virtual PC Cursor on or off (or disables Navigation Quick Keys). When disabled, pressing letters like H, T, or F sends keystrokes directly to the web application instead of triggering screen reader quick navigation.",
+    "distractorNotes": {
+      "a": "Insert + F4 closes and exits JAWS completely.",
+      "b": "Insert + Tab repeats the currently focused element and its state.",
+      "c": "Insert + F2 opens the JAWS Run JAWS Manager dialog."
+    },
+    "sourceUrl": "https://www.freedomscientific.com/training/jaws/basics/",
+    "sourceNote": "Freedom Scientific JAWS commands document Insert+Z for toggling Virtual PC Cursor in web apps.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-071",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "When auditing whether all sections of an enterprise web portal are wrapped in appropriate ARIA landmarks using JAWS, which shortcut displays a dialog listing all landmarks and regions on the page?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Insert + F3"
+      },
+      {
+        "id": "b",
+        "text": "Insert + Ctrl + R"
+      },
+      {
+        "id": "c",
+        "text": "Insert + Shift + L"
+      },
+      {
+        "id": "d",
+        "text": "Insert + Alt + M"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "In JAWS, pressing Insert + Ctrl + R displays the Regions/Landmarks dialog, allowing an evaluator to view, count, and navigate between all defined landmarks (<header>, <main>, <nav>, role='region', etc.) on the page.",
+    "distractorNotes": {
+      "a": "Insert + F3 is not the JAWS regions dialog command.",
+      "c": "Insert + Shift + L is not a standard JAWS landmark list shortcut.",
+      "d": "Insert + Alt + M does not open the landmarks dialog in JAWS."
+    },
+    "sourceUrl": "https://www.freedomscientific.com/training/jaws/basics/",
+    "sourceNote": "Freedom Scientific documentation notes Insert+Ctrl+R displays the JAWS Select a Region/Landmark dialog.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-072",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "An accessibility evaluator using VoiceOver on macOS wants a visual caption box on screen displaying spoken text for documenting audit issues. Which VoiceOver feature should be enabled?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The macOS Voice Control Dictation Bubble"
+      },
+      {
+        "id": "b",
+        "text": "The Safari Web Inspector Console Drawer"
+      },
+      {
+        "id": "c",
+        "text": "The VoiceOver Caption Panel"
+      },
+      {
+        "id": "d",
+        "text": "The QuickTime Audio Recording Subtitle Bar"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "The VoiceOver Caption Panel (configured in VoiceOver Utility > Visuals > Panels) displays a resizable high-contrast window showing the exact text spoken by VoiceOver, making it straightforward for auditors to visually monitor announcements and capture screenshots.",
+    "distractorNotes": {
+      "a": "Dictation Bubble displays recognized speech input words rather than screen reader spoken output.",
+      "b": "Web Inspector Console displays JavaScript errors and console logs rather than VoiceOver speech.",
+      "d": "QuickTime Audio Recording is a media capture tool rather than a VoiceOver accessibility feature."
+    },
+    "sourceUrl": "https://support.apple.com/guide/voiceover/display-the-caption-panel-vo27954/mac",
+    "sourceNote": "Apple VoiceOver Guide describes enabling the Caption Panel under Visuals to display spoken text.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-073",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "When testing an HTML data table with VoiceOver on macOS in Safari, an auditor notices that row and column header titles are not spoken when arrowing into cells. What VoiceOver configuration setting should the auditor check?",
+    "options": [
+      {
+        "id": "a",
+        "text": "VoiceOver Utility > Web > 'Always speak web page descriptions aloud'"
+      },
+      {
+        "id": "b",
+        "text": "VoiceOver Utility > Navigation > 'Group items when moving in DOM tree'"
+      },
+      {
+        "id": "c",
+        "text": "VoiceOver Utility > Verbosity > 'Announce table headers' in Web options"
+      },
+      {
+        "id": "d",
+        "text": "Safari Preferences > Advanced > 'Disable native table semantics in DOM'"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "VoiceOver includes verbosity settings under VoiceOver Utility > Verbosity. Under Web options, auditors can configure how tables are read, including whether column and row headers are announced automatically when moving into table cells.",
+    "distractorNotes": {
+      "a": "Web page descriptions setting controls page summary announcements, not table header repetition.",
+      "b": "Grouping controls DOM grouping behavior during linear reading rather than table header speech.",
+      "d": "Safari has no preference setting to disable native table semantics."
+    },
+    "sourceUrl": "https://support.apple.com/guide/voiceover/change-verbosity-settings-vo27956/mac",
+    "sourceNote": "Apple VoiceOver User Guide describes Verbosity settings for web content, including table header announcements.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-074",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An evaluator uses the VoiceOver Web Rotor (VO + U) on macOS to check page structure, but the 'Landmarks' panel does not appear when arrowing through rotor categories. How can the evaluator restore it?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Reinstall the Safari web browser to restore default rotor panels"
+      },
+      {
+        "id": "b",
+        "text": "Open VoiceOver Utility > Web > Web Rotor and check the Landmarks option"
+      },
+      {
+        "id": "c",
+        "text": "Add an aria-rotor='landmarks' attribute to the document body element"
+      },
+      {
+        "id": "d",
+        "text": "Press VO + Command + Shift + R to reset all system rotor preferences"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "The VoiceOver Web Rotor can be customized in VoiceOver Utility > Web > Web Rotor. If a category such as Landmarks, Tables, or Form Controls is unchecked in this list, it will not appear when VO + U is opened.",
+    "distractorNotes": {
+      "a": "Reinstalling Safari is unnecessary because rotor options are managed in macOS VoiceOver Utility.",
+      "c": "There is no HTML or ARIA attribute named aria-rotor.",
+      "d": "VO + Command + Shift + R is not a valid VoiceOver reset shortcut."
+    },
+    "sourceUrl": "https://support.apple.com/guide/voiceover/use-the-voiceover-rotor-mchlp2719/mac",
+    "sourceNote": "Apple VoiceOver Guide explains customizing rotor options in VoiceOver Utility > Web > Web Rotor.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-075",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "In VoiceOver on macOS with Safari, an auditor reaches an HTML <table> or <iframe> and VoiceOver announces 'Table, 4 columns, 5 rows'. What key command must the auditor press to move focus inside the container to read its cells?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Pressing VO + Spacebar to activate container"
+      },
+      {
+        "id": "b",
+        "text": "Pressing VO + J to jump into active container"
+      },
+      {
+        "id": "c",
+        "text": "Pressing VO + Return to open edit control mode"
+      },
+      {
+        "id": "d",
+        "text": "Pressing VO + Shift + Down Arrow"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "macOS VoiceOver uses an explicit hierarchical interaction model. When encountering complex composite elements like tables, lists, scroll areas, and iframes, the user must press VO + Shift + Down Arrow to interact with items inside, and VO + Shift + Up Arrow to stop interacting.",
+    "distractorNotes": {
+      "a": "VO + Spacebar activates links, buttons, or checkboxes rather than interacting with compound containers.",
+      "b": "VO + J jumps to the linked element or container without entering interaction mode.",
+      "c": "VO + Return opens links or enters text edit fields in certain applications."
+    },
+    "sourceUrl": "https://support.apple.com/guide/voiceover/interact-with-items-mchlp2730/mac",
+    "sourceNote": "Apple VoiceOver User Guide describes using VO+Shift+Down Arrow to interact with items in an area or table.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-076",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "While conducting an accessibility audit on an iPhone using VoiceOver, an auditor needs to verify that the interface can be navigated solely by audio without visual cues. What touch gesture toggles the Screen Curtain on or off?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Triple-tapping with three fingers on the screen"
+      },
+      {
+        "id": "b",
+        "text": "Double-tapping with two fingers anywhere on the screen"
+      },
+      {
+        "id": "c",
+        "text": "Swiping down with four fingers from the top bezel"
+      },
+      {
+        "id": "d",
+        "text": "Long-pressing with three fingers for five seconds"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "On iOS with VoiceOver enabled, triple-tapping with three fingers turns the Screen Curtain on or off, blacking out the screen so auditors can test non-visual operation. (Double-tapping with three fingers toggles speech on or off).",
+    "distractorNotes": {
+      "b": "Two-finger double tap is the 'Magic Tap' (starts or pauses media and answers calls).",
+      "c": "Four-finger swipe switches between open apps on iOS devices.",
+      "d": "Three-finger long press does not toggle Screen Curtain."
+    },
+    "sourceUrl": "https://support.apple.com/guide/iphone/voiceover-gestures-iph3e2e2281/ios",
+    "sourceNote": "Apple iPhone User Guide defines VoiceOver gestures: triple-tap with three fingers toggles the Screen Curtain.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-077",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "When testing a mobile web list item with custom swipe actions (such as 'Archive' or 'Delete') in VoiceOver on iOS, how does an evaluator trigger those contextual actions?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Performing a rapid three-finger flick to the left side of the screen"
+      },
+      {
+        "id": "b",
+        "text": "Rotating the rotor to 'Actions' and swiping up or down with one finger"
+      },
+      {
+        "id": "c",
+        "text": "Holding the device in landscape orientation and tapping the bottom edge"
+      },
+      {
+        "id": "d",
+        "text": "Shaking the device vigorously to reveal the hidden contextual menu"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "On iOS VoiceOver, custom element actions appear in the Rotor under 'Actions'. The user rotates two fingers to select 'Actions' and swipes up or down with one finger to hear each action, double-tapping to activate.",
+    "distractorNotes": {
+      "a": "A three-finger flick scrolls pages rather than triggering element action menus.",
+      "c": "Rotating device orientation triggers reflow rather than activating element action lists.",
+      "d": "Shaking the device triggers Undo if motion actuation is enabled."
+    },
+    "sourceUrl": "https://support.apple.com/guide/iphone/voiceover-rotor-iph3e2e2329/ios",
+    "sourceNote": "Apple iOS VoiceOver documentation details the Actions rotor item for activating contextual actions.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-078",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "When auditing mobile web pages on Android with Google TalkBack, what standard multi-finger gesture allows an evaluator to cycle through reading controls (such as Headings, Links, or Controls)?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Swiping up with three fingers or swiping down with three fingers"
+      },
+      {
+        "id": "b",
+        "text": "Double-tapping with four fingers simultaneously on the screen"
+      },
+      {
+        "id": "c",
+        "text": "Pinching inward with two fingers while pressing volume down"
+      },
+      {
+        "id": "d",
+        "text": "Swiping left with two fingers from the right screen bezel"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "In modern TalkBack (version 9.1+), swiping up with three fingers or swiping down with three fingers cycles through reading controls like Characters, Words, Lines, Headings, Links, and Controls.",
+    "distractorNotes": {
+      "b": "Four-finger double tap is not a standard TalkBack navigation command.",
+      "c": "Pinching with two fingers does not adjust reading controls; it zooms content.",
+      "d": "Two-finger swipe left or right scrolls content horizontally in TalkBack."
+    },
+    "sourceUrl": "https://support.google.com/accessibility/android/answer/6006598",
+    "sourceNote": "Google TalkBack Help outlines using a three-finger swipe up or down to cycle through reading controls.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-079",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "When using the Colour Contrast Analyser (CCA) eyedropper tool to evaluate small anti-aliased text rendered on a textured or solid background, what is the best practice for sampling the text color?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Sample the outer blurred fringe pixels of the font stroke where smoothing blends"
+      },
+      {
+        "id": "b",
+        "text": "Sample an average of the entire web page viewport color histogram using a browser tool"
+      },
+      {
+        "id": "c",
+        "text": "Sample the solid center core pixel of the font glyph stroke at high screen magnification"
+      },
+      {
+        "id": "d",
+        "text": "Sample the background color twice and add the mathematical difference to the computed CSS"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Anti-aliasing creates gradient transition pixels around glyph edges. Sampling edge pixels skews the reading toward the background color. Evaluators must magnify the screen and sample the solid interior core pixel of the font stroke to measure the intended foreground contrast.",
+    "distractorNotes": {
+      "a": "Sampling outer fringe pixels produces inaccurate contrast ratios because those pixels blend with the background.",
+      "b": "Viewport color histograms measure overall page palette rather than specific text-to-background contrast.",
+      "d": "Doubling the background sample and calculating mathematical deltas is not a valid contrast measurement technique."
+    },
+    "sourceUrl": "https://www.w3.org/TR/WCAG22/#contrast-minimum",
+    "sourceNote": "WCAG 2.2 Understanding 1.4.3 explains measuring contrast for anti-aliased text by sampling pixels within stroke core.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-080",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "During an audit of an e-commerce checkout form, an evaluator enters invalid data into the 'Zip Code' field. The input border turns red, but no text message, icon, or formatting change appears. Why does this violate WCAG 2.2 SC 1.4.1 (Use of Color)?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The red border fails to satisfy the 4.5:1 minimum contrast requirement for body text"
+      },
+      {
+        "id": "b",
+        "text": "Error indicators must be presented exclusively as system modal alert dialog boxes"
+      },
+      {
+        "id": "c",
+        "text": "HTML form fields are prohibited from modifying CSS border colors upon validation failure"
+      },
+      {
+        "id": "d",
+        "text": "Color is used as the sole visual means of conveying that an input error has occurred"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "WCAG 2.2 Success Criterion 1.4.1 (Use of Color, Level A) requires that color is not used as the only visual means of conveying information, indicating an action, prompting a response, or distinguishing a visual element. Adding an error icon, text message, or bold outline provides a non-color visual cue.",
+    "distractorNotes": {
+      "a": "Input borders are user interface components evaluated under SC 1.4.11 (3:1), not SC 1.4.3 (4.5:1).",
+      "b": "Modals are not required; inline text messages or icons satisfy the requirement.",
+      "c": "CSS border color modification is allowed as long as an additional non-color indicator is provided."
+    },
+    "sourceUrl": "https://www.w3.org/TR/WCAG22/#use-of-color",
+    "sourceNote": "WCAG 2.2 SC 1.4.1 requires that color is not used as the only visual means of conveying information or error states.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-081",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "An evaluator tests a button's keyboard focus indicator under WCAG 2.2 SC 1.4.11 (Non-text Contrast). The button background is dark blue (#002244) on a white page (#FFFFFF). When focused, a 2px solid light blue outline (#66AAFF) appears around the button. What must the outline contrast against by at least 3:1?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Against the inner text label and icon rendered inside the button element"
+      },
+      {
+        "id": "b",
+        "text": "Directly against neighboring interactive button and link components positioned on the web page"
+      },
+      {
+        "id": "c",
+        "text": "Against the operating system and browser default gray focus ring color"
+      },
+      {
+        "id": "d",
+        "text": "Against adjacent background colors (the button background and/or the white page)"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Under WCAG 2.2 SC 1.4.11 (Non-text Contrast) and SC 2.4.13 (Focus Appearance), the focus indicator must have a contrast ratio of at least 3:1 against adjacent colors (such as the outer background of the page or the inner background of the focused component).",
+    "distractorNotes": {
+      "a": "Focus outlines surround the component boundary and must contrast against adjacent backgrounds, not internal text.",
+      "b": "Focus indicators do not need to contrast against other unrelated buttons on the page.",
+      "c": "WCAG criteria evaluate the author's custom style against page backgrounds, not against default browser rings."
+    },
+    "sourceUrl": "https://www.w3.org/TR/WCAG22/#non-text-contrast",
+    "sourceNote": "WCAG 2.2 SC 1.4.11 requires 3:1 contrast for user interface component states against adjacent colors.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-082",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An evaluator audits a standalone pie chart graphic illustrating company market share. Three adjacent slices use pastel shades of yellow, light green, and light blue with contrast ratios of 1.4:1 between them and no separating lines. Why does this fail WCAG 2.2 SC 1.4.11 (Non-text Contrast)?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Data visualizations and pie charts are strictly restricted to using a maximum of two color swatches under Level A"
+      },
+      {
+        "id": "b",
+        "text": "Complex statistical chart labels must present all numerical percentage values in 24-point bold high-contrast text"
+      },
+      {
+        "id": "c",
+        "text": "Visual parts required to identify graphical objects must achieve at least 3:1 contrast against adjacent colors"
+      },
+      {
+        "id": "d",
+        "text": "Static graphic representations must provide synchronized audio tracks describing each data slice on user focus"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "WCAG 2.2 SC 1.4.11 requires that visual information required to identify parts of graphical objects (like slices of a pie chart) have a contrast ratio of at least 3:1 against adjacent colors, or use a contrasting 3:1 border or separator line.",
+    "distractorNotes": {
+      "a": "WCAG does not limit the number of colors in charts, provided contrast thresholds or separating borders are met.",
+      "b": "Typography size requirements for data graphics are not fixed at 24pt bold.",
+      "d": "Static pie charts require accessible names/descriptions, not synchronized audio descriptions."
+    },
+    "sourceUrl": "https://www.w3.org/TR/WCAG22/#non-text-contrast",
+    "sourceNote": "WCAG 2.2 SC 1.4.11 mandates 3:1 contrast for graphical objects required to understand content.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-083",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "When testing a responsive web page for conformance with WCAG 2.2 SC 1.4.10 (Reflow), an evaluator configures the desktop browser viewport to 1280 CSS pixels wide and zooms to 400%. What is the effective CSS viewport width being evaluated?",
+    "options": [
+      {
+        "id": "a",
+        "text": "320 CSS pixels"
+      },
+      {
+        "id": "b",
+        "text": "480 CSS pixels"
+      },
+      {
+        "id": "c",
+        "text": "640 CSS pixels"
+      },
+      {
+        "id": "d",
+        "text": "1024 CSS pixels"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "1280 CSS pixels divided by 400% zoom (scale factor of 4) equals 320 CSS pixels. WCAG 2.2 SC 1.4.10 requires that content reflow without two-dimensional scrolling at a width equivalent to 320 CSS pixels for vertically scrolling content.",
+    "distractorNotes": {
+      "b": "480 CSS pixels corresponds to approximately 267% zoom at 1280 CSS pixels.",
+      "c": "640 CSS pixels corresponds to 200% zoom at 1280 CSS pixels.",
+      "d": "1024 CSS pixels corresponds to 125% zoom at 1280 CSS pixels."
+    },
+    "sourceUrl": "https://www.w3.org/TR/WCAG22/#reflow",
+    "sourceNote": "WCAG 2.2 SC 1.4.10 requires reflow at a width of 320 CSS pixels, equivalent to 400% zoom at 1280px width.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-084",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "Under WCAG 2.2 SC 1.4.10 (Reflow), which type of web content is explicitly exempted from the requirement to avoid horizontal scrolling at 320 CSS pixels?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Multi-column article blogs, editorial news posts, and standard marketing copy paragraphs"
+      },
+      {
+        "id": "b",
+        "text": "Complex multi-dimensional data tables, maps, and video player control toolbars"
+      },
+      {
+        "id": "c",
+        "text": "Primary website navigation headers, skip links, and full footer legal copyright sections"
+      },
+      {
+        "id": "d",
+        "text": "User registration forms, multi-step checkout questionnaires, and customer account login portals"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "SC 1.4.10 provides an exception for content where two-dimensional layout is essential to its presentation or usage, such as data tables with multiple columns, geographic maps, diagrams, code blocks, and games.",
+    "distractorNotes": {
+      "a": "Blog articles and text paragraphs must reflow into a single column without horizontal scrolling.",
+      "c": "Navigation menus and footer blocks must reflow without requiring horizontal scrolling.",
+      "d": "Form fields and checkout workflows are required to reflow into a responsive vertical layout."
+    },
+    "sourceUrl": "https://www.w3.org/TR/WCAG22/#reflow",
+    "sourceNote": "WCAG 2.2 SC 1.4.10 lists exceptions where 2D layout is essential: data tables, maps, diagrams, and games.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-085",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "When testing an application for WCAG 2.2 SC 1.4.4 (Resize Text, Level AA), why must an evaluator specifically test 'Zoom Text Only' (such as in Firefox) in addition to full browser page zoom?",
+    "options": [
+      {
+        "id": "a",
+        "text": "SC 1.4.4 requires text to scale up to 200% without assistive tech and without containers clipping or truncating text"
+      },
+      {
+        "id": "b",
+        "text": "Browser page zoom is classified as external assistive technology and cannot be accepted for WCAG conformance claims"
+      },
+      {
+        "id": "c",
+        "text": "Text-only zoom forces the browser rendering engine to re-rasterize all inline SVG graphics into bitmap icon assets"
+      },
+      {
+        "id": "d",
+        "text": "Full page zoom disables JavaScript event listeners, preventing accurate evaluation of interactive form components"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "SC 1.4.4 requires text to be resized up to 200% without loss of content or functionality. While page zoom scales layout boxes together with text, 'Zoom Text Only' scales only font sizes inside fixed-height containers, exposing overflow clippings and overlaps.",
+    "distractorNotes": {
+      "b": "Browser page zoom is a standard user agent mechanism, not classified as third-party assistive technology.",
+      "c": "Text-only zoom does not convert SVG images to PNG files.",
+      "d": "Full page zoom does not alter or disable JavaScript DOM event listeners."
+    },
+    "sourceUrl": "https://www.w3.org/TR/WCAG22/#resize-text",
+    "sourceNote": "WCAG 2.2 Understanding 1.4.4 notes that text-only resize verifies containers adapt without truncating text.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-086",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An evaluator applies a standard WCAG 2.2 SC 1.4.12 (Text Spacing) bookmarklet to test content resilience. Which four exact CSS text styling metrics must the web page accommodate without loss of content or functionality?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Paragraph font weight 700, margin spacing 24px, line height 1.8 times font size, and padding 16px across text containers"
+      },
+      {
+        "id": "b",
+        "text": "Text indent 2em, uppercase text transform, line height 2.5 times font size, and expanded font stretch across typography"
+      },
+      {
+        "id": "c",
+        "text": "Line height 1.5, paragraph spacing 2 times font size, letter spacing 0.12 times font size, and word spacing 0.16 times font size"
+      },
+      {
+        "id": "d",
+        "text": "Line height 2.0, column count 2, letter spacing 0.25 times font size, and word spacing 0.5 times font size across layout"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "WCAG 2.2 SC 1.4.12 specifies exact minimum metrics: line height (line spacing) to at least 1.5 times font size, spacing following paragraphs to at least 2 times font size, letter spacing to at least 0.12 times font size, and word spacing to at least 0.16 times font size.",
+    "distractorNotes": {
+      "a": "SC 1.4.12 does not specify font weight, margin, or padding dimensions.",
+      "b": "Text indent and text transform are not part of the text spacing metrics.",
+      "d": "These multipliers exceed the specific thresholds defined in SC 1.4.12."
+    },
+    "sourceUrl": "https://www.w3.org/TR/WCAG22/#text-spacing",
+    "sourceNote": "WCAG 2.2 SC 1.4.12 defines exact metrics: line height 1.5x, paragraph space 2x, letter space 0.12x, word space 0.16x.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-087",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "While auditing an icon button in Windows Contrast Mode (Forced Colors Mode), an evaluator notices the icon vanishes completely. Inspecting CSS reveals the icon was rendered via background-image: url('search.svg'). Why does this issue occur?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Windows Contrast Mode blocks external HTTP network requests to vector image assets referenced in stylesheets"
+      },
+      {
+        "id": "b",
+        "text": "Modern browsers convert all external vector graphics into black silhouettes when system color modes are enabled"
+      },
+      {
+        "id": "c",
+        "text": "Forced Colors Mode enforces strict hardware screen resolutions that suppress rendering of external SVG graphics"
+      },
+      {
+        "id": "d",
+        "text": "Forced Colors Mode strips CSS background images, requiring inline SVG elements or high contrast media queries"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "In Forced Colors Mode (such as Windows High Contrast Mode), browsers override author colors and strip CSS background images to ensure high-contrast readability. Meaningful icons rendered as CSS backgrounds disappear unless authored using inline SVG, <img> tags, or forced-color-adjust: none.",
+    "distractorNotes": {
+      "a": "Forced Colors Mode does not block network requests; it alters CSS rendering rules.",
+      "b": "Browsers do not convert SVG graphics into black silhouettes.",
+      "c": "Forced Colors Mode does not restrict screen resolution."
+    },
+    "sourceUrl": "https://www.w3.org/WAI/tutorials/page-structure/styling/",
+    "sourceNote": "WAI page styling tutorials explain that forced colors mode strips CSS background images, hiding non-inline icons.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-088",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "When hovering over an information icon, a descriptive tooltip pops up covering adjacent text. According to WCAG 2.2 SC 1.4.13 (Content on Hover or Focus), what must the web page provide to satisfy the 'Dismissible' requirement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A client-side browser mechanism to delete cached tooltip assets from the local browser storage permanently"
+      },
+      {
+        "id": "b",
+        "text": "A mechanism such as the Escape key to dismiss the tooltip without moving pointer hover or keyboard focus"
+      },
+      {
+        "id": "c",
+        "text": "An automatic three-second countdown timer that dismisses the tooltip window without requiring user input"
+      },
+      {
+        "id": "d",
+        "text": "An interactive modal dialogue requesting user confirmation before displaying the descriptive tooltip popover"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Under SC 1.4.13 (Content on Hover or Focus, Level AA), the 'Dismissible' requirement specifies that a mechanism is available to dismiss the additional content without moving pointer hover or keyboard focus, typically implemented by pressing Escape.",
+    "distractorNotes": {
+      "a": "Browser cache deletion is irrelevant to visual tooltip dismissal.",
+      "c": "Automatic timeouts violate the 'Persistent' requirement of SC 1.4.13 unless the content becomes invalid.",
+      "d": "Confirmation dialogs introduce extra barriers and do not fulfill the dismissibility mechanism."
+    },
+    "sourceUrl": "https://www.w3.org/TR/WCAG22/#content-on-hover-or-focus",
+    "sourceNote": "WCAG 2.2 SC 1.4.13 Dismissible requires a way to dismiss hover/focus content without moving pointer or focus.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-089",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An evaluator hovers the mouse cursor over a help icon to trigger a popover containing a hyperlink. When the evaluator attempts to move the mouse pointer over the popover to click the link, the popover immediately disappears. What WCAG 2.2 requirement does this violate?",
+    "options": [
+      {
+        "id": "a",
+        "text": "SC 2.1.4 Character Key Shortcuts (Remap or Turn Off requirement)"
+      },
+      {
+        "id": "b",
+        "text": "SC 2.4.4 Link Purpose in Context (Programmatic Determination)"
+      },
+      {
+        "id": "c",
+        "text": "SC 1.4.13 Content on Hover or Focus (Hoverable condition)"
+      },
+      {
+        "id": "d",
+        "text": "SC 2.5.3 Label in Name (Speech Recognition Matching requirement)"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "SC 1.4.13 requires that if pointer hover can trigger the additional content, the pointer can be moved over the additional content without the content disappearing (the 'Hoverable' requirement), allowing users to read or interact with it.",
+    "distractorNotes": {
+      "a": "SC 2.1.4 relates to single-character keyboard shortcuts, not mouse hover popovers.",
+      "b": "SC 2.4.4 relates to link text clarity, not hover popover persistence.",
+      "d": "SC 2.5.3 relates to speech recognition label matching on interactive elements."
+    },
+    "sourceUrl": "https://www.w3.org/TR/WCAG22/#content-on-hover-or-focus",
+    "sourceNote": "WCAG 2.2 SC 1.4.13 Hoverable condition requires that the pointer can move over hover content without it disappearing.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-090",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "Under WCAG 2.2 SC 1.4.13, a custom tooltip triggered on hover or focus disappears automatically after 4 seconds while the user is still reading it and hovering the trigger. Why does this behavior fail the criterion?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The tooltip popover is required to remain rendered on screen for an absolute minimum of 60 seconds before closing"
+      },
+      {
+        "id": "b",
+        "text": "Tooltips triggered by mouse pointer hover are prohibited from closing until the user explicitly reloads the page"
+      },
+      {
+        "id": "c",
+        "text": "Transient hover triggers must immediately convert hover tooltips into permanent modal dialog boxes on display"
+      },
+      {
+        "id": "d",
+        "text": "The content must remain visible until the hover trigger is removed, the user dismisses it, or it becomes invalid"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "The 'Persistent' requirement of SC 1.4.13 mandates that the additional content remains visible until the hover or focus trigger is removed, the user dismisses it, or its information is no longer valid. Automatic timeouts fail this requirement.",
+    "distractorNotes": {
+      "a": "SC 1.4.13 does not define a 60-second timer; it requires persistence until dismissed or unfocused.",
+      "b": "Content can be dismissed by moving the pointer or pressing Escape without reloading the page.",
+      "c": "Tooltips do not need to convert into modal dialog windows."
+    },
+    "sourceUrl": "https://www.w3.org/TR/WCAG22/#content-on-hover-or-focus",
+    "sourceNote": "WCAG 2.2 SC 1.4.13 Persistent condition mandates hover/focus content remains until trigger is removed or dismissed.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-091",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A news website features a live auto-updating breaking news ticker at the top of every page. The ticker starts scrolling automatically upon page load and updates continuously. To satisfy WCAG 2.2 SC 2.2.2 (Pause, Stop, Hide, Level A), what must the author provide?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A dedicated mechanism allowing the user to increase the horizontal scroll rate by 300 percent"
+      },
+      {
+        "id": "b",
+        "text": "A mechanism allowing users to pause, stop, or hide the moving and auto-updating news feed"
+      },
+      {
+        "id": "c",
+        "text": "A high-contrast visual display toggle that modifies background colors across the ticker container"
+      },
+      {
+        "id": "d",
+        "text": "An audible synthesized chime sound effect alerting users every time the ticker text feed updates"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Under WCAG 2.2 SC 2.2.2 (Pause, Stop, Hide), for any moving, blinking, or scrolling information that starts automatically, lasts more than 5 seconds, and is presented in parallel with other content, there must be a mechanism for the user to pause, stop, or hide it.",
+    "distractorNotes": {
+      "a": "Increasing scroll speed makes reading harder and does not satisfy pause/stop/hide.",
+      "c": "Contrast toggles address SC 1.4.3, not moving/updating content under SC 2.2.2.",
+      "d": "Audible chimes would introduce distracting noise and potentially violate SC 1.4.2 Audio Control."
+    },
+    "sourceUrl": "https://www.w3.org/TR/WCAG22/#pause-stop-hide",
+    "sourceNote": "WCAG 2.2 SC 2.2.2 requires a mechanism for users to pause, stop, or hide moving or auto-updating content.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-092",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An evaluator reviews long-form documentation against WCAG 2.2 Level AAA criteria. Which styling choice directly violates SC 1.4.8 (Visual Presentation) regarding text alignment and line length?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Text is justified (aligned to both margins) and line length exceeds 80 characters"
+      },
+      {
+        "id": "b",
+        "text": "Text is left-aligned with ragged right edge and line length is 65 characters"
+      },
+      {
+        "id": "c",
+        "text": "Line spacing is set to 1.5 within paragraphs and paragraph spacing is 2 times font size"
+      },
+      {
+        "id": "d",
+        "text": "Foreground and background colors provide a contrast ratio of 7:1"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "WCAG 2.2 SC 1.4.8 (Visual Presentation, Level AAA) requires that text is not fully justified (aligned to both left and right margins) and line width is no more than 80 characters or glyphs (40 if CJK). Full justification creates uneven spaces ('rivers of white') that impede reading.",
+    "distractorNotes": {
+      "b": "Left-aligned text with 65 characters per line conforms to SC 1.4.8 recommendations.",
+      "c": "1.5 line spacing and 2x paragraph spacing are specifically recommended under SC 1.4.8.",
+      "d": "7:1 contrast ratio satisfies Level AAA contrast under SC 1.4.6."
+    },
+    "sourceUrl": "https://www.w3.org/TR/WCAG22/#visual-presentation",
+    "sourceNote": "WCAG 2.2 SC 1.4.8 requires non-justified text and line length of 80 characters or fewer (Level AAA).",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-093",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "A web dashboard includes a custom slider widget built with <div> elements to adjust volume. The slider can be dragged with a mouse, but pressing the Left and Right Arrow keys has no effect when the slider is focused. What success criterion does this fail?",
+    "options": [
+      {
+        "id": "a",
+        "text": "SC 1.4.11 Non-text Contrast"
+      },
+      {
+        "id": "b",
+        "text": "SC 2.1.1 Keyboard"
+      },
+      {
+        "id": "c",
+        "text": "SC 3.2.1 On Focus"
+      },
+      {
+        "id": "d",
+        "text": "SC 1.3.4 Orientation"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "WCAG 2.2 SC 2.1.1 (Keyboard, Level A) requires all functionality of the content to be operable through a keyboard interface without requiring specific timings for individual keystrokes. Custom sliders must support keyboard adjustment (e.g., arrow keys).",
+    "distractorNotes": {
+      "a": "SC 1.4.11 governs visual contrast of graphical objects and components, not operability.",
+      "c": "SC 3.2.1 requires that receiving focus does not automatically trigger a context change.",
+      "d": "SC 1.3.4 ensures content does not restrict view display to a single orientation."
+    },
+    "sourceUrl": "https://www.w3.org/TR/WCAG22/#keyboard",
+    "sourceNote": "WCAG 2.2 SC 2.1.1 mandates all functionality must be operable via a keyboard interface.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-094",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "When testing an accessible modal dialog, an evaluator observes that tabbing past the last interactive element loops focus back to the first interactive element inside the modal. Does this behavior violate WCAG 2.2 SC 2.1.2 (No Keyboard Trap)?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Yes, because cycling keyboard focus within any DOM element is classified as an automatic keyboard trap under WCAG"
+      },
+      {
+        "id": "b",
+        "text": "Yes, because keyboard navigation must allow focus to escape into the browser address bar at every step of tabbing"
+      },
+      {
+        "id": "c",
+        "text": "No, but only if the modal dialog component automatically closes after ten seconds of detected user inactivity"
+      },
+      {
+        "id": "d",
+        "text": "No, provided the user can close the dialog and restore page focus using standard keys such as Escape"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Focus trapping within an active modal dialog is standard ARIA practice to prevent tabbing to obscured background content. It does not violate SC 2.1.2 (No Keyboard Trap) as long as the user can escape the dialog using a standard method, such as pressing Escape or activating a Close button.",
+    "distractorNotes": {
+      "a": "Confining focus inside a modal is intentional and compliant if standard exit keystrokes (like Escape) work.",
+      "b": "Tabbing to background page content while a modal is open is an accessibility defect, not a requirement.",
+      "c": "Automatic closure timers create severe accessibility barriers and are not required by SC 2.1.2."
+    },
+    "sourceUrl": "https://www.w3.org/TR/WCAG22/#no-keyboard-trap",
+    "sourceNote": "WCAG 2.2 Understanding 2.1.2 confirms modal focus loops do not violate the criterion if standard escape exists.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-095",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer uses CSS flex-direction: row-reverse to display a navigation bar. The visual order of links is 'Home', 'About', 'Contact', but pressing Tab moves focus from 'Contact' to 'About' to 'Home'. Why does this fail WCAG 2.2 SC 2.4.3 (Focus Order)?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The focus sequence fails to preserve meaning because DOM order diverges from visual reading order"
+      },
+      {
+        "id": "b",
+        "text": "CSS flex-direction properties are strictly prohibited from being applied to interactive hyperlinks under Level A"
+      },
+      {
+        "id": "c",
+        "text": "All interactive hyperlink elements styled with CSS flexbox must have positive tabindex attribute values declared"
+      },
+      {
+        "id": "d",
+        "text": "Visual content layout must follow right-to-left orientation across all internationalized web applications"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "SC 2.4.3 (Focus Order, Level A) requires that if a web page can be navigated sequentially and the navigation sequences affect meaning or operation, focusable components receive focus in an order that preserves meaning and operability. CSS reordering without DOM adjustment causes confusing focus movement.",
+    "distractorNotes": {
+      "b": "CSS flex-direction is not prohibited, but DOM order must match visual order for logical focus navigation.",
+      "c": "Using positive tabindex is an anti-pattern that disrupts natural tab flow.",
+      "d": "Visual reading order depends on the language and design, not an arbitrary right-to-left rule."
+    },
+    "sourceUrl": "https://www.w3.org/TR/WCAG22/#focus-order",
+    "sourceNote": "WCAG 2.2 SC 2.4.3 requires focus order to preserve meaning and operability when navigated sequentially.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-096",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "An evaluator presses the Tab key through an interactive web page. Focus lands on a series of navigation links, but no visible outline, border, background change, or cursor indicator appears. What success criterion is violated?",
+    "options": [
+      {
+        "id": "a",
+        "text": "SC 2.4.1 Bypass Blocks"
+      },
+      {
+        "id": "b",
+        "text": "SC 2.4.2 Page Titled"
+      },
+      {
+        "id": "c",
+        "text": "SC 2.4.7 Focus Visible"
+      },
+      {
+        "id": "d",
+        "text": "SC 3.1.2 Language of Parts"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "WCAG 2.2 SC 2.4.7 (Focus Visible, Level AA) requires that any keyboard operable user interface has a mode of operation where the keyboard focus indicator is visible. Setting outline: none without providing an alternative focus style directly violates this criterion.",
+    "distractorNotes": {
+      "a": "SC 2.4.1 requires a mechanism to bypass repeated blocks of content (such as skip links).",
+      "b": "SC 2.4.2 requires web pages to have descriptive titles.",
+      "d": "SC 3.1.2 requires identifying the human language of parts of text."
+    },
+    "sourceUrl": "https://www.w3.org/TR/WCAG22/#focus-visible",
+    "sourceNote": "WCAG 2.2 SC 2.4.7 requires that any keyboard operable user interface has a visible focus indicator.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-097",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "When testing a webpage for WCAG 2.2 SC 2.4.11 (Focus Not Obscured (Minimum), Level AA), a fixed sticky footer covers the bottom 25% of a focused button. Does this fail SC 2.4.11?",
+    "options": [
+      {
+        "id": "a",
+        "text": "No, because SC 2.4.11 fails only if the focused component is entirely hidden by author content"
+      },
+      {
+        "id": "b",
+        "text": "Yes, because Level AA mandates that 100% of the focused component surface area must remain completely unobscured"
+      },
+      {
+        "id": "c",
+        "text": "Yes, because fixed sticky components are prohibited from overlapping any focusable HTML elements under Level AA"
+      },
+      {
+        "id": "d",
+        "text": "No, provided the sticky footer element has a CSS opacity value set to 0.5 or lower during keyboard navigation"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "WCAG 2.2 SC 2.4.11 (Focus Not Obscured (Minimum), Level AA) requires that when an item receives keyboard focus, it is not entirely hidden due to author-created content. If it is partially obscured (e.g., 25%), it passes Level AA (though it fails Level AAA SC 2.4.12).",
+    "distractorNotes": {
+      "b": "Requiring 100% visibility is the enhanced Level AAA requirement under SC 2.4.12.",
+      "c": "Sticky footers are permitted as long as they do not entirely obscure the focused item.",
+      "d": "Opacity does not exempt an item if it is completely covered and illegible."
+    },
+    "sourceUrl": "https://www.w3.org/TR/WCAG22/#focus-not-obscured-minimum",
+    "sourceNote": "WCAG 2.2 SC 2.4.11 Level AA requires that the focused component is not entirely hidden by author content.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-098",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "What is the key difference between WCAG 2.2 SC 2.4.11 (Focus Not Obscured (Minimum), Level AA) and SC 2.4.12 (Focus Not Obscured (Enhanced), Level AAA)?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Level AA applies to native input fields, whereas Level AAA applies exclusively to custom ARIA interactive widgets"
+      },
+      {
+        "id": "b",
+        "text": "Level AA allows partial obscuring if not entirely hidden, whereas Level AAA requires no part to be obscured"
+      },
+      {
+        "id": "c",
+        "text": "Level AA permits obscuring by modal dialogs, whereas Level AAA strictly prohibits all modal dialog window overlays"
+      },
+      {
+        "id": "d",
+        "text": "Level AA requires automated testing suites, whereas Level AAA mandates testing with physical switch access devices"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Under SC 2.4.11 (Minimum, Level AA), the item cannot be entirely hidden by author content. Under SC 2.4.12 (Enhanced, Level AAA), no part of the focus indicator or focused component may be hidden by author-created content.",
+    "distractorNotes": {
+      "a": "Both criteria apply to all user interface components that receive keyboard focus.",
+      "c": "Neither criterion prohibits modal dialogs; modals properly manage background focus and visibility.",
+      "d": "WCAG conformance levels define normative requirements, not testing tool mandates."
+    },
+    "sourceUrl": "https://www.w3.org/TR/WCAG22/#focus-not-obscured-enhanced",
+    "sourceNote": "WCAG 2.2 SC 2.4.12 Level AAA requires that no part of the component is hidden by author-created content.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-099",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "An interactive image gallery on a mobile site allows users to zoom into images using a two-finger pinch gesture. To satisfy WCAG 2.2 SC 2.5.1 (Pointer Gestures, Level A), what must the web application provide?",
+    "options": [
+      {
+        "id": "a",
+        "text": "An option allowing users to shake their mobile device to adjust the image zoom level"
+      },
+      {
+        "id": "b",
+        "text": "A mandatory system voice dictation command that replaces all screen gesture interactions"
+      },
+      {
+        "id": "c",
+        "text": "An alternative single-pointer mechanism, such as plus and minus zoom buttons"
+      },
+      {
+        "id": "d",
+        "text": "A hardware requirement obligating mobile device users to connect an external keyboard"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "WCAG 2.2 SC 2.5.1 (Pointer Gestures, Level A) requires that all functionality that uses multipoint or path-based gestures for operation can be operated with a single pointer without a path-based gesture, unless multipoint or path-based gesture is essential. Providing single-pointer zoom buttons satisfies this.",
+    "distractorNotes": {
+      "a": "Shaking the device relies on motion actuation (SC 2.5.4) and is not a pointer gesture solution.",
+      "b": "Voice dictation is an input modality, not an author-provided single-pointer interface control.",
+      "d": "Mobile users cannot be required to attach a physical keyboard to zoom images."
+    },
+    "sourceUrl": "https://www.w3.org/TR/WCAG22/#pointer-gestures",
+    "sourceNote": "WCAG 2.2 SC 2.5.1 requires single-pointer alternatives for multipoint or path-based gestures.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-100",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "When auditing a web application, an evaluator presses down the primary mouse button on a 'Delete Account' button. The deletion action triggers immediately on mousedown, before the user releases the button. Why does this violate WCAG 2.2 SC 2.5.2 (Pointer Cancellation)?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Destructive account actions are prohibited from being triggered through mouse pointer clicks under Level A"
+      },
+      {
+        "id": "b",
+        "text": "Pointer activation must always play an audible confirmation tone prior to initiating JavaScript execution"
+      },
+      {
+        "id": "c",
+        "text": "Single-pointer actions must require holding the mouse button down continuously for at least five seconds"
+      },
+      {
+        "id": "d",
+        "text": "The down-event must not trigger the function unless an abort, undo, or up-event mechanism is provided"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Under WCAG 2.2 SC 2.5.2 (Pointer Cancellation, Level A), for functionality that can be operated using a single pointer, at least one of the following must be true: the down-event is not used to execute the function (it executes on the up-event), an abort/undo mechanism is available, or the down-event is essential. Triggering on mousedown prevents aborting by moving the pointer away.",
+    "distractorNotes": {
+      "a": "Destructive actions can be triggered by clicks, provided pointer cancellation rules (like up-event execution) are followed.",
+      "b": "Audio confirmation chimes are not required by SC 2.5.2.",
+      "c": "A 5-second press requirement is not part of pointer cancellation."
+    },
+    "sourceUrl": "https://www.w3.org/TR/WCAG22/#pointer-cancellation",
+    "sourceNote": "WCAG 2.2 SC 2.5.2 requires functions to execute on the up-event or provide abort/undo capabilities.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-101",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A shopping cart button displays the visible text 'Buy Now' on screen, but its HTML is coded as <button aria-label='Purchase Cart Items'>Buy Now</button>. What barrier does this cause when evaluated with speech recognition software?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Speech recognition software crashes due to character encoding mismatches between HTML and ARIA labels"
+      },
+      {
+        "id": "b",
+        "text": "The shopping cart button fails to render its border correctly in high contrast mode on Windows systems"
+      },
+      {
+        "id": "c",
+        "text": "Screen readers will refuse to speak or present the button in their navigable elements list dialogues"
+      },
+      {
+        "id": "d",
+        "text": "When a user says 'Click Buy Now', the speech software fails to match the accessible name"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Under WCAG 2.2 SC 2.5.3 (Label in Name, Level A), for user interface components with labels that include text or images of text, the accessible name must contain the text that is presented visually. Since aria-label='Purchase Cart Items' completely replaces 'Buy Now' in the accessible name, saying 'Click Buy Now' will not activate the button.",
+    "distractorNotes": {
+      "a": "Speech software does not crash from mismatched labels; it simply fails to target the element.",
+      "b": "High contrast mode is unaffected by aria-label naming mismatches.",
+      "c": "Screen readers will announce the button using its aria-label ('Purchase Cart Items')."
+    },
+    "sourceUrl": "https://www.w3.org/TR/WCAG22/#label-in-name",
+    "sourceNote": "WCAG 2.2 SC 2.5.3 requires visible label text to be included within the programmatic accessible name.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-102",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "A mobile banking application allows users to clear entered form data by shaking their phone. To conform with WCAG 2.2 SC 2.5.4 (Motion Actuation), what two conditions must the application satisfy?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A conventional UI control must also provide the function, and motion actuation can be turned off"
+      },
+      {
+        "id": "b",
+        "text": "The motion gesture must require shaking for 15 seconds, and high contrast mode must be supported"
+      },
+      {
+        "id": "c",
+        "text": "The motion must be supported on Android devices and provide haptic vibration"
+      },
+      {
+        "id": "d",
+        "text": "The application must prompt the user with a biometric scan before accepting the motion trigger"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "WCAG 2.2 SC 2.5.4 (Motion Actuation, Level A) requires that functionality triggered by device motion (like shaking or tilting) can also be operated by conventional user interface components (e.g., a 'Clear' button), and the motion response can be disabled to prevent accidental actuation.",
+    "distractorNotes": {
+      "b": "A 15-second shake is tiring, difficult for motor disabilities, and not a WCAG requirement.",
+      "c": "Platform exclusivity and haptics do not fulfill SC 2.5.4 requirements.",
+      "d": "Biometric scanning is an authentication mechanism unrelated to motion actuation."
+    },
+    "sourceUrl": "https://www.w3.org/TR/WCAG22/#motion-actuation",
+    "sourceNote": "WCAG 2.2 SC 2.5.4 requires conventional UI alternatives and the ability to disable motion actuation.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-103",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "When testing a web application for switch access users (who use single-switch or two-switch scanning software), why do custom interactive components built with <div> elements without tabindex or ARIA roles present severe barriers?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Switch control software requires all interactive controls to be rendered as hardware-accelerated Canvas bitmaps"
+      },
+      {
+        "id": "b",
+        "text": "Switch scanning relies on the accessibility tree and focusable elements to determine scan targets"
+      },
+      {
+        "id": "c",
+        "text": "Switch hardware devices can only navigate web pages that are rendered strictly in plain text compatibility mode"
+      },
+      {
+        "id": "d",
+        "text": "Switch scanning utilities require specialized Bluetooth drivers that disable non-native CSS flexbox layouts"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Switch access systems (such as iOS Switch Control or Android Switch Access) scan through interactive elements exposed via the browser accessibility tree and DOM focus order. Non-semantic <div> elements without tabindex and appropriate roles are skipped during scanning.",
+    "distractorNotes": {
+      "a": "Canvas bitmaps are largely inaccessible to switch access unless backed by DOM elements.",
+      "c": "Switch devices navigate standard rendered HTML and CSS, not plain text mode.",
+      "d": "Bluetooth switch hardware interacts through OS accessibility APIs, not by disabling CSS layouts."
+    },
+    "sourceUrl": "https://www.w3.org/WAI/test-evaluate/preliminary/",
+    "sourceNote": "WAI preliminary evaluation notes that switch devices rely on semantic focusable elements to navigate.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-104",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An evaluator tests a web application using macOS Voice Control or Dragon NaturallySpeaking. The evaluator says 'Show numbers' to click a custom icon that lacks an accessible name. Why is relying on 'Show numbers' considered a workaround rather than a conformance pass?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Numbered overlays permanently alter the underlying DOM markup, causing immediate HTML5 validation failures"
+      },
+      {
+        "id": "b",
+        "text": "Speech recognition software utilities are strictly prohibited under WCAG 2.2 conformance evaluation methods"
+      },
+      {
+        "id": "c",
+        "text": "Accessible names enable direct voice targeting, whereas missing names force cumbersome numbered overlays"
+      },
+      {
+        "id": "d",
+        "text": "Numbered badges can only be rendered by speech utilities if the web page has zero custom CSS styling rules applied"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "When an interactive control lacks an accessible name, speech users cannot target it directly by speaking its label (e.g., 'Click Search'). They are forced to invoke numbering overlays ('Show numbers') and speak an arbitrary number. This fails SC 4.1.2 (Name, Role, Value) and hinders efficient interaction.",
+    "distractorNotes": {
+      "a": "Numbered overlays are rendered by the OS speech utility, not modifying author DOM.",
+      "b": "Speech recognition software is a key assistive technology evaluated in accessibility audits.",
+      "d": "Numbered overlays work across styled web pages independently of CSS."
+    },
+    "sourceUrl": "https://www.w3.org/TR/WCAG22/#name-role-value",
+    "sourceNote": "WCAG 2.2 Understanding 4.1.2 explains that proper accessible names allow direct voice recognition targeting.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-105",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "According to the Website Accessibility Conformance Evaluation Methodology (WCAG-EM 1.0), what is the first sub-step in Step 1 (Define the Evaluation Scope)?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Audit all sampled pages using an automated accessibility scanning engine"
+      },
+      {
+        "id": "b",
+        "text": "Interview end users with disabilities to gather subjective usability data"
+      },
+      {
+        "id": "c",
+        "text": "Define the Conformance Target (WCAG version and conformance level)"
+      },
+      {
+        "id": "d",
+        "text": "Select a structured and randomly chosen sample of representative web pages"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "WCAG-EM 1.0 Step 1 is 'Define the Evaluation Scope'. Sub-step 1.1 is 'Define the Conformance Target', where the evaluator and commissioner specify the target WCAG version (e.g., WCAG 2.2) and conformance level (e.g., Level AA).",
+    "distractorNotes": {
+      "a": "Auditing sampled pages occurs in Step 4 of WCAG-EM.",
+      "b": "User testing and interviews are supplemental activities outside core WCAG-EM conformance methodology.",
+      "d": "Selecting the representative sample occurs in Step 3 of WCAG-EM."
+    },
+    "sourceUrl": "https://www.w3.org/TR/WCAG-EM/#step1",
+    "sourceNote": "WCAG-EM 1.0 Step 1.1 defines establishing the target WCAG version and conformance level (A, AA, AAA).",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-106",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "During WCAG-EM Step 1.2 (Define the Scope of the Website), what must an evaluator document if third-party embedded content (such as an external payment portal) cannot be modified by the website owner?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Document boundaries, URIs, and whether third-party components are included or excluded from evaluation scope"
+      },
+      {
+        "id": "b",
+        "text": "Automatically grant an exemption under WCAG Conformance Requirement 5.2.2 for all embedded external services"
+      },
+      {
+        "id": "c",
+        "text": "Declare the primary website non-conformant immediately without evaluating any pages within author control"
+      },
+      {
+        "id": "d",
+        "text": "Directly modify and refactor the external vendor server-side scripts before proceeding with the evaluation"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "In WCAG-EM Step 1.2, evaluators explicitly define what is in and out of scope, including domain names, subdomains, paths, and third-party content. If third-party items are excluded, this must be transparently documented in the scope statement.",
+    "distractorNotes": {
+      "b": "WCAG 5.2.2 does not provide exemptions for partial pages; scope boundaries must be explicitly declared.",
+      "c": "Excluding a third-party section from evaluation scope does not invalidate the audit of pages within scope.",
+      "d": "Auditors evaluate web systems as deployed; they do not modify external third-party server code."
+    },
+    "sourceUrl": "https://www.w3.org/TR/WCAG-EM/#step1b",
+    "sourceNote": "WCAG-EM 1.0 Step 1.2 specifies defining the website scope, including boundaries and third-party content.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-107",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "In WCAG-EM Step 1.3 (Define the Baseline), what does establishing the 'Accessibility Support Baseline' entail?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Calculating minimum CPU processing speed and RAM memory required to execute client-side JavaScript frameworks"
+      },
+      {
+        "id": "b",
+        "text": "Verifying that all software engineers contributing code to the website hold active accessibility credentials"
+      },
+      {
+        "id": "c",
+        "text": "Setting the maximum allowable network latency for asynchronous API endpoints to under two hundred milliseconds"
+      },
+      {
+        "id": "d",
+        "text": "Specifying the operating systems, browsers, and assistive technologies against which the site is evaluated"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "In WCAG-EM Step 1.3, defining the baseline specifies the combination of user agents (web browsers) and assistive technologies (screen readers, screen magnifiers, speech recognition) supported by the target audience and against which accessibility is evaluated.",
+    "distractorNotes": {
+      "a": "Hardware specifications are not part of the accessibility support baseline.",
+      "b": "Staff credentials are administrative matters unrelated to testing baselines.",
+      "c": "Network response latency is a performance metric, not an accessibility baseline."
+    },
+    "sourceUrl": "https://www.w3.org/TR/WCAG-EM/#step1c",
+    "sourceNote": "WCAG-EM 1.0 Step 1.3 defines the accessibility support baseline as supported browsers and assistive tech.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-108",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "In WCAG-EM Step 2 (Explore the Target Website), which activity is specifically performed to ensure that subsequent sample selection is representative?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Issuing formal conformance compliance certificates for all static pages discovered during exploration"
+      },
+      {
+        "id": "b",
+        "text": "Identifying technologies used, key functionality, distinct page types, and variations in page layout"
+      },
+      {
+        "id": "c",
+        "text": "Remediating invalid ARIA attributes and missing heading markup discovered in the global header component"
+      },
+      {
+        "id": "d",
+        "text": "Filing formal bug reports with browser vendors regarding layout rendering inconsistencies on mobile devices"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "WCAG-EM Step 2 involves exploring the target website to identify the web technologies used (HTML, CSS, JavaScript, PDF), distinct types of web pages (forms, tables, multimedia), key functionalities, and different templates to inform sample selection.",
+    "distractorNotes": {
+      "a": "Conformance certificates cannot be issued before the audit is conducted.",
+      "c": "Remediating defects is the responsibility of developers after reporting, not during exploration.",
+      "d": "Submitting vendor bug reports is outside the scope of WCAG-EM site exploration."
+    },
+    "sourceUrl": "https://www.w3.org/TR/WCAG-EM/#step2",
+    "sourceNote": "WCAG-EM 1.0 Step 2 requires exploring the site to identify technologies, page types, and key functionality.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-109",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "When constructing the structured sample in WCAG-EM Step 3.1, which criteria guide the selection of representative web pages?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Selecting only web pages that have logged zero user accessibility complaints during the previous twelve months"
+      },
+      {
+        "id": "b",
+        "text": "Including common pages, diverse functionality, complete processes, and distinct page templates"
+      },
+      {
+        "id": "c",
+        "text": "Selecting pages strictly based on reverse chronological database creation timestamps across content stores"
+      },
+      {
+        "id": "d",
+        "text": "Restricting the evaluation sample exclusively to the public website homepage and the general contact form"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "WCAG-EM Step 3.1 (Select a Structured Sample) requires including common web pages (homepage, login, search), pages with distinct functions (data tables, forms, multimedia), complete user processes (checkout, registration), and pages using different designs or technologies.",
+    "distractorNotes": {
+      "a": "Complaint history is not a technical sampling criterion under WCAG-EM.",
+      "c": "Database creation order does not ensure functional or structural diversity.",
+      "d": "Restricting sampling to only two pages fails to provide a representative sample of a website."
+    },
+    "sourceUrl": "https://www.w3.org/TR/WCAG-EM/#step3a",
+    "sourceNote": "WCAG-EM 1.0 Step 3.1 guides selecting structured samples based on diversity, common pages, and complete processes.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-110",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "Why does WCAG-EM Step 3.2 mandate adding a randomly selected sample of web pages to the structured sample?",
+    "options": [
+      {
+        "id": "a",
+        "text": "To satisfy automated search engine indexing algorithms and improve public organic discovery rankings"
+      },
+      {
+        "id": "b",
+        "text": "To guarantee that every single web page across the entire web domain receives identical testing coverage"
+      },
+      {
+        "id": "c",
+        "text": "To validate the structured sample and discover unexpected accessibility issues outside curated templates"
+      },
+      {
+        "id": "d",
+        "text": "To eliminate the need for manual accessibility audits across pages included in the structured sample set"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "WCAG-EM Step 3.2 incorporates a randomly selected sample (typically ~10% of the structured sample size) to serve as a validation check. This helps identify edge cases, orphaned pages, or unexpected content authoring practices that were missed during structured selection.",
+    "distractorNotes": {
+      "a": "Search engine optimization is unrelated to WCAG evaluation sampling methodology.",
+      "b": "A random sample of 10% does not provide equal coverage across an entire site.",
+      "d": "Random sampling does not replace manual testing; both samples require audit."
+    },
+    "sourceUrl": "https://www.w3.org/TR/WCAG-EM/#step3b",
+    "sourceNote": "WCAG-EM 1.0 Step 3.2 includes randomly selected pages to validate the structured sample and detect surprises.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-111",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "In WCAG-EM Step 4 (Audit the Selected Sample), what must an auditor record for each sampled web page and success criterion?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The outcome (pass, fail, or not applicable) along with documentation of any identified failures"
+      },
+      {
+        "id": "b",
+        "text": "The financial budget estimates required to refactor identified non-conforming HTML and ARIA elements"
+      },
+      {
+        "id": "c",
+        "text": "A numerical performance score measured by commercial search engine marketing optimization engines"
+      },
+      {
+        "id": "d",
+        "text": "The calculated legal liability exposure under international commercial maritime accessibility treaties"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "WCAG-EM Step 4 requires evaluating each sampled page against all relevant WCAG success criteria and documenting the outcome (e.g., passed, failed, not present/applicable) along with specific failure details, elements, and steps to reproduce.",
+    "distractorNotes": {
+      "b": "Remediation cost estimation is an engineering project management task, not a WCAG-EM audit step.",
+      "c": "SEO scores are unrelated to accessibility conformance evaluation.",
+      "d": "Maritime laws do not govern web accessibility conformance evaluations."
+    },
+    "sourceUrl": "https://www.w3.org/TR/WCAG-EM/#step4",
+    "sourceNote": "WCAG-EM 1.0 Step 4 requires auditing sampled pages and recording outcomes (pass, fail, not applicable).",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-112",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "Which accessibility defect can an automated accessibility scanning tool (such as axe-core or WAVE) reliably detect with high precision without human judgement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Whether a video track provides accurate and synchronous captions"
+      },
+      {
+        "id": "b",
+        "text": "Whether an image's alt text accurately describes the instructional context of a diagram"
+      },
+      {
+        "id": "c",
+        "text": "Whether custom navigation links follow a logical reading order for screen reader users"
+      },
+      {
+        "id": "d",
+        "text": "An <img> element that completely lacks an alt attribute in the HTML markup"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Automated rules can reliably verify deterministic syntax and DOM properties, such as a missing alt attribute, duplicate element id values, or missing form <label> associations. Assessing the contextual accuracy of alt text, video captions, or reading order requires human judgement.",
+    "distractorNotes": {
+      "a": "Automated tools cannot judge the semantic synchronization and semantic accuracy of captions.",
+      "b": "Scanners can check if an alt attribute exists, but cannot judge whether the text accurately describes context.",
+      "c": "Logical reading order requires cognitive and context evaluation that automated scanners cannot perform."
+    },
+    "sourceUrl": "https://www.w3.org/WAI/eval/selecting-tools/",
+    "sourceNote": "W3C Selecting Accessibility Evaluation Tools notes automated tools reliably check syntax like missing alt.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-113",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "Why do industry accessibility guidelines state that automated testing tools typically detect only 30% to 40% of WCAG success criteria?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Most criteria require contextual human judgement, such as meaningful alternative text and logical tab flow"
+      },
+      {
+        "id": "b",
+        "text": "Automated scanners can only inspect CSS styles and cannot parse HTML markup or examine the DOM tree structure"
+      },
+      {
+        "id": "c",
+        "text": "Modern web browsers block automated accessibility testing APIs due to strict cross-origin security rules"
+      },
+      {
+        "id": "d",
+        "text": "Automated scanning engines are prohibited by federal regulations from scanning websites using HTTPS encryption"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "The majority of WCAG success criteria require human interpretation and context (e.g., whether alt text is meaningful, whether keyboard focus order is logical, whether color is the sole indicator, whether instructions are clear). Automated tools only evaluate rule-based programmatic invariants.",
+    "distractorNotes": {
+      "b": "Automated scanners directly inspect both the DOM and computed CSS styles.",
+      "c": "Browsers support automated scanning through extensions and headless drivers; CORS does not block DOM evaluation.",
+      "d": "HTTPS encryption does not prevent browser-based testing tools from evaluating page content."
+    },
+    "sourceUrl": "https://www.w3.org/WAI/eval/selecting-tools/",
+    "sourceNote": "WAI guidance notes automated tools detect ~30-40% of issues because most criteria require human judgement.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-114",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An automated scanner flags a text heading as failing SC 1.4.3 Contrast (Minimum). Upon manual inspection, the evaluator finds the text sits over a CSS gradient background, and the actual contrast ratio measured with a color picker across all letters is 6.5:1. How should the evaluator classify this scanner finding?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A false negative, because the automated tool failed to catch an actual severe visual accessibility violation"
+      },
+      {
+        "id": "b",
+        "text": "A critical conformance violation requiring immediate emergency removal of all gradient styling from the DOM"
+      },
+      {
+        "id": "c",
+        "text": "A verified true positive, because automated scanners hold legal authority over manual eyedropper readings"
+      },
+      {
+        "id": "d",
+        "text": "A false positive, because the scanner flagged compliant text due to complex background gradients"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "A false positive occurs when an automated tool flags compliant content as a failure. Many scanners cannot reliably determine the lowest contrast point over CSS gradients or background images and flag an issue even though the content passes upon manual measurement.",
+    "distractorNotes": {
+      "a": "A false negative occurs when an actual accessibility failure is missed by the scanner, not when compliant text is flagged.",
+      "b": "Compliant content does not represent a severity violation.",
+      "c": "Manual human inspection with validated tools overrides heuristic scanner flags."
+    },
+    "sourceUrl": "https://www.w3.org/WAI/eval/selecting-tools/",
+    "sourceNote": "W3C evaluation tool guidance explains false positives where tools flag compliant complex backgrounds as failures.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-115",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "When inspecting an interactive custom dropdown component in browser developer tools (such as Chrome or Firefox DevTools), what does the Accessibility Tree pane reveal that the raw DOM Elements tree does not?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The underlying server-side SQL queries used to retrieve option data from relational databases"
+      },
+      {
+        "id": "b",
+        "text": "The current battery charge percentage of the user's connected wireless Bluetooth keyboard device"
+      },
+      {
+        "id": "c",
+        "text": "The computed accessible name, role, states, and properties exposed to assistive technologies"
+      },
+      {
+        "id": "d",
+        "text": "The complete git commit log and pull request metadata for the engineer who authored the component"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "The browser DevTools Accessibility Tree pane displays the computed accessibility properties of an element—including its computed role, accessible name, description, and ARIA states—as calculated by the browser for assistive technologies.",
+    "distractorNotes": {
+      "a": "Server-side database queries are not exposed in browser developer tools accessibility panes.",
+      "b": "Hardware battery levels are not displayed in the accessibility tree.",
+      "d": "Version control commit history is not part of the browser accessibility tree."
+    },
+    "sourceUrl": "https://www.w3.org/TR/accname-1.2/",
+    "sourceNote": "W3C AccName 1.2 explains how browsers compute accessible name and role in the accessibility tree.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-116",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "An evaluator reviews a search dialog and finds <div aria-hidden='true'><button>Submit Search</button></div>. When inspecting the accessibility tree in DevTools, what is the expected status of the <button>?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The button is announced as an urgent live region alert dialog with highest speech synthesizer priority"
+      },
+      {
+        "id": "b",
+        "text": "The button is removed from the accessibility tree, preventing screen readers from accessing it"
+      },
+      {
+        "id": "c",
+        "text": "The button remains accessible to screen readers while its visual rendering opacity is forced to zero percent"
+      },
+      {
+        "id": "d",
+        "text": "The browser converts the button element into an accessible hyperlink navigation anchor automatically"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Applying aria-hidden='true' to a container removes the container and all of its DOM descendants from the accessibility tree. As a result, screen readers cannot perceive or interact with the button, even though it remains focusable via the keyboard, creating a severe accessibility barrier.",
+    "distractorNotes": {
+      "a": "aria-hidden does not convert child elements into live alerts.",
+      "c": "aria-hidden affects only the accessibility tree, not visual CSS opacity, but it hides content from screen readers.",
+      "d": "Browsers do not convert buttons into hyperlinks when aria-hidden is applied."
+    },
+    "sourceUrl": "https://www.w3.org/TR/wai-aria-1.2/#aria-hidden",
+    "sourceNote": "WAI-ARIA 1.2 §6.5.3 specifies aria-hidden='true' removes the element and all its children from the accessibility tree.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-117",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "Under WCAG 2.2 Conformance Requirement 5.2.1 (Conformance Level), what must a web page satisfy to claim conformance at Level AA?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Satisfy all Level AA success criteria only, while disregarding all foundational Level A requirements"
+      },
+      {
+        "id": "b",
+        "text": "Satisfy all Level AAA criteria and obtain formal written verification from the W3C Technical Director"
+      },
+      {
+        "id": "c",
+        "text": "Satisfy any arbitrary fifty percent subset of success criteria defined across both Level A and Level AA"
+      },
+      {
+        "id": "d",
+        "text": "Satisfy all Level A and all Level AA criteria in full (or provide conforming alternate versions)"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Conformance levels in WCAG are strictly cumulative. To conform at Level AA, the web page must satisfy all Level A success criteria AND all Level AA success criteria in full (or have conforming alternate versions).",
+    "distractorNotes": {
+      "a": "Level AA requires satisfying all Level A criteria in addition to Level AA criteria.",
+      "b": "Conformance at Level AA does not require Level AAA criteria or W3C approval.",
+      "c": "Partial percentage satisfaction cannot form the basis of a WCAG conformance claim."
+    },
+    "sourceUrl": "https://www.w3.org/TR/WCAG22/#conformance-reqs",
+    "sourceNote": "WCAG 2.2 Conformance Requirement 5.2.1 specifies Level AA requires meeting all Level A and AA criteria.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-118",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "A banking site's multi-step loan application spans four sequential web pages. Pages 1, 2, and 4 conform to WCAG 2.2 Level AA, but Page 3 has an inaccessible custom signature component that fails SC 2.1.1 (Keyboard). Can the organization claim Level AA conformance for the loan application?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Yes, because the majority of pages in the sequential process (75%) successfully pass all Level AA criteria"
+      },
+      {
+        "id": "b",
+        "text": "No, because Conformance Requirement 5.2.3 requires all pages in a complete process to conform"
+      },
+      {
+        "id": "c",
+        "text": "Yes, provided users are given an alternative option to complete the signature by printing a paper document"
+      },
+      {
+        "id": "d",
+        "text": "No, but only if the financial transaction amount exceeds standard regulatory consumer lending limits"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Under WCAG 2.2 Conformance Requirement 5.2.3 (Complete Processes), when a web page is one of a series of web pages presenting a process (like a transaction or workflow), all web pages in the process must conform at the specified level or better. Conformance cannot be claimed if any step in the process fails.",
+    "distractorNotes": {
+      "a": "Conformance cannot be claimed based on passing page percentages within a complete process.",
+      "c": "Alternative offline paper workflows do not permit claiming web conformance under 5.2.3.",
+      "d": "Financial loan thresholds have no bearing on WCAG conformance rules."
+    },
+    "sourceUrl": "https://www.w3.org/TR/WCAG22/#cc3",
+    "sourceNote": "WCAG 2.2 Conformance Requirement 5.2.3 mandates that all pages in a complete process must conform.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-119",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "hard",
+    "status": "reviewed",
+    "stem": "Under WCAG 2.2, when can a web page rely on a 'Conforming Alternate Version' to satisfy a conformance claim?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The alternate version conforms, provides equivalent content and function, and has an accessible link"
+      },
+      {
+        "id": "b",
+        "text": "The alternate version is hosted on a private company intranet requiring employee VPN credentials"
+      },
+      {
+        "id": "c",
+        "text": "The alternate version provides simplified plain text while omitting complex data charts and tables"
+      },
+      {
+        "id": "d",
+        "text": "The primary version displays a notification stating that full accessibility remediation is scheduled"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Under the WCAG definition of Conforming Alternate Version, the alternate version must conform at the designated level, provide the same information and functionality in the same human language, be as up to date as the non-conforming version, and be reached via an accessible mechanism from the non-conforming page.",
+    "distractorNotes": {
+      "b": "Restricting the alternate version to an internal intranet fails public reachability requirements.",
+      "c": "Omitting data tables or interactive functionality violates the requirement to provide the same information and functionality.",
+      "d": "Promising future remediation does not satisfy the requirements for a conforming alternate version."
+    },
+    "sourceUrl": "https://www.w3.org/TR/WCAG22/#conforming-alternate-version-def",
+    "sourceNote": "WCAG 2.2 defines Conforming Alternate Version: must conform, provide same content/function, and be accessible.",
+    "sourceCheckedAt": "2026-10-12"
+  },
+  {
+    "id": "iaap-was-iai-120",
+    "cert": "iaap-was",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "identifying-accessibility-issues",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "What is the primary purpose of the W3C Accessibility Conformance Testing (ACT) Rules format in modern web accessibility auditing?",
+    "options": [
+      {
+        "id": "a",
+        "text": "To automatically generate legal enforcement filings against websites exhibiting accessibility violations"
+      },
+      {
+        "id": "b",
+        "text": "To supersede normative WCAG success criteria with automated machine learning classification algorithms"
+      },
+      {
+        "id": "c",
+        "text": "To provide harmonized test rules so different tools and auditors produce consistent results"
+      },
+      {
+        "id": "d",
+        "text": "To administer commercial certification and licensing programs for software accessibility audit vendors"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "The W3C ACT Rules format defines a standardized way to write accessibility test rules. By harmonizing rule definitions across automated tools, test engines (like axe-core and Alfa), and human testing methodologies, ACT ensures consistent interpretation and testing of WCAG criteria.",
+    "distractorNotes": {
+      "a": "ACT rules are technical testing specifications, not automated legal litigation tools.",
+      "b": "ACT rules implement and test WCAG criteria; they do not replace them.",
+      "d": "ACT rules are open W3C technical specifications, not a commercial vendor licensing program."
+    },
+    "sourceUrl": "https://act-rules.github.io/rules/",
+    "sourceNote": "W3C ACT Rules provide harmonized, transparent test procedures to ensure consistent evaluation across tools.",
+    "sourceCheckedAt": "2026-10-12"
   }
 ]
