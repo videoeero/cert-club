@@ -241,6 +241,28 @@ _Checked 2026-09-17 · bank: `aws-clf-c02`_
     be reviewed as calibration for difficulty and question style, but must
     never be cited as a `sourceUrl`.
 
+## IAAP (International Association of Accessibility Professionals)
+
+_Checked 2026-10-12 · bank: `iaap-was`_
+
+- **Exam guides and Bodies of Knowledge** are public PDFs hosted on IAAP's Salesforce Community CDN:
+  - WAS Body of Knowledge: `https://www.accessibilityassociation.org/sfsites/c/resource/WASBoK_PDF`
+  - Candidate and Certificant Handbook: `https://www.accessibilityassociation.org/sfsites/c/resource/CertHandbook2025`
+  - Candidate Handbook and BoK carry formal version and date blocks (e.g., `Version 2.3 · October 2024`).
+- **Sample exam questions:**
+  - `https://www.accessibilityassociation.org/was-sample-exam-questions`
+- **Citable standards and documentation:**
+  - `https://www.w3.org/TR/*` — W3C Recommendations (WCAG 2.0 / 2.1 / 2.2, WAI-ARIA 1.2 / 1.3, ATAG 2.0, WCAG-EM 1.0)
+  - `https://www.w3.org/WAI/*` — WAI Authoring Practices Guide, WAI Tutorials, Planning & Management
+  - `https://act-rules.github.io/rules/` — W3C Accessibility Conformance Testing Rules
+  - `https://www.etsi.org/deliver/etsi_en/301500_301599/301549/*` — European Accessibility Standard EN 301 549
+  - `https://www.accessibilityassociation.org/sfsites/c/resource/*` — Official IAAP BoK and Handbook PDFs
+- **Do not cite:**
+  - `https://dequeuniversity.com/*` — course curriculum gated behind paid subscription / user login.
+  - `https://stiftelsenfunka.org/*` and `https://www.funka.com/*` — certification training courses are gated paid content.
+  - `https://makeitfable.com/*` — training content gated behind login.
+  - `https://www.surveymonkey.com/r/*` — third-party survey forms (use official sample questions page instead).
+
 ## Google
 
 No bank yet, so no profile. Write one from the first Google cert's recon.

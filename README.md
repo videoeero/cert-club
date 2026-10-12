@@ -78,6 +78,7 @@ should go. Courses teach you to build; these exams test what to choose.
 | AWS Certified Cloud Practitioner                                     | `aws-clf-c02` | stable      | [review record](./certs/aws-clf-c02/review-progress.md) |
 | AWS Certified AI Practitioner                                        | `aws-aif-c01` | stable      | [review record](./certs/aws-aif-c01/review-progress.md) |
 | AWS Certified Developer – Associate                                  | `aws-dva-c02` | draft       | [review record](./certs/aws-dva-c02/review-progress.md) |
+| IAAP Web Accessibility Specialist                                    | `iaap-was`    | draft       | [review record](./certs/iaap-was/review-progress.md)    |
 
 Each cert's `manifest.json` holds the authoritative metadata — official exam
 guide URL, question count, duration, and blueprint domain weights — and the app
