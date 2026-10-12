@@ -200,16 +200,30 @@ Domain 3 expanded from 30 to 60 questions (`iaap-was-raw-031` through `iaap-was-
   - Absolute qualifier giveaway: 0%.
   - Distractor notes coverage: 100% across all 300 bank items.
 
-## Full 4× Bank Target Achieved — 2026-10-12
+## Coverage Audit & Readiness for Human Testing — 2026-10-12
 
-The `iaap-was` bank has reached its complete 4× authoring target:
-- **Total Questions**: 300 reviewed items across all three domains:
-  - `creating-accessible-web-solutions`: 120 items (40% weight)
-  - `identifying-accessibility-issues`: 120 items (40% weight)
-  - `remediating-accessibility-issues`: 60 items (20% weight)
-- **Item Formats**: 300 single-select multiple choice items with 4 options each, matching the live exam blueprint.
-- **Sourcing Firewall**: 100% of questions sourced from open, public W3C Recommendations, ETSI EN 301 549 standards, and official IAAP documentation without paywalls or account registration.
-- **Quality Balance**: Perfect position balance (25.0% each: 75/75/75/75), length delta +0.64 characters, longest option as key 27.0%, zero absolute qualifier tells, zero option letter references.
+Offline audit of bank coverage against the official WAS Body of Knowledge blueprint:
+
+| Domain | Questions | Target (2×) | Target (4×) | Share | Manifest Weight | Delta vs Weight |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Creating Accessible Web Solutions | 120 | 60 | 120 | 40.0% | 40% | 0.0% |
+| Identifying Accessibility Issues in Web Solutions | 120 | 60 | 120 | 40.0% | 40% | 0.0% |
+| Remediating Issues in Web Solutions | 60 | 30 | 60 | 20.0% | 20% | 0.0% |
+| **Total** | **300** | **150** | **300** | **100%** | **100%** | **0.0%** |
+
+### Findings:
+1. **Blueprint Fidelity**: All three domains match their blueprint weights exactly (40% / 40% / 20%) across the full 4× expanded target (300 items).
+2. **Review & Calibration Status**: All 300 questions have `status: "reviewed"` following complete Stage B (adversarial cold evaluation) and Stage C (difficulty hardening) passes against official IAAP sample questions 1–8.
+3. **Statistical Guards**:
+   - Answer key balance: exactly 75 `a` / 75 `b` / 75 `c` / 75 `d` (25.0% each).
+   - Option length delta: mean +0.64 characters (median 0.33), passing the ±10 char guard.
+   - Longest option as key: 27.0% (below 45% ceiling).
+   - Zero absolute qualifier tells, zero option letter references, 100% distractor notes coverage.
+4. **Readiness Verdict**:
+   - The bank is **100% ready for human testing** via the web quiz application (`npm run dev`).
+   - No further AI agent content generation, cold evaluation, or difficulty hardening skills are required.
+   - `manifest.status` remains `draft` pending human testing feedback and explicit human promotion approval.
+
 
 
 
