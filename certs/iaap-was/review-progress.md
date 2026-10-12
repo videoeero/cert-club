@@ -30,8 +30,8 @@ sum to exactly 100%:
 | --- | --- | ---: | ---: | ---: | ---: | ---: |
 | Creating Accessible Web Solutions | `creating-accessible-web-solutions` | 40% | 30 | 60 | 120 | 120 |
 | Identifying Accessibility Issues in Web Solutions | `identifying-accessibility-issues` | 40% | 30 | 60 | 120 | 120 |
-| Remediating Issues in Web Solutions | `remediating-accessibility-issues` | 20% | 15 | 30 | 60 | 30 |
-| **Total** | | **100%** | **75** | **150** | **300** | **270** |
+| Remediating Issues in Web Solutions | `remediating-accessibility-issues` | 20% | 15 | 30 | 60 | 60 |
+| **Total** | | **100%** | **75** | **150** | **300** | **300** |
 
 Exam specifications from blueprint:
 
@@ -179,5 +179,34 @@ Domain 2 expanded from 60 to 120 questions (`iaap-was-iai-061` through `iaap-was
   - Longest option as key: 65 of 270 (24.1%, well below 45% ceiling).
   - Absolute qualifier giveaway: 0%.
   - Distractor notes coverage: 100% across all 270 bank items.
+
+## 4× Expansion: Domain 3 Pass (`remediating-accessibility-issues`) — 2026-10-12
+
+Domain 3 expanded from 30 to 60 questions (`iaap-was-raw-031` through `iaap-was-raw-060`) to complete the full 4× blueprint target:
+
+- **Stage A (Authoring)**: 30 new items authored by dedicated domain subagent. Sourced exclusively against primary W3C Recommendations (WCAG 2.2, WAI planning & interim repairs, WAI procurement), Information Technology Industry Council (ITI VPAT 2.x), Section508.gov, and ETSI EN 301 549.
+  - Topics covered: Issue Prioritization & Severity Triage (Blocker/Critical vs. High vs. Medium vs. Low/Advisory; task completion barriers and workaround availability; high-traffic conversion funnels like checkout, registration, and login prioritized over static content; distinguishing normative WCAG Failures from Advisory Techniques; unlabelled controls, keyboard traps, and SC 3.3.8 cognitive authentication blocks); Remediation Strategies (In-place code repairs for missing attributes and CSS `:focus-visible` restyling; structural architectural redesign replacing div-grids with native `<table>` and custom datepickers with conforming controls; W3C WAI Interim Repairs / Web Accessibility First Aid including telephone assistance and Accessibility Statement barrier disclosures; Shift-left engineering via `eslint-plugin-jsx-a11y`, CI/CD test bounds, Agile Definition of Done, and centralized design system remediation); Procurement & Governance (VPAT editions: 508, WCAG, EN 301 549, and INT; ACR conformance evaluation declarations and vendor red flags such as 100% "Supports" without remarks or legacy VPAT 1.0 submissions; Contract terms: Service Level Agreements with severity-based remediation timelines, "Right to Audit" clauses; EN 301 549 chapter mapping: Chapter 10 Non-web documents, Chapter 11 Software, Chapter 12 Documentation & Support; Accessible Procurement Maturity Model).
+- **Stage B (Adversarial Cold Evaluation)**: All 30 items cold-evaluated against cited specifications. All 30 keys confirmed correct (0 miskeys). Explanations and distractor notes verified to be free of option letter references. All 30 items promoted to `status: "reviewed"`.
+- **Stage C (Difficulty Hardening)**: Calibrated against official sample questions 7–8. Practical remediation trade-offs and enterprise procurement governance scenarios benchmarked against official items. All 30 items *calibrated — no change*.
+- **Metrics & Quality Guards**:
+  - Key distribution in batch: exactly 7 `a`, 7 `b`, 8 `c`, 8 `d`.
+  - Domain total key distribution (60 items): exactly 15 `a`, 15 `b`, 15 `c`, 15 `d` (25.0% each).
+  - Whole-bank position balance (300 items): **exactly 75 `a` / 75 `b` / 75 `c` / 75 `d`** (25.0% each across all four positions).
+  - Mean option length delta: +0.93 characters (median 0.33), well within ±10 char limit.
+  - Longest option as key: 70 of 300 (23.3%, well below 45% ceiling).
+  - Absolute qualifier giveaway: 0%.
+  - Distractor notes coverage: 100% across all 300 bank items.
+
+## Full 4× Bank Target Achieved — 2026-10-12
+
+The `iaap-was` bank has reached its complete 4× authoring target:
+- **Total Questions**: 300 reviewed items across all three domains:
+  - `creating-accessible-web-solutions`: 120 items (40% weight)
+  - `identifying-accessibility-issues`: 120 items (40% weight)
+  - `remediating-accessibility-issues`: 60 items (20% weight)
+- **Item Formats**: 300 single-select multiple choice items with 4 options each, matching the live exam blueprint.
+- **Sourcing Firewall**: 100% of questions sourced from open, public W3C Recommendations, ETSI EN 301 549 standards, and official IAAP documentation without paywalls or account registration.
+- **Quality Balance**: Perfect position balance (25.0% each), length delta +0.93 characters, zero absolute qualifier tells, zero option letter references.
+
 
 
