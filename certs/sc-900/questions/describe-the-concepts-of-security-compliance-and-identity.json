@@ -6,7 +6,7 @@
     "type": "single",
     "domain": "describe-the-concepts-of-security-compliance-and-identity",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "stem": "An organization is modernizing its security architecture according to the Zero Trust model. When designing access boundaries and threat detection mechanisms, the security architect wants to limit potential blast radius and lateral movement by operating under the assumption that malicious actors may already have access to internal network resources. Which core Zero Trust principle directly instructs this design approach?",
     "options": [
       {
@@ -37,6 +37,366 @@
     },
     "sourceUrl": "https://learn.microsoft.com/en-us/security/zero-trust/zero-trust-overview",
     "sourceNote": "Zero Trust principles",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-concepts-of-security-compliance-and-identity-002",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-concepts-of-security-compliance-and-identity",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An organization is planning to migrate internal line-of-business applications to cloud infrastructure and is evaluating different cloud service models against the shared responsibility model. According to Microsoft's cloud shared responsibility model, which security responsibility remains solely with the cloud provider across Infrastructure as a Service (IaaS), Platform as a Service (PaaS), and Software as a Service (SaaS)?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Operating system patching and host maintenance"
+      },
+      {
+        "id": "b",
+        "text": "Physical datacenter security and facilities"
+      },
+      {
+        "id": "c",
+        "text": "Information access governance and stored data"
+      },
+      {
+        "id": "d",
+        "text": "User account management and corporate devices"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "In Microsoft's cloud shared responsibility model, physical datacenter security and hardware maintenance are managed entirely by Microsoft across all cloud service models (IaaS, PaaS, and SaaS). Operating system patching is the customer's responsibility in IaaS, while Microsoft manages it in PaaS and SaaS. Information and data governance as well as user account management remain the customer's responsibility in all cloud deployment models.",
+    "distractorNotes": {
+      "a": "Operating system patching and configuration is managed by the customer in Infrastructure as a Service (IaaS), whereas the provider manages it in PaaS and SaaS.",
+      "c": "Information access governance and data protection remain the customer's responsibility across all cloud service models, including SaaS.",
+      "d": "Managing user accounts and identity security remains the customer's responsibility across cloud models, with device management shared in SaaS."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/security/fundamentals/shared-responsibility",
+    "sourceNote": "Shared responsibility model division across IaaS, PaaS, and SaaS",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-concepts-of-security-compliance-and-identity-003",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-concepts-of-security-compliance-and-identity",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A company implements multiple concentric rings of protection to safeguard its intellectual property in the cloud, ensuring that if a malicious actor bypasses outer network barriers, additional defensive mechanisms prevent unauthorized data exfiltration. Which security strategy does this architectural approach represent?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Perimeter-based boundary defense"
+      },
+      {
+        "id": "b",
+        "text": "Zero Trust verification model"
+      },
+      {
+        "id": "c",
+        "text": "Defense-in-depth security strategy"
+      },
+      {
+        "id": "d",
+        "text": "Role-based access control model"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Defense-in-depth is a multilayered security strategy that deploys protections across multiple concentric levels—including physical security, identity, perimeter, network, compute, application, and data. If one defensive barrier is breached, subsequent layers prevent unauthorized access to sensitive corporate assets. Perimeter defense relies solely on outer barriers, Zero Trust evaluates individual access requests continuously, and role-based access control governs authorization permissions.",
+    "distractorNotes": {
+      "a": "Perimeter-based boundary defense relies on securing outer network edges and trusts all internal network activity rather than deploying concentric protective layers.",
+      "b": "Zero Trust focuses on verifying every access request explicitly using all available signals rather than organizing multiple concentric physical and infrastructure barriers.",
+      "d": "Role-based access control assigns permissions to identities according to job roles rather than organizing protective defensive layers across the infrastructure."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/security/fundamentals/overview",
+    "sourceNote": "Azure defense-in-depth security approach",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-concepts-of-security-compliance-and-identity-004",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-concepts-of-security-compliance-and-identity",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A security administrator is configuring access policies in accordance with Zero Trust methodology. Under this model, every access request must be authenticated, authorized, and evaluated against contextual signals—including user identity, geographic location, device health, and anomaly risk—before granting access. Which core Zero Trust principle dictates this requirement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Assume breach"
+      },
+      {
+        "id": "b",
+        "text": "Defense-in-depth strategy"
+      },
+      {
+        "id": "c",
+        "text": "Use least privilege access"
+      },
+      {
+        "id": "d",
+        "text": "Verify explicitly"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "The Verify explicitly principle requires that every access request be authenticated and authorized using all available data points and contextual signals, including user identity, location, device health, service workload, and detected anomaly risk. Assume breach directs organizations to minimize blast radius by presuming adversaries might already operate inside the environment, and Use least privilege access limits permissions with just-in-time and just-enough access. Defense-in-depth is an overarching security strategy organizing layered protections across concentric tiers rather than a Zero Trust access principle.",
+    "distractorNotes": {
+      "a": "Assume breach instructs organizations to minimize blast radius and limit lateral movement under the expectation that adversaries might already be present inside the network.",
+      "b": "Defense-in-depth is a multilayered architectural strategy deploying concentric protection mechanisms, rather than a specific Zero Trust access decision principle.",
+      "c": "Use least privilege access limits user and workload permissions with just-in-time and just-enough access rather than mandating multi-signal validation for every request."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/security/zero-trust/zero-trust-overview",
+    "sourceNote": "Zero Trust principles and outcomes",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-concepts-of-security-compliance-and-identity-005",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-concepts-of-security-compliance-and-identity",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An organization needs to encrypt high volumes of database records stored in cloud storage while maintaining efficient processing performance. When evaluating cryptographic mechanisms, the engineering team requires an encryption method that uses the same cryptographic key for both data encryption and decryption. Which type of cryptography satisfies this requirement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Asymmetric public-key cryptography"
+      },
+      {
+        "id": "b",
+        "text": "Symmetric shared-key cryptography"
+      },
+      {
+        "id": "c",
+        "text": "Asymmetric digital signature exchange"
+      },
+      {
+        "id": "d",
+        "text": "Cryptographic hash message digest"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Symmetric cryptography (also known as shared-key or secret-key encryption) uses a single shared key for both encrypting plaintext and decrypting ciphertext. Because symmetric algorithms like AES are computationally efficient, they are ideal for encrypting large amounts of data at rest or in transit. Asymmetric cryptography uses a mathematically linked public and private key pair, which is computationally slower and typically used for small payloads like key exchange or digital signatures. Cryptographic hashing creates a fixed-length digest to verify integrity rather than enabling reversible encryption.",
+    "distractorNotes": {
+      "a": "Asymmetric cryptography uses two mathematically related keys—a public key to encrypt and a private key to decrypt—rather than a single shared key.",
+      "c": "Digital signatures use asymmetric key pairs combined with hashing to authenticate senders and verify integrity rather than performing bulk data encryption.",
+      "d": "Cryptographic hash algorithms produce fixed-length mathematical representations of data to detect tampering and cannot decrypt data back to plaintext."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/security/fundamentals/encryption-overview",
+    "sourceNote": "Azure encryption overview for data at rest and in transit",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-concepts-of-security-compliance-and-identity-006",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-concepts-of-security-compliance-and-identity",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A software development team wants to verify that downloaded software installation packages have not been altered or corrupted during distribution. The team publishes a fixed-length hexadecimal string computed from the original installation file so users can recalculate the value and confirm that the contents match exactly. Which cryptographic technique is being used to verify data integrity?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Asymmetric public-key encryption"
+      },
+      {
+        "id": "b",
+        "text": "Symmetric block cipher encryption"
+      },
+      {
+        "id": "c",
+        "text": "Cryptographic hashing algorithm"
+      },
+      {
+        "id": "d",
+        "text": "Transport Layer Security tunneling"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Cryptographic hashing algorithms (such as SHA-256) convert input data of arbitrary size into a unique, fixed-length hash value (or digest). Because changing even a single bit in the input data produces a completely different hash value, comparing hashes confirms that the file has not been altered or corrupted, establishing data integrity. Hashing is a one-way mathematical function and does not provide encryption or decryption. Symmetric and asymmetric encryption provide confidentiality, while TLS protects network data in transit.",
+    "distractorNotes": {
+      "a": "Asymmetric public-key encryption scrambles data using a public key to provide confidentiality rather than generating a fixed-length digest to verify file integrity.",
+      "b": "Symmetric block cipher encryption transforms plaintext blocks into ciphertext using a shared key to keep data secret rather than checking for file alterations.",
+      "d": "Transport Layer Security encrypts communication channels across networks to protect data in transit rather than providing a standalone file checksum to verify packages."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/dotnet/standard/security/cryptographic-services",
+    "sourceNote": "Cryptographic primitives: secret-key encryption, public-key encryption, and hashing",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-concepts-of-security-compliance-and-identity-007",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-concepts-of-security-compliance-and-identity",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An enterprise is establishing a Governance, Risk, and Compliance (GRC) program to oversee its cloud environment. The leadership team must ensure that the organization's workloads and data handling practices satisfy statutory obligations, industry standards, and government mandates. Within the GRC framework, which component specifically focuses on adhering to these external legal and contractual requirements?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Corporate governance program"
+      },
+      {
+        "id": "b",
+        "text": "Operational risk management"
+      },
+      {
+        "id": "c",
+        "text": "Independent assurance audit"
+      },
+      {
+        "id": "d",
+        "text": "Regulatory compliance program"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Within the Governance, Risk, and Compliance (GRC) framework, compliance focuses on adhering to external laws, government regulations, industry standards, and statutory obligations. Governance establishes the overarching rules, hierarchy, and processes to direct and control organizational activities toward business goals. Risk management identifies, analyzes, and mitigates potential vulnerabilities and operational threats to protect organizational assets. Independent assurance audits evaluate whether controls and processes operate effectively.",
+    "distractorNotes": {
+      "a": "Corporate governance provides the overarching system of rules, processes, and policies that direct organizational decision-making rather than tracking legal compliance.",
+      "b": "Operational risk management focuses on identifying, evaluating, and mitigating potential business and technological threats rather than certifying adherence to laws.",
+      "c": "Independent assurance audit evaluates and verifies internal control effectiveness rather than defining and maintaining ongoing adherence to external legal standards."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/govern/",
+    "sourceNote": "Cloud governance framework, guardrails, and risk management",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-concepts-of-security-compliance-and-identity-008",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-concepts-of-security-compliance-and-identity",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "In traditional on-premises architectures, security teams relied heavily on firewalls and physical datacenter controls to secure corporate resources. In modern cloud and hybrid workplace environments where employees access corporate resources from various locations, personal devices, and external software services, what serves as the primary security perimeter according to Microsoft security guidance?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Identity control plane"
+      },
+      {
+        "id": "b",
+        "text": "Virtual private network"
+      },
+      {
+        "id": "c",
+        "text": "Endpoint device boundary"
+      },
+      {
+        "id": "d",
+        "text": "Network boundary subnet"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "In modern cloud and hybrid workplace environments, identity serves as the primary security perimeter (or control plane). Because users work from diverse locations, use unmanaged personal devices, and interact directly with cloud-hosted SaaS applications outside traditional network boundaries, firewalls and physical perimeters are no longer sufficient. Organizations must control access by authenticating and authorizing identities across users, devices, and applications. Network boundaries, VPNs, and endpoint devices remain supporting defensive layers but do not form the primary cloud perimeter.",
+    "distractorNotes": {
+      "b": "Virtual private networks extend private corporate networks across public connections but do not act as the primary access boundary for modern cloud applications.",
+      "c": "Endpoint device boundaries enforce device health and compliance policies, but Microsoft guidance identifies identity as the primary security perimeter connecting users, devices, and services.",
+      "d": "Network boundaries provide localized network filtering and segmentation but no longer serve as the primary security perimeter in cloud and hybrid architectures."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/security/zero-trust/identity",
+    "sourceNote": "Zero Trust identity deployment and the primary control plane",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-concepts-of-security-compliance-and-identity-009",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-concepts-of-security-compliance-and-identity",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "When designing access control mechanisms for a cloud service, a security team must separate the process of confirming user identities from the process of granting resource access. Which statement accurately distinguishes authentication from authorization?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Authentication grants specific permissions to a resource, whereas authorization issues cryptographically signed user identity tokens."
+      },
+      {
+        "id": "b",
+        "text": "Authentication validates user credentials and confirms identity, whereas authorization determines permissible operations on a resource."
+      },
+      {
+        "id": "c",
+        "text": "Authentication enforces role-based access control policies, whereas authorization collects biometric signals to verify user presence."
+      },
+      {
+        "id": "d",
+        "text": "Authentication audits resource usage patterns in real time, whereas authorization configures multifactor challenge prompts for sign-in."
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Authentication (AuthN) is the process of proving that an entity or user is who they claim to be by verifying credentials such as passwords, tokens, or biometric factors. Authorization (AuthZ) occurs after successful authentication and determines what permissions the authenticated entity has and what actions or data they are allowed to access. Role-based access control and resource permissions are authorization mechanisms, while multifactor prompts and credential validation are authentication mechanisms.",
+    "distractorNotes": {
+      "a": "Granting resource permissions is an authorization function, whereas issuing identity tokens to verify user identity is an authentication function.",
+      "c": "Role-based access control governs authorization by assigning permissions, while collecting biometric factors is an authentication method to prove identity.",
+      "d": "Auditing resource usage is a monitoring and governance task, while multifactor verification prompts are part of the authentication process."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/entra/identity-platform/authentication-vs-authorization",
+    "sourceNote": "Authentication and authorization definitions and protocols",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-concepts-of-security-compliance-and-identity-010",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "describe-the-concepts-of-security-compliance-and-identity",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An organization connects its on-premises directory service to Microsoft Entra ID to establish identity federation and enable single sign-on (SSO) for corporate employees accessing software as a service (SaaS) applications. Which two statements describe the primary operational and security benefits of this architecture? (Select TWO.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Connected software applications maintain separate local repositories of corporate user account credentials and passwords."
+      },
+      {
+        "id": "b",
+        "text": "Users authenticate once with their central identity provider and access multiple applications without repeated sign-ins."
+      },
+      {
+        "id": "c",
+        "text": "Cloud providers assume complete administrative responsibility for assigning and reviewing corporate data access roles."
+      },
+      {
+        "id": "d",
+        "text": "A trust relationship allows external service providers to accept authentication tokens issued by the home identity provider."
+      }
+    ],
+    "correct": [
+      "b",
+      "d"
+    ],
+    "explanation": "Identity federation establishes a trust relationship between identity providers and external service providers, allowing applications to trust authentication assertions or tokens issued by the central identity provider. Single sign-on (SSO) allows users to authenticate once with their primary identity provider and automatically gain access to multiple connected applications without having to enter credentials repeatedly. Applications do not need to maintain separate credential databases, and the customer retains responsibility for configuring internal access roles.",
+    "distractorNotes": {
+      "a": "Federation and single sign-on eliminate the need for individual applications to maintain their own separate databases of user credentials and passwords.",
+      "c": "Customer administrators retain responsibility for assigning and governing access roles and permissions; cloud providers do not assume this administrative responsibility."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/whatis-fed",
+    "sourceNote": "What is federation with Microsoft Entra ID",
     "sourceCheckedAt": "2026-10-11"
   }
 ]

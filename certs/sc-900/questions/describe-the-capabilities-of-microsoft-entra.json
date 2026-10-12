@@ -6,7 +6,7 @@
     "type": "single",
     "domain": "describe-the-capabilities-of-microsoft-entra",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "stem": "An enterprise wants to enforce a policy where employees accessing sensitive cloud applications from outside the corporate network must complete multifactor authentication before access is granted. Which Microsoft Entra capability evaluates these contextual signals using if-then logic to enforce access decisions?",
     "options": [
       {
@@ -37,6 +37,846 @@
     },
     "sourceUrl": "https://learn.microsoft.com/en-us/entra/identity/conditional-access/overview",
     "sourceNote": "Conditional Access as Zero Trust policy engine",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-entra-002",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-entra",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "An enterprise is establishing an independent cloud identity boundary for a newly acquired subsidiary adopting Microsoft 365. The subsidiary requires an isolated, dedicated directory instance to house its own user accounts, enterprise applications, and security groups. Which Microsoft Entra component represents this dedicated directory instance?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A Microsoft Entra management group"
+      },
+      {
+        "id": "b",
+        "text": "A Microsoft Entra directory tenant"
+      },
+      {
+        "id": "c",
+        "text": "An Azure resource group container"
+      },
+      {
+        "id": "d",
+        "text": "An Azure cloud subscription scope"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "A Microsoft Entra tenant is a dedicated and trusted instance of Microsoft Entra ID automatically created when an organization signs up for a Microsoft cloud service. The tenant represents the organization and houses its directory objects, including users, groups, and application registrations. Azure subscriptions and management groups provide billing and Azure resource governance boundaries rather than directory identity containers.",
+    "distractorNotes": {
+      "a": "Management groups provide governance containers above Azure subscriptions to manage access policies across subscriptions rather than serving as the identity tenant.",
+      "c": "Resource groups are containers that hold related Azure infrastructure resources for lifecycle management rather than hosting directory identities.",
+      "d": "Subscriptions provide billing boundaries and access containers for Azure resources rather than acting as the directory identity service."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/entra/fundamentals/identity-fundamental-concepts",
+    "sourceNote": "Tenant definition and directory concepts in Microsoft Entra",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-entra-003",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-entra",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer is configuring an automated script running on an Azure Virtual Machine to read secrets from Azure Key Vault without storing credentials in application configuration files or code. Which identity type should be assigned to the virtual machine to authenticate automatically?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A cloud-only user account"
+      },
+      {
+        "id": "b",
+        "text": "An application client secret"
+      },
+      {
+        "id": "c",
+        "text": "A managed identity"
+      },
+      {
+        "id": "d",
+        "text": "A registered device identity"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Managed identities provide an automatically managed identity in Microsoft Entra ID for Azure resources to use when connecting to resources that support Microsoft Entra authentication, such as Azure Key Vault. Applications obtain tokens directly from the Azure infrastructure without developers managing, storing, or rotating credentials. Application registrations with client secrets require storing credentials, user accounts represent human identities, and registered devices provide device-level trust rather than automated workload credentials.",
+    "distractorNotes": {
+      "a": "Cloud-only user accounts represent human directory users and require manual credential management, violating the requirement to avoid stored credentials.",
+      "b": "An application registration with a client secret requires developers to store, manage, and rotate secret strings in code or configuration files.",
+      "d": "Microsoft Entra registered device identities provide device-level context for conditional access rather than automated authentication for Azure compute workloads."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/overview",
+    "sourceNote": "Managed identities for Azure resources overview and credential handling",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-entra-004",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-entra",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An architecture team needs to provide an identity for multiple Azure virtual machines running identical background services so they can share access permissions to an Azure SQL Database. The identity lifecycle must remain independent of any individual virtual machine's lifecycle. Which identity type meets these criteria?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A system-assigned managed identity"
+      },
+      {
+        "id": "b",
+        "text": "An application service principal"
+      },
+      {
+        "id": "c",
+        "text": "A Microsoft Entra device identity"
+      },
+      {
+        "id": "d",
+        "text": "A user-assigned managed identity"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "A user-assigned managed identity is created as a standalone Azure resource independent of the resources that use it. It can be assigned to multiple Azure resources simultaneously and persists even if those resources are deleted. In contrast, a system-assigned managed identity is tied directly to the lifecycle of a single Azure resource, an application service principal requires manual credential management, and device identities represent client endpoints.",
+    "distractorNotes": {
+      "a": "System-assigned managed identities are tied to a single resource lifecycle and are automatically deleted when the parent Azure resource is deleted, preventing reuse across multiple virtual machines.",
+      "b": "Application service principals can be shared across workloads, but require explicit credential creation and rotation rather than standalone Azure-managed resource lifecycles.",
+      "c": "Device identities represent client endpoints joined or registered with Microsoft Entra ID rather than workload identities for virtual machines accessing database services."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/overview",
+    "sourceNote": "Comparison of system-assigned and user-assigned managed identities",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-entra-005",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-entra",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A company wants to invite external contractors to collaborate on internal projects using their own organization-issued email addresses without creating separate internal Active Directory accounts for them. Which Microsoft Entra External ID capability supports this scenario?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Microsoft Entra B2B collaboration"
+      },
+      {
+        "id": "b",
+        "text": "Microsoft Entra B2B direct connect"
+      },
+      {
+        "id": "c",
+        "text": "Microsoft Entra customer tenants"
+      },
+      {
+        "id": "d",
+        "text": "Microsoft Entra cross-tenant sync"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Microsoft Entra B2B collaboration enables organizations to share applications and internal resources with external partners and contractors using their existing corporate or personal email identities, representing them as guest users in the directory. B2B direct connect enables Teams shared channel collaboration without guest accounts, customer tenants handle consumer CIAM applications, and cross-tenant synchronization automates provisioning across internal organizational tenants.",
+    "distractorNotes": {
+      "b": "B2B direct connect establishes mutual two-way trust for collaboration in Teams shared channels without creating guest user objects in the directory.",
+      "c": "Customer tenants provide customer identity and access management (CIAM) for public-facing consumer applications rather than business partner guest collaboration.",
+      "d": "Cross-tenant synchronization automates user provisioning between multiple Microsoft Entra tenants within the same organization rather than external contractor guest invitations."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/entra/external-id/what-is-b2b",
+    "sourceNote": "B2B collaboration overview in Microsoft Entra External ID",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-entra-006",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-entra",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An e-commerce retailer wants customer-facing mobile and web applications to allow retail consumers to self-register and sign in using consumer social accounts, such as Google or Facebook, or a personal email address. Which Microsoft Entra capability is specifically designed for customer identity and access management (CIAM)?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Microsoft Entra B2B partner collaboration"
+      },
+      {
+        "id": "b",
+        "text": "Microsoft Entra External ID customer tenants"
+      },
+      {
+        "id": "c",
+        "text": "Microsoft Entra Verified ID credential issuance"
+      },
+      {
+        "id": "d",
+        "text": "Microsoft Entra B2B direct connect federation"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Microsoft Entra External ID for customers (customer tenants) delivers customer identity and access management (CIAM), allowing consumers to register, sign in, and manage profiles across web and mobile applications using social accounts or personal email addresses. B2B collaboration manages guest access for partner organizations, B2B direct connect enables cross-organization Teams collaboration, and Verified ID issues decentralized credentials.",
+    "distractorNotes": {
+      "a": "B2B collaboration manages guest access for external business partners and contractors rather than consumer sign-in and registration for public e-commerce applications.",
+      "c": "Verified ID implements decentralized identity standards and digital credential issuance rather than consumer registration and social account sign-in.",
+      "d": "B2B direct connect configures mutual federation for Teams shared channels between organizations rather than customer identity management for retail apps."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/entra/external-id/external-identities-overview",
+    "sourceNote": "Customer identity and access management in Microsoft Entra External ID",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-entra-007",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-entra",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An organization with multiple disconnected on-premises Active Directory forests wants to implement a lightweight synchronization solution that uses small on-premises agents and executes directory mapping and transformation rules in the cloud. Which solution matches these architectural requirements?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Active Directory Federation Services"
+      },
+      {
+        "id": "b",
+        "text": "Microsoft Entra Connect Sync"
+      },
+      {
+        "id": "c",
+        "text": "Microsoft Entra Cloud Sync"
+      },
+      {
+        "id": "d",
+        "text": "Microsoft Entra Domain Services"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Microsoft Entra Cloud Sync uses a lightweight agent installed on on-premises servers while moving the synchronization processing, configuration, and rules engine into the Microsoft Entra cloud architecture. It easily supports complex topologies such as multi-forest disconnected environments. Microsoft Entra Connect Sync runs its synchronization engine locally on a dedicated heavy on-premises server, AD FS manages federated trust, and Domain Services provides legacy managed domain capabilities.",
+    "distractorNotes": {
+      "a": "Active Directory Federation Services provides federated token issuance rather than identity synchronization using lightweight cloud-managed agents.",
+      "b": "Connect Sync requires hosting the full synchronization engine and SQL database on an on-premises Windows server rather than using lightweight cloud-managed agents.",
+      "d": "Domain Services provides cloud-hosted domain controllers with LDAP and Kerberos rather than synchronizing multiple on-premises Active Directory forests."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/entra/identity/hybrid/cloud-sync/what-is-cloud-sync",
+    "sourceNote": "Microsoft Entra Cloud Sync architecture and multi-forest synchronization",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-entra-008",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-entra",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An organization is evaluating hybrid identity authentication options. They want user passwords validated directly in the cloud by Microsoft Entra ID even if on-premises domain controllers go offline, while also enabling Microsoft Entra ID Protection to detect leaked credentials. Which authentication method should they implement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Federated authentication with on-premises AD FS"
+      },
+      {
+        "id": "b",
+        "text": "Pass-through Authentication with local agents"
+      },
+      {
+        "id": "c",
+        "text": "Certificate-based authentication with smart cards"
+      },
+      {
+        "id": "d",
+        "text": "Password Hash Synchronization with cloud sign-in"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Password Hash Synchronization (PHS) synchronizes a cryptographic hash of the user password hash from on-premises Active Directory to Microsoft Entra ID. This allows Microsoft Entra ID to authenticate users directly without relying on on-premises infrastructure availability, and enables Microsoft Entra ID Protection to cross-reference leaked credential lists discovered on the dark web against synchronized hashes.",
+    "distractorNotes": {
+      "a": "Federated authentication forwards requests to on-premises AD FS servers; if those on-premises servers go offline, cloud sign-ins fail.",
+      "b": "Pass-through Authentication requires on-premises software agents to validate credentials in real time against domain controllers, failing if local servers are offline.",
+      "c": "Certificate-based authentication validates X.509 digital certificates rather than synchronizing password hashes to enable cloud-side credential leak detection."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/how-to-connect-password-hash-synchronization",
+    "sourceNote": "Password Hash Synchronization benefits and leaked credential detection",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-entra-009",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-entra",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A financial organization with strict security policies mandates that user passwords must never be stored in the cloud in any form, including password hashes. Authentication requests must be validated directly against on-premises Active Directory domain controllers using an outbound-only lightweight connector agent. Which hybrid authentication method satisfies this mandate?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Pass-through Authentication"
+      },
+      {
+        "id": "b",
+        "text": "Password Hash Synchronization"
+      },
+      {
+        "id": "c",
+        "text": "Federated token authentication"
+      },
+      {
+        "id": "d",
+        "text": "Certificate-based authentication"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Microsoft Entra Pass-through Authentication (PTA) validates user passwords directly against on-premises Active Directory domain controllers via outbound-only lightweight agents, ensuring passwords and password hashes are never stored in the cloud. Password Hash Synchronization stores password hashes in Microsoft Entra ID, federated token authentication forwards sign-ins to on-premises token issuers like AD FS over incoming connections, and certificate-based authentication evaluates digital certificates instead of passwords.",
+    "distractorNotes": {
+      "b": "Password Hash Synchronization copies a cryptographic hash of the password hash to the cloud, violating the mandate that no password hashes be stored in the cloud.",
+      "c": "Federated authentication forwards sign-ins to on-premises token issuers like AD FS over incoming connections rather than using outbound-only connector agents.",
+      "d": "Certificate-based authentication validates user X.509 digital certificates rather than evaluating user password submissions against on-premises domain controllers."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/how-to-connect-pta",
+    "sourceNote": "Pass-through Authentication architecture and on-premises credential validation",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-entra-010",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-entra",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "When domain-joined corporate laptops connected to the internal corporate network access cloud services such as Microsoft 365, users should be automatically signed in without entering their passwords. Which hybrid identity feature provides this functionality when combined with Password Hash Sync or Pass-through Authentication?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Microsoft Entra Password Protection"
+      },
+      {
+        "id": "b",
+        "text": "Microsoft Entra Seamless Single Sign-On"
+      },
+      {
+        "id": "c",
+        "text": "Microsoft Entra Self-Service Password Reset"
+      },
+      {
+        "id": "d",
+        "text": "Microsoft Entra Smart Lockout protection"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Microsoft Entra Seamless Single Sign-On (Seamless SSO) automatically signs users in when they are on their corporate devices connected to the corporate network. When enabled alongside Password Hash Synchronization or Pass-through Authentication, users do not need to type in their passwords to sign in to Microsoft Entra applications, utilizing Kerberos tickets issued by on-premises Active Directory. Password Protection blocks weak passwords, Self-Service Password Reset handles forgotten credentials, and Smart Lockout prevents password-guessing attacks.",
+    "distractorNotes": {
+      "a": "Password Protection prevents the use of weak and banned passwords during password changes rather than providing silent desktop single sign-on.",
+      "c": "Self-Service Password Reset allows users to reset their passwords and unlock accounts rather than automatically signing users into cloud applications.",
+      "d": "Smart Lockout protects user accounts from brute-force password guessing attacks rather than providing Kerberos-based silent single sign-on."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/how-to-connect-sso",
+    "sourceNote": "Seamless Single Sign-On overview and corporate network requirements",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-entra-011",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "describe-the-capabilities-of-microsoft-entra",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An organization wants to eliminate passwords for employee sign-ins to mitigate credential phishing and spray attacks. Which two methods are officially supported passwordless authentication methods in Microsoft Entra ID? (Select two.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "SMS verification codes sent via text"
+      },
+      {
+        "id": "b",
+        "text": "FIDO2-compliant external security keys"
+      },
+      {
+        "id": "c",
+        "text": "Voice call verification phone responses"
+      },
+      {
+        "id": "d",
+        "text": "Windows Hello for Business biometric sign-in"
+      }
+    ],
+    "correct": [
+      "b",
+      "d"
+    ],
+    "explanation": "Passwordless authentication replaces passwords with secure hardware-bound credentials or authenticator apps. Microsoft Entra ID supports several passwordless methods: Windows Hello for Business, FIDO2 security keys, and the Microsoft Authenticator app configured with number matching. SMS verification codes and voice phone calls require passwords for primary authentication and only serve as secondary factors, while also being vulnerable to SIM swapping and interception.",
+    "distractorNotes": {
+      "a": "SMS verification codes serve as secondary authentication factors alongside passwords rather than standalone passwordless authentication credentials.",
+      "c": "Voice call verification operates as a secondary verification factor rather than a standalone passwordless authentication method."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/entra/identity/authentication/concept-authentication-passwordless",
+    "sourceNote": "Passwordless authentication methods in Microsoft Entra ID",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-entra-012",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-entra",
+    "difficulty": "easy",
+    "status": "reviewed",
+    "stem": "Multifactor authentication requires users to provide two or more distinct types of authentication factors during sign-in. Which option pairs an authentication factor category with an accurate example according to Microsoft identity standards?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Something you know: A mobile push approval notification"
+      },
+      {
+        "id": "b",
+        "text": "Something you have: A facial recognition biometric scan"
+      },
+      {
+        "id": "c",
+        "text": "Something you are: A fingerprint scan on a registered laptop"
+      },
+      {
+        "id": "d",
+        "text": "Something you know: A hardware OATH token key generator"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Multifactor authentication requires two or more distinct factors from three fundamental categories: something you know (passwords or PINs), something you have (a trusted device, phone, or hardware OATH token), and something you are (biometrics such as fingerprint or facial recognition). A fingerprint scan is a biometric factor belonging to the 'something you are' category.",
+    "distractorNotes": {
+      "a": "A mobile push approval notification requires possession of a trusted physical device, which belongs to the 'something you have' category rather than 'something you know'.",
+      "b": "A facial recognition biometric scan belongs to the 'something you are' category rather than 'something you have'.",
+      "d": "A hardware OATH token is a physical possession device belonging to the 'something you have' category rather than 'something you know'."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/entra/identity/authentication/concept-mfa-howitworks",
+    "sourceNote": "Multifactor authentication factor categories and verification examples",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-entra-013",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-entra",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An organization wants to prevent employees from creating easily guessable passwords that contain company-specific keywords, brand names, or local sports teams. Which feature in Microsoft Entra ID should administrators configure to enforce this requirement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Microsoft Entra Smart Lockout threshold rules"
+      },
+      {
+        "id": "b",
+        "text": "Microsoft Entra Self-Service Password Reset rules"
+      },
+      {
+        "id": "c",
+        "text": "Microsoft Entra ID Protection user risk policies"
+      },
+      {
+        "id": "d",
+        "text": "Microsoft Entra Password Protection custom lists"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Microsoft Entra Password Protection detects and blocks known weak passwords using a global banned password list maintained by Microsoft. In addition, administrators can configure a custom banned password list to block terms specific to their organization, such as company names, product brands, local landmarks, or regional sports teams, during password changes and resets. Smart Lockout prevents brute-force lockouts, Self-Service Password Reset manages user credential recovery, and ID Protection detects credential compromise.",
+    "distractorNotes": {
+      "a": "Smart Lockout locks out attackers attempting password guessing based on failed attempts and IP telemetry rather than filtering specific word strings during password changes.",
+      "b": "Self-Service Password Reset governs registration requirements and methods for resetting credentials rather than blocking organization-specific banned words.",
+      "c": "ID Protection user risk policies evaluate whether credentials have been compromised or leaked rather than checking password substrings against custom banned dictionaries."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/entra/identity/authentication/concept-password-ban-bad",
+    "sourceNote": "Password Protection global and custom banned password lists",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-entra-014",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-entra",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An organization wants remote employees to securely resolve account lockouts and configure replacement credentials independently using verified authentication methods, with changes synchronized back to on-premises Active Directory. Which Microsoft Entra feature provides this capability?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Microsoft Entra Self-Service Password Reset"
+      },
+      {
+        "id": "b",
+        "text": "Microsoft Entra Password Protection service"
+      },
+      {
+        "id": "c",
+        "text": "Microsoft Entra Smart Lockout administration"
+      },
+      {
+        "id": "d",
+        "text": "Microsoft Entra Privileged Identity Manager"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Microsoft Entra Self-Service Password Reset (SSPR) allows users to change or reset their passwords and unlock their accounts without helpdesk intervention. When configured with password writeback, password resets executed in the cloud are written back to on-premises Active Directory in real time. Password Protection blocks weak words, Smart Lockout mitigates brute-force attacks, and Privileged Identity Management manages administrative roles.",
+    "distractorNotes": {
+      "b": "Password Protection prevents users from choosing weak or custom banned passwords rather than providing a user portal for account unlock and credential reset.",
+      "c": "Smart Lockout locks out malicious login attempts without locking out users in Active Directory, but does not provide end-user self-service credential recovery.",
+      "d": "Privileged Identity Management governs time-bound activation of administrative roles rather than employee self-service account unlocking."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/entra/identity/authentication/concept-sspr-howitworks",
+    "sourceNote": "Self-Service Password Reset overview and authentication methods",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-entra-015",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "describe-the-capabilities-of-microsoft-entra",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "In Microsoft Entra Conditional Access policies, administrators define if-then rules to govern access. Which two items represent input signals evaluated by a Conditional Access engine rather than grant or block access controls? (Select two.)",
+    "options": [
+      {
+        "id": "a",
+        "text": "User or workload group membership"
+      },
+      {
+        "id": "b",
+        "text": "Require multifactor authentication"
+      },
+      {
+        "id": "c",
+        "text": "Device platform and compliance state"
+      },
+      {
+        "id": "d",
+        "text": "Require Microsoft Entra hybrid join"
+      }
+    ],
+    "correct": [
+      "a",
+      "c"
+    ],
+    "explanation": "Microsoft Entra Conditional Access operates on signals, decisions, and enforcement. Signals are contextual inputs evaluated by the policy engine, such as user or group membership, IP location, client application, device platform, device compliance state, and calculated risk levels. Requiring multifactor authentication and requiring hybrid join are grant controls (decisions enforced after signals are evaluated) rather than input signals.",
+    "distractorNotes": {
+      "b": "Requiring multifactor authentication is an access decision grant control enforced when policy conditions are met rather than an input signal evaluated by the engine.",
+      "d": "Requiring Microsoft Entra hybrid join is an access enforcement control specifying device requirements for granting access rather than an input signal."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/entra/identity/conditional-access/concept-conditional-access-conditions",
+    "sourceNote": "Conditional Access signals and condition evaluation",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-entra-016",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-entra",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A security analyst is reviewing Microsoft Entra ID Protection reports. One alert indicates that a user's corporate email and plaintext password were discovered in a leaked credential database on the dark web. How does Microsoft Entra ID Protection categorize this specific threat detection?",
+    "options": [
+      {
+        "id": "a",
+        "text": "As a sign-in risk detection"
+      },
+      {
+        "id": "b",
+        "text": "As a user risk detection"
+      },
+      {
+        "id": "c",
+        "text": "As a workload service risk"
+      },
+      {
+        "id": "d",
+        "text": "As a device compliance risk"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Microsoft Entra ID Protection categorizes threats into user risk and sign-in risk. User risk represents the probability that a specific identity or credential has been compromised, such as leaked credentials found on the dark web or administrator-confirmed user compromise. Sign-in risk represents the probability that a specific authentication request is anomalous, such as an anonymous IP address or unfamiliar sign-in properties. Workload identity risk applies to service principals, and device compliance risk evaluates endpoint configuration.",
+    "distractorNotes": {
+      "a": "Sign-in risk measures the probability that a specific authentication session is unauthorized (such as anonymous IP or atypical travel) rather than long-term credential compromise.",
+      "c": "Workload service principal risk pertains to compromised applications or managed identities rather than individual human user credentials leaked online.",
+      "d": "Device compliance risk evaluates endpoint management status through Intune rather than identity credential compromise detected in public leak databases."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/entra/id-protection/concept-identity-protection-risks",
+    "sourceNote": "User risk and sign-in risk classification in Microsoft Entra ID Protection",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-entra-017",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-entra",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A security operations team wants to implement automated remediation for account compromise. If Microsoft Entra ID Protection flags a user with high user risk due to confirmed credential leakage, the system should allow the user to self-remediate immediately. Which policy action achieves this automated response?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Require multifactor authentication on next sign-in"
+      },
+      {
+        "id": "b",
+        "text": "Block access until an administrator manually intervenes"
+      },
+      {
+        "id": "c",
+        "text": "Require a secure password change backed by MFA"
+      },
+      {
+        "id": "d",
+        "text": "Require device compliance through Microsoft Intune"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "In Microsoft Entra ID Protection, a user risk policy can be configured to require a secure password change when high user risk is detected. To complete the password change securely, the user must first satisfy a multifactor authentication challenge. Once the user proves their identity via MFA and successfully changes their password, the user risk is automatically remediated. Requiring MFA alone remediates sign-in risk, while blocking access requires administrative intervention rather than automated user self-remediation.",
+    "distractorNotes": {
+      "a": "Prompting for multifactor authentication alone remediates sign-in risk detections, but self-remediation of high user risk from leaked credentials requires a password change.",
+      "b": "Blocking access prevents unauthorized sign-ins but requires manual administrator intervention rather than allowing the user to self-remediate immediately.",
+      "d": "Requiring a compliant device enforces endpoint trust through Conditional Access, but does not resolve a compromised user credential or reset user risk."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/entra/id-protection/concept-identity-protection-policies",
+    "sourceNote": "User risk policy automated remediation with password change and MFA",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-entra-018",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-entra",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An organization needs to delegate administrative authority. One team must manage cloud user accounts, groups, and domain names, while another team must deploy and configure virtual machines and storage accounts in an Azure subscription. Which statement accurately describes the division of administrative roles?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Microsoft Entra directory roles manage virtual machines, while Azure RBAC roles manage directory users"
+      },
+      {
+        "id": "b",
+        "text": "Azure RBAC roles grant directory permissions, while Microsoft Entra roles manage storage containers"
+      },
+      {
+        "id": "c",
+        "text": "Azure management groups configure directory domains, while resource groups manage user accounts"
+      },
+      {
+        "id": "d",
+        "text": "Microsoft Entra directory roles control directory objects, while Azure RBAC roles govern Azure resources"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Microsoft Entra directory roles (such as Global Administrator, User Administrator, and Helpdesk Administrator) control permissions for directory-level objects, including users, groups, licenses, and domain configurations. In contrast, Azure role-based access control (Azure RBAC) roles (such as Owner, Contributor, and Reader) manage access to Azure resources (such as virtual machines, databases, and storage accounts) within management groups, subscriptions, and resource groups.",
+    "distractorNotes": {
+      "a": "Microsoft Entra roles govern directory objects rather than virtual machines, while Azure RBAC governs Azure infrastructure resources rather than directory users.",
+      "b": "Azure RBAC does not grant directory-level administration by default, and Microsoft Entra roles do not grant storage container management without explicit Azure RBAC assignments.",
+      "c": "Management groups and resource groups are hierarchy containers for Azure resources rather than directory domain and user management systems."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/role-based-access-control/rbac-and-directory-admin-roles",
+    "sourceNote": "Comparison of Microsoft Entra directory roles and Azure RBAC roles",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-entra-019",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-entra",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A tier-1 support specialist needs permissions to reset passwords for non-administrator employees, invalidate existing refresh tokens, and manage Microsoft service support tickets, without having permissions to modify security groups or assign directory roles. Which Microsoft Entra built-in role should be assigned according to the principle of least privilege?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Helpdesk Administrator"
+      },
+      {
+        "id": "b",
+        "text": "User Administrator"
+      },
+      {
+        "id": "c",
+        "text": "Security Administrator"
+      },
+      {
+        "id": "d",
+        "text": "Authentication Administrator"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "The Helpdesk Administrator role (also known as Password Administrator) allows users to reset passwords for non-administrators and users assigned certain limited roles, invalidate refresh tokens, and manage service support tickets. The User Administrator role includes permissions to modify security groups, create users, and delete accounts, exceeding the required least privilege. Security Administrator manages security controls rather than routine password resets, and Authentication Administrator focuses on authentication method configuration.",
+    "distractorNotes": {
+      "b": "User Administrator can manage groups, licenses, and user creation/deletion, violating the constraint of least privilege for a role strictly needing password reset capabilities.",
+      "c": "Security Administrator monitors security alerts, reads reports, and manages security policies rather than performing routine user password resets.",
+      "d": "Authentication Administrator configures authentication methods and can reset passwords for certain non-admins, but Helpdesk Administrator is the standard role specifically scoped for password resets, token revocation, and support tickets."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/permissions-reference",
+    "sourceNote": "Helpdesk Administrator permissions reference in Microsoft Entra ID",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-entra-020",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-entra",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An organization wants to simplify how internal employees and external partners request access to bundled resources, including SharePoint sites, Microsoft 365 groups, and enterprise applications. Administrators want to define approval workflows and automatic expiration periods for these resource bundles. Which Microsoft Entra Identity Governance feature provides this capability?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Microsoft Entra Access Reviews"
+      },
+      {
+        "id": "b",
+        "text": "Microsoft Entra Entitlement Management"
+      },
+      {
+        "id": "c",
+        "text": "Microsoft Entra Lifecycle Workflows"
+      },
+      {
+        "id": "d",
+        "text": "Microsoft Entra Terms of Use"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Microsoft Entra Entitlement Management is an identity governance feature that enables organizations to manage access to groups, applications, and SharePoint sites at scale. It bundles these resources into access packages, allowing users (both internal and external) to request access through self-service portals with configured multi-stage approvals, assignment time limits, and automatic expiration. Access Reviews periodically recertify existing access, Lifecycle Workflows automate joiner-mover-leaver tasks, and Terms of Use requires policy consent.",
+    "distractorNotes": {
+      "a": "Access Reviews allow administrators to periodically recertify that users still need their existing access rather than creating self-service request packages for bundled resources.",
+      "c": "Lifecycle Workflows automate onboarding and offboarding tasks for employees (joiner, mover, leaver) rather than providing self-service access request bundles and approval workflows.",
+      "d": "Terms of Use presents policies and disclaimers that users must consent to before gaining access rather than managing multi-resource access request packages."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/entra/id-governance/entitlement-management-overview",
+    "sourceNote": "Entitlement management access packages and approval workflows",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-entra-021",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-entra",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "To meet regulatory compliance standards, an enterprise must periodically verify that external guests and internal employees still require access to sensitive project groups and privileged roles. If a manager fails to respond or confirms access is no longer needed, access must be revoked automatically. Which Microsoft Entra feature fulfills this requirement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Microsoft Entra Entitlement Management"
+      },
+      {
+        "id": "b",
+        "text": "Microsoft Entra Terms of Use policies"
+      },
+      {
+        "id": "c",
+        "text": "Microsoft Entra Access Reviews"
+      },
+      {
+        "id": "d",
+        "text": "Microsoft Entra Lifecycle Workflows"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Microsoft Entra Access Reviews allow organizations to efficiently manage group memberships, access to enterprise applications, and role assignments. Administrators can schedule recurring reviews where designated reviewers or resource owners must recertify that users still need access. If access is denied or the review expires without response, automated actions can revoke group membership or role assignment. Entitlement Management bundles resources for initial access requests, Terms of Use requires policy consent, and Lifecycle Workflows automates employee lifecycle events.",
+    "distractorNotes": {
+      "a": "Entitlement Management manages access requests, approval workflows, and assignment packages for bundled resources rather than conducting recurring recertification campaigns.",
+      "b": "Terms of Use presents agreements and policies that users must review and accept before gaining access rather than automating recurring access audits and revocation.",
+      "d": "Lifecycle Workflows automate joiner, mover, and leaver lifecycle processes based on HR triggers rather than executing scheduled periodic access recertification reviews."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/entra/id-governance/access-reviews-overview",
+    "sourceNote": "Access reviews overview and automated recertification of access",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-entra-022",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-entra",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An organization wants to eliminate standing administrative privileges for administrators who manage Microsoft Entra ID and Azure resources. Instead, administrators should be eligible for roles and only activate their permissions just-in-time for a limited duration after completing multifactor authentication and providing a business justification. Which service provides these controls?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Microsoft Entra Entitlement Management"
+      },
+      {
+        "id": "b",
+        "text": "Microsoft Entra Conditional Access engine"
+      },
+      {
+        "id": "c",
+        "text": "Microsoft Entra ID Protection risk service"
+      },
+      {
+        "id": "d",
+        "text": "Microsoft Entra Privileged Identity Management"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Microsoft Entra Privileged Identity Management (PIM) is a service that enables organizations to manage, control, and monitor access to important resources. PIM minimizes standing administrative privileges by using time-bound eligible role assignments, requiring just-in-time activation with multifactor authentication, business justification, approval workflows, and access audit notifications. Entitlement Management bundles resources into access packages, Conditional Access evaluates access conditions, and ID Protection detects identity risks.",
+    "distractorNotes": {
+      "a": "Entitlement Management automates access request packages and approval lifecycles for security groups, applications, and SharePoint sites rather than managing privileged role activation.",
+      "b": "Conditional Access enforces if-then access controls based on contextual signals rather than providing time-bound eligible role activations with business justifications.",
+      "c": "ID Protection analyzes sign-in telemetry and user behavior to detect anomalous credential risks rather than governing privileged administrative role lifecycles."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/entra/id-governance/privileged-identity-management/pim-configure",
+    "sourceNote": "Privileged Identity Management just-in-time role activation",
     "sourceCheckedAt": "2026-10-11"
   }
 ]

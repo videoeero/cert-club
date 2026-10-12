@@ -6,7 +6,7 @@
     "type": "single",
     "domain": "describe-the-capabilities-of-microsoft-security-solutions",
     "difficulty": "medium",
-    "status": "draft",
+    "status": "reviewed",
     "stem": "A security operations center (SOC) requires a cloud-native solution that collects data across users, devices, applications, and infrastructure across multicloud environments, uses AI to detect threats, and automates incident response workflows using playbooks. Which Microsoft service provides these combined SIEM and SOAR capabilities?",
     "options": [
       {
@@ -19,24 +19,1184 @@
       },
       {
         "id": "c",
-        "text": "Azure Network Watcher"
+        "text": "Microsoft Defender XDR"
       },
       {
         "id": "d",
-        "text": "Azure Web Application Firewall"
+        "text": "Azure Monitor alerts"
       }
     ],
     "correct": [
       "a"
     ],
-    "explanation": "Microsoft Sentinel is a scalable, cloud-native security information and event management (SIEM) and security orchestration, automated response (SOAR) solution. It collects security data across multicloud and on-premises environments, detects threats using built-in analytics, and automates responses using logic app playbooks. Microsoft Defender for Cloud provides cloud security posture management (CSPM) and workload protection, while Network Watcher provides network monitoring tools.",
+    "explanation": "Microsoft Sentinel is a scalable, cloud-native security information and event management (SIEM) and security orchestration, automated response (SOAR) solution. It collects security data across multicloud and on-premises environments, detects threats using built-in analytics, and automates responses using logic app playbooks. Microsoft Defender for Cloud provides cloud security posture management (CSPM) and workload protection, Microsoft Defender XDR focuses on native Microsoft 365 detection, and Azure Monitor provides operational monitoring and alerting.",
     "distractorNotes": {
       "b": "Microsoft Defender for Cloud focuses on Cloud Security Posture Management (CSPM) and Cloud Workload Protection (CWPP) across multicloud resources rather than unified SIEM log aggregation and correlation.",
-      "c": "Azure Network Watcher provides diagnostic and monitoring tools for Azure network infrastructure rather than an enterprise SIEM/SOAR system.",
-      "d": "Azure Web Application Firewall provides centralized Layer 7 protection for web applications against common exploits and vulnerabilities rather than log collection and incident orchestration."
+      "c": "Microsoft Defender XDR provides native extended detection and response across Microsoft 365 workloads (endpoints, identities, email, and apps) rather than multicloud SIEM log aggregation and SOAR across third-party sources.",
+      "d": "Azure Monitor alerts provide operational metric and log alerting for Azure resources rather than enterprise security information and event management (SIEM) and incident response orchestration."
     },
     "sourceUrl": "https://learn.microsoft.com/en-us/azure/sentinel/overview",
     "sourceNote": "What is Microsoft Sentinel SIEM?",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-security-solutions-002",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-security-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An organization requires cost-effective distributed denial-of-service defense for a single public IP address assigned to an Azure firewall, without purchasing protection across an entire virtual network. Which service tier should the organization deploy?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Azure DDoS Network Protection"
+      },
+      {
+        "id": "b",
+        "text": "Azure DDoS IP Protection"
+      },
+      {
+        "id": "c",
+        "text": "Azure Web Application Firewall"
+      },
+      {
+        "id": "d",
+        "text": "Azure Front Door Premium tier"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Azure DDoS IP Protection is designed for small and medium businesses, providing essential DDoS mitigation capabilities for individual public IP addresses at a predictable per-IP hourly rate. Azure DDoS Network Protection provides turnkey DDoS protection for entire virtual networks and all contained public IPs, but at a higher fixed monthly commitment. Azure Web Application Firewall protects web applications at Layer 7 rather than mitigating volumetric network attacks.",
+    "distractorNotes": {
+      "a": "Azure DDoS Network Protection provides comprehensive protection across entire virtual networks rather than targeting individual public IP addresses with per-IP billing.",
+      "c": "Azure Web Application Firewall provides Layer 7 inspection against web application exploits like SQL injection rather than volumetric Layer 3 and Layer 4 DDoS defense.",
+      "d": "Azure Front Door Premium tier is a global content delivery and Layer 7 security service rather than a native public IP DDoS protection tier for Azure virtual network resources."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/ddos-protection/ddos-protection-overview",
+    "sourceNote": "Azure DDoS Protection tiers and architecture",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-security-solutions-003",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-security-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A security engineer is designing the perimeter security architecture for an enterprise Azure virtual network. The architecture requires a fully managed, stateful service with built-in high availability that can inspect traffic across Layer 3 through Layer 7 and alert or deny traffic from known malicious IP addresses using threat intelligence. Which Azure service satisfies these requirements?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Network Security Groups with service tags"
+      },
+      {
+        "id": "b",
+        "text": "Azure Web Application Firewall service"
+      },
+      {
+        "id": "c",
+        "text": "Azure Firewall stateful network service"
+      },
+      {
+        "id": "d",
+        "text": "Azure Bastion remote management service"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Azure Firewall is a managed, cloud-native, stateful firewall service that offers built-in high availability and unrestricted cloud scalability. It inspects both inbound and outbound traffic across Layer 3 through Layer 7 and includes threat intelligence-based filtering to alert and deny traffic from known malicious IP addresses and domains. Network Security Groups provide basic 5-tuple packet filtering without stateful Layer 7 inspection. Azure Web Application Firewall inspects web application HTTP/HTTPS traffic.",
+    "distractorNotes": {
+      "a": "Network Security Groups provide basic 5-tuple packet filtering rules at the subnet and NIC levels rather than stateful Layer 7 application inspection and threat intelligence filtering.",
+      "b": "Azure Web Application Firewall inspects incoming HTTP and HTTPS web traffic for Layer 7 vulnerabilities rather than providing general network and transport layer stateful firewall filtering.",
+      "d": "Azure Bastion provides secure administrative remote desktop and shell connectivity over TLS rather than filtering general enterprise network traffic."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/firewall/overview",
+    "sourceNote": "Azure Firewall features and traffic filtering",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-security-solutions-004",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-security-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An administrator needs to configure outbound rules in Azure Firewall that permit virtual machines to access external websites based on specific fully qualified domain names (FQDNs) over HTTP and HTTPS. Which rule collection type should the administrator configure?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Destination Network Address Translation rules"
+      },
+      {
+        "id": "b",
+        "text": "Network rules filtering by IP address ranges"
+      },
+      {
+        "id": "c",
+        "text": "Threat intelligence alert and deny rule sets"
+      },
+      {
+        "id": "d",
+        "text": "Application rules filtering by domain FQDNs"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Application rules in Azure Firewall allow administrators to configure fully qualified domain names (FQDNs) such as *.microsoft.com that can be accessed from a subnet over HTTP and HTTPS protocols. Network rules filter outbound and inbound traffic using Layer 3 and Layer 4 parameters including IP addresses, ports, and protocols, but do not inspect HTTP/HTTPS application layer FQDNs. DNAT rules translate incoming public traffic to private IP addresses.",
+    "distractorNotes": {
+      "a": "Destination Network Address Translation rules translate incoming internet traffic destined for the firewall public IP to private IP addresses of backend workloads.",
+      "b": "Network rules evaluate Layer 3 and Layer 4 source and destination IP addresses, ports, and protocols rather than application-layer domain names.",
+      "c": "Threat intelligence filtering operates automatically against Microsoft threat intelligence feeds rather than defining custom domain name allowlists."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/firewall/features",
+    "sourceNote": "Azure Firewall rule collections and FQDN filtering",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-security-solutions-005",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-security-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A company hosts web applications on Azure and needs centralized protection against common web vulnerabilities such as SQL injection, cross-site scripting (XSS), and HTTP request smuggling. Which service should the company deploy?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Azure Web Application Firewall"
+      },
+      {
+        "id": "b",
+        "text": "Azure DDoS Network Protection"
+      },
+      {
+        "id": "c",
+        "text": "Azure Network Security Groups"
+      },
+      {
+        "id": "d",
+        "text": "Azure Private Link service endpoints"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Azure Web Application Firewall (WAF) provides centralized, Layer 7 protection for web applications from common web exploits and vulnerabilities defined in standards such as the OWASP Core Rule Set. It can be deployed alongside Azure Application Gateway, Azure Front Door, or Azure Content Delivery Network. Azure DDoS Protection defends against volumetric Layer 3 and Layer 4 traffic attacks. Network Security Groups enforce Layer 3 and Layer 4 5-tuple filtering rules.",
+    "distractorNotes": {
+      "b": "Azure DDoS Network Protection mitigates large-scale Layer 3 and Layer 4 volumetric attacks rather than inspecting Layer 7 payload exploits such as SQL injection.",
+      "c": "Network Security Groups filter packets based on IP addresses, ports, and transport protocols without inspecting HTTP payload contents for web vulnerabilities.",
+      "d": "Azure Private Link provides private connectivity to Azure hosted services over private IP addresses rather than inspecting web traffic for vulnerabilities."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/web-application-firewall/overview",
+    "sourceNote": "Azure Web Application Firewall overview",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-security-solutions-006",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-security-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "How does a Network Security Group (NSG) determine whether inbound and outbound traffic is permitted through an Azure subnet or network interface?",
+    "options": [
+      {
+        "id": "a",
+        "text": "By inspecting HTTP request headers and URL parameters"
+      },
+      {
+        "id": "b",
+        "text": "By evaluating 5-tuple rules in numerical priority order"
+      },
+      {
+        "id": "c",
+        "text": "By comparing file hashes against Defender threat feeds"
+      },
+      {
+        "id": "d",
+        "text": "By authenticating client identities with Microsoft Entra ID"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Network Security Groups contain security rules that filter network traffic to and from Azure resources in an Azure virtual network. Each rule is evaluated using a 5-tuple: source IP or range, source port, destination IP or range, destination port, and protocol (TCP, UDP, or ICMP). Rules are processed in numerical order from lowest priority number (100) to highest (4096), stopping at the first matching rule.",
+    "distractorNotes": {
+      "a": "Inspecting HTTP headers and URL parameters is a Layer 7 web application firewall function rather than an NSG packet-filtering capability.",
+      "c": "Comparing file hashes against threat intelligence is an antivirus and endpoint detection capability provided by Microsoft Defender rather than an NSG function.",
+      "d": "Authenticating user credentials is an identity provider function handled by Microsoft Entra ID rather than a transport layer network security group."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview",
+    "sourceNote": "Network security groups rule evaluation and 5-tuple filtering",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-security-solutions-007",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-security-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An organization has multiple virtual machines hosting web tiers and database tiers within the same subnet. Administrators want to define network security rules based on workload roles rather than managing individual static IP addresses. Which feature should they use?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Route Tables specifying custom next-hop targets"
+      },
+      {
+        "id": "b",
+        "text": "Azure Firewall rules specifying domain FQDN tags"
+      },
+      {
+        "id": "c",
+        "text": "Application Security Groups grouping workloads"
+      },
+      {
+        "id": "d",
+        "text": "Virtual Network NAT gateways handling outbound IPs"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Application Security Groups (ASGs) enable administrators to configure network security policies based on application structure and workload roles. By grouping virtual machines under an ASG (such as WebServers or DatabaseServers), security rules can be written in an NSG using the ASG as the source or destination without needing to maintain explicit IP addresses when virtual machines are created or reconfigured.",
+    "distractorNotes": {
+      "a": "Route tables control packet forwarding and next-hop paths rather than grouping virtual machines for role-based NSG security rule definitions.",
+      "b": "Azure Firewall application rule FQDN tags represent groups of external fully qualified domain names rather than grouping internal virtual machines inside an Azure virtual network.",
+      "d": "Virtual Network NAT gateways provide outbound internet connectivity for subnets rather than grouping virtual machines for internal security filtering."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/virtual-network/application-security-groups",
+    "sourceNote": "Application security groups workload-centric filtering",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-security-solutions-008",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-security-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An enterprise needs to connect two Azure virtual networks in different Azure regions so that workloads can communicate privately with high bandwidth and low latency, without sending traffic across the public internet. Which solution should the enterprise implement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Site-to-Site VPN gateway connection"
+      },
+      {
+        "id": "b",
+        "text": "Point-to-Site VPN client gateway"
+      },
+      {
+        "id": "c",
+        "text": "Azure ExpressRoute direct circuit"
+      },
+      {
+        "id": "d",
+        "text": "Virtual Network peering connection"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Virtual Network peering enables seamless connection between two Azure virtual networks. Traffic between the peered virtual networks uses the Microsoft backbone network infrastructure, providing private, high-bandwidth, low-latency connectivity without passing through the public internet. Global VNet peering connects virtual networks across different Azure regions. While VPN gateways can connect virtual networks, they traverse the internet or public infrastructure and introduce encryption overhead.",
+    "distractorNotes": {
+      "a": "Site-to-Site VPN connections traverse the public internet with encrypted IPsec tunnels, introducing routing latency and bandwidth limits compared to native backbone peering.",
+      "b": "Point-to-Site VPN connects individual remote client computers to a virtual network rather than interconnecting two Azure virtual networks.",
+      "c": "Azure ExpressRoute connects on-premises networks to Microsoft cloud services over dedicated private connectivity rather than natively interconnecting two Azure virtual networks."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-peering-overview",
+    "sourceNote": "Azure virtual network peering connectivity",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-security-solutions-009",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-security-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A developer needs to connect an Azure virtual machine to an Azure SQL Database securely, ensuring that traffic remains entirely on the Microsoft backbone network and the database is accessible via a private IP address within the subnet. Which service provides this capability?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Azure Private Endpoint"
+      },
+      {
+        "id": "b",
+        "text": "Azure Service Endpoints"
+      },
+      {
+        "id": "c",
+        "text": "Azure Public IP Address"
+      },
+      {
+        "id": "d",
+        "text": "Azure Network Watcher"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Azure Private Endpoint is a network interface that connects a workload securely to an Azure service powered by Azure Private Link. The private endpoint uses a private IP address from the virtual network subnet, bringing the service effectively inside the virtual network and keeping all traffic within the Microsoft backbone network. Azure Service Endpoints route traffic to public endpoints of Azure services using public IP routing rather than assigning a dedicated private IP address inside the subnet.",
+    "distractorNotes": {
+      "b": "Azure Service Endpoints optimize traffic routing to Azure PaaS services over the backbone network, but the service still retains a public IP address rather than a dedicated private IP in the subnet.",
+      "c": "Assigning a public IP address exposes the resource to public internet routing rather than establishing an internal private subnet IP address.",
+      "d": "Azure Network Watcher provides monitoring and diagnostic tools for network health rather than establishing private network connectivity to PaaS resources."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-overview",
+    "sourceNote": "Azure Private Endpoint private IP connectivity",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-security-solutions-010",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "describe-the-capabilities-of-microsoft-security-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "Which two statements describe the security and operational benefits of deploying Azure Bastion for remote virtual machine administration?",
+    "options": [
+      {
+        "id": "a",
+        "text": "It configures IPsec VPN tunnels between on-premises sites and Azure subnets."
+      },
+      {
+        "id": "b",
+        "text": "It connects to virtual machines directly through a web browser using TLS port 443."
+      },
+      {
+        "id": "c",
+        "text": "It inspects inbound web traffic for SQL injection and cross-site scripting risks."
+      },
+      {
+        "id": "d",
+        "text": "It eliminates the requirement to assign public IP addresses to target virtual machines."
+      }
+    ],
+    "correct": [
+      "b",
+      "d"
+    ],
+    "explanation": "Azure Bastion is a fully platform-managed PaaS service deployed inside an Azure virtual network. It enables secure and seamless RDP and SSH connectivity to virtual machines directly through the Azure portal inside a web browser over TLS (port 443). Because sessions originate from the Bastion host within the virtual network, target virtual machines do not require public IP addresses or management agent software, protecting them from port scanning.",
+    "distractorNotes": {
+      "a": "IPsec site-to-site tunnels are established by Azure VPN Gateway rather than Azure Bastion.",
+      "c": "Inspecting web payloads for SQL injection and script injection is performed by Azure Web Application Firewall rather than Azure Bastion."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/bastion/bastion-overview",
+    "sourceNote": "Azure Bastion architecture and remote access benefits",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-security-solutions-011",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-security-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An application requires secure storage for an API token and a database connection string. The values must be encrypted at rest, access-controlled via role-based access control, and retrieved programmatically at runtime. Which Azure Key Vault object type is designed for this purpose?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Asymmetric cryptographic keys"
+      },
+      {
+        "id": "b",
+        "text": "X.509 security certificates"
+      },
+      {
+        "id": "c",
+        "text": "Secure Key Vault secret objects"
+      },
+      {
+        "id": "d",
+        "text": "Customer-managed key objects"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "In Azure Key Vault, secrets are sequences of bytes up to 25 KB each, specifically designed to store sensitive configuration data such as passwords, API access tokens, and database connection strings. Cryptographic keys and customer-managed keys are used to perform encryption, decryption, signing, and verification operations without exposing the raw key material. Certificates are built on top of keys and secrets to manage X.509 digital certificate lifecycles.",
+    "distractorNotes": {
+      "a": "Cryptographic keys are used for encryption, decryption, and digital signature operations rather than storing arbitrary strings like database connection strings and API tokens.",
+      "b": "Certificates manage public and private key pairs for X.509 certificate lifecycles rather than storing arbitrary application configuration strings.",
+      "d": "Customer-managed keys in Key Vault are used to control encryption keys for services like Azure Storage and SQL rather than storing application configuration secrets like connection strings."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/key-vault/general/basic-concepts",
+    "sourceNote": "Azure Key Vault object types and basic concepts",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-security-solutions-012",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-security-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An organization has strict regulatory compliance obligations requiring cryptographic keys to be stored in dedicated, single-tenant, FIPS 140 Level 3 validated hardware modules where keys cannot be extracted in plaintext. Which service should the organization select?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Azure Key Vault Standard tier"
+      },
+      {
+        "id": "b",
+        "text": "Azure Key Vault Premium tier"
+      },
+      {
+        "id": "c",
+        "text": "Azure Dedicated HSM service"
+      },
+      {
+        "id": "d",
+        "text": "Azure Key Vault Managed HSM"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Azure Key Vault Managed HSM (Hardware Security Module) is a fully managed, highly available, single-tenant cloud service that provides cryptographic key storage backed by FIPS 140 Level 3 validated hardware security modules. It guarantees customer isolation and ensures cryptographic keys never leave the hardware boundary in plaintext. The Standard tier uses software-backed keys, the Premium tier uses multi-tenant HSMs, and Azure Dedicated HSM provides unmanaged bare-metal hardware.",
+    "distractorNotes": {
+      "a": "Azure Key Vault Standard tier stores secrets and keys in software-protected multi-tenant infrastructure rather than dedicated single-tenant hardware security modules.",
+      "b": "Azure Key Vault Premium tier supports HSM-protected keys, but runs on shared multi-tenant HSM infrastructure rather than providing a dedicated single-tenant HSM pool.",
+      "c": "Azure Dedicated HSM provides raw, bare-metal HSM appliances requiring manual network and host administration rather than a fully managed cloud key service."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/key-vault/managed-hsm/overview",
+    "sourceNote": "Azure Key Vault Managed HSM architecture and compliance",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-security-solutions-013",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-security-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "Which capability of Microsoft Defender for Cloud focuses on evaluating cloud resource configurations against security benchmarks, providing actionable recommendations, and calculating a continuous security posture score?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Cloud Security Posture Management"
+      },
+      {
+        "id": "b",
+        "text": "Cloud Workload Protection Platform"
+      },
+      {
+        "id": "c",
+        "text": "Extended Detection and Response"
+      },
+      {
+        "id": "d",
+        "text": "Security Orchestration and Response"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Cloud Security Posture Management (CSPM) in Microsoft Defender for Cloud assesses cloud resources across Azure, AWS, and Google Cloud against security baselines and compliance standards. It discovers misconfigurations, identifies security vulnerabilities, generates prioritized remediation recommendations, and calculates the overall Secure Score. Cloud Workload Protection Platform (CWPP) focuses on real-time threat detection and active defense across specific running workloads like servers, databases, and containers.",
+    "distractorNotes": {
+      "b": "Cloud Workload Protection Platform provides targeted threat detection and defense for active running workloads rather than configuration posture assessment and Secure Score calculation.",
+      "c": "Extended Detection and Response correlates threat telemetry across endpoints, identities, and cloud apps to disrupt active attacks rather than assessing cloud configuration hygiene.",
+      "d": "Security Orchestration and Response automates incident handling workflows and playbooks rather than evaluating resource configurations against posture benchmarks."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/defender-for-cloud/defender-for-cloud-introduction",
+    "sourceNote": "Defender for Cloud CSPM and CWPP architecture",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-security-solutions-014",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-security-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "In Microsoft Defender for Cloud, how does resolving security recommendations impact an organization's overall Secure Score?",
+    "options": [
+      {
+        "id": "a",
+        "text": "It resets compliance standards to initial baseline values"
+      },
+      {
+        "id": "b",
+        "text": "It increases the score by fulfilling recommendations within security controls"
+      },
+      {
+        "id": "c",
+        "text": "It lowers the score by increasing the total number of monitored cloud assets"
+      },
+      {
+        "id": "d",
+        "text": "It converts active security alerts into automated incident remediation rules"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Secure Score in Microsoft Defender for Cloud aggregates security findings into security controls (such as 'Enable MFA' or 'Remediate vulnerabilities'). Each control carries a specific maximum point value. Completing all recommendations within a security control increases the overall Secure Score, reflecting reduced attack surface and improved organizational security posture.",
+    "distractorNotes": {
+      "a": "Resolving recommendations does not reset compliance standards; it demonstrates alignment with regulatory requirements and security benchmarks.",
+      "c": "Adding monitored assets expands coverage, but resolving recommendations increases the percentage of compliant resources and raises the score rather than lowering it.",
+      "d": "Resolving recommendations hardens configurations and reduces vulnerabilities rather than converting threat alerts into automated rules."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/defender-for-cloud/secure-score-security-controls",
+    "sourceNote": "Defender for Cloud Secure Score calculation and controls",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-security-solutions-015",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-security-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "Which default security initiative in Microsoft Defender for Cloud provides cloud-centric security principles and best-practice recommendations mapped directly to industry frameworks such as CIS and NIST?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Azure Cost Management governance baseline initiative"
+      },
+      {
+        "id": "b",
+        "text": "Microsoft Sentinel incident analytics rule collection"
+      },
+      {
+        "id": "c",
+        "text": "Microsoft Cloud Security Benchmark compliance standard"
+      },
+      {
+        "id": "d",
+        "text": "Azure Resource Manager deployment blueprint template"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "The Microsoft Cloud Security Benchmark (MCSB) is the foundational set of cloud-centric security guidelines and best practices provided by Microsoft. Built into Microsoft Defender for Cloud as a default policy initiative, it defines prescriptive recommendations for cloud security and maps technical controls directly to industry standards such as CIS Controls, NIST SP 800-53, and PCI-DSS.",
+    "distractorNotes": {
+      "a": "Azure Cost Management governance initiatives monitor expenditure and budget limits rather than technical cloud security and compliance benchmarks.",
+      "b": "Microsoft Sentinel analytics rules detect operational threats and generate security incidents rather than serving as the baseline cloud security configuration benchmark.",
+      "d": "Azure Resource Manager templates define declarative infrastructure deployments rather than serving as a continuous security and compliance evaluation benchmark."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/defender-for-cloud/regulatory-compliance-dashboard",
+    "sourceNote": "Regulatory compliance and Microsoft Cloud Security Benchmark",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-security-solutions-016",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-security-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An administrator needs to protect Windows and Linux virtual machines running in Azure and on-premises against malware, fileless attacks, and operating system vulnerabilities, with integrated endpoint detection and response (EDR). Which plan should be enabled in Defender for Cloud?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Microsoft Defender for Storage plan"
+      },
+      {
+        "id": "b",
+        "text": "Microsoft Defender for Containers plan"
+      },
+      {
+        "id": "c",
+        "text": "Microsoft Defender for Key Vault plan"
+      },
+      {
+        "id": "d",
+        "text": "Microsoft Defender for Servers plan"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Microsoft Defender for Servers protects Windows and Linux servers running in Azure, AWS, Google Cloud, and on-premises environments. It provides threat detection, vulnerability management, just-in-time VM access, file integrity monitoring, and integrated endpoint detection and response (EDR) powered by Microsoft Defender for Endpoint.",
+    "distractorNotes": {
+      "a": "Defender for Storage protects cloud blob and file storage accounts from malware uploads and anomalous access patterns rather than monitoring operating system processes on virtual machines.",
+      "b": "Defender for Containers secures Kubernetes clusters, container nodes, and container images rather than general-purpose operating system virtual machine workloads.",
+      "c": "Defender for Key Vault detects unusual and potentially malicious attempts to access cryptographic keys and secrets rather than server host operating systems."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/defender-for-cloud/defender-for-servers-introduction",
+    "sourceNote": "Defender for Servers workload protection capabilities",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-security-solutions-017",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-security-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A cloud architect needs to protect cloud object repositories and file shares against malware uploads, suspicious data exfiltration, and anomalous access patterns without deploying host operating system agents. Which Microsoft Defender for Cloud plan satisfies these requirements?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Microsoft Defender for Storage"
+      },
+      {
+        "id": "b",
+        "text": "Microsoft Defender for Containers"
+      },
+      {
+        "id": "c",
+        "text": "Microsoft Defender for Resource Manager"
+      },
+      {
+        "id": "d",
+        "text": "Microsoft Defender for Cosmos DB"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Microsoft Defender for Storage provides contextual cloud security intelligence that monitors Azure Blob Storage, Azure Files, and Azure Data Lake Storage. It identifies anomalous access patterns, malware uploads through built-in malware scanning, and sensitive data exfiltration without requiring virtual machine agent installations.",
+    "distractorNotes": {
+      "b": "Defender for Containers monitors Kubernetes clusters, container registries, and containerized runtime environments rather than object and file storage repositories.",
+      "c": "Defender for Resource Manager monitors cloud management plane operations and configuration modifications rather than data-plane transactions against object stores.",
+      "d": "Defender for Cosmos DB detects malicious database querying patterns and credential compromises on NoSQL databases rather than cloud object repositories and file shares."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/defender-for-cloud/defender-for-storage-introduction",
+    "sourceNote": "Defender for Storage threat detection capabilities",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-security-solutions-018",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-security-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "In the context of security operations center (SOC) architecture, how does the SOAR component of Microsoft Sentinel differ from its SIEM component?",
+    "options": [
+      {
+        "id": "a",
+        "text": "SOAR ingests raw event telemetry, while SIEM executes automated remediation playbooks"
+      },
+      {
+        "id": "b",
+        "text": "SOAR automates incident responses, while SIEM aggregates and correlates event data"
+      },
+      {
+        "id": "c",
+        "text": "SOAR correlates multi-table detections, while SIEM executes network firewall rules"
+      },
+      {
+        "id": "d",
+        "text": "SOAR assesses cloud posture compliance, while SIEM enforces user identity privileges"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "In security operations, SIEM (Security Information and Event Management) aggregates, normalizes, and analyzes log and event data across diverse infrastructure to detect threats and generate correlated incidents. SOAR (Security Orchestration, Automation, and Response) takes those detected incidents and automates investigative steps, containment actions, and remediation workflows using logic app playbooks.",
+    "distractorNotes": {
+      "a": "Ingesting and indexing event telemetry is a foundational SIEM function, whereas executing automated remediation workflows using playbooks is the core purpose of SOAR.",
+      "c": "Correlating multi-table detections into security alerts is a core SIEM analytics capability, while configuring network firewalls is a network infrastructure task.",
+      "d": "Assessing posture compliance is handled by CSPM solutions like Microsoft Defender for Cloud, and user identity privileges are managed by Microsoft Entra ID."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/sentinel/overview",
+    "sourceNote": "Microsoft Sentinel SIEM and SOAR functional definitions",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-security-solutions-019",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-security-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A SOC analyst needs to ingest security audit logs from Microsoft Entra ID, Microsoft Defender XDR, and Amazon Web Services into Microsoft Sentinel. Which built-in Sentinel capability should the analyst use to establish these connections?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Azure Logic Apps workbooks"
+      },
+      {
+        "id": "b",
+        "text": "Log Analytics restore tables"
+      },
+      {
+        "id": "c",
+        "text": "Sentinel data connectors"
+      },
+      {
+        "id": "d",
+        "text": "Azure Bastion endpoints"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Microsoft Sentinel uses data connectors to ingest telemetry from first-party Microsoft services (such as Microsoft Entra ID, Microsoft Defender XDR, and Office 365) and third-party systems (such as AWS CloudTrail, firewalls, and Syslog/CEF servers). Once connected, data flows into Log Analytics workspaces for correlation and analytics. Workbooks provide data visualization rather than log ingestion.",
+    "distractorNotes": {
+      "a": "Workbooks in Microsoft Sentinel provide interactive dashboards and data visualization for ingested data rather than ingesting log feeds from external services.",
+      "b": "Restore tables in Log Analytics restore historical archived data for ad-hoc querying rather than connecting live operational security log streams.",
+      "d": "Azure Bastion endpoints provide secure administrative browser connectivity to virtual machines rather than ingesting telemetry into a SIEM."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/sentinel/connect-data-sources",
+    "sourceNote": "Microsoft Sentinel data connectors and ingestion",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-security-solutions-020",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-security-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "Which component in Microsoft Sentinel runs scheduled Kusto Query Language (KQL) queries across ingested tables to identify suspicious activity and automatically generate alerts and incidents?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Data collection endpoints"
+      },
+      {
+        "id": "b",
+        "text": "Security hunting workbooks"
+      },
+      {
+        "id": "c",
+        "text": "Automation rule triggers"
+      },
+      {
+        "id": "d",
+        "text": "Scheduled analytics rules"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Scheduled analytics rules in Microsoft Sentinel run scheduled KQL queries against data stored in the underlying Log Analytics workspace. When query results match configured detection logic and threshold conditions, Sentinel creates security alerts and groups related alerts into incidents for analysts to investigate.",
+    "distractorNotes": {
+      "a": "Data collection endpoints define network ingestion pathways for the Azure Monitor Agent rather than running detection queries that generate security incidents.",
+      "b": "Workbooks provide interactive visualizations and reports on security data rather than running scheduled background queries that generate alerts.",
+      "c": "Automation rules execute response actions after an incident or alert is created rather than running KQL detection queries against raw log tables."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/sentinel/detect-threats-custom",
+    "sourceNote": "Microsoft Sentinel analytics rules and KQL queries",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-security-solutions-021",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-security-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "During an active security incident investigation in Microsoft Sentinel, which tool provides an interactive visual representation of interconnected entities such as user accounts, host machines, IP addresses, and correlated alerts?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Investigation graph"
+      },
+      {
+        "id": "b",
+        "text": "Log Analytics schema"
+      },
+      {
+        "id": "c",
+        "text": "Azure Resource Graph"
+      },
+      {
+        "id": "d",
+        "text": "Content hub gallery"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "The Microsoft Sentinel investigation graph enables security analysts to examine the scope and root cause of a security incident through an intuitive visual canvas. It correlates alerts and entities (such as compromised user accounts, infected devices, suspicious IP addresses, and malicious files) and lets analysts traverse connections to uncover related activities.",
+    "distractorNotes": {
+      "b": "The Log Analytics schema displays table structures and column data types for query writing rather than visually mapping relationships across incident entities.",
+      "c": "Azure Resource Graph queries inventory and configuration properties of cloud resources rather than mapping real-time entity relationships during an active incident triage.",
+      "d": "The Content hub is an in-product marketplace for discovering and installing Sentinel solutions and connectors rather than an incident investigation canvas."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/sentinel/investigate-cases",
+    "sourceNote": "Microsoft Sentinel investigation graph and incident triage",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-security-solutions-022",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-security-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "A SOC team wants Microsoft Sentinel to automatically trigger an automated workflow whenever a high-severity incident is created, executing tasks such as isolating a host and notifying administrators. Which pair of Sentinel features provides this automated response?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Data collection rules and workbook templates"
+      },
+      {
+        "id": "b",
+        "text": "Automation rules and Logic Apps playbooks"
+      },
+      {
+        "id": "c",
+        "text": "Diagnostic settings and Log Analytics workspaces"
+      },
+      {
+        "id": "d",
+        "text": "Analytics rule queries and hunting bookmarks"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "In Microsoft Sentinel, automation rules act as event triggers that execute when incidents are created or updated. Automation rules can assign incidents, tag them, or trigger playbooks. Playbooks are automated workflows built on Azure Logic Apps that interact with external security tools and communication platforms (such as isolating an endpoint or sending an alert to Microsoft Teams).",
+    "distractorNotes": {
+      "a": "Data collection rules manage log ingestion and workbooks provide visualization dashboards rather than executing automated remediation workflows.",
+      "c": "Diagnostic settings route resource logs and Log Analytics stores data rather than executing event-driven response actions against external services.",
+      "d": "Analytics rules detect threats and hunting bookmarks save query results during proactive searches rather than running automated remediation workflows."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/azure/sentinel/automate-incident-handling-with-automation-rules",
+    "sourceNote": "Microsoft Sentinel automation rules and playbooks",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-security-solutions-023",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-security-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "Which Microsoft security solution provides extended detection and response (XDR) across endpoints, identities, email, and cloud applications, correlating individual alerts into unified incidents and automatically stopping in-progress attacks?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Microsoft Defender for Cloud platform"
+      },
+      {
+        "id": "b",
+        "text": "Microsoft Sentinel cloud SIEM solution"
+      },
+      {
+        "id": "c",
+        "text": "Microsoft Defender XDR unified platform"
+      },
+      {
+        "id": "d",
+        "text": "Microsoft Purview risk management portal"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Microsoft Defender XDR is an enterprise defense suite that provides native extended detection and response (XDR) across identities, endpoints, email, applications, and data. It correlates native signal streams from Defender for Endpoint, Defender for Identity, Defender for Office 365, and Defender for Cloud Apps into unified incidents. It also features automatic attack disruption, which acts in real time to contain compromised assets and stop lateral movement.",
+    "distractorNotes": {
+      "a": "Microsoft Defender for Cloud focuses on Cloud Security Posture Management (CSPM) and Cloud Workload Protection (CWPP) across multicloud infrastructure rather than native cross-domain XDR across endpoints, identities, email, and SaaS apps.",
+      "b": "Microsoft Sentinel is a broad cloud SIEM and SOAR solution that ingests and correlates logs across third-party and multicloud data sources rather than being the dedicated native XDR engine with built-in attack disruption.",
+      "d": "Microsoft Purview provides data security, governance, and compliance solutions rather than extended detection and response against cyber attacks."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/defender-xdr/microsoft-365-defender",
+    "sourceNote": "Microsoft Defender XDR unified detection and attack disruption",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-security-solutions-024",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-security-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "Which feature of Microsoft Defender for Office 365 provides time-of-click URL verification, protecting users against malicious links in emails and Microsoft Teams messages even if a website becomes compromised after the email was delivered?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Anti-spam outbound filtering"
+      },
+      {
+        "id": "b",
+        "text": "Safe Attachments sandbox detonation"
+      },
+      {
+        "id": "c",
+        "text": "Connection filtering policies"
+      },
+      {
+        "id": "d",
+        "text": "Safe Links real-time protection"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Safe Links is a capability of Microsoft Defender for Office 365 that provides time-of-click verification of web addresses (URLs) in email messages, Microsoft Teams, and supported Office 365 applications. If a link originally appeared safe but was weaponized with malicious payloads after delivery, Safe Links detects the malicious target when the user clicks the link and blocks access. Safe Attachments protects against malicious file attachments by detonating them in a virtual sandbox environment.",
+    "distractorNotes": {
+      "a": "Anti-spam outbound filtering inspects messages sent by internal users to prevent compromised accounts from distributing spam externally.",
+      "b": "Safe Attachments uses a virtual sandbox environment to detonate and analyze unknown email file attachments before delivery rather than scanning and rewriting hyperlinks at time-of-click.",
+      "c": "Connection filtering policies allow or block incoming emails based on the IP address of the sending email server rather than scanning embedded hyperlinks."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/defender-office-365/safe-links-about",
+    "sourceNote": "Microsoft Defender for Office 365 Safe Links protection",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-security-solutions-025",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "multi",
+    "domain": "describe-the-capabilities-of-microsoft-security-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "Which two capabilities are provided by Microsoft Defender for Office 365 to protect user mailboxes against malicious content and deceptive messages?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Detonating email attachments in a virtual sandbox before delivery"
+      },
+      {
+        "id": "b",
+        "text": "Encrypting message bodies automatically using sensitivity label policies"
+      },
+      {
+        "id": "c",
+        "text": "Detecting spoofing and impersonation attempts using anti-phishing models"
+      },
+      {
+        "id": "d",
+        "text": "Requiring phishing-resistant MFA tokens through Conditional Access rules"
+      }
+    ],
+    "correct": [
+      "a",
+      "c"
+    ],
+    "explanation": "Microsoft Defender for Office 365 protects against threats in email messages, links, and collaboration tools. Safe Attachments uses a virtual sandbox environment to detonate and analyze unknown email attachments for malicious behavior before delivering them to recipients. Anti-phishing policies use machine learning and mailbox intelligence models to evaluate messages for sender spoofing, domain impersonation, and brand deception. Message encryption is managed by Microsoft Purview Information Protection, and MFA requirements are governed by Microsoft Entra Conditional Access.",
+    "distractorNotes": {
+      "b": "Encrypting message contents using sensitivity labels is a data security capability of Microsoft Purview Information Protection rather than threat detection in Defender for Office 365.",
+      "d": "Enforcing phishing-resistant multi-factor authentication is an identity access management capability configured in Microsoft Entra Conditional Access rather than Defender for Office 365."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/defender-office-365/mdo-sec-ops-guide",
+    "sourceNote": "Defender for Office 365 capabilities and security operations",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-security-solutions-026",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-security-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "Which capability in Microsoft Defender for Endpoint continuously monitors operating system behaviors, detects advanced post-breach attacks, and can automatically execute remediation actions such as isolating devices and terminating malicious processes?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Endpoint Detection and Response with Automated Investigation and Remediation"
+      },
+      {
+        "id": "b",
+        "text": "Attack Surface Reduction rules with hardware-based process isolation controls"
+      },
+      {
+        "id": "c",
+        "text": "Next-generation antivirus protection with cloud-delivered definition scanning"
+      },
+      {
+        "id": "d",
+        "text": "Defender Vulnerability Management with continuous software weakness tracking"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "explanation": "Microsoft Defender for Endpoint includes Endpoint Detection and Response (EDR) to detect advanced persistent threats and post-breach activities by analyzing endpoint behavioral telemetry. It also includes Automated Investigation and Remediation (AIR), which uses automated inspection algorithms to examine alerts, identify root causes, and immediately execute remediation actions like stopping processes and quarantining files without waiting for manual analyst action.",
+    "distractorNotes": {
+      "b": "Attack Surface Reduction (ASR) rules focus on preventive host hardening by blocking behaviors commonly exploited by malware (such as child process creation) rather than post-breach behavioral detection and automated response.",
+      "c": "Next-generation antivirus protection provides real-time file scanning and heuristic threat blocking against known malware rather than advanced post-breach behavioral telemetry analysis and automated remediation.",
+      "d": "Defender Vulnerability Management inventories software assets and assesses known CVEs and misconfigurations rather than monitoring runtime process execution and isolating infected devices."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/defender-endpoint/microsoft-defender-endpoint",
+    "sourceNote": "Defender for Endpoint behavioral sensing and AIR",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-security-solutions-027",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-security-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An administrator wants to prevent malware from executing by blocking Office applications from launching child processes, stopping credential stealing from Windows Local Security Authority (LSASS), and blocking untrusted executables from running from USB drives. Which Defender for Endpoint feature achieves this?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Diagnostic data export policies"
+      },
+      {
+        "id": "b",
+        "text": "Attack Surface Reduction rules"
+      },
+      {
+        "id": "c",
+        "text": "Web content filtering categories"
+      },
+      {
+        "id": "d",
+        "text": "Device discovery active probes"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Attack Surface Reduction (ASR) rules in Microsoft Defender for Endpoint target software behaviors that are commonly abused by attackers and malware. Common examples include preventing Office applications from creating executable child processes, blocking script execution from obfuscated code, and preventing credential stealing from the Windows Local Security Authority Subsystem Service (LSASS).",
+    "distractorNotes": {
+      "a": "Diagnostic data export policies route system telemetry to storage accounts or SIEMs rather than blocking malicious software execution techniques on client endpoints.",
+      "c": "Web content filtering restricts access to websites based on domain categories (such as gambling or adult content) rather than blocking OS process creation techniques.",
+      "d": "Device discovery scans local network subnets to find unmanaged endpoints rather than enforcing behavior-blocking rules on managed devices."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/defender-endpoint/attack-surface-reduction-rules-overview",
+    "sourceNote": "Attack surface reduction rules overview",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-security-solutions-028",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-security-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "Which Microsoft security solution operates as a Cloud Access Security Broker (CASB) to identify shadow IT by analyzing network firewall logs, assess the risk of third-party cloud applications, and enforce real-time session controls?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Microsoft Defender for Identity"
+      },
+      {
+        "id": "b",
+        "text": "Microsoft Defender for Cloud"
+      },
+      {
+        "id": "c",
+        "text": "Microsoft Defender for Cloud Apps"
+      },
+      {
+        "id": "d",
+        "text": "Microsoft Sentinel Data Connectors"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Microsoft Defender for Cloud Apps is a comprehensive Cloud Access Security Broker (CASB). It delivers Cloud Discovery to uncover shadow IT by analyzing firewall and proxy logs, assesses the compliance and risk score of tens of thousands of cloud apps, controls sensitive data in cloud apps, and integrates with Conditional Access App Control to enforce real-time monitoring and controls over user sessions. Microsoft Defender for Cloud provides cloud posture management and workload protection.",
+    "distractorNotes": {
+      "a": "Microsoft Defender for Identity monitors on-premises Active Directory domain controllers to identify identity-based attacks rather than serving as a CASB for cloud applications.",
+      "b": "Microsoft Defender for Cloud provides Cloud Security Posture Management (CSPM) and Cloud Workload Protection (CWPP) across multicloud resources rather than acting as a Cloud Access Security Broker for SaaS applications.",
+      "d": "Microsoft Sentinel Data Connectors ingest event logs into a SIEM workspace rather than functioning as a standalone CASB solution for cloud applications."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/defender-cloud-apps/what-is-defender-for-cloud-apps",
+    "sourceNote": "Defender for Cloud Apps CASB architecture and discovery",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-security-solutions-029",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-security-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "Which Microsoft security service monitors on-premises Active Directory Domain Controllers by capturing and parsing network traffic and Windows event logs to identify reconnaissance, compromised credentials, and lateral movement attacks like Pass-the-Hash?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Microsoft Defender for Endpoint"
+      },
+      {
+        "id": "b",
+        "text": "Microsoft Entra ID Protection"
+      },
+      {
+        "id": "c",
+        "text": "Microsoft Defender for Cloud"
+      },
+      {
+        "id": "d",
+        "text": "Microsoft Defender for Identity"
+      }
+    ],
+    "correct": [
+      "d"
+    ],
+    "explanation": "Microsoft Defender for Identity is a cloud-based security solution that leverages on-premises Active Directory signals. By installing lightweight sensors on domain controllers, it analyzes network traffic, authentication protocols (Kerberos, NTLM), and Windows event logs to detect advanced threats, insider risks, credential theft (such as Pass-the-Hash, Pass-the-Ticket, and Golden Ticket), and lateral movement. Microsoft Defender for Endpoint secures endpoint operating systems, while Microsoft Entra ID Protection evaluates cloud sign-in risks.",
+    "distractorNotes": {
+      "a": "Microsoft Defender for Endpoint monitors device operating systems and processes on workstations and servers rather than capturing network and directory protocol traffic directly on on-premises domain controllers.",
+      "b": "Microsoft Entra ID Protection evaluates cloud-based sign-in risk and user risk within Microsoft Entra ID rather than deploying sensors to parse on-premises Active Directory traffic and Kerberos events.",
+      "c": "Microsoft Defender for Cloud provides cloud posture management and cloud workload protection across cloud platforms rather than analyzing on-premises domain controller authentication streams."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/defender-for-identity/what-is",
+    "sourceNote": "Microsoft Defender for Identity architecture and threat detection",
+    "sourceCheckedAt": "2026-10-11"
+  },
+  {
+    "id": "sc-900-describe-the-capabilities-of-microsoft-security-solutions-030",
+    "cert": "sc-900",
+    "schemaVersion": 1,
+    "type": "single",
+    "domain": "describe-the-capabilities-of-microsoft-security-solutions",
+    "difficulty": "medium",
+    "status": "reviewed",
+    "stem": "An organization needs a centralized solution to continuously discover unmanaged software assets, assess known Common Vulnerabilities and Exposures (CVEs), and track remediation progress across endpoints. Which Microsoft Defender capability provides these features?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Microsoft Defender Attack Surface Reduction"
+      },
+      {
+        "id": "b",
+        "text": "Microsoft Defender Vulnerability Management"
+      },
+      {
+        "id": "c",
+        "text": "Microsoft Defender SmartScreen protection"
+      },
+      {
+        "id": "d",
+        "text": "Microsoft Defender Device Discovery probe"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Microsoft Defender Vulnerability Management provides comprehensive, risk-based asset discovery and vulnerability management. It continuously assesses devices for known vulnerabilities, misconfigurations, and software risks, providing prioritized remediation guidance and tracking progress across client and server endpoints within the unified Microsoft Defender portal.",
+    "distractorNotes": {
+      "a": "Attack Surface Reduction (ASR) rules prevent software behaviors commonly exploited by malware (such as child process creation) rather than performing continuous vulnerability and CVE tracking.",
+      "c": "Microsoft Defender SmartScreen protects users from phishing websites and malicious file downloads in web browsers rather than assessing software inventory and CVE vulnerabilities on devices.",
+      "d": "Device discovery identifies unmanaged network devices connected to corporate subnets rather than assessing software versions and CVE vulnerabilities across managed endpoints."
+    },
+    "sourceUrl": "https://learn.microsoft.com/en-us/defender-vulnerability-management/defender-vulnerability-management-capabilities",
+    "sourceNote": "Microsoft Defender Vulnerability Management core capabilities",
     "sourceCheckedAt": "2026-10-11"
   }
 ]
