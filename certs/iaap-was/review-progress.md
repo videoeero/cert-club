@@ -224,6 +224,19 @@ Offline audit of bank coverage against the official WAS Body of Knowledge bluepr
    - No further AI agent content generation, cold evaluation, or difficulty hardening skills are required.
    - `manifest.status` remains `draft` pending human testing feedback and explicit human promotion approval.
 
+## 2026-10-13: Option hints implementation
 
+Implemented option-level `hintText` across the IAAP-WAS question bank in accordance with [`CONTRIBUTING.md` § Bare option text and optional `hintText`](../../CONTRIBUTING.md) and [`certs/VENDORS.md` § IAAP](../../certs/VENDORS.md):
 
+- **Coverage**: 60 of 300 questions (20.0%) now feature option-level `hintText` across all four of their options (240 options with hints; 100% per-question hint completeness).
+- **Domain breakdown**:
+  - `creating-accessible-web-solutions` (Domain 1): 17 of 120 questions (68 option hints). Refactored candidate items testing ARIA attributes/states/properties (`aria-controls`, `aria-activedescendant`, `aria-modal="true"`, `aria-multiselectable="true"`), live region and widget roles (`role="status"`, `role="log"`), semantic HTML elements (`<article>`, `<main>`), accordion header structure, and widget interaction keystrokes.
+  - `identifying-accessibility-issues` (Domain 2): 38 of 120 questions (152 option hints). Refactored candidate items testing screen reader keystrokes and navigation modes across NVDA, JAWS, VoiceOver (macOS and iOS), and TalkBack, neutral browser platform definitions, audit finding classifications, and explicit WCAG 2.2 Success Criteria options.
+  - `remediating-accessibility-issues` (Domain 3): 5 of 60 questions (20 option hints). Refactored items testing EN 301 549 bare chapters (Chapter 5, Chapter 7, Chapter 9, Chapter 10, Chapter 11), ITI VPAT 2.x editions (`VPAT 508`, `VPAT INT`, `VPAT WCAG`), and ACR conformance level ratings (`Supports`, `Partially Supports`, `Does Not Support`, `Not Applicable`).
+- **Design & Pedagogical alignment**:
+  - Questions with bare technical terms matching live exam formats isolate the bare term in option `text` and provide concise technical glosses in `hintText`, viewable when a learner toggles "Show hints" during practice.
+  - The remaining 240 questions feature statement-style options whose text *is* the answer content (multi-clause accessibility assessments, scenario remediation procedures, code repairs, policy workflows, numerical thresholds, calculations, or triage rationales) and remain intact with NO `hintText`, strictly observing the repository standard and avoiding distractor tells or prompt-echo giveaways.
+  - All glosses derive strictly from authoritative public sources (W3C Recommendations, WAI APG/Tutorials, NV Access NVDA User Guide, Freedom Scientific JAWS User Guide, Apple VoiceOver documentation, Google Android Accessibility Help, ETSI EN 301 549, ITI VPAT 2.x instructions, and the official IAAP Body of Knowledge). Zero content was sourced from gated providers (Deque University, Funka, or Fable).
+  - Every hint is neutrally phrased to define the option's specific technical meaning without telegraphing the key, with 0% absolute qualifier giveaway (`always`, `never`, `only`, `must`, `every`, `cannot`, `all`, `any`, `no`).
+  - Whole-bank metrics remain strictly within all statistical and length guards (`positionBias`, `lengthBiasMeanDelta`, `longestOptionIsKey`).
 
