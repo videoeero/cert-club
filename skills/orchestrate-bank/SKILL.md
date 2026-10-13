@@ -1,15 +1,16 @@
 ---
 name: orchestrate-bank
-description: Orchestrate end-to-end question authoring, cold evaluation, and difficulty hardening across all domains of a cert bank using subagents. Use when populating or expanding a scaffolded bank to its 2x baseline without manually running per-domain sessions.
+description: Orchestrate end-to-end question authoring, cold evaluation, difficulty hardening, and option hint refinement across all domains of a cert bank using subagents. Use when populating or expanding a scaffolded bank to its 2x baseline without manually running per-domain sessions.
 argument-hint: "<cert-slug>"
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash, Subagent, Agent, AskUserQuestion
 ---
 
 # Orchestrate Certification Bank Authoring
 
-Chains `author-questions`, `evaluate-questions`, and `harden-domain-questions` across
-all domains of a bank using subagents. `certs/AUTHORING-A-CERT-WITH-SKILLS.md` Phase 2
-owns the workflow details; this skill is the automated orchestration procedure.
+Chains `author-questions`, `evaluate-questions`, `harden-domain-questions`, and
+`add-option-hints` across all domains of a bank using subagents.
+`certs/AUTHORING-A-CERT-WITH-SKILLS.md` Phase 2 owns the workflow details; this
+skill is the automated orchestration procedure.
 
 Requires an agent environment capable of spawning isolated subagents (`Subagent` or `Agent`).
 
@@ -44,12 +45,19 @@ Requires an agent environment capable of spawning isolated subagents (`Subagent`
    - Calibrates solvability and distractors against official sample questions
      inventoried in `review-progress.md`. Default outcome is no change.
 
-5. **Stage D: Reconciliation & Bank Gate.**
+5. **Stage D: Option Hints Subagents.**
+   For each domain:
+   - Spawn a subagent to execute `skills/add-option-hints` on that domain.
+   - Refines items testing bare terms, tools, APIs, or parameters with
+     concise `hintText` glosses and splits embedded glosses, leaving
+     statement-style items intact.
+
+6. **Stage E: Reconciliation & Bank Gate.**
    The coordinator agent:
    - Runs `npm run sync-dates`.
    - Runs `npm run check` and `npm run metrics -- <slug> --markdown`.
-   - Appends a consolidated, dated summary note covering authoring, evaluation, and
-     hardening dispositions to `certs/<slug>/review-progress.md`.
+   - Appends a consolidated, dated summary note covering authoring, evaluation,
+     hardening, and option hint dispositions to `certs/<slug>/review-progress.md`.
 
 ## Stop and ask
 
@@ -58,8 +66,8 @@ Requires an agent environment capable of spawning isolated subagents (`Subagent`
 - **Widespread miskeys or unsupported dispositions**: If evaluation demotes multiple
   items in a domain, pause to confirm whether the blueprint extraction or doc mapping
   needs human attention.
-- **Whole-bank bias guard failures**: If post-hardening metrics fail length or position
-  guards, adjust distractors before proceeding.
+- **Whole-bank bias guard failures**: If post-hardening or post-hint-refinement
+  metrics fail length or position guards, adjust distractors before proceeding.
 - **Promotion to stable**: Do not flip `manifest.status` to `stable`; promotion is
   strictly human-gated in Phase 4.
 

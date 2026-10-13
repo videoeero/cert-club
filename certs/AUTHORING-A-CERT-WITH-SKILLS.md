@@ -45,7 +45,8 @@ flowchart TD
         E --> F[author-questions<br/>Domain / Skill N]
         F --> G[evaluate-questions<br/>Fresh Session: Cold Solve]
         G --> H[harden-domain-questions<br/>Calibrate to Sample Items]
-        H --> I{More domains/skills needed?}
+        H --> Opt[add-option-hints<br/>Pedagogical Glosses & Splits]
+        Opt --> I{More domains/skills needed?}
         I -->|Yes| F
         G -->|Demoted to draft, or unsupported| F
         H -->|Miskey, or a missing fact| F
@@ -231,7 +232,16 @@ For each domain (or skill when declared):
      missing is `author-questions` work. Re-run the pass it names instead of
      hardening past the finding.
 
-4. **Operator Verification:**
+4. **Option hints refinement (`add-option-hints`):**
+   ```text
+   Run add-option-hints for cert "<slug>" on domain "<domain-slug>"
+   ```
+   - Audits items testing bare tools, services, APIs, parameters, or configurations.
+   - Splits embedded glosses ("Service X, because it does Y") into clean option text and `hintText`.
+   - Authors concise, neutral definitions for all options in candidate items, derived from vendor docs.
+   - Preserves statement-style questions intact with no hints per [`CONTRIBUTING.md`](../CONTRIBUTING.md).
+
+5. **Operator Verification:**
    Run the repository gate after each domain loop:
    ```sh
    npm run check
@@ -381,7 +391,8 @@ The agent audits the review record against permanent invariants (sample question
 | **1. Recon** | [`assess-new-cert`](../skills/assess-new-cert/SKILL.md) | Exam guide URL; `npm run scaffold` | `author-questions` (Domain/Skill 1) |
 | **2. Author** | [`author-questions`](../skills/author-questions/SKILL.md) | Domain/skill slug; `npm run balance -- --2x` | `evaluate-questions` (Domain/Skill N) |
 | **2. Verify** | [`evaluate-questions`](../skills/evaluate-questions/SKILL.md) | Domain/skill slug; cold source fetch | `harden-domain-questions` (Domain/Skill N) |
-| **2. Calibrate** | [`harden-domain-questions`](../skills/harden-domain-questions/SKILL.md) | Domain slug; sample inventory | Next domain/skill (or Phase 3 sweep) |
+| **2. Calibrate** | [`harden-domain-questions`](../skills/harden-domain-questions/SKILL.md) | Domain slug; sample inventory | `add-option-hints` (Domain/Skill N) |
+| **2. Refine** | [`add-option-hints`](../skills/add-option-hints/SKILL.md) | Domain slug; `questions/<domain>.json` | Next domain/skill (or Phase 3 sweep) |
 | **2. Orchestrate (alt)** | [`orchestrate-bank`](../skills/orchestrate-bank/SKILL.md) | Cert slug; subagent tool environment | Phase 3 sweep (then `audit-coverage`) |
 | **3. Sweep** | [`evaluate-questions`](../skills/evaluate-questions/SKILL.md) | `--diff` or full slug; `npm run metrics`; `npm run check-sources` / `check-claims` | `audit-coverage` |
 | **4. Promote** | [`audit-coverage`](../skills/audit-coverage/SKILL.md) | `npm run metrics`; balance check | **Human developer** |
