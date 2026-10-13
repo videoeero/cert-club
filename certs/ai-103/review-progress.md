@@ -193,3 +193,20 @@ Calibrated against Associate-level Azure AI Developer profile:
 - **All bias guards**: `positionBias` PASS, `lengthBiasMeanDelta` PASS, `longestOptionIsKey` PASS.
 - **Validation gate**: `npm run check` green (all 413 unit tests pass, ESLint and Prettier clean).
 
+## 2026-10-13: Option hints implementation
+
+Implemented option-level `hintText` across the AI-103 question bank in accordance with [`CONTRIBUTING.md` § Bare option text and optional `hintText`](../../CONTRIBUTING.md):
+
+- **Coverage**: 59 of 100 questions (59.0%) now feature `hintText` across all of their options (236 options with glosses).
+- **Domain breakdown**:
+  - `plan-and-manage-an-azure-ai-solution`: 18 of 28 questions (72 option hints).
+  - `implement-generative-ai-and-agentic-solutions`: 17 of 33 questions (68 option hints).
+  - `implement-information-extraction-solutions`: 7 of 13 questions (28 option hints).
+  - `implement-text-analysis-solutions`: 9 of 13 questions (36 option hints).
+  - `implement-computer-vision-solutions`: 8 of 13 questions (32 option hints).
+- **Design & Pedagogical alignment**:
+  - Questions whose options consist of bare services, models, SDK evaluators, parameters, algorithms, search modes, and RBAC roles matching official exam item format present concise technical glosses when the candidate toggles "Show hints" during practice.
+  - The 41 remaining questions feature statement-style options whose text *is* the answer decision (multi-clause architectural actions, code snippets, procedure statements, and root-cause explanations) and remain intact without `hintText`, strictly observing the repository standard.
+  - Every hint was neutrally phrased to define the option's specific technical role based on authoritative Microsoft Learn documentation (`learn.microsoft.com/en-us/azure/*`) without telegraphing answer keys and without using absolute qualifier words (`always`, `never`, `only`, `must`, `every`, `cannot`, `all`, `any`, `no`).
+  - All items with hints strictly obey the completeness rule: 100% of options in each hinted item receive a `hintText`.
+  - Bias metrics remain strictly balanced: option length mean delta remains `0.09` characters, longest option is key remains `29%`, and single-select position distribution remains `25 / 27 / 24 / 24`.

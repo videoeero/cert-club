@@ -11,19 +11,23 @@
     "options": [
       {
         "id": "a",
-        "text": "4 megabytes (MB)"
+        "text": "4 megabytes (MB)",
+        "hintText": "standard maximum file size limit for image payloads processed by Azure AI Vision Read API"
       },
       {
         "id": "b",
-        "text": "10 megabytes (MB)"
+        "text": "10 megabytes (MB)",
+        "hintText": "unsupported file size exceeding the 4 MB threshold for image processing"
       },
       {
         "id": "c",
-        "text": "20 megabytes (MB)"
+        "text": "20 megabytes (MB)",
+        "hintText": "supported file size limit for OCR document files submitted to Document Intelligence"
       },
       {
         "id": "d",
-        "text": "50 megabytes (MB)"
+        "text": "50 megabytes (MB)",
+        "hintText": "storage payload limit for batch document analysis jobs"
       }
     ],
     "correct": [
@@ -91,19 +95,23 @@
     "options": [
       {
         "id": "a",
-        "text": "In the Azure Monitor diagnostic logs recorded under the request payload trace."
+        "text": "In the Azure Monitor diagnostic logs recorded under the request payload trace.",
+        "hintText": "diagnostic sink storing resource activity logs and HTTP request metrics"
       },
       {
         "id": "b",
-        "text": "In the custom HTTP response header named x-ms-openai-transformed-prompt-text."
+        "text": "In the custom HTTP response header named x-ms-openai-transformed-prompt-text.",
+        "hintText": "custom response header convention used for diagnostic header tracking"
       },
       {
         "id": "c",
-        "text": "In the revised_prompt property of each data item in the API response payload."
+        "text": "In the revised_prompt property of each data item in the API response payload.",
+        "hintText": "response field in the image data object containing the expanded prompt used by DALL-E 3"
       },
       {
         "id": "d",
-        "text": "In the response body returned by a separate prompt transformation endpoint call."
+        "text": "In the response body returned by a separate prompt transformation endpoint call.",
+        "hintText": "secondary REST API endpoint returning prompt transformation diagnostics"
       }
     ],
     "correct": [
@@ -211,19 +219,23 @@
     "options": [
       {
         "id": "a",
-        "text": "VisualFeatures.Caption to produce a single natural-language sentence describing the image."
+        "text": "VisualFeatures.Caption",
+        "hintText": "generates a single natural-language sentence describing the visual content of the entire image"
       },
       {
         "id": "b",
-        "text": "VisualFeatures.DenseCaptions to generate individual descriptions for localized image parts."
+        "text": "VisualFeatures.DenseCaptions",
+        "hintText": "generates localized descriptions and bounding boxes for up to ten distinct regions in the image"
       },
       {
         "id": "c",
-        "text": "VisualFeatures.Tags to produce a list of recognized objects, living things, and scenery."
+        "text": "VisualFeatures.Tags",
+        "hintText": "generates descriptive tags for objects, settings, and actions identified across the image"
       },
       {
         "id": "d",
-        "text": "VisualFeatures.Objects to identify the item possessing the largest bounding box area."
+        "text": "VisualFeatures.Objects",
+        "hintText": "detects physical objects and returns their bounding box coordinates and labels"
       }
     ],
     "correct": [
@@ -251,19 +263,23 @@
     "options": [
       {
         "id": "a",
-        "text": "VisualFeatures.Tags filtered for instances where the detected concept equals person."
+        "text": "VisualFeatures.Tags filtered for instances where the detected concept equals person.",
+        "hintText": "returns generic descriptive labels without providing spatial coordinates or counts"
       },
       {
         "id": "b",
-        "text": "Azure AI Face API identification to locate facial landmarks across room occupants."
+        "text": "Azure AI Face API identification to locate facial landmarks across room occupants.",
+        "hintText": "detects human faces and facial landmarks with optional face identification and verification"
       },
       {
         "id": "c",
-        "text": "VisualFeatures.People to detect human bodies with coordinates and confidence scores."
+        "text": "VisualFeatures.People to detect human bodies with coordinates and confidence scores.",
+        "hintText": "detects human figures in the image and returns bounding box coordinates and detection confidence"
       },
       {
         "id": "d",
-        "text": "VisualFeatures.SmartCrops configured with aspect ratio presets for portrait framing."
+        "text": "VisualFeatures.SmartCrops configured with aspect ratio presets for portrait framing.",
+        "hintText": "determines optimal crop regions for specified aspect ratios based on visual attention"
       }
     ],
     "correct": [
@@ -291,19 +307,23 @@
     "options": [
       {
         "id": "a",
-        "text": "Azure AI Vision Read API invoked synchronously across each frame extracted from the video."
+        "text": "Azure AI Vision Read API invoked synchronously across each frame extracted from the video.",
+        "hintText": "OCR service extracting text from static image frames without processing audio or video tracks"
       },
       {
         "id": "b",
-        "text": "Azure AI Speech batch transcription configured with audio diarization and speaker labels."
+        "text": "Azure AI Speech batch transcription configured with audio diarization and speaker labels.",
+        "hintText": "speech service transcribing spoken audio into text without visual analysis"
       },
       {
         "id": "c",
-        "text": "Azure AI Content Safety image moderation executed across periodic thumbnail extractions."
+        "text": "Azure AI Content Safety image moderation executed across periodic thumbnail extractions.",
+        "hintText": "safety moderation service scanning visual frames for policy violations"
       },
       {
         "id": "d",
-        "text": "Azure AI Video Indexer processing the media file to extract multimodal timeline insights."
+        "text": "Azure AI Video Indexer processing the media file to extract multimodal timeline insights.",
+        "hintText": "media intelligence service extracting spoken words, visible text, faces, speakers, and topics into temporal metadata"
       }
     ],
     "correct": [
@@ -331,19 +351,23 @@
     "options": [
       {
         "id": "a",
-        "text": "Azure AI Document Intelligence deployed with the prebuilt layout analysis model."
+        "text": "Azure AI Document Intelligence deployed with the prebuilt layout analysis model.",
+        "hintText": "document extraction service specialized in text, tables, and structures from PDFs and scanned forms"
       },
       {
         "id": "b",
-        "text": "Azure Content Understanding in Foundry Tools configured with custom analyzers."
+        "text": "Azure Content Understanding in Foundry Tools configured with custom analyzers.",
+        "hintText": "multimodal generative processing service extracting structured fields from images, videos, audio, and documents"
       },
       {
         "id": "c",
-        "text": "Azure AI Search configured with integrated vectorization and semantic ranker."
+        "text": "Azure AI Search configured with integrated vectorization and semantic ranker.",
+        "hintText": "information retrieval service providing indexing, vectorization, and search ranking over document stores"
       },
       {
         "id": "d",
-        "text": "Azure AI Vision Custom Vision trained on custom object classification models."
+        "text": "Azure AI Vision Custom Vision trained on custom object classification models.",
+        "hintText": "computer vision service for training customized image classification and object detection models"
       }
     ],
     "correct": [
@@ -371,19 +395,23 @@
     "options": [
       {
         "id": "a",
-        "text": "Discrete integer severity levels ranging from zero for safe up to six for high harm."
+        "text": "Discrete integer severity levels ranging from zero for safe up to six for high harm.",
+        "hintText": "four-level scale (0, 2, 4, 6) measuring harm severity across hate, sexual, violence, and self-harm"
       },
       {
         "id": "b",
-        "text": "Continuous floating-point confidence scores between zero and one for each category."
+        "text": "Continuous floating-point confidence scores between zero and one for each category.",
+        "hintText": "probability distribution representing statistical classifier confidence"
       },
       {
         "id": "c",
-        "text": "Binary status flags indicating pass or fail alongside matching policy rule strings."
+        "text": "Binary status flags indicating pass or fail alongside matching policy rule strings.",
+        "hintText": "pass/fail evaluation flags used in rule-based compliance engines"
       },
       {
         "id": "d",
-        "text": "Qualitative tier strings classified as benign, suspicious, or actionable violation."
+        "text": "Qualitative tier strings classified as benign, suspicious, or actionable violation.",
+        "hintText": "categorical string labels used in qualitative risk assessment workflows"
       }
     ],
     "correct": [
@@ -411,19 +439,23 @@
     "options": [
       {
         "id": "a",
-        "text": "Direct prompt injection mitigated by applying text moderation to user chat messages."
+        "text": "Direct prompt injection mitigated by applying text moderation to user chat messages.",
+        "hintText": "user prompt attempting to override system instructions in dialogue turns"
       },
       {
         "id": "b",
-        "text": "Image payload steganography mitigated by stripping EXIF metadata from uploaded files."
+        "text": "Image payload steganography mitigated by stripping EXIF metadata from uploaded files.",
+        "hintText": "hiding covert data within image file metadata or pixel channels"
       },
       {
         "id": "c",
-        "text": "Indirect prompt injection mitigated by using Prompt Shields for document protection."
+        "text": "Indirect prompt injection mitigated by using Prompt Shields for document protection.",
+        "hintText": "external untrusted documents or images containing concealed instructions to manipulate model behavior"
       },
       {
         "id": "d",
-        "text": "Adversarial pixel perturbation mitigated by downscaling input images to 512x512 size."
+        "text": "Adversarial pixel perturbation mitigated by downscaling input images to 512x512 size.",
+        "hintText": "imperceptible pixel noise engineered to deceive vision classification models"
       }
     ],
     "correct": [
