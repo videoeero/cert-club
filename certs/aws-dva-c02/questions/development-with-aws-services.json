@@ -256,19 +256,23 @@
     "options": [
       {
         "id": "a",
-        "text": "KEYS_ONLY"
+        "text": "KEYS_ONLY",
+        "hintText": "streams the key attributes of modified items without attribute value data"
       },
       {
         "id": "b",
-        "text": "NEW_AND_OLD_IMAGES"
+        "text": "NEW_AND_OLD_IMAGES",
+        "hintText": "streams the complete item as it appeared before and after the modification"
       },
       {
         "id": "c",
-        "text": "NEW_IMAGE"
+        "text": "NEW_IMAGE",
+        "hintText": "streams the complete item as it appears following the modification"
       },
       {
         "id": "d",
-        "text": "OLD_IMAGE"
+        "text": "OLD_IMAGE",
+        "hintText": "streams the complete item as it appeared prior to the modification"
       }
     ],
     "correct": [
@@ -581,19 +585,23 @@
     "options": [
       {
         "id": "a",
-        "text": "Lambda destinations configured for On-success and On-failure conditions."
+        "text": "Lambda destinations",
+        "hintText": "routes asynchronous invocation records to target destinations upon success or failure"
       },
       {
         "id": "b",
-        "text": "A Dead-Letter Queue (DLQ) configured on the Lambda function execution role."
+        "text": "Dead-letter queue (DLQ)",
+        "hintText": "captures failed asynchronous invocation payloads without success routing capabilities"
       },
       {
         "id": "c",
-        "text": "CloudWatch Logs subscription filters streaming log records to Amazon Kinesis."
+        "text": "CloudWatch Logs subscription filters",
+        "hintText": "streams log events matching pattern filters to destinations like Kinesis or Lambda"
       },
       {
         "id": "d",
-        "text": "AWS Step Functions state machine with a Parallel task branching on status."
+        "text": "AWS Step Functions state machine",
+        "hintText": "orchestrates multi-step distributed serverless tasks through visual state machines"
       }
     ],
     "correct": [
@@ -1151,19 +1159,23 @@
     "options": [
       {
         "id": "a",
-        "text": "EventBridge Schema Registry and schema discovery."
+        "text": "EventBridge Schema Registry",
+        "hintText": "stores event structures and generates strongly typed code bindings in multiple languages"
       },
       {
         "id": "b",
-        "text": "EventBridge API Destinations with connection schemas."
+        "text": "EventBridge API Destinations",
+        "hintText": "routes events to external HTTP endpoints using configurable connection credentials"
       },
       {
         "id": "c",
-        "text": "EventBridge Pipes with JSON Schema payload validation."
+        "text": "EventBridge Pipes",
+        "hintText": "connects event sources to targets point-to-point with filtering and enrichment"
       },
       {
         "id": "d",
-        "text": "EventBridge archive and replay with state verification."
+        "text": "EventBridge archive and replay",
+        "hintText": "captures historical events and replays them to event buses for re-processing"
       }
     ],
     "correct": [
@@ -1191,19 +1203,23 @@
     "options": [
       {
         "id": "a",
-        "text": "Amazon SNS topic with subscription filter policies."
+        "text": "Amazon SNS topic",
+        "hintText": "pub/sub messaging service fanning out messages to HTTP, SQS, and Lambda endpoints"
       },
       {
         "id": "b",
-        "text": "Amazon EventBridge Pipes with filtering and enrichment."
+        "text": "Amazon EventBridge Pipes",
+        "hintText": "point-to-point integration engine connecting sources to targets with filtering and enrichment"
       },
       {
         "id": "c",
-        "text": "Amazon Kinesis Data Firehose delivery stream with an Amazon S3 target."
+        "text": "Amazon Kinesis Data Firehose",
+        "hintText": "managed streaming service loading real-time data into data lakes and analytics storage"
       },
       {
         "id": "d",
-        "text": "AWS Lambda event source mapping with On-success destinations."
+        "text": "AWS Lambda event source mapping",
+        "hintText": "reads stream or queue records and invokes a function handler directly"
       }
     ],
     "correct": [
@@ -1231,19 +1247,23 @@
     "options": [
       {
         "id": "a",
-        "text": "HTTP API"
+        "text": "HTTP API",
+        "hintText": "lightweight, low-latency API offering basic routing without usage plans or VTL templates"
       },
       {
         "id": "b",
-        "text": "WebSocket API"
+        "text": "WebSocket API",
+        "hintText": "bidirectional API maintaining persistent stateful connections between clients and servers"
       },
       {
         "id": "c",
-        "text": "REST API"
+        "text": "REST API",
+        "hintText": "feature-rich API supporting API keys, usage plans, request validation, and VTL templates"
       },
       {
         "id": "d",
-        "text": "REST API (Private)"
+        "text": "REST API (Private)",
+        "hintText": "API accessible within a VPC via interface VPC endpoints rather than public endpoints"
       }
     ],
     "correct": [
@@ -1396,19 +1416,23 @@
     "options": [
       {
         "id": "a",
-        "text": "HTTP integration with a placeholder web server."
+        "text": "HTTP integration",
+        "hintText": "proxies API requests directly to external HTTP backend endpoints"
       },
       {
         "id": "b",
-        "text": "Mock integration."
+        "text": "Mock integration",
+        "hintText": "returns simulated responses directly from API Gateway without forwarding downstream"
       },
       {
         "id": "c",
-        "text": "AWS integration pointing to a dummy SNS topic."
+        "text": "AWS integration",
+        "hintText": "integrates API methods directly with AWS services without requiring Lambda code"
       },
       {
         "id": "d",
-        "text": "VPC Link integration."
+        "text": "VPC Link integration",
+        "hintText": "routes API Gateway requests privately to resources within a customer VPC"
       }
     ],
     "correct": [
@@ -1417,7 +1441,7 @@
     "explanation": "Amazon API Gateway Mock integrations allow developers to generate API responses directly from API Gateway without invoking a backend integration. Developers can define response status codes, headers, and mapping templates returning static JSON data, which is ideal for frontend testing and CORS preflight OPTIONS responses.",
     "distractorNotes": {
       "a": "HTTP integrations require a live web server backend, incurring compute costs and maintenance.",
-      "c": "Using an SNS topic integration adds unnecessary AWS resource provisioning and complexity for returning static responses.",
+      "c": "AWS integrations connect API methods directly to backend AWS services, requiring backend service configuration and IAM permissions rather than returning static responses directly from API Gateway.",
       "d": "VPC Link connects API Gateway to private VPC resources such as Network Load Balancers, rather than generating static mock responses."
     },
     "sourceUrl": "https://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-mock-integration.html",
@@ -1476,19 +1500,23 @@
     "options": [
       {
         "id": "a",
-        "text": "Query operation executed with aggressive client polling intervals."
+        "text": "Query",
+        "hintText": "read operation in GraphQL fetching data from data sources upon client request"
       },
       {
         "id": "b",
-        "text": "Mutation operation executed with optimistic client response headers."
+        "text": "Mutation",
+        "hintText": "write GraphQL operation modifying backend data and emitting event notifications"
       },
       {
         "id": "c",
-        "text": "Live Query operation configured with reactive client cache directives."
+        "text": "Live Query",
+        "hintText": "polling or reactive cache mechanism not defined as an AppSync operation type"
       },
       {
         "id": "d",
-        "text": "Subscription linked to the message creation mutation."
+        "text": "Subscription",
+        "hintText": "event-driven GraphQL operation listening for mutations over persistent WebSocket connections"
       }
     ],
     "correct": [
@@ -1561,19 +1589,23 @@
     "options": [
       {
         "id": "a",
-        "text": "Standard Workflow"
+        "text": "Standard Workflow",
+        "hintText": "long-running workflow running up to one year with exactly-once execution and visual history"
       },
       {
         "id": "b",
-        "text": "Express Workflow"
+        "text": "Express Workflow",
+        "hintText": "high-throughput asynchronous workflow running up to 5 minutes with at-least-once execution"
       },
       {
         "id": "c",
-        "text": "Synchronous Express Workflow"
+        "text": "Synchronous Express Workflow",
+        "hintText": "high-throughput synchronous workflow returning results immediately with a 5-minute limit"
       },
       {
         "id": "d",
-        "text": "Asynchronous EventBridge Rule"
+        "text": "Asynchronous EventBridge Rule",
+        "hintText": "event-routing rule that filters and targets AWS services without stateful orchestration"
       }
     ],
     "correct": [
@@ -1681,19 +1713,23 @@
     "options": [
       {
         "id": "a",
-        "text": "The Amazon Q Developer software development agent (/dev) in the chat panel."
+        "text": "Software development agent (/dev)",
+        "hintText": "chat capability that breaks down tasks and generates multi-file code implementations"
       },
       {
         "id": "b",
-        "text": "The Amazon Q Developer code transformation feature (/transform) in the IDE."
+        "text": "Code transformation (/transform)",
+        "hintText": "feature that upgrades and migrates legacy application codebases across language versions"
       },
       {
         "id": "c",
-        "text": "The Amazon Q Developer security scan feature for project vulnerabilities."
+        "text": "Security scan",
+        "hintText": "feature that scans code for security vulnerabilities and suggests remediation code"
       },
       {
         "id": "d",
-        "text": "Inline code completions generated from natural language comments."
+        "text": "Inline code suggestions",
+        "hintText": "real-time suggestions generated automatically as developers write code and comments"
       }
     ],
     "correct": [

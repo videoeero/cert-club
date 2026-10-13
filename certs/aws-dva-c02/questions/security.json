@@ -11,19 +11,23 @@
     "options": [
       {
         "id": "a",
-        "text": "Encrypt"
+        "text": "Encrypt",
+        "hintText": "encrypts small plaintext data payloads up to 4 KB directly using a KMS key"
       },
       {
         "id": "b",
-        "text": "GenerateDataKey"
+        "text": "GenerateDataKey",
+        "hintText": "returns a plaintext data key and an encrypted copy of the data key under a KMS key"
       },
       {
         "id": "c",
-        "text": "GenerateDataKeyWithoutPlaintext"
+        "text": "GenerateDataKeyWithoutPlaintext",
+        "hintText": "returns an encrypted copy of a data key without returning the plaintext key material"
       },
       {
         "id": "d",
-        "text": "CreateKey"
+        "text": "CreateKey",
+        "hintText": "creates a customer managed KMS key in the calling AWS account and Region"
       }
     ],
     "correct": [
@@ -291,19 +295,23 @@
     "options": [
       {
         "id": "a",
-        "text": "The ID token, because Amazon API Gateway validates custom OAuth scopes against the user identity attributes and claims contained in the OpenID Connect token payload."
+        "text": "ID token",
+        "hintText": "contains user identity attributes and claims intended for frontend client profile display"
       },
       {
         "id": "b",
-        "text": "The refresh token, because Amazon API Gateway communicates with Amazon Cognito endpoints to exchange the refresh token and dynamically verify user scope permissions."
+        "text": "Refresh token",
+        "hintText": "used by client applications to retrieve fresh ID and access tokens without re-authenticating"
       },
       {
         "id": "c",
-        "text": "A SigV4 signed request payload, because Amazon API Gateway requires AWS IAM cryptographic signature calculations whenever custom OAuth scopes are attached to methods."
+        "text": "SigV4 signed request",
+        "hintText": "cryptographic signature calculated for IAM authorization rather than OAuth scope evaluation"
       },
       {
         "id": "d",
-        "text": "The access token, because Amazon API Gateway validates custom OAuth scopes exclusively against the scope claim present within the user pool access token payload."
+        "text": "Access token",
+        "hintText": "contains granted OAuth scopes and authorization claims validated by API Gateway authorizers"
       }
     ],
     "correct": [
@@ -496,19 +504,23 @@
     "options": [
       {
         "id": "a",
-        "text": "An Access Key ID, a Secret Access Key, and a Session Token, accompanied by an expiration timestamp."
+        "text": "AccessKeyId, SecretAccessKey, and SessionToken",
+        "hintText": "temporary credential trio returned by AssumeRole for authenticating subsequent AWS SDK calls"
       },
       {
         "id": "b",
-        "text": "An Access Key ID and a Secret Access Key only, without a Session Token, accompanied by an expiration timestamp."
+        "text": "AccessKeyId and SecretAccessKey",
+        "hintText": "credential pair returned for long-term IAM users rather than temporary STS sessions"
       },
       {
         "id": "c",
-        "text": "An IAM role ARN and a temporary signed SAML assertion token, accompanied by an expiration timestamp."
+        "text": "IAM role ARN and SAML assertion token",
+        "hintText": "input parameters passed to AssumeRoleWithSAML rather than returned credential outputs"
       },
       {
         "id": "d",
-        "text": "A JSON Web Token (JWT) bearer access token and a refresh token, accompanied by an expiration timestamp."
+        "text": "JWT access token and refresh token",
+        "hintText": "OAuth tokens returned by identity providers rather than AWS STS SigV4 credentials"
       }
     ],
     "correct": [
@@ -701,19 +713,23 @@
     "options": [
       {
         "id": "a",
-        "text": "An Amazon Cognito user pool authorizer configured with custom attribute mapping for query strings."
+        "text": "Cognito user pool authorizer",
+        "hintText": "built-in authorizer validating OpenID Connect JWT tokens from user pools"
       },
       {
         "id": "b",
-        "text": "A Lambda TOKEN authorizer configured with the incoming Authorization header designated as the sole identity source."
+        "text": "Lambda TOKEN authorizer",
+        "hintText": "custom authorizer taking a single bearer token header to determine caller identity"
       },
       {
         "id": "c",
-        "text": "A Lambda REQUEST authorizer configured with identity sources for the headers and query string parameter."
+        "text": "Lambda REQUEST authorizer",
+        "hintText": "custom authorizer evaluating multiple headers, query parameters, and stage variables"
       },
       {
         "id": "d",
-        "text": "A standard API Gateway Usage Plan configured with an AWS WAF Web ACL rule group inspecting headers."
+        "text": "API Gateway Usage Plan",
+        "hintText": "access control feature managing API keys, throttling limits, and request quotas"
       }
     ],
     "correct": [
@@ -1236,19 +1252,23 @@
     "options": [
       {
         "id": "a",
-        "text": "String parameter type with a customer managed AWS KMS key ID specified in the parameter description field."
+        "text": "String",
+        "hintText": "stores plaintext string configuration values without encryption or KMS key integration"
       },
       {
         "id": "b",
-        "text": "SecureString parameter type with a customer managed AWS KMS key specified during parameter creation."
+        "text": "SecureString",
+        "hintText": "encrypts plaintext data at rest using an AWS KMS key upon parameter creation"
       },
       {
         "id": "c",
-        "text": "StringList parameter type with client-side Base64 encoding applied to each token element in the list."
+        "text": "StringList",
+        "hintText": "stores comma-separated values as unencrypted plaintext string elements"
       },
       {
         "id": "d",
-        "text": "AdvancedString parameter type with an attached AWS Secrets Manager cross-service encryption policy."
+        "text": "AdvancedString",
+        "hintText": "invalid parameter type not supported by Systems Manager Parameter Store"
       }
     ],
     "correct": [
@@ -1256,8 +1276,8 @@
     ],
     "explanation": "AWS Systems Manager Parameter Store supports three parameter types: String, StringList, and SecureString. A SecureString is plaintext data that is encrypted when stored and decrypted when retrieved using an AWS KMS key (either the default AWS managed key or a customer managed key). Callers require both ssm:GetParameter and kms:Decrypt permissions on the KMS key to retrieve the plaintext value via --with-decryption.",
     "distractorNotes": {
-      "a": "String parameters are stored unencrypted in plaintext; specifying a KMS key ID in the description has no cryptographic effect.",
-      "c": "StringList parameters are comma-separated plaintext strings; Base64 encoding is an encoding scheme, not encryption, and offers no data protection.",
+      "a": "String parameters store configuration data in plaintext without KMS encryption, leaving values exposed to any user with parameter read permissions.",
+      "c": "StringList parameters store comma-separated string values in plaintext without KMS encryption.",
       "d": "AdvancedString is not a valid parameter type in Parameter Store; tiers are Standard or Advanced, but the encryption type is SecureString."
     },
     "sourceUrl": "https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-parameter-store.html",

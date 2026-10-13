@@ -11,19 +11,23 @@
     "options": [
       {
         "id": "a",
-        "text": "Linear10PercentEvery10Minutes"
+        "text": "Linear10PercentEvery10Minutes",
+        "hintText": "shifts 10 percent of traffic in 10-minute intervals until complete"
       },
       {
         "id": "b",
-        "text": "Canary10Percent5Minutes"
+        "text": "Canary10Percent5Minutes",
+        "hintText": "shifts 10 percent of traffic for 5 minutes before routing remaining traffic"
       },
       {
         "id": "c",
-        "text": "Canary10Percent10Minutes"
+        "text": "Canary10Percent10Minutes",
+        "hintText": "shifts 10 percent of traffic for 10 minutes before routing remaining traffic"
       },
       {
         "id": "d",
-        "text": "Linear10PercentEvery1Minute"
+        "text": "Linear10PercentEvery1Minute",
+        "hintText": "shifts 10 percent of traffic in 1-minute intervals until complete"
       }
     ],
     "correct": [
@@ -171,19 +175,23 @@
     "options": [
       {
         "id": "a",
-        "text": "`!Join [':', ['arn:aws:sqs', !Ref 'AWS::Region', !Ref 'AWS::AccountId', !Ref QueueName]]`"
+        "text": "!Join [':', ['arn:aws:sqs', !Ref 'AWS::Region', !Ref 'AWS::AccountId', !Ref QueueName]]",
+        "hintText": "joins delimited string elements using an explicit separator character and array structure"
       },
       {
         "id": "b",
-        "text": "`!Sub 'arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:${!Ref QueueName}'`"
+        "text": "!Sub 'arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:${!Ref QueueName}'",
+        "hintText": "attempts nested intrinsic evaluation inside variable substitution delimiters"
       },
       {
         "id": "c",
-        "text": "`!Sub 'arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:${QueueName}'`"
+        "text": "!Sub 'arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:${QueueName}'",
+        "hintText": "substitutes parameter and pseudo parameter references directly inside a string template"
       },
       {
         "id": "d",
-        "text": "`!FindInMap ['ArnMap', !Ref 'AWS::Region', !Ref QueueName]`"
+        "text": "!FindInMap ['ArnMap', !Ref 'AWS::Region', !Ref QueueName]",
+        "hintText": "retrieves values from two-tier mapping tables declared in the template structure"
       }
     ],
     "correct": [
@@ -451,19 +459,23 @@
     "options": [
       {
         "id": "a",
-        "text": "`AfterInstall`"
+        "text": "AfterInstall",
+        "hintText": "executes post-copy configuration tasks such as setting directory permissions and dependencies"
       },
       {
         "id": "b",
-        "text": "`BeforeInstall`"
+        "text": "BeforeInstall",
+        "hintText": "executes pre-installation tasks such as file decryption or backing up current versions"
       },
       {
         "id": "c",
-        "text": "`ApplicationStop`"
+        "text": "ApplicationStop",
+        "hintText": "gracefully terminates the running service before revision archive file download begins"
       },
       {
         "id": "d",
-        "text": "`ValidateService`"
+        "text": "ValidateService",
+        "hintText": "executes health check scripts verifying that the service responds successfully"
       }
     ],
     "correct": [
@@ -491,19 +503,23 @@
     "options": [
       {
         "id": "a",
-        "text": "`BeforeInstall`"
+        "text": "BeforeInstall",
+        "hintText": "executes Lambda validation tasks before the replacement task set is created or registered"
       },
       {
         "id": "b",
-        "text": "`AfterInstall`"
+        "text": "AfterInstall",
+        "hintText": "executes Lambda validation tasks after task set creation before test traffic routing"
       },
       {
         "id": "c",
-        "text": "`AfterAllowTestTraffic`"
+        "text": "AfterAllowTestTraffic",
+        "hintText": "executes Lambda validation tasks while the test listener directs test traffic to tasks"
       },
       {
         "id": "d",
-        "text": "`BeforeAllowTraffic`"
+        "text": "BeforeAllowTraffic",
+        "hintText": "executes Lambda validation tasks before production traffic shifting begins"
       }
     ],
     "correct": [
@@ -651,19 +667,23 @@
     "options": [
       {
         "id": "a",
-        "text": "All at once"
+        "text": "All at once",
+        "hintText": "deploys the revision to instances simultaneously, taking the environment out of service"
       },
       {
         "id": "b",
-        "text": "Rolling"
+        "text": "Rolling",
+        "hintText": "deploys the revision in batches, reducing environment capacity by batch size"
       },
       {
         "id": "c",
-        "text": "Immutable"
+        "text": "Immutable",
+        "hintText": "provisions a duplicate Auto Scaling group to test instances before termination"
       },
       {
         "id": "d",
-        "text": "Rolling with additional batch"
+        "text": "Rolling with additional batch",
+        "hintText": "provisions an extra batch of instances first to maintain target serving capacity"
       }
     ],
     "correct": [
@@ -771,19 +791,23 @@
     "options": [
       {
         "id": "a",
-        "text": "A file named `worker.json` defining scheduled tasks under the `Environment` key."
+        "text": "worker.json",
+        "hintText": "hypothetical worker descriptor file not recognized by the Elastic Beanstalk daemon"
       },
       {
         "id": "b",
-        "text": "A file named `appspec.yml` with a recurring scheduled task hook definition."
+        "text": "appspec.yml",
+        "hintText": "deployment lifecycle specification file used by AWS CodeDeploy deployments"
       },
       {
         "id": "c",
-        "text": "A file named `cron.yaml` defining the job name, schedule, and URL path."
+        "text": "cron.yaml",
+        "hintText": "configuration file defining recurring background worker tasks in Elastic Beanstalk"
       },
       {
         "id": "d",
-        "text": "A file named `schedule.config` placed inside the `.ebextensions` directory."
+        "text": ".ebextensions/schedule.config",
+        "hintText": "environment configuration file placed inside the platform configuration directory"
       }
     ],
     "correct": [
@@ -931,19 +955,23 @@
     "options": [
       {
         "id": "a",
-        "text": "AWS Systems Manager State Manager associations attached to the target compute instances."
+        "text": "Systems Manager State Manager associations",
+        "hintText": "automates configuration tasks and software baselines on managed compute instances"
       },
       {
         "id": "b",
-        "text": "AWS Config rules that evaluate resource compliance against configuration management baselines."
+        "text": "AWS Config rules",
+        "hintText": "evaluates resource configurations against compliance baselines and configuration histories"
       },
       {
         "id": "c",
-        "text": "Validators configured on the AppConfig configuration profile using JSON Schema or AWS Lambda."
+        "text": "AppConfig validators",
+        "hintText": "syntactic and semantic validation rules using JSON Schema or AWS Lambda functions"
       },
       {
         "id": "d",
-        "text": "Amazon CloudWatch syntactic metric filters configured on the AppConfig deployment event log stream."
+        "text": "CloudWatch metric filters",
+        "hintText": "extracts metric data points from CloudWatch log streams matching filter patterns"
       }
     ],
     "correct": [
@@ -1146,23 +1174,28 @@
     "options": [
       {
         "id": "a",
-        "text": "Use the `Metadata` section to evaluate conditional resource creation based on the environment."
+        "text": "Metadata section",
+        "hintText": "stores arbitrary JSON or YAML data for tools like cfn-init without conditional logic"
       },
       {
         "id": "b",
-        "text": "Use the `Transforms` section to define regional lookup tables for AMI identifiers."
+        "text": "Transforms section",
+        "hintText": "specifies macros or language extensions for template macro processing"
       },
       {
         "id": "c",
-        "text": "Use the `Mappings` section with the `!FindInMap` intrinsic function to match AMI IDs by region and architecture."
+        "text": "Mappings section with !FindInMap",
+        "hintText": "defines static key-value lookup tables and retrieves values matching keys"
       },
       {
         "id": "d",
-        "text": "Use the `Conditions` section with the `!If` intrinsic function to determine whether to create the production alarm."
+        "text": "Conditions section with !If",
+        "hintText": "evaluates conditional statements and controls conditional resource provisioning"
       },
       {
         "id": "e",
-        "text": "Use the `Rules` section to automatically swap AMI identifiers during CloudFormation stack rollback."
+        "text": "Rules section",
+        "hintText": "validates template parameter values before stack creation without modifying resource IDs"
       }
     ],
     "correct": [
@@ -1173,7 +1206,7 @@
     "distractorNotes": {
       "a": "The `Metadata` section provides arbitrary structured information or configuration details for tools like cfn-init, but cannot conditionally create resources.",
       "b": "The `Transforms` section specifies macros for template processing (like AWS SAM or custom macros), not static AMI lookup tables.",
-      "e": "The `Rules` section validates template parameter values before stack creation, rather than managing resource attributes during stack rollbacks."
+      "e": "The `Rules` section validates template parameter values before stack creation, but does not provide conditional resource provisioning or lookup mapping."
     },
     "sourceUrl": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/mappings-section-structure.html",
     "sourceNote": "Mappings section structure in AWS CloudFormation",
@@ -1191,27 +1224,33 @@
     "options": [
       {
         "id": "a",
-        "text": "`ApplicationStop` to gracefully terminate the existing web service before new files are downloaded."
+        "text": "ApplicationStop",
+        "hintText": "gracefully terminates the running service before revision archive file download begins"
       },
       {
         "id": "b",
-        "text": "`BeforeInstall` to restart the web server process before file copying begins."
+        "text": "BeforeInstall",
+        "hintText": "executes pre-installation tasks such as file decryption before file copying begins"
       },
       {
         "id": "c",
-        "text": "`Install` to write custom deployment scripts directly to disk."
+        "text": "Install",
+        "hintText": "reserved CodeDeploy lifecycle event that extracts revision files to the destination"
       },
       {
         "id": "d",
-        "text": "`AfterInstall` to configure directory permissions and install dependencies after file copying."
+        "text": "AfterInstall",
+        "hintText": "configures directory permissions and installs dependencies after file copying completes"
       },
       {
         "id": "e",
-        "text": "`ValidateService` to run health checks verifying that the web server responds to requests."
+        "text": "ValidateService",
+        "hintText": "runs health check scripts verifying that the service responds to requests"
       },
       {
         "id": "f",
-        "text": "`DownloadBundle` to execute custom network download commands on the target instances."
+        "text": "DownloadBundle",
+        "hintText": "reserved CodeDeploy lifecycle event that copies revision files to temporary storage"
       }
     ],
     "correct": [
@@ -1221,7 +1260,7 @@
     ],
     "explanation": "In an AWS CodeDeploy in-place deployment on EC2/on-premises instances: (1) ApplicationStop runs before new files are copied to gracefully stop the existing application; (2) AfterInstall runs after files are copied to the target directory, making it the appropriate place for tasks like setting file permissions and installing dependencies; and (3) ValidateService runs after ApplicationStart to verify that the application has started and is healthy.",
     "distractorNotes": {
-      "b": "Restarting the web server during `BeforeInstall` makes no sense because new application files have not yet been copied.",
+      "b": "The `BeforeInstall` lifecycle event executes pre-installation tasks (such as file decryption or backups) before files are copied, which is not one of the three required lifecycle hooks in the scenario.",
       "c": "The `Install` lifecycle event is reserved for the CodeDeploy agent to copy files; user scripts cannot be run in `Install`.",
       "f": "The `DownloadBundle` lifecycle event is reserved for the CodeDeploy agent to download the revision bundle; user scripts cannot be run in `DownloadBundle`."
     },

@@ -11,19 +11,23 @@
     "options": [
       {
         "id": "a",
-        "text": "Metadata"
+        "text": "Metadata",
+        "hintText": "non-indexed key-value pairs containing structured objects not searchable via filter expressions"
       },
       {
         "id": "b",
-        "text": "Sampling rules"
+        "text": "Sampling rules",
+        "hintText": "configurable rules controlling trace collection rates to manage telemetry volume and cost"
       },
       {
         "id": "c",
-        "text": "Trace groups"
+        "text": "Trace groups",
+        "hintText": "collections of traces grouped by filter expressions to provide focused service graphs"
       },
       {
         "id": "d",
-        "text": "Annotations"
+        "text": "Annotations",
+        "hintText": "indexed key-value pairs recorded on trace segments for searching with filter expressions"
       }
     ],
     "correct": [
@@ -51,19 +55,23 @@
     "options": [
       {
         "id": "a",
-        "text": "Set the Period parameter to 1 second and the EvaluationPeriods parameter to 1 in the PutMetricData API call."
+        "text": "Period: 1 and EvaluationPeriods: 1",
+        "hintText": "alarm evaluation parameters defining aggregation time windows rather than metric resolution"
       },
       {
         "id": "b",
-        "text": "Set the StorageResolution parameter to 1 on the MetricDatum objects when calling PutMetricData."
+        "text": "StorageResolution: 1",
+        "hintText": "metric datum parameter specifying high-resolution 1-second storage granularity in PutMetricData"
       },
       {
         "id": "c",
-        "text": "Set the Resolution parameter to high and configure a CloudWatch Logs subscription filter to ingest metrics."
+        "text": "Resolution: high",
+        "hintText": "invalid parameter name not supported by the PutMetricData API schema"
       },
       {
         "id": "d",
-        "text": "Set the MetricResolution parameter to 1 on the CloudWatch metric alarm configuration rather than in the API call."
+        "text": "MetricResolution: 1",
+        "hintText": "invalid parameter name not supported by the CloudWatch metric datum structure"
       }
     ],
     "correct": [
@@ -72,7 +80,7 @@
     "explanation": "When publishing custom metrics to Amazon CloudWatch using the PutMetricData API, setting StorageResolution to 1 creates a high-resolution metric capable of storing data at 1-second granularity. Standard-resolution metrics default to a StorageResolution of 60 (1-minute intervals).",
     "distractorNotes": {
       "a": "Period and EvaluationPeriods are parameters used when defining CloudWatch metric alarms, not parameters of the PutMetricData API request structure.",
-      "c": "There is no Resolution parameter in PutMetricData, and CloudWatch Logs subscription filters stream log events rather than defining PutMetricData resolution.",
+      "c": "Resolution is not a valid parameter of the PutMetricData API or MetricDatum data structure; high-resolution metrics must be configured using StorageResolution.",
       "d": "Metric resolution must be defined at metric ingestion time on the MetricDatum using StorageResolution, not via a MetricResolution parameter on alarms."
     },
     "sourceUrl": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/publishingMetrics.html",
@@ -702,23 +710,27 @@
     "domain": "troubleshooting-and-optimization",
     "difficulty": "medium",
     "status": "reviewed",
-    "stem": "A developer is selecting an Amazon ElastiCache engine for a web application. The application requires caching sorted real-time gaming leaderboards, atomic counter increments for player scores, and Multi-AZ replication with automatic failover to support high availability. Which ElastiCache engine meets these requirements?",
+    "stem": "A developer is selecting an in-memory caching engine for a web application. The application requires caching sorted real-time gaming leaderboards, atomic counter increments for player scores, and Multi-AZ replication with automatic failover to support high availability. Which caching solution meets these requirements?",
     "options": [
       {
         "id": "a",
-        "text": "Amazon ElastiCache for Memcached, because it provides multi-threaded processing and horizontal shard scaling."
+        "text": "Amazon ElastiCache for Memcached",
+        "hintText": "in-memory key-value store supporting multi-threaded execution without replication or complex structures"
       },
       {
         "id": "b",
-        "text": "Amazon ElastiCache for Redis, because it natively supports advanced data structures and Multi-AZ replication."
+        "text": "Amazon ElastiCache for Redis",
+        "hintText": "in-memory data store supporting advanced data structures, atomic operations, and Multi-AZ replication"
       },
       {
         "id": "c",
-        "text": "Amazon ElastiCache for Memcached, because it provides persistent point-in-time snapshots to Amazon S3."
+        "text": "Amazon DynamoDB Accelerator (DAX)",
+        "hintText": "in-memory hardware-managed cache dedicated to accelerating read requests for DynamoDB tables"
       },
       {
         "id": "d",
-        "text": "Amazon MemoryDB, because it is the only AWS caching service that supports in-memory atomic increments."
+        "text": "Amazon MemoryDB for Redis",
+        "hintText": "durable in-memory database with Multi-AZ transaction logs designed as primary data storage"
       }
     ],
     "correct": [
@@ -727,8 +739,8 @@
     "explanation": "Amazon ElastiCache for Redis supports complex data structures (including sorted sets for leaderboards and hashes), atomic operations (such as INCR and ZADD), and Multi-AZ replication with automatic failover. Memcached supports only simple key-value strings and lacks native replication or Multi-AZ failover.",
     "distractorNotes": {
       "a": "Memcached is multi-threaded, but it lacks support for sorted sets, atomic leaderboard operations, and Multi-AZ replication with automatic failover.",
-      "c": "Memcached does not support persistent snapshots or backups to Amazon S3; backup and restore capabilities are exclusive to Redis.",
-      "d": "ElastiCache for Redis fully supports atomic operations and in-memory increments, making MemoryDB unnecessary for meeting these requirements."
+      "c": "DAX provides microsecond caching for Amazon DynamoDB tables, but does not provide general-purpose in-memory caching with Redis-compatible data structures.",
+      "d": "Amazon MemoryDB for Redis is a durable primary database with Multi-AZ transaction logging rather than a dedicated in-memory caching tier, making ElastiCache for Redis the appropriate caching solution for this workload."
     },
     "sourceUrl": "https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/SelectEngine.html",
     "sourceNote": "Choosing between Redis and Memcached in ElastiCache",

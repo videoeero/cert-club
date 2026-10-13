@@ -136,3 +136,27 @@ All domains assessed against the 10 official DVA-C02 sample questions inventorie
 - Distractor notes coverage: 100% of distractors noted across all 130 items; zero option letter references in explanations or distractor notes.
 - "Eliminate absolute qualifiers then guess" uniquely identifies key in 0 of 108 single-select items.
 - Repository test suite: 416/416 tests green.
+
+## 2026-10-13: Option hints implementation
+
+Implemented option-level `hintText` across the AWS Certified Developer - Associate (DVA-C02) question bank in accordance with [`CONTRIBUTING.md` § Bare option text and optional `hintText`](../../CONTRIBUTING.md) and precedents from `aws-clf-c02`, `sc-900`, and `ai-103`:
+
+- **Coverage**: 26 of 130 questions (20.0%) now feature `hintText` across all of their options (108 options with technical glosses).
+- **Domain breakdown**:
+  - `deployment`: 9 of 31 questions (40 option hints) — deployment preference types (`Linear10PercentEvery10Minutes`, `Canary10Percent5Minutes`), CloudFormation intrinsic syntax (`!Join`, `!Sub`, `!FindInMap`), CodeDeploy EC2 & ECS lifecycle hooks (`BeforeInstall`, `AfterInstall`, `BeforeAllowTraffic`, `ValidateService`), Elastic Beanstalk deployment policies (`All at once`, `Rolling`, `Immutable`), Beanstalk configuration files (`cron.yaml`), AppConfig validators, and CloudFormation template section structures (`Mappings`, `Conditions`, `Metadata`).
+  - `development-with-aws-services`: 9 of 42 questions (36 option hints) — DynamoDB Streams view types (`KEYS_ONLY`, `NEW_AND_OLD_IMAGES`, `NEW_IMAGE`, `OLD_IMAGE`), Lambda asynchronous routing mechanisms (`Lambda destinations`, `Dead-letter queue`), EventBridge capabilities (`Schema Registry`, `API Destinations`, `Pipes`, `Archive and Replay`), serverless event routing services, API Gateway types (`HTTP API`, `REST API`, `WebSocket API`), API Gateway integrations (`Mock integration`, `HTTP integration`, `AWS integration`, `VPC Link integration`), AppSync GraphQL operations (`Query`, `Mutation`, `Subscription`), Step Functions workflow types (`Standard Workflow`, `Express Workflow`), and Amazon Q Developer capabilities.
+  - `security`: 5 of 34 questions (20 option hints) — AWS KMS cryptographic APIs (`Encrypt`, `GenerateDataKey`, `GenerateDataKeyWithoutPlaintext`, `CreateKey`), Cognito token types (`ID token`, `Refresh token`, `Access token`), STS temporary credentials (`AccessKeyId, SecretAccessKey, and SessionToken`), API Gateway authorizer types (`Cognito user pool authorizer`, `Lambda TOKEN authorizer`, `Lambda REQUEST authorizer`), and Systems Manager Parameter Store parameter types (`String`, `SecureString`, `StringList`).
+  - `troubleshooting-and-optimization`: 3 of 23 questions (12 option hints) — AWS X-Ray telemetry concepts (`Metadata`, `Sampling rules`, `Trace groups`, `Annotations`), CloudWatch metric resolution parameters (`StorageResolution: 1`, `Period: 1 and EvaluationPeriods: 1`), and in-memory caching and data store solutions (`Amazon ElastiCache for Memcached`, `Amazon ElastiCache for Redis`, `Amazon DynamoDB Accelerator (DAX)`, `Amazon MemoryDB for Redis`).
+- **Design & Pedagogical alignment**:
+  - Questions whose options test bare services, tools, API operations, CLI parameters, intrinsic functions, or lifecycle hooks matching official exam item presentation present concise, authoritative technical descriptions when the candidate toggles "Show hints" during practice.
+  - Questions with embedded glosses (such as item `018` in troubleshooting testing caching engines, item `030` in deployment testing AppSpec hooks, and item `008` in security testing Cognito tokens) were disentangled into clean bare `text` with explanatory clauses moved into `hintText`.
+  - The remaining 104 questions feature statement-style options whose text *is* the answer decision (multi-step architectural configurations, CLI invocations, IAM policy blocks, code snippets, and procedural choices) and remain intact without `hintText`, strictly observing the repository standard.
+  - Every hint was neutrally phrased to define each option objectively based on authoritative AWS documentation (`docs.aws.amazon.com/*`) without telegraphing answer keys and without using absolute qualifiers (`always`, `never`, `only`, `must`, `every`, `cannot`, `all`, `any`, `no`).
+  - All items with hints strictly obey the completeness rule: 100% of options in each hinted item receive a `hintText` (zero partial hints).
+- **Post-refactor quality metrics**:
+  - `positionBias`: **PASS** — Single-select answer positions remain perfectly balanced across 108 items: `a`: 27 (25.0%), `b`: 28 (25.9%), `c`: 27 (25.0%), `d`: 26 (24.1%).
+  - `lengthBiasMeanDelta`: **PASS** — Mean key length delta is +1.85 characters (median +1.67 chars), well within the ±10.0 character ceiling.
+  - `longestOptionIsKey`: **PASS** — Correct answer is longest option in 17 of 108 single-select items (15.7%, well below 45% ceiling).
+  - Eliminating absolute qualifiers uniquely solves 0 of 108 items (25.8% expected guessing rate).
+  - Test suite: 416/416 unit tests passing; Vite production build succeeds.
+
