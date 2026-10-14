@@ -10,7 +10,7 @@ measured as of April 16, 2026", updated 2026-07-07). Recon performed on
 
 ## Predecessor exam: AI-102 retirement
 
-Exam AI-102 (*Designing and Implementing a Microsoft Azure AI Solution*) was
+Exam AI-102 (_Designing and Implementing a Microsoft Azure AI Solution_) was
 officially retired on June 30, 2026 at 11:59 PM CST. Microsoft replaced AI-102
 with **Exam AI-103: Developing AI Apps and Agents on Azure**, updating the role
 focus toward agentic architectures, Microsoft Foundry Agent Service, and multimodal
@@ -19,15 +19,12 @@ switched to AI-103 as the active certification path.
 
 ## Bank status: `draft`
 
-`manifest.status` is `draft`. The bank currently holds 5 seed questions (1 per
-domain, 0% reviewed, 100% draft). These items serve as the smoke test of the
-sourcing plan and schema validation.
-
-Promote to `stable` only when coverage is genuinely proportional across all
-domains, judged per domain against the manifest weights rather than by total
-question count, and record that reasoning here. The standard bank authoring
-target is 2x the official exam question count (`2 * manifest.examQuestionCount` =
-100 questions), providing two full non-overlapping mock exam sessions.
+`manifest.status` is `draft`. The bank holds 100 questions (100% reviewed, 0% draft),
+fully satisfying the 2× exam baseline (`2 * manifest.examQuestionCount = 100`)
+proportionally distributed across all five domains matching normalized blueprint
+weights (28 / 33 / 13 / 13 / 13). Promoted items were verified across independent
+cold evaluation and difficulty hardening passes. Status remains `draft` pending
+final human promotion approval in Phase 4.
 
 ## Blueprint and weights
 
@@ -41,172 +38,116 @@ Microsoft publishes domain percentage ranges in the official study guide:
 
 Weights were normalized using the largest-remainder method (`npm run scaffold -- --normalize "25-30,30-35,10-15,10-15,10-15"`):
 
-| Domain | Slug | Weight | Target (1x: 50) | Target (2x: 100) | Questions |
-| --- | --- | ---: | ---: | ---: | ---: |
-| Plan and manage an Azure AI solution | `plan-and-manage-an-azure-ai-solution` | 28% | 14 | 28 | 1 |
-| Implement generative AI and agentic solutions | `implement-generative-ai-and-agentic-solutions` | 33% | 17 | 33 | 1 |
-| Implement computer vision solutions | `implement-computer-vision-solutions` | 13% | 7 | 13 | 1 |
-| Implement text analysis solutions | `implement-text-analysis-solutions` | 13% | 6 | 13 | 1 |
-| Implement information extraction solutions | `implement-information-extraction-solutions` | 13% | 6 | 13 | 1 |
-| **Total** | | **100%** | **50** | **100** | **5** |
+| Domain                                        | Slug                                            |   Weight | Target (1x: 50) | Target (2x: 100) | Bank Questions (2x) |
+| --------------------------------------------- | ----------------------------------------------- | -------: | --------------: | ---------------: | ------------------: |
+| Plan and manage an Azure AI solution          | `plan-and-manage-an-azure-ai-solution`          |      28% |              14 |               28 |                  28 |
+| Implement generative AI and agentic solutions | `implement-generative-ai-and-agentic-solutions` |      33% |              17 |               33 |                  33 |
+| Implement computer vision solutions           | `implement-computer-vision-solutions`           |      13% |               7 |               13 |                  13 |
+| Implement text analysis solutions             | `implement-text-analysis-solutions`             |      13% |               6 |               13 |                  13 |
+| Implement information extraction solutions    | `implement-information-extraction-solutions`    |      13% |               6 |               13 |                  13 |
+| **Total**                                     |                                                 | **100%** |          **50** |          **100** |             **100** |
 
-Exam specifications from the official blueprint:
+Exam specifications from the blueprint:
+
 - Total items: ~50 questions (Associate level standard)
 - Exam duration: 100 minutes
 - Passing score: 700 / 1,000
 
-## Skill breakdown
+## Composition and coverage audit
 
-The guide provides bulleted skill objectives under each domain, but does not
-publish individual percentage weights for sub-skills. Consequently, the bank does
-not declare `skills` in `manifest.json`, avoiding artificial per-skill weight
-enforcement while tracking objective coverage across batches.
+Audited against the 100-question bank:
+
+- **Distribution**: Proportional across all 5 domains (28 / 33 / 13 / 13 / 13, zero delta against 2× target).
+- **Question status**: 100 of 100 questions are `reviewed` (100%).
+- **Item formats**: 100 single-select items (100%), matching the blueprint objectives through multiple-choice scenarios.
+- **Single-select position distribution**: 25 A / 27 B / 24 C / 24 D across `a`–`d` (max position share 27.0%, uniform distribution).
+- **Option length delta**: Mean correct-option length minus distractor length is +0.09 characters (median 0.00 chars), well within the ±10.0 character ceiling.
+- **Longest option as key share**: 29 of 100 items (29.0%), well below the 45% ceiling.
+- **Distractor notes coverage**: 100% of distractor options across all 100 questions carry complete explanations without option letter references.
+- **Sourcing**: 69 unique authoritative documentation pages across Microsoft Learn (`learn.microsoft.com/en-us/azure/*`).
+- **Bias guards**: All pass cleanly (`positionBias`, `lengthBiasMeanDelta`, `longestOptionIsKey`).
+- **Option hints**: 59 of 100 questions (59.0%, 236 options) feature `hintText`. 41 statement-style questions remain intact with no hints.
+
+## Known coverage limits and deliberate boundaries
+
+- **Associate-level persona**: Aligned with the Azure AI engineer profile (builds, manages, and deploys agents and AI solutions leveraging Microsoft Foundry; Python experience; foundational to associate depth). Excludes deep custom ML training math and non-Azure infrastructure.
+- **Single-select modeling**: All exam scenarios are faithfully represented through single-select items (`type: "single"`).
+- **Unweighted sub-skills**: The guide provides bulleted skill objectives without individual percentage weights; `manifest.json` omits `skills` to avoid artificial sub-skill quotas while maintaining comprehensive topic coverage.
+- **GA vs Preview**: Focuses on GA features with high-frequency Preview capabilities included as noted in official guidelines.
 
 ## Official sample question inventory
 
 The official AI-103 study guide publishes **0 sample questions** within its text.
 
-Because the guide lacks embedded vendor sample items, cognitive depth calibration
-relies on:
-1. Candidate profile definitions in the blueprint (Azure AI engineer who builds,
-   manages, and deploys agents and AI solutions leveraging Microsoft Foundry;
-   Python development experience; foundational to associate depth).
+Because the guide lacks embedded vendor sample items, cognitive depth calibration relies on:
+
+1. Candidate profile definitions in the blueprint (Azure AI developer using Microsoft Foundry).
 2. Explicit objective boundaries in the study guide.
 3. Official vendor documentation examples and quickstarts.
 
 ## Calibration set and firewall
 
-No third-party calibration question set is used. A sample set of 10 third-party
-items from a public prep video was inspected during recon and deliberately
-rejected from serving as calibration: the items exhibited significant
-construction defects (transparent "facepalm" distractors, grammatical tells
-via "only" qualifiers, and redundant scenarios) well below Cert Club's quality
-bar.
+No third-party calibration question set is used. A sample set of 10 third-party items from a public prep video was inspected during recon and deliberately rejected due to severe construction defects (transparent facepalm distractors, grammatical tells via "only" qualifiers, and redundant scenarios).
 
-Instead, authoring calibrates purely from first principles:
-1. Candidate profile definitions in the official blueprint.
-2. Official Microsoft Learn documentation and architecture guides.
-3. Rigorous distractor plausibility adhering to `CONTRIBUTING.md`.
-
-Standing firewall for future passes:
+Authoring calibrates strictly from candidate persona definitions, official Microsoft Learn architecture documentation, and distractor plausibility rules under the repository firewall:
 
 > **Calibration only.** No question, option, or rationale here derives from that
 > set, or from any other third-party bank. It informed how deep and how
 > scenario-shaped a question should be, never what a question says.
 
-## Format audit
-
-Quoted verbatim from the AI-103 study guide:
-
-> "Most questions cover features that are general availability (GA). The exam
-> may contain questions on Preview features if those features are commonly used."
-
-Microsoft exams present items through multiple-choice (single-select and
-multi-select), case studies, drag-and-drop, and hotspot controls. In Cert Club,
-all scenarios are modeled through single-select (`type: "single"`) and
-multi-select (`type: "multi"`). No new schema answer shape is required.
-
 ## Sourcing and vendor documentation rules
 
-Recon verdict: **GO-WITH-CONSTRAINTS** — study guide is public and versioned
-(April 16, 2026 skills measured outline, updated 2026-07-07); domain weights
-normalize cleanly to 100%; public, unauthenticated documentation exists for every
-domain on Microsoft Learn.
+Recon verdict: **GO-WITH-CONSTRAINTS** (approved 2026-10-11).
 
-Constraints:
-1. **0 embedded sample questions** in the official guide.
-2. **No external calibration set** — question depth calibrated strictly from
-   candidate persona and documentation.
-3. **Domain weights published as ranges** — normalized via midpoint and
-   largest-remainder arithmetic (28 / 33 / 13 / 13 / 13).
+- Study guide: `https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/ai-103`
+- Normalized domain weights sum to 100%. Public, unauthenticated documentation exists for every domain.
+- Constraints: 0 embedded sample questions; no external calibration set; domain weights normalized from ranges.
 
 ### Classified hosts
 
-- **Citable documentation:**
+- **Citable documentation (`learn.microsoft.com`)**:
   - `https://learn.microsoft.com/en-us/azure/ai-services/*` — Azure AI services, Content Safety, Speech, Vision, Language, Translator
   - `https://learn.microsoft.com/en-us/azure/ai-services/agents/*` — Microsoft Foundry Agent Service
   - `https://learn.microsoft.com/en-us/azure/ai-services/openai/*` — Azure OpenAI
   - `https://learn.microsoft.com/en-us/azure/search/*` — Azure AI Search
   - `https://learn.microsoft.com/en-us/azure/ai-services/document-intelligence/*` — Document Intelligence
   - `https://learn.microsoft.com/en-us/azure/ai-services/computer-vision/*` — Azure AI Vision
-- **Readable-but-not-citable:**
-  - `https://learn.microsoft.com/en-us/credentials/certifications/*` — Certification landing pages (evidence of coverage only)
-  - `https://learn.microsoft.com/en-us/training/paths/*` — Learning path landing pages (curriculum outline only)
-  - `https://techcommunity.microsoft.com/*` — Microsoft Tech Community blog posts (lifecycle and announcement context only)
-- **Excluded:**
-  - Microsoft Learn Practice Assessments (`/practice/assessment`): Requires
-    authenticated Microsoft account login (fails gate test) and tests practice
-    exam items.
-  - Gated lab environments / Microsoft Official Courseware (MOC) labs: Gated
-    behind account logins or course registration (fails gate test).
-  - Third-party dumps or unauthorized mirrors: Fails authority and content rules.
+- **Readable-but-not-citable**:
+  - Certification landing pages (`/credentials/certifications/*`): Evidence of coverage only.
+  - Learning paths (`/training/paths/*`): Curriculum outline only.
+  - Microsoft Tech Community blogs: Lifecycle and announcement context only.
+- **Excluded**:
+  - Microsoft Learn Practice Assessments (`/practice/assessment`): Gated behind login, confidential prep items.
+  - Gated lab environments / MOC courseware: Gated behind login/course registration.
+  - Third-party dumps or unverified mirrors: Fails authority and content rules.
 
-## Seed question inventory
+## Adjudications
 
-| Domain | Question ID | Type | Status | Verified Source |
-| --- | --- | --- | --- | --- |
-| Plan and manage an Azure AI solution | `ai-103-plan-and-manage-an-azure-ai-solution-001` | single | reviewed | `learn.microsoft.com/.../content-safety/overview` |
-| Implement generative AI and agentic solutions | `ai-103-implement-generative-ai-and-agentic-solutions-001` | single | reviewed | `learn.microsoft.com/.../agents/overview` |
-| Implement computer vision solutions | `ai-103-implement-computer-vision-solutions-001` | single | reviewed | `learn.microsoft.com/.../computer-vision/overview` |
-| Implement text analysis solutions | `ai-103-implement-text-analysis-solutions-001` | single | reviewed | `learn.microsoft.com/.../speech-service/speech-synthesis-markup` |
-| Implement information extraction solutions | `ai-103-implement-information-extraction-solutions-001` | single | reviewed | `learn.microsoft.com/.../search/vector-search-overview` |
+Standing rulings and technical adjudications:
 
-## 2026-10-11: Full bank orchestration to 2x baseline (100 items)
+### Distractor design and hardening rulings
 
-Full multi-domain bank authoring, cold evaluation, and difficulty hardening orchestrated via `skills/orchestrate-bank`.
-
-### Stage A: Authoring (95 new questions authored)
-- **Plan and manage an Azure AI solution**: 27 new items (`002`–`028`), total 28 questions (weight 28%).
-- **Implement generative AI and agentic solutions**: 32 new items (`002`–`033`), total 33 questions (weight 33%).
-- **Implement computer vision solutions**: 12 new items (`002`–`013`), total 13 questions (weight 13%).
-- **Implement text analysis solutions**: 12 new items (`002`–`013`), total 13 questions (weight 13%).
-- **Implement information extraction solutions**: 12 new items (`002`–`013`), total 13 questions (weight 13%).
-- All items cited public, unauthenticated documentation under `learn.microsoft.com/en-us/azure/*`.
-
-### Stage B: Adversarial Cold Evaluation (Fresh subagents)
-- Clean, independent evaluation subagents cold-derived each item against its cited documentation without generative prompt history.
-- **Plan and manage**: 28/28 confirmed; item `022` polished to specify SQL Database view (where high-water mark applies) rather than Blob Storage. All 28 promoted to `status: "reviewed"`.
-- **Generative AI and agentic solutions**: 33/33 confirmed; canonical URLs updated for prompt flow and agent tracing. All 33 promoted to `status: "reviewed"`.
-- **Computer vision**: 13/13 confirmed; all promoted to `status: "reviewed"`.
-- **Text analysis**: 13/13 confirmed; all promoted to `status: "reviewed"`.
-- **Information extraction**: 13/13 confirmed; all promoted to `status: "reviewed"`.
-- Total bank reviewed status: 100/100 questions (100%).
-
-### Stage C: Difficulty Hardening
 Calibrated against Associate-level Azure AI Developer profile:
-- **Plan and manage**: 7 calibrated — no change; 21 hardened (removed giveaway descriptors from model names in `002`, replaced synthetic or out-of-domain distractors with authentic Azure services, deployment tiers, and least-privilege RBAC roles).
-- **Generative AI and agentic solutions**: 28 calibrated — no change; 5 hardened (`012`, `023`, `030`, `032`, `033` tightened distractors; eliminated 033 facepalm option in favor of realistic practitioner misconception on zero temperature).
-- **Computer vision**: 12 calibrated — no change; 1 hardened (`013` replaced out-of-domain translator distractor with plausible vision payload parameter).
-- **Text analysis**: 8 calibrated — no change; 5 hardened (`001`, `010`, `011`, `012`, `013` strengthened with genuine speech technologies like PLS, `<emphasis>`, and Speaker Recognition).
-- **Information extraction**: 10 calibrated — no change; 3 hardened (`001`, `008`, `013` replaced generic text search options with authentic AI Search vector architectures and balanced option lengths).
 
-### Stage D: Final Reconciliation & Bias Guards
-- **Total questions**: 100 (target: 100 [2x exam of 50], delta +0 across all domains).
-- **Format mix**: 100 single-select, 0 multi-select.
-- **Reviewed count**: 100 of 100 (100%).
-- **Distinct source pages**: 69 unique Microsoft Learn pages.
-- **Single-select answer positions**: `25 / 27 / 24 / 24` across `a / b / c / d` (perfect balance).
-- **Option length delta**: mean `0.12` characters (median `0.00`).
-- **Longest option is key**: `29%` (29 of 100 questions).
-- **Always longest baseline**: `31.1%` expected score.
-- **Eliminate absolutes baseline**: `24.8%` expected score (uniquely identifies key in 0/100).
-- **All bias guards**: `positionBias` PASS, `lengthBiasMeanDelta` PASS, `longestOptionIsKey` PASS.
-- **Validation gate**: `npm run check` green (all 413 unit tests pass, ESLint and Prettier clean).
+- **Plan and manage (7 calibrated intact, 21 hardened)**: Removed giveaway model descriptors in `002`; replaced synthetic distractors with authentic Azure services, deployment tiers, and least-privilege RBAC roles.
+- **Generative AI and agents (28 calibrated intact, 5 hardened)**: Tightened distractors in `012`, `023`, `030`, `032`, `033`; replaced zero temperature facepalm with realistic misconception in `033`.
+- **Computer vision (12 calibrated intact, 1 hardened)**: Replaced out-of-domain translator distractor with plausible vision payload parameter in `013`.
+- **Text analysis (8 calibrated intact, 5 hardened)**: Strengthened genuine speech technologies (PLS, `<emphasis>`, Speaker Recognition) across `001`, `010`, `011`, `012`, `013`.
+- **Information extraction (10 calibrated intact, 3 hardened)**: Replaced generic text search with authentic AI Search vector architectures in `001`, `008`, `013`.
+- **Absolute qualifiers**: 0% giveaway across all single-select items.
 
-## 2026-10-13: Option hints implementation
+### Key and source repairs
 
-Implemented option-level `hintText` across the AI-103 question bank in accordance with [`CONTRIBUTING.md` § Bare option text and optional `hintText`](../../CONTRIBUTING.md):
+- **Seed smoke test (2026-10-11)**: 5 initial draft items verified against primary documentation (`plan-and-manage-001`, `genai-001`, `vision-001`, `text-001`, `info-extraction-001`).
+- **Item repairs**: `ai-103-plan-and-manage-an-azure-ai-solution-022` polished to specify SQL Database view (where high-water mark applies) rather than Blob Storage. Canonical documentation URLs updated for prompt flow and agent tracing. 0 miskeys detected across the 100-question bank.
 
-- **Coverage**: 59 of 100 questions (59.0%) now feature `hintText` across all of their options (236 options with glosses).
-- **Domain breakdown**:
-  - `plan-and-manage-an-azure-ai-solution`: 18 of 28 questions (72 option hints).
-  - `implement-generative-ai-and-agentic-solutions`: 17 of 33 questions (68 option hints).
-  - `implement-information-extraction-solutions`: 7 of 13 questions (28 option hints).
-  - `implement-text-analysis-solutions`: 9 of 13 questions (36 option hints).
-  - `implement-computer-vision-solutions`: 8 of 13 questions (32 option hints).
-- **Design & Pedagogical alignment**:
-  - Questions whose options consist of bare services, models, SDK evaluators, parameters, algorithms, search modes, and RBAC roles matching official exam item format present concise technical glosses when the candidate toggles "Show hints" during practice.
-  - The 41 remaining questions feature statement-style options whose text *is* the answer decision (multi-clause architectural actions, code snippets, procedure statements, and root-cause explanations) and remain intact without `hintText`, strictly observing the repository standard.
-  - Every hint was neutrally phrased to define the option's specific technical role based on authoritative Microsoft Learn documentation (`learn.microsoft.com/en-us/azure/*`) without telegraphing answer keys and without using absolute qualifier words (`always`, `never`, `only`, `must`, `every`, `cannot`, `all`, `any`, `no`).
-  - All items with hints strictly obey the completeness rule: 100% of options in each hinted item receive a `hintText`.
-  - Bias metrics remain strictly balanced: option length mean delta remains `0.09` characters, longest option is key remains `29%`, and single-select position distribution remains `25 / 27 / 24 / 24`.
+### Option hints implementation (2026-10-13)
+
+- 59 of 100 questions (236 options) feature neutral, non-telegraphing `hintText` glosses for bare services, models, SDK evaluators, parameters, and algorithms matching exam format.
+- 41 statement-style scenario questions remain intact without hints, strictly observing the repository standard.
+
+## Maintenance audits
+
+- **2026-10-11**: Recon completed. Verified AI-102 retirement and approved AI-103 GO-WITH-CONSTRAINTS. Bank scaffolded with 5 seed items.
+- **2026-10-11**: Full bank orchestration to 2× baseline (100 items: 28 / 33 / 13 / 13 / 13). Independent cold evaluation confirmed 0 miskeys (item `022` polished). Difficulty hardening calibrated all domains. All 100 items promoted to `reviewed`.
+- **2026-10-13**: Option hints pass added 236 option hints across 59 questions with zero impact on bias guards. `npm run check` clean.

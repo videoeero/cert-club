@@ -65,13 +65,22 @@ The official AWS Certified AI Practitioner exam guide publishes **0 sample quest
 Because the guide lacks embedded vendor sample items, cognitive depth calibration relies on:
 1. Candidate profile definitions in the blueprint (foundational level: up to 6 months of exposure to AI/ML on AWS; uses rather than builds AI/ML solutions).
 2. Explicit out-of-scope boundaries (no coding/algorithms, no hyperparameter tuning, no pipeline engineering).
-3. The third-party calibration set noted below, strictly firewalled.
+3. The official practice question set noted below, strictly firewalled.
 
 ## Calibration set and firewall
 
-A set of 20 practice questions was identified for question structure, cognitive depth, and scenario calibration.
+The calibration set is AWS's **official 20-question AIF-C01 practice question
+set** (AWS Skill Builder, behind free account registration). It was read under
+[`AGENTS.md` § The calibration firewall](../../AGENTS.md), to compare
+the bank's calibration against the official set's structure and cognitive
+depth. Per the extraction rule, only parameters may be recorded here — the
+observed parameters from the reading session were not written down at the
+time; if this bank is re-calibrated against a practice set in the future,
+record them per [`AGENTS.md`](../../AGENTS.md).
 
-> **Calibration only.** No question, option, or rationale here derives from that set, or from any other third-party bank. It informed how deep and how scenario-shaped a question should be, never what a question says.
+> **Calibration only.** No question, option, or rationale here derives from
+> that set, or from any other practice bank. It informed how deep and how
+> scenario-shaped a question should be, never what a question says.
 
 All authored items are written strictly from public AWS documentation.
 
@@ -91,7 +100,11 @@ Recon verdict: **GO-WITH-CONSTRAINTS** — guide is public, authoritative, and v
   - `https://aws.amazon.com/ai/responsible-ai/` — Responsible AI principles
 - **Docs `.md` endpoint**: Pages under `docs.aws.amazon.com` render client-side HTML, but appending `.md` or requesting `.md` yields clean markdown text.
 - **Excluded sources:**
-  - `explore.skillbuilder.aws` / AWS Skill Builder: Gated behind account registration (fails gate test).
+  - `explore.skillbuilder.aws` / AWS Skill Builder: gated behind account
+    registration, so it fails the gate test for citation — no `sourceUrl`
+    may point there. The official practice question set was nevertheless read
+    as calibration under the firewall above, which [`certs/VENDORS.md`](../VENDORS.md)
+    licenses.
   - Third-party dumps or unverified mirrors: Fails authority and content rules.
 
 ## Adjudications
