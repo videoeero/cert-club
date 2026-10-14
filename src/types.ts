@@ -23,6 +23,7 @@ export interface Manifest {
   schemaVersion: number;
   cert: string;
   name: string;
+  vendor: string;
   status: CertStatus;
   updatedAt: string;
   examUrl: string;

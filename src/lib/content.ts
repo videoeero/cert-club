@@ -74,6 +74,8 @@ function isManifest(value: unknown): value is Manifest {
     value.schemaVersion === CONTENT_SCHEMA_VERSION &&
     typeof value.cert === "string" &&
     typeof value.name === "string" &&
+    typeof value.vendor === "string" &&
+    value.vendor.length > 0 &&
     (value.status === "draft" || value.status === "stable") &&
     typeof value.updatedAt === "string" &&
     typeof value.examUrl === "string" &&
@@ -211,4 +213,47 @@ export async function loadCertContent(
     );
   }
   return { manifest, questions };
+}
+
+const questionCountCache = new Map<string, number>();
+
+export async function loadCertQuestionCount(
+  manifest: Manifest,
+  fetcher: JsonFetcher = fetch,
+): Promise<number> {
+  const cached = questionCountCache.get(manifest.cert);
+  if (cached !== undefined) {
+    return cached;
+  }
+
+  const domainQuestions = await Promise.all(
+    manifest.domains.map(async (domain) => {
+      try {
+        const questions = await fetchJson<unknown[]>(
+          fetcher,
+          contentUrl(manifest.cert, `questions/${domain.slug}.json`),
+          `the ${manifest.cert} ${domain.slug} question file`,
+        );
+        return Array.isArray(questions) ? questions.length : 0;
+      } catch {
+        return 0;
+      }
+    }),
+  );
+  const total = domainQuestions.reduce((sum, count) => sum + count, 0);
+  questionCountCache.set(manifest.cert, total);
+  return total;
+}
+
+export async function loadCertQuestionCounts(
+  manifests: readonly Manifest[],
+  fetcher: JsonFetcher = fetch,
+): Promise<Record<string, number>> {
+  const entries = await Promise.all(
+    manifests.map(async (manifest) => {
+      const count = await loadCertQuestionCount(manifest, fetcher);
+      return [manifest.cert, count] as const;
+    }),
+  );
+  return Object.fromEntries(entries);
 }

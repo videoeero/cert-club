@@ -22,7 +22,9 @@ export const STORAGE_KEYS = {
   bookmarks: "cert-club.bookmarks",
   missed: "cert-club.missed",
   pausedSessions: "cert-club.paused-sessions",
+  sort: "cert-club.sort",
   theme: "cert-club.theme",
+  viewMode: "cert-club.view-mode",
 } as const;
 
 export interface StorageAdapter {

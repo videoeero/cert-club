@@ -241,6 +241,9 @@ export function parseSpec(argv) {
       case "--name":
         spec.name = argv[++i];
         break;
+      case "--vendor":
+        spec.vendor = argv[++i];
+        break;
       case "--exam-url":
         spec.examUrl = argv[++i];
         break;
@@ -309,6 +312,9 @@ export function parseSpec(argv) {
   if (!spec.name) {
     errors.push('"--name" is required');
   }
+  if (!spec.vendor) {
+    errors.push('"--vendor" is required');
+  }
   if (!spec.examUrl) {
     errors.push('"--exam-url" is required');
   }
@@ -334,6 +340,7 @@ export function buildManifest(spec) {
     schemaVersion: SCHEMA_VERSION,
     cert: spec.slug,
     name: spec.name,
+    vendor: spec.vendor,
     status: "draft",
     updatedAt: today,
     examUrl: spec.examUrl,

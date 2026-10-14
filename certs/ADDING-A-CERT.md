@@ -63,6 +63,7 @@ reads directly, and must not be restated in the README.
   "schemaVersion": 1,
   "cert": "<slug>",
   "name": "Full certification name",
+  "vendor": "Vendor name (e.g. AWS, Microsoft, Anthropic)",
   "status": "draft",
   "updatedAt": "2026-09-11",
   "examUrl": "https://example.com/public-exam-guide.pdf",
@@ -294,7 +295,7 @@ supported route through the work rather than hand-rolling it.
 
 - `npm run scaffold` — generates the `manifest.json` / `questions/*.json` /
   `review-progress.md` file set for Step 1–2 from `--slug`, `--name`,
-  `--exam-url` and repeated `--domain` (and `--skill`) flags, optionally
+  `--vendor`, `--exam-url` and repeated `--domain` (and `--skill`) flags, optionally
   appending the catalog entry (`--register`) or previewing with no writes
   (`--dry-run`). Its `--normalize` sub-mode does the midpoint-and-largest-
   remainder weight arithmetic described in Step 2 for you — pass `--target`

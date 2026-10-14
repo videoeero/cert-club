@@ -142,10 +142,10 @@ npm run scaffold -- --normalize "<range1>,<range2>,<range3>"
 On approval, the agent executes `npm run scaffold` to generate the file tree and register the slug in `certs/catalog.json`:
 ```sh
 # Preview with dry-run first
-npm run scaffold -- --slug <slug> --name "<Full Name>" --exam-url "<url>" --exam-questions <n> --domain "<slug>:<name>:<weight>" --register --dry-run
+npm run scaffold -- --slug <slug> --name "<Full Name>" --vendor "<Vendor>" --exam-url "<url>" --exam-questions <n> --domain "<slug>:<name>:<weight>" --register --dry-run
 
 # Execute with --register and include --skill flags if the guide declared a skill breakdown
-npm run scaffold -- --slug <slug> --name "<Full Name>" --exam-url "<url>" --exam-questions <n> --domain "<slug>:<name>:<weight>" --skill "<domain>/<skill>:<name>:<weight>" --register
+npm run scaffold -- --slug <slug> --name "<Full Name>" --vendor "<Vendor>" --exam-url "<url>" --exam-questions <n> --domain "<slug>:<name>:<weight>" --skill "<domain>/<skill>:<name>:<weight>" --register
 ```
 *(Passing `--register` is critical: without it, `certs/catalog.json` is not updated and validation will fail.)*
 

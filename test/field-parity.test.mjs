@@ -59,7 +59,12 @@ const hooks = registerHooks({
 });
 globalThis.__FIELD_PARITY_IMPORT_META_ENV__ = { BASE_URL: "/" };
 
-const { loadCertContent, loadCertManifest } = await import(contentPath);
+const {
+  loadCertContent,
+  loadCertManifest,
+  loadCertQuestionCount,
+  loadCertQuestionCounts,
+} = await import(contentPath);
 
 // The module is loaded and cached, so the hook has done its job. Leaving it
 // registered would put every later module load in this process through it.
@@ -86,6 +91,7 @@ function validManifest() {
     schemaVersion: 1,
     cert: "test-cert",
     name: "Test certification",
+    vendor: "Test Vendor",
     status: "stable",
     updatedAt: "2026-09-03",
     examUrl: "https://example.com/exam-guide",
@@ -312,6 +318,7 @@ test("the required-manifest-field set is actually derived from the schema", () =
     "schemaVersion",
     "cert",
     "name",
+    "vendor",
     "status",
     "updatedAt",
     "examUrl",
@@ -406,4 +413,64 @@ test("the runtime guard tolerates an unrecognized extra manifest field the schem
     fetcherFor(manifest, [validQuestion()]),
   );
   assert.equal(loaded.cert, "test-cert");
+});
+
+test("loadCertQuestionCount sums question counts across all domains", async () => {
+  const manifest = {
+    ...validManifest(),
+    domains: [
+      { slug: "domain-1", name: "D1", weight: 50 },
+      { slug: "domain-2", name: "D2", weight: 50 },
+    ],
+  };
+
+  const fetcher = async (url) => {
+    if (url.includes("domain-1.json")) {
+      return { ok: true, json: async () => [validQuestion(), validQuestion()] };
+    }
+    if (url.includes("domain-2.json")) {
+      return { ok: true, json: async () => [validQuestion()] };
+    }
+    return { ok: false, status: 404, statusText: "Not found" };
+  };
+
+  const count = await loadCertQuestionCount(manifest, fetcher);
+  assert.equal(count, 3);
+});
+
+test("loadCertQuestionCounts returns counts mapped by cert slug", async () => {
+  const m1 = {
+    ...validManifest(),
+    cert: "cert-one",
+    domains: [{ slug: "d1", name: "D1", weight: 100 }],
+  };
+  const m2 = {
+    ...validManifest(),
+    cert: "cert-two",
+    domains: [{ slug: "d2", name: "D2", weight: 100 }],
+  };
+
+  const fetcher = async (url) => {
+    if (url.includes("cert-one") && url.includes("d1.json")) {
+      return { ok: true, json: async () => [validQuestion(), validQuestion()] };
+    }
+    if (url.includes("cert-two") && url.includes("d2.json")) {
+      return {
+        ok: true,
+        json: async () => [
+          validQuestion(),
+          validQuestion(),
+          validQuestion(),
+          validQuestion(),
+        ],
+      };
+    }
+    return { ok: false, status: 404, statusText: "Not found" };
+  };
+
+  const counts = await loadCertQuestionCounts([m1, m2], fetcher);
+  assert.deepEqual(counts, {
+    "cert-one": 2,
+    "cert-two": 4,
+  });
 });

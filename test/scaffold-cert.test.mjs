@@ -26,6 +26,7 @@ function baseSpec(overrides = {}) {
     mode: "scaffold",
     slug: "sc-900",
     name: "Microsoft Certified: Security Compliance and Identity Fundamentals",
+    vendor: "Microsoft",
     examUrl:
       "https://learn.microsoft.com/en-us/credentials/certifications/security-compliance-and-identity-fundamentals/",
     domains: [
@@ -202,6 +203,8 @@ test("parseSpec assembles domains, skills and flags from repeated arguments", ()
     "sc-900",
     "--name",
     "Security, Compliance, and Identity Fundamentals",
+    "--vendor",
+    "Microsoft",
     "--exam-url",
     "https://example.com/sc-900",
     "--exam-questions",
@@ -238,6 +241,8 @@ test("parseSpec rejects a --skill referencing an undeclared domain", () => {
         "sc-900",
         "--name",
         "Name",
+        "--vendor",
+        "Microsoft",
         "--exam-url",
         "https://example.com",
         "--domain",
@@ -256,6 +261,7 @@ test("parseSpec collects every missing required field into one error", () => {
       assert.ok(error instanceof ScaffoldError);
       assert.match(error.message, /"--slug" is required/);
       assert.match(error.message, /"--name" is required/);
+      assert.match(error.message, /"--vendor" is required/);
       assert.match(error.message, /"--exam-url" is required/);
       assert.match(error.message, /at least one --domain is required/);
       return true;
@@ -472,6 +478,8 @@ test("rejects a domain or skill weight with trailing junk", () => {
     "sc-900",
     "--name",
     "N",
+    "--vendor",
+    "V",
     "--exam-url",
     "https://example.test/guide",
   ];
