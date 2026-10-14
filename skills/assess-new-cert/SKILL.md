@@ -33,17 +33,23 @@ Report it and let a human make that edit.
 3. **Extract the blueprint.** Follow `skills/extract-blueprint/SKILL.md` in
    full, against the guide stage 2 settled on: weights, any skill breakdown,
    the sample-question inventory, and the format audit.
-4. **Stop-and-ask: calibration.** Ask the user whether they have found public
-   third-party material usable as calibration for question structure, scope
-   and difficulty. Present the firewall in the repo's own words, from
-   `certs/ccdv-f/review-progress.md`:
+4. **Stop-and-ask: calibration.** Ask the user whether they have calibration
+   material usable for question structure, scope and difficulty — a
+   third-party question bank, or the vendor's official practice questions.
+   Present the firewall in the repo's own words, from
+   [`AGENTS.md`](../../AGENTS.md) § The calibration firewall:
 
-   > **Calibration only.** No question, option, or rationale here derives from
-   > that set, or from any other third-party bank. It informed how deep and
-   > how scenario-shaped a question should be, never what a question says.
+   > **The firewall.** A set informs how deep and how scenario-shaped a
+   > question should be — never what a question says. No question, option,
+   > rationale, or a tested fact at a specific angle derives from it, no matter
+   > how thoroughly reworded.
 
-   Record the answer either way, including "none" — a bank with no calibration
-   set and no official samples is a constraint the next author must know about.
+   If a set exists, record its identity, item count and parameters — stem
+   length, option count, distractor style, difficulty relative to the official
+   samples or, if the guide ships none, to the blueprint's candidate profile —
+   never item text. Record the answer either way, including "none" — a bank
+   with no calibration set and no official samples is a constraint the next
+   author must know about.
 
 5. **Stop-and-ask: the verdict**, approved before anything is written.
    **GO** — guide public, blueprint extractable, citable documentation for

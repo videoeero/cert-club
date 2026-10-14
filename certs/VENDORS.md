@@ -237,9 +237,13 @@ _Checked 2026-09-17 · bank: `aws-clf-c02`_
   retired, leaving the 210 TB NVMe storage-optimized configuration.
 - **Do not cite:**
   - `explore.skillbuilder.aws` / AWS Skill Builder — gated behind account
-    registration. Official practice question sets and exam prep materials may
-    be reviewed as calibration for difficulty and question style, but must
-    never be cited as a `sourceUrl`.
+    registration, so it fails the gate for citation. Official practice
+    question sets and exam prep materials may nevertheless be **read for
+    calibration** under the firewall in [`AGENTS.md`](../AGENTS.md) § The
+    calibration firewall: parameters in, items never. `aws-aif-c01` calibrated
+    against the official 20-question AIF-C01 practice question set this way —
+    record the set's parameters in the bank's `review-progress.md`, never its
+    item text.
 
 ## IAAP (International Association of Accessibility Professionals)
 

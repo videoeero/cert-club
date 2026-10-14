@@ -238,7 +238,10 @@ priority order:
    well documented the fact is.
 2. **Cognitive level — the guide's sample questions.** Most guides include a
    handful, labelled as representative. They are the calibration set. Match how
-   they discriminate, not just what they cover.
+   they discriminate, not just what they cover. Where a bank's review file
+   records the parameters of a separate calibration set (see
+   [`AGENTS.md`](../AGENTS.md) § The calibration firewall), those parameters
+   are a secondary anchor under this one — the set's items are never an input.
 3. **Tiebreak — the candidate profile.** Guides describe who should pass, in
    years of experience and months of hands-on use. Ask whether that person
    would know this, or would merely look it up.

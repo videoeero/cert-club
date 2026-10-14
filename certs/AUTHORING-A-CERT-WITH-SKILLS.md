@@ -122,9 +122,12 @@ The agent will automatically chain two internal reconnaissance skills:
 
 ### 3. Human Decision Gates (Stop-and-Ask)
 The agent will stop and ask for your input on two specific checkpoints:
-1. **Third-party calibration**: Confirm whether you are providing any external
-   sample material solely to calibrate difficulty/style, observing the firewall
-   in [`certs/ccdv-f/review-progress.md`](./ccdv-f/review-progress.md).
+1. **Calibration set**: Confirm whether you are providing any calibration
+   material — a third-party question bank, or the vendor's official practice
+   questions — solely to calibrate difficulty and style, observing the
+   firewall in [`AGENTS.md`](../AGENTS.md) § The calibration firewall. The
+   bank's `review-progress.md` records the set's parameters, never its item
+   text.
 2. **The Verdict**:
    - **GO**: Clear public blueprint, citable documentation for all domains.
    - **GO-WITH-CONSTRAINTS**: Viable with documented limitations (e.g., thin docs in one domain).

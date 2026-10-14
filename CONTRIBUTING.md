@@ -160,6 +160,17 @@ Two limits on that licence:
   must be avoided — see the depth anchors in
   [`certs/ADDING-A-CERT.md`](certs/ADDING-A-CERT.md).
 
+**Calibration inputs**, in priority order — all subject to the two limits
+above and to the firewall in [`AGENTS.md`](./AGENTS.md) § The calibration firewall:
+
+1. The guide's own sample questions (primary anchor).
+2. Recorded parameters of a calibration set — a third-party bank or the
+   vendor's official practice questions — as a difficulty _floor_; the
+   bank's review file records the parameters, never item text.
+3. Aggregate experiential signals from exam passers (a passing score, "the
+   options sit closer together than the samples") — aggregate only; item
+   recollection is excluded no matter how reworded.
+
 **Formats the live exam does not use are still allowed if they are harder.**
 Multi-select is the standing example: a bank may carry multi-select items even
 for an exam that ships single-select only. All-or-nothing scoring over two or

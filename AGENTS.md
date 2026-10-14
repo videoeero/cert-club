@@ -18,13 +18,16 @@ object and the validator enforces it. Never invent or omit it.
 
 Never source questions from:
 
-- Real exam items (confidential, legally off-limits)
-- Any material that requires an account to read. **The test is registration,
-  not price** — a course that is free but asks you to register still fails,
-  because "free to register" is not "open to read".
+- Real exam items (confidential, legally off-limits) — **including remembered
+  or reworded items.** Certification item banks are protected as trade
+  secrets, and that protection attaches to the _information_, not the wording.
+- As a citation, any material that requires an account to read. **The test is
+  registration, not price** — a course that is free but asks you to register
+  still fails, because "free to register" is not "open to read". (Reading for
+  calibration is separately licensed below.)
 - Paywalled or gated course content, including the certification vendor's own
-  training — an official course is still gated content, and being official does
-  not make it citable
+  training — an official course is still gated content, and being official
+  does not make it citable
 
 Always source questions from public vendor documentation and official exam
 guides/blueprints only.
@@ -36,15 +39,51 @@ in someone's public GitHub repository passes the gate perfectly and fails
 authority — it is a mirror that can be stale, partial or edited, and nothing
 in this repository would reveal it. Cite the vendor's own copy, always, and
 `manifest.examUrl` most of all: every domain name and weight in a bank derives
-from it. Third-party material may be read as calibration, never cited; see the
-firewall in `certs/ccdv-f/review-progress.md`.
+from it.
 
-The gate test is about the gate, never about the vendor. A course's **public
-landing page** — syllabus, learning objectives, prerequisites — is genuinely
-open and may be read, but only as a cross-check on whether a skill is
-covered. It is still not a valid `sourceUrl`, because it states what a course
-claims to teach rather than a verifiable technical fact. Cite the
-documentation that establishes the fact instead.
+## The calibration firewall
+
+Two rules govern every example-question set, wherever it comes from — a
+third-party bank, or the vendor's own official practice questions:
+
+1. **The firewall.** A set informs how deep and how scenario-shaped a
+   question should be — never what a question says. No question, option,
+   rationale, or a tested fact at a specific angle derives from it, no matter
+   how thoroughly reworded.
+2. **The extraction rule.** What crosses out of the reading session is
+   parameters, not text: stem length, option count, distractor style, format
+   mix, difficulty relative to the official samples. If an observation cannot
+   be stated without quoting an item, it is not a calibration observation.
+
+Operational guardrails:
+
+- **Set text never lands in the repository or the working tree.** These banks
+  are written by AI agents that traverse `certs/` and read what is there; a
+  pasted set would contaminate every item authored afterwards, silently, with
+  nothing to reveal it. If a set must be re-consulted mid-authoring, read it
+  again at its source — do not keep a local copy.
+- **Assessment, not authoring.** Pasted examples may sit in a context window
+  while comparing against existing items, never while drafting or editing
+  bank items. An edit must be justifiable from the recorded parameters alone,
+  never from a specific item of the set.
+- **Record parameters, not items.** A calibrated bank's `review-progress.md`
+  names the set, its item count, and its parameters — never any item text.
+- **Floor, not anchor.** Practice sets skew easy; treat one as a difficulty
+  floor, and prefer the bank somewhat above it.
+- **Paywalled sets are excluded outright.** The licence covers sets readable
+  without paying; this project claims no need of more, and paid walls carry
+  the harshest terms of use.
+- **Experiential signals are aggregate only.** A passing score or "the options
+  sit closer together than the samples" is a legitimate input; soliciting item
+  recollection from exam passers is not, regardless of rewording.
+
+Open material that is _not_ a practice set gets no such licence: a course's
+**public landing page** — syllabus, learning objectives, prerequisites — is
+genuinely open and may be read, but only as a cross-check on whether a skill
+is covered. It is still not a valid `sourceUrl`, because it states what a
+course claims to teach rather than a verifiable technical fact, and it must
+never calibrate depth — courses teach building; these exams test choosing.
+Cite the documentation that establishes the fact instead.
 
 Both tests are general. What they cannot tell you is which of a _particular_
 vendor's hosts are legacy redirects, which keep superseded guide revisions

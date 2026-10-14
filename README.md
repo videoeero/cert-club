@@ -44,19 +44,37 @@ If you are looking for exam dumps, this is the wrong repository.
 
 ### The source boundary
 
-One rule, applied identically to every cert in the repository:
+Two rules, applied identically to every cert in the repository:
 
-| Source                                             | Usable?                      |
-| -------------------------------------------------- | ---------------------------- |
-| Official vendor documentation                      | ✅ Primary source            |
-| Official exam guide / blueprint (domains, weights) | ✅ Drives question weighting |
-| Public course landing pages (syllabus, objectives) | ⚠️ Coverage cross-check only |
-| Anything behind a registration wall or paywall     | ❌ Never                     |
-| Real exam items                                    | ❌ Never                     |
+1. **Questions are verified against public sources only.** A question cites
+   the official documentation that establishes its fact — a page anyone can
+   open without an account, published by the party that owns the fact. The
+   citation requirement (`sourceUrl` on every question) is what makes that
+   auditable rather than merely claimed.
+2. **Example questions calibrate, never contribute.** A practice set — a
+   third-party bank or the vendor's own official practice questions — may be
+   read to calibrate depth, difficulty and scenario shape, and for nothing
+   else. It informs how deep and how scenario-shaped a question should be,
+   never what a question says: no question, option, rationale, or a tested
+   fact at a specific angle derives from it, however thoroughly reworded.
+   What crosses out of the reading is parameters — stem length, option
+   count, distractor style, difficulty — never text. Set text never lands in
+   this repository, and a calibrated bank's review record states the set and
+   its parameters, not its items. Practice sets skew easy, so treat one as a
+   difficulty floor, not an anchor. Sets behind a paywall are excluded
+   outright — this project claims no need of that licence.
 
-Questions are written **only** from the primary sources and the exam guide. The
-citation requirement (`sourceUrl` on every question) is what makes that
-auditable rather than merely claimed.
+| Source                                              | Usable **as a source**?      |
+| --------------------------------------------------- | ---------------------------- |
+| Official vendor documentation                       | ✅ Primary source            |
+| Official exam guide / blueprint (domains, weights)  | ✅ Drives question weighting |
+| Practice question sets — official or third-party    | ⚠️ Calibration only          |
+| Public course landing pages (syllabus, objectives)  | ⚠️ Coverage cross-check only |
+| Documentation or courses behind a registration wall | ❌ Never                     |
+| Anything behind a paywall                           | ❌ Never                     |
+| Real exam items                                     | ❌ Never                     |
+
+Questions are written **only** from the primary sources and the exam guide.
 
 The boundary is drawn at the **gate — not the vendor, and not the price.** A
 course that costs nothing but asks you to register still sits behind a wall, so
@@ -64,6 +82,13 @@ it is excluded on the same footing as a paid one. A course's public landing page
 is not behind that wall and may be read — but only to ask "is this skill
 covered?", never as a citation, and never to calibrate how deep a question
 should go. Courses teach you to build; these exams test what to choose.
+
+Real exam items are excluded **including remembered or reworded** —
+certification item banks are protected as trade secrets, and that protection
+attaches to the information, not the wording. Aggregate experiential signals
+(a passing score, "the options sit closer together than the samples") are
+legitimate calibration inputs; soliciting item recollection from exam passers
+is not.
 
 ## Certifications
 

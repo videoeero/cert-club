@@ -44,6 +44,8 @@ that touches nothing and says why is a successful pass.
    whether elimination alone reaches one option, or the sample forces a
    decision between two defensible ones. If the guide samples no item here,
    calibrate to the nearest sampled domains' shape and say so in the note.
+   Recorded calibration-set parameters are part of this anchor; the set itself
+   is not in the repository.
 3. **Measure current solvability, per question**, against the tells
    CONTRIBUTING names across both sections: does elimination alone leave one
    survivor a competent practitioner picks on instinct (below the band); does
@@ -75,7 +77,7 @@ that touches nothing and says why is a successful pass.
    that need fundamental rework to `author-questions`.
 6. **Respect the bias guards.** Padding moves the length and position figures;
    never trim a key to compensate — fidelity to the cited doc outranks cosmetic
-   balance. If padding cannot close a gap, escalate rather than trimming a key.
+   balance. If padding cannot close a gap, escalate to the author.
 7. **Record one disposition per question** in `review-progress.md` —
    _calibrated — no change_, or _hardened_ with the axis lifted (weak
    distractor, obvious key, definition-prompt stem) — plus a dated line on the
