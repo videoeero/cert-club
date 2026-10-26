@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 
 import {
@@ -59,6 +59,8 @@ export function QuizSessionPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const retakeKeyHandledRef = useRef<string | null>(null);
+  const autoResumeHandledRef = useRef<string | null>(null);
+  const isCompletingRef = useRef(false);
   const [retryKey, setRetryKey] = useState(0);
   const [currentTime, setCurrentTime] = useState(() => Date.now());
   const [questionIndex, setQuestionIndex] = useState(0);
@@ -96,6 +98,8 @@ export function QuizSessionPage() {
   );
 
   useEffect(() => {
+    isCompletingRef.current = false;
+    autoResumeHandledRef.current = null;
     setQuestionIndex(0);
     setActiveSession(null);
     setIsPaused(false);
@@ -193,6 +197,175 @@ export function QuizSessionPage() {
     navigate,
   ]);
 
+  const handleResumeSaved = useCallback(
+    (sessionToResume: PausedSession, bankQuestions?: Question[]) => {
+      const availableQuestions = bankQuestions ?? certContent?.questions ?? [];
+      const questionMap = new Map(availableQuestions.map((q) => [q.id, q]));
+      const matchedQuestions = sessionToResume.questionIds
+        .map((id) => {
+          const q = questionMap.get(id);
+          if (!q) return undefined;
+          const order = sessionToResume.optionOrders?.[id];
+          return order ? applyOptionOrder(q, order) : q;
+        })
+        .filter((q): q is Question => q !== undefined);
+
+      if (matchedQuestions.length === 0) {
+        setResumeError(
+          "Questions from this paused session are no longer available in the question bank.",
+        );
+        return;
+      }
+
+      const matchedIds = new Set(matchedQuestions.map((q) => q.id));
+      const filteredAnswers = Object.fromEntries(
+        Object.entries(sessionToResume.answers).filter(([qid]) =>
+          matchedIds.has(qid),
+        ),
+      );
+      const filteredStrikethroughs = Object.fromEntries(
+        Object.entries(sessionToResume.strikethroughs).filter(([qid]) =>
+          matchedIds.has(qid),
+        ),
+      );
+      const filteredRevealed = sessionToResume.revealedQuestionIds.filter(
+        (qid) => matchedIds.has(qid),
+      );
+      const filteredHints = sessionToResume.hintRevealedQuestionIds.filter(
+        (qid) => matchedIds.has(qid),
+      );
+
+      const adjustedStartedAt = new Date(
+        Date.now() - sessionToResume.elapsedSeconds * 1000,
+      ).toISOString();
+      isCompletingRef.current = false;
+      setActiveSession({
+        questions: matchedQuestions,
+        config: sessionToResume.config,
+        startedAt: adjustedStartedAt,
+      });
+      setAnswers(filteredAnswers);
+      setStrikethroughs(filteredStrikethroughs);
+      setRevealedQuestionIds(new Set(filteredRevealed));
+      setHintRevealedQuestionIds(new Set(filteredHints));
+      setQuestionIndex(
+        Math.min(sessionToResume.questionIndex, matchedQuestions.length - 1),
+      );
+      setIsPaused(false);
+      setCurrentTime(Date.now());
+      setResumeError(null);
+      setSavedPausedSession(null);
+    },
+    [certContent],
+  );
+
+  useEffect(() => {
+    if (!certContent || !certSlug) {
+      return;
+    }
+    const shouldResume =
+      new URLSearchParams(location.search).get("resume") === "true";
+    if (!shouldResume) return;
+
+    // Strip ?resume=true so it does not linger in browser address bar / history
+    void navigate(".", { replace: true, state: null });
+
+    if (!savedPausedSession || activeSession) return;
+
+    const resumeKey = `${certSlug}:${savedPausedSession.pausedAt}`;
+    if (autoResumeHandledRef.current === resumeKey) return;
+    autoResumeHandledRef.current = resumeKey;
+
+    handleResumeSaved(savedPausedSession, certContent.questions);
+  }, [
+    certContent,
+    certSlug,
+    savedPausedSession,
+    activeSession,
+    location.search,
+    navigate,
+    handleResumeSaved,
+  ]);
+
+  const getActiveSessionSnapshot = useCallback((): PausedSession | null => {
+    if (!activeSession || !certSlug) return null;
+    const elapsedSeconds = Math.max(
+      0,
+      Math.floor(
+        (Date.now() - new Date(activeSession.startedAt).getTime()) / 1000,
+      ),
+    );
+    const optionOrders = Object.fromEntries(
+      activeSession.questions.map((q) => [
+        q.id,
+        q.options.map((opt) => opt.id),
+      ]),
+    );
+    return {
+      cert: certSlug,
+      startedAt: activeSession.startedAt,
+      pausedAt: new Date().toISOString(),
+      elapsedSeconds,
+      config: activeSession.config,
+      questionIds: activeSession.questions.map((q) => q.id),
+      questionIndex,
+      answers,
+      strikethroughs,
+      revealedQuestionIds: [...revealedQuestionIds],
+      hintRevealedQuestionIds: [...hintRevealedQuestionIds],
+      optionOrders,
+    };
+  }, [
+    activeSession,
+    certSlug,
+    questionIndex,
+    answers,
+    strikethroughs,
+    revealedQuestionIds,
+    hintRevealedQuestionIds,
+  ]);
+
+  // Auto-save active exam state periodically and on progress updates
+  useEffect(() => {
+    if (!activeSession || isPaused || !certSlug || isCompletingRef.current) {
+      return;
+    }
+
+    const persistSnapshot = () => {
+      if (isCompletingRef.current) return;
+      const snapshot = getActiveSessionSnapshot();
+      if (!snapshot) return;
+      try {
+        savePausedSession(certSlug, snapshot);
+      } catch {
+        // Non-blocking background save
+      }
+    };
+
+    // Save immediately on any progress change
+    persistSnapshot();
+
+    // Auto-save periodically every 5 seconds to keep elapsed time current
+    const interval = setInterval(persistSnapshot, 5000);
+
+    // Save when tab / browser is closing or navigating away
+    const handleUnload = () => {
+      persistSnapshot();
+    };
+    if (typeof window !== "undefined") {
+      window.addEventListener("pagehide", handleUnload);
+      window.addEventListener("beforeunload", handleUnload);
+    }
+
+    return () => {
+      clearInterval(interval);
+      if (typeof window !== "undefined") {
+        window.removeEventListener("pagehide", handleUnload);
+        window.removeEventListener("beforeunload", handleUnload);
+      }
+    };
+  }, [activeSession, isPaused, certSlug, getActiveSessionSnapshot]);
+
   if (resource.status !== "ready") {
     return (
       <section className="page-section">
@@ -254,6 +427,7 @@ export function QuizSessionPage() {
       domainBreakdown: results.domainBreakdown,
       optionOrders,
     });
+    isCompletingRef.current = true;
     const missed: string[] = [];
     const correct: string[] = [];
     for (const r of results.questionResults) {
@@ -272,32 +446,8 @@ export function QuizSessionPage() {
 
   function handlePause(): void {
     if (!activeSession || !certSlug) return;
-    const elapsedSeconds = Math.max(
-      0,
-      Math.floor(
-        (Date.now() - new Date(activeSession.startedAt).getTime()) / 1000,
-      ),
-    );
-    const optionOrders = Object.fromEntries(
-      activeSession.questions.map((q) => [
-        q.id,
-        q.options.map((opt) => opt.id),
-      ]),
-    );
-    const sessionToSave: PausedSession = {
-      cert: certSlug,
-      startedAt: activeSession.startedAt,
-      pausedAt: new Date().toISOString(),
-      elapsedSeconds,
-      config: activeSession.config,
-      questionIds: activeSession.questions.map((q) => q.id),
-      questionIndex,
-      answers,
-      strikethroughs,
-      revealedQuestionIds: [...revealedQuestionIds],
-      hintRevealedQuestionIds: [...hintRevealedQuestionIds],
-      optionOrders,
-    };
+    const sessionToSave = getActiveSessionSnapshot();
+    if (!sessionToSave) return;
     try {
       savePausedSession(certSlug, sessionToSave);
       setSavedPausedSession(sessionToSave);
@@ -326,71 +476,6 @@ export function QuizSessionPage() {
     );
     setCurrentTime(Date.now());
     setIsPaused(false);
-  }
-
-  function handleResumeSaved(sessionToResume: PausedSession): void {
-    const questionMap = new Map(questions.map((q) => [q.id, q]));
-    const matchedQuestions = sessionToResume.questionIds
-      .map((id) => {
-        const q = questionMap.get(id);
-        if (!q) return undefined;
-        const order = sessionToResume.optionOrders?.[id];
-        return order ? applyOptionOrder(q, order) : q;
-      })
-      .filter((q): q is Question => q !== undefined);
-
-    if (matchedQuestions.length === 0) {
-      setResumeError(
-        "Questions from this paused session are no longer available in the question bank.",
-      );
-      return;
-    }
-
-    const matchedIds = new Set(matchedQuestions.map((q) => q.id));
-    const filteredAnswers = Object.fromEntries(
-      Object.entries(sessionToResume.answers).filter(([qid]) =>
-        matchedIds.has(qid),
-      ),
-    );
-    const filteredStrikethroughs = Object.fromEntries(
-      Object.entries(sessionToResume.strikethroughs).filter(([qid]) =>
-        matchedIds.has(qid),
-      ),
-    );
-    const filteredRevealed = sessionToResume.revealedQuestionIds.filter((qid) =>
-      matchedIds.has(qid),
-    );
-    const filteredHints = sessionToResume.hintRevealedQuestionIds.filter(
-      (qid) => matchedIds.has(qid),
-    );
-
-    const adjustedStartedAt = new Date(
-      Date.now() - sessionToResume.elapsedSeconds * 1000,
-    ).toISOString();
-    setActiveSession({
-      questions: matchedQuestions,
-      config: sessionToResume.config,
-      startedAt: adjustedStartedAt,
-    });
-    setAnswers(filteredAnswers);
-    setStrikethroughs(filteredStrikethroughs);
-    setRevealedQuestionIds(new Set(filteredRevealed));
-    setHintRevealedQuestionIds(new Set(filteredHints));
-    setQuestionIndex(
-      Math.min(sessionToResume.questionIndex, matchedQuestions.length - 1),
-    );
-    setIsPaused(false);
-    setCurrentTime(Date.now());
-    setResumeError(null);
-
-    if (certSlug) {
-      try {
-        clearPausedSession(certSlug);
-      } catch {
-        // Non-blocking
-      }
-    }
-    setSavedPausedSession(null);
   }
 
   function handleDiscardPausedSession(): void {
@@ -520,6 +605,7 @@ export function QuizSessionPage() {
               }
               setSavedPausedSession(null);
             }
+            isCompletingRef.current = false;
             setActiveSession({
               questions: qs,
               config,
@@ -705,6 +791,7 @@ export function QuizSessionPage() {
     try {
       completeAttempt(config, sessionQuestions, answers, startedAt);
     } catch (error) {
+      isCompletingRef.current = false;
       setFinishError(errorMessage(error));
     }
   }

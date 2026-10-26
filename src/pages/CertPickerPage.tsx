@@ -14,8 +14,12 @@ import {
   type SortField,
   type SortOption,
 } from "../lib/sort";
-import { getPausedSessions, STORAGE_KEYS } from "../lib/storage";
-import { formatCalendarDate } from "../lib/time";
+import {
+  clearPausedSession,
+  getPausedSessions,
+  STORAGE_KEYS,
+} from "../lib/storage";
+import { formatCalendarDate, formatRemainingTime } from "../lib/time";
 import type { Manifest, PausedSession } from "../types";
 import styles from "./CertPickerPage.module.css";
 
@@ -69,7 +73,9 @@ function CertCard({
           {manifest.status === "draft" && (
             <span className={styles.draftChip}>Draft</span>
           )}
-          {pausedSession && <span className={styles.pausedChip}>Paused</span>}
+          {pausedSession && (
+            <span className={styles.pausedChip}>In Progress</span>
+          )}
           <span className={styles.slugChip}>{manifest.cert}</span>
         </div>
       </div>
@@ -100,7 +106,11 @@ function CertCard({
         </p>
         <Link
           className="button button-primary"
-          to={`/quiz/${manifest.cert}`}
+          to={
+            pausedSession
+              ? `/quiz/${manifest.cert}?resume=true`
+              : `/quiz/${manifest.cert}`
+          }
           aria-label={`${pausedSession ? "Resume" : "Start"} practice for ${manifest.name}`}
         >
           {pausedSession ? "Resume practice" : "Start practice"}
@@ -108,6 +118,117 @@ function CertCard({
         </Link>
       </div>
     </article>
+  );
+}
+
+function InProgressSection({
+  pausedSessions,
+  manifests,
+  onDiscard,
+}: {
+  pausedSessions: Record<string, PausedSession>;
+  manifests: Manifest[];
+  onDiscard: (certSlug: string) => void;
+}) {
+  const manifestMap = useMemo(
+    () => new Map(manifests.map((m) => [m.cert, m])),
+    [manifests],
+  );
+
+  const activeEntries = useMemo(() => {
+    return Object.entries(pausedSessions)
+      .map(([certSlug, session]) => ({
+        certSlug,
+        session,
+        manifest: manifestMap.get(certSlug),
+      }))
+      .filter(
+        (
+          entry,
+        ): entry is {
+          certSlug: string;
+          session: PausedSession;
+          manifest: Manifest;
+        } => Boolean(entry.manifest),
+      )
+      .sort((a, b) => b.session.pausedAt.localeCompare(a.session.pausedAt));
+  }, [pausedSessions, manifestMap]);
+
+  if (activeEntries.length === 0) {
+    return null;
+  }
+
+  return (
+    <section
+      className={styles.inProgressSection}
+      aria-labelledby="in-progress-heading"
+    >
+      <div className={styles.sectionHeader}>
+        <div className={styles.inProgressTitleRow}>
+          <h2 id="in-progress-heading">Resume Practice</h2>
+          <span className={styles.pausedChip}>In Progress</span>
+        </div>
+        <p className={styles.sectionSubtext}>
+          Pick up right where you left off.
+        </p>
+      </div>
+      <div className={styles.inProgressGrid}>
+        {activeEntries.map(({ certSlug, session, manifest }) => {
+          const answeredCount = Object.values(session.answers).filter(
+            (s) => s.length > 0,
+          ).length;
+
+          return (
+            <article key={certSlug} className={styles.inProgressCard}>
+              <div className={styles.cardHeading}>
+                <p className="eyebrow">{manifest.vendor}</p>
+                <div className={styles.chips}>
+                  <span className={styles.slugChip}>{manifest.cert}</span>
+                </div>
+              </div>
+              <h3>{manifest.name}</h3>
+              <dl className={styles.inProgressMetaList}>
+                <div className={styles.inProgressMetaItem}>
+                  <dt>Position</dt>
+                  <dd>
+                    Question {session.questionIndex + 1} of{" "}
+                    {session.questionIds.length}
+                  </dd>
+                </div>
+                <div className={styles.inProgressMetaItem}>
+                  <dt>Answered</dt>
+                  <dd>
+                    {answeredCount} of {session.questionIds.length}
+                  </dd>
+                </div>
+                <div className={styles.inProgressMetaItem}>
+                  <dt>Time active</dt>
+                  <dd>{formatRemainingTime(session.elapsedSeconds)}</dd>
+                </div>
+              </dl>
+              <div className={styles.inProgressActions}>
+                <Link
+                  className="button button-primary"
+                  to={`/quiz/${certSlug}?resume=true`}
+                  aria-label={`Resume practice for ${manifest.name}`}
+                >
+                  Resume practice
+                  <span aria-hidden="true">→</span>
+                </Link>
+                <button
+                  type="button"
+                  className="button button-secondary"
+                  onClick={() => onDiscard(certSlug)}
+                  aria-label={`Discard in-progress practice for ${manifest.name}`}
+                >
+                  Discard
+                </button>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </section>
   );
 }
 
@@ -383,7 +504,7 @@ function CertTable({
                           <span className={styles.draftChip}>Draft</span>
                         )}
                         {pausedSession && (
-                          <span className={styles.pausedChip}>Paused</span>
+                          <span className={styles.pausedChip}>In Progress</span>
                         )}
                       </div>
                     )}
@@ -408,7 +529,11 @@ function CertTable({
                 <td className={styles.actionCell}>
                   <Link
                     className={`button button-primary ${styles.tableAction}`}
-                    to={`/quiz/${manifest.cert}`}
+                    to={
+                      pausedSession
+                        ? `/quiz/${manifest.cert}?resume=true`
+                        : `/quiz/${manifest.cert}`
+                    }
                     aria-label={`${pausedSession ? "Resume" : "Start"} practice for ${manifest.name}`}
                   >
                     {pausedSession ? "Resume practice" : "Start practice"}
@@ -492,6 +617,15 @@ export function CertPickerPage() {
     filterInputRef.current?.focus();
   }
 
+  function handleDiscardSession(certSlug: string) {
+    try {
+      clearPausedSession(certSlug);
+      setPausedSessions(getPausedSessions());
+    } catch {
+      // Non-blocking fallback
+    }
+  }
+
   const { error: regexError } = useMemo(
     () => compileFilterRegex(filterQuery),
     [filterQuery],
@@ -546,6 +680,12 @@ export function CertPickerPage() {
       )}
       {resource.status === "ready" && (
         <>
+          <InProgressSection
+            pausedSessions={pausedSessions}
+            manifests={resource.data}
+            onDiscard={handleDiscardSession}
+          />
+
           <div className={styles.controlsBar}>
             <div
               className={styles.viewToggle}

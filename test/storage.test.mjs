@@ -222,6 +222,33 @@ test("isolates paused sessions across different certifications", () => {
   assert.deepEqual(getPausedSession("cert-b", storage), sessionB);
 });
 
+test("updates an in-progress session across auto-save intervals", () => {
+  const storage = new MemoryStorage();
+  const initialSnapshot = samplePausedSession("test-cert");
+
+  savePausedSession("test-cert", initialSnapshot, storage);
+  assert.equal(getPausedSession("test-cert", storage)?.questionIndex, 2);
+  assert.equal(getPausedSession("test-cert", storage)?.elapsedSeconds, 150);
+
+  const updatedSnapshot = {
+    ...initialSnapshot,
+    questionIndex: 3,
+    elapsedSeconds: 155,
+    answers: { ...initialSnapshot.answers, q3: ["c"] },
+    pausedAt: "2026-09-03T10:02:35.000Z",
+  };
+
+  savePausedSession("test-cert", updatedSnapshot, storage);
+  const retrieved = getPausedSession("test-cert", storage);
+  assert.equal(retrieved?.questionIndex, 3);
+  assert.equal(retrieved?.elapsedSeconds, 155);
+  assert.deepEqual(retrieved?.answers.q3, ["c"]);
+
+  const all = getPausedSessions(storage);
+  assert.equal(Object.keys(all).length, 1);
+  assert.equal(all["test-cert"]?.questionIndex, 3);
+});
+
 test("rejects saving an invalid paused session", () => {
   const storage = new MemoryStorage();
   const badSession = { ...samplePausedSession(), elapsedSeconds: -5 };
