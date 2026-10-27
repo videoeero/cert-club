@@ -15,11 +15,13 @@ import type {
   ReviewScope,
   RevealMode,
   SimulationPreset,
+  TimeLimitMode,
 } from "../types";
 
 const DEFAULT_SELECTION_MODE: QuestionSelectionMode = "weighted";
 const DEFAULT_QUESTION_COUNT = "10";
 const DEFAULT_REVEAL_MODE: RevealMode = "immediate";
+const DEFAULT_TIME_LIMIT_MODE: TimeLimitMode = "default";
 const DEFAULT_REVIEW_SCOPE: ReviewScope = "missed-or-bookmarked";
 
 const REVIEW_SCOPE_LABELS: Record<ReviewScope, string> = {
@@ -344,6 +346,9 @@ export function QuizSetupForm({
   const [selectionDomain, setSelectionDomain] = useState("");
   const [selectionCount, setSelectionCount] = useState(DEFAULT_QUESTION_COUNT);
   const [revealMode, setRevealMode] = useState<RevealMode>(DEFAULT_REVEAL_MODE);
+  const [timeLimitMode, setTimeLimitMode] = useState<TimeLimitMode>(
+    DEFAULT_TIME_LIMIT_MODE,
+  );
   const [activeTab, setActiveTab] = useState<"practice" | "simulate">(
     "practice",
   );
@@ -404,7 +409,10 @@ export function QuizSetupForm({
       ? String(countLimit)
       : selectionCount;
 
-  function buildConfig(customRevealMode: RevealMode): QuizConfig | null {
+  function buildConfig(
+    customRevealMode: RevealMode,
+    customTimeLimitMode: TimeLimitMode = timeLimitMode,
+  ): QuizConfig | null {
     if (selectionMode === "review" && reviewQuestions.length === 0) {
       setSessionError(
         "No questions match this review set and domain filter. Answer or bookmark questions first.",
@@ -429,6 +437,7 @@ export function QuizSetupForm({
     return {
       mode: selectionMode,
       revealMode: customRevealMode,
+      timeLimitMode: customTimeLimitMode,
       ...(count === undefined ? {} : { count }),
       ...(selectionMode === "domain" ? { domain: selectedDomain } : {}),
       ...(selectionMode === "review"
@@ -472,7 +481,7 @@ export function QuizSetupForm({
       );
       return;
     }
-    const config = buildConfig("end");
+    const config = buildConfig("end", "default");
     if (!config) return;
     try {
       const selected = selectQuestions(
@@ -591,6 +600,40 @@ export function QuizSetupForm({
               </span>
             </label>
           </fieldset>
+
+          {manifest.examDurationMinutes ? (
+            <fieldset className={styles.setupFieldset}>
+              <legend>Time limit</legend>
+              <label className={styles.radioOption}>
+                <input
+                  type="radio"
+                  name="time-limit-mode"
+                  value="default"
+                  checked={timeLimitMode === "default"}
+                  onChange={() => setTimeLimitMode("default")}
+                />
+                <span>
+                  <strong>Default ({manifest.examDurationMinutes} min)</strong>
+                  <small>Timed to match the official exam duration.</small>
+                </span>
+              </label>
+              <label className={styles.radioOption}>
+                <input
+                  type="radio"
+                  name="time-limit-mode"
+                  value="none"
+                  checked={timeLimitMode === "none"}
+                  onChange={() => setTimeLimitMode("none")}
+                />
+                <span>
+                  <strong>No time limit</strong>
+                  <small>
+                    Practice at your own pace without a countdown timer.
+                  </small>
+                </span>
+              </label>
+            </fieldset>
+          ) : null}
 
           <div className={styles.sessionInstructions}>
             <strong className={styles.sessionInstructionsHeading}>

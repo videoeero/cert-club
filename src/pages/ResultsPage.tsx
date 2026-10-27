@@ -255,9 +255,11 @@ export function ResultsPage() {
               {formatUsedTime(attempt.startedAt, attempt.completedAt)}
             </dd>
             <dd className={styles.resultsDetail}>
-              {manifest.examDurationMinutes
-                ? `of ${manifest.examDurationMinutes} min limit`
-                : "Total elapsed time"}
+              {attempt.config.timeLimitMode === "none"
+                ? "No time limit"
+                : manifest.examDurationMinutes
+                  ? `of ${manifest.examDurationMinutes} min limit`
+                  : "Total elapsed time"}
             </dd>
           </div>
           <div>

@@ -165,6 +165,33 @@ test("rejects an attempt carrying an invalid config", () => {
   );
 });
 
+test("supports timeLimitMode in quiz config", () => {
+  const storage = new MemoryStorage();
+
+  const timedAttempt = attempt("timed");
+  timedAttempt.config.timeLimitMode = "default";
+  saveAttempt(timedAttempt, storage);
+  assert.equal(
+    getAttempt("test-cert", "timed", storage)?.config.timeLimitMode,
+    "default",
+  );
+
+  const untimedAttempt = attempt("untimed");
+  untimedAttempt.config.timeLimitMode = "none";
+  saveAttempt(untimedAttempt, storage);
+  assert.equal(
+    getAttempt("test-cert", "untimed", storage)?.config.timeLimitMode,
+    "none",
+  );
+
+  const badAttempt = attempt("bad-timelimit");
+  badAttempt.config.timeLimitMode = "unlimited";
+  assert.throws(
+    () => saveAttempt(badAttempt, storage),
+    /Cannot save an invalid quiz attempt/,
+  );
+});
+
 function samplePausedSession(cert = "test-cert") {
   return {
     cert,
@@ -249,12 +276,41 @@ test("updates an in-progress session across auto-save intervals", () => {
   assert.equal(all["test-cert"]?.questionIndex, 3);
 });
 
+test("preserves timeLimitMode across paused session saves", () => {
+  const storage = new MemoryStorage();
+  const baseSession = samplePausedSession("test-cert");
+  const session = {
+    ...baseSession,
+    config: {
+      ...baseSession.config,
+      timeLimitMode: "none",
+    },
+  };
+
+  savePausedSession("test-cert", session, storage);
+  const retrieved = getPausedSession("test-cert", storage);
+  assert.equal(retrieved?.config.timeLimitMode, "none");
+});
+
 test("rejects saving an invalid paused session", () => {
   const storage = new MemoryStorage();
   const badSession = { ...samplePausedSession(), elapsedSeconds: -5 };
 
   assert.throws(
     () => savePausedSession("test-cert", badSession, storage),
+    StorageError,
+  );
+
+  const baseSession = samplePausedSession();
+  const badTimeLimitSession = {
+    ...baseSession,
+    config: {
+      ...baseSession.config,
+      timeLimitMode: "unlimited",
+    },
+  };
+  assert.throws(
+    () => savePausedSession("test-cert", badTimeLimitSession, storage),
     StorageError,
   );
 

@@ -78,6 +78,9 @@ function isQuizConfig(value: unknown): value is QuizConfig {
       value.mode === "weighted" ||
       value.mode === "review") &&
     (value.revealMode === "immediate" || value.revealMode === "end") &&
+    (value.timeLimitMode === undefined ||
+      value.timeLimitMode === "default" ||
+      value.timeLimitMode === "none") &&
     (value.count === undefined ||
       (typeof value.count === "number" &&
         Number.isInteger(value.count) &&

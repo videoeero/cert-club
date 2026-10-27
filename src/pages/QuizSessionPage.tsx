@@ -126,14 +126,21 @@ export function QuizSessionPage() {
     }
   }, [certSlug, retryKey]);
 
+  const certContent = resource.status === "ready" ? resource.data : null;
+
   useEffect(() => {
-    if (!activeSession || isPaused) return;
+    if (
+      !activeSession ||
+      isPaused ||
+      activeSession.config.timeLimitMode === "none" ||
+      !certContent?.manifest.examDurationMinutes
+    ) {
+      return;
+    }
     setCurrentTime(Date.now());
     const interval = setInterval(() => setCurrentTime(Date.now()), 1000);
     return () => clearInterval(interval);
-  }, [activeSession, isPaused]);
-
-  const certContent = resource.status === "ready" ? resource.data : null;
+  }, [activeSession, isPaused, certContent?.manifest.examDurationMinutes]);
 
   useEffect(() => {
     if (!certContent || !certSlug) return;
@@ -634,7 +641,10 @@ export function QuizSessionPage() {
       (selected) => selected.length > 0,
     ).length;
     const elapsedSeconds = savedPausedSession?.elapsedSeconds ?? 0;
-    const totalExamSeconds = (manifest.examDurationMinutes ?? 0) * 60;
+    const isUntimed = activeSession.config.timeLimitMode === "none";
+    const totalExamSeconds = isUntimed
+      ? 0
+      : (manifest.examDurationMinutes ?? 0) * 60;
     const remainingSeconds = Math.max(0, totalExamSeconds - elapsedSeconds);
 
     return (
@@ -677,7 +687,7 @@ export function QuizSessionPage() {
               <dt>Active time</dt>
               <dd>{formatRemainingTime(elapsedSeconds)}</dd>
             </div>
-            {manifest.examDurationMinutes ? (
+            {!isUntimed && manifest.examDurationMinutes ? (
               <div className={styles.pausedMetaItem}>
                 <dt>Time remaining</dt>
                 <dd>{formatRemainingTime(remainingSeconds)}</dd>
@@ -811,7 +821,11 @@ export function QuizSessionPage() {
       <QuizProgress
         currentIndex={questionIndex}
         totalQuestions={sessionQuestions.length}
-        examDurationMinutes={manifest.examDurationMinutes}
+        examDurationMinutes={
+          config.timeLimitMode === "none"
+            ? undefined
+            : manifest.examDurationMinutes
+        }
         startedAt={startedAt}
         currentTime={currentTime}
       />

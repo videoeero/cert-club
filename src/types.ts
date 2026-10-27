@@ -86,8 +86,11 @@ export interface QuizSelectionConfig {
   shuffleOptions?: boolean;
 }
 
+export type TimeLimitMode = "default" | "none";
+
 export interface QuizConfig extends QuizSelectionConfig {
   revealMode: RevealMode;
+  timeLimitMode?: TimeLimitMode;
 }
 
 export type RetakeMode = "exact" | "random" | "other" | "failed";
