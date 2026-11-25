@@ -840,6 +840,7 @@ export function QuizSessionPage() {
         isRevealed={isRevealed}
         revealMode={config.revealMode}
         isHintRevealed={hintRevealedQuestionIds.has(question.id)}
+        certName={manifest.name}
         onToggleBookmark={() => {
           if (!certSlug) return;
           const next = new Set(bookmarkedQuestionIds);

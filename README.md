@@ -119,7 +119,9 @@ author should not have to rediscover.
 - **No backend.** Static site plus JSON question banks. Progress and
   bookmarks live in your browser's `localStorage`.
 - **No accounts, no analytics, no telemetry.** Nothing about your study
-  session leaves your machine.
+  session leaves your machine unless you send it yourself: the optional
+  "Explain with Claude" link on a missed question opens claude.ai with that
+  question and your answer in the link, and only when you click it.
 - **Every question cites its source.** Non-negotiable.
 
 ## Running locally

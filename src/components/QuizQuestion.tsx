@@ -1,6 +1,8 @@
 import { useEffect, useRef } from "react";
 
+import { ExplainWithClaude } from "./ClaudeActions";
 import styles from "./QuizQuestion.module.css";
+import { buildExplainPrompt } from "../lib/claude";
 import {
   answerCountLabel,
   getOptionLabel,
@@ -19,6 +21,8 @@ export interface QuizQuestionProps {
   isRevealed: boolean;
   revealMode: RevealMode;
   isHintRevealed: boolean;
+  /** Certification name, used in the "Explain with Claude" prompt. */
+  certName?: string;
   onToggleBookmark: () => void;
   onOptionChange: (optionId: string) => void;
   onToggleStrikethrough?: (optionId: string) => void;
@@ -310,6 +314,7 @@ export function QuizQuestion({
   isRevealed,
   revealMode,
   isHintRevealed,
+  certName,
   onToggleBookmark,
   onOptionChange,
   onToggleStrikethrough = () => {},
@@ -374,6 +379,16 @@ export function QuizQuestion({
       />
       {isRevealed && (
         <AnswerFeedback question={question} isCorrect={isCorrect} />
+      )}
+      {isRevealed && !isCorrect && (
+        <ExplainWithClaude
+          prompt={buildExplainPrompt(
+            certName ?? question.cert,
+            question,
+            selectedOptionIds,
+            domainName,
+          )}
+        />
       )}
     </article>
   );
